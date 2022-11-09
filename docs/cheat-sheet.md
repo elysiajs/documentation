@@ -121,8 +121,8 @@ app
     .get('/version', ({ 
         getDate, 
         store: { version } 
-    }) => `${version} ${getDate()}`
-)
+    }) => `${version} ${getDate()}`)
+    .listen(8080)
 ```
 
 ## Plugin
