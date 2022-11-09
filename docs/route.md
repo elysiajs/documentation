@@ -3,9 +3,7 @@ Like Express, and Fastify.
 
 You define route using method as a building block for your server.
 
-By calling `.[method name](path, callback, hook?)`, you attach route to KingWorld, and KingWorld will handle the rest for you.
-
-Callback run when the request match.
+By calling `.[method name](path, callback, hook?)`, you attach route to KingWorld, and the library will handle the routing for you.
 
 For example:
 ```typescript
@@ -13,6 +11,9 @@ new KingWorld()
     .get('/ping', () => 'pong')
     .listen(8080)
 ```
+
+Callback run when the request match.
+
 Means when the [GET] request with path '/ping' shall return 'pong' as a response.
 
 ## Custom Method
@@ -21,6 +22,7 @@ You can define with many built-in method like:
 - put
 - delete
 - etc
+
 But in-case you have a custom method, using `.route` will register any methods you like:
 ```typescript
 new KingWorld()
