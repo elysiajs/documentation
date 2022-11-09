@@ -1,5 +1,5 @@
 # Introduction
-KingWorld is a library for writing web servers in Bun.
+Fast, and friendly [Bun](https://bun.sh) web framework.
 
 Building on top of 3 philosophies:
 - Performance
