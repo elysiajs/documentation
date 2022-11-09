@@ -136,7 +136,7 @@ export default defineConfig({
         editLink: {
             text: 'Edit this page on GitHub',
             pattern:
-                "https://github.com/saltyaom/kingworld-docs/edit/main/docs/:path'"
+                "https://github.com/saltyaom/kingworld-docs/edit/main/docs/:path"
         }
     }
 })
