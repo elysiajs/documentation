@@ -14,7 +14,8 @@ Designed with TypeScript in mind, you don't need to understand TypeScript to tak
 Take a look at this:
 ```typescript
 new KingWorld()
-    .get('/id/:id', (({ params: { id }}) => id)
+    .get('/id/:id', (({ params: { id }}) => id))
+    .listen(8080)
 ```
 
 KingWorld understands that you want a path parameter name `id`.
@@ -34,6 +35,7 @@ new KingWorld()
             })
         }
     })
+    .listen(8080)
 ```
 
 You explictly tells KingWorld that the incoming request body expected to have structure like you define.
