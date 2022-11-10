@@ -43,8 +43,8 @@ app
         .post('/sign-up', signUp)
         .post('/profile', getProfile)
     )
-    // scoped is undefined, therefore it returns false
-    .get('/scoped', ({ store: { scoped } }) => scoped ?? false)
+    // inner is undefined out of scope, therefore it returns false
+    .get('/scoped', ({ store: { inner } }) => inner ?? false)
 ```
 
 Group is also useful when you need an encapsulation too.
