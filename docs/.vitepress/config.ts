@@ -23,7 +23,7 @@ export default defineConfig({
             'meta',
             {
                 property: 'og:image',
-                content: 'https://kingworld.pages.dev/assets/cover.png'
+                content: 'https://kingworldjs.com/assets/cover.png'
             }
         ],
         [
