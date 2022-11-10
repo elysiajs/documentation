@@ -49,9 +49,9 @@ new KingWorld()
 import { KingWorld } from 'kingworld'
 
 new KingWorld()
-    .get('/', ({ status, setHeader }) => {
-        status(419)
-        setHeader('x-powered-by', 'KingWorld')
+    .get('/', ({ set }) => {
+        set.status = 418
+        set.headers['x-powered-by'] = 'KingWorld'
 
         return 'I\'m teapod'
     })
@@ -100,6 +100,8 @@ new KingWorld()
 
 ## Guard
 ```typescript
+import { KingWorld } from 'kingworld'
+
 new KingWorld()
     .guard({
         schema: {
@@ -115,7 +117,9 @@ new KingWorld()
 
 ## State and Decorate
 ```typescript
-app
+import { KingWorld } from 'kingworld'
+
+new KingWorld()
     .state('version', 1)
     .decorate('getDate', () => Date.now())
     .get('/version', ({ 
@@ -125,18 +129,23 @@ app
     .listen(8080)
 ```
 
+## Redirect
+```typescript
+import { KingWorld } from 'kingworld'
+
+new KingWorld()
+    .get('/', () => 'hi')
+    .get('/redirect', ({ set }) => {
+        set.redirect = '/'
+    })
+    .listen(8080)
+```
+
 ## Plugin
 ```typescript
 import { KingWorld } from 'kingworld'
 
-const plugin = (app: KingWorld, {
-    prefix: '/v1'
-}) => app
-    .state('plugin-version', 1)
-    .get('/from-plugin', () => 'Hi')
-    .get(`/${prefix}/hi`, () => 'Hi')
-
-const app = new KingWorld()
+new KingWorld()
     .use(plugin, {
         prefix: '/v2'
     })

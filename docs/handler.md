@@ -17,12 +17,16 @@ app.get('/id/:id', (context) => context.params.id)
 
 ## Context
 Context's properties consists of
-request: Raw `Request` for accessing data as web standard type
-body: Body which come with the request
-query: Parsed path query as a simple object
-params: Path parameters as a simple object
-store: A global mutable store for KingWorld instance
-responseHeaders: An object to be retunr with Response's header
+- request: Raw `Request` for accessing data as web standard type
+- body: Body which come with the request
+ query: Parsed path query as a simple object
+- params: Path parameters as a simple object
+- store: A global mutable store for KingWorld instance
+- set: Response representation
+    - status: response status
+    - headers: response headers
+    - redirect: redirect to new path
+
 And a few helper methods for convenient usage:
 status: Function to set HTTP response status code
  redirect: Function to redirect to different path
@@ -30,17 +34,22 @@ setHeader: Syntax sugar for setting specific header value
 
 For both context, you can easily access in `Handler` function:
 ```typescript
-app.post('/', ({ body, status }) => {
+app.post('/', ({ body, set }) => {
     const signed = signIn(body)
     
     if(signed)
         return 'Welcome back'
     else {
-        status(403)
+        set.status = 403
         return 'Invalid username or password'
     }
 })
 ```
+
+::: tip
+KingWorld encourages object destructuring, but `set` is an exception.
+As destructured primitive value is not linked to the object, in order to make `set` work properly, we need to use `set.value`
+:::
 
 ## Response
 Returning value from `Handler`, KingWorld will try to map returned value into `Response`.

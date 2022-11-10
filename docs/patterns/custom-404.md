@@ -1,5 +1,5 @@
 # Custom 404
-You define custom 404 using `onError` hook:
+You can define custom 404 using `onError` hook:
 ```typescript
 import { KingWorld } from '../src'
 

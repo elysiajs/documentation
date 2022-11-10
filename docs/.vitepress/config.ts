@@ -126,6 +126,14 @@ export default defineConfig({
                     {
                         text: 'Custom 404',
                         link: '/patterns/custom-404'
+                    },
+                    {
+                        text: 'Redirect',
+                        link: '/patterns/redirect'
+                    },
+                    {
+                        text: 'Static File',
+                        link: '/patterns/static-file'
                     }
                 ]
             }

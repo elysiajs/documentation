@@ -69,9 +69,9 @@ Which consists of:
 To use a local hook, pass it as the third argument in the handler
 ```typescript
 app.get('/', () => 'Hello', {
-    beforeHandle: ({ request: { headers }, status }) => {
+    beforeHandle: ({ set, request: { headers } }) => {
         if(!isSignIn(headers)) {
-            status(401)
+            set.status = 401
             return 'Unauthorized'
         }
     }
