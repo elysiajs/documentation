@@ -6,15 +6,15 @@ Schema is not an event but a value used in a validation event.
 To strictly type and validate an incoming request and outgoing response.
 
 Schema is consists of:
-body
-query
-params
-header
-response
+- body
+- query
+- params
+- header
+- response
 
 Schema is defined as:
-Locally in a handler
-Globally limits to the scope
+- Locally: in a handler
+- Globally: limits to the scope
 
 ## Local Schema
 Local schema tied to a specific route in local handler.
