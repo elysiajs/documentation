@@ -13,7 +13,8 @@ That's why KingWorld is creating pre-built common pattern plugin for convinient 
 - [Static](https://github.com/saltyaom/kingworld-static) - serve static file/folders
 - [Cookie](https://github.com/saltyaom/kingworld-cookie) - get/set cookie
 - [CORS](https://github.com/saltyaom/kingworld-cors) - handle CORS request
-- [html](https://github.com/saltyaom/kingworld-html) - shorthand returning HTML
+- [HTML](https://github.com/saltyaom/kingworld-html) - shorthand returning HTML
+- [Swagger](https://github.com/saltyaom/kingworld-swagger) - generate Swagger on fly
 - [GraphQL Yoga](https://github.com/saltyaom/kingworld-graphql-yoga) - shorthand returning HTML
 
 ## Community plugins:
