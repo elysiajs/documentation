@@ -44,8 +44,8 @@ export default defineConfig({
     themeConfig: {
         nav: [
             {
-                text: 'Quickstart',
-                link: '/quickstart'
+                text: 'Quick Start',
+                link: '/quick-start'
             },
             {
                 text: 'Changelog',
@@ -106,11 +106,25 @@ export default defineConfig({
                 ]
             },
             {
+                text: 'Technique',
+                collapsible: true,
+                items: [
+                    {
+                        text: 'Chaining',
+                        link: '/technique/chaining'
+                    },
+                    {
+                        text: 'Typed Plugin',
+                        link: '/technique/typed-plugin'
+                    }
+                ]
+            },
+            {
                 text: 'Collections',
                 collapsible: true,
                 items: [
                     {
-                        text: 'Ecosystem',
+                        text: 'Plugins',
                         link: '/ecosystem'
                     },
                     {
@@ -120,7 +134,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: 'Pattern',
+                text: 'Patterns',
                 collapsible: true,
                 items: [
                     {
@@ -144,7 +158,7 @@ export default defineConfig({
         editLink: {
             text: 'Edit this page on GitHub',
             pattern:
-                "https://github.com/saltyaom/kingworld-docs/edit/main/docs/:path"
+                'https://github.com/saltyaom/kingworld-docs/edit/main/docs/:path'
         }
     }
 })
