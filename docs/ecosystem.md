@@ -16,6 +16,7 @@ That's why KingWorld is creating pre-built common pattern plugin for convinient 
 - [HTML](https://github.com/saltyaom/kingworld-html) - shorthand returning HTML
 - [Swagger](https://github.com/saltyaom/kingworld-swagger) - generate Swagger on fly
 - [GraphQL Yoga](https://github.com/saltyaom/kingworld-graphql-yoga) - shorthand returning HTML
+- [WebSocket](https://github.com/saltyaom/kingworld-graphql-yoga) - websocket support
 
 ## Community plugins:
 - [Controllers](https://github.com/gaurishhs/kingworld-controllers) - decorator and controller-based routing
