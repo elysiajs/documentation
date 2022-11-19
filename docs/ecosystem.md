@@ -17,7 +17,7 @@ That's why KingWorld is creating pre-built common pattern plugin for convinient 
 - [Swagger](https://github.com/saltyaom/kingworld-swagger) - generate Swagger on fly
 - [GraphQL Yoga](https://github.com/saltyaom/kingworld-graphql-yoga) - using GraphQL Yoga with KingWorld
 - [WebSocket](https://github.com/saltyaom/kingworld-graphql-yoga) - websocket support
-- [Cron](https://github.com/saltyaom/kingworld-graphql-yoga) - running cron
+- [Cron](https://github.com/saltyaom/kingworld-cron) - running cron
 
 ## Community plugins:
 - [Controllers](https://github.com/gaurishhs/kingworld-controllers) - decorator and controller-based routing
