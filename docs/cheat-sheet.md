@@ -145,10 +145,14 @@ new KingWorld()
 ```typescript
 import { KingWorld } from 'kingworld'
 
+const plugin = ({ prefix }: { prefix: string }) => 
+    (app: KingWorld) =>
+    app.get(`${prefix}/hi`, () => 'hi')
+
 new KingWorld()
-    .use(plugin, {
+    .use(plugin(
         prefix: '/v2'
-    })
+    }))
     .get('/version', ({ store }) => store['plugin-version'])
     .listen(8080)
 ```
