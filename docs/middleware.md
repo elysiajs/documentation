@@ -1,7 +1,7 @@
-# Hook
+# Middleware
 KingWorld has Life Cycle event support which you get called on a specific event.
 
-A hook is an event listener to "hook", and listen to those events cycling around.
+Middleware or Hook is an event listener to "hook", and listen to those events cycling around.
 
 Hook allows you to transform data running through the data pipeline.
 

@@ -20,20 +20,20 @@ Plugin can register by using `use`.
 Registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
 
 ## Config
-You can customize plugin by accepting `config` as a second parameter.
+You can customize plugin by creating function to return callback which accepts KingWorld.
 
 ```typescript
 import { KingWorld } from 'kingworld'
 
-const plugin = (app: KingWorld, {
+const plugin = ({
     prefix: '/v1'
-}) => app
+}) => (app: KingWorld) => app
     .get(`/${prefix}/hi`, () => 'Hi')
 
 const app = new KingWorld()
-    .use(plugin, {
+    .use(plugin({
         prefix: '/v2'
-    })
+    }))
     .listen(8080)
 ```
 

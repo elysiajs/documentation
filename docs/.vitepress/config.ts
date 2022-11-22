@@ -88,8 +88,8 @@ export default defineConfig({
                         link: '/group'
                     },
                     {
-                        text: 'Hook',
-                        link: '/hook'
+                        text: 'Middleware',
+                        link: '/middleware'
                     },
                     {
                         text: 'Schema',
