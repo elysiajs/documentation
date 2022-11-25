@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 import { join } from 'path'
+import { SearchPlugin } from "vitepress-plugin-search"
 
 export default defineConfig({
     lang: 'en-US',
@@ -10,6 +11,12 @@ export default defineConfig({
     lastUpdated: true,
     markdown: {
         theme: 'github-light'
+    },
+    vite: {
+        plugins: [SearchPlugin({
+            preset: 'performance',
+            tokenize: 'full'
+        })]
     },
     head: [
         [
