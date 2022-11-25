@@ -160,7 +160,8 @@ export default defineConfig({
             }
         ],
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/saltyaom/kingworld' }
+            { icon: 'github', link: 'https://github.com/saltyaom/kingworld' },
+            { icon: 'discord', link: 'https://discord.gg/eaFJ2KDJck' }
         ],
         editLink: {
             text: 'Edit this page on GitHub',
