@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 import { join } from 'path'
-import { SearchPlugin } from "vitepress-plugin-search"
+import { SearchPlugin } from 'vitepress-plugin-search'
 
 export default defineConfig({
     lang: 'en-US',
@@ -13,17 +13,19 @@ export default defineConfig({
         theme: 'github-light'
     },
     vite: {
-        plugins: [SearchPlugin({
-            preset: 'performance',
-            tokenize: 'full'
-        })]
+        plugins: [
+            SearchPlugin({
+                preset: 'performance',
+                tokenize: 'full'
+            })
+        ]
     },
     head: [
         [
             'link',
             {
                 rel: 'icon',
-                href: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦊</text></svg>'
+                href: '/assets/kingworld.png'
             }
         ],
         [
@@ -49,13 +51,14 @@ export default defineConfig({
         ]
     ],
     themeConfig: {
+        "logo": "/assets/kingworld.svg",
         nav: [
             {
                 text: 'Quick Start',
                 link: '/quick-start'
             },
             {
-                text: 'Changelog',
+                text: 'Release',
                 link: 'https://github.com/SaltyAom/kingworld/releases'
             }
         ],
