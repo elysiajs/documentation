@@ -112,6 +112,10 @@ export default defineConfig({
                     {
                         text: 'Plugin',
                         link: '/plugin'
+                    },
+                    {
+                        text: 'Config',
+                        link: '/config'
                     }
                 ]
             },

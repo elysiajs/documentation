@@ -23,6 +23,27 @@ app
 
 Decorator function is directly assigned to `Context` while state is assigned to `Context.store`.
 
-And yes, KingWorld handle type registration for both `state`, and `decorate`.
+KingWorld handle type registration for both `state`, and `decorate`.
 
 So you don't need to type it manually or afraid that you're using a wrong type.
+
+## TypeScript
+You can type state and decorator explictly using TypeScript with `as`:
+```typescript
+app
+    // Will type version as `number | null`
+    .state('version', 1 as number | null)
+    .get('/version', ({ 
+        store: { version } 
+    }) => version
+```
+
+If explictly typed doesn't type `null` or `undefined`, make sure to set `strict` to `true` in `tsconfig.json`:
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
