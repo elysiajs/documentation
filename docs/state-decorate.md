@@ -1,7 +1,7 @@
 # State and Decorate
-State and Decorate is a powerful concept for KingWorld but similar with a different purpose
+State and Decorate is a powerful concept for Elysia but similar with a different purpose
 
-You can customize and create a shortcut and adapt KingWorld to your liking.
+You can customize and create a shortcut and adapt Elysia to your liking.
 
 To put it simply:
 - State: set global mutable store accessible to `Handler`
@@ -23,7 +23,7 @@ app
 
 Decorator function is directly assigned to `Context` while state is assigned to `Context.store`.
 
-KingWorld handle type registration for both `state`, and `decorate`.
+Elysia handle type registration for both `state`, and `decorate`.
 
 So you don't need to type it manually or afraid that you're using a wrong type.
 

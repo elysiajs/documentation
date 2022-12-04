@@ -1,5 +1,5 @@
 # Middleware
-KingWorld has Life Cycle event support which you get called on a specific event.
+Elysia has Life Cycle event support which you get called on a specific event.
 
 Middleware or Hook is an event listener to "hook", and listen to those events cycling around.
 
@@ -7,10 +7,10 @@ Hook allows you to transform data running through the data pipeline.
 
 Whether you want to create a custom body parser, return a custom response based on your handler, or define a custom function for guarding authentication.
 
-With the hook, you can customize KingWorld to its fullest potential.
+With the hook, you can customize Elysia to its fullest potential.
 
 ## Life Cycle
-The life cycle in KingWorld consists of:
+The life cycle in Elysia consists of:
 - Start: setup some requirement before the server start serving
 (Start Loop)
 - Request: get notified of every new request

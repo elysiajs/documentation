@@ -1,5 +1,5 @@
 # Schema
-Schema is used to define the strict type for the KingWorld handler.
+Schema is used to define the strict type for the Elysia handler.
 
 Schema is not an event but a value used in a validation event. 
 
@@ -21,9 +21,9 @@ Local schema tied to a specific route in local handler.
 
 To define a schema, import `t`, a schema builder re-exported from `@sinclair/typebox`:
 ```typescript
-import { KingWorld, t } from 'kingworld'
+import { Elysia, t } from 'elysia
 
-new KingWorld()
+new Elysia()
     .post('/mirror', ({ body }) => body, {
         schema: {
             body: t.Object({

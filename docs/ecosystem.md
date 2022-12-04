@@ -1,5 +1,5 @@
 # Ecosystem
-KingWorld is designed to be modular and lightweight.
+Elysia is designed to be modular and lightweight.
 
 Following the same phiolsophy as Arch Linux (btw, I use Arch):
 
@@ -7,23 +7,23 @@ Following the same phiolsophy as Arch Linux (btw, I use Arch):
 
 To ensure that developers endup with performant web server they intent to created.
 
-That's why KingWorld is creating pre-built common pattern plugin for convinient usage for developers:
+That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers:
 
 ## Official plugins:
-- [Static](https://github.com/saltyaom/kingworld-static) - serve static file/folders
-- [Cookie](https://github.com/saltyaom/kingworld-cookie) - get/set cookie
-- [CORS](https://github.com/saltyaom/kingworld-cors) - handle CORS request
-- [HTML](https://github.com/saltyaom/kingworld-html) - shorthand returning HTML
-- [Swagger](https://github.com/saltyaom/kingworld-swagger) - generate Swagger on fly
-- [GraphQL Yoga](https://github.com/saltyaom/kingworld-graphql-yoga) - using GraphQL Yoga with KingWorld
-- [WebSocket](https://github.com/saltyaom/kingworld-websocket) - websocket support
-- [Cron](https://github.com/saltyaom/kingworld-cron) - running cron
-- [JWT](https://github.com/saltyaom/kingworld-jwt) - authenticating with JWT
-- [tRPC](https://github.com/saltyaom/kingworld-trpc) - add tRPC support
+- [Static](https://github.com/elysiajs/elysia-static) - serve static file/folders
+- [Cookie](https://github.com/elysiajs/elysia-cookie) - get/set cookie
+- [CORS](https://github.com/elysiajs/elysia-cors) - handle CORS request
+- [HTML](https://github.com/elysiajs/elysia-html) - shorthand returning HTML
+- [Swagger](https://github.com/elysiajs/elysia-swagger) - generate Swagger on fly
+- [GraphQL Yoga](https://github.com/elysiajs/elysia-graphql-yoga) - using GraphQL Yoga with Elysia
+- [WebSocket](https://github.com/elysiajs/elysia-websocket) - websocket support
+- [Cron](https://github.com/elysiajs/elysia-cron) - running cron
+- [JWT](https://github.com/elysiajs/elysia-jwt) - authenticating with JWT
+- [tRPC](https://github.com/elysiajs/elysia-trpc) - add tRPC support
 
 ## Community plugins:
 - [Controllers](https://github.com/gaurishhs/kingworld-controllers) - decorator and controller-based routing
 - [OAuth2](https://github.com/bogeychan/kingworld-oauth2) - handle OAuth 2.0 authorization code flow
 
 ---
-If you have plugin written for KingWorld, feels free to share you plugin by creating PR to [documentation repo](https://github.com/saltyaom/kingworld-docs).
+If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/elysia-docs).

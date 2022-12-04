@@ -1,13 +1,13 @@
 # Config
-You can customize KingWorld behavior by:
+You can customize Elysia behavior by:
 1. using constructor 
 2. using `listen`:.
 
 ## Constructor
-Constructor will change some behavior of KingWorld.
+Constructor will change some behavior of Elysia.
 
 ```typescript
-new KingWorld({
+new Elysia({
   strictPath: true
 })
 ```
@@ -21,11 +21,11 @@ For Object, `listen` accept the same value as `Bun.serve`, you can provide any c
 
 ```typescript
 // ✅ This is fine
-new KingWorld()
+new Elysia()
   .listen(8080)
 
 // ✅ This is fine
-new KingWorld()
+new Elysia()
   .listen({
     port: 8080,
     hostname: '0.0.0.0'
@@ -33,13 +33,13 @@ new KingWorld()
 ```
 
 ::: tip
-For providing WebSocket, please use [`@kingworldjs/websocket`](https://github.com/saltyaom/kingworld-websocket)
+For providing WebSocket, please use [`@elysiajs/websocket`](https://github.com/elysiajs/websocket)
 :::
 
 ## Custom Port
 You can provide a custom port from ENV by using `process.env`
 ```typescript
-new KingWorld()
+new Elysia()
   .listen(process.env.PORT ?? 8080)
 ```
 
@@ -49,7 +49,7 @@ You can get underlying `Server` instance from either using:
 Using callback in `.listen`
 
 ```typescript
-const app = new KingWorld()
+const app = new Elysia()
   .listen(8080, ({ hostname, port }) => {
     console.log(`Running at http://${hostname}:${port}`)
   })

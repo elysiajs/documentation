@@ -1,5 +1,5 @@
 # Quick Start
-KingWorld is a library built for Bun. 
+Elysia is a library built for Bun. 
 
 So the only prerequisite is that you need to have Bun installed.
 ```bash
@@ -8,23 +8,23 @@ curl https://bun.sh/install | bash
 
 Start by using `bun create` to scaffold the project:
 ```bash
-bun create kingworld hi-kingworld
+bun create elysia hi-elysia
 ```
 
-Then you should see the folder name `hi-kingworld` in your directory.
+Then you should see the folder name `hi-elysia` in your directory.
 ```bash
-cd hi-kingworld && bun install
+cd hi-elysia && bun install
 ```
 
 Open `src/index.ts`, and you should see:
 ```typescript
-import KingWorld from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
-	.get('/', () => 'Hello KingWorld')
+const app = new Elysia()
+	.get('/', () => 'Hello Elysia')
 	.listen(8080)
 	 
-console.log('🦊 KINGWORLD is running at :3000')
+console.log(`🦊 Elysia is running at :${app.server.host}`)
 ```
 
 Start a development server by:
@@ -38,4 +38,4 @@ You should see your server is running.
 
 ---
 
-Congrats! You just create a new web server with KingWorld 🎉🎉
+Congrats! You just create a new web server with Elysia 🎉🎉

@@ -21,7 +21,7 @@ Context's properties consists of
 - body: Body which come with the request
  query: Parsed path query as a simple object
 - params: Path parameters as a simple object
-- store: A global mutable store for KingWorld instance
+- store: A global mutable store for Elysia instance
 - set: Response representation
     - status: response status
     - headers: response headers
@@ -47,12 +47,12 @@ app.post('/', ({ body, set }) => {
 ```
 
 ::: tip
-KingWorld encourages object destructuring, but `set` is an exception.
+Elysia encourages object destructuring, but `set` is an exception.
 As destructured primitive value is not linked to the object, in order to make `set` work properly, we need to use `set.value`
 :::
 
 ## Response
-Returning value from `Handler`, KingWorld will try to map returned value into `Response`.
+Returning value from `Handler`, Elysia will try to map returned value into `Response`.
 
 For eaxmple, to return an object, you should stringify the content first and then set response header of `Content-Type` to `application/json`.
 
@@ -70,9 +70,9 @@ new Response(JSON.stringify({
 })
 ```
 
-But KingWorld handle that for you.
+But Elysia handle that for you.
 
-You simply return an object, and KingWorld will map your value to a correct response for you.
+You simply return an object, and Elysia will map your value to a correct response for you.
 ```typescript
 app.get('/', () => ({
     'vtuber': [
@@ -82,7 +82,7 @@ app.get('/', () => ({
 }))
 ```
 
-Ofcourse, as KingWorld map the value to `Response`.
+Ofcourse, as Elysia map the value to `Response`.
 
 But you can also return a `Response` if you really want to.
 ```typescript

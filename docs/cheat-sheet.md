@@ -2,20 +2,20 @@
 
 ## Ping Pong
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+const app = new Elysia()
     .get('/ping', () => 'pong')
     .listen(8080)
 
-console.log('🦊 KingWorld is running at :8080')
+console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`)
 ```
 
 ## Custom Method
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .get('/hi', () => 'Hi')
     .post('/hi', () => 'From Post')
     .put('/hi', () => 'From Put')
@@ -25,9 +25,9 @@ new KingWorld()
 
 ## Path Params
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
     .get('/rest/*', () => 'Rest')
     .listen(8080)
@@ -35,23 +35,23 @@ new KingWorld()
 
 ## Return JSON
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .get('/json', () => ({
-        hi: 'KingWorld'
+        hi: 'Elysia'
     }))
     .listen(8080)
 ```
 
 ## Header and status code
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .get('/', ({ set }) => {
         set.status = 418
-        set.headers['x-powered-by'] = 'KingWorld'
+        set.headers['x-powered-by'] = 'Elysia'
 
         return 'I\'m teapod'
     })
@@ -60,9 +60,9 @@ new KingWorld()
 
 ## Group
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia'
 
-new KingWorld()
+new Elysia()
     .get("/", () => "Hi")
     .group("/auth", app => {
         app
@@ -75,9 +75,9 @@ new KingWorld()
 
 ## Hook and Schema
 ```typescript
-import { KingWorld, t } from 'kingworld'
+import { Elysia, t } from 'elysia
 
-new KingWorld()
+new Elysia()
     .onRequest(() => {
         console.log('On request')
     })
@@ -100,9 +100,9 @@ new KingWorld()
 
 ## Guard
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .guard({
         schema: {
             response: t.String()
@@ -117,9 +117,9 @@ new KingWorld()
 
 ## State and Decorate
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .state('version', 1)
     .decorate('getDate', () => Date.now())
     .get('/version', ({ 
@@ -131,9 +131,9 @@ new KingWorld()
 
 ## Redirect
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .get('/', () => 'hi')
     .get('/redirect', ({ set }) => {
         set.redirect = '/'
@@ -143,13 +143,13 @@ new KingWorld()
 
 ## Plugin
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
 const plugin = ({ prefix }: { prefix: string }) => 
-    (app: KingWorld) =>
+    (app: Elysia) =>
     app.get(`${prefix}/hi`, () => 'hi')
 
-new KingWorld()
+new Elysia()
     .use(plugin(
         prefix: '/v2'
     }))

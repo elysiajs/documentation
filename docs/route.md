@@ -3,11 +3,11 @@ Like Express, and Fastify.
 
 You define route using method as a building block for your server.
 
-By calling `.[method name](path, callback, hook?)`, you attach route to KingWorld, and the library will handle the routing for you.
+By calling `.[method name](path, callback, hook?)`, you attach route to Elysia, and the library will handle the routing for you.
 
 For example:
 ```typescript
-new KingWorld()
+new Elysia()
     .get('/ping', () => 'pong')
     .listen(8080)
 ```
@@ -25,7 +25,7 @@ You can define with many built-in method like:
 
 But in-case you have a custom method, using `.route` will register any methods you like:
 ```typescript
-new KingWorld()
+new Elysia()
     .route('M-SEARCH', () => 'From M Search')
     .listen(8080)
 ```
@@ -36,7 +36,7 @@ Sometime, you want to get data from a path.
 Like retrieving user id from path parameters like many social media does, that's when you need a path parameters.
 
 ```typescript
-new KingWorld()
+new Elysia()
     .get('/id/:id', ({ params: { id } }) => getUserById(id))
     .listen(8080)
 ```
@@ -52,7 +52,7 @@ Matching anything after some pattern is required, and you can't define them all 
 
 You can use `*` to match the rest.
 ```typescript
-new KingWorld()
+new Elysia()
     .get('/user/*', () => doSomething())
     .listen(8080)
 ```

@@ -5,7 +5,7 @@ import { SearchPlugin } from 'vitepress-plugin-search'
 
 export default defineConfig({
     lang: 'en-US',
-    title: 'KingWorld',
+    title: 'Elysia',
     description:
         'Fast, and friendly Bun web framework for Bun. Designed on top of 3 philosophies: Performance, Simplicity, Flexibility.',
     lastUpdated: true,
@@ -25,14 +25,14 @@ export default defineConfig({
             'link',
             {
                 rel: 'icon',
-                href: '/assets/kingworld.png'
+                href: '/assets/elysia.png'
             }
         ],
         [
             'meta',
             {
                 property: 'og:image',
-                content: 'https://kingworldjs.com/assets/cover.png'
+                content: 'https://elysiajs.com/assets/cover.png'
             }
         ],
         [
@@ -51,7 +51,7 @@ export default defineConfig({
         ]
     ],
     themeConfig: {
-        "logo": "/assets/kingworld.svg",
+        "logo": "/assets/elysia.svg",
         nav: [
             {
                 text: 'Quick Start',
@@ -59,7 +59,7 @@ export default defineConfig({
             },
             {
                 text: 'Release',
-                link: 'https://github.com/SaltyAom/kingworld/releases'
+                link: 'https://github.com/elysiajs/elysia/releases'
             }
         ],
         sidebar: [
@@ -167,13 +167,13 @@ export default defineConfig({
             }
         ],
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/saltyaom/kingworld' },
+            { icon: 'github', link: 'https://github.com/elysiajs/elysia' },
             { icon: 'discord', link: 'https://discord.gg/eaFJ2KDJck' }
         ],
         editLink: {
             text: 'Edit this page on GitHub',
             pattern:
-                'https://github.com/saltyaom/kingworld-docs/edit/main/docs/:path'
+                'https://github.com/elysiajs/elysia-docs/edit/main/docs/:path'
         }
     }
 })

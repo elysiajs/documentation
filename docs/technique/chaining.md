@@ -1,25 +1,25 @@
 # Chaining
-KingWorld heavily encourages the use of method chaining.
+Elysia heavily encourages the use of method chaining.
 
-Because KingWorld's type system is complex, method usually introduce a new type to the instance.
+Because Elysia's type system is complex, method usually introduce a new type to the instance.
 
 Using method chaining will help save that new type refernce.
 
 For example:
 ```typescript
-const = new KingWorld()
+const = new Elysia()
     .state('build', 1)
     // Store is strictly typed
     .get('/', ({ store: { build } }) => build)
     .listen(3000)
 ```
-Using this, `state` now returns new `KingWorldInstance` type, introducing `build` into store and replace the current one.
+Using this, `state` now returns new `ElysiaInstance` type, introducing `build` into store and replace the current one.
 
 Method chaining now save that new type and pass it to `get`, which is why `get` now have type access of `build`.
 
-Without using method chaning, KingWorld doesn't save the new type when introduced, leading to no type inference.
+Without using method chaning, Elysia doesn't save the new type when introduced, leading to no type inference.
 ```typescript
-const app = new KingWorld()
+const app = new Elysia()
 
 app.state('build', 1)
 
@@ -29,4 +29,4 @@ app.get('/', ({ store: { build } }) => build)
 app.listen(3000)
 ```
 
-That's why KingWorld encourage use of method chaining, not only that it reduce redundant usage of `app.` prefix, but also have better type inference.
+That's why Elysia encourage use of method chaining, not only that it reduce redundant usage of `app.` prefix, but also have better type inference.

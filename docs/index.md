@@ -9,24 +9,24 @@ Building on top of 3 philosophies:
 - Flexibility
     - You shall be able to customize most of the library to fits your need
 
-Designed with TypeScript in mind, you don't need to understand TypeScript to take advantage of KingWorld. The library understands what you want and automatically infers the type from your code.
+Designed with TypeScript in mind, you don't need to understand TypeScript to take advantage of Elysia. The library understands what you want and automatically infers the type from your code.
 
 Take a look at this:
 ```typescript
-new KingWorld()
+new Elysia()
     .get('/id/:id', (({ params: { id }}) => id))
     .listen(8080)
 ```
 
-KingWorld understands that you want a path parameter name `id`.
+Elysia understands that you want a path parameter name `id`.
 The library then register `id` as one object in `params`.
 
 --- 
-That's only the start.
-
 You can define custom type for many thing, for example an incoming request's body.
 ```typescript
-new KingWorld()
+import { Elysia } from 'elysia'
+
+new Elysia()
     .post('/sign-in', ({ body }) => signIn(body), {
         schema: {
             body: t.Object({
@@ -38,14 +38,28 @@ new KingWorld()
     .listen(8080)
 ```
 
-You explictly tells KingWorld that the incoming request body expected to have structure like you define.
+You explicitly tell Elysia that the incoming request body is expected to have a structure as you define it.
 
-KingWorld then infers type from your code you write. 
-Type the body from your code and validate the incoming request to have the same type.
+Elysia then infers the type from the code you write. Validate the body from the incoming request to ensure the type safety.
 
-Ensure type safety across all the library by defining it once, without needing to know TypeScript.
+Then with plugin, Elysia can instantly generate API documentation with Swagger with a single line of code.
+```typescript
+import { Elysia } from 'elysia'
+/* [!code ++] */import { swagger } from '@elysiajs/swagger'
 
-KingWorld handle all of the redundant step for you.
+new Elysia()
+/* [!code ++] */    .use(swagger())
+    .post('/sign-in', ({ body }) => signIn(body), {
+        schema: {
+            body: t.Object({
+                username: t.String(),
+                password: t.String()
+            })
+        }
+    })
+    .listen(8080)
+```
 
-Fun fact: "KingWorld" is named after the author's favorite VTuber [Shirakami Fubuki] and composer [Sasakure.UK] song name [KINGWORLD](https://youtu.be/yVaQpUUAzik)
+Creating a single source of truth for your data structure, eliminating any possible type conflict between TypeScript, actual request via validation, documentation. 
 
+Ensure that nothing went wrong on development, migration and production.

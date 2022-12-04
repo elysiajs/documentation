@@ -1,19 +1,19 @@
 # Redirect
 You can serve static file using `Bun.file`
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .get('/tako', () => Bun.file('./takodachi.png'))
     .listen(8080)
 ```
 
-Or serving folders using [static plugin](https://github.com/saltyaom/kingworld-static).
+Or serving folders using [static plugin](https://github.com/elysiajs/elysia-static).
 ```typescript
-import { KingWorld } from 'kingworld'
-import staticPlugin from '@kingworldjs/static'
+import { Elysia } from 'elysia
+import { staticPlugin } from '@elysia/static'
 
-new KingWorld()
+new Elysia()
     .use(staticPlugin, {
         path: 'public'
     })

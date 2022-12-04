@@ -1,9 +1,9 @@
 # Redirect
 You can redirect page using `set.redirect`
 ```typescript
-import { KingWorld } from 'kingworld'
+import { Elysia } from 'elysia
 
-new KingWorld()
+new Elysia()
     .get('/', () => 'hi')
     .get('/redirect', ({ set }) => {
         set.redirect = '/'

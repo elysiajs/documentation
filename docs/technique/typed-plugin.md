@@ -4,13 +4,13 @@ Sometimes you would like to separate routes from your main file.
 Normally you would normally decouple them into a plugin like:
 ```typescript
 // index.ts
-const app = new KingWorld()
+const app = new Elysia()
     .use(authenRoute)
     .use(profileRoute)
     // and so on...
 
 // routes/authen.ts
-const authen = (app: KingWorld) => app
+const authen = (app: Elysia) => app
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)
 ```
@@ -18,7 +18,7 @@ const authen = (app: KingWorld) => app
 But then sometime, at the main instance introduce some `state` and you need to use that state in a plugin.
 ```typescript
 // index.ts
-const app = new KingWorld()
+const app = new Elysia()
     .decorate('signOut', signOut)
     .state('redis', redis)
     .use(authenRoute)
@@ -26,7 +26,7 @@ const app = new KingWorld()
     // and so on...
 
 // routes/authen.ts
-const authen = (app: KingWorld) => app
+const authen = (app: Elysia) => app
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)
     // But then there is no type
@@ -39,7 +39,7 @@ const authen = (app: KingWorld) => app
 
 If you hovered over the main `app` in `index.ts`, you can see that it has some type auto-generated for your main server which might look something like this:
 ```typescript
-const app: KingWorld<{
+const app: Elysia<{
     store: {
         redis: Redis;
      };
@@ -54,7 +54,7 @@ You can simply copy the type and reuse it in any plugins.
 
 ```typescript
 // index.ts
-type MyKingWorld = KingWorld<{
+type MyElysia = Elysia<{
     store: {
         redis: Redis
     }
@@ -65,7 +65,7 @@ type MyKingWorld = KingWorld<{
 }>
 
 // routes/authen.ts
-const authen = (app: MyKingWorld) => app
+const authen = (app: MyElysia) => app
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)
     // Now it's strictly typed
