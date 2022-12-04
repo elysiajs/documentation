@@ -6,9 +6,9 @@ So the only prerequisite is that you need to have Bun installed.
 curl https://bun.sh/install | bash
 ```
 
-Start by using `bun create` to scaffold the project:
+Start with template project:
 ```bash
-bun create elysia hi-elysia
+npx degit https://github.com/saltyaom/create-templates/elysia hi-elysia
 ```
 
 Then you should see the folder name `hi-elysia` in your directory.
