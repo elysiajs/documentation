@@ -2,7 +2,7 @@
 
 ## Ping Pong
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 const app = new Elysia()
     .get('/ping', () => 'pong')
@@ -13,7 +13,7 @@ console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.serv
 
 ## Custom Method
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/hi', () => 'Hi')
@@ -25,7 +25,7 @@ new Elysia()
 
 ## Path Params
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
@@ -35,7 +35,7 @@ new Elysia()
 
 ## Return JSON
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/json', () => ({
@@ -46,7 +46,7 @@ new Elysia()
 
 ## Header and status code
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', ({ set }) => {
@@ -75,7 +75,7 @@ new Elysia()
 
 ## Hook and Schema
 ```typescript
-import { Elysia, t } from 'elysia
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .onRequest(() => {
@@ -100,7 +100,7 @@ new Elysia()
 
 ## Guard
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 new Elysia()
     .guard({
@@ -117,7 +117,7 @@ new Elysia()
 
 ## State and Decorate
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 new Elysia()
     .state('version', 1)
@@ -131,7 +131,7 @@ new Elysia()
 
 ## Redirect
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', () => 'hi')
@@ -143,7 +143,7 @@ new Elysia()
 
 ## Plugin
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 const plugin = ({ prefix }: { prefix: string }) => 
     (app: Elysia) =>

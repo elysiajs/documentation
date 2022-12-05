@@ -3,7 +3,7 @@ A plugin is a way to decouple logic into smaller parts, defining reusable compon
 
 Defining a plugin is as simple as:
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 const plugin = (app: Elysia) => app
     .state('plugin-version', 1)
@@ -23,7 +23,7 @@ Registering a plugin will combine types between plugin and current instance, and
 You can customize plugin by creating function to return callback which accepts Elysia.
 
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 const plugin = ({
     prefix: '/v1'

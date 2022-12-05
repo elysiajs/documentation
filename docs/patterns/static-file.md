@@ -1,7 +1,7 @@
 # Redirect
 You can serve static file using `Bun.file`
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/tako', () => Bun.file('./takodachi.png'))
@@ -10,7 +10,7 @@ new Elysia()
 
 Or serving folders using [static plugin](https://github.com/elysiajs/elysia-static).
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysia/static'
 
 new Elysia()

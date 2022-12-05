@@ -18,7 +18,7 @@ cd hi-elysia && bun install
 
 Open `src/index.ts`, and you should see:
 ```typescript
-import { Elysia } from 'elysia
+import { Elysia } from 'elysia'
 
 const app = new Elysia()
 	.get('/', () => 'Hello Elysia')

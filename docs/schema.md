@@ -21,7 +21,7 @@ Local schema tied to a specific route in local handler.
 
 To define a schema, import `t`, a schema builder re-exported from `@sinclair/typebox`:
 ```typescript
-import { Elysia, t } from 'elysia
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .post('/mirror', ({ body }) => body, {
