@@ -33,7 +33,7 @@ new Elysia()
 ```
 
 ::: tip
-For providing WebSocket, please use [`@elysiajs/websocket`](https://github.com/elysiajs/websocket)
+For providing WebSocket, please use [`@elysiajs/websocket`](https://github.com/elysiajs/elysia-websocket)
 :::
 
 ## Custom Port
