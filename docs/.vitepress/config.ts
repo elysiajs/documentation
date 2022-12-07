@@ -2,11 +2,12 @@ import { defineConfig } from 'vitepress'
 
 import { join } from 'path'
 
+const description = 'Fast, and friendly Bun web framework for Bun. Designed on top of 3 philosophies: Performance, Simplicity, Flexibility.'
+
 export default defineConfig({
     lang: 'en-US',
-    title: 'Elysia',
-    description:
-        'Fast, and friendly Bun web framework for Bun. Designed on top of 3 philosophies: Performance, Simplicity, Flexibility.',
+    title: 'Elysia.js',
+    description,
     lastUpdated: true,
     markdown: {
         theme: {
@@ -39,8 +40,22 @@ export default defineConfig({
         [
             'meta',
             {
-                property: 'og:image',
+                property: 'og:image:height',
                 content: '1080'
+            },
+        ],
+        [
+            'meta',
+            {
+                property: 'twitter:card',
+                content: 'summary_large_image'
+            }
+        ],
+        [
+            'meta',
+            {
+                property: 'twitter:image',
+                content: 'https://elysiajs.com/assets/cover.png'
             }
         ]
     ],
