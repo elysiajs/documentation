@@ -107,39 +107,39 @@ export default defineConfig({
                 items: [
                     {
                         text: 'Route',
-                        link: '/route'
+                        link: '/concept/route'
                     },
                     {
                         text: 'Handler',
-                        link: '/handler'
+                        link: '/concept/handler'
                     },
                     {
                         text: 'State & Decorate',
-                        link: '/state-decorate'
+                        link: '/concept/state-decorate'
                     },
                     {
                         text: 'Group',
-                        link: '/group'
+                        link: '/concept/group'
                     },
                     {
                         text: 'Middleware',
-                        link: '/middleware'
+                        link: '/concept/middleware'
                     },
                     {
                         text: 'Schema',
-                        link: '/schema'
+                        link: '/concept/schema'
                     },
                     {
                         text: 'Guard',
-                        link: '/guard'
+                        link: '/concept/guard'
                     },
                     {
                         text: 'Plugin',
-                        link: '/plugin'
+                        link: '/concept/plugin'
                     },
                     {
                         text: 'Config',
-                        link: '/config'
+                        link: '/concept/config'
                     }
                 ]
             },
@@ -232,6 +232,10 @@ export default defineConfig({
                     {
                         text: 'Static File',
                         link: '/patterns/static-file'
+                    },
+                    {
+                        text: 'Get Header',
+                        link: '/patterns/get-header'
                     }
                 ]
             }
