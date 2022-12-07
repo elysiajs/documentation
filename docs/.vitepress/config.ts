@@ -9,7 +9,10 @@ export default defineConfig({
         'Fast, and friendly Bun web framework for Bun. Designed on top of 3 philosophies: Performance, Simplicity, Flexibility.',
     lastUpdated: true,
     markdown: {
-        theme: 'github-light'
+        theme: {
+            light: 'github-light',
+            dark: 'github-dark'
+        }
     },
     head: [
         [

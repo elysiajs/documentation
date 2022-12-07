@@ -1,13 +1,14 @@
 :root {
-    --vp-c-brand: #007aff;
-    --vp-c-brand-light: #007aff;
-    --vp-c-brand-dark: #007aff;
+    --vp-c-brand: #f06292;
+    --vp-c-brand-light: #ff94c2;
+    --vp-c-brand-dark: #ba2d65;
     --vp-code-block-bg: #f6f8fa;
 }
 
 .dark {
     --vp-c-bg: #1f2937;
     --vp-c-bg-alt: #111827;
+    --vp-code-block-bg: #111827;
 }
 
 .VPNavBar > .container > .content {
