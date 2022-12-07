@@ -9,6 +9,7 @@
     --vp-c-bg: #1f2937;
     --vp-c-bg-alt: #111827;
     --vp-code-block-bg: #111827;
+    --vp-c-bg-alpha-with-backdrop: #1f2937bf
 }
 
 .VPNavBar > .container > .content {
