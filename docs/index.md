@@ -19,7 +19,7 @@ new Elysia()
 ```
 
 Elysia understands that you want a path parameter name `id`.
-The library then register `id` as one object in `params`.
+The library then register `id` as a type in `params`.
 
 --- 
 You can define custom type for many thing, for example an incoming request's body.
@@ -42,7 +42,7 @@ You explicitly tell Elysia that the incoming request body is expected to have a 
 
 Elysia then infers the type from the code you write. Validate the body from the incoming request to ensure the type safety.
 
-Then with plugin, Elysia can instantly generate API documentation with Swagger with a single line of code.
+Then with [plugin](/plugins), Elysia can instantly generate API documentation with Swagger with a single line of code.
 ```typescript
 import { Elysia } from 'elysia'
 /* [!code ++] */import { swagger } from '@elysiajs/swagger'

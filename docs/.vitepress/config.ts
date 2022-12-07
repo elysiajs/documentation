@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitepress'
 
 import { join } from 'path'
-import { SearchPlugin } from 'vitepress-plugin-search'
 
 export default defineConfig({
     lang: 'en-US',
@@ -11,14 +10,6 @@ export default defineConfig({
     lastUpdated: true,
     markdown: {
         theme: 'github-light'
-    },
-    vite: {
-        plugins: [
-            SearchPlugin({
-                preset: 'performance',
-                tokenize: 'full'
-            })
-        ]
     },
     head: [
         [
@@ -51,7 +42,7 @@ export default defineConfig({
         ]
     ],
     themeConfig: {
-        "logo": "/assets/elysia.svg",
+        logo: '/assets/elysia.svg',
         nav: [
             {
                 text: 'Quick Start',
@@ -139,7 +130,49 @@ export default defineConfig({
                 items: [
                     {
                         text: 'Plugins',
-                        link: '/ecosystem'
+                        link: '/plugins',
+                        items: [
+                            {
+                                text: 'Static',
+                                link: '/plugins/static'
+                            },
+                            {
+                                text: 'Cookie',
+                                link: '/plugins/cookie'
+                            },
+                            {
+                                text: 'CORS',
+                                link: '/plugins/cors'
+                            },
+                            {
+                                text: 'HTML',
+                                link: '/plugins/html'
+                            },
+                            {
+                                text: 'Swagger',
+                                link: '/plugins/swagger'
+                            },
+                            {
+                                text: 'GraphQL Yoga',
+                                link: '/plugins/graphql'
+                            },
+                            {
+                                text: 'Web Socket',
+                                link: '/plugins/websocket'
+                            },
+                            {
+                                text: 'Cron',
+                                link: '/plugins/cron'
+                            },
+                            {
+                                text: 'JWT',
+                                link: '/plugins/jwt'
+                            },
+                            {
+                                text: 'trpc',
+                                link: '/plugins/trpc'
+                            }
+                        ]
                     },
                     {
                         text: 'Cheat Sheet',
