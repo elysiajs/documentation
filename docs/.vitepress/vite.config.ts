@@ -5,8 +5,8 @@ export default defineConfig({
     vite: {
         plugins: [
             SearchPlugin({
-                // preset: 'performance',
-                // tokenize: 'full',
+                preset: 'score',
+                tokenize: 'full',
                 previewLength: 10,
                 buttonLabel: 'Find',
                 placeholder: 'Find in Elysia'

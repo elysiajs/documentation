@@ -121,6 +121,10 @@ export default defineConfig({
                     {
                         text: 'Typed Plugin',
                         link: '/technique/typed-plugin'
+                    },
+                    {
+                        text: 'Handle error',
+                        link: '/technique/error-handler'
                     }
                 ]
             },
