@@ -134,12 +134,12 @@ export default defineConfig({
                         link: '/concept/guard'
                     },
                     {
-                        text: 'Plugin',
-                        link: '/concept/plugin'
-                    },
-                    {
                         text: 'Config',
                         link: '/concept/config'
+                    },
+                    {
+                        text: 'Plugin',
+                        link: '/concept/plugin'
                     }
                 ]
             },
@@ -161,10 +161,19 @@ export default defineConfig({
                     }
                 ]
             },
+            
             {
                 text: 'Collections',
                 collapsible: true,
                 items: [
+                    {
+                        text: 'Cheat Sheet',
+                        link: '/collections/cheat-sheet'
+                    },
+                    {
+                        text: 'Docker',
+                        link: '/collections/docker'
+                    },
                     {
                         text: 'Plugins',
                         link: '/plugins',
@@ -210,10 +219,6 @@ export default defineConfig({
                                 link: '/plugins/trpc'
                             }
                         ]
-                    },
-                    {
-                        text: 'Cheat Sheet',
-                        link: '/cheat-sheet'
                     }
                 ]
             },

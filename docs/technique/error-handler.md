@@ -17,9 +17,6 @@ With `onError` you can catch and transform the error into your custom error mess
 
 For example, returning custom 404 messages:
 ```typescript
-# Custom 404
-You can define custom 404 using `onError` hook:
-```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -34,11 +31,10 @@ new Elysia()
 
 ## Error Code
 Elysia error code consists of:
-'NOT_FOUND'
-'INTERNAL_SERVER_ERROR'
-'BODY_LIMIT'
-'VALIDATION'
-'UNKNOWN'
+- NOT_FOUND
+- INTERNAL_SERVER_ERROR
+- VALIDATION
+- UNKNOWN
 
 By default, user thrown error code is `unknown`.
 

@@ -1,5 +1,5 @@
 # Introduction
-Fast, and friendly [Bun](https://bun.sh) web framework.
+Elysia.js is a fast, and friendly [Bun](https://bun.sh) web framework.
 
 Building on top of 3 philosophies:
 - Performance
@@ -63,3 +63,5 @@ new Elysia()
 Creating a single source of truth for your data structure, eliminating any possible type conflict between TypeScript, actual request via validation, documentation. 
 
 Ensure that nothing went wrong on development, migration and production.
+
+> <small>Elysia pronounce as "ae-li-sia" ・「エリシア」・ "เอลิเซีย"</small>
