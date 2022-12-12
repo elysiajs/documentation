@@ -7,6 +7,11 @@ Weight just 500 bytes according to [bundlephobia](https://bundlephobia.com/packa
 
 Inspired by tRPC, using Eden you can fetch API from the Elysia server fully type-safe for both request and response.
 
+Start by installing Eden client on your frontend:
+```bash
+pnpm add @elysiajs/eden
+```
+
 First export your existing Elysia server type:
 ```typescript
 // server.ts
