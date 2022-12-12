@@ -44,7 +44,7 @@ You explicitly tell Elysia that the incoming request body is expected to have a 
 
 Elysia then infers the type from the code you write. Validate the body from the incoming request to ensure the type safety.
 
-Then with [plugin](/plugins), Elysia can instantly generate API documentation with Swagger with a single line of code.
+Then with [plugins](/collections/plugins), Elysia can instantly generate API documentation with Swagger with a single line of code.
 ```typescript
 import { Elysia } from 'elysia'
 /* [!code ++] */import { swagger } from '@elysiajs/swagger'

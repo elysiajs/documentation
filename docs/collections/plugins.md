@@ -10,6 +10,7 @@ To ensure that developers endup with performant web server they intent to create
 That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers:
 
 ## Official plugins:
+- [Eden](/collections/eden) - fully type-safe client for Elysia server
 - [Static](/plugins/static) - serve static file/folders
 - [Cookie](/plugins/cookie) - get/set cookie
 - [CORS](/plugins/cors) - handle CORS request
