@@ -1,11 +1,13 @@
 # Introduction
 Elysia.js is a fast, and friendly [Bun](https://bun.sh) web framework.
 
+> <small>Elysia pronounce as "ae-li-sia" ・「エリシア」・ "เอลิเซีย"</small>
+
 Building on top of 3 philosophies:
 - Performance
     - You shall not worry about the underlying performance
 - Simplicity
-    - Simple building blocks to create abstraction, not repeating yourself
+    - Simple building blocks to create an abstraction, not repeating yourself
 - Flexibility
     - You shall be able to customize most of the library to fits your need
 
@@ -19,10 +21,10 @@ new Elysia()
 ```
 
 Elysia understands that you want a path parameter name `id`.
-The library then register `id` as a type in `params`.
+The library then registers `id` as a type in `params`.
 
 --- 
-You can define custom type for many thing, for example an incoming request's body.
+You can define a custom type for many things, for example, an incoming request's body.
 ```typescript
 import { Elysia } from 'elysia'
 
@@ -60,8 +62,42 @@ new Elysia()
     .listen(8080)
 ```
 
-Creating a single source of truth for your data structure, eliminating any possible type conflict between TypeScript, actual request via validation, documentation. 
+And finally, you can create a fully type-safe client for consuming Elysia API with Eden (optional).
 
-Ensure that nothing went wrong on development, migration and production.
+```typescript
+// server.ts
+import { Elysia } from 'elysia'
+import { swagger } from '@elysiajs/swagger'
 
-> <small>Elysia pronounce as "ae-li-sia" ・「エリシア」・ "เอลิเซีย"</small>
+/* [!code ++] */const app = new Elysia()
+    .use(swagger())
+    .post('/sign-in', ({ body }) => signIn(body), {
+        schema: {
+            body: t.Object({
+                username: t.String(),
+                password: t.String()
+            })
+        }
+    })
+    .listen(8080)
+
+/* [!code ++] */export type App = typeof app
+```
+
+And on the client:
+```typescript
+// client.ts
+import { eden } from '@elysia/eden'
+import type { Server } from './server'
+
+const app = eden<Server>('http://localhost:8080')
+
+app.signIn.POST({
+    username: 'saltyaom',
+    password: 12345678
+}).then(console.log)
+```
+
+Creating a single source of truth for your data structure, eliminating any possible type conflict between TypeScript, actual requests via validation, API documentation, and frontend client.
+
+Ensure that nothing went wrong in development, migration, and production.

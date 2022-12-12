@@ -161,22 +161,18 @@ export default defineConfig({
                     }
                 ]
             },
-            
+
             {
                 text: 'Collections',
                 collapsible: true,
                 items: [
                     {
-                        text: 'Cheat Sheet',
-                        link: '/collections/cheat-sheet'
-                    },
-                    {
-                        text: 'Docker',
-                        link: '/collections/docker'
+                        text: 'Eden',
+                        link: '/collections/eden'
                     },
                     {
                         text: 'Plugins',
-                        link: '/plugins',
+                        link: '/collections/plugins',
                         items: [
                             {
                                 text: 'Static',
@@ -219,6 +215,14 @@ export default defineConfig({
                                 link: '/plugins/trpc'
                             }
                         ]
+                    },
+                    {
+                        text: 'Docker',
+                        link: '/collections/docker'
+                    },
+                    {
+                        text: 'Cheat Sheet',
+                        link: '/collections/cheat-sheet'
                     }
                 ]
             },
