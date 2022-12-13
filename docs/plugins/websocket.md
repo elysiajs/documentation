@@ -86,11 +86,12 @@ WebSocketHandler extends config from [config](#config).
 Below is a config which accepted by `ws`.
 
 ## schema
-Validation for incoming WebSocket request.
-headers: validate headers
-params: validate path paramters
-query: validate query parameters
-message: validate websocket message
+Validatation for an incoming WebSocket request.
+
+- headers: validate headers
+- params: validate path paramters
+- query: validate query parameters
+- message: validate websocket message
 
 ## open
 Callback function for new websocket connection.
