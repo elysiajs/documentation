@@ -1,9 +1,9 @@
 # Ecosystem
 Elysia is designed to be modular and lightweight.
 
-Following the same phiolsophy as Arch Linux (btw, I use Arch):
+Following the same idea as Arch Linux (btw, I use Arch):
 
-> Things that that can be separated, will be separated. 
+> Design decisions are made on a case-by-case basis through developer consensus
 
 To ensure that developers endup with performant web server they intent to created.
 
@@ -15,6 +15,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Cookie](/plugins/cookie) - get/set cookie
 - [CORS](/plugins/cors) - handle CORS request
 - [HTML](/plugins/html) - shorthand returning HTML
+- [Bearer](/plugins/bearer) - retreiving Bearer token.
 - [Swagger](/plugins/swagger) - generate Swagger on fly
 - [GraphQL Yoga](/plugins/graphql-yoga) - using GraphQL Yoga with Elysia
 - [WebSocket](/plugins/websocket) - websocket support

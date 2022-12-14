@@ -191,6 +191,10 @@ export default defineConfig({
                                 link: '/plugins/html'
                             },
                             {
+                                text: 'Bearer',
+                                link: '/plugins/bearer'
+                            },
+                            {
                                 text: 'Swagger',
                                 link: '/plugins/swagger'
                             },

@@ -1,5 +1,5 @@
 # Eden
-Eden is an fully type-safe client for Elysia for communicating with Elysia server. 
+Eden is an fully type-safe client for communicating with Elysia server.
 
 Weight just 500 bytes according to [bundlephobia](https://bundlephobia.com/package/@elysiajs/eden).
 
