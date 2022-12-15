@@ -6,14 +6,14 @@ So the only prerequisite is that you need to have Bun installed.
 curl https://bun.sh/install | bash
 ```
 
-Start with template project:
+Start by using `bun create` to scaffold the project:
 ```bash
-npx degit https://github.com/saltyaom/create-templates/elysia hi-elysia
+bun create elysia hi-elysia
 ```
 
 Then you should see the folder name `hi-elysia` in your directory.
 ```bash
-cd hi-elysia && bun install
+cd hi-elysia
 ```
 
 Open `src/index.ts`, and you should see:
@@ -24,7 +24,7 @@ const app = new Elysia()
 	.get('/', () => 'Hello Elysia')
 	.listen(8080)
 	 
-console.log(`🦊 Elysia is running at :${app.server.host}`)
+console.log(`🦊 Elysia is running at ${app.server.hostname}:${app.server.port}`)
 ```
 
 Start a development server by:
