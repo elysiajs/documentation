@@ -82,8 +82,8 @@ export default defineConfig({
                 link: '/quick-start'
             },
             {
-                text: 'Release',
-                link: 'https://github.com/elysiajs/elysia/releases'
+                text: 'Plugins',
+                link: '/collections/plugins'
             }
         ],
         sidebar: [
@@ -93,7 +93,7 @@ export default defineConfig({
                 items: [
                     {
                         text: 'Introduction',
-                        link: '/'
+                        link: '/introduction'
                     },
                     {
                         text: 'Quick Start',
