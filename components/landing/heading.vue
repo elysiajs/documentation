@@ -68,7 +68,7 @@
                     >
                 </section>
                 <section
-                    class="flex flex-[3.5] justify-start flex-col gap-6 overflow-scroll shadow-2xl max-w-full"
+                    class="flex flex-[3.5] justify-start flex-col gap-6 overflow-auto shadow-2xl max-w-full"
                 >
                     <code
                         class="flex flex-col w-full px-1 backdrop-filter backdrop-blur-sm bg-white/60 dark:bg-black/40 rounded-xl border border-solid border-white/40"
