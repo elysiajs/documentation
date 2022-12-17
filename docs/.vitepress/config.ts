@@ -260,7 +260,7 @@ export default defineConfig({
         editLink: {
             text: 'Edit this page on GitHub',
             pattern:
-                'https://github.com/elysiajs/elysia-documentation/edit/main/docs/:path'
+                'https://github.com/elysiajs/documentation/edit/main/docs/:path'
         }
     }
 })

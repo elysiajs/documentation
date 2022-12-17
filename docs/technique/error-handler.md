@@ -8,7 +8,7 @@ new Elysia()
         
         return 'unreachable'
     })
-    .onError((code, error) => {
+    .onError(({ code, error }) => {
         return new Response(error.toString())
     })
 ```
@@ -20,11 +20,12 @@ For example, returning custom 404 messages:
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .onError((code, error) => {
-        if (code === 'NOT_FOUND')
-            return new Response('Not Found :(', {
-                status: 404
-            })
+    .onError(({ code, error, set }) => {
+        if (code === 'NOT_FOUND') {
+            set.status = 404
+        
+            return 'Not Found :('
+        }
     })
     .listen(8080)
 ```
