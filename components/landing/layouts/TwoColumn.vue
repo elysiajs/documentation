@@ -1,5 +1,5 @@
 <template>
-    <article class="flex flex-col-reverse md:grid md:grid-col md:grid-cols-2 justify-center gap-10 md:gap-16 py-12">
+    <article class="flex flex-col-reverse md:grid md:grid-col md:grid-cols-2 items-stretch md:items-center justify-center gap-10 md:gap-16 py-12">
         <section class="flex flex-col justify-start flex-1">
             <slot name="left" />
         </section>
