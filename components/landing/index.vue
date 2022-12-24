@@ -39,6 +39,7 @@
         <Eden />
         <Ecosystem />
         <GetStart />
+        <BuildWithLove />
     </main>
 </template>
 
@@ -51,6 +52,7 @@ import Familiar from './familiar.vue'
 import Ecosystem from './ecosystem.vue'
 import Eden from './eden.vue'
 import GetStart from './get-start.vue'
+import BuildWithLove from './build-with-love.vue'
 
 import 'virtual:windi.css'
 import { onMounted, ref } from 'vue'

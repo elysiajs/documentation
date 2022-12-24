@@ -9,16 +9,8 @@ import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
 new Elysia()
-  .use(
-    swagger({
-      path: '/v2/swagger',
-      swagger: {
-        info: {
-          version: '2.0.0-beta.1'
-        }
-      }
-    })
-  )`
+  .use(swagger())
+`
                     }}
                 </Prism>
             </div>

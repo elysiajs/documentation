@@ -5,25 +5,25 @@
                 <Progress
                     primary="true"
                     label="Elysia"
-                    percent=100
+                    percent="100"
                     reqs="126,075"
                 />
-                <Progress label="Hono" percent=90.7 reqs="114,356.1" />
+                <Progress label="Hono" percent="90.7" reqs="114,356.1" />
                 <!-- <Progress label="Bun" percent="88.1" reqs="111,077" /> -->
                 <Progress
                     isNode
                     label="Fastify"
-                    percent=47.65
+                    percent="47.65"
                     reqs="60,087"
                 />
-                <Progress isNode label="Koa" percent=34.02 reqs="42,900" />
+                <Progress isNode label="Koa" percent="34.02" reqs="42,900" />
                 <Progress
                     isNode
                     label="Express"
-                    percent=14.03
+                    percent="14.03"
                     reqs="17,696"
                 />
-                <Progress isNode label="Nest" percent=13.33 reqs="16,815" />
+                <Progress isNode label="Nest" percent="13.33" reqs="16,815" />
             </section>
             <p class="text-gray-400 text-sm mt-6">
                 Benchmark for parsing query, path parameter and set response
@@ -35,16 +35,13 @@
                 Fast by default
             </h2>
             <h4 class="text-lg">
-                Powered by Bun means Elysia is fast by default.
+                Powered by Bun means faster than Node.js by default.
             </h4>
             <p>
-                Built with performance in mind. Balancing between
-                developers experience and performance.
+                Optimized for Bun and JavaScript Core. Curated from selective
+                benchmark from various real-world situations.
             </p>
-            <p>
-                Selected from benchmarking many possible way of reaching the
-                same goal and picking up the fastest one.
-            </p>
+            <p></p>
             <a
                 class="text-base text-pink-500 mt-2"
                 href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/e3c774e3cf3a31a55c734379b7b29228753f7e28"

@@ -10,7 +10,7 @@
 
         <p class="text-xl text-center">
             The future of JavaScript <span class="text-pink-500">await</span>,
-            it will worth your time, we
+            it will worth your time,
             <span class="text-pink-500">promise</span>.
         </p>
 
@@ -31,7 +31,9 @@
             </a>
         </div>
 
-        <small class="text-gray-500 dark:text-gray-100 text-lg opacity-65 text-center">
+        <small
+            class="text-gray-500 dark:text-gray-100 text-lg opacity-65 text-center"
+        >
             ps. you can get your first server up and running in a minute.
         </small>
     </article>

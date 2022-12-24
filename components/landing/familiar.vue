@@ -26,7 +26,7 @@ new Elysia()
                     Familiar syntax that clicks
                 </h2>
                 <p>
-                    Picking up from Node.js, Elysia is super easy to get start
+                    Picking up from Node.js, Elysia is easy to get start
                     with as it has familar syntax like most of the framework.
                 </p>
                 <p>
