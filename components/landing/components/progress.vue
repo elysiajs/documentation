@@ -1,7 +1,7 @@
 <template>
     <div class="flex justify items-center gap-4">
         <p
-            class="flex items-center text-gray-600 dark:text-gray-400 w-34 sm:w-30 font-medium"
+            class="flex items-center text-gray-600 dark:text-gray-400 w-34 md:w-30 font-medium"
         >
             {{ label }}
             <span
@@ -21,7 +21,13 @@
                 "
                 :style="{ width: `${percent}%` }"
             >
-                <span className="absolute px-2" :style="offset">
+                <span
+                    className="px-2"
+                    :style="{
+                        position: 'absolute',
+                        right
+                    }"
+                >
                     {{ reqs }}
                 </span>
             </p>
@@ -40,7 +46,5 @@ const { label, reqs, percent } = defineProps<{
     isNode: false
 }>()
 
-const offset = computed(() =>
-    +percent < 20 ? `right: -${reqs.toString().length + 1}ch` : ''
-)
+const right = +percent < 20 ? `-${reqs.toString().length + 1}ch` : '0px'
 </script>
