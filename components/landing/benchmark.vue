@@ -20,7 +20,7 @@
                 <Progress isNode label="Nest" percent="4.88" reqs="5,794" />
             </section>
             <p class="text-gray-400 text-sm mt-6">
-                Measure in requests/second. Benchmark for parsing
+                Measure in requestsg/second. Benchmark for parsing
                 query, path parameter and set response header on Debian 11,
                 Ryzen 5 3500 tested on Bun 0.4.0 at 25 Dec 2022.
             </p>
@@ -39,7 +39,7 @@
             <p></p>
             <a
                 class="text-base text-pink-500 mt-2"
-                href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/e3c774e3cf3a31a55c734379b7b29228753f7e28"
+                href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/655fe7f87f0f4f73f2121433f4741a9d6cf00de4"
                 target="_blank"
             >
                 View Benchmark
