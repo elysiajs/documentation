@@ -200,7 +200,7 @@ export default defineConfig({
                             },
                             {
                                 text: 'GraphQL Yoga',
-                                link: '/plugins/graphql'
+                                link: '/plugins/graphql-yoga'
                             },
                             {
                                 text: 'Web Socket',
