@@ -6,28 +6,27 @@
                     primary="true"
                     label="Elysia"
                     percent="100"
-                    reqs="126,075"
+                    reqs="118,570"
                 />
-                <Progress label="Hono" percent="90.7" reqs="114,356.1" />
-                <!-- <Progress label="Bun" percent="88.1" reqs="111,077" /> -->
+                <Progress label="Hono" percent="80.9" reqs="95,943" />
                 <Progress
                     isNode
                     label="Fastify"
-                    percent="47.65"
-                    reqs="60,087"
+                    percent="16.12"
+                    reqs="19,125"
                 />
-                <Progress isNode label="Koa" percent="34.02" reqs="42,900" />
+                <Progress isNode label="Koa" percent="8.87" reqs="10,525" />
                 <Progress
                     isNode
                     label="Express"
-                    percent="14.03"
-                    reqs="17,696"
+                    percent="6.89"
+                    reqs="8,177"
                 />
-                <Progress isNode label="Nest" percent="13.33" reqs="16,815" />
+                <Progress isNode label="Nest" percent="4.88" reqs="5,794" />
             </section>
             <p class="text-gray-400 text-sm mt-6">
                 Benchmark for parsing query, path parameter and set response
-                header, measure with Bombardier.
+                header on Debian 11, Ryzen 5 3500 tested on Bun 0.4.0 at 25 Dec 2022.
             </p>
         </template>
         <template v-slot:right>

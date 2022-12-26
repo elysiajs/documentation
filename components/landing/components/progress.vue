@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify items-center gap-4">
-        <p class="flex items-center text-gray-600 dark:text-gray-400 w-30 font-medium">
+        <p class="flex items-center text-gray-600 dark:text-gray-400 w-34 sm:w-30 font-medium">
             {{ label }} 
             <span v-if="isNode" class="opacity-65 text-xs ml-0.5 transform scale-75">
                 Node
@@ -8,7 +8,7 @@
         </p>
         <div class="w-full">
             <p
-                class="flex justify-end items-center h-7 font-semibold text-xs px-2 rounded-full mr-auto"
+                class="relative flex justify-end items-center h-7 font-semibold text-xs rounded-full mr-auto"
                 :class="
                     primary
                         ? 'bg-pink-500 text-white'
@@ -16,7 +16,10 @@
                 "
                 :style="{ width: `${percent}%` }"
             >
+            <span className="absolute px-2" :style="offset">
+
                 {{ reqs }}
+            </span>
             </p>
         </div>
     </div>
@@ -32,4 +35,6 @@ const { label, reqs, percent } = defineProps<{
     primary: false
     isNode: false
 }>()
+
+const offset = +percent < 20 ? `right: -${reqs.toString().length + 1}ch` : ''
 </script>
