@@ -1,8 +1,13 @@
 <template>
     <div class="flex justify items-center gap-4">
-        <p class="flex items-center text-gray-600 dark:text-gray-400 w-34 sm:w-30 font-medium">
-            {{ label }} 
-            <span v-if="isNode" class="opacity-65 text-xs ml-0.5 transform scale-75">
+        <p
+            class="flex items-center text-gray-600 dark:text-gray-400 w-34 sm:w-30 font-medium"
+        >
+            {{ label }}
+            <span
+                v-if="isNode"
+                class="opacity-65 text-xs ml-0.5 transform scale-75"
+            >
                 Node
             </span>
         </p>
@@ -16,17 +21,16 @@
                 "
                 :style="{ width: `${percent}%` }"
             >
-            <span className="absolute px-2" :style="offset">
-
-                {{ reqs }}
-            </span>
+                <span className="absolute px-2" :style="offset">
+                    {{ reqs }}
+                </span>
             </p>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, computed } from 'vue'
 
 const { label, reqs, percent } = defineProps<{
     label: string
@@ -36,5 +40,7 @@ const { label, reqs, percent } = defineProps<{
     isNode: false
 }>()
 
-const offset = +percent < 20 ? `right: -${reqs.toString().length + 1}ch` : ''
+const offset = computed(() =>
+    +percent < 20 ? `right: -${reqs.toString().length + 1}ch` : ''
+)
 </script>
