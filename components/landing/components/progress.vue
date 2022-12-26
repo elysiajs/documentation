@@ -22,11 +22,8 @@
                 :style="{ width: `${percent}%` }"
             >
                 <span
-                    className="px-2"
-                    :style="{
-                        position: 'absolute',
-                        right
-                    }"
+                    class="absolute px-2"
+                    :style="{right}"
                 >
                     {{ reqs }}
                 </span>
