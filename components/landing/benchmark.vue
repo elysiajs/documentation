@@ -16,17 +16,13 @@
                     reqs="19,125"
                 />
                 <Progress isNode label="Koa" percent="8.87" reqs="10,525" />
-                <Progress
-                    isNode
-                    label="Express"
-                    percent="6.89"
-                    reqs="8,177"
-                />
+                <Progress isNode label="Express" percent="6.89" reqs="8,177" />
                 <Progress isNode label="Nest" percent="4.88" reqs="5,794" />
             </section>
             <p class="text-gray-400 text-sm mt-6">
-                Benchmark for parsing query, path parameter and set response
-                header on Debian 11, Ryzen 5 3500 tested on Bun 0.4.0 at 25 Dec 2022.
+                Measure in requests/second. Benchmark for parsing
+                query, path parameter and set response header on Debian 11,
+                Ryzen 5 3500 tested on Bun 0.4.0 at 25 Dec 2022.
             </p>
         </template>
         <template v-slot:right>
