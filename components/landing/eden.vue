@@ -24,9 +24,9 @@ import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
   .put('/shelf/plushie', 
-  ({ db, body }) => {
-    return db.put(body)
-  }, {
+    ({ db, body }) => {
+      return db.put(body)
+    }, {
     schema: {
       body: t.Object({
         name: t.String(),
