@@ -612,7 +612,7 @@ export class Gradient {
             e(this, 'minigl', void 0),
             e(this, 'scrollObserver', void 0),
             e(this, 'amp', 320),
-            e(this, 'seed', 5),
+            e(this, 'seed', ~~(Math.random() * 1024)),
             e(this, 'freqX', 14e-5),
             e(this, 'freqY', 29e-5),
             e(this, 'freqDelta', 1e-5),

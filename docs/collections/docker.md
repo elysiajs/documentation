@@ -1,4 +1,4 @@
-# Redirect
+# Docker
 You use Elysia with Docker with the following Dockerfile below:
 ```typescript
 FROM debian:slim as builder

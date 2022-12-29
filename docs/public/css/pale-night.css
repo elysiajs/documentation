@@ -52,7 +52,7 @@ pre[class*='language-'] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-    color: #676e95;
+    color: #a6accda8;
 }
 
 .token.attr-name,
@@ -131,4 +131,19 @@ pre[class*='language-'] {
 
 .token.entity {
     cursor: help;
+}
+
+/* Selection */
+code[class*='language-']::-moz-selection,
+code[class*='language-'] *::-moz-selection,
+pre[class*='language-'] *::-moz-selection {
+    background: hsla(240, 2%, 90%, 0.2);
+    color: inherit;
+}
+
+code[class*='language-']::selection,
+code[class*='language-'] *::selection,
+pre[class*='language-'] *::selection {
+    background: hsl(230, 1%, 90%, 0.2);
+    color: inherit;
 }
