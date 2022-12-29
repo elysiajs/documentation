@@ -9,7 +9,7 @@ bun add @elysiajs/cors
 Then use it:
 ```typescript
 import { Elysia } from 'elysia'
-import { cors } from '@elysiajs/static'
+import { cors } from '@elysiajs/cors'
 
 new Elysia()
     .use(cors())
