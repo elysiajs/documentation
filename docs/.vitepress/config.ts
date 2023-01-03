@@ -158,6 +158,10 @@ export default defineConfig({
                     {
                         text: 'Handle error',
                         link: '/technique/error-handler'
+                    },
+                    {
+                        text: 'Body Parser',
+                        link: '/technique/body-parser'
                     }
                 ]
             },

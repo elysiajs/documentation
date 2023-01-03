@@ -27,24 +27,3 @@ app.group('/v1', app => app
     )
 )
 ```
-
-## Encapsulation
-The `state` defined in a group is encapsulated.
-
-It will not be exposed to the outer scope but will inherit from the inner scope.
-
-```typescript
-app
-    .state('version', 1)
-    .group('/user', app => app
-        .get('/version', ({ store: { version } }) => version)
-        .state('inner', true)
-        .post('/sign-in, signIn)
-        .post('/sign-up', signUp)
-        .post('/profile', getProfile)
-    )
-    // inner is undefined out of scope, therefore it returns false
-    .get('/scoped', ({ store: { inner } }) => inner ?? false)
-```
-
-Group is also useful when you need an encapsulation too.

@@ -91,7 +91,8 @@ Validatation for an incoming WebSocket request.
 - headers: validate headers
 - params: validate path paramters
 - query: validate query parameters
-- message: validate websocket message
+- body: validate websocket message
+- response: validate websocket message
 
 ## open
 Callback function for new websocket connection.
@@ -174,7 +175,8 @@ new Elysia()
     .use(websocket())
     .ws('/ws', {
         schema: {
-            message: t.Object({
+            // validate incoming message
+            body: t.Object({
                 message: t.String()
             })
         },
