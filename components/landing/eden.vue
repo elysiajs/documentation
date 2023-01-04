@@ -62,7 +62,7 @@ import type { App } from './server'
 
 const api = eden<App>('http://localhost')
 
-await api.shelf.plushie.PUT({
+await api.shelf.plushie.put({
   name: 'Blåhaj',
   quantity: '200'
 })

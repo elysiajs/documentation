@@ -53,7 +53,7 @@ import type { App } from 'server'
 const api = eden<App>('http://0.0.0.0:8080')
 
 // Fully type-safe both client/server like tRPC
-await api.auth.signIn.POST(data)
+await api.auth.signIn.post(data)
 `
 
 export const websocket = `\

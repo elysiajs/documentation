@@ -1,7 +1,7 @@
 # Docker
 You use Elysia with Docker with the following Dockerfile below:
 ```typescript
-FROM debian:slim as builder
+FROM debian:11.6-slim as builder
 
 WORKDIR /app
 
