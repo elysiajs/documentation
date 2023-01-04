@@ -88,11 +88,15 @@ Below is a config which accepted by `ws`.
 ## schema
 Validatation for an incoming WebSocket request.
 
-- headers: validate headers
+- headers: validate headers before upgrade to WebSocket
 - params: validate path paramters
 - query: validate query parameters
 - body: validate websocket message
-- response: validate websocket message
+- response: validate websocket response
+
+::: tip
+It's recommended to use query parameters instead of path parameters in WebSocket, as parsing path parameters is expensive and sometime unrealiable for multiple data with long value.
+:::
 
 ## open
 Callback function for new websocket connection.
@@ -156,6 +160,12 @@ drain(
 
 Ideal place for validation.
 
+## transform
+`Transform` middleware which execute before validation.
+
+## transformMessage
+Like `transform`, but execute before validation of WebSocket message
+
 ## header
 Additional headers to add before upgrade connection to WebSocket.
 
@@ -181,12 +191,10 @@ new Elysia()
             })
         },
         message(ws, { message }) {
-            ws.send(
-                JSON.stringify({
-                    message,
-                    time: Date.now()
-                })
-            )
+            ws.send({
+                message,
+                time: Date.now()
+            })
         }
     )
     .listen(8080)
