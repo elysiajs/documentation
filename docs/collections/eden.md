@@ -115,3 +115,48 @@ client.index.post({
     }
 })
 ```
+
+## WebSocket
+Eden supports WebSocket with full type-safety like REST.
+
+If your server uses WebSocket plugin, Eden will have auto-completion by default.
+
+To use WebSocket plugin, call `.subscribe`:
+```typescript
+// Server
+import { Elysia, t } from 'elysia'
+import { websocket } from '@elysiajs/websocket'
+
+const app = new Elysia()
+    .use(websocket())
+    .ws('/chat', {
+        message(ws, message) {
+            ws.send(message)
+        },
+        schema: {
+            body: t.String(),
+            response: t.String()
+        }
+    })
+    .listen(8080)
+
+type App = typeof app
+
+// Client
+import { eden } from '@elysiajs/eden'
+
+const api = eden<App>('http://localhost:8080')
+
+const chat = api.chat.subscribe()
+    .on('message', (ws, message) {
+        console.log('got', message)
+    })
+
+chat.send('hello from client')
+```
+
+Like normal `Handler`, you can use `schema` to enforce type-safety on WebSocket plugin, and the type will also be available on Eden.
+
+`Eden.subscribe` return `EdenWebSocket` which extends `WebSocket` class with type-safety, so the syntax is mostly identical if you're familiar with WebSocket API, you can think of it as `WebSocket` with type-safety.
+
+If you need more control over `EdenWebSocket`, you can access `EdenWebSocket.raw` to access the native `WebSocket` API instead.
