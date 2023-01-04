@@ -1,7 +1,7 @@
 # Eden
 Eden is an fully type-safe client for communicating with Elysia server.
 
-Weight just 500 bytes according to [bundlephobia](https://bundlephobia.com/package/@elysiajs/eden).
+Weight less than 1KB according to [bundlephobia](https://bundlephobia.com/package/@elysiajs/eden).
 
 > <small>Eden is in experimental stage, and is subject to change</small>
 
@@ -44,13 +44,13 @@ import type { App } from './server'
 const client = eden<App>('http://localhost:8080')
 
 // return: Hi Elysia (fully type-safe)
-client.index.GET().then(console.log)
+client.index.get().then(console.log)
 
 // return: 1895
-client.id.1895.GET().then(console.log)
+client.id.1895.get().then(console.log)
 
 // return: { id: 1895, name: 'Skadi' }
-client.mirror.POST({
+client.mirror.post({
     id: 1895,
     name: 'Skadi'
 }).then(console.log)
@@ -76,10 +76,10 @@ sign-in -> signIn
 However, if you don't like the magic, you can use the same path name:
 ```typescript
 // ✅ This is fine
-client.signIn.POST()
+client.signIn.post()
 
 // ✅ This is also fine
-client['sign-in'].POST()
+client['sign-in'].post()
 ```
 
 ## Path parameters
@@ -96,7 +96,7 @@ If a path doesn't support path parameter, TypeScript will throw an error.
 ## Query
 You can append query to path with `$query`:
 ```typescript
-client.index.GET({
+client.index.get({
     $query: {
         name: 'Eden',
         code: 'Gold'
@@ -107,7 +107,7 @@ client.index.GET({
 ## Fetch
 Eden is a fetch wrapper, you can add any valid fetch's parameters to Eden by passing it to `$fetch`:
 ```typescript
-client.index.POST({
+client.index.post({
     $fetch: {
         headers: {
             'x-origanization': 'MANTIS'
