@@ -35,8 +35,6 @@ export type App = typeof app
 
 Then consume Elysia API on client side:
 ```typescript
-export type App = typeof app
-
 // client.ts
 import { eden } from '@elysiajs/eden'
 import type { App } from './server'
@@ -59,7 +57,7 @@ client.mirror.post({
 Notice that every path is fully type-safe with auto-complete.
 
 ## Path
-Eden will transform `/` into `.` then can be called with `method` registered (capitalized), for example:
+Eden will transform `/` into `.` then can be called with `method` registered, for example:
 - **/path** -> .path
 - **/nested/path** -> .nested.path
 
