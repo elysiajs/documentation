@@ -100,7 +100,7 @@ new Elysia()
 
 ## Guard
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .guard({
