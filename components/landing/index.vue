@@ -6,18 +6,8 @@
         crossorigin="true"
     />
 
-    <link
-        rel="preload"
-        href="/css/one-light.css"
-        priority="high"
-        as="style"
-    />
-    <link
-        rel="preload"
-        href="/css/pale-night.css"
-        priority="high"
-        as="style"
-    />
+    <link rel="preload" href="/css/one-light.css" priority="high" as="style" />
+    <link rel="preload" href="/css/pale-night.css" priority="high" as="style" />
 
     <link
         href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap"
@@ -31,7 +21,9 @@
     />
     <link v-else rel="stylesheet" href="/css/one-light.css" type="text/css" />
     <Heading />
-    <main class="flex flex-col w-full max-w-6xl mx-auto px-4 lg:py-8 mb-6 lg:mb-12">
+    <main
+        class="flex flex-col w-full max-w-6xl mx-auto px-4 lg:py-8 mb-6 lg:mb-12"
+    >
         <Familiar />
         <TypeScript />
         <Swagger />
@@ -39,6 +31,7 @@
         <Eden />
         <Ecosystem />
         <GetStart />
+        <Editor />
         <BuildWithLove />
     </main>
 </template>
@@ -51,6 +44,7 @@ import Swagger from './swagger.vue'
 import Familiar from './familiar.vue'
 import Ecosystem from './ecosystem.vue'
 import Eden from './eden.vue'
+import Editor from './editor.vue'
 import GetStart from './get-start.vue'
 import BuildWithLove from './build-with-love.vue'
 
