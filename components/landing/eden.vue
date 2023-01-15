@@ -10,7 +10,7 @@
         <p class="leading-relaxed">
             With
             <a class="text-pink-500 underline" href="/collections/eden">Eden</a
-            >, you fully get type-safe client on both client and server
+            >, you get fully type-safe client on both client and server
         </p>
 
         <section class="flex flex-col lg:flex-row justify-center items-start gap-6 mt-4 mb-12 md:mb-4 w-full">

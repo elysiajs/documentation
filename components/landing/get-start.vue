@@ -5,12 +5,12 @@
         <h2
             class="text-3xl md:text-4xl text-gray-700 dark:text-gray-100 font-semibold text-center"
         >
-            It's easy to get start
+            It's easy to get started 
         </h2>
 
         <p class="text-xl text-center">
             The future of JavaScript <span class="text-pink-500">await</span>,
-            it will worth your time,
+            it will be worth your time,
             <span class="text-pink-500">promise</span>.
         </p>
 
