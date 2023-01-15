@@ -1,7 +1,7 @@
 # State and Decorate
-You can extends Elysia with to fits you need.
+You can extend Elysia to fits your need.
 
-This is useful when you to access extra value in handler like Database connection.
+This is useful when you to access extra values in a handler like a Database connection.
 
 In summary:
 - state: assign value to `Context.store`
@@ -23,7 +23,7 @@ app
 ```
 
 - `version` is registered using `state`, and accessible via `Context.store.version`.
-- `getDate` is registered using `decorate`, and acccessible via `Context`.
+- `getDate` is registered using `decorate`, and accessible via `Context`.
 
 ## TypeScript
 You can type state and decorator explictly using TypeScript with `as`:
