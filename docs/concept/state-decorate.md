@@ -1,14 +1,15 @@
 # State and Decorate
-State and Decorate is a powerful concept for Elysia but similar with a different purpose
+You can extends Elysia with to fits you need.
 
-You can customize and create a shortcut and adapt Elysia to your liking.
+This is useful when you to access extra value in handler like Database connection.
 
-To put it simply:
-- State: set global mutable store accessible to `Handler`
-- Decorate: set custom method accessible to `Handler`
+In summary:
+- state: assign value to `Context.store`
+- decorate: assign value to `Context`
 
-The different is that state is a globally mutable store of any type while decorate is not. 
-Decorate expected to be only a function assigned once.
+::: tip
+`Context` is a parameter in callback of handler
+:::
 
 ```typescript
 app
@@ -21,11 +22,8 @@ app
 )
 ```
 
-Decorator function is directly assigned to `Context` while state is assigned to `Context.store`.
-
-Elysia handle type registration for both `state`, and `decorate`.
-
-So you don't need to type it manually or afraid that you're using a wrong type.
+- `version` is registered using `state`, and accessible via `Context.store.version`.
+- `getDate` is registered using `decorate`, and acccessible via `Context`.
 
 ## TypeScript
 You can type state and decorator explictly using TypeScript with `as`:
