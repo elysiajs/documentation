@@ -11,6 +11,8 @@ In summary:
 `Context` is a parameter in callback of handler
 :::
 
+### Example
+
 ```typescript
 app
     .state('version', 1)
@@ -23,7 +25,7 @@ app
 ```
 
 - `version` is registered using `state`, and accessible via `Context.store.version`.
-- `getDate` is registered using `decorate`, and accessible via `Context`.
+- `getDate` is registered using `decorate`, and accessible via `Context.getDate`.
 
 ## TypeScript
 You can type state and decorator explictly using TypeScript with `as`:
