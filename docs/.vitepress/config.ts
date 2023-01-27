@@ -195,8 +195,8 @@ export default defineConfig({
                         link: '/collections/plugins',
                         items: [
                             {
-                                text: 'Static',
-                                link: '/plugins/static'
+                                text: 'Bearer',
+                                link: '/plugins/bearer'
                             },
                             {
                                 text: 'Cookie',
@@ -207,36 +207,40 @@ export default defineConfig({
                                 link: '/plugins/cors'
                             },
                             {
-                                text: 'HTML',
-                                link: '/plugins/html'
+                                text: 'Cron',
+                                link: '/plugins/cron'
                             },
                             {
-                                text: 'Bearer',
-                                link: '/plugins/bearer'
-                            },
-                            {
-                                text: 'Swagger',
-                                link: '/plugins/swagger'
+                                text: 'GraphQL Apollo',
+                                link: '/plugins/graphql-apollo'
                             },
                             {
                                 text: 'GraphQL Yoga',
                                 link: '/plugins/graphql-yoga'
                             },
                             {
-                                text: 'Web Socket',
-                                link: '/plugins/websocket'
-                            },
-                            {
-                                text: 'Cron',
-                                link: '/plugins/cron'
+                                text: 'HTML',
+                                link: '/plugins/html'
                             },
                             {
                                 text: 'JWT',
                                 link: '/plugins/jwt'
                             },
                             {
+                                text: 'Static',
+                                link: '/plugins/static'
+                            },
+                            {
+                                text: 'Swagger',
+                                link: '/plugins/swagger'
+                            },
+                            {
                                 text: 'trpc',
                                 link: '/plugins/trpc'
+                            },
+                            {
+                                text: 'Web Socket',
+                                link: '/plugins/websocket'
                             }
                         ]
                     },
