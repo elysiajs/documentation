@@ -1,4 +1,4 @@
-# Chaining
+# Method Chaining
 Elysia heavily encourages the use of method chaining.
 
 Because Elysia's type system is complex, method usually introduce a new type to the instance.

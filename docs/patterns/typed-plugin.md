@@ -1,4 +1,8 @@
 # Typed Plugin
+::: tip
+This is for TypeScript user only, you can skip the section if you are not using TypeScript.
+:::
+
 Sometimes you would like to separate routes from your main file.
 
 Normally you would normally decouple them into a plugin like:

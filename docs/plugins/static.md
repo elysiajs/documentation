@@ -35,7 +35,7 @@ The available path will become:
 ## Config
 Below is a config which accepted by the plugin
 
-### path
+### assets
 @default `"public"`
 
 Path to folder to expose as static

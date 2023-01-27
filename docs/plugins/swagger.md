@@ -63,7 +63,7 @@ new Elysia()
     .listen(8080)
 ```
 
-## custom Swagger title and detail
+## Customize Swagger info
 ```typescript
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'

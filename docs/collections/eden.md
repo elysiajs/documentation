@@ -3,14 +3,18 @@ Eden is an fully type-safe client for communicating with Elysia server.
 
 Weight less than 1KB according to [bundlephobia](https://bundlephobia.com/package/@elysiajs/eden).
 
-> <small>Eden is in experimental stage, and is subject to change</small>
-
 Inspired by tRPC, using Eden you can fetch API from the Elysia server fully type-safe for both request and response.
 
 Start by installing Eden client on your frontend:
 ```bash
-pnpm add @elysiajs/eden
+bun add @elysiajs/eden && bun add -d elysia
 ```
+
+::: tip
+Elysia is installed as dev dependencies for infering Elysia utility type.
+
+If Elysia is not installed, Eden might not inferred type properly and might lead to `unknown` type.
+:::
 
 First export your existing Elysia server type:
 ```typescript

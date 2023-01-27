@@ -19,7 +19,7 @@ If you want to support more `content-type`, you can use `onParse`:
 
 ```typescript
 new Elysia()
-    .onParse((request, contentType) => {
+    .onParse(({ request }, contentType) => {
         if (contentType === 'application/custom-type')
             return request.text()
     })
@@ -32,7 +32,7 @@ You can also use `request` to take advantage and add custom behavior for parsing
 For example, parsing GraphQL on a specific path:
 ```typescript
  app
-    .onParse((request, contentType) => {
+    .onParse(({ request }, contentType) => {
         if (
             path === getPath(request.url) &&
             contentType === 'application/json'

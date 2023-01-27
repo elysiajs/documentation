@@ -1,4 +1,4 @@
-# Handle Error
+# Error Handling
 Elysia catches all the errors thrown in the handler, classifies the error code, and pipes them to `onError` middleware.
 
 ```typescript

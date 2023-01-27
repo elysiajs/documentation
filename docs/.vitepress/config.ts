@@ -102,7 +102,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: 'Core Concept',
+                text: 'Concept',
                 collapsible: true,
                 items: [
                     {
@@ -144,25 +144,41 @@ export default defineConfig({
                 ]
             },
             {
-                text: 'Technique',
+                text: 'Patterns',
                 collapsible: true,
                 items: [
                     {
-                        text: 'Chaining',
-                        link: '/technique/chaining'
+                        text: 'End-to-End Type-Safety',
+                        link: '/patterns/end-to-end-type-safety'
+                    },
+                    {
+                        text: 'Error Handling',
+                        link: '/patterns/error-handling'
+                    },
+                    {
+                        text: 'Lazy Loading Moudle',
+                        link: '/patterns/lazy-loading-module'
+                    },
+                    {
+                        text: 'Method Chaining',
+                        link: '/patterns/method-chaining'
+                    },
+                    {
+                        text: 'Creating Documentation',
+                        link: '/patterns/creating-documentation'
+                    },
+                    {
+                        text: 'Testing',
+                        link: '/patterns/testing'
                     },
                     {
                         text: 'Typed Plugin',
-                        link: '/technique/typed-plugin'
-                    },
-                    {
-                        text: 'Handle error',
-                        link: '/technique/error-handler'
+                        link: '/patterns/typed-plugin'
                     },
                     {
                         text: 'Body Parser',
-                        link: '/technique/body-parser'
-                    }
+                        link: '/patterns/body-parser'
+                    },
                 ]
             },
 
@@ -235,24 +251,24 @@ export default defineConfig({
                 ]
             },
             {
-                text: 'Patterns',
+                text: 'Tips',
                 collapsible: true,
                 items: [
                     {
                         text: 'Custom 404',
-                        link: '/patterns/custom-404'
+                        link: '/tips/custom-404'
                     },
                     {
                         text: 'Redirect',
-                        link: '/patterns/redirect'
+                        link: '/tips/redirect'
                     },
                     {
                         text: 'Static File',
-                        link: '/patterns/static-file'
+                        link: '/tips/static-file'
                     },
                     {
                         text: 'Get Header',
-                        link: '/patterns/get-header'
+                        link: '/tips/get-header'
                     }
                 ]
             }

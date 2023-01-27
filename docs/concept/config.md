@@ -8,7 +8,7 @@ Constructor will change some behavior of Elysia.
 
 ```typescript
 new Elysia({
-  strictPath: true
+    strictPath: true
 })
 ```
 
@@ -22,14 +22,14 @@ For Object, `listen` accept the same value as `Bun.serve`, you can provide any c
 ```typescript
 // ✅ This is fine
 new Elysia()
-  .listen(8080)
+    .listen(8080)
 
 // ✅ This is fine
 new Elysia()
-  .listen({
-    port: 8080,
-    hostname: '0.0.0.0'
-  })
+    .listen({
+        port: 8080,
+        hostname: '0.0.0.0'
+    })
 ```
 
 ::: tip
@@ -40,7 +40,7 @@ For providing WebSocket, please use [`@elysiajs/websocket`](https://github.com/e
 You can provide a custom port from ENV by using `process.env`
 ```typescript
 new Elysia()
-  .listen(process.env.PORT ?? 8080)
+    .listen(process.env.PORT ?? 8080)
 ```
 
 ## Retrieve Port
@@ -50,9 +50,9 @@ Using callback in `.listen`
 
 ```typescript
 const app = new Elysia()
-  .listen(8080, ({ hostname, port }) => {
-    console.log(`Running at http://${hostname}:${port}`)
-  })
+    .listen(8080, ({ hostname, port }) => {
+        console.log(`Running at http://${hostname}:${port}`)
+    })
 
 // `server` will be null if listen isn't called
 console.log(`Running at http://${app.server!.hostname}:${app.server!.port}`)
