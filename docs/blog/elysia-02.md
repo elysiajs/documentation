@@ -17,7 +17,11 @@ head:
 
   - - meta
     - property: 'og:image'
-      content: https://elysiajs.com/blog/elysia-02/blessing.png
+      content: https://elysiajs.com/blog/elysia-02/blessing.webp
+
+  - - meta
+    - property: 'twitter:image'
+      content: https://elysiajs.com/blog/elysia-02/blessing.webp
 ---
 
 <script setup>
@@ -26,7 +30,7 @@ head:
 
 <Blog 
     title="Elysia 0.2 - The Blessing"
-    src="/blog/elysia-02/blessing.png"
+    src="/blog/elysia-02/blessing.webp"
     alt="blue to purple aurora in the night sky above of snow mountain"
     author="saltyaom"
     date="29 Jan 2023"
