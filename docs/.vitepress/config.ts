@@ -92,7 +92,7 @@ export default defineConfig({
         ],
         sidebar: [
             {
-                text: 'Getting Start',
+                text: 'Getting Started',
                 collapsible: true,
                 items: [
                     {
@@ -106,7 +106,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: 'Concept',
+                text: 'Concepts',
                 collapsible: true,
                 items: [
                     {

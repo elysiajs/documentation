@@ -5,11 +5,11 @@
         <h2
             class="text-3xl md:text-4xl text-gray-700 dark:text-gray-100 font-semibold text-center mb-4"
         >
-            First-class TypeScript Supports
+            First-class TypeScript Support
         </h2>
         <p class="leading-relaxed">
-            Instead of writing type, Elysia understands what you want and
-            automatically infers the type from your code.
+            Instead of writing types, Elysia understands what you want and
+            automatically infers the types from your code.
         </p>
 
         <div

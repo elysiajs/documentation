@@ -69,14 +69,13 @@ import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
 new Elysia()
-    .use(
-            swagger: {
-                info: {
-                    title: 'Elysia Documentation',
-                    version: '1.0.0'
-                }
+    .use(swagger({
+        swagger: {
+            info: {
+                title: 'Elysia Documentation',
+                version: '1.0.0'
             }
-        })
-    )
+        }
+    }))
     .listen(8080)
 ```
