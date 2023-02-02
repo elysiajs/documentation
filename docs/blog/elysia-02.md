@@ -36,7 +36,7 @@ head:
     date="29 Jan 2023"
 >
 
-「[Blessing](https://youtu.be/xVPDszGmTgg?t=1139)」brings more improvement, mainly on TypeScript performance, type-inference, and better auto-completion and some new features to reduce boilerplate.
+「[Blessing](https://youtu.be/3eytpBOkOFA)」brings more improvement, mainly on TypeScript performance, type-inference, and better auto-completion and some new features to reduce boilerplate.
 
 Named after YOASOBI's song「祝福」, an opening for Witch from "Mobile Suit Gundam: The Witch from Mercury".
 
