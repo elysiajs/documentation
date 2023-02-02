@@ -26,12 +26,12 @@ new Elysia()
                     Familiar syntax that clicks
                 </h2>
                 <p>
-                    Picking up from Node.js, Elysia is easy to get start
+                    Picking up from Node.js, Elysia is easy to get started
                     with as it has familar syntax like most of the framework.
                 </p>
                 <p>
                     Also with great support of TypeScript, you will have the
-                    best experience with infers type and autocomplete.
+                    best experience with inferred types and autocomplete.
                 </p>
                 <a
                     class="text-base text-pink-500 mt-2"
