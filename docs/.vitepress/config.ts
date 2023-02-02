@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 import { join } from 'path'
 
 const description =
-    'Fast, and friendly Bun web framework for Bun. Designed on top of 3 philosophies: Performance, Simplicity, Flexibility.'
+    'Fast, and friendly Bun web framework. Designed on top of 3 philosophies: Performance, Simplicity, Flexibility.'
 
 export default defineConfig({
     lang: 'en-US',
@@ -84,6 +84,10 @@ export default defineConfig({
             {
                 text: 'Plugins',
                 link: '/collections/plugins'
+            },
+            {
+                text: 'Blog',
+                link: '/blog'
             }
         ],
         sidebar: [
@@ -178,7 +182,7 @@ export default defineConfig({
                     {
                         text: 'Body Parser',
                         link: '/patterns/body-parser'
-                    },
+                    }
                 ]
             },
 

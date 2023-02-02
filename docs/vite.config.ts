@@ -12,8 +12,8 @@ export default defineConfig({
             preset: 'performance',
             tokenize: 'full',
             previewLength: 24,
-            buttonLabel: 'Search',
-            placeholder: 'Find in docs'
+            buttonLabel: 'Find in docs',
+            placeholder: 'Find in docs',
         })
     ]
 })
