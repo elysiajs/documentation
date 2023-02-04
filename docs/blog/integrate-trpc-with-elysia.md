@@ -1,11 +1,11 @@
 ---
-title: Elysia 0.2 - The Blessing
+title: Integrate tRPC server to Bun with Elysia
 sidebar: false
 editLink: false
 head:
   - - meta
     - property: 'og:title'
-      content: Integrate existing tRPC server to Bun with Elysia
+      content: Integrate tRPC server to Bun with Elysia
 
   - - meta
     - name: 'description'
@@ -29,7 +29,7 @@ head:
 </script>
 
 <Blog
-    title="Integrate existing tRPC server to Bun with Elysia"
+    title="Integrate tRPC server to Bun with Elysia"
     src="/blog/integrate-trpc-with-elysia/elysia-trpc.webp"
     alt="Logo of Elysia connect with a plus sign with tRPC"
     author="saltyaom"
@@ -49,7 +49,11 @@ With Bun being the runtime for Elysia, the speed and throughput for Elysia serve
 
 The ability to combine the existing tRPC server into Elysia has been one of the very first objectives of Elysia since its start.
 
-By switching tRPC runtime to Bun, RPC server will become faster and even outperform many popular web frameworks running in Nodejs without changing a single piece of code.
+The reason why you might want to switch from tRPC to Bun:
+- Significantly faster, even outperform many popular web frameworks running in Nodejs without changing a single piece of code.
+- Extend tRPC with RESTful or GraphQL, both co-existing in the same server.
+- Elysia has end-to-end type-safety like tRPC but with almost no-learning curve for most developer.
+- Using Elysia is the great first start experimenting/investing in Bun runtime.
 
 ## Creating Elysia Server
 To get started, let's create a new Elysia server, make sure you have [Bun](https://bun.sh) installed first, then run this command to scaffold Elysia project.
@@ -83,10 +87,10 @@ import { observable } from '@trpc/server/observable'
 
 import { z } from 'zod'
 
-const p = initTRPC.create()
+const t = initTRPC.create()
 
-export const router = p.router({
-    mirror: p.procedure.input(z.string()).query(({ input }) => input),
+export const router = t.router({
+    mirror: t.procedure.input(z.string()).query(({ input }) => input),
 })
 
 export type Router = typeof router
@@ -132,10 +136,10 @@ export const createContext = async (opts: FetchCreateContextFnOptions) => { // [
     } // [!code ++]
 } // [!code ++]
 
-const p = initTRPC.context<Awaited<ReturnType<typeof createContext>>>().create() // [!code ++]
+const t = initTRPC.context<Awaited<ReturnType<typeof createContext>>>().create() // [!code ++]
 
-export const router = p.router({ 
-    mirror: p.procedure.input(z.string()).query(({ input }) => input),
+export const router = t.router({ 
+    mirror: t.procedure.input(z.string()).query(({ input }) => input),
 })
 
 export type Router = typeof router
@@ -206,16 +210,16 @@ export const createContext = async (opts: FetchCreateContextFnOptions) => {
     }
 }
 
-const p = initTRPC.context<Awaited<ReturnType<typeof createContext>>>().create()
+const t = initTRPC.context<Awaited<ReturnType<typeof createContext>>>().create()
 const ee = new EventEmitter() // [!code ++]
 
-export const router = p.router({
-    mirror: p.procedure.input(z.string()).query(({ input }) => {
+export const router = t.router({
+    mirror: t.procedure.input(z.string()).query(({ input }) => {
         ee.emit('listen', input) // [!code ++]
 
         return input
     }),
-    listen: p.procedure.subscription(() => // [!code ++]
+    listen: t.procedure.subscription(() => // [!code ++]
         observable<string>((emit) => { // [!code ++]
             ee.on('listen', (input) => { // [!code ++]
                 emit.next(input) // [!code ++]
