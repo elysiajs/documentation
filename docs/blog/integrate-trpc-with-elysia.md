@@ -45,7 +45,7 @@ But we can when extending tRPC more.
 ## Elysia
 Elysia is a web framework optimized for Bun, inspired by many frameworks including tRPC. Elysia supports end-to-end type safety by default, but unlike tRPC, Elysia uses Express-like syntax that many already know, removing the learning curve of tRPC.
 
-With Bun being the runtime for Elysia, the speed and throughput for Elysia server are fast and even outperforming Express and beyond Fastify.
+With Bun being the runtime for Elysia, the speed and throughput for Elysia server are fast and even outperforming [Express up to 21x and Fastify up to 12x on mirroring JSON body (see benchmark)](https://github.com/SaltyAom/bun-http-framework-benchmark/tree/655fe7f87f0f4f73f2121433f4741a9d6cf00de4).
 
 The ability to combine the existing tRPC server into Elysia has been one of the very first objectives of Elysia since its start.
 
@@ -96,7 +96,7 @@ export const router = t.router({
 export type Router = typeof router
 ```
 
-All we need to do here is to `export` the router too, not only **type** of the router.
+Normally all we need to use tRPC is to export the type of router, but to integrate tRPC with Elysia, we need to export the instance of router too.
 
 Then in the Elysia server, we import the router and register tRPC router with `.trpc`
 ```typescript
@@ -307,7 +307,81 @@ const data = await app.index.get()
 
 Elysia is a good start when you want end-to-end type-safety like tRPC but need to support more standard patterns like REST, and still have to support tRPC or need to migrate from one.
 
-To learn more about Elysia, [Elysia documentation](https://elysiajs.com) is a good place to start exploring the concept and plugins, and if you are stuck or need help, feel free to reach out in [Elysia Discord](https://discord.gg/eaFJ2KDJck).
+## Bonus: Extra tip for Elysia
+An additional thing you can do with Elysia is not only that it has support for tRPC and end-to-end type-safety, but also has a variety of support for many essential plugins configured especially for Bun.
 
-The repository for all of the code is available at [https://github.com/saltyaom/elysia-trpc-demo](https://github.com/saltyaom/elysia-trpc-demo), feels free to experiment and reach out if you have a question.
+For example, you can generate documentation with Swagger only in 1 line using [Swagger plugin](/plugins/swagger).
+```typescript
+import { Elysia, t } from 'elysia'
+import { swagger } from '@elysiajs/swagger' // [!code ++]
+
+const app = new Elysia()
+    .use(swagger()) // [!code ++]
+    .setModel({
+        sign: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+    .get('/', () => 'Hello Elysia')
+    .post('/typed-body', ({ body }) => body, {
+        schema: {
+            body: 'sign',
+            response: 'sign'
+        }
+    })
+    .listen(3000)
+
+export type App = typeof app
+
+console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
+```
+
+Or when you want to use [GraphQL Apollo](/plugins/graphql-apollo) on Bun.
+```typescript
+import { Elysia } from 'elysia'
+import { apollo, gql } from '@elysiajs/apollo' // [!code ++]
+
+const app = new Elysia()
+    .use( // [!code ++]
+        apollo({ // [!code ++]
+            typeDefs: gql` // [!code ++]
+                type Book { // [!code ++]
+                    title: String // [!code ++]
+                    author: String // [!code ++]
+                } // [!code ++]
+ // [!code ++]
+                type Query { // [!code ++]
+                    books: [Book] // [!code ++]
+                } // [!code ++]
+            `, // [!code ++]
+            resolvers: { // [!code ++]
+                Query: { // [!code ++]
+                    books: () => { // [!code ++]
+                        return [ // [!code ++]
+                            { // [!code ++]
+                                title: 'Elysia', // [!code ++]
+                                author: 'saltyAom' // [!code ++]
+                            } // [!code ++]
+                        ] // [!code ++]
+                    } // [!code ++]
+                } // [!code ++]
+            } // [!code ++]
+        }) // [!code ++]
+    ) // [!code ++]
+    .get('/', () => 'Hello Elysia')
+    .listen(3000)
+
+export type App = typeof app
+
+console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
+```
+
+Or supporting OAuth 2.0 with a [community OAuth plugin](https://github.com/bogeychan/elysia-oauth2).
+
+Nonetheless, Elysia is a great place to start learning/using Bun and the ecosystem around Bun.
+
+If you like to learn more about Elysia, [Elysia documentation](https://elysiajs.com) is a great start to start exploring the concept and patterns, and if you are stuck or need help, feel free to reach out in [Elysia Discord](https://discord.gg/eaFJ2KDJck).
+
+The repository for all of the code is available at [https://github.com/saltyaom/elysia-trpc-demo](https://github.com/saltyaom/elysia-trpc-demo), feels free to experiment and reach out.
 </Blog>
