@@ -68,7 +68,7 @@ Let's start a development server by running the dev command:
 bun run dev
 ```
 
-This command should start a development server on **http://localhost:3000**
+This command should start a development server on port :3000
 
 ## Elysia tRPC plugin
 Building on top of the tRPC Web Standard adapter, Elysia has a plugin for integrating the existing tRPC server into Elysia.
