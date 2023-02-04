@@ -17,11 +17,11 @@ head:
 
   - - meta
     - property: 'og:image'
-      content: /blog/integrate-trpc-with-elysia/elysia-trpc.webp
+      content: https://elysiajs.com/blog/integrate-trpc-with-elysia/elysia-trpc.webp
 
   - - meta
     - property: 'twitter:image'
-      content: /blog/integrate-trpc-with-elysia/elysia-trpc.webp
+      content: https://elysiajs.com/blog/integrate-trpc-with-elysia/elysia-trpc.webp
 ---
 
 <script setup>
