@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue'
+import { defineProps, onMounted, onUnmounted } from 'vue'
 
 import 'virtual:windi.css'
 
@@ -54,18 +54,37 @@ const props = defineProps<{
 const author = authors[props.author]
 const profile = `/blog/authors/${author.src}`
 const twitter = `https://twitter.com/${author.twitter}`
+
+const mutated = ['.aside', '.content', '.content-container', '.VPDocFooter']
+onMounted(() => {
+    mutated.forEach((selector) => {
+        // @ts-ignore
+        document.querySelector(selector).classList.add('blog')
+    })
+})
+
+onUnmounted(() => {
+    mutated.forEach((selector) => {
+        // @ts-ignore
+        document.querySelector(selector).classList.remove('blog')
+    })
+})
 </script>
 
 <style>
-.aside {
+.blog.aside {
     position: fixed !important;
     z-index: 10;
     left: calc(50% + 48rem / 2 + 2rem) !important;
 }
 
-.content,
-.content-container {
+.blog.content,
+.blog.content-container {
     max-width: unset !important;
+}
+
+.blog.VPDocFooter {
+    display: hidden !important;
 }
 
 #blog {
@@ -86,9 +105,5 @@ const twitter = `https://twitter.com/${author.twitter}`
 
 #blog > h3 {
     @apply !text-xl md:!text-2xl font-semibold;
-}
-
-.VPDocFooter {
-    @apply !hidden;
 }
 </style>
