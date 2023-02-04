@@ -58,15 +58,17 @@ const twitter = `https://twitter.com/${author.twitter}`
 const mutated = ['.aside', '.content', '.content-container', '.VPDocFooter']
 onMounted(() => {
     mutated.forEach((selector) => {
+        console.log(document.querySelector(selector))
+
         // @ts-ignore
-        document.querySelector(selector).classList.add('blog')
+        document.querySelector(selector)?.classList.add('blog')
     })
 })
 
 onUnmounted(() => {
     mutated.forEach((selector) => {
         // @ts-ignore
-        document.querySelector(selector).classList.remove('blog')
+        document.querySelector(selector)?.classList.remove('blog')
     })
 })
 </script>
@@ -84,7 +86,7 @@ onUnmounted(() => {
 }
 
 .blog.VPDocFooter {
-    display: hidden !important;
+    display: none !important;
 }
 
 #blog {
