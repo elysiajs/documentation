@@ -160,7 +160,7 @@ export default defineConfig({
                         link: '/patterns/error-handling'
                     },
                     {
-                        text: 'Lazy Loading Moudle',
+                        text: 'Lazy Loading Module',
                         link: '/patterns/lazy-loading-module'
                     },
                     {
