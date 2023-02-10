@@ -12,7 +12,7 @@
     <main class="flex flex-col max-w-xl gap-4 w-full mx-auto mt-8">
         <a
             v-for="blog in props.blogs"
-            class="px-4 py-2 rounded-lg hover:bg-gray-50 focus:bg-gray-50 dark:hover:bg-gray-700 dark:focus:bg-gray-50 transition-colors cursor-pointer"
+            class="px-4 py-2 rounded-lg hover:bg-gray-50 focus:bg-gray-50 dark:hover:bg-gray-700 dark:focus:bg-gray-700 transition-colors cursor-pointer"
             :href="blog.href"
         >
             <article class="flex flex-col gap-2">
