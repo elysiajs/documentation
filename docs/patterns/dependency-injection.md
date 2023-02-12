@@ -1,8 +1,4 @@
-# Typed Plugin
-::: tip
-This is for TypeScript user only, you can skip the section if you are not using TypeScript.
-:::
-
+# Dependency Injection
 Sometimes you would like to separate routes from your main file.
 
 Normally you would normally decouple them into a plugin like:
@@ -19,7 +15,7 @@ const authen = (app: Elysia) => app
     .post('/sign-up', signUp)
 ```
 
-But then sometime, at the main instance introduce some `state` and you need to use that state in a plugin.
+But then sometime, at the main instance introduce some `state`, and `decorate` that you might need a separated module.
 ```typescript
 // index.ts
 const app = new Elysia()
@@ -48,28 +44,24 @@ const app: Elysia<{
         redis: Redis;
      };
      request: {
-         signOut: () => void;
+        signOut: () => void;
      };
      schema: {};
 }>
 ```
 
-You can simply copy the type and reuse it in any plugins.
+But this type isn't applied to sub-modules.
+
+To apply the type to sub-modules, you can create a plugin which only contains `state` and `decorate` which caused **type side-effect** as dependency, and apply to the module you want to use.
 
 ```typescript
-// index.ts
-type MyElysia = Elysia<{
-    store: {
-        redis: Redis
-    }
-    request: {
-        signOut: () => void
-    }
-    schema: {}
-}>
+const setup = (app: Elysia) => app
+    .decorate('signOut', signOut)
+    .state('redis', redis)
 
 // routes/authen.ts
 const authen = (app: MyElysia) => app
+    .use(setup)
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)
     // Now it's strictly typed
@@ -78,3 +70,6 @@ const authen = (app: MyElysia) => app
 
         db.doSomething()
     })
+```
+
+This will allows you to control access to decorators in modules, this concept is also known as **Dependency Injection** but only for types.

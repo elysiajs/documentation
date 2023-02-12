@@ -176,8 +176,8 @@ export default defineConfig({
                         link: '/patterns/testing'
                     },
                     {
-                        text: 'Typed Plugin',
-                        link: '/patterns/typed-plugin'
+                        text: 'Dependency Injection',
+                        link: '/patterns/dependency-injection'
                     },
                     {
                         text: 'Body Parser',
