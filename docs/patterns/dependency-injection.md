@@ -60,7 +60,7 @@ const setup = (app: Elysia) => app
     .state('redis', redis)
 
 // routes/authen.ts
-const authen = (app: MyElysia) => app
+const authen = (app: Elysia) => app
     .use(setup)
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)

@@ -1,7 +1,7 @@
 # Introduction
 Elysia.js is a fast, and friendly [Bun](https://bun.sh) web framework.
 
-> <small>Elysia pronounce as "ae-li-sia" ・「エリシア」・ "เอลิเซีย"</small>
+> <small>Pronounce as "eh-LIHZ-iy-ah"・ エリシア ・ เอลิเซีย</small>
 
 Building on top of 3 philosophies:
 - Performance

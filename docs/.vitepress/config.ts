@@ -152,12 +152,16 @@ export default defineConfig({
                 collapsible: true,
                 items: [
                     {
-                        text: 'End-to-End Type-Safety',
-                        link: '/patterns/end-to-end-type-safety'
+                        text: 'Dependency Injection',
+                        link: '/patterns/dependency-injection'
                     },
                     {
                         text: 'Error Handling',
                         link: '/patterns/error-handling'
+                    },
+                    {
+                        text: 'End-to-End Type-Safety',
+                        link: '/patterns/end-to-end-type-safety'
                     },
                     {
                         text: 'Lazy Loading Module',
@@ -174,10 +178,6 @@ export default defineConfig({
                     {
                         text: 'Testing',
                         link: '/patterns/testing'
-                    },
-                    {
-                        text: 'Dependency Injection',
-                        link: '/patterns/dependency-injection'
                     },
                     {
                         text: 'Body Parser',
