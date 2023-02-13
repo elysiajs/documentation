@@ -9,7 +9,7 @@ bun add @elysiajs/cookie
 Then use it:
 ```typescript
 import { Elysia } from 'elysia'
-import { staticPlugin } from '@elysiajs/cookie'
+import { cookie } from '@elysiajs/cookie'
 
 new Elysia()
     .use(cookie())
@@ -148,7 +148,7 @@ A function to unset cookies.
 
 Type:
 ```
-unsetCookie(name: string) => void
+removeCookie(name: string) => void
 ```
 
 ### unsignCookie
@@ -174,7 +174,7 @@ By default, the config is passed to `setCookie` and inherits its value.
 
 ```typescript
 import { Elysia } from 'elysia'
-import { staticPlugin } from '@elysiajs/cookie'
+import { cookie } from '@elysiajs/cookie'
 
 new Elysia()
     .use(cookie({
