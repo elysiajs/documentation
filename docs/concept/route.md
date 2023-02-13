@@ -17,23 +17,29 @@ Callback run when the request match.
 Means when the [GET] request with path '/ping' shall return 'pong' as a response.
 
 ## Custom Method
-You can define with many built-in method like:
+You can define with many built-in methods including:
 - post
 - put
+- patch
 - delete
-- etc
+- options
+- head
+- trace
+- connect
+- all (map any method)
 
-But in-case you have a custom method, using `.route` will register any methods you like:
+Other methods can be defined by using `.route`:
 ```typescript
 new Elysia()
+    // custom method should be all uppercased
     .route('M-SEARCH', () => 'From M Search')
     .listen(8080)
 ```
 
 ## Path Parameters
-Sometime, you want to get data from a path.
+Path parameters can retrieve data from URL.
 
-Like retrieving user id from path parameters like many social media does, that's when you need a path parameters.
+For example, getting an user id from path like many social media is when you need a path parameters.
 
 ```typescript
 new Elysia()
