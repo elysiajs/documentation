@@ -26,7 +26,7 @@ You can customize plugin by creating function to return callback which accepts E
 import { Elysia } from 'elysia'
 
 const plugin = ({
-    prefix: '/v1'
+    prefix = '/v1'
 }) => (app: Elysia) => app
     .get(`/${prefix}/hi`, () => 'Hi')
 
