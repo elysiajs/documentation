@@ -41,7 +41,30 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Accessing `/swagger` would show you a Swagger endpoint with generated endpoint from Elysia server.
+Accessing `/graphql` should show Apollo GraphQL playground work with.
+
+## Context
+Because Elysia is based on Web Standard Request and Response which is different from Node's `HttpRequest` and `HttpResponse` that Express use, result in `req, res` being undefined in context.
+
+Because of this, Elysia replace both with `context` like route parameter.
+```typescript
+const app = new Elysia()
+    .use(
+        apollo({
+            typeDefs,
+            resolvers,
+            context: async ({ request }) => {
+                const authorization = request.headers.get('Authorization')
+
+                return {
+                    authorization
+                }
+            }
+        })
+    )
+    .listen(3000)
+```
+
 
 ## Config
 This plugin extends Apollo's [ServerRegistration](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#options) (which is `ApolloServer`'s' constructor parameter).
