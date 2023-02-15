@@ -62,7 +62,7 @@ const app = new Elysia()
             }
         })
     )
-    .listen(3000)
+    .listen(8080)
 ```
 
 
