@@ -16,6 +16,11 @@ Then you should see the folder name `hi-elysia` in your directory.
 cd hi-elysia
 ```
 
+Sometime Bun cached the `latest` version field, so let's state the latest version explictly:
+```bash
+bun add elysia
+```
+
 Open `src/index.ts`, and you should see:
 ```typescript
 import { Elysia } from 'elysia'
