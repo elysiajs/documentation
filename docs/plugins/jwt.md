@@ -10,7 +10,7 @@ Then use it:
 ```typescript
 import { Elysia, t } from 'elysia'
 import { cookie } from '@elysiajs/cookie'
-import { jwt } from '../src/index'
+import { jwt } from '@elysiajs/jwt'
 
 const app = new Elysia()
     .use(
@@ -52,10 +52,12 @@ Name to register `jwt` function as.
 For example, `jwt` function will be registered with a custom name.
 ```typescript
 app
-    .decorate({
-        name: 'myJWTNamespace',
-        secret: process.env.JWT_SECRETS
-    })
+    .use(
+        jwt({
+            name: 'myJWTNamespace',
+            secret: process.env.JWT_SECRETS
+        })
+    )
     .get('/sign/:name', ({ myJWTNamespace, params }) => {
         return myJWTNamespace.sign(params)
     })
@@ -157,7 +159,7 @@ This is intended for use by the application when more than one kind of object co
 ## Handler
 Below are the value added to the handler.
 
-### jwt
+### jwt.sign
 A dynamic object of collection related to use with JWT registered by JWT plugin.
 
 Type:
