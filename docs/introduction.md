@@ -26,7 +26,7 @@ The library then registers `id` as a type in `params`.
 --- 
 You can define a custom type for many things, for example, an incoming request's body.
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .post('/sign-in', ({ body }) => signIn(body), {
@@ -46,7 +46,7 @@ Elysia then infers the type from the code you write. Validate the body from the 
 
 Then with [plugins](/collections/plugins), Elysia can instantly generate API documentation with Swagger with a single line of code.
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 /* [!code ++] */import { swagger } from '@elysiajs/swagger'
 
 new Elysia()
@@ -66,7 +66,7 @@ And finally, you can create a fully type-safe client for consuming Elysia API wi
 
 ```typescript
 // server.ts
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
 /* [!code ++] */const app = new Elysia()

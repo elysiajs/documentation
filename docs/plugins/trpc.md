@@ -3,7 +3,7 @@ This plugin adds support for using [tRPC](https://trpc.io/)
 
 Install with:
 ```bash
-bun add @elysiajs/trpc
+bun add @elysiajs/trpc @trpc/server @elysiajs/websocket 
 ```
 
 Then use it:

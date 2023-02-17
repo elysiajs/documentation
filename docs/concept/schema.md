@@ -76,7 +76,7 @@ app.guard({
     }, app => app
         // Invalid: will throw an error
         .get('/', () => 'Hi')
-        .get('/invalid', () => 1)
+        .get('/this-is-now-valid', () => 1)
     )
 )
 ```
