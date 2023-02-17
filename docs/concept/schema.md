@@ -104,3 +104,33 @@ new Elysia()
         }
     })
 ```
+
+## Reference Models
+Sometime you might find yourself re-use the same type multiple time.
+
+Using [reference models](/patterns/reference-models), you can named your model and use it by referencing the name:
+```typescript
+// auth.model.ts
+import { Elysia } from 'elysia'
+
+// index.ts
+import { Elysia } from 'elysia'
+import { authModel } from './auth.model.ts'
+
+const app = new Elysia()
+    .setModel({
+        sign: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+    .post('/sign-in', ({ body }) => body, {
+        schema: {
+             // with auto-completion for existing model name
+            body: 'sign',
+            response: 'sign'
+        }
+    })
+```
+
+For more explaination, see [Reference Models](/patterns/reference-models).

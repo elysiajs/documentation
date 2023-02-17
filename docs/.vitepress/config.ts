@@ -160,7 +160,7 @@ export default defineConfig({
                         link: '/patterns/error-handling'
                     },
                     {
-                        text: 'End-to-End Type-Safety',
+                        text: 'End-to-End Type Safety',
                         link: '/patterns/end-to-end-type-safety'
                     },
                     {
@@ -170,6 +170,10 @@ export default defineConfig({
                     {
                         text: 'Method Chaining',
                         link: '/patterns/method-chaining'
+                    },
+                    {
+                        text: 'Reference Model',
+                        link: '/patterns/reference-models'
                     },
                     {
                         text: 'Creating Documentation',

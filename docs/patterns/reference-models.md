@@ -1,5 +1,7 @@
 # Reference Models
-Sometimes you might find yourself declaring duplicated models.
+Sometimes you might find yourself declaring duplicated models, or re-use the same model multiple time. 
+
+With reference models, you can named your model and use it by referencing the name:
 
 For example:
 ```typescript
