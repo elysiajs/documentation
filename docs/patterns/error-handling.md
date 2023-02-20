@@ -30,6 +30,19 @@ new Elysia()
     .listen(8080)
 ```
 
+## Local Error
+You can assign error handling method to a scope using [hook](/concept/middleware.html#local-hook) or [guard](/concept/guard.html)
+```typescript
+app.get('/', () => 'Hello', {
+    beforeHandle: ({ set, request: { headers } }) => {
+        if(!isSignIn(headers)) {
+            set.status = 401
+            return 'Unauthorized'
+        }
+    }
+})
+```
+
 ## Error Code
 Elysia error code consists of:
 - NOT_FOUND
