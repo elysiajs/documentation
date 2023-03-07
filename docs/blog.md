@@ -24,6 +24,11 @@ head:
 <Blogs 
     :blogs="[
         {
+            title: 'Introducing Elysia 0.3 - 大地の閾を探して [Looking for Edge of Ground]',
+            href: '/blog/elysia-03',
+            detail: 'Introducing Elysia Fn, Type Rework for highly scalable TypeScript performance, File Upload support and validation, Reworked Eden Treaty.'
+        },
+        {
             title: 'Integrate existing tRPC server to Bun with Elysia',
             href: '/blog/integrate-trpc-with-elysia',
             detail: 'Learn how to integrate existing tRPC to Elysia and Bun with Elysia tRPC plugin and more about Eden end-to-end type-safety for Elysia.'
