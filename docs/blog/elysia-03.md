@@ -21,7 +21,7 @@ head:
 
   - - meta
     - property: 'twitter:image'
-      content: https://elysiajs.com/blog/elysia-02/edge-of-ground.webp
+      content: https://elysiajs.com/blog/elysia-03/edge-of-ground.webp
 ---
 
 <script setup>
