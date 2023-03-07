@@ -157,12 +157,16 @@ We have [Discord server](https://discord.gg/eaFJ2KDJck) dedicated to Elysia. Fee
 
 Thank you for supporting Elysia.
 
-> Not to be part of those images someone paints
+> Under a celestial map that never have ends
 >
-> Not advancing in that show chosen by someone else
+> On a cliff that never have name
 >
-> You and I, alive to write our story
+> I just holwed
 >
-> Will never let you be lone and be gone from your side
+> Hoping the neverending reverberation will reach you
+>
+> And I believe someday, I will stand on edge of the ground
+>
+> (Until the day I can be back to you to tell it)
 >
 </Blog>
