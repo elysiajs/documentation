@@ -1,5 +1,5 @@
 ---
-title: Elysia 0.2 - The Blessing
+title: Elysia 0.3 - 大地の閾を探して [Looking for Edge of Ground]
 sidebar: false
 editLink: false
 head:
@@ -29,7 +29,7 @@ head:
 </script>
 
 <Blog
-    title="Elysia 0.3 - 大地の閾を探して [Looking for Edge of Ground]"
+    title="Elysia 0.3 (RC) - 大地の閾を探して [Looking for Edge of Ground]"
     src="/blog/elysia-03/edge-of-ground.webp"
     alt="shattered glass pieces floating in the abyss"
     author="saltyaom"
@@ -40,7 +40,16 @@ Named after Camellia's song[「大地の閾を探して [Looking for Edge of Gro
 
 This is the most challenging update, bringing the biggest release of Elysia yet, with rethinking and redesigning of Elysia architecture to be highly scalable while making less breaking change as possible.
 
-And I'm pleased to announce the release candidate of Elysia 0.3 with exciting new features coming right up.
+I'm pleased to announce the release candidate of Elysia 0.3 with exciting new features coming right up.
+
+::: tip
+This version is a release candidate, use `elysia@rc` to install:
+```bash
+bun add elysia@rc
+```
+
+All plugins are tested and updated to work with Elysia Release candidate
+:::
 
 ## Elysia Fn
 Introducing Elysia Fn, run any backend function on the frontend with full auto-completion and full type support.
