@@ -540,21 +540,21 @@ export const post = (app: Elysia) =>
         app.put(
             '/create',
             async ({ body }) => {
-              let userId: string // [!code ++]
- // [!code ++]
-              const { data, error } = await supabase.auth.getUser( // [!code ++]
-                  access_token // [!code ++]
-              ) // [!code ++]
- // [!code ++]
-              if(error) { // [!code ++]
-                  const { data, error } = await supabase.auth.refreshSession({ // [!code ++]
-                      refresh_token // [!code ++]
-                  }) // [!code ++]
- // [!code ++]
-                  if (error) throw error // [!code ++]
- // [!code ++]
-                  userId = data.user!.id // [!code ++]
-              } // [!code ++]
+                let userId: string // [!code ++]
+   // [!code ++]
+                const { data, error } = await supabase.auth.getUser( // [!code ++]
+                    access_token // [!code ++]
+                ) // [!code ++]
+   // [!code ++]
+                if(error) { // [!code ++]
+                    const { data, error } = await supabase.auth.refreshSession({ // [!code ++]
+                        refresh_token // [!code ++]
+                    }) // [!code ++]
+   // [!code ++]
+                    if (error) throw error // [!code ++]
+   // [!code ++]
+                    userId = data.user!.id // [!code ++]
+                } // [!code ++]
 
                 const { data, error } = await supabase
                     .from('post')
@@ -664,7 +664,7 @@ export const post = (app: Elysia) =>
             .use(authen) // [!code ++]
             .put(
                 '/create',
-                async ({ body, userId }) => {
+                async ({ body, userId }) => { // [!code ++]
                     let userId: string // [!code --]
     // [!code --]
                     const { data, error } = await supabase.auth.getUser( // [!code --]
