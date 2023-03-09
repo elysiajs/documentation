@@ -249,8 +249,6 @@ Elysia also understands the schema, so instead of declaring TypeScript's type se
 
 So if you accidentally create a breaking change in the future, Elysia going to warn you about the data type.
 
-<img class="-png" src="/blog/elysia-supabase/lagrange-sign-up.webp" alt="Using Rest Client to sign up" />
-
 The code we have are great, it did the job that we expected, but we can step it up a little bit further.
 
 You see, both **sign-in** and **sign-up** accept the same shape of data, in the future, you might also find yourself duplicating a long schema in multiple routes.
