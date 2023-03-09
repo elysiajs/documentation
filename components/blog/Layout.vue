@@ -119,6 +119,11 @@ onUnmounted(() => {
     box-shadow: 0 8px 25px rgba(0,0,0,.1)
 }
 
+.-png {
+    box-shadow: unset !important;
+    background: transparent !important;
+}
+
 @media (min-width: 768px) {
     #blog > h1 {
         line-height: 3.25rem !important;

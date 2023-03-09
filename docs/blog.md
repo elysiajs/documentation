@@ -24,6 +24,11 @@ head:
 <Blogs 
     :blogs="[
         {
+            title: 'Elysia with Supabase. Your next backend at sonic speed',
+            href: '/blog/elysia-supabase',
+            detail: 'Elysia, and Supabase are a great match for rapidly developing prototype in less than a hour, let's take a look of how we can take advantage of both.'
+        },
+        {
             title: 'Introducing Elysia 0.3 - 大地の閾を探して [Looking for Edge of Ground]',
             href: '/blog/elysia-03',
             detail: 'Introducing Elysia Fn, Type Rework for highly scalable TypeScript performance, File Upload support and validation, Reworked Eden Treaty.'
