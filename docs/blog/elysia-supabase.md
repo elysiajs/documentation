@@ -583,9 +583,9 @@ export const post = (app: Elysia) =>
 Great! Now we can extract `user_id` from our cookie using **supabase.auth.getUser**
 
 ## Derive
-Our code work fine for now, but let's paint the little picture.
+Our code work fine for now, but let's paint a little picture.
 
-Let's say you have so many routes the require authorization like this, requiring you to extract the `userId`, it means that you will have a lot of duplicated code here, right?
+Let's say you have so many routes that require authorization like this, requiring you to extract the `userId`, it means that you will have a lot of duplicated code here, right?
 
 Luckily, Elysia is specially designed to tackle this problem.
 
