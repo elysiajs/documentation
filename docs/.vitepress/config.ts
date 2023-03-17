@@ -168,6 +168,10 @@ export default defineConfig({
                         link: '/patterns/error-handling'
                     },
                     {
+                        text: 'Web Socket',
+                        link: '/patterns/websocket'
+                    },
+                    {
                         text: 'Reference Model',
                         link: '/patterns/reference-models'
                     },
@@ -270,10 +274,6 @@ export default defineConfig({
                             {
                                 text: 'trpc',
                                 link: '/plugins/trpc'
-                            },
-                            {
-                                text: 'Web Socket',
-                                link: '/plugins/websocket'
                             }
                         ]
                     }
