@@ -10,7 +10,7 @@
         </h2>
 
         <p class="text-xl text-center z-10">
-            Whether you're new or expert, you will see your server up in no time.
+            Whether you're new or expert, you will find yourself running server up in no time.
         </p>
 
         <div
@@ -33,7 +33,7 @@
         <small
             class="z-10 text-gray-500 dark:text-gray-100 text-lg opacity-65 text-center"
         >
-            ps. you can get your first server up and running in no time
+            ps. you can get your first server up and running in 5 minute
         </small>
     </article>
 </template>

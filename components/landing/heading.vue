@@ -160,7 +160,7 @@ onMounted(() => {
 }
 
 #canvas {
-    filter: brightness(0.9) saturate(1.25);
+    filter: brightness(0.85) saturate(1.25);
     --gradient-color-1: #c09eed;
     --gradient-color-2: #d7b2ec;
     --gradient-color-3: #c8f7dd;
