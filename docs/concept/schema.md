@@ -1,9 +1,23 @@
+---
+title: Schema - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Schema - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Schema is a strictly typed definitions, use to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
+
+  - - meta
+    - property: 'og:description'
+      content: Schema is a strictly typed definitions, use to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
+---
+
 # Schema
 Schema is used to define the strict type for the Elysia handler.
 
-Schema is not an event but a value used in a validation event. 
-
-To strictly type and validate an incoming request and outgoing response.
+Schema is not an event but a value used in a validation event to strictly type and validate an incoming request and outgoing response.
 
 The schema consists of:
 - body - validate incoming body.

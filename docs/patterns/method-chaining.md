@@ -1,5 +1,21 @@
+---
+title: Method Chaining - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Method Chaining - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Elysia heavily encourages the use of method chaining. Because Elysia's type system is complex, method usually introduce a new type to the instance. Using method chaining will help save that new type refernce.
+
+  - - meta
+    - name: 'og:description'
+      content: Elysia heavily encourages the use of method chaining. Because Elysia's type system is complex, method usually introduce a new type to the instance. Using method chaining will help save that new type refernce.
+---
+
 # Method Chaining
-Elysia heavily encourages the use of method chaining.
+Elysia heavily **encourages the use of method chaining**.
 
 Because Elysia's type system is complex, method usually introduce a new type to the instance.
 

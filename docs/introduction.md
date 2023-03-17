@@ -1,3 +1,19 @@
+---
+title: Introduction - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Introduction - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Elysia.js is a fast and friendly bun web framework. Building on top of 3 philosophies, performance, simplicity, flexibility. Designed with TypeScript in mind. Elysia understands what you want and automatically infers the type from your code.
+
+  - - meta
+    - property: 'og:description'
+      content: Elysia.js is a fast and friendly bun web framework. Building on top of 3 philosophies, performance, simplicity, flexibility. Designed with TypeScript in mind. Elysia understands what you want and automatically infers the type from your code.
+---
+
 # Introduction
 Elysia.js is a fast, and friendly [Bun](https://bun.sh) web framework.
 
@@ -44,7 +60,7 @@ You explicitly tell Elysia that the incoming request body is expected to have a 
 
 Elysia then infers the type from the code you write. Validate the body from the incoming request to ensure the type safety.
 
-Then with [plugins](/collections/plugins), Elysia can instantly generate API documentation with Swagger with a single line of code.
+Then with [plugins](/plugins/plugins), Elysia can instantly generate API documentation with Swagger with a single line of code.
 ```typescript
 import { Elysia, t } from 'elysia'
 /* [!code ++] */import { swagger } from '@elysiajs/swagger'

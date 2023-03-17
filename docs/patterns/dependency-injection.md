@@ -1,3 +1,20 @@
+---
+title: Dependency Injection - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Dependency Injection - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Dependency injection is a concept that allows you to separate a utility function, decouple route into a plugin and reuse them in a certain scope. This will allows you to control access to decorators of Elysia.
+
+
+  - - meta
+    - property: 'og:description'
+      content: Dependency injection is a concept that allows you to separate a utility function, decouple route into a plugin and reuse them in a certain scope. This will allows you to control access to decorators of Elysia.
+---
+
 # Dependency Injection
 Sometimes you would like to separate routes from your main file.
 

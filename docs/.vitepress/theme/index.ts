@@ -1,14 +1,16 @@
-// .vitepress/theme/index.js
-import DefaultTheme from 'vitepress/theme'
-
+// https://vitepress.dev/guide/custom-theme
+import { h } from 'vue'
+import Theme from 'vitepress/theme'
 import './custom.css'
 
 export default {
-    ...DefaultTheme,
-    enhanceApp({ app, router, siteData }) {
-        // app is the Vue 3 app instance from `createApp()`.
-        // router is VitePress' custom router. `siteData` is
-        // a `ref` of current site-level metadata.
-        // app.component('Prism', Prism)
-    }
+  ...Theme,
+  Layout: () => {
+    return h(Theme.Layout, null, {
+      // https://vitepress.dev/guide/extending-default-theme#layout-slots
+    })
+  },
+  enhanceApp({ app, router, siteData }) {
+    // ...
+  }
 }

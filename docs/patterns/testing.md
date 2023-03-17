@@ -1,3 +1,20 @@
+---
+title: Testing - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Testing - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: You can use `bun:test` to create a unit test with Elysia. Elysia instance has a `handle` method that accepts `Request` and will return a `Response`, the same as creating an HTTP request.
+
+
+  - - meta
+    - name: 'og:description'
+      content: You can use `bun:test` to create a unit test with Elysia. Elysia instance has a `handle` method that accepts `Request` and will return a `Response`, the same as creating an HTTP request.
+---
+
 # Testing
 Creating a unit test in Elysia is easy.
 

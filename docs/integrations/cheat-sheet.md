@@ -1,3 +1,19 @@
+---
+title: Cheat Sheet (Elysia by example) - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Cheat Sheet (Elysia by example) - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Elysia's cheat sheet in summary and how it work with "Elysia by example"
+
+  - - meta
+    - property: 'og:description'
+      content: Elysia's cheat sheet in summary and how it work with "Elysia by example"
+---
+
 # Cheat Sheet
 
 ## Ping Pong

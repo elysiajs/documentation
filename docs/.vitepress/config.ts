@@ -8,7 +8,7 @@ const description =
 export default defineConfig({
     lang: 'en-US',
     title: 'Elysia.js',
-    description,
+    // description,
     lastUpdated: true,
     markdown: {
         theme: {
@@ -83,7 +83,7 @@ export default defineConfig({
             },
             {
                 text: 'Plugins',
-                link: '/collections/plugins'
+                link: '/plugins/overview'
             },
             {
                 text: 'Blog',
@@ -93,7 +93,7 @@ export default defineConfig({
         sidebar: [
             {
                 text: 'Getting Started',
-                collapsible: true,
+                collapsed: true,
                 items: [
                     {
                         text: 'Introduction',
@@ -107,7 +107,7 @@ export default defineConfig({
             },
             {
                 text: 'Concepts',
-                collapsible: true,
+                collapsed: true,
                 items: [
                     {
                         text: 'Route',
@@ -120,6 +120,10 @@ export default defineConfig({
                     {
                         text: 'State & Decorate',
                         link: '/concept/state-decorate'
+                    },
+                    {
+                        text: 'Derive',
+                        link: '/concept/derive'
                     },
                     {
                         text: 'Group',
@@ -149,31 +153,31 @@ export default defineConfig({
             },
             {
                 text: 'Patterns',
-                collapsible: true,
+                collapsed: true,
                 items: [
                     {
-                        text: 'Dependency Injection',
-                        link: '/patterns/dependency-injection'
+                        text: 'Method Chaining',
+                        link: '/patterns/method-chaining'
+                    },
+                    {
+                        text: 'File Upload',
+                        link: '/patterns/file-upload'
                     },
                     {
                         text: 'Error Handling',
                         link: '/patterns/error-handling'
                     },
                     {
-                        text: 'End-to-End Type Safety',
-                        link: '/patterns/end-to-end-type-safety'
+                        text: 'Reference Model',
+                        link: '/patterns/reference-models'
+                    },
+                    {
+                        text: 'Dependency Injection',
+                        link: '/patterns/dependency-injection'
                     },
                     {
                         text: 'Lazy Loading Module',
                         link: '/patterns/lazy-loading-module'
-                    },
-                    {
-                        text: 'Method Chaining',
-                        link: '/patterns/method-chaining'
-                    },
-                    {
-                        text: 'Reference Model',
-                        link: '/patterns/reference-models'
                     },
                     {
                         text: 'Creating Documentation',
@@ -186,21 +190,42 @@ export default defineConfig({
                     {
                         text: 'Body Parser',
                         link: '/patterns/body-parser'
+                    },
+                    {
+                        text: 'End-to-End Type Safety',
+                        link: '/patterns/end-to-end-type-safety'
                     }
                 ]
             },
-
             {
-                text: 'Collections',
-                collapsible: true,
+                text: 'Plugins',
+                collapsed: true,
                 items: [
                     {
                         text: 'Eden',
-                        link: '/collections/eden'
+                        link: '/plugins/eden/overview',
+                        items: [
+                            {
+                                text: 'Installation',
+                                link: '/plugins/eden/installation.md'
+                            },
+                            {
+                                text: 'Eden Treaty',
+                                link: '/plugins/eden/treaty.md'
+                            },
+                            {
+                                text: 'Eden Fn',
+                                link: '/plugins/eden/fn.md'
+                            },
+                            {
+                                text: 'Eden Fetch',
+                                link: '/plugins/eden/fetch.md'
+                            },
+                        ]
                     },
                     {
                         text: 'Plugins',
-                        link: '/collections/plugins',
+                        link: '/plugins/overview',
                         items: [
                             {
                                 text: 'Bearer',
@@ -251,36 +276,20 @@ export default defineConfig({
                                 link: '/plugins/websocket'
                             }
                         ]
-                    },
-                    {
-                        text: 'Docker',
-                        link: '/collections/docker'
-                    },
-                    {
-                        text: 'Cheat Sheet',
-                        link: '/collections/cheat-sheet'
                     }
                 ]
             },
             {
-                text: 'Tips',
-                collapsible: true,
+                text: 'Integration',
+                collapsed: true,
                 items: [
                     {
-                        text: 'Custom 404',
-                        link: '/tips/custom-404'
+                        text: 'Docker',
+                        link: '/integrations/docker'
                     },
                     {
-                        text: 'Redirect',
-                        link: '/tips/redirect'
-                    },
-                    {
-                        text: 'Static File',
-                        link: '/tips/static-file'
-                    },
-                    {
-                        text: 'Get Header',
-                        link: '/tips/get-header'
+                        text: 'Cheat Sheet',
+                        link: '/integrations/cheat-sheet'
                     }
                 ]
             }

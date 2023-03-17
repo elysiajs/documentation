@@ -1,3 +1,19 @@
+---
+title: Error Handling - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Error Handling - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Elysia has a life cycle hook to intercept an error, thus separating the concern from the main handler function, you can use ".onError" to handle the error and classified errors with error code.
+
+  - - meta
+    - property: 'og:description'
+      content: Elysia has a life cycle hook to intercept an error, thus separating the concern from the main handler function, you can use ".onError" to handle the error and classified errors with error code.
+---
+
 # Error Handling
 Elysia catches all the errors thrown in the handler, classifies the error code, and pipes them to `onError` middleware.
 

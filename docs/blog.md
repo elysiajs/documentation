@@ -13,7 +13,7 @@ head:
       content: Update of Elysia.js, from core maintainers
 
   - - meta
-    - property: 'description'
+    - property: 'og:description'
       content: Update of Elysia.js from core maintainers
 ---
 

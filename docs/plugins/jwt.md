@@ -1,3 +1,19 @@
+---
+title: JWT Plugin - Elysia.js
+head:
+    - - meta
+      - property: 'og:title'
+        content: JWT Plugin - Elysia.js
+
+    - - meta
+      - name: 'description'
+        content: Plugin for Elysia that add support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysiajs/jwt".
+
+    - - meta
+      - name: 'og:description'
+        content: Plugin for Elysia that add support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysiajs/jwt".
+---
+
 # JWT Plugin
 This plugin adds support for using JWT in Elysia handler
 

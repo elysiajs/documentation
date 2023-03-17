@@ -1,3 +1,19 @@
+---
+title: GraphQL Yoga Plugin - Elysia.js
+head:
+    - - meta
+      - property: 'og:title'
+        content: GraphQL Yoga Plugin - Elysia.js
+
+    - - meta
+      - name: 'description'
+        content: Plugin for Elysia that add support for using GraphQL Yoga on Elysia server. Start by installing the plugin with "bun add graphql graphql-yoga @elysiajs/graphql-yoga".
+
+    - - meta
+      - name: 'og:description'
+        content: Plugin for Elysia that add support for using GraphQL Yoga on Elysia server. Start by installing the plugin with "bun add graphql graphql-yoga @elysiajs/graphql-yoga".
+---
+
 # GraphQL Yoga Plugin
 This plugin integrate GraphQL yoga with Elysia
 

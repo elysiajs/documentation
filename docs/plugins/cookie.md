@@ -1,5 +1,21 @@
+---
+title: Cookie Plugin - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Cookie Plugin - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Plugin for Elysia that adds support for using cookie in Elysia handler. Start by installing the plugin with "bun add @elysiajs/cookie".
+
+  - - meta
+    - name: 'og:description'
+      content: Plugin for Elysia that adds support for using cookie in Elysia handler. Start by installing the plugin with "bun add @elysiajs/cookie".
+---
+
 # Cookie Plugin
-This plugin adds support for using cookie in Elysia handler
+This plugin adds support for using cookie in Elysia handler.
 
 Install with:
 ```bash

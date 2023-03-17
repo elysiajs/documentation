@@ -1,18 +1,28 @@
-# Websocket Plugin
-This plugin adds support for using WebSocket with Elysia
+---
+title: WebSocket Plugin - Elysia.js
+head:
+  - - meta
+    - property: 'title'
+      content: WebSocket Plugin - Elysia.js
 
-Install with:
-```bash
-bun add @elysiajs/websocket
-```
+  - - meta
+    - name: 'description'
+      content: Plugin for Elysia that add support for using WebSocket. Start by registering the plugin and declare WebSocket route with "ws".
 
-Then use it:
+  - - meta
+    - name: 'og:description'
+      content: Plugin for Elysia that add support for using WebSocket. Start by registering the plugin and declare WebSocket route with "ws".
+---
+
+# WebSocket
+Elysia WebSocket is extending Bun WebSocket which use [uWebSocket](https://github.com/uNetworking/uWebSockets) under the hood.
+
+To start using WebSocket, register the WebSocket plugin, and start declaring WebSocket route with `.ws`.
 ```typescript
-import { Elysia } from 'elysia'
-import { websocket } from '@elysiajs/websocket'
+import { Elysia, ws } from 'elysia'
 
 new Elysia()
-    .use(websocket())
+    .use(ws())
     .ws('/ws', {
         message(ws, message) {
             ws.send(message)
@@ -21,7 +31,11 @@ new Elysia()
     .listen(8080)
 ```
 
-## Config
+WebSocket route is extending Bun WebSocket configuration, for additional configuration please refers to [Bun's WebSocket](https://bun.sh/docs/api/websockets).
+
+Just like normal route, WebSocket also accepts **schema** to strictly type and validate requests.
+
+## Configuration
 This plugin extends config from [Bun WebSocket](https://github.com/oven-sh/bun#websockets-with-bunserve)
 
 Below is a config extends from [Bun WebSocket](https://github.com/oven-sh/bun#websockets-with-bunserve)
@@ -59,11 +73,10 @@ Create websocket handler
 
 Example:
 ```typescript
-import { Elysia } from 'elysia'
-import { websocket } from '@elysiajs/websocket'
+import { Elysia, ws } from 'elysia'
 
 new Elysia()
-    .use(websocket())
+    .use(ws())
     .ws('/ws', {
         message(ws, message) {
             ws.send(message)
@@ -178,11 +191,10 @@ Validate incoming WebSocket message.
 By default Elysia will parse incoming stringified JSON message as Object for validation.
 
 ```typescript
-import { Elysia } from 'elysia'
-import { websocket } from '@elysiajs/websocket'
+import { Elysia, ws } from 'elysia'
 
 new Elysia()
-    .use(websocket())
+    .use(ws())
     .ws('/ws', {
         schema: {
             // validate incoming message

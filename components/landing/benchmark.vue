@@ -6,23 +6,23 @@
                     primary="true"
                     label="Elysia"
                     percent="100"
-                    reqs="118,570"
+                    reqs="241,814"
                 />
-                <Progress label="Hono" percent="80.9" reqs="95,943" />
+                <Progress label="Hono" percent="98.3" reqs="237,821" />
                 <Progress
                     isNode
                     label="Fastify"
-                    percent="16.12"
-                    reqs="19,125"
+                    percent="24.58"
+                    reqs="59,450"
                 />
-                <Progress isNode label="Koa" percent="8.87" reqs="10,525" />
-                <Progress isNode label="Express" percent="6.89" reqs="8,177" />
-                <Progress isNode label="Nest" percent="4.88" reqs="5,794" />
+                <Progress isNode label="Koa" percent="15.67" reqs="37,895" />
+                <Progress isNode label="Express" percent="6.43" reqs="15,570" />
+                <Progress isNode label="Nest" percent="5.38" reqs="13,016" />
             </section>
             <p class="text-gray-400 text-sm mt-6">
                 Measure in requests/second. Benchmark for parsing
                 query, path parameter and set response header on Debian 11,
-                Ryzen 5 3500 tested on Bun 0.4.0 at 25 Dec 2022.
+                Intel i7-13700K tested on Bun 0.5.7 at 8 Mar 2023.
             </p>
         </template>
         <template v-slot:right>
@@ -39,7 +39,7 @@
             <p></p>
             <a
                 class="text-base text-pink-500 mt-2"
-                href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/655fe7f87f0f4f73f2121433f4741a9d6cf00de4"
+                href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/121b1a1083482e91818244fb7074078f7d61aad5#results"
                 target="_blank"
             >
                 View Benchmark

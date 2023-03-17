@@ -50,14 +50,14 @@
                     >
                         <a
                             href="/introduction"
-                            class="px-6 py-3 bg-black/15 hover:bg-black/20 focus:bg-black/25 backdrop-filter backdrop-blur-sm rounded-xl cursor-pointer transition-colors"
+                            class="px-6 py-3 bg-black/15 hover:bg-black/25 focus:bg-black/25 backdrop-filter backdrop-blur-sm rounded-xl cursor-pointer transition-colors"
                         >
                             <p id="start" class="font-semibold text-gray-600">
                                 Get Started
                             </p>
                         </a>
                         <a
-                            href="/collections/cheat-sheet"
+                            href="/plugins/cheat-sheet"
                             class="px-6 py-3 text-white/80 font-normal hover:bg-white/20 focus:hover:bg-white/40 backdrop-filter backdrop-blur-sm rounded-xl transition-colors"
                         >
                             Cheat Sheet 👀
@@ -130,7 +130,7 @@ import { codeSamples, type SampleType } from './libs/code'
 const code = ref<SampleType>('typedClient')
 
 const isActive = (type: SampleType) => {
-    if (type === code.value) return 'bg-white/50 dark:bg-white/15'
+    if (type === code.value) return '-dark'
 
     return ''
 }
@@ -153,6 +153,10 @@ onMounted(() => {
 
 .title-shadow {
     text-shadow: 0 0 6rem rgba(0, 0, 0, 0.75);
+}
+
+.-dark {
+    @apply bg-white/50 dark:bg-white/20;
 }
 
 #canvas {

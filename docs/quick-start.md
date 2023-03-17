@@ -1,3 +1,20 @@
+---
+title: Getting Start - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Getting Start - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Elysia is a library built for Bun and the only prerequisite. To start, boostrap a new project with "bun create elysia hi-elysia" and start development server with "bun run dev". This is all it need to do a quick start or getting start with Elysia.js
+
+
+  - - meta
+    - property: 'og:description'
+      content: Elysia is a library built for Bun and the only prerequisite. To start, boostrap a new project with "bun create elysia hi-elysia" and start development server with "bun run dev". This is all it need to do a quick start or getting start with Elysia.js
+---
+
 # Quick Start
 Elysia is a library built for Bun. 
 
@@ -14,11 +31,6 @@ bun create elysia hi-elysia
 Then you should see the folder name `hi-elysia` in your directory.
 ```bash
 cd hi-elysia
-```
-
-Sometime Bun cached the `latest` version field, so let's state the latest version explictly:
-```bash
-bun add elysia
 ```
 
 Open `src/index.ts`, and you should see:

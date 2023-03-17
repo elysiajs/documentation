@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import { defineProps, onMounted, onUnmounted } from 'vue'
 
-import 'virtual:windi.css'
+import '../tailwind.css'
 
 const authors = {
     saltyaom: {

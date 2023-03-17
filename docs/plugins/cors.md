@@ -1,5 +1,21 @@
+---
+title: CORS Plugin - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: CORS Plugin - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Plugin for Elysia that add support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysiajs/cors".
+
+  - - meta
+    - name: 'og:description'
+      content: Plugin for Elysia that add support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysiajs/cors".
+---
+
 # CORS Plugin
-This plugin adds support for [Cross-Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+This plugin adds support for customizing [Cross-Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) behavior.
 
 Install with:
 ```bash

@@ -1,14 +1,29 @@
+---
+title: Guard - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Guard - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Guard let you to inject multiple life-cycle event into multiple routes at once. Guard is useful when you have duplicated life-cycle in the multiple route, for example. logging, schema validation, or error handling. You can use ".guard" to inject the life-cycle event to multiple routes.
+
+
+  - - meta
+    - property: 'og:description'
+      content: Guard let you to inject multiple life-cycle event into multiple routes at once. Guard is useful when you have duplicated life-cycle in the multiple route, for example. logging, schema validation, or error handling. You can use ".guard" to inject the life-cycle event to multiple routes.
+---
+
 # Guard
 Suppose you have many shared local hooks.
 
 Instead of writing duplicated hook, you can define a shared hook scope using `guard`.
 
 ---
-`Guard` allows you to combine multiple hooks into one.
+**Guard** let you to inject multiple life-cycle event into multiple routes at once. Guard is useful when you have duplicated life-cycle in the multiple route, for example. logging, schema validation, or error handling.
 
-Encapsulate all hooks into the scope.
-
-Instead of writing:
+To encapsulate all hooks into the scope, instead of writing:
 ```typescript
 app.post('/sign-up', (({ body }) => signUp(body), {
     schema: {

@@ -1,3 +1,19 @@
+---
+title: HTML Plugin - Elysia.js
+head:
+    - - meta
+      - property: 'og:title'
+        content: HTML Plugin - Elysia.js
+
+    - - meta
+      - name: 'description'
+        content: Plugin for Elysia that add shortcut support for returning HTML in Elysia server. Start by installing the plugin with "bun add @elysiajs/html".
+
+    - - meta
+      - name: 'og:description'
+        content: Plugin for Elysia that add shortcut support for returning HTML in Elysia server. Start by installing the plugin with "bun add @elysiajs/html".
+---
+
 # HTML Plugin
 This plugin adds shortcut for returning HTML
 

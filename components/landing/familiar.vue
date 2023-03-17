@@ -35,7 +35,7 @@ new Elysia()
                 </p>
                 <a
                     class="text-base text-pink-500 mt-2"
-                    href="./collections/cheat-sheet"
+                    href="./plugins/cheat-sheet"
                     target="_blank"
                 >
                     See (Cheat Sheet) for yourself

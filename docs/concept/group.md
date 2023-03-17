@@ -1,3 +1,19 @@
+---
+title: Group - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Group - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Grouping allows you to set prefix for multiple route once, with ".group". Suppose you have many paths with the same prefix instead of writing many same prefixes, you can group them using a single ".group" method
+
+  - - meta
+    - property: 'og:description'
+      content: Grouping allows you to set prefix for multiple route once, with ".group". Suppose you have many paths with the same prefix instead of writing many same prefixes, you can group them using a single ".group" method
+---
+
 # Group
 Suppose you have many paths with the same prefix.
 - /user/sign-in

@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import { defineProps } from 'vue'
 
-import 'virtual:windi.css'
+import '../tailwind.css'
 
 const props = defineProps<{
     blogs: {

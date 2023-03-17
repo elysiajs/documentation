@@ -9,7 +9,7 @@
         </h2>
         <p class="leading-relaxed">
             With
-            <a class="text-pink-500 underline" href="/collections/eden">Eden</a
+            <a class="text-pink-500 underline" href="/plugins/eden">Eden</a
             >, you get fully type-safe client on both client and server
         </p>
 
