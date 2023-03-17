@@ -102,11 +102,11 @@ if(error) {
 const { id, name } = nendoroid
 ```
 
-## When should I use Eden Fn over Eden Treaty
+## When should I use Eden Fetch over Eden Treaty
 Using Eden Treaty requires a lot of down-level iteration to map all possible types in a single go, while in contrast, Eden Fetch can be lazily executed until you pick a route.
 
 With complex types and lot of server routes, using Eden Treaty on a low-end development device can lead to slow type inference and auto-completion.
 
 But as Elysia has tweak and optimized a lot of types and inference, Eden Treaty can be perform very well in the considerable amount of routes.
 
-If your single server or micro-service consists of **more than 500 routes per server** or micro-service, and need to consume all of the route **in a single frontend codebase**, then you might want to use Eden Fn to as TypeScript as Eden Fn has a significant better TypeScript performance.
+If your single server or micro-service consists of **more than 500 routes per server** or micro-service, and need to consume all of the route **in a single frontend codebase**, then you might want to use Eden Fetch to as TypeScript as Eden Fetch has a significant better TypeScript performance.
