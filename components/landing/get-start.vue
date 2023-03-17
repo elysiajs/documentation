@@ -24,7 +24,7 @@
                 Get Started
             </a>
             <a
-                href="/collections/cheat-sheet"
+                href="/plugins/cheat-sheet"
                 class="px-6 py-3 text-pink-500 font-medium border border-solid border-pink-500 backdrop-filter backdrop-blur-sm rounded-xl transition-colors"
             >
                 Cheat Sheet

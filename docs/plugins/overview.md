@@ -1,4 +1,4 @@
-# Ecosystem
+# Overview
 Elysia is designed to be modular and lightweight.
 
 Following the same idea as Arch Linux (btw, I use Arch):
@@ -14,7 +14,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Cookie](/plugins/cookie) - get/set cookie
 - [CORS](/plugins/cors) - handle CORS request
 - [Cron](/plugins/cron) - running cron
-- [Eden](/collections/eden) - fully type-safe client for Elysia server
+- [Eden](/plugins/eden) - fully type-safe client for Elysia server
 - [GraphQL Apollo](/plugins/graphql-apollo) - using GraphQL Apollo with Elysia
 - [GraphQL Yoga](/plugins/graphql-yoga) - using GraphQL Yoga with Elysia
 - [HTML](/plugins/html) - shorthand returning HTML

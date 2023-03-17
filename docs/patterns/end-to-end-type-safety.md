@@ -7,12 +7,11 @@ Ensure that the system is working in a predictable way, thus reducing the risk o
 
 ---
 
-Elysia support End-to-End Type-Safety between client-server with the [Eden](/collections/eden).
+Elysia support End-to-End Type-Safety between client-server with the [Eden](/plugins/eden/overview).
 
 <iframe
-    id="editor"
+    id="embedded-editor"
     src="https://codesandbox.io/p/sandbox/bun-elysia-rdxljp?embed=1&codemirror=1&hidenavigation=1&hidedevtools=1&file=eden.ts"
-    class="w-full h-[720px] border-0 rounded-lg my-6"
     allow="accelerometer"
     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
     loading="lazy"
@@ -26,4 +25,4 @@ Elysia allows you change type on server and reflect the type definitions on the 
 
 With End-to-End Type-Safety, migrating from old to new type also reflect which path of the codebase need to be migrate by line-of-code level.
 
-See [Eden](/collections/eden) for more example.
+See [Eden](/plugins/eden) for more example.

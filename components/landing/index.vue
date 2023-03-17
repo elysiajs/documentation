@@ -48,7 +48,8 @@ import Editor from './editor.vue'
 import GetStart from './get-start.vue'
 import BuildWithLove from './build-with-love.vue'
 
-import 'virtual:windi.css'
+import '../tailwind.css'
+
 import { onMounted, ref } from 'vue'
 
 const isDark = ref(false)

@@ -8,7 +8,6 @@ Constructor will change some behavior of Elysia.
 
 ```typescript
 new Elysia({
-    strictPath: true,
     serve: {
         hostname: '0.0.0.0'
     }

@@ -23,7 +23,9 @@
                 id="ts-balloon"
                 class="absolute z-10 block w-xs px-4 py-2 dark:text-gray-200 text-left bg-gray-200/80 dark:bg-gray-600/80 border border-solid border-gray-300 dark:border-gray-600 backdrop-filter backdrop-blur-sm rounded-lg"
             >
-                Type 'number' is not assignable to type '{ id: number; name: string; }'
+                Type 'number' is not assignable to type 
+                <br />
+                '{ id: number; name: string; }'
             </p>
             <Prism language="typescript">
                 {{

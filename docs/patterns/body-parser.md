@@ -1,7 +1,13 @@
 # Body Parser
 Like Express, body-parser is a function to parse body of an incoming request.
 
-By default, Elysia will parse the body with content-type of `text/plain` and `application/json` and assign the value to `Context.body`.
+By default, Elysia will parse the body with content-type of:
+- `text/plain`
+- `application/json`
+- `multipart/form-data`
+- `elysia/fn` 
+
+And assign the value to `Context.body`.
 
 Then you can get body from `body` as:
 ```typescript

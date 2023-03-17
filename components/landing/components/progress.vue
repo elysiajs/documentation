@@ -1,7 +1,7 @@
 <template>
     <div class="flex justify items-center gap-4">
         <p
-            class="flex items-center text-gray-600 dark:text-gray-400 w-34 md:w-30 font-medium"
+            class="flex items-center text-gray-600 dark:text-gray-400 label font-medium"
         >
             {{ label }}
             <span
@@ -21,10 +21,7 @@
                 "
                 :style="{ width: `${percent}%` }"
             >
-                <span
-                    class="absolute px-2"
-                    :style="{right}"
-                >
+                <span class="absolute px-2" :style="{ right }">
                     {{ reqs }}
                 </span>
             </p>
@@ -43,5 +40,17 @@ const { label, reqs, percent } = defineProps<{
     isNode: false
 }>()
 
-const right = +percent < 20 ? `-${reqs.toString().length + 1}ch` : '0px'
+const right = +percent < 25 ? `-${reqs.toString().length + 1}ch` : '0px'
 </script>
+
+<style>
+.label {
+    width: 8.5em;
+}
+
+@media (min-width: 768px) {
+    .label {
+        width: 7.5rem;
+    }
+}
+</style>
