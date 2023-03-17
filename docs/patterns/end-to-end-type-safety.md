@@ -1,3 +1,19 @@
+---
+title: End-to-End Type Safety - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: End-to-End Type Safety - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Elysia support end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
+
+  - - meta
+    - property: 'og:description'
+      content: Elysia support end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
+---
+
 # End-to-End Type-Safety
 End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible. 
 

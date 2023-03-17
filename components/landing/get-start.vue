@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import Plugin from './components/plugins.vue'
+    import Plugin from './components/plugins.vue'
 </script>
 
 <style scoped>

@@ -1,3 +1,19 @@
+---
+title: Route - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Route - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Declaraing Elysia route has similiar syntax to Express and Fastify. By calling `.[method name](path, callback, hook?)`, for example "app.get('/', () => 'hi')", then Elysia will handle the routing and execute the callback if matched.
+
+  - - meta
+    - property: 'og:description'
+      content: Declaraing Elysia route has similiar syntax to Express and Fastify. By calling `.[method name](path, callback, hook?)`, for example "app.get('/', () => 'hi')", then Elysia will handle the routing and execute the callback if matched.
+---
+
 # Route
 Like Express, and Fastify.
 

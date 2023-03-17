@@ -1,3 +1,19 @@
+---
+title: Static File - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Static File - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: You can serve static file by using `Bun.file` or using Elysia Static Plugin (@elysiajs/static) for serving file from the folders recursively, or set custom config to include or exclude the files
+
+  - - meta
+    - property: 'og:description'
+      content: You can serve static file by using `Bun.file` or using Elysia Static Plugin (@elysiajs/static) for serving file from the folders recursively, or set custom config to include or exclude the files
+---
+
 # Static File
 You can serve static file using `Bun.file`
 ```typescript

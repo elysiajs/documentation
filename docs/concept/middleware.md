@@ -1,3 +1,19 @@
+---
+title: Middleware - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Middleware - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Lifecycle event is a concept for each stage of Elysia processing, "Middleware" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+
+  - - meta
+    - property: 'og:description'
+      content: Lifecycle event is a concept for each stage of Elysia processing, "Middleware" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+---
+
 # Middleware
 Elysia has Life Cycle event support which you get called on a specific event.
 

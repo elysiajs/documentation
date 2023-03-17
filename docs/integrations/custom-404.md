@@ -1,3 +1,19 @@
+---
+title: Custom 404 - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Custom 404 - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: You can define custom 404 using `onError` hook to intercept "NOT_FOUND" event and return a custom response
+
+  - - meta
+    - property: 'og:description'
+      content: You can define custom 404 using `onError` hook to intercept "NOT_FOUND" event and return a custom response
+---
+
 # Custom 404
 You can define custom 404 using `onError` hook:
 ```typescript

@@ -1,3 +1,19 @@
+---
+title: File Upload - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: File Upload - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Elysia handle attachment of request with content-type of "multipart/form-data" headers, and parse the body to `Context.body` by default. `t.File`, and `t.Files` is use to strictly validate files.
+
+  - - meta
+    - property: 'og:description'
+      content: Elysia handle attachment of request with content-type of "multipart/form-data" headers, and parse the body to `Context.body` by default. `t.File`, and `t.Files` is use to strictly validate files.
+---
+
 # File Upload
 Elysia handle attachment of `multipart/form-data` to `Context.body` by default.
 

@@ -1,3 +1,19 @@
+---
+title: Eden Fn - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Eden Fn - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Eden Fn or Elysia Fn allow you to expose backend functions to run on the frontend with end-to-end type-safety, autocompletion, original JsDoc comment, and "click-to-definition", allowing you to speed up your development cycle.
+
+  - - meta
+    - name: 'og:description'
+      content: Eden Fn or Elysia Fn allow you to expose backend functions to run on the frontend with end-to-end type-safety, autocompletion, original JsDoc comment, and "click-to-definition", allowing you to speed up your development cycle.
+---
+
 # Eden Fn
 Eden Fn allow you to expose backend functions to run on the frontend with end-to-end type-safety, autocompletion, original JsDoc comment, and "click-to-definition", allowing you to speed up your development cycle.
 

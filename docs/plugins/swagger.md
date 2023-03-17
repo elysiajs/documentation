@@ -1,3 +1,19 @@
+---
+title: Swagger Plugin - Elysia.js
+head:
+    - - meta
+      - property: 'og:title'
+        content: Swagger Plugin - Elysia.js
+
+    - - meta
+      - name: 'description'
+        content: Plugin for Elysia that add support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
+
+    - - meta
+      - name: 'og:description'
+        content: Plugin for Elysia that add support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
+---
+
 # Swagger Plugin
 This plugin generates a Swagger endpoint for an Elysia server
 

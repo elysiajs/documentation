@@ -1,3 +1,19 @@
+---
+title: Swagger Plugin - Elysia.js
+head:
+    - - meta
+      - property: 'og:title'
+        content: Swagger Plugin - Elysia.js
+
+    - - meta
+      - name: 'description'
+        content: Plugin for Elysia that add support for using tRPC on Bun with Elysia Server. Start by installing the plugin with "bun add @elysiajs/trpc".
+
+    - - meta
+      - name: 'og:description'
+        content: Plugin for Elysia that add support for using tRPC on Bun with Elysia Server. Start by installing the plugin with "bun add @elysiajs/trpc".
+---
+
 # tRPC Plugin
 This plugin adds support for using [tRPC](https://trpc.io/)
 
@@ -8,28 +24,30 @@ bun add @elysiajs/trpc @trpc/server @elysiajs/websocket
 
 Then use it:
 ```typescript
-import { Elysia, t } from 'elysia'
-import { compile } from '@elysiajs/trpc'
+import { Elysia, t as T } from 'elysia'
+import { trpc, compile as c } from '@elysiajs/trpc'
+import { z } from 'zod'
 
 import { initTRPC } from '@trpc/server'
 
-const r = initTRPC.create()
+const t = initTRPC.create()
+const p = t.prodcedure
 
-const router = r.router({
-    greet: r.procedure
-	.input(compile(t.String()))
-	.query(({ input }) => input)
+const router = t.router({
+    greet: p
+      // or using Zod
+      .input(z.string())
+      // Using Elysia's T
+      .input(c(t.String()))
+      .query(({ input }) => input)
 })
 
 export type Router = typeof router
 
 const app = new Elysia()
-    .trpc(router)
+    .use(trpc(router))
     .listen(8080)
 ```
-
-## Method
-Below are the new methods registered by the plugin.
 
 ## trpc
 Accept tRPC router and register to Elysia handler.

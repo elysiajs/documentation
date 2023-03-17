@@ -1,3 +1,19 @@
+---
+title: Handler - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Handler - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Handler is a callback function which accept "Context", helping you access powerful API for accessing data and modifying the response. Context is consists of HTTP Request, body, parsed querystring, path parameters and store.
+
+  - - meta
+    - property: 'og:description'
+      content: Handler is a callback function which accept "Context", helping you access powerful API for accessing data and modifying the response. Context is consists of HTTP Request, body, parsed querystring, path parameters and store.
+---
+
 # Handler
 For routing is to tell which function to return a response to.
 
@@ -19,7 +35,7 @@ app.get('/id/:id', (context) => context.params.id)
 Context's properties consists of
 - request: Raw `Request` for accessing data as web standard type
 - body: Body which come with the request
- query: Parsed path query as a simple object
+- query: Parsed path query as a simple object
 - params: Path parameters as a simple object
 - store: A global mutable store for Elysia instance
 - set: Response representation

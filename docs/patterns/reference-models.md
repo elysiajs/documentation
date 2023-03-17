@@ -1,3 +1,19 @@
+---
+title: Reference Model - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Reference Model - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Reference Models allow you to name an existing type models for that use for validation, and use by specifying the name thus refereing the model in lifecycle event or "handler.schema".
+
+  - - meta
+    - name: 'og:description'
+      content: Reference Models allow you to name an existing type models for that use for validation, and use by specifying the name thus refereing the model in lifecycle event or "handler.schema".
+---
+
 # Reference Models
 Sometimes you might find yourself declaring duplicated models, or re-use the same model multiple time. 
 

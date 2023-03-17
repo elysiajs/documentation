@@ -1,3 +1,19 @@
+---
+title: Static Plugin - Elysia.js
+head:
+    - - meta
+      - property: 'og:title'
+        content: Static Plugin - Elysia.js
+
+    - - meta
+      - name: 'description'
+        content: Plugin for Elysia that add support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysiajs/static".
+
+    - - meta
+      - name: 'og:description'
+        content: Plugin for Elysia that add support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysiajs/static".
+---
+
 # Static Plugin
 This plugin can serve static files/folders for Elysia Server
 

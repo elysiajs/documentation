@@ -1,3 +1,19 @@
+---
+title: Eden Installation - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Eden Installation - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Start by installing Eden on your frontend with "bun add elysia @elysiajs/eden", then expose your Elysia server type and then start using Eden Treaty or Eden Fetch.
+
+  - - meta
+    - name: 'og:description'
+      content: Start by installing Eden on your frontend with "bun add elysia @elysiajs/eden", then expose your Elysia server type and then start using Eden Treaty or Eden Fetch.
+---
+
 # Eden Installation
 Start by installing Eden on your frontend:
 ```bash

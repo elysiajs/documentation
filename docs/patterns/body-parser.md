@@ -1,3 +1,19 @@
+---
+title: Body Parser - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Body Parser - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: Body Parser is a function to parse body of an incoming request. By default, Elysia will parse the body with content-type of "text/plain", "application/json", and "multipart/form-data" then added the value to "Context.body" to be used in handler.
+
+  - - meta
+    - property: 'og:description'
+      content: Body Parser is a function to parse body of an incoming request. By default, Elysia will parse the body with content-type of "text/plain", "application/json", and "multipart/form-data" then added the value to "Context.body" to be used in handler.
+---
+
 # Body Parser
 Like Express, body-parser is a function to parse body of an incoming request.
 
@@ -5,7 +21,6 @@ By default, Elysia will parse the body with content-type of:
 - `text/plain`
 - `application/json`
 - `multipart/form-data`
-- `elysia/fn` 
 
 And assign the value to `Context.body`.
 

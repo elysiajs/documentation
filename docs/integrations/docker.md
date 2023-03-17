@@ -1,3 +1,19 @@
+---
+title: Docker - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Docker - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: You use Elysia with Docker with the following Dockerfile by using "oven/bun", or copy the snippet from the page
+
+  - - meta
+    - property: 'og:description'
+      content: You use Elysia with Docker with the following Dockerfile by using "oven/bun", or copy the snippet from the page
+---
+
 # Docker
 You use Elysia with Docker with the following Dockerfile below:
 ```typescript

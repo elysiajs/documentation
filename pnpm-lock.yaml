@@ -10,7 +10,7 @@ specifiers:
   flexsearch: ^0.7.31
   markdown-it: ^13.0.1
   openai: ^3.2.1
-  postcss: ^7.0.39
+  postcss: ^8.4.21
   prismjs: ^1.29.0
   tailwindcss: ^3.2.7
   vite: ^4.2.0
@@ -24,9 +24,9 @@ specifiers:
 dependencies:
   '@iconify/json': 2.2.35
   '@tailwindcss/postcss7-compat': 2.2.17
-  autoprefixer: 10.4.14_postcss@7.0.39
+  autoprefixer: 10.4.14_postcss@8.4.21
   openai: 3.2.1
-  postcss: 7.0.39
+  postcss: 8.4.21
   prismjs: 1.29.0
   tailwindcss: 3.2.7
   vite: 4.2.0_@types+node@18.15.3
@@ -711,7 +711,7 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
 
-  /autoprefixer/10.4.14_postcss@7.0.39:
+  /autoprefixer/10.4.14_postcss@8.4.21:
     resolution: {integrity: sha512-FQzyfOsTlwVzjHxKEqRIAdJx9niO6VCBCoEwax/VLSoQF29ggECcPuBqUMZ+u8jCZOPSy8b8/8KnuFbp0SaFZQ==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
@@ -723,7 +723,7 @@ packages:
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
-      postcss: 7.0.39
+      postcss: 8.4.21
       postcss-value-parser: 4.2.0
     dev: false
 

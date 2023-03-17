@@ -1,3 +1,19 @@
+---
+title: Plugin - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Plugin - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: A plugin is a way to decouple logic into smaller parts, defining reusable components across the server. Plugin can register by using `use`, registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
+
+  - - meta
+    - property: 'og:description'
+      content: A plugin is a way to decouple logic into smaller parts, defining reusable components across the server. Plugin can register by using `use`, registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
+---
+
 # Plugin
 A plugin is a way to decouple logic into smaller parts, defining reusable components across the server.
 

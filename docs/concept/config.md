@@ -1,3 +1,20 @@
+---
+title: Config - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Config - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: You can customize Elysia behavior with "constructor" or "listen", for example setting hostname, max body size or Web Socket config.
+
+
+  - - meta
+    - property: 'og:description'
+      content: You can customize Elysia behavior with "constructor" or "listen", for example setting hostname, max body size or Web Socket config.
+---
+
 # Config
 You can customize Elysia behavior by:
 1. using constructor 

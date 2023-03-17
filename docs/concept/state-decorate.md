@@ -1,3 +1,19 @@
+---
+title: State and Decorate - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: State and Decorate - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: You can extend Elysia to fits your need with ".state" and ".decorate" to add custom value to the "Context", and handler, for example. Database connection, utility function, or cookie.
+
+  - - meta
+    - property: 'og:description'
+      content: You can extend Elysia to fits your need with ".state" and ".decorate" to add custom value to the "Context", and handler, for example. Database connection, utility function, or cookie.
+---
+
 # State and Decorate
 You can extend Elysia to fits your need.
 

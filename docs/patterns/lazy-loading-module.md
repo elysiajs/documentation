@@ -1,5 +1,20 @@
-# Lazy-Loading Module
+---
+title: Lazy Loading Module - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Lazy Loading Module - Elysia.js
 
+  - - meta
+    - name: 'description'
+      content: Elysia support Lazy Loading Module. Lazy-loading can help decrease startup time by deferring modules to be gradually indexed after the server start. Lazy-loading modules are a good option when some modules are heavy and importing startup time is crucial.
+
+  - - meta
+    - property: 'og:description'
+      content: Elysia support Lazy Loading Module. Lazy-loading can help decrease startup time by deferring modules to be gradually indexed after the server start. Lazy-loading modules are a good option when some modules are heavy and importing startup time is crucial.
+---
+
+# Lazy-Loading Module
 Modules are eagerly loaded by default. 
 
 Elysia loads all modules and registers and indexes all of the modules before starting the server. This enforces that all the modules should load before start accepting a request.

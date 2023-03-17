@@ -1,3 +1,19 @@
+---
+title: Plugin Overview - Elysia.js
+head:
+    - - meta
+      - property: 'og:title'
+        content: Swagger Plugin - Elysia.js
+
+    - - meta
+      - name: 'description'
+        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers, and thanks to community plugins for customizing Elysia even further.
+
+    - - meta
+      - name: 'og:description'
+        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers, and thanks to community plugins for customizing Elysia even further.
+---
+
 # Overview
 Elysia is designed to be modular and lightweight.
 

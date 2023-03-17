@@ -1,3 +1,19 @@
+---
+title: Eden Fetch - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Eden Fetch - Elysia.js
+
+  - - meta
+    - name: 'description'
+      content: A fetch-like alternative to Eden Treaty with faster type inference. With Eden Fetch, you can fetch an API from Elysia server fully type-safe with end-to-end type safety without code generation.
+
+  - - meta
+    - name: 'og:description'
+      content: A fetch-like alternative to Eden Treaty with faster type inference. With Eden Fetch, you can fetch an API from Elysia server fully type-safe with end-to-end type safety without code generation.
+---
+
 # Eden Fetch
 A fetch-like alternative to Eden Treaty with faster type inference.
 

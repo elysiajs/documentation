@@ -1,3 +1,19 @@
+---
+title: Eden - Elysia.js
+head:
+  - - meta
+    - property: 'og:title'
+      content: Eden - Elysia.js
+
+  - - meta
+    - name: 'og:description'
+      content: Eden is an fetch client for an Elysia server with **end-to-end type safety** using only TypeScript's type inference instead of code generation. Allowing you to sync client and server types effortlessly. Eden is consists of 3 modules, "Eden Treaty", a simplified object-like client for communicating with Elysia server. "Eden Fn", call server function on frontend with auto-completion and full-type support. and "Eden Fetch", Fetch-like client for instant type-inference.
+
+  - - meta
+    - name: 'og:description'
+      content: Eden is an fetch client for an Elysia server with **end-to-end type safety** using only TypeScript's type inference instead of code generation. Allowing you to sync client and server types effortlessly. Eden is consists of 3 modules, "Eden Treaty", a simplified object-like client for communicating with Elysia server. "Eden Fn", call server function on frontend with auto-completion and full-type support. and "Eden Fetch", Fetch-like client for instant type-inference.
+---
+
 # Eden
 Eden is an fetch client for an Elysia server with **end-to-end type safety** using only TypeScript's type inference instead of code generation. 
 
