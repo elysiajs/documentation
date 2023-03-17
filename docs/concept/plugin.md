@@ -56,4 +56,4 @@ const app = new Elysia()
 Config type will be inferred into `use`, generating auto completion and type strict as intend.
 
 ## Official plugins
-You can find pre-built plugins for Elysia at [plugins](/plugins/plugins).
+You can find pre-built plugins for Elysia at [plugins](/plugins/overview).

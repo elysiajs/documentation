@@ -70,6 +70,8 @@ Elysia Fn supports multiple use-cases, for example accessing Prisma on the clien
 Theoretically, it's possible to use Redis, Sequelize, RabbitMQ, and more.
 As Elysia is running on Bun, Elysia Fn can run over 1.2 million operation/second concurrently (tested on M1 Max).
 
+Learn more about Elysia Fn at [Eden Fn](/plugins/eden/fn).
+
 ## Type Rework
 Over 6.5-9x faster for type checking, and uncountable type's LoC reduction.
 
@@ -108,9 +110,9 @@ With Elysia 0.3, Elysia now uses OpenAPI schema 3.0.x by default for better stat
 To support more demand for Elysia, supporting Elysia Fn, Rest all together, Eden has been reworked to scale with the new architecture.
 
 Eden now exports 3 types of function.
-- Eden Treaty `eden/treaty`: Original Eden syntax you know and love
-- Eden Fn `eden/fn`: Access to Eden Fn
-- Eden Fetch `eden/fetch`: Fetch-like syntax, for highly complex Elysia type (> 1,000 route / Elysia instance)
+- [Eden Treaty](/plugins/eden/treaty) `eden/treaty`: Original Eden syntax you know and love
+- [Eden Fn](/plugins/eden/fn) `eden/fn`: Access to Eden Fn
+- [Eden Fetch](/plugins/eden/fetch) `eden/fetch`: Fetch-like syntax, for highly complex Elysia type (> 1,000 route / Elysia instance)
 
 With the rework of type definitions and support for Elysia Eden, Eden is now much faster and better at inference type from the server.
 

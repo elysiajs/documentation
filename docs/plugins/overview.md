@@ -30,7 +30,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Cookie](/plugins/cookie) - get/set cookie
 - [CORS](/plugins/cors) - handle CORS request
 - [Cron](/plugins/cron) - running cron
-- [Eden](/plugins/eden) - fully type-safe client for Elysia server
+- [Eden](/plugins/eden/overview) - fully type-safe client for Elysia server
 - [GraphQL Apollo](/plugins/graphql-apollo) - using GraphQL Apollo with Elysia
 - [GraphQL Yoga](/plugins/graphql-yoga) - using GraphQL Yoga with Elysia
 - [HTML](/plugins/html) - shorthand returning HTML
@@ -38,7 +38,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Static](/plugins/static) - serve static file/folders
 - [Swagger](/plugins/swagger) - generate Swagger on fly
 - [tRPC](/plugins/trpc) - add tRPC support
-- [WebSocket](/plugins/websocket) - websocket support
+- [WebSocket](/patterns/websocket) - websocket support
 
 ## Community plugins:
 - [OAuth2](https://github.com/bogeychan/elysia-oauth2) - handle OAuth 2.0 authorization code flow

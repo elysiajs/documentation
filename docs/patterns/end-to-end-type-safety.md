@@ -41,4 +41,4 @@ Elysia allows you change type on server and reflect the type definitions on the 
 
 With End-to-End Type-Safety, migrating from old to new type also reflect which path of the codebase need to be migrate by line-of-code level.
 
-See [Eden](/plugins/eden) for more example.
+See [Eden](/plugins/eden/overview) for more example.
