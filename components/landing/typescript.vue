@@ -1,11 +1,11 @@
 <template>
     <article
-        class="flex flex-col items-center justify-center gap-4 md:gap-4 py-12 text-gray-600 dark:text-gray-300 text-lg text-center md:text-xl max-w-2xl w-full mx-auto"
+        class="flex flex-col items-start md:items-center justify-center gap-5 md:gap-5 py-12 text-gray-600 dark:text-gray-300 text-lg text-left md:text-center md:text-xl max-w-2xl w-full mx-auto"
     >
         <h2
-            class="text-3xl md:text-4xl text-gray-700 dark:text-gray-100 font-semibold text-center mb-4"
+            class="text-4xl md:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400"
         >
-            First-class TypeScript Support
+            First-class TypeScript
         </h2>
         <p class="leading-relaxed">
             Instead of writing types, Elysia understands what you want and
@@ -13,7 +13,7 @@
         </p>
 
         <div
-            class="relative bg-gray-100 dark:bg-gray-700 px-4 rounded-2xl text-base my-4 w-full"
+            class="relative bg-gray-100 dark:bg-gray-700 px-4 rounded-2xl text-base my-2 w-full"
         >
             <div
                 class="absolute z-10 block w-20 h-7 bg-red-500/20 rounded-lg"
@@ -21,7 +21,7 @@
             />
             <p
                 id="ts-balloon"
-                class="absolute z-10 block w-xs px-4 py-2 dark:text-gray-200 text-left bg-gray-200/80 dark:bg-gray-600/80 border border-solid border-gray-300 dark:border-gray-600 backdrop-filter backdrop-blur-sm rounded-lg"
+                class="absolute z-10 block w-xs px-4 py-2 dark:text-gray-200 text-left bg-gray-50/80 dark:bg-gray-600/80 border border-solid border-gray-200 dark:border-gray-600 backdrop-filter backdrop-blur-sm rounded-lg"
             >
                 Type 'number' is not assignable to type 
                 <br />

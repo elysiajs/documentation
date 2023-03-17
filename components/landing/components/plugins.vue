@@ -1,10 +1,12 @@
 <template>
     <a
-        class="flex justify-center items-center text-xl font-medium text-center bg-gray-50 dark:bg-gray-700 p-6 border border-solid border-gray-200 dark:border-gray-600 rounded-xl hover:shadow-xl focus:shadow-xl transition-shadow duration-300"
+        :class="`relative flex flex-col justify-center items-center gap-4 text-3xl font-semibold text-center bg-gray-50 dark:bg-gray-700 p-6 border-2 border-solid border-gray-200 dark:border-gray-600 shadow-md rounded-xl hover:-translate-y-2 focus:-translate-y-2 hover:shadow-xl focus:shadow-xl transition-all duration-300 ${card.class}`"
         :href="href"
-        style="aspect-ratio: 1"
+        style="aspect-ratio: 3/4"
     >
-        <p>{{ label }}</p>
+        <img class="absolute top-8 w-8 h-8 object-contain object-center" :src="`/assets/${icon}.webp`" :alt="label" />
+        <p class="z-10">{{ label }}</p>
+        <img class="absolute w-28 object-contain object-center opacity-5" :src="`/assets/${icon}.webp`" :alt="label" />
     </a>
 </template>
 
@@ -14,5 +16,7 @@ import { defineProps } from 'vue'
 const card = defineProps<{
     href: string
     label: string
+    icon: string
+    class?: string
 }>()
 </script>

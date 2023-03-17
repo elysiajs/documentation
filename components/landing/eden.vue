@@ -1,9 +1,9 @@
 <template>
     <article
-        class="flex flex-col items-center justify-center gap-4 md:gap-4 py-12 text-gray-600 dark:text-gray-300 text-lg text-center md:text-xl max-w-2xl w-full mx-auto"
+        class="flex flex-col items-center justify-center gap-1 md:gap-2 py-12 text-gray-600 dark:text-gray-300 text-lg text-left md:text-center md:text-xl max-w-2xl w-full mx-auto"
     >
         <h2
-            class="text-3xl md:text-4xl text-gray-700 dark:text-gray-100 font-semibold text-center mb-4"
+            class="text-4xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-semibold mb-4"
         >
             End-to-end Type Safety
         </h2>
@@ -13,7 +13,7 @@
             >, you get fully type-safe client on both client and server
         </p>
 
-        <section class="flex flex-col lg:flex-row justify-center items-start gap-6 mt-4 mb-12 md:mb-4 w-full">
+        <section class="flex flex-col lg:flex-row justify-center items-start gap-6 mt-6 mb-12 md:mb-6 w-full">
             <div
                 class="relative bg-gray-100 dark:bg-gray-700 px-4 rounded-2xl text-base w-full"
             >
@@ -50,7 +50,7 @@ export type App = typeof app`
                 />
                 <p
                     id="ts-balloon"
-                    class="absolute z-10 block w-xs px-4 py-2 dark:text-gray-200 text-left bg-gray-200/80 dark:bg-gray-600/80 border border-solid border-gray-300 dark:border-gray-600 backdrop-filter backdrop-blur-sm rounded-lg"
+                    class="absolute z-10 block w-xs px-4 py-2 dark:text-gray-200 text-left bg-gray-50/80 dark:bg-gray-600/80 border border-solid border-gray-200 dark:border-gray-600 backdrop-filter backdrop-blur-sm rounded-lg"
                 >
                     Type 'string' is not assignable to type 'number'
                 </p>

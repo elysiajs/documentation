@@ -50,7 +50,7 @@
                     >
                         <a
                             href="/introduction"
-                            class="px-6 py-3 bg-black/15 hover:bg-black/25 focus:bg-black/25 backdrop-filter backdrop-blur-sm rounded-xl cursor-pointer transition-colors"
+                            class="px-6 py-3 bg-black/10 hover:bg-black/25 focus:bg-black/25 backdrop-filter backdrop-blur-sm rounded-xl cursor-pointer transition-colors"
                         >
                             <p id="start" class="font-semibold text-gray-600">
                                 Get Started
@@ -58,7 +58,7 @@
                         </a>
                         <a
                             href="/plugins/cheat-sheet"
-                            class="px-6 py-3 text-white/80 font-normal hover:bg-white/20 focus:hover:bg-white/40 backdrop-filter backdrop-blur-sm rounded-xl transition-colors"
+                            class="px-6 py-3 text-white/80 font-normal hover:bg-white/10 focus:hover:bg-white/25 backdrop-filter backdrop-blur-sm rounded-xl transition-colors"
                         >
                             Cheat Sheet 👀
                         </a>
@@ -160,7 +160,7 @@ onMounted(() => {
 }
 
 #canvas {
-    filter: brightness(0.8) saturate(1.25);
+    filter: brightness(0.9) saturate(1.25);
     --gradient-color-1: #c09eed;
     --gradient-color-2: #d7b2ec;
     --gradient-color-3: #c8f7dd;

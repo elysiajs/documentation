@@ -1,12 +1,12 @@
 <template>
-    <div class="flex justify items-center gap-4">
+    <div class="flex gap-4">
         <p
             class="flex items-center text-gray-600 dark:text-gray-400 label font-medium"
         >
             {{ label }}
             <span
                 v-if="isNode"
-                class="opacity-65 text-xs ml-0.5 transform scale-75"
+                class="node-label"
             >
                 Node
             </span>
@@ -16,7 +16,7 @@
                 class="relative flex justify-end items-center h-7 font-semibold text-xs rounded-full mr-auto"
                 :class="
                     primary
-                        ? 'bg-pink-500 text-white'
+                        ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white'
                         : 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-400'
                 "
                 :style="{ width: `${percent}%` }"
@@ -46,6 +46,11 @@ const right = +percent < 25 ? `-${reqs.toString().length + 1}ch` : '0px'
 <style>
 .label {
     width: 8.5em;
+}
+
+.node-label {
+    @apply opacity-50 ml-2;
+    font-size: 0.625rem;
 }
 
 @media (min-width: 768px) {

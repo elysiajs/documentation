@@ -5,16 +5,15 @@
         <h2
             class="text-3xl md:text-4xl text-gray-700 dark:text-gray-100 font-semibold text-center"
         >
-            See for yourself
+            Try for yourself
         </h2>
 
-        <p class="text-xl text-center">Try out demo project on Codesandbox.</p>
+        <p class="text-xl text-center">See it out online, no download need</p>
 
         <iframe
             id="editor"
-            src="https://codesandbox.io/p/sandbox/bun-elysia-rdxljp?embed=1&codemirror=1&editorsize=75&hidenavigation=1&file=http.ts"
+            src="https://codesandbox.io/p/sandbox/bun-elysia-rdxljp"
             class="w-full h-[720px] border-0 rounded-lg my-6"
-            allow="accelerometer"
             sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
             loading="lazy"
         />

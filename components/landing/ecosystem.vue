@@ -1,31 +1,32 @@
 <template>
     <article
-        class="flex flex-col items-center justify-center gap-6 md:gap-10 py-12 text-gray-600 dark:text-gray-300"
+        class="flex flex-col items-center justify-center gap-5 md:gap-5 text-left md:text-center py-12 text-gray-600 dark:text-gray-300"
     >
         <h2
-            class="text-3xl md:text-4xl text-gray-700 dark:text-gray-100 font-semibold text-center"
+            class="text-4xl md:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400"
         >
-            Yes, it works with that
+            It works with that
         </h2>
 
-        <p class="text-xl text-center">Bring your favorite stacks with on-growing plugins along side Bun</p>
+        <p class="text-xl">
+            Bring your favorite stacks in, or create one and share with the community
+        </p>
 
         <section
-            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 w-full gap-4"
+            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full my-6 gap-4"
         >
-            <Plugin label="tRPC" href="/plugins/trpc" />
-            <Plugin label="GraphQL" href="/plugins/graphql-yoga" />
-            <Plugin label="Swagger" href="/plugins/swagger" />
-            <Plugin label="Web Socket" href="/plugins/websocket" />
-            <Plugin label="JWT" href="/plugins/jwt" />
-            <Plugin label="Cron" href="/plugins/cron" />
+            <Plugin label="tRPC" href="/plugins/trpc" icon="trpc" class="bg-blue-100/75 border-blue-500 lg:-rotate-[9deg] lg:translate-y-8 lg:-translate-x-1" />
+            <Plugin label="GraphQL" href="/plugins/graphql-apollo" icon="graphql" class="bg-pink-50 border-pink-400 lg:-rotate-3 lg:translate-y-2" />
+            <Plugin label="Swagger" href="/plugins/swagger" icon="swagger" class="bg-green-50 border-green-400" />
+            <Plugin label="WebSocket" href="/plugins/websocket" icon="websocket" class="bg-gray-300 border-gray-500 lg:rotate-3 lg:translate-y-2" />
+            <Plugin label="JWT" href="/plugins/jwt" icon="jwt" class="bg-indigo-50 border-indigo-500 lg:rotate-[9deg] lg:translate-y-8 lg:translate-x-1" />
         </section>
 
         <p class="text-center text-gray-500 dark:text-gray-400">
             Not found what you're looking for?
-            <a class="text-pink-500 underline" href="/concept/plugin"
-                >Create one yourself!</a
-            >
+            <a class="text-pink-500 underline" href="/concept/plugin">
+                Create one yourself!
+            </a>
         </p>
     </article>
 </template>

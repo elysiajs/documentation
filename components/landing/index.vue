@@ -28,8 +28,8 @@
         <TypeScript />
         <Swagger />
         <Benchmark />
-        <Eden />
         <Ecosystem />
+        <Eden />
         <GetStart />
         <Editor />
         <BuildWithLove />
