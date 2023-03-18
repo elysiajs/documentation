@@ -16,7 +16,7 @@
             class="relative flex justify-center items-center w-full h-fit"
         >
             <div
-                class="flex flex flex-col lg:flex-row justify-center items-center gap-4 w-full max-w-6xl mx-auto px-2 md:px-8 py-12"
+                class="flex flex-col lg:flex-row justify-center items-center gap-4 w-full max-w-6xl mx-auto px-2 md:px-8 py-12"
             >
                 <section
                     class="flex flex-[4] flex-col gap-6 md:gap-4 px-6 sm:px-0"
@@ -57,7 +57,7 @@
                             </p>
                         </a>
                         <a
-                            href="/plugins/cheat-sheet"
+                            href="/integrations/cheat-sheet"
                             class="px-6 py-3 text-white/80 font-normal hover:bg-white/10 focus:hover:bg-white/25 backdrop-filter backdrop-blur-sm rounded-xl transition-colors"
                         >
                             Cheat Sheet 👀
