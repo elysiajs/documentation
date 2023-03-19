@@ -21,20 +21,20 @@ export const plugins = `\
 // Bring your own favorite stack
 import { Elysia } from 'elysia'
 import { jwt } from '@elysiajs/jwt'
-import '@elysiajs/trpc'
-import '@elysiajs/cron'
+
+import { trpc } '@elysiajs/trpc'
+import { router } from './libs/trpc'
 
 new Elysia()
   .use(websocket())
-  .use(jwt({
-    name: 'jwt',
-    secret: 'Fischl von Luftschloss Narfidort'
-  }))
-  .trpc(trpcRouter)
-  .cron({
-    name: 'heartbeat',
-    pattern: '* */5 * * * *'
-  }, cleanup)`
+  .use(
+    jwt({
+      name: 'jwt',
+      secret: 'Fischl von Luftschloss Narfidort'
+    })
+  )
+  .use(trpc(router))
+  .listen(8080)`
 
 export const typedClient = `\
 // server.ts
