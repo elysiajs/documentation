@@ -33,20 +33,20 @@ app.get('/id/:id', (context) => context.params.id)
 
 ## Context
 Context's properties consists of
-- request: Raw `Request` for accessing data as web standard type
-- body: Body which come with the request
-- query: Parsed path query as a simple object
-- params: Path parameters as a simple object
-- store: A global mutable store for Elysia instance
-- set: Response representation
-    - status: response status
-    - headers: response headers
-    - redirect: redirect to new path
+- `request`: Raw `Request` for accessing data as web standard type
+- `body`: Body which come with the request
+- `query`: Parsed path query as a simple object
+- `params`: Path parameters as a simple object
+- `store`: A global mutable store for Elysia instance
+- `set`: Response representation
+    - `status`: response status
+    - `headers`: response headers
+    - `redirect`: redirect to new path
 
 And a few helper methods for convenient usage:
-status: Function to set HTTP response status code
- redirect: Function to redirect to different path
-setHeader: Syntax sugar for setting specific header value
+- `status`: Function to set HTTP response status code
+- `redirect`: Function to redirect to different path
+- `setHeader`: Syntax sugar for setting specific header value
 
 For both context, you can easily access in `Handler` function:
 ```typescript
