@@ -15,16 +15,14 @@ head:
 ---
 
 # State and Decorate
-You can extend Elysia to fits your need.
-
-This is useful when you to access extra values in a handler like a Database connection.
+You can extend Elysia to fit your need. This is useful when you need to access extra values in a handler (e.g. a database connection).
 
 In summary:
-- state: assign value to `Context.store`
-- decorate: assign value to `Context`
+- `state`: assign value to `Context.store` (a global state object of the Elysia instance)
+- `decorate`: assign value to `Context`
 
 ::: tip
-`Context` is a parameter in callback of handler
+`Context` is a parameter in the callback of handler.
 :::
 
 ### Example
