@@ -4,17 +4,17 @@ layout: page
 sidebar: false
 editLink: false
 head:
-  - - meta
-    - property: 'og:title'
-      content: Blog - Elysia.js
+    - - meta
+      - property: 'og:title'
+        content: Blog - Elysia.js
 
-  - - meta
-    - name: 'description'
-      content: Update of Elysia.js, from core maintainers
+    - - meta
+      - name: 'description'
+        content: Update of Elysia.js, from core maintainers
 
-  - - meta
-    - property: 'og:description'
-      content: Update of Elysia.js from core maintainers
+    - - meta
+      - property: 'og:description'
+        content: Update of Elysia.js from core maintainers
 ---
 
 <script setup>
@@ -24,9 +24,14 @@ head:
 <Blogs 
   :blogs="[
       {
+          title: 'Introducing Elysia 0.4 - 月夜の音楽会 (Moonlit Night Concert)',
+          href: '/blog/elysia-04',
+          detail: 'Elysia, and Supabase are a great match for rapidly developing prototype in less than a hour, let\'s take a look of how we can take advantage of both.'
+      },
+      {
           title: 'Elysia with Supabase. Your next backend at sonic speed',
           href: '/blog/elysia-supabase',
-          detail: 'Elysia, and Supabase are a great match for rapidly developing prototype in less than a hour, let\'s take a look of how we can take advantage of both.'
+          detail: 'Introducing Ahead of Time Compilation, TypeBox 0.26, Response validation per status, and Separation of Elysia Fn.'
       },
       {
           title: 'Introducing Elysia 0.3 - 大地の閾を探して [Looking for Edge of Ground]',
