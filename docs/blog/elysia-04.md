@@ -106,7 +106,7 @@ This allows you to declaratively for a specific conditional, for example excludi
 ```ts
 const isProduction = process.env.NODE_ENV === 'production'
 
-const app = new Elysia().if(isProduction, (app) =>
+const app = new Elysia().if(!isProduction, (app) =>
     app.use(swagger())
 )
 ```
