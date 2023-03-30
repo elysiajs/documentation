@@ -46,7 +46,7 @@ export type App = typeof app`
             >
                 <div
                     class="absolute z-10 block w-14 h-7 bg-red-500/20 rounded-lg"
-                    style="top: 190px; left: 144px"
+                    style="top: 186px; left: 136px"
                 />
                 <p
                     id="ts-balloon"
@@ -87,7 +87,7 @@ import 'prismjs/components/prism-typescript'
 }
 
 #ts-balloon {
-    top: 220px;
+    top: 216px;
     left: calc(50% - 10rem);
 }
 </style>

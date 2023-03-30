@@ -17,7 +17,7 @@
         >
             <div
                 class="absolute z-10 block w-20 h-7 bg-red-500/20 rounded-lg"
-                style="top: 238px; left: 132px"
+                style="top: 234px; left: 124px"
             />
             <p
                 id="ts-balloon"
@@ -68,14 +68,14 @@ import 'prismjs/components/prism-typescript'
 }
 
 #ts-balloon {
-    top: 270px;
+    top: 266px;
     left: calc(50% - 10rem);
 }
 
 @screen sm {
     #ts-balloon {
-        top: 238px;
-        left: 220px;
+        top: 234px;
+        left: 212px;
     }
 }
 </style>

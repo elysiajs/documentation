@@ -6,18 +6,18 @@
                     primary="true"
                     label="Elysia"
                     percent="100"
-                    reqs="241,814"
+                    reqs="265,986"
                 />
-                <Progress label="Hono" percent="98.3" reqs="237,821" />
+                <Progress label="Hono" percent="90.2" reqs="240,167" />
                 <Progress
                     isNode
                     label="Fastify"
-                    percent="24.58"
-                    reqs="59,450"
+                    percent="22.47"
+                    reqs="58,664"
                 />
-                <Progress isNode label="Koa" percent="15.67" reqs="37,895" />
-                <Progress isNode label="Express" percent="6.43" reqs="15,570" />
-                <Progress isNode label="Nest" percent="5.38" reqs="13,016" />
+                <Progress isNode label="Koa" percent="14.62" reqs="38,177" />
+                <Progress isNode label="Express" percent="5.69" reqs="15,149" />
+                <Progress isNode label="Nest" percent="5.09" reqs="13,565" />
             </section>
             <p class="text-gray-400 text-sm mt-6">
                 Measure in requests/second. Benchmark for parsing
@@ -39,7 +39,7 @@
             <p></p>
             <a
                 class="text-base text-pink-500 mt-2"
-                href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/121b1a1083482e91818244fb7074078f7d61aad5#results"
+                href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/bda4aa6a8ee6797c0d329bf725c7541ef932a6e2#results"
                 target="_blank"
             >
                 View Benchmark
