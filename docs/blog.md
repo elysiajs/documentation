@@ -26,12 +26,12 @@ head:
       {
           title: 'Introducing Elysia 0.4 - 月夜の音楽会 (Moonlit Night Concert)',
           href: '/blog/elysia-04',
-          detail: 'Elysia, and Supabase are a great match for rapidly developing prototype in less than a hour, let\'s take a look of how we can take advantage of both.'
+          detail: 'Introducing Ahead of Time Compilation, TypeBox 0.26, Response validation per status, and Separation of Elysia Fn.'
       },
       {
           title: 'Elysia with Supabase. Your next backend at sonic speed',
           href: '/blog/elysia-supabase',
-          detail: 'Introducing Ahead of Time Compilation, TypeBox 0.26, Response validation per status, and Separation of Elysia Fn.'
+          detail: 'Elysia, and Supabase are a great match for rapidly developing prototype in less than a hour, let\'s take a look of how we can take advantage of both.'
       },
       {
           title: 'Introducing Elysia 0.3 - 大地の閾を探して [Looking for Edge of Ground]',
