@@ -98,18 +98,20 @@ export type Router = typeof router
 
 Normally all we need to use tRPC is to export the type of router, but to integrate tRPC with Elysia, we need to export the instance of router too.
 
-Then in the Elysia server, we import the router and register tRPC router with `.trpc`
+Then in the Elysia server, we import the router and register tRPC router with `.use(trpc)`
 ```typescript
 import { Elysia } from 'elysia'
 import { cors } from '@elysiajs/cors' // [!code ++]
-import '@elysiajs/trpc' // [!code ++]
+import { trpc } '@elysiajs/trpc' // [!code ++]
 
 import { router } from './trpc' // [!code ++]
 
 const app = new Elysia()
     .use(cors()) // [!code ++]
     .get('/', () => 'Hello Elysia')
-    .trpc(router) // [!code ++]
+    .use( // [!code ++]
+        trpc(router) // [!code ++]
+    ) // [!code ++]
     .listen(3000)
 
 console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
@@ -120,7 +122,7 @@ And that's it! 🎉
 That's all it takes to integrate tRPC with Elysia, making tRPC run on Bun.
 
 ## tRPC config and Context
-To create context, `.trpc` can accept 2nd parameters that can configure tRPC as same as `createHTTPServer`.
+To create context, `trpc` can accept 2nd parameters that can configure tRPC as same as `createHTTPServer`.
 
 For example, adding `createContext` into tRPC server:
 ```typescript
@@ -156,9 +158,11 @@ import { router, createContext } from './trpc' // [!code ++]
 const app = new Elysia()
     .use(cors())
     .get('/', () => 'Hello Elysia')
-    .trpc(router, {
-        createContext // [!code ++]
-    })
+    .use(
+        trpc(router, { // [!code ++]
+            createContext // [!code ++]
+        }) // [!code ++]
+    )
     .listen(3000)
 
 console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
@@ -168,17 +172,19 @@ And we can specify a custom endpoint of tRPC by using `endpoint`:
 ```typescript
 import { Elysia } from 'elysia'
 import { cors } from '@elysiajs/cors'
-import '@elysiajs/trpc'
+import { trpc } from '@elysiajs/trpc'
 
 import { router, createContext } from './trpc'
 
 const app = new Elysia()
     .use(cors())
     .get('/', () => 'Hello Elysia')
-    .trpc(router, {
-        createContext,
-        endpoint: '/v2/trpc' // [!code ++]
-    })
+    .use(
+        trpc(router, {
+            createContext,
+            endpoint: '/v2/trpc' // [!code ++]
+        })
+    )
     .listen(3000)
 
 console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
@@ -233,16 +239,15 @@ export type Router = typeof router
 
 And then we register:
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, ws } from 'elysia'
 import { cors } from '@elysiajs/cors'
-import { websocket } from '@elysiajs/websocket' // [!code ++]
 import '@elysiajs/trpc'
 
 import { router, createContext } from './trpc'
 
 const app = new Elysia()
     .use(cors())
-    .use(websocket()) // [!code ++]
+    .use(ws()) // [!code ++]
     .get('/', () => 'Hello Elysia')
     .trpc(router, {
         createContext
@@ -267,20 +272,21 @@ This means that you can use Express-like syntax to create RESTful API with full-
 To get started, let's export the app type.
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, ws } from 'elysia'
 import { cors } from '@elysiajs/cors'
-import { websocket } from '@elysiajs/websocket'
-import '@elysiajs/trpc'
+import { trpc } from '@elysiajs/trpc'
 
 import { router, createContext } from './trpc'
 
 const app = new Elysia()
     .use(cors())
-    .use(websocket())
+    .use(ws())
     .get('/', () => 'Hello Elysia')
-    .trpc(router, {
-        createContext
-    })
+    .use(
+        trpc(router, {
+            createContext
+        })
+    )
     .listen(3000)
 
 export type App = typeof app // [!code ++]
