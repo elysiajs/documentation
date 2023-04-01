@@ -57,10 +57,10 @@ export type App = typeof app`
                 <Prism language="typescript">
                     {{
                         `\
-import { eden } from '@elysiajs/eden'
+import { edenTreaty } from '@elysiajs/eden'
 import type { App } from './server'
 
-const api = eden<App>('http://localhost')
+const api = edenTreaty<App>('http://localhost')
 
 await api.shelf.plushie.put({
   name: 'Blåhaj',

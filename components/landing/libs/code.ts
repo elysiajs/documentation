@@ -47,10 +47,10 @@ const app = new Elysia()
 export type App = typeof app
 
 // client.ts
-import { eden } from '@elysiajs/eden'
+import { edenTreaty } from '@elysiajs/eden'
 import type { App } from 'server'
 
-const api = eden<App>('http://0.0.0.0:8080')
+const api = edenTreaty<App>('http://0.0.0.0:8080')
 
 // Fully type-safe both client/server like tRPC
 await api.auth.signIn.post(data)

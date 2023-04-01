@@ -103,12 +103,12 @@ import { swagger } from '@elysiajs/swagger'
 And on the client:
 ```typescript
 // client.ts
-import { eden } from '@elysia/eden'
+import { edenTreaty } from '@elysia/eden'
 import type { Server } from './server'
 
-const app = eden<Server>('http://localhost:8080')
+const app = edenTreaty<Server>('http://localhost:8080')
 
-app.signIn.POST({
+app.signIn.post({
     username: 'saltyaom',
     password: 12345678
 }).then(console.log)

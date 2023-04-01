@@ -301,11 +301,11 @@ bun add @elysia/eden && bun add -d elysia
 
 And in the code:
 ```typescript
-import { eden } from '@elysiajs/eden'
+import { edenTreaty } from '@elysiajs/eden'
 import type { App } from '../server'
 
 // This now has all type inference from the server
-const app = eden<App>('http://localhost:3000')
+const app = edenTreaty<App>('http://localhost:3000')
 
 // data will have a value of 'Hello Elysia' and has a type of 'string'
 const data = await app.index.get()
