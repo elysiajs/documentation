@@ -86,7 +86,7 @@ import { swagger } from '@elysiajs/swagger'
 
 new Elysia()
     .use(swagger({
-        swagger: {
+        documentation: {
             info: {
                 title: 'Elysia Documentation',
                 version: '1.0.0'
