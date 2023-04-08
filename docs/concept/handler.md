@@ -43,22 +43,16 @@ Context's properties consists of
     - `headers`: response headers
     - `redirect`: redirect to new path
 
-And a few helper methods for convenient usage:
-- `status`: Function to set HTTP response status code
-- `redirect`: Function to redirect to different path
-- `setHeader`: Syntax sugar for setting specific header value
-
-For both context, you can easily access in `Handler` function:
+You can access `Context` in `Handler` function:
 ```typescript
 app.post('/', ({ body, set }) => {
     const signed = signIn(body)
     
     if(signed)
         return 'Welcome back'
-    else {
-        set.status = 403
-        return 'Invalid username or password'
-    }
+
+    set.status = 403
+    return 'Invalid username or password'
 })
 ```
 
