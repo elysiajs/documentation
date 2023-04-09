@@ -168,8 +168,11 @@ drain(
 ): this
 ```
 
+## parse
+`Parse` middleware to parse the request before upgrading the HTTP connection to WebSocket.
+
 ## beforeHandle
-`Before Handle` middleware which execute before upgrade HTTP connection to WebSocket.
+`Before Handle` middleware which execute before upgrading the HTTP connection to WebSocket.
 
 Ideal place for validation.
 
