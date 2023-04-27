@@ -1,9 +1,9 @@
 ---
-title: Swagger Plugin - Elysia.js
+title: tRPC Plugin - Elysia.js
 head:
     - - meta
       - property: 'og:title'
-        content: Swagger Plugin - Elysia.js
+        content: tRPC Plugin - Elysia.js
 
     - - meta
       - name: 'description'
