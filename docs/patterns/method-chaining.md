@@ -23,7 +23,7 @@ Using method chaining will help save that new type refernce.
 
 For example:
 ```typescript
-const = new Elysia()
+const app = new Elysia()
     .state('build', 1)
     // Store is strictly typed
     .get('/', ({ store: { build } }) => build)

@@ -15,9 +15,9 @@ head:
 ---
 
 # WebSocket
-Elysia WebSocket is extending Bun WebSocket which use [uWebSocket](https://github.com/uNetworking/uWebSockets) under the hood.
+Elysia WebSocket extends Bun's WebSocket which uses [uWebSocket](https://github.com/uNetworking/uWebSockets) under the hood.
 
-To start using WebSocket, register the WebSocket plugin, and start declaring WebSocket route with `.ws`.
+To start working with a WebSocket, register the Elysia WebSocket plugin, and declare a WebSocket route with `.ws`.
 ```typescript
 import { Elysia, ws } from 'elysia'
 
@@ -31,14 +31,14 @@ new Elysia()
     .listen(8080)
 ```
 
-WebSocket route is extending Bun WebSocket configuration, for additional configuration please refers to [Bun's WebSocket](https://bun.sh/docs/api/websockets).
 
-Just like normal route, WebSocket also accepts **schema** to strictly type and validate requests.
+Just like normal route, WebSockets also accepts a **schema** object to strictly type and validate requests.
 
 ## Configuration
-This plugin extends config from [Bun WebSocket](https://github.com/oven-sh/bun#websockets-with-bunserve)
 
-Below is a config extends from [Bun WebSocket](https://github.com/oven-sh/bun#websockets-with-bunserve)
+Elysia's WebSocket plugin extends Bun's WebSocket configuration so if you wish to configure the websocket you can refer to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) to learn more about this.
+
+Below is a config that extends from [Bun WebSocket](https://github.com/oven-sh/bun#websockets-with-bunserve)
 
 ### perMessageDeflate
 @default `false`
@@ -65,11 +65,11 @@ The maximum number of bytes that can be buffered for a single connection.
 
 Close the connection if the backpressure limit is reached.
 
-## Method
-Below are the new methods register by the plugin
+## Methods
+Below are the new methods that are available to the WebSocket plugin
 
 ## ws
-Create websocket handler
+Create a websocket handler
 
 Example:
 ```typescript
@@ -168,8 +168,11 @@ drain(
 ): this
 ```
 
+## parse
+`Parse` middleware to parse the request before upgrading the HTTP connection to WebSocket.
+
 ## beforeHandle
-`Before Handle` middleware which execute before upgrade HTTP connection to WebSocket.
+`Before Handle` middleware which execute before upgrading the HTTP connection to WebSocket.
 
 Ideal place for validation.
 

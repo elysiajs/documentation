@@ -43,6 +43,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 ## Community plugins:
 - [OAuth2](https://github.com/bogeychan/elysia-oauth2) - handle OAuth 2.0 authorization code flow
 - [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple lightweight rate limiter
+- [Logger](https://github.com/bogeychan/elysia-logger) - pino logging elysia middleware
 - [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node and Deno
 - [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy Elysia on AWS Lambda
 

@@ -64,7 +64,7 @@
                         </a>
                     </div>
                     <small class="text-white text-lg opacity-65"
-                        >ps. it take &lt; 30 seconds to start</small
+                        >ps. it takes &lt; 30 seconds to start</small
                     >
                 </section>
                 <section

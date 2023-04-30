@@ -30,8 +30,8 @@ import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysia/static'
 
 new Elysia()
-    .use(staticPlugin, {
-        path: 'public'
-    })
+    .use(staticPlugin({
+      assets: 'public'
+    }))
     .listen(8080)
 ```
