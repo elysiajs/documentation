@@ -102,7 +102,7 @@ Then in the Elysia server, we import the router and register tRPC router with `.
 ```typescript
 import { Elysia } from 'elysia'
 import { cors } from '@elysiajs/cors' // [!code ++]
-import { trpc } '@elysiajs/trpc' // [!code ++]
+import { trpc } from '@elysiajs/trpc' // [!code ++]
 
 import { router } from './trpc' // [!code ++]
 
