@@ -421,13 +421,13 @@ Breaking Change:
 - remove `mapPathnameRegex` (internal)
 
 ## Afterward
-Pushing performance boundary of JavaScript is what we are really excited even with the new feature, Elysia are just keeps getting faster, with an improved reliable and stability, we hope that Elysia will be one of the choice for the next generation TypeScript framework.
+Pushing performance boundary of JavaScript with Bun is what we really excited!
 
-It expands what Elysia could be.
+Even with the new features every release, Elysia keeps getting faster, with an improved reliabilty and stability, we hope that Elysia will become one of the choice for the next generation TypeScript framework.
 
-We glad that Elysia is on the momentum with Bun community, we see many precious work like Bogeychan's Elysia Node and Deno adapter, Rayriffy's Elysia rate limit, and we hope to see yours in the future too.
+We're glad to see many talent open-source developers bring Elysia to life with their outstanding work like [Bogeychan's Elysia Node](https://github.com/bogeychan/elysia-polyfills) and Deno adapter, Rayriffy's Elysia rate limit, and we hope to see yours in the future too!
 
-Thank you for your continuous support for Elysia, and we hope to see you on the next release.
+Thanks for your continuous support for Elysia, and we hope to see you on the next release.
 
 > I won't let the people down, gonna raise them high
 >
