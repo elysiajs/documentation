@@ -101,12 +101,10 @@ new Elysia()
         console.log('Before handle')
     })
     .post('/mirror', ({ body }) => body, {
-        schema: {
-            body: t.Object({
-                username: t.String(),
-                password: t.String()
-            })
-        },
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        }),
         afterHandle: () => {
             console.log("After handle")
         }
@@ -120,9 +118,7 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
     .guard({
-        schema: {
-            response: t.String()
-        }
+        response: t.String()
     }, (app) => app
         .get('/', () => 'Hi')
         // Invalid: will throws error, and TypeScript will report error

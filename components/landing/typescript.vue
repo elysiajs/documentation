@@ -41,10 +41,8 @@ new Elysia()
   .put('/nendoroid', async ({ body, database }) => {
     return body.id
   }, {
-    schema: {
-      body: nendoroidSchema,
-      response: nendoroidSchema
-    }
+    body: nendoroidSchema,
+    response: nendoroidSchema
   })`
                 }}
             </Prism>

@@ -43,20 +43,18 @@ However, sometime defining a type only isn't clear what the route might work. Yo
 ```typescript
 app
     .post('/sign-in', ({ body }) => body, {
-        schema: {
-            body: t.Object(
-                {
-                    username: t.String(),
-                    password: t.String()
-                },
-                {
-                    description: 'Expected an username and password'
-                }
-            ),
-            detail: {
-                summary: 'Sign in the user',
-                tags: ['authentication']
+        body: t.Object(
+            {
+                username: t.String(),
+                password: t.String()
+            },
+            {
+                description: 'Expected an username and password'
             }
+        ),
+        detail: {
+            summary: 'Sign in the user',
+            tags: ['authentication']
         }
     })
 ```

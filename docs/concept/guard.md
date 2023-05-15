@@ -60,3 +60,26 @@ app.guard({
     })
 )
 ```
+
+# Groupped Guard
+You can create group with a guard scope by adding a guard api in the second parameter, instead of nesting group and guard together.
+
+```ts
+// Instead of this
+app.group('/v1', (app) =>
+    app.guard(
+        {
+            body: t.Literal()
+        },
+        (app) => app.get('/student', () => 'Rikuhachima Aru')
+    )
+)
+
+// Do this
+app.group(
+    '/v1', {
+        body: t.Literal('Rikuhachima Aru')
+    }, 
+    app => app.get('/student', () => 'Rikuhachima Aru')
+)
+```

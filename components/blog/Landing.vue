@@ -9,7 +9,7 @@
             Update of Elysia.js from core maintainers
         </p>
     </header>
-    <main class="flex flex-col max-w-xl gap-4 w-full mx-auto mt-8">
+    <main class="flex flex-col max-w-xl gap-4 w-full mx-auto my-8">
         <a
             v-for="blog in props.blogs"
             class="px-4 py-2 rounded-lg hover:bg-gray-50 focus:bg-gray-50 dark:hover:bg-gray-700 dark:focus:bg-gray-700 transition-colors cursor-pointer"

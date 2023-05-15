@@ -24,6 +24,11 @@ head:
 <Blogs 
   :blogs="[
       {
+          title: 'Introducing Elysia 0.5 - Radiant',
+          href: '/blog/elysia-05',
+          detail: 'Introducing Static Code Analysis, New router Memoirist, TypeBox 0.28, Numeric type, inline schema, state/decorate/model/group rework, and type stability.'
+      },
+      {
           title: 'Introducing Elysia 0.4 - 月夜の音楽会 (Moonlit Night Concert)',
           href: '/blog/elysia-04',
           detail: 'Introducing Ahead of Time Compilation, TypeBox 0.26, Response validation per status, and Separation of Elysia Fn.'

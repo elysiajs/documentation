@@ -30,12 +30,10 @@ const app = new Elysia()
     .get('/', () => 'Hi Elysia')
     .get('/id/:id', ({ params: { id } }) => id)
     .post('/mirror', ({ body }) => body, {
-        schema: {
-            body: t.Object({
-                id: t.Number(),
-                name: t.String()
-            })
-        }
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
     })
     .listen(8080)
 
@@ -167,7 +165,7 @@ Both Eden Treaty and Eden Fetch can narrow down an error type based on status co
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
-    .setModel({
+    .model({
         nendoroid: t.Object({
             id: t.Number(),
             name: t.String()
@@ -179,13 +177,11 @@ const app = new Elysia()
     .get('/', () => 'Hi Elysia')
     .get('/id/:id', ({ params: { id } }) => id)
     .post('/mirror', ({ body }) => body, {
-        schema: {
-            body: 'nendoroid',
-            response: {
-                200: 'nendoroid', // [!code ++]
-                400: 'error', // [!code ++]
-                401: 'error' // [!code ++]
-            }
+        body: 'nendoroid',
+        response: {
+            200: 'nendoroid', // [!code ++]
+            400: 'error', // [!code ++]
+            401: 'error' // [!code ++]
         }
     })
     .listen(8080)

@@ -22,11 +22,9 @@ import { Elysia, t } from '../src'
 
 const app = new Elysia()
 	.post('/single', ({ body: { file } }) => file, {
-		schema: {
-			body: t.Object({
-				file: t.File()
-			})
-		}
+		body: t.Object({
+			file: t.File()
+		})
 	})
 	.listen(8080)
 ```
@@ -44,13 +42,11 @@ const app = new Elysia()
 		'/multiple',
 		({ body: { files } }) => files[0],
 		{
-			schema: {
-				body: t.Object({
-					files: t.Files({
-                        type: ['image', 'video']
-                    })
+			body: t.Object({
+				files: t.Files({
+					type: ['image', 'video']
 				})
-			}
+			})
 		}
 	)
 ```

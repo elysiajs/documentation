@@ -25,16 +25,14 @@ import { Elysia } from 'elysia'
 
 const app = new Elysia()
     .post('/sign-in', ({ body }) => body, {
-        schema: {
-            body: t.Object({
-                username: t.String(),
-                password: t.String()
-            }),
-            response: t.Object({
-                username: t.String(),
-                password: t.String()
-            })
-        }
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        }),
+        response: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
     })
 ```
 
@@ -50,10 +48,8 @@ const SignDTO = t.Object({
 
 const app = new Elysia()
     .post('/sign-in', ({ body }) => body, {
-        schema: {
-            body: signDTO,
-            response: signDTO
-        }
+        body: signDTO,
+        response: signDTO
     })
 ```
 
@@ -69,18 +65,16 @@ Registering the models with `setModel` allows you to name a model and reference 
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .setModel({
+    .model({
         sign: t.Object({
             username: t.String(),
             password: t.String()
         })
     })
     .post('/sign-in', ({ body }) => body, {
-        schema: {
-             // with auto-completion for existing model name
-            body: 'sign',
-            response: 'sign'
-        }
+            // with auto-completion for existing model name
+        body: 'sign',
+        response: 'sign'
     })
 ```
 
@@ -92,7 +86,7 @@ import { Elysia } from 'elysia'
 
 export const authModel = (app: Elysia) => 
     app
-        .setModel({
+        .model({
             sign: t.Object({
                 username: t.String(),
                 password: t.String()
@@ -106,11 +100,9 @@ import { authModel } from './auth.model.ts'
 const app = new Elysia()
     .use(authModel)
     .post('/sign-in', ({ body }) => body, {
-        schema: {
-             // with auto-completion for existing model name
-            body: 'sign',
-            response: 'sign'
-        }
+            // with auto-completion for existing model name
+        body: 'sign',
+        response: 'sign'
     })
 ```
 
@@ -123,7 +115,7 @@ import { Elysia } from 'elysia'
 
 export const authModel = (app: Elysia) => 
     app
-        .setModel({
+        .model({
             sign: t.Object({
                 username: t.String(),
                 password: t.String()
@@ -143,7 +135,7 @@ Let's say that you have all models stored at `models/<name>.ts`, you can declare
 // admin.model.ts
 export const authModel = (app: Elysia) => 
     app
-        .setModel({
+        .model({
             'admin.auth': t.Object({
                 username: t.String(),
                 password: t.String()
@@ -153,7 +145,7 @@ export const authModel = (app: Elysia) =>
 // user.model.ts
 export const authModel = (app: Elysia) => 
     app
-        .setModel({
+        .model({
             'user.auth': t.Object({
                 username: t.String(),
                 password: t.String()

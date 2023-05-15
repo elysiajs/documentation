@@ -40,12 +40,10 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
     .post('/mirror', ({ body }) => body, {
-        schema: {
-            body: t.Object({
-                username: t.String(),
-                password: t.String()
-            })
-        }
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
     })
 ```
 
@@ -65,9 +63,7 @@ The global schema will define all types of a handler in the scope.
 
 ```typescript
 app.guard({
-    schema: {
-        response: t.String()
-    }
+    response: t.String()
 }, app => app
     .get('/', () => 'Hi')
     // Invalid: will throw error
@@ -80,13 +76,9 @@ The global type will be overwritten by the nearest schema to the handler.
 In another word, inherits schema is rewritten by the inner scope.
 ```typescript
 app.guard({
-    schema: {
-        response: t.String()
-    }
+    response: t.String()
 }, app => app.guard({
-        schema: {
-            response: t.Number()
-        }
+        response: t.Number()
     }, app => app
         // Invalid: will throw an error
         .get('/', () => 'Hi')
@@ -107,14 +99,12 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
     .post('/', ({ body }) => doSomething(), {
-        schema: {
-            response: {
-                200: t.Object({
-                    username: t.String(),
-                    password: t.String()
-                }),
-                400: t.String()
-            }
+        response: {
+            200: t.Object({
+                username: t.String(),
+                password: t.String()
+            }),
+            400: t.String()
         }
     })
 ```
@@ -132,18 +122,16 @@ import { Elysia } from 'elysia'
 import { authModel } from './auth.model.ts'
 
 const app = new Elysia()
-    .setModel({
+    .model({
         sign: t.Object({
             username: t.String(),
             password: t.String()
         })
     })
     .post('/sign-in', ({ body }) => body, {
-        schema: {
-             // with auto-completion for existing model name
-            body: 'sign',
-            response: 'sign'
-        }
+            // with auto-completion for existing model name
+        body: 'sign',
+        response: 'sign'
     })
 ```
 

@@ -35,12 +35,10 @@ const app = new Elysia()
     .get('/', () => 'Hi Elysia')
     .get('/id/:id', ({ params: { id } }) => id)
     .post('/mirror', ({ body }) => body, {
-        schema: {
-            body: t.Object({
-                id: t.Number(),
-                name: t.String()
-            })
-        }
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
     })
     .listen(8080)
 

@@ -6,14 +6,12 @@ import { swagger } from '@elysiajs/swagger'
 new Elysia()
   .use(swagger())
   .post('/sign-in', signIn, {
-    schema: {
-      // add type to \`body\` and
-      // validate incoming body
-      body: t.Object({
-        username: t.String(),
-        password: t.String()
-      })
-    }
+    // add type to \`body\` and
+    // validate incoming body
+    body: t.Object({
+      username: t.String(),
+      password: t.String()
+    })
   })
   .listen(8080)`
 

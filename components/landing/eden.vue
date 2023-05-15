@@ -27,12 +27,10 @@ const app = new Elysia()
     ({ db, body }) => {
       return db.put(body)
     }, {
-    schema: {
-      body: t.Object({
-        name: t.String(),
-        quantity: t.Number()
-      })
-    }
+    body: t.Object({
+      name: t.String(),
+      quantity: t.Number()
+    })
   })
   .listen(80)
   

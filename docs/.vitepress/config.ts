@@ -138,6 +138,10 @@ export default defineConfig({
                         link: '/concept/schema'
                     },
                     {
+                        text: 'Numeric',
+                        link: '/concept/numeric'
+                    },                    
+                    {
                         text: 'Guard',
                         link: '/concept/guard'
                     },
@@ -148,6 +152,10 @@ export default defineConfig({
                     {
                         text: 'Plugin',
                         link: '/concept/plugin'
+                    },
+                    {
+                        text: 'Explicit Body',
+                        link: '/concept/explicit-body'
                     }
                 ]
             },

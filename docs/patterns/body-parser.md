@@ -21,6 +21,7 @@ By default, Elysia will parse the body with content-type of:
 - `text/plain`
 - `application/json`
 - `multipart/form-data`
+- `application/x-www-form-urlencoded`
 
 And assign the value to `Context.body`.
 

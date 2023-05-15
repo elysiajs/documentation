@@ -199,12 +199,10 @@ import { Elysia, ws } from 'elysia'
 new Elysia()
     .use(ws())
     .ws('/ws', {
-        schema: {
-            // validate incoming message
-            body: t.Object({
-                message: t.String()
-            })
-        },
+        // validate incoming message
+        body: t.Object({
+            message: t.String()
+        })
         message(ws, { message }) {
             ws.send({
                 message,

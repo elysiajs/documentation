@@ -46,12 +46,10 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
     .post('/sign-in', ({ body }) => signIn(body), {
-        schema: {
-            body: t.Object({
-                username: t.String(),
-                password: t.String()
-            })
-        }
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
     })
     .listen(8080)
 ```
@@ -68,12 +66,10 @@ import { Elysia, t } from 'elysia'
 new Elysia()
 /* [!code ++] */    .use(swagger())
     .post('/sign-in', ({ body }) => signIn(body), {
-        schema: {
-            body: t.Object({
-                username: t.String(),
-                password: t.String()
-            })
-        }
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
     })
     .listen(8080)
 ```
@@ -88,12 +84,10 @@ import { swagger } from '@elysiajs/swagger'
 /* [!code ++] */const app = new Elysia()
     .use(swagger())
     .post('/sign-in', ({ body }) => signIn(body), {
-        schema: {
-            body: t.Object({
-                username: t.String(),
-                password: t.String()
-            })
-        }
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
     })
     .listen(8080)
 
