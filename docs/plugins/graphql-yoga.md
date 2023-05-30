@@ -19,7 +19,7 @@ This plugin integrate GraphQL yoga with Elysia
 
 Install with:
 ```bash
-bun add graphql graphql-yoga @elysiajs/graphql-yoga
+bun add @elysiajs/graphql-yoga
 ```
 
 Then use it:
@@ -27,24 +27,19 @@ Then use it:
 import { Elysia } from 'elysia'
 import { yoga } from '@elysiajs/graphql-yoga'
 
-import { createYoga, createSchema } from 'graphql-yoga'
-
 const app = new Elysia()
     .use(
         yoga({
-            yoga: createYoga({
-                schema: createSchema({
-                    typeDefs: `
-                        type Query {
-                            hi: String
-                        }
-                `,
-                resolvers: {
-                    Query: {
-                        hi: () => 'Hi from Elysia'
-                    }
+            typeDefs: /* GraphQL */`
+                type Query {
+                    hi: String
                 }
-            })
+            `,
+            resolvers: {
+                Query: {
+                    hi: () => 'Hello from Elysia'
+                }
+            }
         })
     )
     .listen(8080)
@@ -52,13 +47,15 @@ const app = new Elysia()
 
 Accessing `/swagger` would show you a Swagger endpoint with generated endpoint from Elysia server.
 
+optional: you can install custom version of optional peer dependencies as well:
+```bash
+bun add graphql graphql-yoga
+```
+
 ## Config
+This plugin extends [GraphQL Yoga's createYoga options, please refers to the GraphQL Yoga documentation](https://the-guild.dev/graphql/yoga-server/docs) with inlining `schema` config to root.
+
 Below is a config which accepted by the plugin
-
-### yoga
-GraphQL Yoga instance.
-
-Please refers to the [GraphQL Yoga documentation](https://the-guild.dev/graphql/yoga-server/docs).
 
 ### path
 @default `/graphql`
