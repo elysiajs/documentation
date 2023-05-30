@@ -1,0 +1,29 @@
+{
+  "hash": "9e9b0dc5",
+  "browserHash": "ee64ebf5",
+  "optimized": {
+    "vue": {
+      "src": "../../../../node_modules/.pnpm/vue@3.2.47/node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "8513dca9",
+      "needsInterop": false
+    },
+    "vue-prism-component": {
+      "src": "../../../../node_modules/.pnpm/vue-prism-component@2.0.0/node_modules/vue-prism-component/dist/vue-prism-component.common.js",
+      "file": "vue-prism-component.js",
+      "fileHash": "c985ac4d",
+      "needsInterop": true
+    },
+    "prismjs/components/prism-typescript": {
+      "src": "../../../../node_modules/.pnpm/prismjs@1.29.0/node_modules/prismjs/components/prism-typescript.js",
+      "file": "prismjs_components_prism-typescript.js",
+      "fileHash": "f7b1fdc7",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-3OREYPTD": {
+      "file": "chunk-3OREYPTD.js"
+    }
+  }
+}

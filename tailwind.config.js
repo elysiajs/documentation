@@ -1,10 +1,16 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-    preflight: false,
-    content: ['components/**/*.vue', 'docs/**/*.md'],
+    mode: 'jit',
+    content: ['src/**/*.{jsx,tsx,js,ts}'],
     darkMode: 'class',
     theme: {
         extend: {}
     },
-    plugins: []
+    variants: {
+        extend: {}
+    },
+    plugins: [
+        require('@tailwindcss/aspect-ratio'),
+        require('@tailwindcss/forms'),
+        require('daisyui')
+    ]
 }
