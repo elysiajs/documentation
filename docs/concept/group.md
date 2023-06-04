@@ -26,7 +26,7 @@ Instead of writing many same prefixes, you can group them.
 Grouping allows you to combine multiple prefixes into one.
 ```typescript
 app.group('/user', app => app
-    .post('/sign-in, signIn)
+    .post('/sign-in', signIn)
     .post('/sign-up', signUp)
     .post('/profile', getProfile)
 )
