@@ -46,7 +46,7 @@ Then import the server type, and consume Elysia API on client:
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
 
-const app = edenFetch<App>('http://localhost:8080')
+const fetch = edenFetch<App>('http://localhost:8080')
 
 // response type: 'Hi Elysia'
 const pong = await fetch('/', {})
