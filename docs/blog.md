@@ -24,9 +24,9 @@ head:
 <Blogs 
   :blogs="[
       {
-        title: 'Accerate your next Prisma server with Elysia',
+        title: 'Accelerate your next Prisma server with Elysia',
         href: '/blog/with-prisma',
-        detail: 'With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accerate our interaction with database, Elysia accerate our creation of backend web server in term of both developer experience and performance.'
+        detail: 'With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accelerate our interaction with database, Elysia accelerate our creation of backend web server in term of both developer experience and performance.'
       },
       {
           title: 'Introducing Elysia 0.5 - Radiant',

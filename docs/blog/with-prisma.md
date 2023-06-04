@@ -1,20 +1,20 @@
 ---
-title: Accerate your next Prisma server with Elysia
+title: Accelerate your next Prisma server with Elysia
 sidebar: false
 editLink: false
 head:
     - - meta
       - property: 'og:title'
-        content: Accerate your next Prisma server with Elysia
+        content: Accelerate your next Prisma server with Elysia
 
     - - meta
       - name: 'description'
-        content: With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accerate our interaction with database, Elysia accerate our creation of backend web server in term of both developer experience and performance.
+        content: With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accelerate our interaction with database, Elysia accelerate our creation of backend web server in term of both developer experience and performance.
 
 
     - - meta
       - property: 'og:description'
-        content: With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accerate our interaction with database, Elysia accerate our creation of backend web server in term of both developer experience and performance.
+        content: With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accelerate our interaction with database, Elysia accelerate our creation of backend web server in term of both developer experience and performance.
 
     - - meta
       - property: 'og:image'
@@ -30,7 +30,7 @@ head:
 </script>
 
 <Blog
-title="Accerate your next Prisma server with Elysia"
+title="Accelerate your next Prisma server with Elysia"
 src="/blog/with-prisma/prism.webp"
 alt="Triangular Prism placing in the center"
 author="saltyaom"
@@ -412,7 +412,7 @@ We can define our route detail with `detail` that also follows OpenAPI Schema 3.
 ## What's next
 With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience.
 
-For Prisma we can accerate our interaction with database, Elysia accerate our creation of backend web server in term of both developer experience and performance.
+For Prisma we can accelerate our interaction with database, Elysia accelerate our creation of backend web server in term of both developer experience and performance.
 
 > It's an absolute joy to work with.
 
