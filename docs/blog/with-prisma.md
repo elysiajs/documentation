@@ -94,11 +94,11 @@ bunx prisma init
 
 `bunx` is a bun command equivalent to `npx`, which allows us to execute package bin.
 
-Once setup, we can see that Prisma will update `.env` file and generate a folder named **prisma** with **prisma.schema** as a file inside.
+Once setup, we can see that Prisma will update `.env` file and generate a folder named **prisma** with **schema.prisma** as a file inside.
 
-**prisma.schema** is an database model defined with Prisma's schema language. 
+**schema.prisma** is an database model defined with Prisma's schema language. 
 
-Let's update our **prisma.schema** file like this for a demonstration:
+Let's update our **schema.prisma** file like this for a demonstration:
 ```ts
 generator client {
   provider = "prisma-client-js"
