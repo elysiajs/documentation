@@ -24,6 +24,11 @@ head:
 <Blogs 
   :blogs="[
       {
+        title: 'Accerate your next Prisma server with Elysia',
+        href: '/blog/with-prisma',
+        detail: 'With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accerate our interaction with database, Elysia accerate our creation of backend web server in term of both developer experience and performance.'
+      },
+      {
           title: 'Introducing Elysia 0.5 - Radiant',
           href: '/blog/elysia-05',
           detail: 'Introducing Static Code Analysis, New router Memoirist, TypeBox 0.28, Numeric type, inline schema, state/decorate/model/group rework, and type stability.'
