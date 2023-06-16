@@ -139,5 +139,3 @@ const app = new Elysia()
     })
     .listen(8080)
 ```
-
-This will sign a cookie with `maxAge` of `86400` and `httpOnly` to `true`.
