@@ -81,7 +81,7 @@ import { Elysia } from 'elysia'
 new Elysia()
     .get("/", () => "Hi")
     .group("/auth", app => {
-        app
+        return app
             .get("/", () => "Hi")
             .post("/sign-in", ({ body }) => body)
             .put("/sign-up", ({ body }) => body)
