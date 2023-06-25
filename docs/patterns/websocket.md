@@ -23,7 +23,7 @@ To start working with a WebSocket, register the Elysia WebSocket plugin, and dec
 ```typescript
 import { Elysia, ws } from 'elysia'
 
-new Elysia()
+const app = new Elysia()
     .use(ws())
     .ws('/ws', {
         message(ws, message) {
@@ -84,7 +84,7 @@ Example:
 ```typescript
 import { Elysia, ws } from 'elysia'
 
-new Elysia()
+const app = new Elysia()
     .use(ws())
     .ws('/ws', {
         message(ws, message) {
@@ -223,7 +223,7 @@ By default Elysia will parse incoming stringified JSON message as Object for val
 ```typescript
 import { Elysia, ws } from 'elysia'
 
-new Elysia()
+const app = new Elysia()
     .use(ws())
     .ws('/ws', {
         // validate incoming message
