@@ -64,7 +64,7 @@ As destructured primitive value is not linked to the object, in order to make `s
 ## Response
 Returning value from `Handler`, Elysia will try to map returned value into `Response`.
 
-For eaxmple, to return an object, you should stringify the content first and then set response header of `Content-Type` to `application/json`.
+For example, to return an object, you should stringify the content first and then set response header of `Content-Type` to `application/json`.
 
 Which look something like this:
 ```typescript
@@ -92,7 +92,7 @@ app.get('/', () => ({
 }))
 ```
 
-Ofcourse, as Elysia map the value to `Response`.
+Of course, as Elysia map the value to `Response`.
 
 But you can also return a `Response` if you really want to.
 ```typescript
