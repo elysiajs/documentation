@@ -24,29 +24,26 @@ bun add @elysiajs/trpc @trpc/server @elysiajs/websocket
 
 Then use it:
 ```typescript
-import { Elysia, t as T } from 'elysia'
-import { trpc, compile as c } from '@elysiajs/trpc'
-import { z } from 'zod'
+import { compile as c, trpc } from "@elysiajs/trpc";
+import { initTRPC } from "@trpc/server";
+import { Elysia, t as T } from "elysia";
 
-import { initTRPC } from '@trpc/server'
-
-const t = initTRPC.create()
-const p = t.prodcedure
+const t = initTRPC.create();
+const p = t.procedure;
 
 const router = t.router({
-    greet: p
-      // or using Zod
-      .input(z.string())
-      // Using Elysia's T
-      .input(c(t.String()))
-      .query(({ input }) => input)
-})
+  greet: p
 
-export type Router = typeof router
+    // 💡 Using Zod
+    //.input(z.string())
+    // 💡 Using Elysia's T
+    .input(c(T.String()))
+    .query(({ input }) => input),
+});
 
-const app = new Elysia()
-    .use(trpc(router))
-    .listen(8080)
+export type Router = typeof router;
+
+const app = new Elysia().use(trpc(router)).listen(8080);
 ```
 
 ## trpc
