@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Elysia heavily encourages the use of method chaining. Because Elysia's type system is complex, method usually introduce a new type to the instance. Using method chaining will help save that new type refernce.
+      content: Elysia heavily encourages the use of method chaining. Because Elysia's type system is complex, method usually introduce a new type to the instance. Using method chaining will help save that new type reference.
 
   - - meta
     - name: 'og:description'
-      content: Elysia heavily encourages the use of method chaining. Because Elysia's type system is complex, method usually introduce a new type to the instance. Using method chaining will help save that new type refernce.
+      content: Elysia heavily encourages the use of method chaining. Because Elysia's type system is complex, method usually introduce a new type to the instance. Using method chaining will help save that new type reference.
 ---
 
 # Method Chaining
@@ -19,7 +19,7 @@ Elysia heavily **encourages the use of method chaining**.
 
 Because Elysia's type system is complex, method usually introduce a new type to the instance.
 
-Using method chaining will help save that new type refernce.
+Using method chaining will help save that new type reference.
 
 For example:
 ```typescript
