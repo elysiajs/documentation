@@ -97,7 +97,7 @@ import { swagger } from '@elysiajs/swagger'
 And on the client:
 ```typescript
 // client.ts
-import { edenTreaty } from '@elysia/eden'
+import { edenTreaty } from '@elysiajs/eden'
 import type { Server } from './server'
 
 const app = edenTreaty<Server>('http://localhost:8080')
