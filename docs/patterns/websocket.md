@@ -229,13 +229,13 @@ const app = new Elysia()
         // validate incoming message
         body: t.Object({
             message: t.String()
-        })
+        }),
         message(ws, { message }) {
             ws.send({
                 message,
                 time: Date.now()
             })
         }
-    )
+    })
     .listen(8080)
 ```
