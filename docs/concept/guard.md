@@ -18,10 +18,10 @@ head:
 # Guard
 Suppose you have many shared local hooks.
 
-Instead of writing duplicated hook, you can define a shared hook scope using `guard`.
+Instead of duplicating an existing hook, you can define a shared hook scope using `guard`.
 
 ---
-**Guard** let you to inject multiple life-cycle event into multiple routes at once. Guard is useful when you have duplicated life-cycle in the multiple route, for example. logging, schema validation, or error handling.
+**Guard** lets you inject multiple life-cycle events into multiple routes at once. Guard is useful when you have listen to same life-cycle events in the multiple routes, for example: logging, schema validation, or error handling.
 
 To encapsulate all hooks into the scope, instead of writing:
 ```typescript

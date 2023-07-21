@@ -15,7 +15,7 @@ head:
 ---
 
 # Handler
-For routing is to tell which function to return a response to.
+To route is to tell which function should return a response.
 
 The function for returning a Response is `Handler`.
 
@@ -80,7 +80,7 @@ new Response(JSON.stringify({
 })
 ```
 
-But Elysia handle that for you.
+But Elysia handles that for you.
 
 You simply return an object, and Elysia will map your value to a correct response for you.
 ```typescript
