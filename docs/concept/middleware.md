@@ -15,18 +15,14 @@ head:
 ---
 
 # Middleware
-Elysia has Life Cycle event support which you get called on a specific event.
+Elysia supports Life Cycle events, which trigger at specific moments.
 
-Middleware or Hook is an event listener to "hook", and listen to those events cycling around.
+A _Middleware_ or _Hook_ acts as an event listener, allowing you to "hook" into these events. This Hook capability enables you to modify data as it moves through the data pipeline.
 
-Hook allows you to transform data running through the data pipeline.
-
-Whether you want to create a custom body parser, return a custom response based on your handler, or define a custom function for guarding authentication.
-
-With the hook, you can customize Elysia to its fullest potential.
+Whether you aim to implement a custom body parser, generate a tailored response based on your handler, or set up an authentication guard, the Hook empowers you to harness the full potential of Elysia.
 
 ## Life Cycle
-The life cycle in Elysia consists of:
+The life cycle events in Elysia consists of:
 - Start: setup some requirement before the server start serving
 (Start Loop)
 - Request: get notified of every new request

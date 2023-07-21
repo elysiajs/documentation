@@ -15,7 +15,7 @@ head:
 ---
 
 # Derive
-Just like state and decorate, derive allows you to customize `Context` based on existing `Context` as `Context.store`.
+Just like _state_ and _decorate_, derive allows you to customize `Context` based on existing `Context` as `Context.store`.
 
 This is useful when you to need to create a value based on an existing value reactively.
 
