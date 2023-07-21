@@ -64,6 +64,7 @@ Elysia error code consists of:
 - NOT_FOUND
 - INTERNAL_SERVER_ERROR
 - VALIDATION
+- PARSE
 - UNKNOWN
 
 By default, user thrown error code is `unknown`.
