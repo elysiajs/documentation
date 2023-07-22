@@ -226,10 +226,8 @@ const app = new Elysia()
         message(ws, message) {
             ws.send(message)
         },
-        schema: {
-            body: t.String(),
-            response: t.String()
-        }
+        body: t.String(),
+        response: t.String()
     })
     .listen(8080)
 
