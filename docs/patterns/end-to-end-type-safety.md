@@ -34,7 +34,7 @@ Elysia support End-to-End Type-Safety between client-server with the [Eden](/plu
 />
 
 ::: tip
-Hover over variable and functino to see type definition.
+Hover over variable and function to see type definition.
 :::
 
 Elysia allows you change type on server and reflect the type definitions on the client, helping with auto-completion and type-enforcement.
