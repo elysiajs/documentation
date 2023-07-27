@@ -47,6 +47,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node and Deno
 - [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy Elysia on AWS Lambda
 - [Decorators](https://github.com/gaurishhs/elysia-decorators) - use typescript decorators with elysia
+- [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - file system routes for Elysia
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
