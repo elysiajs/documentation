@@ -21,7 +21,7 @@ head:
 
     - - meta
       - property: 'twitter:image'
-        content: https://elysiajs.com/blog/elysia-05/this-game.webp
+        content: https://elysiajs.com/blog/elysia-06/this-game.webp
 ---
 
 <script setup>
