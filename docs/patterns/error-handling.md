@@ -47,7 +47,7 @@ new Elysia()
 ```
 
 ## Local Error
-You can assign error handling method to a scope using [hook](/concept/middleware.html#local-hook) or [guard](/concept/guard.html)
+You can assign error handling method to a scope using [hook](/concept/life-cycle.html#local-hook) or [guard](/concept/guard.html)
 ```typescript
 app.get('/', () => 'Hello', {
     beforeHandle: ({ set, request: { headers } }) => {
