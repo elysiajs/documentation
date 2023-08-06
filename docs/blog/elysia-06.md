@@ -5,7 +5,7 @@ editLink: false
 head:
     - - meta
       - property: 'og:title'
-        content: Introducing Elysia 0.5 - Radiant
+        content: Introducing Elysia 0.6 - This Game
 
     - - meta
       - name: 'description'
