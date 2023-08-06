@@ -130,8 +130,8 @@ export default defineConfig({
                         link: '/concept/group'
                     },
                     {
-                        text: 'Middleware',
-                        link: '/concept/middleware'
+                        text: 'Lifecycle',
+                        link: '/concept/life-cycle'
                     },
                     {
                         text: 'Schema',
@@ -204,9 +204,13 @@ export default defineConfig({
                         link: '/patterns/body-parser'
                     },
                     {
+                        text: 'Mount',
+                        link: '/patterns/mount'
+                    },
+                    {
                         text: 'End-to-End Type Safety',
                         link: '/patterns/end-to-end-type-safety'
-                    }
+                    },
                 ]
             },
             {

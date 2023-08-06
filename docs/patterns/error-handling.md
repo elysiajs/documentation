@@ -72,3 +72,29 @@ By default, user thrown error code is `unknown`.
 ::: tip
 If no error response is returned, the error will be returned using `error.name`.
 :::
+
+## Custom Error
+Elysia supports custom error both in type-level and implementaiton level.
+
+Helping you to easly classify and narrow down the error type for fully type safety with an auto-complete:
+```ts
+class CustomError extends Error {
+    constructor(public message: string) {
+        super(message)
+    }
+}
+
+new Elysia()
+    .addError({
+        MyError: CustomError
+    })
+    .onError(({ code, error }) => {
+        switch(code) {
+            // With auto-completion
+            case 'MyError':
+                // With type narrowing
+                // Error is typed as CustomError
+                return error
+        }
+    })
+```

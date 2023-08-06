@@ -15,6 +15,8 @@ head:
       content: By default, Elysia will try to determine body parsing function ahead of time and pick the most suitable function to speed up the process. This allows Elysia to optimize body parser ahead of time, and reduce overhead in compile time but you can explicitly control Elysia to use a certain function.
 ---
 
+# Explicity Body
+
 By default, Elysia will try to determine body parsing function ahead of time and pick the most suitable function to speed up the process.
 
 Elysia is able to determine that body function by reading `body`.

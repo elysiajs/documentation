@@ -43,3 +43,19 @@ app.group('/v1', app => app
     )
 )
 ```
+
+## Plugin group
+You can separate group into an instance and register the group as plugin for code separation and reduce nesting.
+```typescript
+import { Elysia } from 'elysia'
+
+const users = new Elysia({ prefix: '/user' })
+    .post('/sign-in, signIn)
+    .post('/sign-up', signUp)
+    .post('/profile', getProfile)
+
+app.group('/v1', app => app
+    .get('/', () => 'Using v1')
+    .use(users)
+)
+```

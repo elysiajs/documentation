@@ -1,25 +1,27 @@
 ---
-title: Middleware - Elysia.js
+title: Life Cycle - Elysia.js
 head:
   - - meta
     - property: 'og:title'
-      content: Middleware - Elysia.js
+      content: Life Cycle - Elysia.js
 
   - - meta
     - name: 'description'
-      content: Lifecycle event is a concept for each stage of Elysia processing, "Middleware" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+      content: Lifecycle event is a concept for each stage of Elysia processing, "Life Cycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
 
   - - meta
     - property: 'og:description'
-      content: Lifecycle event is a concept for each stage of Elysia processing, "Middleware" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+      content: Lifecycle event is a concept for each stage of Elysia processing, "Life Cycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
 ---
 
-# Middleware
+# Life Cycle
 Elysia supports Life Cycle events, which trigger at specific moments.
 
-A _Middleware_ or _Hook_ acts as an event listener, allowing you to "hook" into these events. This Hook capability enables you to modify data as it moves through the data pipeline.
+A _Middleware__ or _Hook_ acts as an event listener, allowing you to "hook" into these events. This Hook capability enables you to modify data as it moves through the data pipeline.
 
 Whether you aim to implement a custom body parser, generate a tailored response based on your handler, or set up an authentication guard, the Hook empowers you to harness the full potential of Elysia.
+
+![Elysia Life Cycle](/assets/lifecycle.webp)
 
 ## Life Cycle
 The life cycle events in Elysia consists of:
