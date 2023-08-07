@@ -36,7 +36,7 @@ head:
     date="6 Aug 2023"
 >
 
-Named after the opening of the legendary anime, **"Name Game No Life"**, 「[This Game](https://youtu.be/kJ04dMmimn8)」composed by Konomi Suzuki.
+Named after the opening of the legendary anime, **"No Game No Life"**, 「[This Game](https://youtu.be/kJ04dMmimn8)」composed by Konomi Suzuki.
 
 This Game push the boundary of medium-size project to large-scale app with re-imagined plugin model, dynamic mode, pushing developer experience with declarative custom error, collecting more metric with 'onResponse', customizable loose and strict path mapping, TypeBox 0.30 and WinterCG framework interlop.
 
