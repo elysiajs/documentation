@@ -1,9 +1,9 @@
 ---
-title: State and Decorate - Elysia.js
+title: State and Decorate - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: State and Decorate - Elysia.js
+      content: State and Decorate - ElysiaJS
 
   - - meta
     - name: 'description'

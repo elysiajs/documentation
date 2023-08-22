@@ -6,7 +6,7 @@
             Latest Updates
         </h1>
         <p class="text-gray-500 dark:text-gray-300 text-lg">
-            Update of Elysia.js from core maintainers
+            Update of ElysiaJS from core maintainers
         </p>
     </header>
     <main class="flex flex-col max-w-xl gap-4 w-full mx-auto my-8">

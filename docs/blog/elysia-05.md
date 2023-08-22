@@ -2,6 +2,7 @@
 title: Elysia 0.5 - Radiant
 sidebar: false
 editLink: false
+search: false
 head:
     - - meta
       - property: 'og:title'

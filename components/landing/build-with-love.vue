@@ -1,6 +1,6 @@
 <template>
     <footer
-        className="flex flex-col justify-center items-center gap-4 text-sm text-gray-400 dark:text-gray-400"
+        class="flex flex-col justify-center items-center gap-4 text-sm text-gray-400 dark:text-gray-400"
     >
         <p>
             Build with 💖 dear

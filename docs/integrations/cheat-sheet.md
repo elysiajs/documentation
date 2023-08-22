@@ -1,9 +1,9 @@
 ---
-title: Cheat Sheet (Elysia by example) - Elysia.js
+title: Cheat Sheet (Elysia by example) - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Cheat Sheet (Elysia by example) - Elysia.js
+      content: Cheat Sheet (Elysia by example) - ElysiaJS
 
   - - meta
     - name: 'description'
@@ -157,14 +157,12 @@ new Elysia()
 ```typescript
 import { Elysia } from 'elysia'
 
-const plugin = ({ prefix }: { prefix: string }) => 
-    (app: Elysia) =>
-    app.get(`${prefix}/hi`, () => 'hi')
+const plugin = new Elysia()
+    .state('plugin-version', 1)
+    .get('/hi', () => 'hi')
 
 new Elysia()
-    .use(plugin(
-        prefix: '/v2'
-    }))
+    .use(plugin)
     .get('/version', ({ store }) => store['plugin-version'])
     .listen(8080)
 ```

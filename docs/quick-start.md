@@ -1,29 +1,28 @@
 ---
-title: Getting Start - Elysia.js
+title: Getting Start - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Getting Start - Elysia.js
+      content: Getting Start - ElysiaJS
 
   - - meta
     - name: 'description'
-      content: Elysia is a library built for Bun and the only prerequisite. To start, boostrap a new project with "bun create elysia hi-elysia" and start development server with "bun run dev". This is all it need to do a quick start or getting start with Elysia.js
-
+      content: Elysia is a library built for Bun and the only prerequisite. To start, boostrap a new project with "bun create elysia hi-elysia" and start development server with "bun run dev". This is all it need to do a quick start or getting start with ElysiaJS
 
   - - meta
     - property: 'og:description'
-      content: Elysia is a library built for Bun and the only prerequisite. To start, boostrap a new project with "bun create elysia hi-elysia" and start development server with "bun run dev". This is all it need to do a quick start or getting start with Elysia.js
+      content: Elysia is a library built for Bun, and it's all you need to get started. Bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun run dev". That's all you need to work on Elysia.js!
 ---
 
 # Quick Start
-Elysia is a library built for Bun. 
+Elysia is a library built for Bun.
 
-So the only prerequisite is that you need to have Bun installed.
+Bun is all you need to get started.
 ```bash
 curl https://bun.sh/install | bash
 ```
 
-Start by using `bun create` to scaffold the project:
+Bootstrap a new project with `bun create`:
 ```bash
 bun create elysia hi-elysia
 ```
@@ -55,4 +54,4 @@ You should see your server is running.
 
 ---
 
-Congrats! You just create a new web server with Elysia 🎉🎉
+Congrats! You've just created a new web server with Elysia 🎉🎉

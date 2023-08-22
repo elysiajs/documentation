@@ -1,9 +1,9 @@
 ---
-title: Body Parser - Elysia.js
+title: Body Parser - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Body Parser - Elysia.js
+      content: Body Parser - ElysiaJS
 
   - - meta
     - name: 'description'

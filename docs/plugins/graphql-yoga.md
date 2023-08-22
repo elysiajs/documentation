@@ -1,9 +1,9 @@
 ---
-title: GraphQL Yoga Plugin - Elysia.js
+title: GraphQL Yoga Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: GraphQL Yoga Plugin - Elysia.js
+        content: GraphQL Yoga Plugin - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -50,6 +50,39 @@ Accessing `/swagger` would show you a Swagger endpoint with generated endpoint f
 optional: you can install custom version of optional peer dependencies as well:
 ```bash
 bun add graphql graphql-yoga
+```
+
+## Resolver
+Elysia use [Mobius](https://github.com/saltyaom/mobius) to infers type from **typeDefs** field automatically, allowing you to get full type-safety and auto-complete when typing **resolver** types.
+
+## Context
+You can add custom context to resolver function by adding **context**
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysiajs/graphql-yoga'
+
+const app = new Elysia()
+    .use(
+        yoga({
+            typeDefs: /* GraphQL */`
+                type Query {
+                    hi: String
+                }
+            `,
+            context: {
+                name: 'Mobius'
+            },
+            // If context is a function on this doesn't present
+            // for some reason it won't infer context type
+            useContext(_) {}
+            resolvers: {
+                Query: {
+                    hi: async (parent, args, context) => context.name
+                }
+            }
+        })
+    )
+    .listen(8080)
 ```
 
 ## Config

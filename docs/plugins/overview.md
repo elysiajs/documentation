@@ -1,9 +1,9 @@
 ---
-title: Plugin Overview - Elysia.js
+title: Plugin Overview - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Swagger Plugin - Elysia.js
+        content: Swagger Plugin - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -48,6 +48,9 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy Elysia on AWS Lambda
 - [Decorators](https://github.com/gaurishhs/elysia-decorators) - use typescript decorators with elysia
 - [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - file system and folder-based router for groups.
+- [Vite](https://github.com/timnghg/elysia-vite) - Simple Elysia plugin that helps you use Vite. It serve your entry html file with Vite's scripts injected
+- [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - Vite Plugin SSR using Elysia server
+- [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - Unofficial Clerk plugin for ElysiaJS
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).

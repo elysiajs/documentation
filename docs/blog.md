@@ -3,18 +3,19 @@ title: Elysia Blog
 layout: page
 sidebar: false
 editLink: false
+search: false
 head:
     - - meta
       - property: 'og:title'
-        content: Blog - Elysia.js
+        content: Blog - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Update of Elysia.js, from core maintainers
+        content: Update of ElysiaJS, from core maintainers
 
     - - meta
       - property: 'og:description'
-        content: Update of Elysia.js from core maintainers
+        content: Update of ElysiaJS from core maintainers
 ---
 
 <script setup>
@@ -23,6 +24,11 @@ head:
 
 <Blogs 
   :blogs="[
+      {
+        title: 'Introducing Elysia 0.6 - This Game',
+        href: '/blog/elysia-06',
+        detail: 'Introducing re-imagined plugin model, dynamic mode, better developer experience with declarative custom error, customizable loose and strict path mapping, TypeBox 0.30 and WinterCG framework interlop. Pushing the boundary of what is possible once again'
+      },
       {
         title: 'Accelerate your next Prisma server with Elysia',
         href: '/blog/with-prisma',

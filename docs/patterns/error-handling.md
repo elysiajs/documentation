@@ -1,9 +1,9 @@
 ---
-title: Error Handling - Elysia.js
+title: Error Handling - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Error Handling - Elysia.js
+      content: Error Handling - ElysiaJS
 
   - - meta
     - name: 'description'
@@ -47,7 +47,7 @@ new Elysia()
 ```
 
 ## Local Error
-You can assign error handling method to a scope using [hook](/concept/middleware.html#local-hook) or [guard](/concept/guard.html)
+You can assign error handling method to a scope using [hook](/concept/life-cycle.html#local-hook) or [guard](/concept/guard.html)
 ```typescript
 app.get('/', () => 'Hello', {
     beforeHandle: ({ set, request: { headers } }) => {
@@ -72,3 +72,29 @@ By default, user thrown error code is `unknown`.
 ::: tip
 If no error response is returned, the error will be returned using `error.name`.
 :::
+
+## Custom Error
+Elysia supports custom error both in type-level and implementaiton level.
+
+Helping you to easly classify and narrow down the error type for fully type safety with an auto-complete:
+```ts
+class CustomError extends Error {
+    constructor(public message: string) {
+        super(message)
+    }
+}
+
+new Elysia()
+    .addError({
+        MyError: CustomError
+    })
+    .onError(({ code, error }) => {
+        switch(code) {
+            // With auto-completion
+            case 'MyError':
+                // With type narrowing
+                // Error is typed as CustomError
+                return error
+        }
+    })
+```

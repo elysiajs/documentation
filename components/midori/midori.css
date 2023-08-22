@@ -1,0 +1,9 @@
+.link {
+    text-decoration: none;
+}
+
+.dark-light {
+    width: 1100px;
+    height: 1100px;
+    background: radial-gradient(ellipse at center, #797ee199 0%, transparent 70%);
+}

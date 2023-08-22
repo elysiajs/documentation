@@ -2,6 +2,7 @@
 title: Accelerate your next Prisma server with Elysia
 sidebar: false
 editLink: false
+search: false
 head:
     - - meta
       - property: 'og:title'

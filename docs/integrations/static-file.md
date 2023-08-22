@@ -1,9 +1,9 @@
 ---
-title: Static File - Elysia.js
+title: Static File - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Static File - Elysia.js
+      content: Static File - ElysiaJS
 
   - - meta
     - name: 'description'

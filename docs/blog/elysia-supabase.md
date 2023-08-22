@@ -2,6 +2,7 @@
 title: Elysia with Supabase. Your next backend at sonic speed
 sidebar: false
 editLink: false
+search: false
 head:
     - - meta
       - property: 'og:title'
