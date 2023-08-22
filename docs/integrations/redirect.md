@@ -1,9 +1,9 @@
 ---
-title: Redirect - Elysia.js
+title: Redirect - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Redirect - Elysia.js
+      content: Redirect - ElysiaJS
 
   - - meta
     - name: 'description'

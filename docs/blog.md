@@ -3,18 +3,19 @@ title: Elysia Blog
 layout: page
 sidebar: false
 editLink: false
+search: false
 head:
     - - meta
       - property: 'og:title'
-        content: Blog - Elysia.js
+        content: Blog - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Update of Elysia.js, from core maintainers
+        content: Update of ElysiaJS, from core maintainers
 
     - - meta
       - property: 'og:description'
-        content: Update of Elysia.js from core maintainers
+        content: Update of ElysiaJS from core maintainers
 ---
 
 <script setup>

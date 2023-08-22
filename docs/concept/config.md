@@ -1,9 +1,9 @@
 ---
-title: Config - Elysia.js
+title: Config - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Config - Elysia.js
+      content: Config - ElysiaJS
 
   - - meta
     - name: 'description'

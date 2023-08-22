@@ -1,9 +1,9 @@
 ---
-title: WebSocket Plugin - Elysia.js
+title: WebSocket Plugin - ElysiaJS
 head:
     - - meta
       - property: 'title'
-        content: WebSocket Plugin - Elysia.js
+        content: WebSocket Plugin - ElysiaJS
 
     - - meta
       - name: 'description'

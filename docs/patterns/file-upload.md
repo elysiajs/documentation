@@ -1,9 +1,9 @@
 ---
-title: File Upload - Elysia.js
+title: File Upload - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: File Upload - Elysia.js
+      content: File Upload - ElysiaJS
 
   - - meta
     - name: 'description'

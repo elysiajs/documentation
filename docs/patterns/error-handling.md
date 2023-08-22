@@ -1,9 +1,9 @@
 ---
-title: Error Handling - Elysia.js
+title: Error Handling - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Error Handling - Elysia.js
+      content: Error Handling - ElysiaJS
 
   - - meta
     - name: 'description'

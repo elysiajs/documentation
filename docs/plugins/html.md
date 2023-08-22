@@ -1,9 +1,9 @@
 ---
-title: HTML Plugin - Elysia.js
+title: HTML Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: HTML Plugin - Elysia.js
+        content: HTML Plugin - ElysiaJS
 
     - - meta
       - name: 'description'

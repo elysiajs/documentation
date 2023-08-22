@@ -1,9 +1,9 @@
 ---
-title: Eden Treaty - Elysia.js
+title: Eden Treaty - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Eden Treaty - Elysia.js
+      content: Eden Treaty - ElysiaJS
 
   - - meta
     - name: 'og:description'

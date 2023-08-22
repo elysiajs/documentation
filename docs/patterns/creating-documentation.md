@@ -1,9 +1,9 @@
 ---
-title: Creating Documentation - Elysia.js
+title: Creating Documentation - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Creating Documentation - Elysia.js
+      content: Creating Documentation - ElysiaJS
 
   - - meta
     - name: 'description'

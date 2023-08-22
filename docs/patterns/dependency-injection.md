@@ -1,9 +1,9 @@
 ---
-title: Dependency Injection - Elysia.js
+title: Dependency Injection - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Dependency Injection - Elysia.js
+      content: Dependency Injection - ElysiaJS
 
   - - meta
     - name: 'description'

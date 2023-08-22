@@ -1,9 +1,9 @@
 ---
-title: GraphQL Yoga Plugin - Elysia.js
+title: GraphQL Yoga Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: GraphQL Yoga Plugin - Elysia.js
+        content: GraphQL Yoga Plugin - ElysiaJS
 
     - - meta
       - name: 'description'

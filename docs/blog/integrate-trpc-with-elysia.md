@@ -2,6 +2,7 @@
 title: Integrate tRPC server to Bun with Elysia
 sidebar: false
 editLink: false
+search: false
 head:
   - - meta
     - property: 'og:title'

@@ -1,9 +1,9 @@
 ---
-title: Reference Model - Elysia.js
+title: Reference Model - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Reference Model - Elysia.js
+      content: Reference Model - ElysiaJS
 
   - - meta
     - name: 'description'

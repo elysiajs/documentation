@@ -1,9 +1,9 @@
 ---
-title: Route - Elysia.js
+title: Route - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Route - Elysia.js
+      content: Route - ElysiaJS
 
   - - meta
     - name: 'description'

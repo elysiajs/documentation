@@ -1,9 +1,9 @@
 ---
-title: Eden Installation - Elysia.js
+title: Eden Installation - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Eden Installation - Elysia.js
+      content: Eden Installation - ElysiaJS
 
   - - meta
     - name: 'description'

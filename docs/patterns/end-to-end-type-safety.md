@@ -1,9 +1,9 @@
 ---
-title: End-to-End Type Safety - Elysia.js
+title: End-to-End Type Safety - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: End-to-End Type Safety - Elysia.js
+      content: End-to-End Type Safety - ElysiaJS
 
   - - meta
     - name: 'description'

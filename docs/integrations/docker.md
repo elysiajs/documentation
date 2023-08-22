@@ -1,9 +1,9 @@
 ---
-title: Docker - Elysia.js
+title: Docker - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Docker - Elysia.js
+      content: Docker - ElysiaJS
 
   - - meta
     - name: 'description'

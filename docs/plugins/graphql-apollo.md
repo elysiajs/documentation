@@ -1,9 +1,9 @@
 ---
-title: Apollo GraphQL Plugin - Elysia.js
+title: Apollo GraphQL Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Apollo GraphQL Plugin - Elysia.js
+        content: Apollo GraphQL Plugin - ElysiaJS
 
     - - meta
       - name: 'description'

@@ -1,9 +1,9 @@
 ---
-title: tRPC Plugin - Elysia.js
+title: tRPC Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: tRPC Plugin - Elysia.js
+        content: tRPC Plugin - ElysiaJS
 
     - - meta
       - name: 'description'
