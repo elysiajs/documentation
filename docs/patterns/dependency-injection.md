@@ -47,10 +47,10 @@ const authen = (app: Elysia) => app
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)
     // But then there is no type
-    .post('/sign-out', ({ signOut, store: { db } }) => {
+    .post('/sign-out', ({ signOut, store: { redis } }) => {
         signOut()
 
-        db.doSomething()
+        redis.doSomething()
     })
 ```
 
@@ -82,10 +82,10 @@ const authen = (app: Elysia) => app
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)
     // Now it's strictly typed
-    .post('/sign-out', ({ signOut, store: { db } }) => {
+    .post('/sign-out', ({ signOut, store: { redis } }) => {
         signOut()
 
-        db.doSomething()
+        redis.doSomething()
     })
 ```
 
