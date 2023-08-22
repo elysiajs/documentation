@@ -1,9 +1,9 @@
 ---
-title: CORS Plugin - Elysia.js
+title: CORS Plugin - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: CORS Plugin - Elysia.js
+      content: CORS Plugin - ElysiaJS
 
   - - meta
     - name: 'description'

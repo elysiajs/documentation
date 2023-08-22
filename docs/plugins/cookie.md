@@ -1,9 +1,9 @@
 ---
-title: Cookie Plugin - Elysia.js
+title: Cookie Plugin - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Cookie Plugin - Elysia.js
+      content: Cookie Plugin - ElysiaJS
 
   - - meta
     - name: 'description'

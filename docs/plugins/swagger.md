@@ -1,9 +1,9 @@
 ---
-title: Swagger Plugin - Elysia.js
+title: Swagger Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Swagger Plugin - Elysia.js
+        content: Swagger Plugin - ElysiaJS
 
     - - meta
       - name: 'description'

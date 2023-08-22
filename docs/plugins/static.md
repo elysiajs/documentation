@@ -1,9 +1,9 @@
 ---
-title: Static Plugin - Elysia.js
+title: Static Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Static Plugin - Elysia.js
+        content: Static Plugin - ElysiaJS
 
     - - meta
       - name: 'description'

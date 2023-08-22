@@ -1,9 +1,9 @@
 ---
-title: Retrieve Header - Elysia.js
+title: Retrieve Header - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Retrieve Header - Elysia.js
+      content: Retrieve Header - ElysiaJS
 
   - - meta
     - name: 'description'

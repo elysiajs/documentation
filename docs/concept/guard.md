@@ -1,9 +1,9 @@
 ---
-title: Guard - Elysia.js
+title: Guard - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Guard - Elysia.js
+      content: Guard - ElysiaJS
 
   - - meta
     - name: 'description'

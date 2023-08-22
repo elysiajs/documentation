@@ -1,9 +1,9 @@
 ---
-title: Bearer Plugin - Elysia.js
+title: Bearer Plugin - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Bearer Plugin - Elysia.js
+      content: Bearer Plugin - ElysiaJS
 
   - - meta
     - name: 'description'

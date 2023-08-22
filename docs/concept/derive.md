@@ -1,9 +1,9 @@
 ---
-title: Derive - Elysia.js
+title: Derive - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Derive - Elysia.js
+      content: Derive - ElysiaJS
 
   - - meta
     - name: 'description'

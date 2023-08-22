@@ -1,9 +1,9 @@
 ---
-title: Group - Elysia.js
+title: Group - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Group - Elysia.js
+      content: Group - ElysiaJS
 
   - - meta
     - name: 'description'

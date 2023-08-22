@@ -1,9 +1,9 @@
 ---
-title: Life Cycle - Elysia.js
+title: Life Cycle - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Life Cycle - Elysia.js
+      content: Life Cycle - ElysiaJS
 
   - - meta
     - name: 'description'

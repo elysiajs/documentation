@@ -1,9 +1,9 @@
 ---
-title: Schema - Elysia.js
+title: Schema - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Schema - Elysia.js
+      content: Schema - ElysiaJS
 
   - - meta
     - name: 'description'
