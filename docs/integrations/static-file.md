@@ -27,7 +27,7 @@ new Elysia()
 Or serving folders using [static plugin](/plugins/static).
 ```typescript
 import { Elysia } from 'elysia'
-import { staticPlugin } from '@elysia/static'
+import { staticPlugin } from '@elysiajs/static'
 
 new Elysia()
     .use(staticPlugin({
