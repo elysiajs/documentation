@@ -1,9 +1,9 @@
 ---
-title: Eden Fetch - Elysia.js
+title: Eden Fetch - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Eden Fetch - Elysia.js
+      content: Eden Fetch - ElysiaJS
 
   - - meta
     - name: 'description'

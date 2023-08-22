@@ -1,9 +1,9 @@
 ---
-title: Testing - Elysia.js
+title: Testing - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Testing - Elysia.js
+      content: Testing - ElysiaJS
 
   - - meta
     - name: 'description'

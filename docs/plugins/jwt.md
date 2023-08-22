@@ -1,9 +1,9 @@
 ---
-title: JWT Plugin - Elysia.js
+title: JWT Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: JWT Plugin - Elysia.js
+        content: JWT Plugin - ElysiaJS
 
     - - meta
       - name: 'description'

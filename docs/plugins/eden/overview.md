@@ -1,9 +1,9 @@
 ---
-title: Eden - Elysia.js
+title: Eden - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Eden - Elysia.js
+      content: Eden - ElysiaJS
 
   - - meta
     - name: 'og:description'

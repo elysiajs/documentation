@@ -1,9 +1,9 @@
 ---
-title: Explicity Body - Elysia.js
+title: Explicity Body - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Explicit Body - Elysia.js
+      content: Explicit Body - ElysiaJS
 
   - - meta
     - name: 'description'

@@ -1,9 +1,9 @@
 ---
-title: Plugin - Elysia.js
+title: Plugin - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Plugin - Elysia.js
+      content: Plugin - ElysiaJS
 
   - - meta
     - name: 'description'
@@ -35,10 +35,31 @@ Plugin can register by using `use`.
 
 Registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
 
-You can also use a function callback to create a new plugin:
+## Separate file
+Using plugin pattern, you can define decouple your logic into a separate file.
 ```ts
-const plugin = (app: Elysia) => app
+// plugin.ts
+export const plugin = new Elysia()
     .get('/from-plugin', () => 'Hi')
+
+// main.ts
+import { plugin } from './plugin'
+
+const app = new Elysia()
+    .use(plugin)
+    .listen(8080)
+```
+
+## Functional callback
+You can also define a function callback to inline the plugin.
+
+```ts
+// plugin.ts
+export const plugin = (app: Elysia) => app
+    .get('/from-plugin', () => 'Hi')
+
+// main.ts
+import { plugin } from './plugin'
 
 const app = new Elysia()
     .use(plugin)

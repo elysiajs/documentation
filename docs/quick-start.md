@@ -1,14 +1,13 @@
 ---
-title: Quick Start - Elysia.js
+title: Getting Start - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Quick Start - Elysia.js
+      content: Getting Start - ElysiaJS
 
   - - meta
     - name: 'description'
-      content: Elysia is a library built for Bun, and it's all you need to get started. Bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun run dev". That's all you need to work on Elysia.js!
-
+      content: Elysia is a library built for Bun and the only prerequisite. To start, boostrap a new project with "bun create elysia hi-elysia" and start development server with "bun run dev". This is all it need to do a quick start or getting start with ElysiaJS
 
   - - meta
     - property: 'og:description'

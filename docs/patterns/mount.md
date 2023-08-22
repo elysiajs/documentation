@@ -1,9 +1,9 @@
 ---
-title: Mount - Elysia.js
+title: Mount - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Mount - Elysia.js
+      content: Mount - ElysiaJS
 
   - - meta
     - name: 'description'
