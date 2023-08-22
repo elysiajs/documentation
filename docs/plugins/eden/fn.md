@@ -81,7 +81,7 @@ const app = new Elysia()
         sum: (a: number, b: number) => a + b,
         redis: permission({
             value: new Redis(),
-            allows: ['set']
+            allow: ['set']
         })
     })
     .listen(8080)
@@ -105,7 +105,7 @@ const app = new Elysia()
         sum: (a: number, b: number) => a + b,
         redis: permission({
             value: new Redis(),
-            allows: ['set'],
+            allow: ['set'],
             check: ({ key, params, request, match }) => {
                 if(!request.headers.get('Authorized'))
                     // This value will be sent to client
