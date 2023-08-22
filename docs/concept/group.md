@@ -1,9 +1,9 @@
 ---
-title: Group - Elysia.js
+title: Group - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Group - Elysia.js
+      content: Group - ElysiaJS
 
   - - meta
     - name: 'description'
@@ -37,9 +37,25 @@ You can create as many nested groups as you like:
 app.group('/v1', app => app
     .get('/', () => 'Using v1')
     .group('/user', app => app
-        .post('/sign-in, signIn)
+        .post('/sign-in', signIn)
         .post('/sign-up', signUp)
         .post('/profile', getProfile)
     )
+)
+```
+
+## Plugin group
+You can separate group into an instance and register the group as plugin for code separation and reduce nesting.
+```typescript
+import { Elysia } from 'elysia'
+
+const users = new Elysia({ prefix: '/user' })
+    .post('/sign-in, signIn)
+    .post('/sign-up', signUp)
+    .post('/profile', getProfile)
+
+app.group('/v1', app => app
+    .get('/', () => 'Using v1')
+    .use(users)
 )
 ```

@@ -1,21 +1,21 @@
 ---
-title: Introduction - Elysia.js
+title: Introduction - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Introduction - Elysia.js
+      content: Introduction - ElysiaJS
 
   - - meta
     - name: 'description'
-      content: Elysia.js is a fast and friendly bun web framework. Building on top of 3 philosophies, performance, simplicity, flexibility. Designed with TypeScript in mind. Elysia understands what you want and automatically infers the type from your code.
+      content: ElysiaJS is a fast and friendly bun web framework. Building on top of 3 philosophies, performance, simplicity, flexibility. Designed with TypeScript in mind. Elysia understands what you want and automatically infers the type from your code.
 
   - - meta
     - property: 'og:description'
-      content: Elysia.js is a fast and friendly bun web framework. Building on top of 3 philosophies, performance, simplicity, flexibility. Designed with TypeScript in mind. Elysia understands what you want and automatically infers the type from your code.
+      content: ElysiaJS is a fast and friendly bun web framework. Building on top of 3 philosophies, performance, simplicity, flexibility. Designed with TypeScript in mind. Elysia understands what you want and automatically infers the type from your code.
 ---
 
 # Introduction
-Elysia.js is a fast, and friendly [Bun](https://bun.sh) web framework.
+ElysiaJS is a fast, and friendly [Bun](https://bun.sh) web framework.
 
 > <small>Pronounce as "eh-LIHZ-iy-ah"・ エリシア ・ เอลิเซีย</small>
 

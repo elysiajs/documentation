@@ -1,9 +1,9 @@
 ---
-title: Lazy Loading Module - Elysia.js
+title: Lazy Loading Module - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Lazy Loading Module - Elysia.js
+      content: Lazy Loading Module - ElysiaJS
 
   - - meta
     - name: 'description'

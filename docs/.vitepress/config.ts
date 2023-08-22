@@ -7,7 +7,7 @@ const description =
 
 export default defineConfig({
     lang: 'en-US',
-    title: 'Elysia.js',
+    title: 'ElysiaJS',
     // description,
     lastUpdated: true,
     markdown: {
@@ -63,7 +63,7 @@ export default defineConfig({
             'meta',
             {
                 property: 'og:title',
-                content: 'Elysia.js'
+                content: 'ElysiaJS'
             }
         ],
         [
@@ -75,6 +75,9 @@ export default defineConfig({
         ]
     ],
     themeConfig: {
+        search: {
+            provider: 'local'
+        },
         logo: '/assets/elysia.svg',
         nav: [
             {
@@ -130,8 +133,8 @@ export default defineConfig({
                         link: '/concept/group'
                     },
                     {
-                        text: 'Middleware',
-                        link: '/concept/middleware'
+                        text: 'Lifecycle',
+                        link: '/concept/life-cycle'
                     },
                     {
                         text: 'Schema',
@@ -140,7 +143,7 @@ export default defineConfig({
                     {
                         text: 'Numeric',
                         link: '/concept/numeric'
-                    },                    
+                    },
                     {
                         text: 'Guard',
                         link: '/concept/guard'
@@ -204,6 +207,10 @@ export default defineConfig({
                         link: '/patterns/body-parser'
                     },
                     {
+                        text: 'Mount',
+                        link: '/patterns/mount'
+                    },
+                    {
                         text: 'End-to-End Type Safety',
                         link: '/patterns/end-to-end-type-safety'
                     }
@@ -232,7 +239,7 @@ export default defineConfig({
                             {
                                 text: 'Eden Fetch',
                                 link: '/plugins/eden/fetch.md'
-                            },
+                            }
                         ]
                     },
                     {

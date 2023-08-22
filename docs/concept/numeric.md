@@ -1,9 +1,9 @@
 ---
-title: Numeric Type - Elysia.js
+title: Numeric Type - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Numeric Type - Elysia.js
+      content: Numeric Type - ElysiaJS
 
   - - meta
     - name: 'description'

@@ -1,9 +1,9 @@
 ---
-title: Method Chaining - Elysia.js
+title: Method Chaining - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Method Chaining - Elysia.js
+      content: Method Chaining - ElysiaJS
 
   - - meta
     - name: 'description'

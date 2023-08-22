@@ -1,9 +1,9 @@
 ---
-title: Cron Plugin - Elysia.js
+title: Cron Plugin - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Cron Plugin - Elysia.js
+        content: Cron Plugin - ElysiaJS
 
     - - meta
       - name: 'description'

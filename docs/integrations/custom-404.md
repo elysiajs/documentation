@@ -1,9 +1,9 @@
 ---
-title: Custom 404 - Elysia.js
+title: Custom 404 - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Custom 404 - Elysia.js
+      content: Custom 404 - ElysiaJS
 
   - - meta
     - name: 'description'

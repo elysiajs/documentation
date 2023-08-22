@@ -2,6 +2,7 @@
 title: Elysia 0.3 - 大地の閾を探して [Looking for Edge of Ground]
 sidebar: false
 editLink: false
+search: false
 head:
   - - meta
     - property: 'og:title'
