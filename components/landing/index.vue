@@ -32,7 +32,7 @@
         <Eden />
         <GetStart />
         <Editor />
-        <BuildWithLove />
+        <BuiltWithLove />
     </main>
 </template>
 
@@ -46,7 +46,7 @@ import Ecosystem from './ecosystem.vue'
 import Eden from './eden.vue'
 import Editor from './editor.vue'
 import GetStart from './get-start.vue'
-import BuildWithLove from './build-with-love.vue'
+import BuiltWithLove from './built-with-love.vue'
 
 import '../tailwind.css'
 

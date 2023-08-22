@@ -5,12 +5,12 @@
         <h2
             class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400"
         >
-            Start in minute
+            Start in minutes
         </h2>
         <h3
             class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-3xl"
         >
-            Scaffold your project, and runs server in no time
+            Scaffold your project, and run server in no time
         </h3>
         <section class="flex flex-col justify-center items-center gap-6 my-6">
             <code

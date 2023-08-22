@@ -42,8 +42,8 @@ const graphs = [
                 micro optimization.
             </p>
             <p class="text-xl text-gray-400 w-full max-w-lg">
-                Elysia is able to outperform in various situation, being one of
-                the top-perform TypeScript framework.
+                Elysia is able to outperform in various situations, being one of
+                the top-performing TypeScript frameworks.
             </p>
         </section>
         <section class="flex flex-col w-full max-w-xl">

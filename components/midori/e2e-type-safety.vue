@@ -47,7 +47,7 @@ await eden.user.age.patch({
         <p
             class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-2xl"
         >
-            Synchornize types across all applications.
+            Synchronize types across all applications.
             <br />
             Move fast and break nothing like tRPC.
         </p>

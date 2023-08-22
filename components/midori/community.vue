@@ -7,7 +7,7 @@
                 <h2
                     class="text-2xl md:text-3xl leading-tight font-medium text-gray-400 mb-2"
                 >
-                    Can't find what looking for?
+                    Can't find what you're looking for?
                 </h2>
                 <h2
                     class="text-5xl leading-tight font-semibold text-gray-400 mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-fuchsia-500 to-blue-500"
@@ -19,7 +19,7 @@
                 Elysia is one of the biggest community base for Bun first web framework.
             </p>
             <p class="text-xl text-gray-400 w-full max-w-lg">
-                You can ask your questions / propose a new feature / file a bug with our community and mainter.
+                You can ask your questions / propose a new feature / file a bug with our community and mainters.
             </p>
         </section>
         <section class="flex flex-col w-full max-w-xl rounded-lg overflow-hidden">

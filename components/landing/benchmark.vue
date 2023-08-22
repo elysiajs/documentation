@@ -20,7 +20,7 @@
                 <Progress isNode label="Nest" percent="5.09" reqs="13,565" />
             </section>
             <p class="text-gray-400 text-sm mt-6">
-                Measure in requests/second. Benchmark for parsing
+                Measured in requests/second. Benchmark for parsing
                 query, path parameter and set response header on Debian 11,
                 Intel i7-13700K tested on Bun 0.5.7 at 8 Mar 2023.
             </p>
