@@ -37,7 +37,7 @@ You can create as many nested groups as you like:
 app.group('/v1', app => app
     .get('/', () => 'Using v1')
     .group('/user', app => app
-        .post('/sign-in, signIn)
+        .post('/sign-in', signIn)
         .post('/sign-up', signUp)
         .post('/profile', getProfile)
     )
