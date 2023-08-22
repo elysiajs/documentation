@@ -73,7 +73,7 @@
         <div v-else class="block dark-light" />
     </div>
     <header
-        class="relative flex flex-col justify-center items-center font-sans w-full px-6 pt-20 overflow-hidden"
+        class="relative flex flex-col justify-center items-center font-sans w-full px-6 pt-20 mb-16 md:mb-8 overflow-hidden"
         style="min-height: calc(100vh - 64px)"
     >
         <h1

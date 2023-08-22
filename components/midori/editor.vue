@@ -168,7 +168,7 @@ onMounted(() => {
         class="flex flex-col justify-center items-center w-full max-w-6xl mx-auto mt-6 md:my-12"
     >
         <h2
-            class="w-full text-left sm:text-center text-5xl md:text-6xl font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-violet-400 mb-2"
+            class="text-6xl w-full text-left sm:text-center font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-violet-400 mb-2"
         >
             Try it out
         </h2>
