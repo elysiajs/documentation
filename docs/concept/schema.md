@@ -59,7 +59,7 @@ interface Body {
 This means that you will get strict type defining once from a schema and get inferred type to TypeScript without needing to write a single TypeScript.
 
 ## Global and scope
-The global schema will define all types of a handler in the scope.
+The global schema will define all types within the scope of a handler.
 
 ```typescript
 app.guard({
@@ -73,7 +73,7 @@ app.guard({
 
 The global type will be overwritten by the nearest schema to the handler.
 
-In another word, inherits schema is rewritten by the inner scope.
+In other words, the inherited schema is rewritten within the inner scope.
 ```typescript
 app.guard({
     response: t.String()
@@ -87,7 +87,7 @@ app.guard({
 )
 ```
 
-`group` and `guard` will define the scope limit, so the type will not get out of the scope handler.
+`group` and `guard` will define the scope limits, so the type will not get out of the scope handler.
 
 ## Multiple Status Response
 By default `schema.response` can accept either a schema definition or a map or stringified status code with schema.
