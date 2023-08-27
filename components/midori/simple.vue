@@ -27,7 +27,7 @@
             <div class="flex flex-col md:flex-row gap-6 md:gap-8">
                 <p class="text-xl text-gray-400 w-full max-w-lg">
                     That's why Elysia invests time to experiment with design
-                    decision to craft the most ergonomic way possible for
+                    decisions to craft the most ergonomic way possible for
                     everyone.
                 </p>
                 <p class="text-xl text-gray-400 w-full max-w-lg">
