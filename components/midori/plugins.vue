@@ -65,12 +65,12 @@ onMounted(() => {
                 </h2>
             </header>
             <p class="text-xl text-gray-400 w-full max-w-lg mb-4">
-                Being one of the most popular choice for Bun web framework,
+                Being one of the most popular choices for a Bun web framework,
                 likely there is a plugin for what you want.
             </p>
             <p class="text-xl text-gray-400 w-full max-w-lg">
-                If there's no plugin you need, it's easy to create one and share
-                with community.
+                If the plugin you need is not there, it's easy to create one and share
+                it with the community.
             </p>
             <div class="mt-8">
                 <a
