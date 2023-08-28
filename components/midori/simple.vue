@@ -31,7 +31,7 @@
                     everyone
                 </p>
                 <p class="text-xl text-gray-400 w-full max-w-lg">
-                    From built-in strict-type validaiton to unified types
+                    From built-in strict-type validation to unified types
                     system, and documentation generation, making an ideal
                     framework for building server with TypeScript.
                 </p>
