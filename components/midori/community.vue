@@ -16,7 +16,7 @@
                 </h2>
             </header>
             <p class="text-xl text-gray-400 w-full max-w-lg mb-4">
-                Elysia is one of the biggest community base for Bun first web framework.
+                Elysia is one of the biggest communities for Bun first web frameworks.
             </p>
             <p class="text-xl text-gray-400 w-full max-w-lg">
                 You can ask your questions / propose a new feature / file a bug with our community and mainters.

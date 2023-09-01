@@ -74,9 +74,9 @@ You can customize plugin by creating function to return callback which accepts E
 ```typescript
 import { Elysia } from 'elysia'
 
-const plugin = ({
+const plugin = <const Prefix>({
     prefix = '/v1'
-}) => (app: Elysia) => app
+}: { prefix: Prefix }) => new Elysia({ prefix })
     .get(`/${prefix}/hi`, () => 'Hi')
 
 const app = new Elysia()

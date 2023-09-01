@@ -29,8 +29,8 @@ new Elysia()
             <p
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
-                No need for additional method, just return a value to send data
-                back to client
+                No need for an additional method, just return the value to send data
+                back to the client.
             </p>
             <p
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"

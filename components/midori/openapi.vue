@@ -37,7 +37,7 @@ new Elysia()
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
                 Thanks to OpenAPI compliance, Elysia can generate Swagger in one
-                line with Swagger plugin
+                line with the Swagger plugin.
             </p>
         </header>
     </article>
