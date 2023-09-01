@@ -84,14 +84,13 @@ Now when we need to quickly access the model's group, we can separate a `setMode
 // auth.model.ts
 import { Elysia } from 'elysia'
 
-export const authModel = (app: Elysia) => 
-    app
-        .model({
-            sign: t.Object({
-                username: t.String(),
-                password: t.String()
-            })
+export const authModel = new Elysia()
+    .model({
+        sign: t.Object({
+            username: t.String(),
+            password: t.String()
         })
+    })
 
 // index.ts
 import { Elysia } from 'elysia'
@@ -113,15 +112,14 @@ const app = new Elysia()
 // auth.model.ts
 import { Elysia } from 'elysia'
 
-export const authModel = (app: Elysia) => 
-    app
-        .model({
-            sign: t.Object({
-                username: t.String(),
-                password: t.String()
-            }),
-            number: t.Number()
-        })
+export const authModel = new Elysia()
+    .model({
+        sign: t.Object({
+            username: t.String(),
+            password: t.String()
+        }),
+        number: t.Number()
+    })
 ```
 
 ## Naming Convention
@@ -133,24 +131,22 @@ Let's say that you have all models stored at `models/<name>.ts`, you can declare
 
 ```typescript
 // admin.model.ts
-export const authModel = (app: Elysia) => 
-    app
-        .model({
-            'admin.auth': t.Object({
-                username: t.String(),
-                password: t.String()
-            })
+export const authModel = new Elysia()
+    .model({
+        'admin.auth': t.Object({
+            username: t.String(),
+            password: t.String()
         })
+    })
 
 // user.model.ts
-export const authModel = (app: Elysia) => 
-    app
-        .model({
-            'user.auth': t.Object({
-                username: t.String(),
-                password: t.String()
-            })
+export const authModel = new Elysia()
+    .model({
+        'user.auth': t.Object({
+            username: t.String(),
+            password: t.String()
         })
+    })
 ```
 
 This can prevent naming duplication at some level, but in the end, it's best to let the naming convention decision up to your team's agreement is the best option.
