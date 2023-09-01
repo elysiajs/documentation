@@ -31,7 +31,7 @@ new Elysia()
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
                 Elysia generates OpenAPI 3.0 specs automatically to integrate
-                with various tools across multiple languages.
+                with various tools across multiple languages
             </p>
             <p
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"

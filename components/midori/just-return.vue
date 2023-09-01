@@ -35,8 +35,8 @@ new Elysia()
             <p
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
-                Whether it's a normal string, or complex JSON, just return the value
-                and Elysia will handle the rest.
+                Whether it's a regular string, or complex JSON, just return the value
+                and Elysia will handle the rest
             </p>
         </header>
     </article>

@@ -39,13 +39,13 @@ new Elysia()
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
                 Powered by TypeBox, Elysia enforces type-strict validation to
-                ensure type integrity by default.
+                ensure type integrity by default
             </p>
             <p
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
-                Elysia infers types to TypeScript automatically to create a
-                unified type system like in statically typed languages.
+                Elysia infers types to TypeScript automatically to create
+                unified type system like statically typed language
             </p>
         </header>
     </article>

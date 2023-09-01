@@ -23,7 +23,7 @@
                 <p class="text-xl text-gray-400 w-full max-w-lg">
                     That's why Elysia invests time to experiment with design
                     decisions to craft the most ergonomic way possible for
-                    everyone.
+                    everyone
                 </p>
                 <p class="text-xl text-gray-400 w-full max-w-lg">
                     From built-in strict-type validaiton to a unified type

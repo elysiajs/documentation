@@ -19,7 +19,7 @@
                 Elysia is one of the biggest communities for Bun first web frameworks.
             </p>
             <p class="text-xl text-gray-400 w-full max-w-lg">
-                You can ask your questions / propose a new feature / file a bug with our community and maintainers.
+                You can ask your questions / propose a new feature / file a bug with our community and mainters.
             </p>
         </section>
         <section class="flex flex-col w-full max-w-xl rounded-lg overflow-hidden">

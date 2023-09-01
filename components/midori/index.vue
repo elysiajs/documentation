@@ -19,7 +19,7 @@ import '../tailwind.css'
 import './midori.css'
 
 import { onMounted, ref } from 'vue'
-import BuildWithLove from './build-with-love.vue'
+import BuiltWithLove from './built-with-love.vue'
 
 const isDark = ref(false)
 
@@ -97,7 +97,7 @@ onMounted(() => {
             <Editor />
             <Community />
             <QuickStart />
-            <BuildWithLove />
+            <BuiltWithLove />
         </article>
     </div>
 </template>
