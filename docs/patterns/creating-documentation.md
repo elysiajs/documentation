@@ -59,6 +59,6 @@ app
     })
 ```
 
-The detail fields follows an OpenAPI V2 definition with auto-completion and type-safety by default.
+The detail fields follows an OpenAPI V3 definition with auto-completion and type-safety by default.
 
 Detail is then passed to Swagger to put the description to Swagger route.
