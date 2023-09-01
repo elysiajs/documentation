@@ -7,7 +7,7 @@
                 <h2
                     class="text-5xl md:text-6xl md:leading-tight font-bold text-transparent bg-clip-text bg-gradient-to-br from-lime-300 to-cyan-300"
                 >
-                    Made for Human
+                    Made for Humans
                 </h2>
                 <h2
                     class="text-3xl leading-tight font-medium text-gray-400 mb-8"
@@ -26,14 +26,14 @@
             </p>
             <div class="flex flex-col md:flex-row gap-6 md:gap-8">
                 <p class="text-xl text-gray-400 w-full max-w-lg">
-                    That's why Elysia invest times to experiment with design
-                    decision to craft the most ergonomic way possible for
-                    everyone
+                    That's why Elysia invests time to experiment with design
+                    decisions to craft the most ergonomic way possible for
+                    everyone.
                 </p>
                 <p class="text-xl text-gray-400 w-full max-w-lg">
-                    From built-in strict-type validation to unified types
+                    From built-in strict-type validaiton to a unified type
                     system, and documentation generation, making an ideal
-                    framework for building server with TypeScript.
+                    framework for building servers with TypeScript.
                 </p>
             </div>
         </section>

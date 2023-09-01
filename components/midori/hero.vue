@@ -84,7 +84,7 @@
         <h2
             class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400 mt-2 mb-8"
         >
-            Ergonomic Framework for Human<span
+            Ergonomic Framework for Humans<span
                 class="absolute w-10 md:w-12 h-10 md:h-12 bottom-0 mb-4 ml-2 md:ml-0 md:mb-10 text-indigo-400"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">

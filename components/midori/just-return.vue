@@ -29,14 +29,14 @@ new Elysia()
             <p
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
-                No need for additional method, just return a value to send data
-                back to client
+                No need for an additional method, just return the value to send data
+                back to the client.
             </p>
             <p
                 class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
-                Whether it's a normal string, or complex JSON, just return value
-                and Elysia will handle the rest
+                Whether it's a normal string, or complex JSON, just return the value
+                and Elysia will handle the rest.
             </p>
         </header>
     </article>
