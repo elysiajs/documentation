@@ -27,7 +27,7 @@ const app = new Elysia()
     // and so on...
 
 // routes/authen.ts
-const authen = (app: Elysia) => app
+const authen = new Elysia()
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)
 ```
@@ -43,7 +43,7 @@ const app = new Elysia()
     // and so on...
 
 // routes/authen.ts
-const authen = (app: Elysia) => app
+const authen = new Elysia()
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)
     // But then there is no type
@@ -56,7 +56,7 @@ const authen = (app: Elysia) => app
 
 If you hovered over the main `app` in `index.ts`, you can see that it has some type auto-generated for your main server which might look something like this:
 ```typescript
-const app: Elysia<{
+const app: Elysia<'', {
     store: {
         redis: Redis;
      };
@@ -72,12 +72,12 @@ But this type isn't applied to sub-modules.
 To apply the type to sub-modules, you can create a plugin which only contains `state` and `decorate` which caused **type side-effect** as dependency, and apply to the module you want to use.
 
 ```typescript
-const setup = (app: Elysia) => app
+const setup = new Elysia({ name: 'setup' })
     .decorate('signOut', signOut)
     .state('redis', redis)
 
 // routes/authen.ts
-const authen = (app: Elysia) => app
+const authen = new Elysia()
     .use(setup)
     .post('/sign-in', signIn)
     .post('/sign-up', signUp)

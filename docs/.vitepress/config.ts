@@ -129,6 +129,10 @@ export default defineConfig({
                         link: '/concept/derive'
                     },
                     {
+                        text: 'Plugin',
+                        link: '/concept/plugin'
+                    },
+                    {
                         text: 'Group',
                         link: '/concept/group'
                     },
@@ -151,10 +155,6 @@ export default defineConfig({
                     {
                         text: 'Config',
                         link: '/concept/config'
-                    },
-                    {
-                        text: 'Plugin',
-                        link: '/concept/plugin'
                     },
                     {
                         text: 'Explicit Body',
