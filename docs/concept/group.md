@@ -50,7 +50,7 @@ You can separate group into an instance and register the group as plugin for cod
 import { Elysia } from 'elysia'
 
 const users = new Elysia({ prefix: '/user' })
-    .post('/sign-in, signIn)
+    .post('/sign-in', signIn)
     .post('/sign-up', signUp)
     .post('/profile', getProfile)
 
