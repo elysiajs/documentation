@@ -53,6 +53,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - file system routes for Elysia
 - [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - file system and folder-based router for groups.
 - [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic http authentication for Elysia.
+- [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - secure Elysia apps with various HTTP headers.
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
