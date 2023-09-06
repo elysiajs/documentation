@@ -19,17 +19,21 @@ Elysia catches all the errors thrown in the handler, classifies the error code, 
 
 ```typescript
 new Elysia()
+    .onError(({ code, error }) => {
+        return new Response(error.toString())
+    })
     .get('/', () => {
         throw new Error('Server is during maintainance')
         
         return 'unreachable'
     })
-    .onError(({ code, error }) => {
-        return new Response(error.toString())
-    })
 ```
 
 With `onError` you can catch and transform the error into your custom error message.
+
+::: tip
+It's important that `onError` must be call before handler you want to apply
+:::
 
 For example, returning custom 404 messages:
 ```typescript
@@ -50,13 +54,31 @@ new Elysia()
 You can assign error handling method to a scope using [hook](/concept/life-cycle.html#local-hook) or [guard](/concept/guard.html)
 ```typescript
 app.get('/', () => 'Hello', {
-    beforeHandle: ({ set, request: { headers } }) => {
+    beforeHandle({ set, request: { headers } }) {
         if(!isSignIn(headers)) {
             set.status = 401
-            return 'Unauthorized'
+
+            throw new Error("Unauthorized")
         }
+    },
+    error({ error }) {
+        return 'Handled'
     }
 })
+```
+
+## Custom Error Message
+You can provide custom error message by providing `error`:
+```ts
+new Elysia()
+	.post('/', ({ body }) => body, {
+		body: t.Object({
+			name: t.String({
+				error: 'Name is required'
+			}),
+            age: t.Number()
+		})
+	})
 ```
 
 ## Error Code
@@ -98,3 +120,35 @@ new Elysia()
         }
     })
 ```
+
+## Catching all error
+To list all error, you can list an error using `error.all`.
+
+```ts
+new Elysia()
+	.post('/', ({ body }) => body, {
+		body: t.Object({
+			name: t.String(),
+			age: t.Number()
+		}),
+		error({ code, error }) {
+			switch (code) {
+				case 'VALIDATION':
+                    console.log(error.all)
+
+                    // Find a specific error name (path is OpenAPI Schema compliance)
+					const name = error.all.find((x) => x.path === '/name')
+
+                    // If has validation error, then log it
+                    if(name)
+    					console.log(name)
+			}
+		}
+	})
+```
+
+With this you can overwrite provide an advance custom error message or monitor an error based on your need.
+
+::: tip
+Make sure to narrow down Error code to "Validation" to narrow down error type before using `error.all`
+:::
