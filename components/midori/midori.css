@@ -1,5 +1,12 @@
-.dark-light {
+.gradient {
     width: 1100px;
     height: 1100px;
+}
+
+.gradient.-light {
+    background: radial-gradient(ellipse at center, #d7e0ff 0%, #eaecff 35%, transparent 70%);
+}
+
+.gradient.-dark {
     background: radial-gradient(ellipse at center, #797ee199 0%, transparent 70%);
 }

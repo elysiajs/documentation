@@ -3,74 +3,7 @@
         id="splash"
         class="pointer-events-none absolute top-[-70vh] max-w-full flex justify-center w-full h-screen opacity-50"
     >
-        <svg
-            v-if="!isDark"
-            class="filter blur-3xl"
-            xmlns="http://www.w3.org/2000/svg"
-            version="1.1"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            xmlns:svgjs="http://svgjs.dev/svgjs"
-            width="1100"
-            height="1100"
-            viewBox="0 0 1100 1100"
-        >
-            <defs>
-                <radialGradient id="ffflux-gradient">
-                    <stop offset="0%" stop-color="hsl(236, 100%, 72%)"></stop>
-                    <stop offset="100%" stop-color="hsl(0, 0%, 100%)"></stop>
-                </radialGradient>
-                <filter
-                    id="ffflux-filter"
-                    x="-20%"
-                    y="-20%"
-                    width="140%"
-                    height="140%"
-                    filterUnits="objectBoundingBox"
-                    primitiveUnits="userSpaceOnUse"
-                    color-interpolation-filters="sRGB"
-                >
-                    <feTurbulence
-                        type="fractalNoise"
-                        baseFrequency="0.005 0.003"
-                        numOctaves="1"
-                        seed="2"
-                        stitchTiles="stitch"
-                        x="0%"
-                        y="0%"
-                        width="100%"
-                        height="100%"
-                        result="turbulence"
-                    ></feTurbulence>
-                    <feGaussianBlur
-                        stdDeviation="23 14"
-                        x="0%"
-                        y="0%"
-                        width="100%"
-                        height="100%"
-                        in="turbulence"
-                        edgeMode="duplicate"
-                        result="blur"
-                    ></feGaussianBlur>
-                    <feBlend
-                        mode="color-dodge"
-                        x="0%"
-                        y="0%"
-                        width="100%"
-                        height="100%"
-                        in="SourceGraphic"
-                        in2="blur"
-                        result="blend"
-                    ></feBlend>
-                </filter>
-            </defs>
-            <rect
-                width="1100"
-                height="1100"
-                fill="url(#ffflux-gradient)"
-                filter="url(#ffflux-filter)"
-            ></rect>
-        </svg>
-        <div v-else class="block dark-light" />
+        <div :class="(isDark ? 'block gradient -dark' : 'block gradient -light')" />
     </div>
     <header
         class="relative flex flex-col justify-center items-center font-sans w-full px-6 pt-20 mb-16 md:mb-8 overflow-hidden"
@@ -154,7 +87,7 @@
             >, unified type system and outstanding developer experience
         </h3>
         <section
-            class="flex flex-col sm:flex-row items-start gap-4 mt-10 mb-12"
+            class="flex flex-col sm:flex-row items-start w-full md:w-auto gap-4 mt-10 mb-12"
         >
             <a
                 class="text-white font-medium text-lg bg-blue-500 px-6 py-2.5 rounded-full"
@@ -193,7 +126,7 @@
 import { onMounted, ref } from 'vue'
 
 const isDark = ref(false)
-
+const safari =
 onMounted(() => {
     // @ts-ignore
     isDark.value = document.documentElement.classList.contains('dark')
