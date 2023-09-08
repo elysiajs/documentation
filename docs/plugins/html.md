@@ -53,7 +53,10 @@ To utilize JSX, modify the tsconfig.json as the following:
 {
   "compilerOptions": {
     "jsx": "react",
-    "jsxImportSource": "ElysiaJSX"
+    "jsxFactory": "ElysiaJSX",
+    "types": [
+      "bun-types"
+    ]
   }
 }
 ```
