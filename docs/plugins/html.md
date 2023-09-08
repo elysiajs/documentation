@@ -90,6 +90,30 @@ new Elysia()
 To use JSX, don't forget to rename your file extension to either `.tsx` or `.jsx`
 :::
 
+## Sanitize HTML
+If you are using JSX, you can use `safe` attribute to sanitize unsafe value
+```tsx
+const malicious = `<script>alert("Hello")</script>`
+
+new Elysia()
+    .get('/unsafe', () => (
+        <h1 safe>{malicious}</h1>
+    ))
+    .listen(8080)
+```
+
+Otherwise you can use a decorated `sanitize` function decorated in `Context` to explicitly sanitize the value.
+```tsx
+const malicious = `<script>alert("Hello")</script>`
+
+new Elysia()
+    .get('/unsafe', ({ sanitize }) => (
+        <h1>{sanitize(malicious)}</h1>
+    ))
+    .listen(8080)
+```
+```
+
 ## Handler
 Below are the value added to the handler.
 
