@@ -54,6 +54,7 @@ To utilize JSX, modify the tsconfig.json as the following:
   "compilerOptions": {
     "jsx": "react",
     "jsxFactory": "ElysiaJSX",
+    "jsxFragmentFactory": "ElysiaJSX.Fragment",
     "types": [
       "bun-types"
     ]
