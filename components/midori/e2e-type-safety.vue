@@ -52,9 +52,14 @@ await eden.user.age.patch({
             Move fast and break nothing like tRPC.
         </p>
 
-        <section
-            class="flex flex-col lg:flex-row gap-8 w-full max-w-5xl my-8"
+        <a
+            class="text-lg font-medium bg-blue-50 text-blue-500 dark:text-blue-400 dark:bg-blue-500/20 px-3 py-1.5 rounded-lg mt-4"
+            href="/patterns/end-to-end-type-safety"
         >
+            See how it works
+        </a>
+
+        <section class="flex flex-col lg:flex-row gap-8 w-full max-w-5xl my-8">
             <div class="w-full">
                 <Prism
                     class="!text-base !font-mono rounded-xl"

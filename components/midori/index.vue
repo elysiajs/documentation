@@ -96,6 +96,15 @@ onMounted(() => {
             <Plugins />
             <Editor />
             <Community />
+            <figure
+                class="hidden sm:block max-w-6xl w-full mx-auto rounded-2xl overflow-hidden my-12 shadow-xl bg-gray-50 dark:bg-gray-800"
+            >
+                <img
+                    class="w-full object-cover object-center opacity-100"
+                    src="/assets/feature-sheet.webp"
+                    alt="Elysia Feature Sheet"
+                />
+            </figure>
             <QuickStart />
             <BuiltWithLove />
         </article>

@@ -8,7 +8,7 @@
             Start in minutes
         </h2>
         <h3
-            class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-3xl"
+            class="text-xl md:text-2xl leading-relaxed text-gray-400 text-center w-full max-w-3xl"
         >
             Scaffold your project, and run server in no time
         </h3>
