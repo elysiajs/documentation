@@ -39,7 +39,7 @@ await eden.user.age.patch({
             Introducing
         </h3>
         <h2
-            class="text-5xl md:text-6xl font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400 mt-2 mb-4"
+            class="text-5xl md:text-6xl font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400 mt-2 mb-4 mr-auto md:mx-auto"
         >
             End–to-End Type Safety
         </h2>
@@ -53,7 +53,7 @@ await eden.user.age.patch({
         </p>
 
         <a
-            class="text-lg font-medium bg-blue-50 text-blue-500 dark:text-blue-400 dark:bg-blue-500/20 px-3 py-1.5 rounded-lg mt-4"
+            class="text-lg font-medium bg-blue-50 text-blue-500 dark:text-blue-400 dark:bg-blue-500/20 mr-auto md:mx-auto px-3 py-1.5 rounded-lg mt-4"
             href="/patterns/end-to-end-type-safety"
         >
             See how it works
