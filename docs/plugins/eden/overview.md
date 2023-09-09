@@ -40,7 +40,7 @@ import type { App } from './server'
 const app = edenTreaty<App>('http://localhost:8080')
 
 // Call [GET] at '/'
-const { data, error } = app.index.get()
+const { data, error } = app.get()
 
 // Call [POST] at '/nendoroid/id/:id'
 const { data: nendoroid, error } = await app.nendoroid.id['1895'].post({

@@ -49,7 +49,7 @@ import type { App } from './server'
 const app = edenTreaty<App>('http://localhost:8080')
 
 // response type: 'Hi Elysia'
-const { data: pong, error } = app.index.get()
+const { data: pong, error } = app.get()
 
 // response type: 1895
 const { data: id, error } = app.id['1895'].get()
@@ -81,8 +81,6 @@ Eden will transform `/` into `.` then can be called with `method` registered, fo
 - **/path** -> .path
 - **/nested/path** -> .nested.path
 
-For `/`, will become `index` instead.
-
 ### Path parameters
 With path parameters, any name will be applicable and mapped to path parameters automatically.
 
@@ -97,7 +95,7 @@ If a path doesn't support path parameter, TypeScript will throw an error.
 ### Query
 You can append query to path with `$query`:
 ```typescript
-app.index.get({
+app.get({
     $query: {
         name: 'Eden',
         code: 'Gold'
@@ -108,7 +106,7 @@ app.index.get({
 ### Fetch
 Eden Treaty is a fetch wrapper, you can add any valid fetch's parameters to Eden by passing it to `$fetch`:
 ```typescript
-app.index.post({
+app.post({
     $fetch: {
         headers: {
             'x-origanization': 'MANTIS'
