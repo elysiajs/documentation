@@ -57,6 +57,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - file system and folder-based router for groups.
 - [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic http authentication for Elysia.
 - [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - Basic http authentication for Elysia (using 'request' event).
+- [i18n](https://github.com/eelkevdbos/elysia-i18next) - i18n wrapper for Elysia based on i18next
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
