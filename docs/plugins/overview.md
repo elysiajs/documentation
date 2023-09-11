@@ -49,6 +49,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - Vite Plugin SSR using Elysia server
 - [OAuth2](https://github.com/bogeychan/elysia-oauth2) - handle OAuth 2.0 authorization code flow
 - [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple lightweight rate limiter
+- [Logysia](https://github.com/tristanisham/logysia) - classic logging elysia middleware
 - [Logger](https://github.com/bogeychan/elysia-logger) - pino logging elysia middleware
 - [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy Elysia on AWS Lambda
 - [Decorators](https://github.com/gaurishhs/elysia-decorators) - use typescript decorators with elysia
