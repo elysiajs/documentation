@@ -35,7 +35,7 @@ new Elysia()
 This will set Elysia to accept requests from any origin. 
 
 ## Config
-Below is a config which accepted by the plugin
+Below is a config which is accepted by the plugin
 
 ### origin
 @default `true`

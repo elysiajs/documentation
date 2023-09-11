@@ -60,7 +60,7 @@ const app = new Elysia()
 ## Config
 This plugin extends config from [jose](https://github.com/panva/jose).
 
-Below is a config which accepted by the plugin.
+Below is a config which is accepted by the plugin.
 
 ### name
 Name to register `jwt` function as.
@@ -88,7 +88,7 @@ The private key to sign JWT payload with.
 Type strict validation for JWT payload.
 
 ---
-Below is a config extends from [cookie](https://npmjs.com/package/cookie)
+Below is a config that extends from [cookie](https://npmjs.com/package/cookie)
 
 ### alg
 @default `HS256`

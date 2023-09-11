@@ -21,7 +21,7 @@ Elysia is WinterCG compliance as we are optimized to Bun but also openly support
 
 In theory, this allows any framework or code that is WinterCG compliance to be run together, allowing framework like Elysia, Hono, Remix, Itty Router to runs together in a simple function.
 
-By this, we implemented the same logic for Elysia by introducing `.mount` method to runs any framework or code that WinterCG compliance.
+By this, we implemented the same logic for Elysia by introducing `.mount` method to runs any framework or code that is WinterCG compliant.
 
 ## Mount
 To use `.mount`, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
@@ -31,7 +31,7 @@ const app = new Elysia()
     .mount('/hono', hono.fetch)
 ```
 
-A **fetch** function is a function that accept Web Standard Request and return Web Standard Response as the definition of:
+A **fetch** function is a function that accepts a Web Standard Request and returns a Web Standard Response with the definition of:
 ```ts
 // Web Standard Request-like object
 // Web Standard Response
@@ -47,7 +47,7 @@ By default, this declaration are used by:
 - Remix Function Handler
 - etc.
 
-Which means you can run all of the above code to interlop with Elysia all in a single server, or reused and existing function all in one deployment, no need to setting up Reverse Proxy for handling multiple server.
+Which means you can run all of the above code to interlop with Elysia all in a single server, or re-used and existing functions all in one deployment, no need to set up a Reverse Proxy for handling multiple servers.
 
 If the framework also support a **.mount** function, you can deeply nested a framework that support it infinitely.
 ```ts
@@ -65,7 +65,7 @@ const main = new Elysia()
 ```
 
 ## Reusing Elysia
-You can even reused multiple existing Elysia project in your server.
+You can even re-use multiple existing Elysia project in your server.
 
 ```ts
 import A from 'project-a/elysia'
@@ -78,6 +78,6 @@ new Elysia()
     .mount(C)
 ```
 
-If an instance passed to mount is an Elysia instance, it will resolve to `use` automatically, providing type-safety and support for Eden by default.
+If an instance passed to `mount` is an Elysia instance, it will be resolved with `use` automatically, providing type-safety and support for Eden by default.
 
-This made the possiblility of interlopable framework and runtime to a reality.
+This made the possiblility of interlopable framework and runtime, into a reality.
