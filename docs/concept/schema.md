@@ -115,19 +115,22 @@ Sometimes you might find yourself reusing the same type multiple times.
 Using [reference models](/patterns/reference-models), you can name your model and use it by referencing the name:
 ```typescript
 // auth.model.ts
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
-// index.ts
-import { Elysia } from 'elysia'
-import { authModel } from './auth.model.ts'
-
-const app = new Elysia()
+export const authModel = new Elysia()
     .model({
         sign: t.Object({
             username: t.String(),
             password: t.String()
         })
     })
+
+// index.ts
+import { Elysia } from 'elysia'
+import { authModel } from './auth.model.ts'
+
+const app = new Elysia()
+    .use(authModel)
     .post('/sign-in', ({ body }) => body, {
             // with auto-completion for existing model name
         body: 'sign',
