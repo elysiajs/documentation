@@ -176,7 +176,7 @@ onMounted(() => {
         <p
             class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-2xl"
         >
-            Being WinterCG compliance, Elysia can run in your browser!
+            Being WinterCG compliant, Elysia can run in your browser!
             <br />
             Edit the code and see live update immediately.
         </p>
