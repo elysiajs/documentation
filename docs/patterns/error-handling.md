@@ -37,7 +37,7 @@ It's important that `onError` must be call before handler you want to apply
 
 For example, returning custom 404 messages:
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, NotFoundError } from 'elysia'
 
 new Elysia()
     .onError(({ code, error, set }) => {
@@ -47,6 +47,9 @@ new Elysia()
             return 'Not Found :('
         }
     })
+	.post('/', () => {
+		throw new NotFoundError();
+	})
     .listen(8080)
 ```
 
@@ -119,6 +122,9 @@ new Elysia()
                 return error
         }
     })
+	.get('/', () => {
+		throw new CustomError('Hello Error');
+	})
 ```
 
 ## Catching all error
