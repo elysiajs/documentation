@@ -99,7 +99,7 @@ const plugin = (config) => new Elysia({
     name: 'my-plugin',
     seed: config
 })
-    .get(`/${prefix}/hi`, () => 'Hi')
+    .get(`/${config.prefix}/hi`, () => 'Hi')
 
 const app = new Elysia()
     .use(plugin({
