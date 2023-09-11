@@ -89,7 +89,7 @@ const app = new Elysia()
 Config type will be inferred into `use`, generating auto completion and type strict as intend.
 
 ## Plugin deduplication
-By default, Elysia will registered any plugin and handle type definitions which when using multiple times will results in a multiple duplication of setting value or routes.
+By default, Elysia will register any plugin and handle type definitions which when using multiple times will results in a multiple duplication of setting value or routes.
 
 This can be fixed by providing name and optional seeds to help Elysia identify instance duplication:
 ```ts

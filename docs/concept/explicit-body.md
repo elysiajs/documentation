@@ -31,9 +31,9 @@ app.post('/', ({ body }) => body, {
 })
 ```
 
-Elysia read the body schema and found that, the type is entirely an object, so it's likely that the body will be JSON, Elysia then pick the JSON body parser function ahead of time and try to parse the body.
+Elysia read the body schema and found that, the type is entirely an object, so it's likely that the body will be JSON. Elysia then picks the JSON body parser function ahead of time and tries to parse the body.
 
-Here's a criteria that Elysia use to pick up type of body parser
+Here's a criteria that Elysia uses to pick up type of body parser
 
 - `application/json`: body typed as `t.Object`
 - `multipart/form-data`: body typed as `t.Object`, and is 1 level deep with `t.File`
@@ -43,7 +43,7 @@ Here's a criteria that Elysia use to pick up type of body parser
 This allows Elysia to optimize body parser ahead of time, and reduce overhead in compile time.
 
 ## Explicit Content Type
-However, is some scenario that Elysia fail to pick the correct body parser function, you can explicitly tell Elysia to use a certain function by specifying `type`
+However, in some scenario if Elysia fails to pick the correct body parser function, you can explicitly tell Elysia to use a certain function by specifying `type`
 
 ```ts
 app.post('/', ({ body }) => body, {
@@ -52,7 +52,7 @@ app.post('/', ({ body }) => body, {
 })
 ```
 
-This allows you to control Elysia behavior for picking body parser function to fits your need in complex scenario.
+This allows you to control Elysia behavior for picking body parser function to fit your needs in a complex scenario.
 
 `type` may be one of the following:
 ```ts
@@ -71,4 +71,4 @@ type ContentType = |
     | 'application/x-www-form-urlencoded'
 ```
 
-You can extends Elysia by adding a custom body parser function yourself with `onParse`, see [body parser](/patterns/body-parser).
+You can extend Elysia by adding a custom body parser function yourself with `onParse`, see [body parser](/patterns/body-parser).
