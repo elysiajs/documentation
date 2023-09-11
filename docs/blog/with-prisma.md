@@ -283,7 +283,7 @@ This will return a JSON equivalent of our custom error message when a unique con
 Allowing us to seemlessly define any custom error from Prisma error.
 
 ## Bonus: Reference Schema
-When our server grow complex and type becoming more redundant and become a boilerplate, inlining an Elysia type can be improved by using **Reference Schmea**.
+When our server grow complex and type becoming more redundant and become a boilerplate, inlining an Elysia type can be improved by using **Reference Schema**.
 
 To put it simply, we can named our schema and reference the type by using the name.
 
