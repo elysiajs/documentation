@@ -16,7 +16,29 @@ head:
 
 # Docker
 You use Elysia with Docker with the following Dockerfile below:
-```typescript
+```docker
+FROM oven/bun
+
+WORKDIR /app
+
+COPY package.json .
+COPY bun.lockb .
+
+RUN bun install --production
+
+COPY src src
+COPY tsconfig.json .
+# COPY public public
+
+ENV NODE_ENV production
+CMD ["bun", "src/index.ts"]
+
+EXPOSE 3000
+```
+
+## Distroless
+If you like to use Distroless:
+```docker
 FROM debian:11.6-slim as builder
 
 WORKDIR /app
@@ -40,10 +62,10 @@ COPY --from=builder /root/.bun/bin/bun bun
 COPY --from=builder /app/node_modules node_modules
 
 COPY src src
+COPY tsconfig.json .
 # COPY public public
-# COPY tsconfig.json .
 
-ENV ENV production
+ENV NODE_ENV production
 CMD ["./bun", "src/index.ts"]
 
 EXPOSE 3000

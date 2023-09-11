@@ -19,11 +19,11 @@ End-to-end type-safety refers to a system in which every component of the system
 
 This can help prevent bugs and errors by catching type mismatches early in the development process, rather than at runtime.
 
-Ensure that the system is working in a predictable way, thus reducing the risk of unexpected behavior.
+It ensures that the system is working in a predictable way, thus reducing the risk of unexpected behavior.
 
 ---
 
-Elysia support End-to-End Type-Safety between client-server with the [Eden](/plugins/eden/overview).
+Elysia supports End-to-End Type-Safety between client-server with the [Eden](/plugins/eden/overview) plugin.
 
 <iframe
     id="embedded-editor"
@@ -37,8 +37,6 @@ Elysia support End-to-End Type-Safety between client-server with the [Eden](/plu
 Hover over variable and function to see type definition.
 :::
 
-Elysia allows you change type on server and reflect the type definitions on the client, helping with auto-completion and type-enforcement.
+Elysia allows you change the type on server and it will be instantly reflected on the client, helping with auto-completion and type-enforcement.
 
-With End-to-End Type-Safety, migrating from old to new type also reflect which path of the codebase need to be migrate by line-of-code level.
-
-See [Eden](/plugins/eden/overview) for more example.
+See [Eden](/plugins/eden/overview) for more examples.

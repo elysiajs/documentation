@@ -37,7 +37,7 @@ new Elysia()
 Accessing `/swagger` would show you a Swagger endpoint with generated endpoint from Elysia server.
 
 ## Config
-Below is a config which accepted by the plugin
+Below is a config which is accepted by the plugin
 
 ### swagger
 Configuration for customizing Swagger.

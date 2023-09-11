@@ -3,7 +3,7 @@ import Prism from 'vue-prism-component'
 
 const code = `import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
-import { user, feed } from './controllers'
+import { users, feed } from './controllers'
 
 new Elysia()
     .use(swagger())

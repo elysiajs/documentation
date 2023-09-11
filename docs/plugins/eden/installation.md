@@ -21,9 +21,9 @@ bun add elysia @elysiajs/eden
 ```
 
 ::: tip
-Eden couldn't infered type correctly without Elysia installed.
+Eden can't infer types correctly, without Elysia installed.
 
-You can install Elysia as **dev dependencies** as Elysia on client is only for infering utility type.
+You can install Elysia as **dev dependencies**, as Elysia on client is only for infering types.
 :::
 
 First, export your existing Elysia server type:
@@ -45,7 +45,7 @@ const app = new Elysia()
 export type App = typeof app
 ```
 
-Then consume Elysia API on client side:
+Then consume the Elysia API on client side:
 ```typescript
 // client.ts
 import { edenTreaty } from '@elysiajs/eden'

@@ -25,7 +25,7 @@ The schema consists of:
 - params - validate path parameters.
 - header - validate request's headers.
 - response - validate response type.
-- detail - Explicitly define what can route does, see ([creating documentation](/patterns/creating-documentation)) for more explanation.
+- detail - Explicitly define what a route can do, see ([creating documentation](/patterns/creating-documentation)) for more explanation.
 
 Schema is defined as:
 - Locally: in a handler
@@ -114,12 +114,7 @@ Sometimes you might find yourself reusing the same type multiple times.
 
 Using [reference models](/patterns/reference-models), you can name your model and use it by referencing the name:
 ```typescript
-// auth.model.ts
 import { Elysia } from 'elysia'
-
-// index.ts
-import { Elysia } from 'elysia'
-import { authModel } from './auth.model.ts'
 
 const app = new Elysia()
     .model({

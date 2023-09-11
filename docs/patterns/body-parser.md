@@ -37,7 +37,7 @@ new Elysia()
 ```
 
 ## Custom body parser
-If you want to support more `content-type`, you can use `onParse`:
+If you want to support more `content-type`s, you can use the `onParse` method:
 
 ```typescript
 new Elysia()
@@ -47,9 +47,9 @@ new Elysia()
     })
 ```
 
-The returned value will be assigned to `Context.body`, otherwise, Elysia will iterate more parser functions assigned by `onParse` until either body is assigned or all parsers are executed.
+The returned value will be assigned to Context.body. If not, Elysia will continue iterating through additional parser functions assigned by `onParse` until either body is assigned or all parsers have been executed.
 
-You can also use `request` to take advantage and add custom behavior for parsing the body.
+You can also use `request` to add custom parsing behavior.
 
 For example, parsing GraphQL on a specific path:
 ```typescript

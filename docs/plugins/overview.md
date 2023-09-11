@@ -49,6 +49,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - Vite Plugin SSR using Elysia server
 - [OAuth2](https://github.com/bogeychan/elysia-oauth2) - handle OAuth 2.0 authorization code flow
 - [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple lightweight rate limiter
+- [Logysia](https://github.com/tristanisham/logysia) - classic logging elysia middleware
 - [Logger](https://github.com/bogeychan/elysia-logger) - pino logging elysia middleware
 - [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy Elysia on AWS Lambda
 - [Decorators](https://github.com/gaurishhs/elysia-decorators) - use typescript decorators with elysia
@@ -56,6 +57,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - file system and folder-based router for groups.
 - [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic http authentication for Elysia.
 - [ETag](https://github.com/bogeychan/elysia-etag) - automatic HTTP ETags generation for Elysia.
+- [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - Basic http authentication for Elysia (using 'request' event).
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).

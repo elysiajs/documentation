@@ -326,7 +326,7 @@ const authen = (app: Elysia) =>
 Great! We have just used name reference on our route!
 
 ::: tip
-If you found yourself with a long schema, you can declare them in a separate file and reuse them in any Elysia route to put the focus back on business logic instead.
+If you found yourself with a long schema, you can declare them in a separate file and re-use them in any Elysia route to put the focus back on business logic instead.
 :::
 
 ## Storing user session
@@ -478,7 +478,7 @@ And that's it!
 
 We have just implemented user authentication which is fun and game, but now you might find yourself in need of authorization for each route, and duplicating the same code to check for cookies all over the place.
 
-Luckily, we can reuse the function in Elysia.
+Luckily, we can re-use the function in Elysia.
 
 Let's paint the example by saying that we might want a user to create a simple blog post that can have the database schema as the following:
 

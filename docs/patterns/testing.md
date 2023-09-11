@@ -39,10 +39,10 @@ describe('Elysia', () => {
 })
 ```
 
-You can also use other testing library like Jest to create a unit test for Elysia, but we recommended to use `bun:test` over others.
+You can also use other testing libraries like Jest to create a unit test for Elysia, but we recommended to use `bun:test` over others.
 
 ::: tip
-When creating a Request to Elysia server, Elysia expect an entire valid URL **NOT** a part of an URL. 
+When creating a Request to Elysia server, Elysia expects an entire valid URL, **NOT** a part of a URL. 
 
 For instance, "http://localhost/" is valid but "/user" is not.
 :::

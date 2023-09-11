@@ -88,7 +88,7 @@ const app = new Elysia()
 ## Config
 This plugin extends [GraphQL Yoga's createYoga options, please refers to the GraphQL Yoga documentation](https://the-guild.dev/graphql/yoga-server/docs) with inlining `schema` config to root.
 
-Below is a config which accepted by the plugin
+Below is a config which is accepted by the plugin
 
 ### path
 @default `/graphql`
