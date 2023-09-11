@@ -15,7 +15,7 @@ head:
 ---
 
 # File Upload
-Elysia handle attachment of `multipart/form-data` to `Context.body` by default.
+Elysia handles attachment of `multipart/form-data` to `Context.body` by default.
 
 ```typescript
 import { Elysia, t } from '../src'

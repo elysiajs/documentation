@@ -17,9 +17,9 @@ head:
 # Lazy-Loading Module
 Modules are eagerly loaded by default. 
 
-Elysia loads all modules and registers and indexes all of the modules before starting the server. This enforces that all the modules should load before start accepting a request.
+Elysia loads all modules then registers and indexes all of them before starting the server. This enforces that all the modules have loaded before it starts accepting requests.
 
-While this is fine for most applications, it may become a bottleneck for a server running in a serverless environment and edge function, where the startup time is important.
+While this is fine for most applications, it may become a bottleneck for a server running in a serverless environment or an edge function, in which the startup time is important.
 
 Lazy-loading can help decrease startup time by deferring modules to be gradually indexed after the server start.
 
@@ -53,7 +53,7 @@ const app = new Elysia()
 
 Elysia static plugin is also a deferred module, as it loads files and registers files path asynchronously.
 
-To ensure module registration before the server start, you can use `await` on the deferred module.
+To ensure module registration before the server starts, you can use `await` on the deferred module.
 
 ```typescript
 // index.ts
@@ -66,7 +66,7 @@ const app = new Elysia()
 ## Lazy Load Module
 Same as the async plugin, the lazy-load module will be registered after the server is started.
 
-A lazy-load module can be both sync or async function, as long as the module is used with `import` the module will be lazy-load.
+A lazy-load module can be both sync or async function, as long as the module is used with `import` the module will be lazy-loaded.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -75,7 +75,7 @@ const app = new Elysia()
     .use(import('./plugin'))
 ```
 
-Lazy-loading module is recommended when the module is heavy and blocking a start-up time, especially in a serverless/edge environment.
+Using module lazy-loading is recommended when the module is computationally heavy and/or blocking.
 
 ## Testing
 In a test environment, you can use `await app.modules` to wait for deferred and lazy-loading modules.

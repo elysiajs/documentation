@@ -55,7 +55,7 @@ const app = new Elysia()
 
 This is a good approach to keeping the code clean by creating a separation of concerns.
 
-However, as the app grows more complicated, you might re-use the many models on many multiple controllers.
+As the complexity of the app increases, you may find yourself reusing multiple models with various controllers.
 
 You can make it a bit cleaner by creating a "reference model".
 
@@ -123,9 +123,7 @@ export const authModel = new Elysia()
 ```
 
 ## Naming Convention
-Having multiple models in an app might have a duplicated name, by default Elysia will throw an error if the model name is duplicated.
-
-But to prevent declaring duplicate model names, you can create a naming convention for separating a model.
+Duplicated model names will cause Elysia to throw an error. To prevent declaring duplicate model names, you can use the following naming convention.
 
 Let's say that you have all models stored at `models/<name>.ts`, you can declare the prefix of the model as a namespace.
 

@@ -32,7 +32,7 @@ new Elysia()
 With `onError` you can catch and transform the error into your custom error message.
 
 ::: tip
-It's important that `onError` must be call before handler you want to apply
+It's important that `onError` must be called before the handler you want to apply it to.
 :::
 
 For example, returning custom 404 messages:
@@ -128,7 +128,7 @@ new Elysia()
 ```
 
 ## Catching all error
-To list all error, you can list an error using `error.all`.
+To list all errors, you can list an error using `error.all`.
 
 ```ts
 new Elysia()

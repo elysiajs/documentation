@@ -15,7 +15,7 @@ head:
 ---
 
 # Eden Fn
-Eden Fn allow you to expose backend functions to run on the frontend with end-to-end type-safety, autocompletion, original JsDoc comment, and "click-to-definition", allowing you to speed up your development cycle.
+Eden Fn allows you to expose backend functions to run on the frontend with end-to-end type-safety, auto-completion, original JsDoc comments, and "click-to-definition", allowing you to speed up your development speed.
 
 To use Eden Fn, create exposed functions by using `fn`:
 ```typescript
@@ -40,23 +40,23 @@ const fn = edenFn<App>('http://localhost:8080')
 const data = await fn.sum(6, 9)
 ```
 
-In technical detail, Elysia Fn uses JavaScript's Proxy to capture object property, and parameters to create batched requests to the server to handle and returns the value across the network. 
+Elysia Fn uses JavaScript's Proxy to capture object properties and parameters, to create batched requests to the server to handle, and returns the value across the network. 
 
 Elysia Fn extends [superjson](https://github.com/blitz-js/superjson), allowing native type in JavaScript like `Error`, `Map`, `Set`, and `undefined` to parse across JSON data.
 
-Elysia Fn supports multiple use-cases, for example **accessing Prisma on the client-side** app, theoretically, it's possible to use Redis, Sequelize, RabbitMQ, and more as long as it's a function.
+Elysia Fn supports multiple use-cases, for example **accessing Prisma on the client-side** app, theoretically, it's possible to use Redis, Sequelize, RabbitMQ and more, as long as it's a function.
 
-As Elysia is running on Bun, Elysia Fn can run over 1.2 million operation/second concurrently (tested on M1 Max).
+As Elysia is running on Bun, Elysia Fn can run over 1.2 million operation/second, concurrently (tested on M1 Max).
 
 ### Naming Convention
-As for naming convention, we wil refers the term of Elysia Fn and Eden Fn as the following:
+As for naming convention, we will refers to Elysia Fn and Eden Fn as:
 
 - Elysia Fn: Exposed functions on Elysia server
 - Eden Fn: A client to use Elysia Fn
 :::
 
 ## Security
-You can limit allow or deny scopes of the function, check for authorization header and other headers' fields, validate parameters, or limit keys access programmatically using `permission` function.
+You can limit allow or deny scopes of the function, check for the authorization header and other headers' fields, validate parameters, or limit keys access programmatically using `permission` function.
 
 `permission` accepts an object consists of:
 - value (required): a function or classes to be exposed
@@ -87,14 +87,14 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-By default if `allows` is set, the others method that is not defined in an allows function will be considered as `denied` and vice-versa.
+By default if `allows` is set, any other methods that are not defined in an allows function will be considered as `denied` and vice-versa.
 
 ::: tip
-Elysia Fn has an auto-completion and type-safety for literal string of an method checking, you don't need to worry if you accidentally put an invalid method.
+Elysia Fn has an auto-completion and type-safety for literal string of an method checking.
 :::
 
 ## "check" Function
-You can programatically set a permission to the function with an access to methods and parameters of the function, and access to HTTP request.
+You can programatically set permissions to the function by accessing methods and parameters of the function, and the HTTP request.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -116,10 +116,10 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-By default, if the **check** function throw an error, request will be reject to access the function.
+By default, if the **check** function throws an error, access the function is denied and the request will be rejected.
 
 ::: tip
-If method is set in an allow scope, the method will also be re-checked in the **check** function as well.
+If a method is set in an allow scope, the method will also be re-checked in the **check** function as well.
 :::
 
 ### Available parameters
@@ -136,7 +136,7 @@ Keys checking supports type-safety and auto-completion of all possible functions
 ### "match" function
 By default, params is a union type of all possible parameters of all methods combined to a single value.
 
-As TypeScript narrowing down is complicated, Elysia Fn provided you with an `match` method, a swtich-case like for narrowing down the type of the value for class/object.
+As TypeScript narrowing down is complicated, Elysia Fn provided you with an `match` method, for narrowing down the type of the value for class/object.
 
 You don't need to use `match` if the value is a function.
 
@@ -170,14 +170,12 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Each method accept the narrowed down the type of its parameters array.
+Each method accepts the narrowed down the type of its parameters array.
 
 ## Batching
-By default, Eden Fn will **batch requests in range of 33ms** into a single request, so you don't have to worry if you accidentally DoS your server if you call multiple functions frequently.
+By default, Eden Fn will **batch requests in a range of 33ms** into a single request, so you don't have to worry if you accidentally DoS your server if you call multiple functions frequently.
 
-For each request in the batched request fail will not affect other requests inside the batch, Eden Fn will handle the error handling behind the scene.
-
-Eden Fn, try to make you think that each request is completely separated for easier handling.
+If a request in the batched requests fails, it will not affect other requests inside the batch, Eden Fn will handle the error behind the scenes.
 
 ## Config
 As Elysia Fn can handle HTTP request validation using Headers, Eden Fn can also set the default value of the headers and fetch behavior with a second argument of the `edenFn`.
@@ -208,7 +206,7 @@ fn.$set({
 })
 ```
 
-**$set** will mutate the config, **not merge**, and not side-effect free.
+**$set** will mutate the config, **not merge it**, so be careful of side-effects or read below.
 
 ### $clone
 A side-effect free implementation of **$set**, will return a new instance of Elysia Fn.

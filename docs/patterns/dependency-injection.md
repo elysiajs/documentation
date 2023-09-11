@@ -7,18 +7,18 @@ head:
 
   - - meta
     - name: 'description'
-      content: Dependency injection is a concept that allows you to separate a utility function, decouple route into a plugin and reuse them in a certain scope. This will allows you to control access to decorators of Elysia.
+      content: Dependency injection is a concept that allows you to separate a utility function, decouple route into a plugin and re-use them in a certain scope. This will allows you to control access to decorators of Elysia.
 
 
   - - meta
     - property: 'og:description'
-      content: Dependency injection is a concept that allows you to separate a utility function, decouple route into a plugin and reuse them in a certain scope. This will allows you to control access to decorators of Elysia.
+      content: Dependency injection is a concept that allows you to separate a utility function, decouple route into a plugin and re-use them in a certain scope. This will allows you to control access to decorators of Elysia.
 ---
 
 # Dependency Injection
 Sometimes you would like to separate routes from your main file.
 
-Normally you would normally decouple them into a plugin like:
+Normally you would decouple them into a plugin like:
 ```typescript
 // index.ts
 const app = new Elysia()
@@ -32,7 +32,7 @@ const authen = new Elysia()
     .post('/sign-up', signUp)
 ```
 
-But then sometime, at the main instance introduce some `state`, and `decorate` that you might need a separated module.
+You might want to introduce some `state`, and `decorate` in the main instance that you actually need in a separated module.
 ```typescript
 // index.ts
 const app = new Elysia()
@@ -54,7 +54,7 @@ const authen = new Elysia()
     })
 ```
 
-If you hovered over the main `app` in `index.ts`, you can see that it has some type auto-generated for your main server which might look something like this:
+If you hover over the main `app` in `index.ts`, you can see the auto-generated type for your main server which might look something like this:
 ```typescript
 const app: Elysia<'', {
     store: {
@@ -69,7 +69,7 @@ const app: Elysia<'', {
 
 But this type isn't applied to sub-modules.
 
-To apply the type to sub-modules, you can create a plugin which only contains `state` and `decorate` which caused **type side-effect** as dependency, and apply to the module you want to use.
+To apply the type to sub-modules, you can create a plugin which only contains `state` and `decorate` which causes **type side-effect** as a dependency, and applies it to any sub-modules you want.
 
 ```typescript
 const setup = new Elysia({ name: 'setup' })
@@ -89,4 +89,4 @@ const authen = new Elysia()
     })
 ```
 
-This will allows you to control access to decorators in modules, this concept is also known as **Dependency Injection** but only for types.
+This will allow you to control access to decorators in modules. This concept is also known as **Dependency Injection** but only for types.

@@ -122,7 +122,7 @@ By this, Elysia is partially follows WinterCG compliance as we are optimized to 
 
 This allows any framework and code that is WinterCG compliance to be run together in theory, an implementation is proved by [Hono](https://honojs.dev) which introduce the **.mount** method to [runs multiple framework together in one codebase](https://twitter.com/honojs/status/1684839623355490304), including Remix, Elysia, Itty Router, and Hono itself in a simple function.
 
-By this, we implemented the same logic for Elysia by introducing `.mount` method to runs any framework or code that WinterCG compliance.
+By this, we implemented the same logic for Elysia by introducing `.mount` method to runs any framework or code that is WinterCG compliant.
 
 To use `.mount`, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
 ```ts
@@ -146,7 +146,7 @@ By default, this declaration are used by:
 - Netlify Edge Function
 - Remix Function Handler
 
-Which means you can run all of the above code to interlop with Elysia all in a single server, or reused and existing function all in one deployment, no need to setting up Reverse Proxy for handling multiple server.
+Which means you can run all of the above code to interlop with Elysia all in a single server, or re-used and existing function all in one deployment, no need to setting up Reverse Proxy for handling multiple server.
 
 If the framework also support a **.mount** function, you can deeply nested a framework that support it infinitely.
 ```ts
@@ -163,7 +163,7 @@ const main = new Elysia()
     .listen(3000)
 ```
 
-You can even reused multiple existing Elysia project in your server.
+You can even re-used multiple existing Elysia project in your server.
 
 ```ts
 import A from 'project-a/elysia'

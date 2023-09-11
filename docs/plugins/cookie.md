@@ -41,7 +41,7 @@ new Elysia()
 ## Config
 This plugin extends config from [cookie](https://npmjs.com/package/cookie)
 
-Below is a config which accepted by the plugin
+Below is a config which is accepted by the plugin
 
 ### secret
 The secret key for signing/un-signing cookies.
@@ -51,7 +51,7 @@ If an array is passed, will use Key Rotation.
 Key rotation is when an encryption key is retired and replaced by generating a new cryptographic key.
 
 ---
-Below is a config extends from [cookie](https://npmjs.com/package/cookie)
+Below is a config that extends from [cookie](https://npmjs.com/package/cookie)
 
 ### domain
 Specifies the value for the [Domain Set-Cookie attribute](https://tools.ietf.org/html/rfc6265#section-5.2.3).
