@@ -21,7 +21,7 @@ With reference models, you can named your model and use it by referencing the na
 
 For example:
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .post('/sign-in', ({ body }) => body, {
@@ -38,7 +38,7 @@ const app = new Elysia()
 
 We can make it cleaner, by declaring the model as a variable.
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 // Maybe in a different file eg. models.ts
 const SignDTO = t.Object({
@@ -62,7 +62,7 @@ You can make it a bit cleaner by creating a "reference model".
 Registering the models with `setModel` allows you to name a model and reference them directly in `schema` with auto-completion.
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .model({
@@ -82,7 +82,7 @@ Now when we need to quickly access the model's group, we can separate a `setMode
 
 ```typescript
 // auth.model.ts
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 export const authModel = new Elysia()
     .model({
@@ -110,7 +110,7 @@ const app = new Elysia()
 
 ```typescript
 // auth.model.ts
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 export const authModel = new Elysia()
     .model({
