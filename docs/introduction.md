@@ -98,9 +98,9 @@ And on the client:
 ```typescript
 // client.ts
 import { edenTreaty } from '@elysiajs/eden'
-import type { Server } from './server'
+import type { App } from './server'
 
-const app = edenTreaty<Server>('http://localhost:8080')
+const app = edenTreaty<App>('http://localhost:8080')
 
 app.signIn.post({
     username: 'saltyaom',

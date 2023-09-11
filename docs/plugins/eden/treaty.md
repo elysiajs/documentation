@@ -7,17 +7,17 @@ head:
 
   - - meta
     - name: 'og:description'
-      content: Eden Treaty is a object-like representation of an Elysia server, providing an end-to-end type safety, and significantly improved developer experience. With Eden, you can fetch an API from Elysia server fully type-safe without code generation.
+      content: Eden Treaty is a object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, you can fetch an API from Elysia server fully type-safe without code generation.
 
   - - meta
     - name: 'og:description'
-      content: Eden Treaty is a object-like representation of an Elysia server, providing an end-to-end type safety, and significantly improved developer experience. With Eden, you can fetch an API from Elysia server fully type-safe without code generation.
+      content: Eden Treaty is a object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, you can fetch an API from Elysia server fully type-safe without code generation.
 ---
 
 # Eden Treaty
-Eden Treaty is a object-like representation of an Elysia server, providing an end-to-end type safety, and significantly improved developer experience.
+Eden Treaty is a object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience.
 
-With Eden, you can fetch an API from Elysia server fully type-safe without code generation.
+With Eden, you can make requests to an Elysia server, with full type-safety, without the need of code generation.
 
 ---
 
@@ -40,7 +40,7 @@ const app = new Elysia()
 export type App = typeof app
 ```
 
-Then import the server type, and consume Elysia API on client:
+Then import the server type, and consume the Elysia API on client:
 ```typescript
 // client.ts
 import { edenTreaty } from '@elysiajs/eden'
@@ -49,7 +49,7 @@ import type { App } from './server'
 const app = edenTreaty<App>('http://localhost:8080')
 
 // response type: 'Hi Elysia'
-const { data: pong, error } = app.index.get()
+const { data: pong, error } = app.get()
 
 // response type: 1895
 const { data: id, error } = app.id['1895'].get()
@@ -63,11 +63,10 @@ const { data: nendoroid, error } = app.mirror.post({
 
 ::: tip
 Eden Treaty is fully type-safe with auto-completion support. 
-You don't have to worry if you can't remember all the existing path, misspelling and accidentally put wrong shape and type of the body or header.
 :::
 
 ## Anatomy
-Eden Treaty will transform all existing path on the to object-like representation, and can be describe as:
+Eden Treaty will transform all existing paths to object-like representation, that can be described as:
 ```typescript
 EdenTreaty.<1>.<2>.<n>.<method>({
     ...body,
@@ -77,27 +76,25 @@ EdenTreaty.<1>.<2>.<n>.<method>({
 ```
 
 ### Path
-Eden will transform `/` into `.` then can be called with `method` registered, for example:
+Eden will transform `/` into `.` which can be called with a registered `method`, for example:
 - **/path** -> .path
 - **/nested/path** -> .nested.path
 
-For `/`, will become `index` instead.
-
 ### Path parameters
-With path parameters, any name will be applicable and mapped to path parameters automatically.
+Path parameters will be mapped to automatically by their name in the URL.
 
 - **/id/:id** -> .id.`<anyThing>`
 - eg: .id.hi
 - eg: .id['123']
 
 ::: tip
-If a path doesn't support path parameter, TypeScript will throw an error.
+If a path doesn't support path parameters, TypeScript will show an error.
 :::
 
 ### Query
-You can append query to path with `$query`:
+You can append queries to path with `$query`:
 ```typescript
-app.index.get({
+app.get({
     $query: {
         name: 'Eden',
         code: 'Gold'
@@ -106,9 +103,9 @@ app.index.get({
 ```
 
 ### Fetch
-Eden Treaty is a fetch wrapper, you can add any valid fetch's parameters to Eden by passing it to `$fetch`:
+Eden Treaty is a fetch wrapper, you can add any valid [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) parameters to Eden by passing it to `$fetch`:
 ```typescript
-app.index.post({
+app.post({
     $fetch: {
         headers: {
             'x-origanization': 'MANTIS'
@@ -118,7 +115,7 @@ app.index.post({
 ```
 
 ## Error Handling
-Eden Treaty will return a value of `data` and `error` as a result, both is fully typed.
+Eden Treaty will return a value of `data` and `error` as a result, both fully typed.
 ```typescript
 // response type: { id: 1895, name: 'Skadi' }
 const { data: nendoroid, error } = app.mirror.post({
@@ -149,9 +146,9 @@ if(error) {
 const { id, name } = nendoroid
 ```
 
-Both **data**, and **error** will be typed as nullable until you can confirm its status with type guard.
+Both **data**, and **error** will be typed as nullable until you can confirm their statuses with a type guard.
 
-To put it simply, if fetch is sucessful, data will has its value and error will be null and vice-versa.
+To put it simply, if fetch is sucessful, data will have a value and error will be null, and vice-versa.
 
 ::: tip
 Error is wrapped with an `Error` with its value return from the server can be retrieve from `Error.value`
@@ -215,7 +212,7 @@ if(error) {
 ```
 
 ## WebSocket
-Eden supports WebSocket as same as normal route.
+Eden supports WebSocket, just like a normal route.
 ```typescript
 // Server
 import { Elysia, t, ws } from 'elysia'
@@ -234,7 +231,7 @@ const app = new Elysia()
 type App = typeof app
 ```
 
-To listen to WebSocket, call `.subscribe`:
+To listen to WebSockets, call `.subscribe`:
 ```typescript
 // Client
 import { edenTreaty } from '@elysiajs/eden'
@@ -249,8 +246,8 @@ chat.subscribe((message) => {
 chat.send('hello from client')
 ```
 
-You can use `schema` to enforce type-safety on WebSocket just like normal route.
+You can use `schema` to enforce type-safety on WebSockets, just like a normal route.
 
-`Eden.subscribe` return `EdenWebSocket` which extends `WebSocket` class with type-safety, the syntax is mostly identical if you're familiar with WebSocket API, you can think of it as `WebSocket` with type-safety.
+`Eden.subscribe` returns `EdenWebSocket` which extends the `WebSocket` class with type-safety. The syntax is mostly identical if you're familiar with the WebSocket API.
 
 If you need more control over `EdenWebSocket`, you can access `EdenWebSocket.raw` to access the native `WebSocket` API instead.

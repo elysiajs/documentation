@@ -12,10 +12,9 @@ const plugins = [
         'https://github.com/wobsoriano/elysia-clerk'
     ],
     [
-        'OAuth',
-        '/assets/lock.svg',
-        'https://github.com/bogeychan/elysia-oauth2',
-        '/assets/lock-dark.svg'
+        'Lucia Auth',
+        '/assets/lucia.svg',
+        'https://github.com/pilcrowOnPaper/lucia'
     ],
     [
         'Logger',

@@ -21,7 +21,7 @@ With reference models, you can named your model and use it by referencing the na
 
 For example:
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .post('/sign-in', ({ body }) => body, {
@@ -38,7 +38,7 @@ const app = new Elysia()
 
 We can make it cleaner, by declaring the model as a variable.
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 // Maybe in a different file eg. models.ts
 const SignDTO = t.Object({
@@ -55,14 +55,14 @@ const app = new Elysia()
 
 This is a good approach to keeping the code clean by creating a separation of concerns.
 
-However, as the app grows more complicated, you might re-use the many models on many multiple controllers.
+As the complexity of the app increases, you may find yourself reusing multiple models with various controllers.
 
 You can make it a bit cleaner by creating a "reference model".
 
 Registering the models with `setModel` allows you to name a model and reference them directly in `schema` with auto-completion.
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .model({
@@ -82,7 +82,7 @@ Now when we need to quickly access the model's group, we can separate a `setMode
 
 ```typescript
 // auth.model.ts
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 export const authModel = new Elysia()
     .model({
@@ -110,7 +110,7 @@ const app = new Elysia()
 
 ```typescript
 // auth.model.ts
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 export const authModel = new Elysia()
     .model({
@@ -123,9 +123,7 @@ export const authModel = new Elysia()
 ```
 
 ## Naming Convention
-Having multiple models in an app might have a duplicated name, by default Elysia will throw an error if the model name is duplicated.
-
-But to prevent declaring duplicate model names, you can create a naming convention for separating a model.
+Duplicated model names will cause Elysia to throw an error. To prevent declaring duplicate model names, you can use the following naming convention.
 
 Let's say that you have all models stored at `models/<name>.ts`, you can declare the prefix of the model as a namespace.
 

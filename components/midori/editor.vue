@@ -176,7 +176,7 @@ onMounted(() => {
         <p
             class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-2xl"
         >
-            Being WinterCG compliance, Elysia can run in your browser!
+            Being WinterCG compliant, Elysia can run in your browser!
             <br />
             Edit the code and see live update immediately.
         </p>
@@ -205,7 +205,7 @@ onMounted(() => {
             </section>
             <div class="w-full mockup-browser h-96 shadow-xl border dark:border-gray-600 bg-white dark:bg-gray-700 max-w-full">
                 <div class="mockup-browser-toolbar">
-                    <form class="input font-medium dark:!bg-gray-600" @submit.prevent="execute">
+                    <form class="input font-medium !bg-gray-100 dark:!bg-gray-600" @submit.prevent="execute">
                         <span class="text-gray-400 dark:text-gray-300">localhost</span>
                         <input
                             class="absolute"

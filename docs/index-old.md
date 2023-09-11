@@ -1,11 +1,11 @@
 ---
-title: Elysia - Fast, and friendly Bun web frameworks
+title: Elysia - Fast, and friendly Bun web framework
 layout: page
 sidebar: false
 head:
   - - meta
     - property: 'og:title'
-      content: Elysia - Fast, and friendly Bun web frameworks
+      content: Elysia - Fast, and friendly Bun web framework
 
   - - meta
     - name: 'description'

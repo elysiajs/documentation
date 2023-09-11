@@ -146,7 +146,7 @@ By default, this declaration is used by:
 - Netlify Edge Function
 - Remix Function Handler
 
-Which means you can run all of the above code to interact with Elysia all in a single server, or reused and existing function all in one deployment, no need to set up a Reverse Proxy for handling multiple server.
+Which means you can run all of the above code to interlop with Elysia all in a single server, or re-used and existing function all in one deployment, no need to setting up Reverse Proxy for handling multiple server.
 
 If the framework also support a **.mount** function, you can deeply nested a framework that support it infinitely.
 ```ts
@@ -163,7 +163,7 @@ const main = new Elysia()
     .listen(3000)
 ```
 
-You can even reused multiple existing Elysia project in your server.
+You can even re-used multiple existing Elysia project in your server.
 
 ```ts
 import A from 'project-a/elysia'

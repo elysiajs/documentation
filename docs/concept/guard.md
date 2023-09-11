@@ -21,38 +21,32 @@ Suppose you have many shared local hooks.
 Instead of duplicating an existing hook, you can define a shared hook scope using `guard`.
 
 ---
-**Guard** lets you inject multiple life-cycle events into multiple routes at once. Guard is useful when you have listen to same life-cycle events in the multiple routes, for example: logging, schema validation, or error handling.
+**Guard** lets you inject multiple life-cycle events into multiple routes at once. Guard is useful when you have to listen to the same life-cycle event in multiple routes, for example: logging, schema validation, or error handling.
 
 To encapsulate all hooks into the scope, instead of writing:
 ```typescript
-app.post('/sign-up', (({ body }) => signUp(body), {
-    schema: {
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
-    }
+app.post('/sign-up', ({ body }) => signUp(body), {
+    body: t.Object({
+        username: t.String(),
+        password: t.String()
+    })
 })
 .post('/sign-in', (({ body }) => signIn(body), {
     beforeHandle: isUserExists,
-    schema: {
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
-    }
+    body: t.Object({
+        username: t.String(),
+        password: t.String()
+    })
 })
 ```
 
 You can group hook into `guard`:
 ```typescript
 app.guard({
-    schema: {
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
-    }
+    body: t.Object({
+        username: t.String(),
+        password: t.String()
+    })
 }, app => app
     .post('/sign-up', ({ body }) => signUp(body))
     .post('/sign-in', ({ body }) => signIn(body), {
@@ -69,7 +63,7 @@ You can create group with a guard scope by adding a guard api in the second para
 app.group('/v1', (app) =>
     app.guard(
         {
-            body: t.Literal()
+            body: t.Literal('Rikuhachima Aru')
         },
         (app) => app.get('/student', () => 'Rikuhachima Aru')
     )

@@ -7,21 +7,20 @@ head:
 
   - - meta
     - name: 'description'
-      content: A fetch-like alternative to Eden Treaty with faster type inference. With Eden Fetch, you can fetch an API from Elysia server fully type-safe with end-to-end type safety without code generation.
+      content: A fetch-like alternative to Eden Treaty with faster type inference. With Eden Fetch, you can make requests to an Elysia server with end-to-end type-safety without the need of code generation.
 
   - - meta
     - name: 'og:description'
-      content: A fetch-like alternative to Eden Treaty with faster type inference. With Eden Fetch, you can fetch an API from Elysia server fully type-safe with end-to-end type safety without code generation.
+      content: A fetch-like alternative to Eden Treaty with faster type inference. With Eden Fetch, you can make requests to an Elysia server with end-to-end type-safety without the need of code generation.
 ---
 
 # Eden Fetch
 A fetch-like alternative to Eden Treaty with faster type inference.
 
-With Eden Fetch, you can fetch an API from Elysia server fully type-safe without code generation.
+With Eden Fetch, you can make requests to an Elysia server without code generation.
+----
 
----
-
-To use Eden Fetch, first export your existing Elysia server type:
+T without the need of use Eden Fetch, first export your existing Elysia server type:
 ```typescript
 // server.ts
 import { Elysia, t } from 'elysia'
@@ -40,7 +39,7 @@ const app = new Elysia()
 export type App = typeof app
 ```
 
-Then import the server type, and consume Elysia API on client:
+Then import the server type, and consume the Elysia API on client:
 ```typescript
 // client.ts
 import { edenFetch } from '@elysiajs/eden'
@@ -69,7 +68,7 @@ const nendoroid = await fetch('/mirror', {
 ```
 
 ## Error Handling
-You can handle error as same as Eden Treaty:
+You can handle errors the same way as Eden Treaty:
 ```typescript
 // response type: { id: 1895, name: 'Skadi' }
 const { data: nendoroid, error } = app.mirror.post({
@@ -107,4 +106,4 @@ With complex types and lot of server routes, using Eden Treaty on a low-end deve
 
 But as Elysia has tweak and optimized a lot of types and inference, Eden Treaty can be perform very well in the considerable amount of routes.
 
-If your single server or micro-service consists of **more than 500 routes per server** or micro-service, and need to consume all of the route **in a single frontend codebase**, then you might want to use Eden Fetch to as TypeScript as Eden Fetch has a significant better TypeScript performance.
+If your single process contains **more than 500 routes**, and you need to consume all of the routes **in a single frontend codebase**, then you might want to use Eden Fetch as it has a significant better TypeScript performance than Eden Treaty.
