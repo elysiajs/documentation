@@ -163,7 +163,7 @@ setCookie(name: string, value: string, options?: SetCookieOptions) => void
 A function to unset cookies.
 
 Type:
-```
+```typescript
 removeCookie(name: string) => void
 ```
 
