@@ -114,12 +114,7 @@ Sometimes you might find yourself reusing the same type multiple times.
 
 Using [reference models](/patterns/reference-models), you can name your model and use it by referencing the name:
 ```typescript
-// auth.model.ts
 import { Elysia } from 'elysia'
-
-// index.ts
-import { Elysia } from 'elysia'
-import { authModel } from './auth.model.ts'
 
 const app = new Elysia()
     .model({
