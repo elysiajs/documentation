@@ -18,7 +18,7 @@ head:
 Elysia handles attachment of `multipart/form-data` to `Context.body` by default.
 
 ```typescript
-import { Elysia, t } from '../src'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
 	.post('/single', ({ body: { file } }) => file, {
@@ -35,7 +35,7 @@ You can use `t.File`, and `t.Files` to strictly validate files:
 - `t.Files`: validate multiple files (array) as `Blob[]`
 
 ```typescript
-import { Elysia, t } from '../src'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
 	.post(

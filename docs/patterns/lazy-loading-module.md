@@ -81,7 +81,7 @@ Using module lazy-loading is recommended when the module is computationally heav
 In a test environment, you can use `await app.modules` to wait for deferred and lazy-loading modules.
 
 ```typescript
-import { Elysia } from '../src'
+import { Elysia } from 'elysia'
 
 import { describe, expect, it } from 'bun:test'
 
