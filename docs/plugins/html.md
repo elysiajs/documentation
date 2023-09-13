@@ -112,7 +112,6 @@ new Elysia()
     ))
     .listen(8080)
 ```
-```
 
 ## Handler
 Below are the value added to the handler.
