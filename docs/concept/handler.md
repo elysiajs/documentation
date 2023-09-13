@@ -107,5 +107,5 @@ app.get('/', () => new Response(
             'Content-Type': 'application/json'
         }
     })
-)
+))
 ```
