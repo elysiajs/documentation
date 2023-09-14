@@ -95,3 +95,53 @@ new Elysia()
     }))
     .listen(8080)
 ```
+
+## Using Tags
+Elysia has the ability to separate the endpoints into groups by using Swaggers tag system
+
+Firstly define the available tags in the swagger config object
+
+```typescript
+app.use(
+  swagger({
+    documentation: {
+      tags: [
+        { name: 'App', description: 'General endpoints' },
+        { name: 'Auth', description: 'Authentication endpoints' }
+      ]
+    }
+  })
+)
+```
+
+Then use the details property of the endpoint configuration section to assign that endpoint to the group 
+
+```typescript
+app.get('/', () => 'Hello Elysia', {
+  detail: {
+    tags: ['App']
+  }
+})
+
+app.group('/auth', (app) =>
+  app.post(
+    '/sign-up',
+    async ({ body }) =>
+      db.user.create({
+        data: body,
+        select: {
+          id: true,
+          username: true
+        }
+      }),
+    {
+      detail: {
+        tags: ['Auth']
+      }
+    }
+  )
+)
+```
+
+Which will produce a swagger page like the following
+<img width="1446" alt="image" src="https://github.com/elysiajs/documentation/assets/184729/8caee6c0-4262-4a5c-b225-196cf74c338b">
