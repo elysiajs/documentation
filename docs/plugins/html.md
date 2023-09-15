@@ -113,7 +113,7 @@ Keep in mind there's no real way to validate HTML, so the default implementation
 
 <br />
 
-This plugin re-exports [@kitajs/html](https://github.com/kitajs/html), which is a JSX factory for creating HTML strings from JSX. Please report JSX related issues to that repository.
+This plugin re-exports [@kitajs/html](https://github.com/kitajs/html), which is a JSX factory for creating HTML strings from JSX. **Please report JSX related issues to that repository.**
 
 To use JSX, first rename your file extension to either `.tsx` or `.jsx`.
 
@@ -157,6 +157,12 @@ new Elysia()
 and that's it! 🎉
 
 You can now use JSX to define your web page and Elysia will turns them to HTML automatically.
+
+::: tip
+
+Read more about JSX in the [official documentation](https://github.com/kitajs/html) and learn how to add HTMX typings, compiling html, adding more JSX components and so on...
+
+:::
 
 ## Sanitization
 
