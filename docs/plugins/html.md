@@ -117,7 +117,11 @@ This plugin re-exports [@kitajs/html](https://github.com/kitajs/html), which is 
 
 To use JSX, first rename your file extension to either `.tsx` or `.jsx`.
 
-Then, add the following to your `tsconfig.json`:
+Then, install basic dependencies and add the following to your `tsconfig.json`:
+
+```sh
+bun install @kitajs/html @kitajs/ts-html-plugin
+```
 
 ```jsonc
 // tsconfig.json
@@ -126,7 +130,8 @@ Then, add the following to your `tsconfig.json`:
     "compilerOptions": {
         "jsx": "react",
         "jsxFactory": "Html.createElement",
-        "jsxFragmentFactory": "Html.Fragment"
+        "jsxFragmentFactory": "Html.Fragment",
+        "plugins": [{ "name": "@kitajs/ts-html-plugin" }]
     }
 }
 ```
