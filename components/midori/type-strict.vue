@@ -11,8 +11,8 @@ new Elysia()
             body: t.Object({
                 username: t.String()
             })
-        })
-    })
+        }
+    )
     .listen(3000)
 `
 </script>
