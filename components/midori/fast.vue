@@ -22,26 +22,26 @@ const graphs = [
         <section class="flex flex-col w-full max-w-lg">
             <header class="flex flex-col justify-center items-start">
                 <h2
-                    class="text-4xl leading-tight font-medium text-gray-400 mb-2"
+                    class="text-4xl leading-tight font-medium text-gray-500 dark:text-gray-400 mb-2"
                 >
                     Elysia is fast
                 </h2>
                 <h2
-                    class="text-4xl leading-tight font-medium text-gray-400 mb-4"
+                    class="text-4xl leading-tight font-medium text-gray-500 dark:text-gray-400 mb-4"
                 >
                     <span
-                        class="leading-tight text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-lime-300 to-cyan-300"
+                        class="leading-tight text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-lime-400 to-cyan-400 dark:from-lime-300 dark:to-cyan-300"
                     >
                         18x
                     </span>
                     faster than Express
                 </h2>
             </header>
-            <p class="text-xl text-gray-400 w-full max-w-lg mb-4">
+            <p class="text-xl text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4">
                 Supercharged by Bun runtime, Static Code Analysis, and various
                 micro optimization.
             </p>
-            <p class="text-xl text-gray-400 w-full max-w-lg">
+            <p class="text-xl text-gray-500 dark:text-gray-400 w-full max-w-lg">
                 Elysia is able to outperform in various situations, being one of
                 the top-performing TypeScript frameworks.
             </p>
