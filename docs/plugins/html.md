@@ -15,59 +15,122 @@ head:
 ---
 
 # HTML Plugin
-Return [**JSX**](#jsx), and HTML with proper HTML headers automatically
+
+Allows you to use [JSX](#jsx) and HTML with proper headers and support.
 
 Install with:
+
 ```bash
 bun add @elysiajs/html
 ```
 
 Then use it:
-```typescript
+
+```tsx
 import { Elysia } from 'elysia'
 import { html } from '@elysiajs/html'
 
-const page = `<html lang="en">
-    <head>
-        <title>Hello World</title>
-    </head>
-    <body>
-        <h1>Hello World</h1>
-    </body>
-</html>`
-
 new Elysia()
     .use(html())
-    .get('/', () => page)
+    .get(
+        '/html',
+        () => `
+        <html lang="en">
+            <head>
+                <title>Hello World</title>
+            </head>
+            <body>
+                <h1>Hello World</h1>
+            </body>
+        </html>  `
+    )
+    .get('/jsx', () => (
+        <html lang="en">
+            <head>
+                <title>Hello World</title>
+            </head>
+            <body>
+                <h1>Hello World</h1>
+            </body>
+        </html>
+    ))
     .listen(8080)
 ```
 
-If any html tag is returned, response will be treat as HTML response automatically
+This plugin will automatically add `Content-Type: text/html; charset=utf8` header to the response, add `<!doctype html>` and convert it into a Response object.
 
-## JSX
-Starting from HTML plugin > 0.6.1, you can directly use JSX to create, and return HTML automatically.
+## Options
 
-### Setup
-To utilize JSX, modify the tsconfig.json as the following:
-```json
+### contentType
+
+-   Type: `string`
+-   Default: `'text/html; charset=utf8'`
+
+The content-type of the response.
+
+### autoDetect
+
+-   Type: `boolean`
+-   Default: `true`
+
+Whether to automatically detect HTML content and set the content-type.
+
+### autoDoctype
+
+-   Type: `boolean | 'full'`
+-   Default: `true`
+
+Whether to automatically add `<!doctype html>` to a response starting with `<html>`, if not found.
+
+Use `full` to also automatically add doctypes on responses returned without this plugin
+
+```ts
+// without the plugin
+app.get('/', () => '<html></html>')
+
+// With the plugin
+app.get('/', ({ html }) => html('<html></html>')
+```
+
+### isHtml
+
+-   Type: `(value: string) => boolean`
+-   Default: `isHtml` (exported function)
+
+The function used to detect if a string is a html or not. Default implementation if length is greater than 7, starts with `<` and ends with `>`.
+
+Keep in mind there's no real way to validate HTML, so the default implementation is a best guess.
+
+## Jsx
+
+This plugin re-exports [@kitajs/html](https://github.com/kitajs/html), which is a JSX factory for creating HTML strings from JSX. **Please report JSX related issues to that repository.**
+
+To use JSX, first rename your file extension to either `.tsx` or `.jsx`.
+
+Then, install basic dependencies and add the following to your `tsconfig.json`:
+
+```sh
+bun install @kitajs/html @kitajs/ts-html-plugin
+```
+
+```jsonc
+// tsconfig.json
+
 {
-  "compilerOptions": {
-    "jsx": "react",
-    "jsxFactory": "ElysiaJSX",
-    "jsxFragmentFactory": "ElysiaJSX.Fragment",
-    "types": [
-      "bun-types"
-    ]
-  }
+    "compilerOptions": {
+        "jsx": "react",
+        "jsxFactory": "Html.createElement",
+        "jsxFragmentFactory": "Html.Fragment",
+        "plugins": [{ "name": "@kitajs/ts-html-plugin" }]
+    }
 }
 ```
 
-and that's it! 🎉
-
-You can now use JSX to define your web page and Elysia will turns them to HTML automatically.
+Then, you can simply use the JSX syntax to create HTML strings:
 
 ```tsx
 // app.tsx
+
 import { Elysia } from 'elysia'
 import { html } from '@elysiajs/html'
 
@@ -86,63 +149,36 @@ new Elysia()
     .listen(8080)
 ```
 
-::: tip
-To use JSX, don't forget to rename your file extension to either `.tsx` or `.jsx`
+and that's it! 🎉
+
+You can now use JSX to define your web page and Elysia will turns them to HTML automatically.
+
+::: warning
+Learn how to [sanitize](https://github.com/kitajs/html#sanitization) and avoid xss vulnerabilities in your code!
 :::
 
-## Sanitize HTML
-If you are using JSX, you can use `safe` attribute to sanitize unsafe value
-```tsx
-const malicious = `<script>alert("Hello")</script>`
+::: tip
 
-new Elysia()
-    .get('/unsafe', () => (
-        <h1 safe>{malicious}</h1>
-    ))
-    .listen(8080)
-```
+Read more about JSX in the [official documentation](https://github.com/kitajs/html) and learn how to add HTMX typings, compiling html, adding more JSX components and so on...
 
-Otherwise you can use a decorated `sanitize` function decorated in `Context` to explicitly sanitize the value.
-```tsx
-const malicious = `<script>alert("Hello")</script>`
+:::
 
-new Elysia()
-    .get('/unsafe', ({ sanitize }) => (
-        <h1>{sanitize(malicious)}</h1>
-    ))
-    .listen(8080)
-```
-```
+## Sanitization
 
-## Handler
-Below are the value added to the handler.
+To keep this section up to date, please refer to the [sanitization](https://github.com/kitajs/html/tree/master#sanitization) section of the `@kitajs/html` repository.
 
-### html
-A function that converts string to `Response` with `Content-Type: text/html; charset=utf8` header.
+## Manual handler
 
-Type:
-```typescript
-html(value: string) => Response
-```
+We recommend relying on automatic responses, but you can optionally disable `autoDetect` and explicitly only use the `html` function.
 
-#### Example:
-Although we recommended relying on automatic response, but you can optionally you can return explictly return any string with HTML header.
-
-```typescript
+```ts
 import { Elysia } from 'elysia'
 import { html } from '@elysiajs/html'
 
-const page = `<html lang="en">
-    <head>
-        <title>Hello World</title>
-    </head>
-    <body>
-        <h1>Hello World</h1>
-    </body>
-</html>`
+const page = '<html>My Html</html>'
 
 new Elysia()
-    .use(html())
+    .use(html({ autoDetect: false }))
     .get('/', ({ html }) => html(page))
     .listen(8080)
 ```
