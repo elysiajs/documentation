@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers, and thanks to community plugins for customizing Elysia even further.
+        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convenient usage for developers, and thanks to community plugins for customizing Elysia even further.
 
     - - meta
       - name: 'og:description'
-        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers, and thanks to community plugins for customizing Elysia even further.
+        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convenient usage for developers, and thanks to community plugins for customizing Elysia even further.
 ---
 
 # Overview
