@@ -39,7 +39,7 @@ head:
 
 Name after our never giving up spirit, our beloved Virtual YouTuber, ~~Suicopath~~ Hoshimachi Suisei, and her brilliance voice: 「[Stellar Stellar](https://youtu.be/AAsRtnbDs-0)」from her first album:「Still Still Stellar」
 
-For once being forgetten, she really is a star that truly shine in the dark.
+For once being forgotten, she really is a star that truly shine in the dark.
 
 **Stellar Stellar** brings many exciting new update to help Elysia solid the foundation, and handle complexity with ease, featuring:
 - Entirely rewrite type, up to 13x faster type inference.
