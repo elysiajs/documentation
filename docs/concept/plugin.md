@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: A plugin is a way to decouple logic into smaller parts, defining reusable components across the server. Plugin can register by using `use`, registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
+      content: A plugin is a way to decouple logic into smaller parts, defining reusable components across the server. Plugin can be registered by using `use` method, registering a plugin will combine types between plugin and current instance, and the scope of hooks and schema get merged as well.
 
   - - meta
     - property: 'og:description'
-      content: A plugin is a way to decouple logic into smaller parts, defining reusable components across the server. Plugin can register by using `use`, registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
+      content: A plugin is a way to decouple logic into smaller parts, defining reusable components across the server. Plugin can be registered by using `use` method, registering a plugin will combine types between plugin and current instance, and the scope of hooks and schema get merged as well.
 ---
 
 # Plugin
@@ -31,12 +31,12 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Plugin can register by using `use`.
+Plugin can be registered by using `use` method.
 
-Registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
+Registering a plugin will combine types between plugin and current instance, and the scope of hooks and schema get merged as well.
 
 ## Separate file
-Using plugin pattern, you can define decouple your logic into a separate file.
+Using plugin pattern, you can separate your logic into a separate file.
 ```ts
 // plugin.ts
 export const plugin = new Elysia()
@@ -66,7 +66,7 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Functional callback will allows use to access main instance values like routes schema, store.
+Functional callback will allow user to access main instance values like routes schema, store.
 
 ## Config
 You can customize plugin by creating function to return callback which accepts Elysia.
@@ -77,7 +77,7 @@ import { Elysia } from 'elysia'
 const plugin = <const Prefix>({
     prefix = '/v1'
 }: { prefix: Prefix }) => new Elysia({ prefix })
-    .get(`/${prefix}/hi`, () => 'Hi')
+    .get(`/hi`, () => 'Hi')
 
 const app = new Elysia()
     .use(plugin({
