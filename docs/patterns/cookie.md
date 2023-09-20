@@ -80,6 +80,19 @@ app.get('/', ({ cookie: { name } }) => {
 ## add
 Like **set**, **add** allow us to update multiple cookie property at once, but instead, will only overwrite the property defined instead of resetting.
 
+## remove
+To remove a cookie, you can either cookie:
+1. cookie.remove
+2. delete cookie.name
+
+```ts
+app.get('/', ({ cookie, cookie: { name } }) => {
+    cookie.remove()
+
+    delete cookie.name
+})
+```
+
 ## Cookie Schema
 You can strictly validate cookie type and providing type inference for cookie by using cookie schema with `t.Cookie`.
 
