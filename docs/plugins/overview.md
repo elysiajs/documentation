@@ -27,7 +27,6 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 
 ## Official plugins:
 - [Bearer](/plugins/bearer) - retreiving Bearer token automatically
-- [Cookie](/plugins/cookie) - toolkits for handling cookie
 - [CORS](/plugins/cors) - setup Cross Origin Request request
 - [Cron](/plugins/cron) - setup cronjob
 - [Eden](/plugins/eden/overview) - end-to-end type safe client for Elysia

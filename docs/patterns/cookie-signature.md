@@ -1,47 +1,90 @@
 ---
-title: Cookie Plugin - ElysiaJS
+title: Cookie Signature - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Cookie Plugin - ElysiaJS
+      content: Cookie Signature - ElysiaJS
 
   - - meta
     - name: 'description'
-      content: Plugin for Elysia that adds support for using cookie in Elysia handler. Start by installing the plugin with "bun add @elysiajs/cookie".
+      content: Cookie signature is a cryptographic hash appended to a cookie's value, generated using a secret key and the content of the cookie to enhance security by adding a signature to the cookie.
 
   - - meta
-    - name: 'og:description'
-      content: Plugin for Elysia that adds support for using cookie in Elysia handler. Start by installing the plugin with "bun add @elysiajs/cookie".
+    - property: 'og:description'
+      content: Cookie signature is a cryptographic hash appended to a cookie's value, generated using a secret key and the content of the cookie to enhance security by adding a signature to the cookie.
 ---
 
-# Cookie Plugin
-This plugin adds support for using cookie in Elysia handler.
+# Cookie Signature
+And lastly, with an introduction of Cookie Schema, and `t.Cookie` type. We are able to create a unified type for handling sign/verify cookie signature automatically.
 
-Install with:
-```bash
-bun add @elysiajs/cookie
+Cookie signature is a cryptographic hash appended to a cookie's value, generated using a secret key and the content of the cookie to enhance security by adding a signature to the cookie.
+
+This make sure that the cookie value is not modified by malicious actor, helps in verifying the authenticity and integrity of the cookie data.
+
+## Using Cookie Signature
+By provide a cookie secret, and `sign` property to indicate which cookie should have a signature verification.
+```ts
+new Elysia()
+    .get('/', ({ cookie: { profile } }) => {
+        profile.value = {
+            id: 617,
+            name: 'Summoning 101'
+        }
+    }, {
+        cookie: t.Cookie({
+            profile: t.Object({
+                id: t.Numeric(),
+                name: t.String()
+            })
+        }, {
+            secret: 'Fischl von Luftschloss Narfidort',
+            sign: ['profile']
+        })
+    })
 ```
 
-Then use it:
-```typescript
-import { Elysia } from 'elysia'
-import { cookie } from '@elysiajs/cookie'
+Elysia then sign and unsign cookie value automatically.
 
-new Elysia()
-    .use(cookie())
-    .get('/profile', ({ cookie: { name } }) => name)
-    .put('/sign/:name', ({ setCookie, params: { name } }) => {
-        setCookie('name', name)
+## Constructor
+You can use Elysia constructor to set global cookie `secret`, and `sign` value to apply to all route globally instead of inlining to every route you need.
 
-        return name
+```ts
+new Elysia({
+    cookie: {
+        secret: 'Fischl von Luftschloss Narfidort',
+        sign: ['profile']
+    }
+})
+    .get('/', ({ cookie: { profile } }) => {
+        profile.value = {
+            id: 617,
+            name: 'Summoning 101'
+        }
+    }, {
+        cookie: t.Cookie({
+            profile: t.Object({
+                id: t.Numeric(),
+                name: t.String()
+            })
+        })
     })
-    .listen(8080)
+```
+
+## Cookie Rotation
+Elysia handle Cookie's secret rotation automatically.
+
+Cookie Rotation is a migration technique to sign a cookie with a newer secret, while also be able to verify the old signature of the cookie.
+
+```ts
+new Elysia({
+    cookie: {
+        secret: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']
+    }
+})
 ```
 
 ## Config
-This plugin extends config from [cookie](https://npmjs.com/package/cookie)
-
-Below is a config which is accepted by the plugin
+Below is a cookie config accepted by Elysia.
 
 ### secret
 The secret key for signing/un-signing cookies.
@@ -137,93 +180,3 @@ Specifies the boolean value for the [Secure Set-Cookie attribute](https://tools.
 ::: tip
 Be careful when setting this to true, as compliant clients will not send the cookie back to the server in the future if the browser does not have an HTTPS connection.
 :::
-
-## Handler
-Below are the value added to the handler.
-
-### cookie
-An object representation of request cookies.
-
-Type:
-```typescript
-cookie: Record<string, string>
-```
-
-### setCookie
-A function to set a cookie and return it to the client.
-
-Type:
-```typescript
-setCookie(name: string, value: string, options?: SetCookieOptions) => void
-```
-
-`SetCookieOptions` extends [cookie](https://npmjs.com/package/cookie), which is the same as [config](#config).
-
-### removeCookie
-A function to unset cookies.
-
-Type:
-```typescript
-removeCookie(name: string) => void
-```
-
-### unsignCookie
-A function to validate and signed cookies and retrieved their value.
-
-```typescript
-unsignCookie(input: string, secret: string):
-    | {
-        valid: true
-        value: string
-    }
-    |  {
-        valid: false
-        value: undefined
-    }
-```
-
-## Pattern
-Below you can find the common patterns to use the plugin.
-
-## Set default config:
-By default, the config is passed to `setCookie` and inherits its value.
-
-```typescript
-import { Elysia } from 'elysia'
-import { cookie } from '@elysiajs/cookie'
-
-new Elysia()
-    .use(cookie({
-        httpOnly: true
-    }))
-    .post('/sign/:name', ({ setCookie, params: { name } }) => {
-        setCookie('name', name, {
-            maxAge: 86400
-        })
-    })
-    .listen(8080)
-```
-
-This will sign a cookie with `maxAge` of `86400` and `httpOnly` to `true`.
-
-## Sign & unsign cookie
-```typescript
-new Elysia()
-    .get('/sign/:name', ({ params: { name }, setCookie }) => {
-        setCookie('name', name, {
-            signed: true
-        })
-
-        return name
-    })
-    .get('/auth', ({ unsignCookie, cookie: { name }, set }) => {
-        const { valid, value } = unsignCookie(name)
-
-        if (!valid) {
-            set.status = 401
-            return 'Unauthorized'
-        }
-
-        return value
-    })
-```
