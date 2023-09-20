@@ -363,7 +363,7 @@ Further more, scoped is now truly scoped down both in runtime, and type level wh
 This is exciting from maintainer side because previously, it's almost impossible to truly encapsulate the scope the an instance, but using `mount` and WinterCG compilance, we are finally able to truly encapsulate the instance of the plugin while providing a soft link with main instance property like `state`, `decorate`.
 
 ## Text based status
-There are over 64 standard HTTP status codes to remember, and to admit it, sometime we forget them and search it on MDN.
+There are over 64 standard HTTP status codes to remember, and I admit that sometime we also forget the status we want to use.
 
 This is why we ship 64 HTTP Status codes in text-based form with autocompletion for you.
 
@@ -371,7 +371,7 @@ This is why we ship 64 HTTP Status codes in text-based form with autocompletion 
 
 Text will then resolved to status code automatically as expected.
 
-As you type, there should be auto-completion for text popup automatically for your IDE, whether it's NeoVim or VSCode, as it's a built-in TypeScript fefature.
+As you type, there should be auto-completion for text popup automatically for your IDE, whether it's NeoVim or VSCode, as it's a built-in TypeScript feature.
 
 ![Text-base status code showing auto-completion](/blog/elysia-07/teapot-autocompletion.webp)
 
