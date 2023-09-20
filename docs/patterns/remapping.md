@@ -15,8 +15,6 @@ head:
 ---
 
 # Remapping
-To use Cookie, you can extract the cookie property and access its name and value directly.
-
 As the name suggest, this allow us to remap existing `state`, `decorate`, `model`, `derive` to anything we like to prevent name collision, or just wanting to rename a property.
 
 By providing a function as a first parameters, the callback will accept current value, allowing us to remap the value to anything we like.
