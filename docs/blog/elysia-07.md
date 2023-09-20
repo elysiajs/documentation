@@ -204,7 +204,7 @@ With the release of 0.7, we are updating to TypeBox 0.31 to brings even more fea
 
 This brings new exciting feature like support for TypeBox's `Decode` in Elysia natively.
 
-Previously, a custom type like `Numeric` require a dyanmic code injection to convert numeric string to number, but with the use of TypeBox's decode, we are allow to define a custom function to encode and decode the value of a type automatically.
+Previously, a custom type like `Numeric` require a dynamic code injection to convert numeric string to number, but with the use of TypeBox's decode, we are allow to define a custom function to encode and decode the value of a type automatically.
 
 Allowing us to simplify type to:
 ```ts
