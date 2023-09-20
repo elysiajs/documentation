@@ -164,6 +164,10 @@ export default defineConfig({
                 text: 'Patterns',
                 items: [
                     {
+                        text: 'After Handle',
+                        link: '/patterns/after-handle'
+                    },
+                    {
                         text: 'Method Chaining',
                         link: '/patterns/method-chaining'
                     },
@@ -216,12 +220,12 @@ export default defineConfig({
                         link: '/patterns/body-parser'
                     },
                     {
-                        text: 'Mount',
-                        link: '/patterns/mount'
-                    },
-                    {
                         text: 'Trace',
                         link: '/patterns/trace'
+                    },
+                    {
+                        text: 'Mount',
+                        link: '/patterns/mount'
                     },
                     {
                         text: 'End-to-End Type Safety',
