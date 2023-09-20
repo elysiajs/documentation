@@ -220,6 +220,10 @@ export default defineConfig({
                         link: '/patterns/mount'
                     },
                     {
+                        text: 'Trace',
+                        link: '/patterns/trace'
+                    },
+                    {
                         text: 'End-to-End Type Safety',
                         link: '/patterns/end-to-end-type-safety'
                     }

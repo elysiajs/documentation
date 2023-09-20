@@ -48,6 +48,7 @@ For once being forgetten, she really is a star that truly shine in the dark.
 - TypeBox 0.31 with a custom decoder support.
 - Rewritten Web Socket for even better support. 
 - Definitions remapping, and declarative affix for preventing name collision.
+- Text based status
 
 ## Rewritten Type
 
@@ -360,6 +361,21 @@ const app = new Elysia()
 Further more, scoped is now truly scoped down both in runtime, and type level which is not possible without the type rewrite mentioned before.
 
 This is exciting from maintainer side because previously, it's almost impossible to truly encapsulate the scope the an instance, but using `mount` and WinterCG compilance, we are finally able to truly encapsulate the instance of the plugin while providing a soft link with main instance property like `state`, `decorate`.
+
+## Text based status
+There are over 64 standard HTTP status codes to remember, and to admit it, sometime we forget them and search it on MDN.
+
+This is why we ship 64 HTTP Status codes in text-based form with autocompletion for you.
+
+![Example of using text-base status code](/blog/elysia-07/teapot.webp)
+
+Text will then resolved to status code automatically as expected.
+
+As you type, there should be auto-completion for text popup automatically for your IDE, whether it's NeoVim or VSCode, as it's a built-in TypeSCript fefature.
+
+![Text-base status code showing auto-completion](/blog/elysia-07/teapot-autocompletion.webp)
+
+This is a small ergonomic feature to helps you develop your server without switching between IDE and MDN to search for a correct status code.
 
 ## Notable Improvement
 Improvement:
