@@ -70,7 +70,7 @@ Value can be one of the following:
     - eg: `['GET', 'PUT', 'POST']`
 
 ---
-### allowHeaders
+### allowedHeaders
 @default `*`
 
 Allowed headers for an incoming request.
