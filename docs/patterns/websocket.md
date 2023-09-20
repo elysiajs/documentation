@@ -18,13 +18,11 @@ head:
 
 Elysia WebSocket extends Bun's WebSocket which uses [uWebSocket](https://github.com/uNetworking/uWebSockets) under the hood.
 
-To start working with a WebSocket, register the Elysia WebSocket plugin, and declare a WebSocket route with `.ws`.
-
+To use websocket, just call `ws()`:
 ```typescript
-import { Elysia, ws } from 'elysia'
+import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .use(ws())
     .ws('/ws', {
         message(ws, message) {
             ws.send(message)
@@ -33,9 +31,17 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Just like normal route, WebSockets also accepts a **schema** object to strictly type and validate requests.
+Like a normal route, WebSockets also accepts a **schema** object to strictly type and validate requests.
 
 ## Configuration
+You can set Elysia constructor to set the Web Socket value.
+```ts
+new Elysia({
+    websocket: {
+        idleTimeout: 30
+    }
+})
+```
 
 Elysia's WebSocket plugin extends Bun's WebSocket configuration so if you wish to configure the websocket you can refer to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) to learn more about this.
 
@@ -82,10 +88,9 @@ Create a websocket handler
 Example:
 
 ```typescript
-import { Elysia, ws } from 'elysia'
+import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .use(ws())
     .ws('/ws', {
         message(ws, message) {
             ws.send(message)
@@ -221,10 +226,9 @@ Validate incoming WebSocket message.
 By default Elysia will parse incoming stringified JSON message as Object for validation.
 
 ```typescript
-import { Elysia, ws } from 'elysia'
+import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .use(ws())
     .ws('/ws', {
         // validate incoming message
         body: t.Object({

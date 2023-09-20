@@ -15,7 +15,7 @@ head:
 ---
 
 # Eden
-Eden is a fetch client for an Elysia server with **end-to-end type safety** using only TypeScript's type inference instead of code generation. 
+Eden is a fetch client for an Elysia server with **end-to-end type safety** using only TypeScript's type inference instead of code generation.
 
 Allowing you to sync client and server types effortlessly, weighing less than 2KB.
 
@@ -92,6 +92,6 @@ Using Eden Treaty with a complex type and lot of routes (more than 500 routes pe
 
 Eden Fetch is an alternative and solution for fastest type inference possible while providing full type support like Eden Treaty.
 
-::: note
+::: tip NOTE
 Unlike Eden Treaty, Eden Fetch doesn't provide Web Socket implementation for Elysia server
 :::

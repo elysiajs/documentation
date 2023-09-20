@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers, and thanks to community plugins for customizing Elysia even further.
+        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convenient usage for developers, and thanks to community plugins for customizing Elysia even further.
 
     - - meta
       - name: 'og:description'
-        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers, and thanks to community plugins for customizing Elysia even further.
+        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convenient usage for developers, and thanks to community plugins for customizing Elysia even further.
 ---
 
 # Overview
@@ -27,7 +27,6 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 
 ## Official plugins:
 - [Bearer](/plugins/bearer) - retreiving Bearer token automatically
-- [Cookie](/plugins/cookie) - toolkits for handling cookie
 - [CORS](/plugins/cors) - setup Cross Origin Request request
 - [Cron](/plugins/cron) - setup cronjob
 - [Eden](/plugins/eden/overview) - end-to-end type safe client for Elysia
@@ -58,6 +57,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic http authentication for Elysia.
 - [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - Basic http authentication for Elysia (using 'request' event).
 - [i18n](https://github.com/eelkevdbos/elysia-i18next) - i18n wrapper for Elysia based on i18next
+- [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - Adds/Forwards request IDs (`X-Request-ID` or custom).
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).

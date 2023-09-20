@@ -25,6 +25,11 @@ head:
 <Blogs 
   :blogs="[
       {
+        title: 'Introducing Elysia 0.7 - Stellar Stellar',
+        href: '/blog/elysia-07',
+        detail: 'Introducing up to 13x faster type inference. Declarative telemetry with trace. Reactive cookie model, and cookie validation. TypeBox 0.31 and custom decoder support. Rewritten Web Socket. Definitions remapping and custom affix. Leading more solid foundation for Elysia for a brighter future.'
+      },
+      {
         title: 'Introducing Elysia 0.6 - This Game',
         href: '/blog/elysia-06',
         detail: 'Introducing re-imagined plugin model, dynamic mode, better developer experience with declarative custom error, customizable loose and strict path mapping, TypeBox 0.30 and WinterCG framework interlop. Pushing the boundary of what is possible once again'

@@ -41,6 +41,22 @@ app
 - `version` is registered using `state`, and accessible via `Context.store.version`.
 - `getDate` is registered using `decorate`, and accessible via `Context.getDate`.
 
+## Remap
+By providing a function as a first parameters, the callback will accept current value, allowing us to remap the value to anything we like.
+
+```typescript
+app
+    .state({
+        a: "a",
+        b: "b"
+    })
+    // Exclude b state
+    .state(({ b, ...rest }) => rest)
+    .get('/version', ({ 
+        store: { a }
+    }) => a
+```
+
 ## TypeScript
 You can type state and decorator explictly using TypeScript with `as`:
 ```typescript

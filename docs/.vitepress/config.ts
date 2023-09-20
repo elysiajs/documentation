@@ -96,7 +96,6 @@ export default defineConfig({
         sidebar: [
             {
                 text: 'Getting Started',
-                collapsed: true,
                 items: [
                     {
                         text: 'Introduction',
@@ -110,7 +109,6 @@ export default defineConfig({
             },
             {
                 text: 'Concepts',
-                collapsed: true,
                 items: [
                     {
                         text: 'Route',
@@ -164,8 +162,11 @@ export default defineConfig({
             },
             {
                 text: 'Patterns',
-                collapsed: true,
                 items: [
+                    {
+                        text: 'After Handle',
+                        link: '/patterns/after-handle'
+                    },
                     {
                         text: 'Method Chaining',
                         link: '/patterns/method-chaining'
@@ -173,6 +174,14 @@ export default defineConfig({
                     {
                         text: 'File Upload',
                         link: '/patterns/file-upload'
+                    },
+                    {
+                        text: 'Cookie',
+                        link: '/patterns/cookie'
+                    },
+                    {
+                        text: 'Cookie Signature',
+                        link: '/patterns/cookie-signature'
                     },
                     {
                         text: 'Error Handling',
@@ -191,6 +200,10 @@ export default defineConfig({
                         link: '/patterns/dependency-injection'
                     },
                     {
+                        text: 'Remapping',
+                        link: '/patterns/remapping'
+                    },
+                    {
                         text: 'Lazy Loading Module',
                         link: '/patterns/lazy-loading-module'
                     },
@@ -207,6 +220,10 @@ export default defineConfig({
                         link: '/patterns/body-parser'
                     },
                     {
+                        text: 'Trace',
+                        link: '/patterns/trace'
+                    },
+                    {
                         text: 'Mount',
                         link: '/patterns/mount'
                     },
@@ -218,7 +235,6 @@ export default defineConfig({
             },
             {
                 text: 'Plugins',
-                collapsed: true,
                 items: [
                     {
                         text: 'Eden',
@@ -296,7 +312,6 @@ export default defineConfig({
             },
             {
                 text: 'Integration',
-                collapsed: true,
                 items: [
                     {
                         text: 'Docker',
