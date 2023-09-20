@@ -1,17 +1,17 @@
 ---
-title: WebSocket Plugin - ElysiaJS
+title: WebSocket - ElysiaJS
 head:
     - - meta
       - property: 'title'
-        content: WebSocket Plugin - ElysiaJS
+        content: WebSocket - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that add support for using WebSocket. Start by registering the plugin and declare WebSocket route with "ws".
+        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add support for using WebSocket. Start by registering the plugin and declare WebSocket route with "ws".
+        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws".
 ---
 
 # WebSocket
@@ -43,7 +43,7 @@ new Elysia({
 })
 ```
 
-Elysia's WebSocket plugin extends Bun's WebSocket configuration so if you wish to configure the websocket you can refer to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) to learn more about this.
+Elysia's WebSocket implementation extends Bun's WebSocket configuration so if you wish to configure the websocket you can refer to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) to learn more about this.
 
 Below is a config that extends from [Bun WebSocket](https://bun.sh/docs/api/websockets#create-a-websocket-server)
 
@@ -79,7 +79,7 @@ Close the connection if the backpressure limit is reached.
 
 ## Methods
 
-Below are the new methods that are available to the WebSocket plugin
+Below are the new methods that are available to the WebSocket route
 
 ## ws
 
@@ -214,10 +214,6 @@ Like `transform`, but execute before validation of WebSocket message
 ## header
 
 Additional headers to add before upgrade connection to WebSocket.
-
-## Pattern
-
-Below you can find the common patterns to use the plugin.
 
 ## WebSocket message validation:
 
