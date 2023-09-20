@@ -23,18 +23,18 @@ new Elysia()
         </section>
         <header class="flex flex-col gap-3 w-full">
             <h3
-                class="text-5xl leading-tight font-bold text-transparent bg-clip-text bg-gradient-to-br from-teal-300 to-blue-300"
+                class="text-5xl leading-tight font-bold text-transparent bg-clip-text bg-gradient-to-br from-teal-400 to-blue-400 dark:from-teal-300 dark:to-blue-300"
             >
                 OpenAPI Compliance
             </h3>
             <p
-                class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
+                class="text-xl leading-normal text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4"
             >
                 Elysia generates OpenAPI 3.0 specs automatically to integrate
                 with various tools across multiple languages
             </p>
             <p
-                class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
+                class="text-xl leading-normal text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4"
             >
                 Thanks to OpenAPI compliance, Elysia can generate Swagger in one
                 line with the Swagger plugin.

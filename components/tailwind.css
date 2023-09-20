@@ -5,3 +5,11 @@
 .link {
     text-decoration: none !important;
 }
+
+::selection {
+    @apply bg-gray-900/20;
+}
+
+.dark ::selection {
+    @apply bg-gray-400/20;
+}

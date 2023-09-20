@@ -58,16 +58,16 @@ onMounted(() => {
         <section class="flex flex-col w-full max-w-lg">
             <header class="flex flex-col justify-center items-start">
                 <h2
-                    class="text-5xl md:text-6xl leading-tight font-bold bg-clip-text text-transparent bg-gradient-to-tr from-sky-400 to-fuchsia-400 mb-4"
+                    class="text-5xl md:text-6xl leading-tight font-bold bg-clip-text text-transparent bg-gradient-to-tr from-sky-500 to-fuchsia-500 dark:from-sky-400 dark:to-fuchsia-400 mb-4"
                 >
                     It works with that
                 </h2>
             </header>
-            <p class="text-xl text-gray-400 w-full max-w-lg mb-4">
+            <p class="text-xl text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4">
                 Being one of the most popular choices for a Bun web framework,
                 likely there is a plugin for what you want.
             </p>
-            <p class="text-xl text-gray-400 w-full max-w-lg">
+            <p class="text-xl text-gray-500 dark:text-gray-400 w-full max-w-lg">
                 If the plugin you need is not there, it's easy to create one and share
                 it with the community.
             </p>
