@@ -55,7 +55,7 @@ new Elysia()
 ## Path Parameters
 Path parameters can retrieve data from URL.
 
-For example, getting an user id from path like many social media is when you need a path parameters.
+For example, getting a user id from path like many social media is when you need a path parameters.
 
 ```typescript
 new Elysia()
@@ -63,12 +63,12 @@ new Elysia()
     .listen(8080)
 ```
 
-Path parameters is a variable in a path.
+Path parameters are a variable in a path.
 
-When the pattern match, the path you named will become available in `context.params`, and you can retrieve its value.
+When the pattern matches, the path you named will become available in `context.params`, and you can retrieve its value.
 
 ## Wildcard
-Sometime path parameters is not enough. 
+Sometimes path parameters are not enough. 
 
 Matching anything after some pattern is required, and you can't define them all or its too redundant.
 
