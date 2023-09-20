@@ -72,11 +72,11 @@ const group = new Elysia({ prefix: '/v1' })
     .get('/hello', () => 'Hello World')
 ```
 
-We encourage you to use the new model of Elysia plugin instance, as we can take advantage of Plugin Checksum and new possible feature in the future.
+We encourage you to use the new model of Elysia plugin instance, as we can take advantage of Plugin Checksum and new possible features in the future.
 
 However, we are **NOT deprecating** the callback function method as there's some case function model is useful like:
 - Inline function
-- Plugin that required an information of main instance (for example accessing OpenAPI schema)
+- Plugins that required an information of main instance (for example accessing OpenAPI schema)
 
 With this new plugin model, we hope that you can make your codebase even easier to maintain.
 
@@ -87,7 +87,7 @@ This means that if you register a plugin for type declaration, it will duplicate
 
 Which is why Plugin Checksum is introduced, to de-duplicated plugin registered for type declaration.
 
-To opt-in to Plugin Checksum, you need to use a new plugin model, and provided a `name` property to tell Elysia to not deduplicated the plugin
+To opt-in to Plugin Checksum, you need to use a new plugin model, and provide a `name` property to tell Elysia to prevent the plugin from being deduplicate
 ```ts
 const plugin = new Elysia({
     name: 'plugin'
@@ -96,9 +96,9 @@ const plugin = new Elysia({
 
 This allows Elysia to identify the plugin and deduplicated based on name.
 
-Any duplicated name will be registered only once but type-safety will be provided after registered even if the plugin is deduplicated.
+Any duplicated name will be registered only once but type-safety will be provided after registration even if the plugin is deduplicated.
 
-In case if your plugin need configuration, you can provided the configuration into a **seed** property to generate a checksum to deduplicate the plugin.
+In case your plugin needs configuration, you can provide the configuration into a **seed** property to generate a checksum for deduplicating the plugin.
 
 ```ts
 const plugin = (config) = new Elysia({
@@ -107,9 +107,9 @@ const plugin = (config) = new Elysia({
 })
 ```
 
-name and seed will be used to generate a checksum to de-duplicated registration, which leads to even better performance improvement.
+Name and seed will be used to generate a checksum to de-duplicated registration, which leads to even better performance improvement.
 
-This update also fixed the deduplication of the plugin's lifecycle accidentally inline life-cycle when Elysia is not sured if plugin is local and global event.
+This update also fixed the deduplication of the plugin's lifecycle accidentally inline lifecycle when Elysia is not sure if plugin is local and global event.
 
 As always, means performance improvement for an app that's larger than "Hello World".
 
@@ -138,7 +138,7 @@ A **fetch** function is a function that accept Web Standard Request and return W
 type fetch = (request: RequestLike) => Response
 ```
 
-By default, this declaration are used by:
+By default, this declaration is used by:
 - Bun
 - Deno
 - Vercel Edge Runtime
@@ -178,25 +178,25 @@ new Elysia()
 
 If an instance passed to mount is an Elysia instance, it will resolve to `use` automatically, providing type-safety and support for Eden by default.
 
-This made the possiblility of interlopable framework and runtime to a reality.
+This made the possibility of interlopable framework and runtime to a reality.
 
 ## Improved starts up time
-Starts up time is an important metric in an serverless environment which Elysia excels it incredibly, but we have taken it even further.
+Starts up time is an important metric in a serverless environment which Elysia excels it incredibly, but we have taken it even further.
 
-By default, Elysia generate OpenAPI schema for every route automatically and stored it internally when if not used.
+By default, Elysia generates OpenAPI schema for every route automatically and stored it internally when if not used.
 
-In this version, Elysia defers the compliation and moved to `@elysiajs/swagger` instead allowing Elysia starts up time to be even faster.
+In this version, Elysia defers the compilation and moved to `@elysiajs/swagger` instead allowing Elysia starts up time to be even faster.
 
 And with various micro-optimization, and made possible by new Plugin model, starts up time is now up to 35% faster.
 
 ## Dynamic Mode
-Elysia introduce Static Code Analysis and Ahead of Time compliation to push to boundary of performance.
+Elysia introduces Static Code Analysis and Ahead of Time compilation to push the boundary of performance.
 
-Static Code Analysis allow Elysia to read your code then produce the most optimized version code, allowing Elysia to push the performance to it's limit.
+Static Code Analysis allow Elysia to read your code then produce the most optimized version code, allowing Elysia to push the performance to its limit.
 
 Even if Elysia is WinterCG compliance, environment like Cloudflare worker doesn't support function composition.
 
-This means that Ahead of Time Compliation isn't possible, leading us to create a dynamic mode which use JIT compliation instead of AoT, allowing Elysia to runs in Cloudflare Worker as well.
+This means that Ahead of Time Compliation isn't possible, leading us to create a dynamic mode which use JIT compilation instead of AoT, allowing Elysia to run in Cloudflare Worker as well.
 
 To enable dynamic mode, set `aot` to false.
 ```ts
@@ -207,18 +207,18 @@ new Elysia({
 
 Dynamic Mode is enabled by default in cloudflare worker.
 
-#### It's worth note that, enabling Dynamic Mode will disable some feature like dynamic injected code like `t.Numeric` which parse string to number automatically.
+#### It's worth noting that, enabling Dynamic Mode will disable some feature like dynamic injected code like `t.Numeric` which parse strings to numbers automatically.
 
-Ahead of Time compliation can read, detect and optimized your code in exchange of start up time in exchange of extra performance gain, while dynamic mode use JIT compilation, allowing start up time to be even faster up to 6x.
+Ahead of Time compilation can read, detect and optimize your code in exchange for startup time in exchange for extra performance gain, while dynamic mode uses JIT compilation, allowing start up time to be even faster up to 6x.
 
-But it should be note that starts up time in Elysia is fast enough by default.
+But it should be noted that startup time in Elysia is fast enough by default.
 
-Elysia is able to registered 10,000 routes in just 78ms which means in an average of 0.0079 ms/route
+Elysia is able to register 10,000 routes in just 78ms which means in an average of 0.0079 ms/route
 
 That being said, we are leaving a choice for you to decided yourself.
 
 ## Declarative Custom Error
-This update add support for adding type support for handling custom error.
+This update adds support for adding type support for handling custom error.
 
 ```ts
 class CustomError extends Error {
@@ -242,20 +242,20 @@ new Elysia()
     })
 ```
 
-This allows us to handle custom type with type narrowing for handling custom error and auto-completion for error code to narrow down the correct type, fully type-safe declaratively.
+This allows us to handle custom types with type narrowing for handling custom errors and auto-completion for error codes to narrow down the correct types, fully type-safe declaratively.
 
-This fulfills one of the our main philosophy is focused on Developer Experience especially with types.
+This fulfills one of our main philosophies is focused on Developer Experience especially with types.
 
-Elysia Type System is complex, yet we try to refrained our user's need to write a custom type or passing a custom generic, retaining all the code to looks just like JavaScript.
+Elysia Type System is complex, yet we try to refrained our users need to write a custom type or passing a custom generic, retaining all the code to look just like JavaScript.
 
 It just works, and all the code looks just like JavaScript.
 
 ## TypeBox 0.30
-TypeBox is a core library that powered Elysia's strict type system known as **Elysia.t**.
+TypeBox is a core library that powers Elysia's strict type system known as **Elysia.t**.
 
-In this update, we update TypeBox from 0.28 to 0.30 to make even more fine-grained Type System near strictly typed language.
+In this update, we update TypeBox from 0.28 to 0.30 to make even more fine-grained Type System nearly strictly typed language.
 
-This updates introduce new features and many interesting changes, for example **Iterator** type, reducing package size, TypeScript code generation.
+These updates introduce new features and many interesting changes, for example **Iterator** type, reducing packages size, TypeScript code generation.
 
 And with support for Utility Types like:
 - `t.Awaited`
@@ -298,18 +298,18 @@ new Elysia({
 We hope that this will clear any questions regards to path matching and its expected behavior
 
 ## onResponse
-This update introduce a new life-cycle hook call `onResponse`.
+This update introduce a new lifecycle hook called `onResponse`.
 
-This is a proposal, proposed by [elysia#67](https://github.com/elysiajs/elysia/issues/67)
+This is a proposal proposed by [elysia#67](https://github.com/elysiajs/elysia/issues/67)
 
 Previously Elysia life-cycle works as illustrated in this diagram.
 ![Elysia life-cycle diagram](/blog/elysia-06/lifecycle-05.webp)
 
-For any metric, data-collection or logging purpose, you can use `onAfterHandle` to run the function to collect metrics, however this life-cycle doesn't executed when handler runs into an error, whether it's routing error, or custom error provided.
+For any metric, data-collection or logging purpose, you can use `onAfterHandle` to run the function to collect metrics, however, this lifecycle isn't executed when handler runs into an error, whether it's a routing error or a custom error provided.
 
 Which is why we introduced `onResponse` to handle all cases of Response.
 
-You can use `onRequest`, and `onResponse` together to measure a metric of performance or any logging requred.
+You can use `onRequest`, and `onResponse` together to measure a metric of performance or any required logging.
 
 Quoted
 > However, the onAfterHandle function only fires on successful responses. For instance, if the route is not found, or the body is invalid, or an error is thrown, it is not fired. How can I listen to both successful and non-successful requests? This is why I suggested onResponse.
@@ -320,15 +320,15 @@ Quoted
 ---
 
 ### Notable Improvement:
-- Add `error` field to Elysia type system for adding custom error message
+- Added an error field to the Elysia type system for adding custom error messages
 - Support Cloudflare worker with Dynamic Mode (and ENV)
 - AfterHandle now automatically maps the value
 - Using bun build to target Bun environment, improving the overall performance by 5-10%
-- Deduplicated inline life-cycle when using plugin registration
+- Deduplicated inline lifecycle when using plugin registration
 - Support for setting `prefix`
 - Recursive path typing
-- Slighty improve type checking speed
-- Recursive schema collision causing infinite type
+- Slightly improved type checking speed
+- Recursive schema collision causing infinite types
 
 ### Change:
 - Moved **registerSchemaPath** to @elysiajs/swagger
@@ -342,11 +342,11 @@ Quoted
 ## Afterward
 We have just passed a one year milestone, and really excited how Elysia and Bun have improved over the year!
 
-Pushing performance boundary of JavaScript with Bun, and developer experience with Elysia, we are thrilled to have keeps in touch with you and our community.
+Pushing the performance boundaries of JavaScript with Bun, and developer experience with Elysia, we are thrilled to have kept in touch with you and our community.
 
-Every updates, keeps making Elysia even more stable, and having better developer experience gradually without a drop in performance and features.
+Every updates, keeps making Elysia even more stable, and gradually providing a better developer experience without a drop in performance and features.
 
-We're thrilled to see our community of open-source developers bring Elysia to life with their works like
+We're thrilled to see our community of open-source developers bringing Elysia to life with their projects like.
 - [Elysia Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) allowing us to use Vite Server Side Rendering using Elysia as the server.
 - [Elysia Connect](https://github.com/timnghg/elysia-connect) which made Connect's plugin compatible with Elysia
 
@@ -354,7 +354,7 @@ And much more developers that choose Elysia for their next big project.
 
 With our commitment, we also recently introduced [Mobius](https://github.com/saltyaom/mobius), and open-source TypeScript library to parse GraphQL to TypeScript type without relying on code generation by using TypeScript template literal type entirely to be the very first framework to achieve end-to-end type safety without relying on code generation.
 
-We incredibly thanksful for your overwhelming continous support for Elysia, and we hope to see you pushing the boundary together on the next release.
+We incredibly thankful for your overwhelming continous support for Elysia, and we hope to see you pushing the boundaries together in the next release.
 
 > As this whole new world cheers my name
 >
