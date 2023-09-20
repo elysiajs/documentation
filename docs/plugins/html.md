@@ -159,6 +159,13 @@ Learn how to [sanitize](https://github.com/kitajs/html#sanitization) and avoid x
 
 ::: tip
 
+new Elysia()
+    .get('/unsafe', ({ sanitize }) => (
+        <h1>{sanitize(malicious)}</h1>
+    ))
+    .listen(8080)
+```
+
 Read more about JSX in the [official documentation](https://github.com/kitajs/html) and learn how to add HTMX typings, compiling html, adding more JSX components and so on...
 
 :::
