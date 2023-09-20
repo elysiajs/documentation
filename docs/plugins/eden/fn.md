@@ -40,7 +40,7 @@ const fn = edenFn<App>('http://localhost:8080')
 const data = await fn.sum(6, 9)
 ```
 
-Elysia Fn uses JavaScript's Proxy to capture object properties and parameters, to create batched requests to the server to handle, and returns the value across the network. 
+Elysia Fn uses JavaScript's Proxy to capture object properties and parameters, to create batched requests to the server to handle, and returns the value across the network.
 
 Elysia Fn extends [superjson](https://github.com/blitz-js/superjson), allowing native type in JavaScript like `Error`, `Map`, `Set`, and `undefined` to parse across JSON data.
 
@@ -53,7 +53,6 @@ As for naming convention, we will refers to Elysia Fn and Eden Fn as:
 
 - Elysia Fn: Exposed functions on Elysia server
 - Eden Fn: A client to use Elysia Fn
-:::
 
 ## Security
 You can limit allow or deny scopes of the function, check for the authorization header and other headers' fields, validate parameters, or limit keys access programmatically using `permission` function.

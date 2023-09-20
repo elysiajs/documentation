@@ -33,12 +33,11 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Plugin can register by using `use`.
+Plugin can be registered by using `use` method.
 
-Registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
+Registering a plugin will combine types between plugin and current instance, and the scope of hooks and schema get merged as well.
 
 ## Separate file
-
 Using plugin pattern, you can define decouple your logic into a separate file.
 
 ```ts
@@ -65,7 +64,7 @@ import { plugin } from './plugin'
 const app = new Elysia().use(plugin).listen(8080)
 ```
 
-Functional callback will allows use to access main instance values like routes schema, store.
+Functional callback will allow user to access main instance values like routes schema, store.
 
 ## Config
 
