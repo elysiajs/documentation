@@ -55,7 +55,7 @@ app.guard({
 )
 ```
 
-# Groupped Guard
+# Grouped Guard
 You can create group with a guard scope by adding a guard api in the second parameter, instead of nesting group and guard together.
 
 ```ts
