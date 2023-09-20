@@ -81,13 +81,13 @@ app.get('/', ({ cookie: { name } }) => {
 Like **set**, **add** allow us to update multiple cookie property at once, but instead, will only overwrite the property defined instead of resetting.
 
 ## remove
-To remove a cookie, you can either cookie:
-1. cookie.remove
+To remove a cookie, you can either use:
+1. name.remove
 2. delete cookie.name
 
 ```ts
 app.get('/', ({ cookie, cookie: { name } }) => {
-    cookie.remove()
+    name.remove()
 
     delete cookie.name
 })
