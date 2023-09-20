@@ -371,7 +371,7 @@ This is why we ship 64 HTTP Status codes in text-based form with autocompletion 
 
 Text will then resolved to status code automatically as expected.
 
-As you type, there should be auto-completion for text popup automatically for your IDE, whether it's NeoVim or VSCode, as it's a built-in TypeSCript fefature.
+As you type, there should be auto-completion for text popup automatically for your IDE, whether it's NeoVim or VSCode, as it's a built-in TypeScript fefature.
 
 ![Text-base status code showing auto-completion](/blog/elysia-07/teapot-autocompletion.webp)
 
