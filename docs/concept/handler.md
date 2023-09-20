@@ -102,7 +102,7 @@ app.get('/', () => new Response(
             'Shirakami Fubuki',
             'Inugami Korone'
         ]
-    }, {
+    }), {
         headers: {
             'Content-Type': 'application/json'
         }

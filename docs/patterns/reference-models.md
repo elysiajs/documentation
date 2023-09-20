@@ -48,8 +48,8 @@ const SignDTO = t.Object({
 
 const app = new Elysia()
     .post('/sign-in', ({ body }) => body, {
-        body: signDTO,
-        response: signDTO
+        body: SignDTO,
+        response: SignDTO
     })
 ```
 
