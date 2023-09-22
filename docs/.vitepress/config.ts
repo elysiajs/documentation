@@ -267,10 +267,6 @@ export default defineConfig({
                                 link: '/plugins/bearer'
                             },
                             {
-                                text: 'Cookie',
-                                link: '/plugins/cookie'
-                            },
-                            {
                                 text: 'CORS',
                                 link: '/plugins/cors'
                             },
