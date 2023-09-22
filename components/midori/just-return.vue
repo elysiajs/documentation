@@ -22,18 +22,18 @@ new Elysia()
         </section>
         <header class="flex flex-col gap-3 w-full">
             <h3
-                class="text-5xl leading-tight font-bold text-transparent bg-clip-text bg-gradient-to-br from-green-400 to-sky-400 dark:from-green-300 dark:to-sky-300"
+                class="text-5xl leading-tight font-bold text-transparent bg-clip-text bg-gradient-to-br from-green-300 to-sky-300"
             >
                 Just return
             </h3>
             <p
-                class="text-xl leading-normal text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4"
+                class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
                 No need for an additional method, just return the value to send data
                 back to the client.
             </p>
             <p
-                class="text-xl leading-normal text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4"
+                class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
                 Whether it's a regular string, or complex JSON, just return the value
                 and Elysia will handle the rest

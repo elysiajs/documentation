@@ -31,18 +31,18 @@ new Elysia()
         </section>
         <header class="flex flex-col gap-3 w-full">
             <h3
-                class="text-5xl leading-tight font-bold text-transparent bg-clip-text bg-gradient-to-br from-teal-400 to-blue-400 dark:from-teal-300 dark:to-blue-300"
+                class="text-5xl leading-tight font-bold text-transparent bg-clip-text bg-gradient-to-br from-teal-300 to-blue-300"
             >
                 Type Strict
             </h3>
             <p
-                class="text-xl leading-normal text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4"
+                class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
                 Powered by TypeBox, Elysia enforces type-strict validation to
                 ensure type integrity by default
             </p>
             <p
-                class="text-xl leading-normal text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4"
+                class="text-xl leading-normal text-gray-400 w-full max-w-lg mb-4"
             >
                 Elysia infers types to TypeScript automatically to create
                 unified type system like statically typed language

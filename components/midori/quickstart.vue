@@ -3,12 +3,12 @@
         class="flex flex-col justify-center items-center gap-3 w-full my-24 overflow-hidden"
     >
         <h2
-            class="relative text-5xl md:text-6xl md:leading-tight font-bold text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-500 dark:from-sky-300 dark:to-indigo-400"
+            class="relative text-5xl md:text-6xl md:leading-tight font-bold text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400"
         >
             Start in minutes
         </h2>
         <h3
-            class="text-xl md:text-2xl leading-relaxed text-gray-500 dark:text-gray-400 text-center w-full max-w-3xl"
+            class="text-xl md:text-2xl leading-relaxed text-gray-400 text-center w-full max-w-3xl"
         >
             Scaffold your project, and run server in no time
         </h3>

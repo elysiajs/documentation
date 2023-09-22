@@ -168,13 +168,13 @@ onMounted(() => {
         class="flex flex-col justify-center items-center w-full max-w-6xl mx-auto mt-6 md:my-12"
     >
         <h2
-            class="text-6xl w-full text-left sm:text-center font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-violet-500 dark:from-blue-400 dark:to-violet-400 mb-2"
+            class="text-6xl w-full text-left sm:text-center font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-violet-400 mb-2"
         >
             Try it out
         </h2>
 
         <p
-            class="text-xl md:text-2xl leading-relaxed text-gray-500 dark:text-gray-400 text-left md:text-center w-full max-w-2xl"
+            class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-2xl"
         >
             Being WinterCG compliant, Elysia can run in your browser!
             <br />
