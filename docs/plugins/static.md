@@ -77,6 +77,11 @@ Tradeoff memory with performance.
 
 If set to true, static files will path will be registered to Router skipping the `staticLimits`.
 
+### headers
+@default `{}`
+
+Set response headers of files
+
 ## Pattern
 Below you can find the common patterns to use the plugin.
 
