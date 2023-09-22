@@ -29,7 +29,7 @@ app.get('/id/:id', ({ params: { id } }) => id, {
     transform({ params }) {
         const id = +params.id
 
-        if(!Number.isNan(id))
+        if(!Number.isNaN(id))
             params.id = id
     }
 })
