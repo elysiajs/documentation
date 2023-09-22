@@ -89,5 +89,5 @@ Below you can find the common patterns to use the plugin.
 Suppose you want to return just a single file, you can use `Bun.file` instead of using static plugin
 ```typescript
 new Elysia()
-    .get('/file', () => Bun.file('public/takodachi.png')
+    .get('/file', () => Bun.file('public/takodachi.png'))
 ```
