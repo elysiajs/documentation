@@ -1,5 +1,5 @@
 ---
-title: Getting Start - ElysiaJS
+title: Getting Started - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
