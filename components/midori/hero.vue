@@ -15,7 +15,7 @@
             ElysiaJS
         </h1>
         <h2
-            class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-500  dark:from-sky-300 dark:to-indigo-400 mt-2 mb-8"
+            class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400 mt-2 mb-8"
         >
             Ergonomic Framework for Humans<span
                 class="absolute w-10 md:w-12 h-10 md:h-12 bottom-0 mb-4 ml-2 md:ml-0 md:mb-10 text-indigo-400"
@@ -78,7 +78,7 @@
             </span>
         </h2>
         <h3
-            class="text-xl md:text-2xl leading-relaxed text-gray-500 dark:text-gray-400 text-left md:text-center w-full max-w-[49rem]"
+            class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-[49rem]"
         >
             TypeScript framework supercharged by Bun with
             <span
@@ -101,7 +101,7 @@
                 bun create elysia app
             </code>
         </section>
-        <p class="flex justify-center items-center gap-2 text-gray-500 dark:text-gray-400">
+        <p class="flex justify-center items-center gap-2 text-gray-400">
             See why developers love Elysia
             <svg
                 xmlns="http://www.w3.org/2000/svg"

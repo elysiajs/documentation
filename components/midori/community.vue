@@ -10,15 +10,15 @@
                     Can't find what you're looking for?
                 </h2>
                 <h2
-                    class="text-5xl leading-tight font-semibold text-gray-400 mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-fuchsia-600 to-blue-600 dark:from-fuchsia-500 dark:to-blue-500"
+                    class="text-5xl leading-tight font-semibold text-gray-400 mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-fuchsia-500 to-blue-500"
                 >
                     Join the community
                 </h2>
             </header>
-            <p class="text-xl text-gray-500 dark:text-gray-400 w-full max-w-lg mb-4">
+            <p class="text-xl text-gray-400 w-full max-w-lg mb-4">
                 Elysia is one of the biggest communities for Bun first web frameworks.
             </p>
-            <p class="text-xl text-gray-500 dark:text-gray-400 w-full max-w-lg">
+            <p class="text-xl text-gray-400 w-full max-w-lg">
                 You can ask your questions / propose a new feature / file a bug with our community and mainters.
             </p>
         </section>
