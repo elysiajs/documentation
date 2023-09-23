@@ -75,12 +75,12 @@ Value can be one of the following:
 
 Allowed headers for an incoming request.
 
-Assign [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers) header.
+Assign [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers) header.
 
 Value can be one of the following:
-- **string** - Expects either a single method or a comma-delimited string
+- **string** - Expects either a single header or a comma-delimited string
     - eg: `'Content-Type, Authorization'`.
-- **string[]** - Allow multiple HTTP methods.
+- **string[]** - Allow multiple HTTP headers.
     - eg: `['Content-Type', 'Authorization']`
 
 ---
@@ -92,9 +92,9 @@ Response CORS with specified headers.
 Assign [Access-Control-Exposed-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers) header.
 
 Value can be one of the following:
-- **string** - Expects either a single method or a comma-delimited string.
+- **string** - Expects either a single header or a comma-delimited string.
     - eg: `'Content-Type, X-Powered-By'`.
-- **string[]** - Allow multiple HTTP methods.
+- **string[]** - Allow multiple HTTP headers.
     - eg: `['Content-Type', 'X-Powered-By']`
 
 ---
