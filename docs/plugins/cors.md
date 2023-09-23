@@ -89,7 +89,7 @@ Value can be one of the following:
 
 Response CORS with specified headers.
 
-Assign [Access-Control-Exposed-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers) header.
+Assign [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers) header.
 
 Value can be one of the following:
 - **string** - Expects either a single header or a comma-delimited string.
