@@ -48,7 +48,7 @@ Start a development server by:
 bun dev
 ```
 
-Open your browser and go to `http://localhost:8080`.
+Open your browser and go to `http://localhost:3000`.
 
 You should see your server is running.
 
