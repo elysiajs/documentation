@@ -73,7 +73,7 @@ new Response(JSON.stringify({
         'Shirakami Fubuki',
         'Inugami Korone'
     ]
-}, {
+}), {
     headers: {
         'Content-Type': 'application/json'
     }
