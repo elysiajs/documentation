@@ -59,6 +59,8 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - Basic http authentication for Elysia (using 'request' event).
 - [i18n](https://github.com/eelkevdbos/elysia-i18next) - i18n wrapper for Elysia based on i18next
 - [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - Adds/Forwards request IDs (`X-Request-ID` or custom).
+- [Elysia HMR HTML](https://github.com/gtrabanco/elysia-hmr-html) - Reload html files when change any file in a directory
+- [Elysia Inject HTML](https://github.com/gtrabanco/elysia-inject-html) - So simple plugin to inject HTML code in HTML files
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
