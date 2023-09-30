@@ -65,11 +65,11 @@ import { plugin } from './plugin'
 const app = new Elysia().use(plugin).listen(8080)
 ```
 
-Functional callback will allow user to access main instance values like routes, schema, store, etc.
+Functional callback will allow a user to access main instance values like routes, schema, store, etc.
 
 ## Config
 
-You can customize a plugin by creating function to return callback which accepts Elysia.
+You can customize a plugin by creating a function to return callback which accepts Elysia.
 
 ```typescript
 import { Elysia } from 'elysia'
