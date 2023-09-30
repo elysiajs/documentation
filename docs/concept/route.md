@@ -55,7 +55,7 @@ new Elysia()
 ## Path Parameters
 Path parameters can retrieve data from URL.
 
-For example, getting a user id from path like many social media is when you may need path parameters.
+For example, getting a user id from path (like many social media) is when you may need path parameters.
 
 ```typescript
 new Elysia()
