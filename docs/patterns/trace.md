@@ -16,18 +16,18 @@ head:
 ---
 
 # Trace
-**Trace** allow us to take tap into a life-cycle event and identifying performance bottleneck for our app.
+**Trace** allows us to tap into a life-cycle event and identify performance bottlenecks for our app.
 
 ![Example of usage of Trace](/assets/trace.webp)
 
-Performance is another one of important aspect for Elysia.
+Performance is another important aspect for Elysia.
 
-We don't want to be fast for benchmarking purpose, we want you to have a real fast server in real-world scenario.
+We don't want to be fast for benchmarking purposes, we want you to have a real fast server in real-world scenario.
 
-There are many factor that can slow down your app, and it's hard to identifying one, and **trace** can helps solve that problem
+There are many factors that can slow down your app - and it's hard to identify them, but **trace** can helps solve that problem
 
 ## Trace
-Trace can measure lifecycle execution time of each function to audit performance bottleneck of each cycle.
+Trace can measure lifecycle execution time of each function to audit the performance bottleneck of each cycle.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -56,7 +56,7 @@ Please refers to [lifecycle event](/concept/life-cycle) for more information:
 ![Elysia Life Cycle](/assets/lifecycle.webp)
 
 ## Children
-You can tap deeper into each measure each function of life-cycle event by using children property of a life-cycle
+You can tap deeper and measure each function of a life-cycle event by using the **children** property of a life-cycle event
 
 ```ts
 import { Elysia } from 'elysia'
@@ -88,7 +88,7 @@ Every life cycle has support for children except for `handle`
 :::
 
 ## Name
-Measuring function by index can be hard to trace back to the function code, that's why trace provide a **name** property to easily identify the function by name.
+Measuring functions by index can be hard to trace back to the function code, that's why trace provides a **name** property to easily identify the function by name.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -113,13 +113,13 @@ const app = new Elysia()
 ```
 
 ::: tip
-If you are using arrow function or unnamed function, **name** will become **"anonymous"**
+If you are using an arrow function or unnamed function, **name** will become **"anonymous"**
 :::
 
 ## Set
-Inside trace calback, you can access `Context` of the request, and can mutate the value of the request itself, for example using `set.headers` to update headers.
+Inside the trace callback, you can access `Context` of the request, and can mutate the value of the request itself, for example using `set.headers` to update headers.
 
-This is useful when you need support API like Server-Timing.
+This is useful when you need support an API like Server-Timing.
 
 ![Example of usage of Trace](/assets/server-timing.webp)
 
@@ -137,13 +137,13 @@ const app = new Elysia()
 ```
 
 ::: tip
-Using `set` inside `trace` can affect performance, as Elysia as to defer to execution to next micro-tick.
+Using `set` inside `trace` can affect performance, as Elysia defers the execution to the next micro-tick.
 :::
 
 ## Skip
-Sometime, `beforeHandle` or handler can throw can error, skipping the execution of some lifecycle.
+Sometimes, `beforeHandle` or handler can throw an error, skipping the execution of some lifecycles.
 
-By default if this happens, each life-cycle will be resolved automatically, you can track if the API is executed or not by using `skip` property
+By default if this happens, each life-cycle will be resolved automatically, and you can track if the API is executed or not by using `skip` property
 
 ```ts
 import { Elysia } from 'elysia'
