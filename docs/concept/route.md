@@ -19,7 +19,7 @@ Like Express, and Fastify.
 
 You define route using method as a building block for your server.
 
-By calling `.[method name](path, callback, hook?)`, you attach route to Elysia, and the library will handle the routing for you.
+By calling `.[method name](path, callback, hook?)`, you attach the route to Elysia, and the library will handle the routing for you.
 
 For example:
 ```typescript
@@ -55,7 +55,7 @@ new Elysia()
 ## Path Parameters
 Path parameters can retrieve data from URL.
 
-For example, getting a user id from path like many social media is when you need a path parameters.
+For example, getting a user id from path like many social media is when you may need path parameters.
 
 ```typescript
 new Elysia()
