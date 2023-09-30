@@ -17,7 +17,7 @@ head:
 
 # Numeric
 
-Sometime you might find yourself in need of numeric string like extracting path parameter, but it's typed as string and need to be convert to number.
+Sometimes you might find yourself in need of numeric string like extracting path parameter, but it's typed as string and need to be convert to number.
 
 Using Elysia's `transform` life-cycle, you can manually parse number to string and re-use the transform function in other handler as well.
 
