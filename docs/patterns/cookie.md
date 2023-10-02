@@ -104,12 +104,14 @@ app.get('/', ({ cookie: { name } }) => {
         name: 'Summoning 101'
     }
 }, {
-    cookie: t.Cookie({
-        value: t.Object({
+    cookie: t.Object({
+        name: t.Cookie({
+            value: t.Object({
             id: t.Numeric(),
             name: t.String()
         })
     })
+  })
 })
 ```
 
@@ -124,13 +126,15 @@ app.get('/', ({ cookie: { name } }) => {
         name: 'Summoning 101'
     }
 }, {
-    cookie: t.Cookie({
-        value: t.Optional(
-            t.Object({
-                id: t.Numeric(),
-                name: t.String()
-            })
-        )
-    })
+    cookie: t.Object({
+      name: t.Cookie({
+          value: t.Optional(
+              t.Object({
+                  id: t.Numeric(),
+                  name: t.String()
+              })
+          )
+      })
+  })
 })
 ```
