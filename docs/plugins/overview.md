@@ -61,6 +61,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - Adds/Forwards request IDs (`X-Request-ID` or custom).
 - [Elysia HMR HTML](https://github.com/gtrabanco/elysia-hmr-html) - Reload html files when change any file in a directory
 - [Elysia Inject HTML](https://github.com/gtrabanco/elysia-inject-html) - So simple plugin to inject HTML code in HTML files
+- [NoCache](https://github.com/gaurishhs/elysia-nocache) - A plugin for Elysia to disable caching
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
