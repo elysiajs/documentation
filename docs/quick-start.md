@@ -34,13 +34,13 @@ cd hi-elysia
 
 Open `src/index.ts`, and you should see:
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia } from "elysia";
 
-const app = new Elysia()
-	.get('/', () => 'Hello Elysia')
-	.listen(8080)
-	 
-console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
+const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
+
+console.log(
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+);
 ```
 
 Start a development server by:
@@ -48,7 +48,7 @@ Start a development server by:
 bun dev
 ```
 
-Open your browser and go to `http://localhost:8080`.
+Open your browser and go to `http://localhost:3000`.
 
 You should see your server is running.
 
