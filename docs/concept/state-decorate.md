@@ -58,7 +58,7 @@ app
 ```
 
 ## TypeScript
-You can type state and decorator explictly using TypeScript with `as`:
+You can type state and decorator explicitly using TypeScript with `as`:
 ```typescript
 app
     // Will type version as `number | null`
@@ -68,7 +68,7 @@ app
     }) => version
 ```
 
-If explictly typed doesn't type `null` or `undefined`, make sure to set `strict` to `true` in `tsconfig.json`:
+If the explicit type doesn't type `null` or `undefined`, make sure to set `strict` to `true` in `tsconfig.json`:
 ```json
 // tsconfig.json
 {

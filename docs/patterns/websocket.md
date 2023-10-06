@@ -112,7 +112,7 @@ options: Customize WebSocket handler behavior
 
 WebSocketHandler extends config from [config](#config).
 
-Below is a config which accepted by `ws`.
+Below is a config which is accepted by `ws`.
 
 ## schema
 

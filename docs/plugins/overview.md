@@ -59,9 +59,12 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - Basic http authentication for Elysia (using 'request' event).
 - [i18n](https://github.com/eelkevdbos/elysia-i18next) - i18n wrapper for Elysia based on i18next
 - [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - Adds/Forwards request IDs (`X-Request-ID` or custom).
+- [Elysia HTMX](https://github.com/gtramontina/elysia-htmx) - Context helpers for [HTMX](https://htmx.org/).
 - [Elysia HMR HTML](https://github.com/gtrabanco/elysia-hmr-html) - Reload html files when change any file in a directory
 - [Elysia Inject HTML](https://github.com/gtrabanco/elysia-inject-html) - So simple plugin to inject HTML code in HTML files
 - [Elysia HTTP Error](https://github.com/yfrans/elysia-http-error) - Easiest way to return HTTP errors from Elysia handlers
+- [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - Simple http status code plugin for Elysia.js
+- [NoCache](https://github.com/gaurishhs/elysia-nocache) - A plugin for Elysia to disable caching
 
 ---
 If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
