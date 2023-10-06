@@ -25,7 +25,7 @@ Building on top of 3 philosophies:
 - Simplicity
     - Simple building blocks to create an abstraction, not repeating yourself
 - Flexibility
-    - You shall be able to customize most of the library to fits your need
+    - You shall be able to customize most of the library to fit your need
 
 Designed with TypeScript in mind, you don't need to understand TypeScript to take advantage of Elysia. The library understands what you want and automatically infers the type from your code.
 
