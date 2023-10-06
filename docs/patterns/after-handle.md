@@ -17,7 +17,7 @@ head:
 # After Handle
 **After Handle** can transform a response into a new response.
 
-**After Handle** is like `transform`, but instead of transforming incoming request, it is use to transform a response returned from main handler.
+**After Handle** is like `transform`, but instead of transforming the incoming request, it is used to transform a response returned from main handler.
 
 Allowing you to remap the returned value into a new value or force the value to early return.
 
@@ -42,7 +42,7 @@ new Elysia()
 The above code will return `3` as a result.
 
 ## Early return
-Sometime, you may want to prevent the on-going chain of **afterHandle**, just like **beforeHandle**, if you return the value in a **afterHandle** function, it will be an early return and skip the rest of **afterHandle**
+Sometimes you may want to prevent the on-going chain of **afterHandle**, just like **beforeHandle**. If you return the value in a **afterHandle** function, it will be an early return and skip the rest of **afterHandle**
 
 ```typescript
 import { Elysia } from 'elysia'

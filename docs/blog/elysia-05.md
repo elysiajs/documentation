@@ -177,7 +177,7 @@ type ContentType = |
     | 'application/x-www-form-urlencoded'
 ```
 
-You can find more detail at [explicity body](/concept/explicit-body) page in concept.
+You can find more detail at the [explicit body](/concept/explicit-body) page in concept.
 
 ### Numeric Type
 We found that one of the redundant task our developers found using Elysia is to parse numeric string.

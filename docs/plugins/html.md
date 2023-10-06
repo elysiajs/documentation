@@ -89,7 +89,7 @@ Use `full` to also automatically add doctypes on responses returned without this
 app.get('/', () => '<html></html>')
 
 // With the plugin
-app.get('/', ({ html }) => html('<html></html>')
+app.get('/', ({ html }) => html('<html></html>'))
 ```
 
 ### isHtml
