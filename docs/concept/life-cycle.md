@@ -17,7 +17,7 @@ head:
 # Life Cycle
 Elysia supports Life Cycle events, which trigger at specific moments.
 
-A _Middleware__ or _Hook_ acts as an event listener, allowing you to "hook" into these events. This Hook capability enables you to modify data as it moves through the data pipeline.
+A _Middleware_ or _Hook_ acts as an event listener, allowing you to "hook" into these events. This Hook capability enables you to modify data as it moves through the data pipeline.
 
 Whether you aim to implement a custom body parser, generate a tailored response based on your handler, or set up an authentication guard, the Hook empowers you to harness the full potential of Elysia.
 

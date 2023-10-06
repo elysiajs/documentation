@@ -54,7 +54,7 @@ new Elysia()
 ```
 
 ## Local Error
-You can assign error handling method to a scope using [hook](/concept/life-cycle.html#local-hook) or [guard](/concept/guard.html)
+You can assign an error handling method to a scope using [hook](/concept/life-cycle.html#local-hook) or [guard](/concept/guard.html)
 ```typescript
 app.get('/', () => 'Hello', {
     beforeHandle({ set, request: { headers } }) {
@@ -71,7 +71,7 @@ app.get('/', () => 'Hello', {
 ```
 
 ## Custom Error Message
-You can provide custom error message by providing `error`:
+You can provide a custom error message by providing `error`:
 ```ts
 new Elysia()
 	.post('/', ({ body }) => body, {
@@ -99,9 +99,9 @@ If no error response is returned, the error will be returned using `error.name`.
 :::
 
 ## Custom Error
-Elysia supports custom error both in type-level and implementaiton level.
+Elysia supports custom error both in the type-level and implementation level.
 
-Helping you to easly classify and narrow down the error type for fully type safety with an auto-complete:
+Helping you to easily classify and narrow down the error type for full type safety with auto-complete:
 ```ts
 class CustomError extends Error {
     constructor(public message: string) {
