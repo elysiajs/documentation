@@ -74,7 +74,7 @@ You can customize a plugin by creating a function to return callback which accep
 ```typescript
 import { Elysia } from 'elysia'
 
-const plugin = <const Prefix>({ prefix = '/v1' }: { prefix: Prefix }) =>
+const plugin = ({ prefix = '/v1' }: ConstructorParameters<typeof Elysia>[0] = {}) =>
     new Elysia({ prefix }).get(`/hi`, () => 'Hi')
 
 const app = new Elysia()
@@ -86,7 +86,9 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Config type will be inferred into `use`, generating auto completion and type strict as intend.
+This allows to provide part of Elysia config from `app`, and use default config if not provided.
+
+In this example, we set prefix to be `/v2`. If not provided, it defaults to `/v1`.
 
 ## Plugin deduplication
 
