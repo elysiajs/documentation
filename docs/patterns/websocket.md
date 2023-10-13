@@ -222,20 +222,20 @@ Validate incoming WebSocket message.
 By default Elysia will parse incoming stringified JSON message as Object for validation.
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .ws('/ws', {
         // validate incoming message
         body: t.Object({
             message: t.String()
-        })
+        }),
         message(ws, { message }) {
             ws.send({
                 message,
                 time: Date.now()
             })
         }
-    )
+    })
     .listen(8080)
 ```
