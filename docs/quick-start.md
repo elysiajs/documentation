@@ -14,25 +14,25 @@ head:
       content: Elysia is a library built for Bun, and it's all you need to get started. Bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". That's all you need to work on Elysia.js!
 ---
 
-# Quick Start
-Elysia is a library built for Bun.
+# Bắt đầu nhanh
+Elysia là một thư viện được xây dựng trên Bun.
 
-Bun is all you need to get started.
+Bun là tất cả những gì bạn cần để bắt đầu.
 ```bash
 curl https://bun.sh/install | bash
 ```
 
-Bootstrap a new project with `bun create`:
+Khởi động một dự án mới với `bun create`:
 ```bash
 bun create elysia hi-elysia
 ```
 
-Then you should see the folder name `hi-elysia` in your directory.
+Sau đó, bạn sẽ thấy tên thư mục `hi-elysia` trong thư mục của mình.
 ```bash
 cd hi-elysia
 ```
 
-Open `src/index.ts`, and you should see:
+Mở file `src/index.ts`, và bạn sẽ thấy mã như sau:
 ```typescript
 import { Elysia } from "elysia";
 
@@ -43,14 +43,14 @@ console.log(
 );
 ```
 
-Start a development server by:
+Khởi động máy chủ development như sau :
 ```bash
 bun dev
 ```
 
-Open your browser and go to `http://localhost:3000`.
+Mở browser của bạn và nhập đường dẫn như sau: `http://localhost:3000`.
 
-You should see your server is running.
+Bạn sẽ thấy máy chủ của bạn đang chạy.
 
 ---
 
