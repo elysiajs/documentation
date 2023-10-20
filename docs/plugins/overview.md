@@ -67,4 +67,4 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [NoCache](https://github.com/gaurishhs/elysia-nocache) - A plugin for Elysia to disable caching
 
 ---
-If you have plugin written for Elysia, feels free to share you plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
+If you have plugin written for Elysia, feels free to share your plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
