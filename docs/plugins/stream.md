@@ -72,9 +72,9 @@ Below is the example to integrate ChatGPT to Elysia.
 
 ```ts
 new Elysia()
-    .post(
+    .get(
         '/ai',
-        ({ body, query: { prompt } }) =>
+        ({ query: { prompt } }) =>
             new Stream(
                 openai.chat.completions.create({
                     model: 'gpt-3.5-turbo',
@@ -89,6 +89,32 @@ new Elysia()
 ```
 
 By default [openai](https://npmjs.com/package/openai) chatGPT completion return `AsyncIterable` so you should be able to wrap the OpenAI in `Stream`.
+
+## Fetch Stream
+You can pass a fetch from an endpoint that returns the stream to proxy a stream.
+
+This is useful for those endpoints that use AI text-generation since you can proxy it directly, eg. [Cloudflare AI](https://developers.cloudflare.com/workers-ai/models/llm/#examples---chat-style-with-system-prompt-preferred).
+```ts
+const model = '@cf/meta/llama-2-7b-chat-int8'
+const endpoint = `https://api.cloudflare.com/client/v4/accounts/${process.env.ACCOUNT_ID}/ai/run/${model}`
+
+new Elysia()
+    .get('/ai', ({ query: { prompt } }) => 
+        fetch(endpoint, {
+            method: 'POST',
+            headers: { 
+                authorization: `Bearer ${API_TOKEN}`,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                messages: [
+                    { role: 'system', content: 'You are a friendly assistant' },
+                    { role: 'user', content: prompt }
+                ]
+            })
+        })
+    )
+```
 
 ## Server Sent Event
 Manual mode is triggered when parameter is either `callback` or `undefined`, allowing you to control the stream.
@@ -132,3 +158,5 @@ new Elysia()
         return stream
     })
 ```
+
+Both callback-based and value-based stream work in the same way but with just difference syntax for your preference.
