@@ -41,11 +41,13 @@ new Elysia()
 
 By default, `Stream` will return `Response` with `content-type` of `text/event-stream; charset=utf8`.
 
-You can pass `Iterable` or `AsyncIterable` to `Stream` to stream content back to client.
-
 ## Constructor
 Below is the constructor parameter accept by `Stream`:
-- Automatic: Iterable / AsyncIterable
+- Automatic: 
+    - Iterable
+    - AsyncIterable
+    - ReadableStream
+    - Response
 - Manual: Callback of `(stream: this) => unknown` or `undefined`
 
 ## Method
