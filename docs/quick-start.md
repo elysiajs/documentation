@@ -46,7 +46,11 @@ console.log(
 Start a development server by:
 ```bash
 bun dev
-```
+
+Build project for production etc:
+```bash
+bun build ./src/* --outdir ./dist
+
 
 Open your browser and go to `http://localhost:3000`.
 
