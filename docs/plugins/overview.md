@@ -35,8 +35,9 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [HTML](/plugins/html) - convenient plugin for handling HTML response
 - [JWT](/plugins/jwt) - authentication with JWT
 - [Static](/plugins/static) - serve static file/folders
+- [Stream](/plugins/stream) - response streaming, and server sent event
 - [Swagger](/plugins/swagger) - generate Swagger documentation in 1 line
-- [tRPC](/plugins/trpc) - add tRPC support
+- [tRPC](/plugins/trpc) - tRPC support
 - [WebSocket](/patterns/websocket) - websocket support
 
 ## Community plugins:

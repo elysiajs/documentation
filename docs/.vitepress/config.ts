@@ -295,6 +295,10 @@ export default defineConfig({
                                 link: '/plugins/static'
                             },
                             {
+                                text: 'Stream',
+                                link: '/plugins/stream'
+                            },
+                            {
                                 text: 'Swagger',
                                 link: '/plugins/swagger'
                             },
