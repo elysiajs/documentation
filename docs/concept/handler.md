@@ -15,14 +15,14 @@ head:
 ---
 
 # Handler
-To route is to tell which function should return a response.
+Định tuyến là cho biết chức năng nào sẽ trả về phản hồi.
 
-The function for returning a Response is `Handler`.
+Hàm trả về một Phản hồi là `Handler`.
 
 ---
-Handler is a callback function which accept `Context`, helping you access powerful API for accessing data and modifying the response.
+Handler là một hàm gọi lại chấp nhận `Context`, giúp bạn truy cập API mạnh mẽ để truy cập dữ liệu và sửa đổi phản hồi.
 
-The `params` from the previous example also come from `Handler`
+The `params` trong ví dụ trước cũng đến từ `Handler`
 ```typescript
 // Structure
 app.get(path, handler, hook?)
@@ -32,18 +32,18 @@ app.get('/id/:id', (context) => context.params.id)
 ```
 
 ## Context
-Context's properties consists of
-- `request`: Raw `Request` for accessing data as web standard type
-- `body`: Body which come with the request
-- `query`: Parsed path query as a simple object
-- `params`: Path parameters as a simple object
-- `store`: A global mutable store for Elysia instance
-- `set`: Response representation
-    - `status`: response status
-    - `headers`: response headers
-    - `redirect`: redirect to new path
+Các thuộc tính của bối cảnh bao gồm
+- `request`:`Request` thô để truy cập dữ liệu dưới dạng loại tiêu chuẩn web
+- `body`: Nội dung đi kèm với yêu cầu
+- `query`: Truy vấn đường dẫn được phân tích cú pháp dưới dạng một đối tượng đơn giản
+- `params`: Tham số đường dẫn như một đối tượng đơn giản
+- `store`: Một cửa hàng có thể thay đổi toàn cầu cho phiên bản Elysia
+- `set`: Đại diện phản hồi
+    - `status`: trạng thái phản hồi
+    - `headers`: tiêu đề phản hồi
+    - `redirect`: chuyển hướng đến đường dẫn mới
 
-You can access `Context` in `Handler` function:
+Bạn có thể truy cập `Context` trong hàm `Handler`:
 ```typescript
 app.post('/', ({ body, set }) => {
     const signed = signIn(body)
@@ -56,17 +56,17 @@ app.post('/', ({ body, set }) => {
 })
 ```
 
-::: tip
-Elysia encourages object destructuring, but `set` is an exception.
-As destructured primitive value is not linked to the object, in order to make `set` work properly, we need to use `set.value`
+::: Mẹo
+Elysia khuyến khích việc phá hủy đối tượng, nhưng `set` là một ngoại lệ.
+Vì giá trị nguyên thủy bị hủy cấu trúc không được liên kết với đối tượng, để làm cho `set` hoạt động bình thường, chúng ta cần sử dụng `set.value`
 :::
 
 ## Response
-Returning value from `Handler`, Elysia will try to map returned value into `Response`.
+Trả về giá trị từ `Handler`, Elysia sẽ cố gắng ánh xạ giá trị trả về vào `Response`.
 
-For example, to return an object, you should stringify the content first and then set response header of `Content-Type` to `application/json`.
+Ví dụ: để trả về một đối tượng, trước tiên bạn nên xâu chuỗi nội dung rồi đặt tiêu đề phản hồi của `Content-Type` thành `application/json`.
 
-Which look something like this:
+Trông giống như thế này:
 ```typescript
 new Response(JSON.stringify({
     'vtuber': [
@@ -80,9 +80,9 @@ new Response(JSON.stringify({
 })
 ```
 
-But Elysia handles that for you.
+Nhưng Elysia sẽ giải quyết việc đó cho bạn.
 
-You simply return an object, and Elysia will map your value to a correct response for you.
+Bạn chỉ cần trả về một đối tượng và Elysia sẽ ánh xạ giá trị của bạn thành phản hồi chính xác cho bạn.
 ```typescript
 app.get('/', () => ({
     'vtuber': [
@@ -92,9 +92,9 @@ app.get('/', () => ({
 }))
 ```
 
-Of course, as Elysia map the value to `Response`.
+Tất nhiên, khi Elysia ánh xạ giá trị tới `Response`.
 
-But you can also return a `Response` if you really want to.
+Nhưng bạn cũng có thể trả về `Response` nếu bạn thực sự muốn.
 ```typescript
 app.get('/', () => new Response(
     JSON.stringify({
