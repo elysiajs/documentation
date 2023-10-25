@@ -14,33 +14,32 @@ head:
       content: ElysiaJS is a fast and friendly bun web framework. Building on top of 3 philosophies, performance, simplicity, flexibility. Designed with TypeScript in mind. Elysia understands what you want and automatically infers the type from your code.
 ---
 
-# Introduction
-ElysiaJS is a fast, and friendly [Bun](https://bun.sh) web framework.
+# Giới thiệu
+ElysiaJS là một khung web [Bun](https://bun.sh) nhanh và thân thiện.
 
-> <small>Pronounce as "eh-LIHZ-iy-ah"・ エリシア ・ เอลิเซีย</small>
+> <small>Phát âm là "eh-LIHZ-iy-ah"・ エリシア ・ เอลิเซีย</small>
 
-Building on top of 3 philosophies:
-- Performance
-    - You shall not worry about the underlying performance
-- Simplicity
-    - Simple building blocks to create an abstraction, not repeating yourself
-- Flexibility
-    - You shall be able to customize most of the library to fit your need
+Xây dựng trên 3 triết lý:
+- Hiệu suất
+    - Bạn sẽ không phải lo lắng về hiệu suất.
+- Sự đơn giản
+    - Các khối xây dựng đơn giản để tạo ra một trừu tượng, tránh lặp lại chính mình.
+- Uyển chuyển
+    - Bạn sẽ có thể tùy chỉnh hầu hết thư viện để phù hợp với nhu cầu của bạn
 
-Designed with TypeScript in mind, you don't need to understand TypeScript to take advantage of Elysia. The library understands what you want and automatically infers the type from your code.
+Được thiết kế dành cho TypeScript, bạn không cần phải hiểu TypeScript để tận dụng Elysia. Thư viện hiểu những gì bạn muốn và tự động suy ra loại từ mã của bạn.
 
-Take a look at this:
+Hãy xem này:
 ```typescript
 new Elysia()
     .get('/id/:id', (({ params: { id }}) => id))
     .listen(8080)
 ```
 
-Elysia understands that you want a path parameter name `id`.
-The library then registers `id` as a type in `params`.
+Elysia hiểu rằng bạn muốn có tên tham số đường dẫn `id`. Sau đó, thư viện sẽ đăng ký `id` làm loại trong `params`.
 
 --- 
-You can define a custom type for many things, for example, an incoming request's body.
+Bạn có thể xác định loại tùy chỉnh cho nhiều thứ, ví dụ: nội dung của yêu cầu đến.
 ```typescript
 import { Elysia, t } from 'elysia'
 
@@ -54,11 +53,11 @@ new Elysia()
     .listen(8080)
 ```
 
-You explicitly tell Elysia that the incoming request body is expected to have a structure as you define it.
+Bạn nói rõ ràng với Elysia rằng nội dung yêu cầu gửi đến phải có cấu trúc như bạn xác định.
 
-Elysia then infers the type from the code you write. Validate the body from the incoming request to ensure the type safety.
+Sau đó Elysia sẽ suy ra loại từ mã bạn viết. Xác thực nội dung từ yêu cầu đến để đảm bảo an toàn cho loại.
 
-Then with [plugins](/plugins/overview), Elysia can instantly generate API documentation with Swagger with a single line of code.
+Sau đó, với [plugins](/plugins/overview), Elysia có thể tạo ngay tài liệu API bằng Swagger chỉ bằng một dòng mã.
 ```typescript
 import { Elysia, t } from 'elysia'
 /* [!code ++] */import { swagger } from '@elysiajs/swagger'
@@ -74,7 +73,7 @@ new Elysia()
     .listen(8080)
 ```
 
-And finally, you can create a fully type-safe client for consuming Elysia API with Eden (optional).
+Và cuối cùng, bạn có thể tạo một ứng dụng khách hoàn toàn an toàn về loại để sử dụng API Elysia với Eden (tùy chọn).
 
 ```typescript
 // server.ts
@@ -94,7 +93,7 @@ import { swagger } from '@elysiajs/swagger'
 /* [!code ++] */export type App = typeof app
 ```
 
-And on the client:
+Và trên máy khách:
 ```typescript
 // client.ts
 import { edenTreaty } from '@elysiajs/eden'
@@ -108,6 +107,6 @@ app.signIn.post({
 }).then(console.log)
 ```
 
-Creating a single source of truth for your data structure, eliminating any possible type conflict between TypeScript, actual requests via validation, API documentation, and frontend client.
+Tạo một nguồn sự thật duy nhất cho cấu trúc dữ liệu của bạn, loại bỏ mọi xung đột `type` có thể xảy ra giữa TypeScript, các yêu cầu thực tế thông qua xác thực, tài liệu API và ứng dụng khách.
 
-Ensure that nothing went wrong in development, migration, and production.
+Đảm bảo rằng không có sai sót nào xảy ra trong quá trình phát triển, di chuyển và sản xuất.
