@@ -54,4 +54,4 @@ Bạn sẽ thấy máy chủ của bạn đang chạy.
 
 ---
 
-Congrats! You've just created a new web server with Elysia 🎉🎉
+Chúc mừng! Bạn vừa tạo một máy chủ web mới với Elysia 🎉🎉
