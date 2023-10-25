@@ -14,26 +14,26 @@ head:
       content: Declaraing Elysia route has similiar syntax to Express and Fastify. By calling `.[method name](path, callback, hook?)`, for example "app.get('/', () => 'hi')", then Elysia will handle the routing and execute the callback if matched.
 ---
 
-# Route
-Like Express, and Fastify.
+# Route (Định tuyến)
+Giống như Express và Fastify.
 
-You define route using method as a building block for your server.
+Bạn có thể sử dụng phương thức `route` để định tuyến tạo thành khối thành phần trong máy chủ.
 
-By calling `.[method name](path, callback, hook?)`, you attach the route to Elysia, and the library will handle the routing for you.
+Bằng cách gọi `.[method name](path, callback, hook?)`, bạn đính kèm tuyến đường đến Elysia và thư viện sẽ xử lý việc định tuyến cho bạn.
 
-For example:
+Ví dụ như sau:
 ```typescript
 new Elysia()
     .get('/ping', () => 'pong')
     .listen(8080)
 ```
 
-Callback run when the request match.
+Chạy đoạn mã khi yêu cầu từ client khớp với đừng dẫn
 
-Means when the [GET] request with path '/ping' shall return 'pong' as a response.
+Có nghĩa là khi yêu cầu [GET] có đường dẫn '/ping' sẽ trả về 'pong' dưới dạng phản hồi.
 
-## Custom Method
-You can define with many built-in methods including:
+## Custom Method (Phương pháp tùy chỉnh)
+Bạn có thể xác định bằng nhiều phương thức tích hợp bao gồm:
 - post
 - put
 - patch
@@ -42,9 +42,9 @@ You can define with many built-in methods including:
 - head
 - trace
 - connect
-- all (map any method)
+- all (ánh xạ bất kỳ phương pháp nào)
 
-Other methods can be defined by using `.route`:
+Các phương pháp khác có thể được xác định bằng cách sử dụng `.route`:
 ```typescript
 new Elysia()
     // custom method should be all uppercased
@@ -52,27 +52,26 @@ new Elysia()
     .listen(8080)
 ```
 
-## Path Parameters
-Path parameters can retrieve data from URL.
+## Path Parameters (Tham số đường dẫn)
+Tham số đường dẫn có thể lấy dữ liệu từ URL.
 
-For example, getting a user id from path (like many social media) is when you may need path parameters.
-
+Ví dụ: lấy id người dùng từ đường dẫn (giống như nhiều phương tiện truyền thông xã hội) là lúc bạn có thể cần tham số đường dẫn.
 ```typescript
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => getUserById(id))
     .listen(8080)
 ```
 
-Path parameters are a variable in a path.
+Tham số đường dẫn là một biến trong đường dẫn.
 
-When the pattern matches, the path you named will become available in `context.params`, and you can retrieve its value.
+Khi mẫu khớp, đường dẫn bạn đặt tên sẽ có sẵn trong `context.params` và bạn có thể truy xuất giá trị của nó.
 
-## Wildcard
-Sometimes path parameters are not enough. 
+## Wildcard(Ký tự đại diện)
+Đôi khi các tham số đường dẫn là không đủ.
 
-Matching anything after some pattern is required, and you can't define them all or its too redundant.
+Bắt buộc phải khớp bất kỳ thứ gì sau một số mẫu và bạn không thể xác định tất cả chúng hoặc nó quá dư thừa.
 
-You can use `*` to match the rest.
+Bạn có thể sử dụng `*` để khớp với phần còn lại.
 ```typescript
 new Elysia()
     .get('/user/*', () => doSomething())
