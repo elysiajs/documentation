@@ -34,6 +34,7 @@ That's why Elysia is creating pre-built common pattern plugin for convinient usa
 - [GraphQL Yoga](/plugins/graphql-yoga) - run GraphQL Yoga on Elysia
 - [HTML](/plugins/html) - convenient plugin for handling HTML response
 - [JWT](/plugins/jwt) - authentication with JWT
+- [Server Timing](/plugins/server-timing) - audit performance bottleneck with Server Timing API
 - [Static](/plugins/static) - serve static file/folders
 - [Stream](/plugins/stream) - response streaming, and server sent event
 - [Swagger](/plugins/swagger) - generate Swagger documentation in 1 line

@@ -291,6 +291,10 @@ export default defineConfig({
                                 link: '/plugins/jwt'
                             },
                             {
+                                text: 'Server Timing',
+                                link: '/plugins/server-timing'
+                            },
+                            {
                                 text: 'Static',
                                 link: '/plugins/static'
                             },

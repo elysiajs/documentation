@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that add support for streaming response and Server Sent Event, eg. OpenAI integration. Start by installing the plugin with "bun add @elysiajs/static".
+        content: Plugin for Elysia that add support for streaming response and Server Sent Event, eg. OpenAI integration. Start by installing the plugin with "bun add @elysiajs/stream".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add support for streaming response and Server Sent Event, eg. OpenAI integration. Start by installing the plugin with "bun add @elysiajs/static".
+        content: Plugin for Elysia that add support for streaming response and Server Sent Event, eg. OpenAI integration. Start by installing the plugin with "bun add @elysiajs/stream".
 ---
 
 # Stream Plugin
@@ -43,12 +43,16 @@ By default, `Stream` will return `Response` with `content-type` of `text/event-s
 
 ## Constructor
 Below is the constructor parameter accept by `Stream`:
-- Automatic: 
-    - Iterable
-    - AsyncIterable
-    - ReadableStream
-    - Response
-- Manual: Callback of `(stream: this) => unknown` or `undefined`
+1. Stream:
+    - Automatic: Automatically stream response from provided value
+        - Iterable
+        - AsyncIterable
+        - ReadableStream
+        - Response
+    - Manual: Callback of `(stream: this) => unknown` or `undefined`
+2. Options: `StreamOptions`
+    - [event](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event): A string identifying the type of event described
+    - [retry](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#retry): The reconnection time in milliseconds
 
 ## Method
 Below is the method provided by `Stream`:
@@ -65,7 +69,11 @@ Return a promise that resolved in provided value in ms
 ### value
 Inner value of the `ReadableStream`
 
-# Example
+## Pattern
+Below you can find the common patterns to use the plugin.
+- [OpenAI](#openai)
+- [Fetch Stream](#fetch-stream)
+- [Server Sent Event](#server-sent-event)
 
 ## OpenAI
 Automatic mode is triggered when parameter is either `Iterable` or `AsyncIterable` streaming response back to client automatically.

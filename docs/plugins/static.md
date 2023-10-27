@@ -85,6 +85,8 @@ Set response headers of files
 ## Pattern
 Below you can find the common patterns to use the plugin.
 
+- [Single File](#single-file)
+
 ## Single file
 Suppose you want to return just a single file, you can use `Bun.file` instead of using static plugin
 ```typescript
