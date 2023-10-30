@@ -14,7 +14,7 @@ head:
         content: Plugin for Elysia that add support for streaming response and Server Sent Event, eg. OpenAI integration. Start by installing the plugin with "bun add @elysiajs/server-timing".
 ---
 
-# Stream Plugin
+# Server Timing Plugin
 This plugin add support for streaming response or sending Server Sent Event back to client.
 
 Install with:
