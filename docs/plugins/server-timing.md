@@ -14,8 +14,8 @@ head:
         content: Plugin for Elysia that add support for streaming response and Server Sent Event, eg. OpenAI integration. Start by installing the plugin with "bun add @elysiajs/server-timing".
 ---
 
-# Stream Plugin
-This plugin add support for streaming response or sending Server Sent Event back to client.
+# Server Timing Plugin
+This plugin add support for auditing performance bottleneck with Server Timing API
 
 Install with:
 ```bash
@@ -37,7 +37,9 @@ Server Timing then will append header 'Server-Timing' with log duration, functio
 
 To inspect, open browser developer tools > Network > [Request made through Elysia server] > Timing.
 
-Then inspect the Server Timing of your server
+![Developer tools showing Server Timing screenshot](/assets/server-timing.webp)
+
+Now you can effortlessly audit performance bottleneck of your server.
 
 ## Config
 Below is a config which is accepted by the plugin
