@@ -22,9 +22,9 @@ Bun is all you need to get started.
 curl https://bun.sh/install | bash
 ```
 
-Bootstrap a new project with `bun create`:
+Bootstrap a new project with `bun x`:
 ```bash
-bun create elysia hi-elysia
+bun x create-elysia hi-elysia
 ```
 
 Then you should see the folder name `hi-elysia` in your directory.
