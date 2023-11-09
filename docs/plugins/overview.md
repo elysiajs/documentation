@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convenient usage for developers, and thanks to community plugins for customizing Elysia even further.
+        content: Elysia is designed to be modular and lightweight, which is why Elysia includes pre-built plugins involving common patterns for convenient developer usage. Elysia is enhanced by community plugins which customize it even further.
 
     - - meta
       - name: 'og:description'
-        content: Elysia is designed to be modular and lightweight. That's why Elysia is creating pre-built common pattern plugin for convenient usage for developers, and thanks to community plugins for customizing Elysia even further.
+        content: Elysia is designed to be modular and lightweight, which is why Elysia includes pre-built plugins involving common patterns for convenient developer usage. Elysia is enhanced by community plugins which customize it even further.
 ---
 
 # Overview
@@ -21,50 +21,51 @@ Following the same idea as Arch Linux (btw, I use Arch):
 
 > Design decisions are made on a case-by-case basis through developer consensus
 
-To ensure that developers endup with performant web server they intent to created.
-
-That's why Elysia is creating pre-built common pattern plugin for convinient usage for developers:
+This is to ensure developers end up with a performant web server they intend to create. By extension, Elysia includes pre-built common pattern plugins for convenient developer usage:
 
 ## Official plugins:
-- [Bearer](/plugins/bearer) - retreiving Bearer token automatically
-- [CORS](/plugins/cors) - setup Cross Origin Request request
-- [Cron](/plugins/cron) - setup cronjob
-- [Eden](/plugins/eden/overview) - end-to-end type safe client for Elysia
-- [GraphQL Apollo](/plugins/graphql-apollo) - run GraphQL Apollo on Elysia
-- [GraphQL Yoga](/plugins/graphql-yoga) - run GraphQL Yoga on Elysia
-- [HTML](/plugins/html) - convenient plugin for handling HTML response
-- [JWT](/plugins/jwt) - authentication with JWT
-- [Static](/plugins/static) - serve static file/folders
-- [Swagger](/plugins/swagger) - generate Swagger documentation in 1 line
-- [tRPC](/plugins/trpc) - add tRPC support
-- [WebSocket](/patterns/websocket) - websocket support
+- [Bearer](/plugins/bearer) - retrieve [Bearer](https://swagger.io/docs/specification/authentication/bearer-authentication/) token automatically
+- [CORS](/plugins/cors) - set up [Cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+- [Cron](/plugins/cron) - set up [cron](https://en.wikipedia.org/wiki/Cron) job
+- [Eden](/plugins/eden/overview) - end-to-end type safety client for Elysia
+- [GraphQL Apollo](/plugins/graphql-apollo) - run [Apollo GraphQL](https://www.apollographql.com/) on Elysia
+- [GraphQL Yoga](/plugins/graphql-yoga) - run [GraphQL Yoga](https://github.com/dotansimha/graphql-yoga) on Elysia
+- [HTML](/plugins/html) - handle HTML responses
+- [JWT](/plugins/jwt) - authenticate with [JWTs](https://jwt.io/)
+- [Server Timing](/plugins/server-timing) - audit performance bottlenecks with the [Server-Timing API](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing)
+- [Static](/plugins/static) - serve static files/folders
+- [Stream](/plugins/stream) - integrate response streaming and [server-sent events (SSEs)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
+- [Swagger](/plugins/swagger) - generate [Swagger](https://swagger.io/) documentation
+- [tRPC](/plugins/trpc) - support [tRPC](https://trpc.io/)
+- [WebSocket](/patterns/websocket) - support [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 
 ## Community plugins:
-- [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - Authentication, simple and clean
-- [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - Unofficial Clerk plugin for ElysiaJS
-- [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node and Deno
-- [Vite](https://github.com/timnghg/elysia-vite) - Simple Elysia plugin that helps you use Vite. It serve your entry html file with Vite's scripts injected
-- [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - secure Elysia apps with various HTTP headers.
-- [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - Vite Plugin SSR using Elysia server
+- [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication, simple and clean
+- [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
+- [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node.js and Deno
+- [Vite](https://github.com/timnghg/elysia-vite) - serve entry HTML file with Vite's scripts injected
+- [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - secure Elysia apps with various HTTP headers
+- [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - Vite SSR plugin using Elysia server
 - [OAuth2](https://github.com/bogeychan/elysia-oauth2) - handle OAuth 2.0 authorization code flow
-- [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple lightweight rate limiter
-- [Logysia](https://github.com/tristanisham/logysia) - classic logging elysia middleware
-- [Logger](https://github.com/bogeychan/elysia-logger) - pino logging elysia middleware
-- [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy Elysia on AWS Lambda
-- [Decorators](https://github.com/gaurishhs/elysia-decorators) - use typescript decorators with elysia
-- [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - file system routes for Elysia
-- [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - file system and folder-based router for groups.
-- [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic http authentication for Elysia.
-- [ETag](https://github.com/bogeychan/elysia-etag) - automatic HTTP ETags generation for Elysia.
-- [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - Basic http authentication for Elysia (using 'request' event).
-- [i18n](https://github.com/eelkevdbos/elysia-i18next) - i18n wrapper for Elysia based on i18next
-- [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - Adds/Forwards request IDs (`X-Request-ID` or custom).
-- [Elysia HTMX](https://github.com/gtramontina/elysia-htmx) - Context helpers for [HTMX](https://htmx.org/).
-- [Elysia HMR HTML](https://github.com/gtrabanco/elysia-hmr-html) - Reload html files when change any file in a directory
-- [Elysia Inject HTML](https://github.com/gtrabanco/elysia-inject-html) - So simple plugin to inject HTML code in HTML files
-- [Elysia HTTP Error](https://github.com/yfrans/elysia-http-error) - Easiest way to return HTTP errors from Elysia handlers
-- [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - Simple http status code plugin for Elysia.js
-- [NoCache](https://github.com/gaurishhs/elysia-nocache) - A plugin for Elysia to disable caching
+- [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple, lightweight rate limiter
+- [Logysia](https://github.com/tristanisham/logysia) - classic logging middleware
+- [Logger](https://github.com/bogeychan/elysia-logger) - [pino](https://github.com/pinojs/pino)-based logging middleware
+- [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy on AWS Lambda
+- [Decorators](https://github.com/gaurishhs/elysia-decorators) - use TypeScript decorators
+- [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - filesystem routes
+- [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - filesystem and folder-based router for groups
+- [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic HTTP authentication
+- [ETag](https://github.com/bogeychan/elysia-etag) - automatic HTTP [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) generation
+- [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - basic HTTP authentication (using `request` event)
+- [i18n](https://github.com/eelkevdbos/elysia-i18next) - [i18n](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/i18n) wrapper based on [i18next](https://www.i18next.com/)
+- [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - add/forward request IDs (`X-Request-ID` or custom)
+- [Elysia HTMX](https://github.com/gtramontina/elysia-htmx) - context helpers for [HTMX](https://htmx.org/)
+- [Elysia HMR HTML](https://github.com/gtrabanco/elysia-hmr-html) - reload HTML files when changing any file in a directory
+- [Elysia Inject HTML](https://github.com/gtrabanco/elysia-inject-html) - inject HTML code in HTML files
+- [Elysia HTTP Error](https://github.com/yfrans/elysia-http-error) - return HTTP errors from Elysia handlers
+- [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - integrate HTTP status codes
+- [NoCache](https://github.com/gaurishhs/elysia-nocache) - disable caching
+- [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - Compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
 
 ---
 If you have plugin written for Elysia, feels free to share your plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
