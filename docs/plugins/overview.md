@@ -68,4 +68,4 @@ This is to ensure developers end up with a performant web server they intend to 
 - [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - Compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
 
 ---
-If you wrote a plugin for Elysia, feel free to share it by creating a PR on the [documentation repo](https://github.com/elysiajs/documentation).
+If you have plugin written for Elysia, feels free to share your plugin by creating PR to [documentation repo](https://github.com/elysiajs/documentation).
