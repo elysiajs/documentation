@@ -74,7 +74,7 @@ const app = new Elysia()
             },
             // If context is a function on this doesn't present
             // for some reason it won't infer context type
-            useContext(_) {}
+            useContext(_) {},
             resolvers: {
                 Query: {
                     hi: async (parent, args, context) => context.name
