@@ -65,6 +65,7 @@ This is to ensure developers end up with a performant web server they intend to 
 - [Elysia HTTP Error](https://github.com/yfrans/elysia-http-error) - return HTTP errors from Elysia handlers
 - [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - integrate HTTP status codes
 - [NoCache](https://github.com/gaurishhs/elysia-nocache) - disable caching
+- [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - Compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
 
 ---
 If you wrote a plugin for Elysia, feel free to share it by creating a PR on the [documentation repo](https://github.com/elysiajs/documentation).
