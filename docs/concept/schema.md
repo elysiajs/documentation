@@ -58,6 +58,16 @@ interface Body {
 
 This means that you will get strict type defining once from a schema and get inferred type to TypeScript without needing to write a single TypeScript.
 
+However, if you really want to get the Typescript type, this will do, but not `Static` method of Typebox:
+```typescript
+const body = t.Object({
+  username: t.String(),
+  password: t.String(),
+});
+
+type bodyTp = (typeof body)["static"]
+```
+
 ## Global and scope
 The global schema will define all types within the scope of a handler.
 
