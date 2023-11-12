@@ -43,9 +43,9 @@ new Elysia()
 Remap function can be use with `state`, `decorate`, `model`, `derive` to helps you define a correct property name and preventing name collision.
 
 ## Affix
-The provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
+To provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
 
-The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
+The **Affix** function, which consists of a **prefix** and **suffix**, allows us to effortlessly remap all properties of an instance, preventing the name collision of the plugin.
 
 ```ts
 const setup = new Elysia({ name: 'setup' })
@@ -62,8 +62,6 @@ const app = new Elysia()
     )
     .get('/', ({ setupCarbon }) => setupCarbon)
 ```
-
-Allowing us to bulk remap a property of the plugin effortlessly, preventing the name collision of the plugin.
 
 By default, **affix** will handle both runtime, type-level code automatically, remapping the property to camelCase as naming convention.
 
