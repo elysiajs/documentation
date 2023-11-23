@@ -34,8 +34,7 @@ app
     .get('/version', ({ 
         getDate, 
         store: { version } 
-    }) => `${version} ${getDate()}`
-)
+    }) => `${version} ${getDate()}`)
 ```
 
 - `version` is registered using `state`, and accessible via `Context.store.version`.
@@ -54,7 +53,7 @@ app
     .state(({ b, ...rest }) => rest)
     .get('/version', ({ 
         store: { a }
-    }) => a
+    }) => a)
 ```
 
 ## TypeScript
@@ -65,7 +64,7 @@ app
     .state('version', 1 as number | null)
     .get('/version', ({ 
         store: { version } 
-    }) => version
+    }) => version)
 ```
 
 If the explicit type doesn't type `null` or `undefined`, make sure to set `strict` to `true` in `tsconfig.json`:
