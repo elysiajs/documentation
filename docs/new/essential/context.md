@@ -150,7 +150,7 @@ new Elysia()
 The object offers a less repetitive API for setting multiple values.
 
 ### Remap
-Remap is a function reassignment. 
+Remap is a function reassignment.
 
 Allowing us to create a new value from existing value like renaming or removing a property.
 
@@ -179,6 +179,41 @@ However, it's important to note that Elysia doesn't offer reactivity from this a
 ::: tip
 Using remap, Elysia will treat a returned object as a new property, removing any property that is missing from the object.
 :::
+
+## Affix
+The provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
+
+The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
+
+```ts
+const setup = new Elysia({ name: 'setup' })
+    .decorate({
+        argon: 'a',
+        boron: 'b',
+        carbon: 'c'
+    })
+
+const app = new Elysia()
+    .use(
+        setup
+            .prefix('decorator', 'setup')
+    )
+    .get('/', ({ setupCarbon }) => setupCarbon)
+```
+
+Allowing us to bulk remap a property of the plugin effortlessly, preventing the name collision of the plugin.
+
+By default, **affix** will handle both runtime, type-level code automatically, remapping the property to camelCase as naming convention.
+
+In some condition, you can also remap `all` property of the plugin:
+```ts
+const app = new Elysia()
+    .use(
+        setup
+            .prefix('all', 'setup')
+    )
+    .get('/', ({ setupCarbon }) => setupCarbon)
+```
 
 ## Reference and value
 To mutate the state, it's recommended to use `reference` to mutate rather than using an actual value.

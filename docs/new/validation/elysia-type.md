@@ -24,7 +24,7 @@ This is useful when an incoming value is a numeric string for example path param
 Numeric accepts the same attribute as [Numeric Instance](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-num)
 
 ## File
-A singular file. Often useful for HTTP body validation.
+A singular file. Often useful for **file upload** validation.
 
 ```typescript
 t.File()

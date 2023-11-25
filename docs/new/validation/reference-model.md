@@ -39,7 +39,7 @@ const app = new Elysia()
     })
 ```
 
-We can refactor them by declaring the model as a variable, and reuse them.
+We can refactor the code by extract the model as a variable, and reference them.
 ```typescript
 import { Elysia, t } from 'elysia'
 
@@ -56,9 +56,7 @@ const app = new Elysia()
     })
 ```
 
-This method of separation the concerns is an effective approach for maintaining clean code.
-
-You might find yourself reusing multiple models with different controllers as the app gets more complex.
+This method of separation the concerns is an effective approach but we might find ourself reusing multiple models with different controllers as the app gets more complex.
 
 We can resolve that by creating a "reference model"  allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
 
@@ -126,9 +124,9 @@ export const authModel = new Elysia()
 ```
 
 ## Naming Convention
-Duplicated model names will cause Elysia to throw an error. To prevent declaring duplicate model names, you can use the following naming convention.
+Duplicated model names will cause Elysia to throw an error. To prevent declaring duplicate model names, we can use the following naming convention.
 
-Let's say that you have all models stored at `models/<name>.ts`, you can declare the prefix of the model as a namespace.
+Let's say that we have all models stored at `models/<name>.ts`, and declare the prefix of the model as a namespace.
 
 ```typescript
 // admin.model.ts

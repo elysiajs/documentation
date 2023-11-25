@@ -208,6 +208,39 @@ export default defineConfig({
                 ]
             },
             {
+                text: '🧭 Patterns',
+                items: [
+                    {
+                        text: 'Cookie',
+                        link: '/patterns/cookie'
+                    },
+                    {
+                        text: 'Cookie Signature',
+                        link: '/patterns/cookie-signature'
+                    },
+                    {
+                        text: 'Web Socket',
+                        link: '/patterns/cookie'
+                    },
+                    {
+                        text: 'Documentation',
+                        link: '/patterns/creating-documentation'
+                    },
+                    {
+                        text: 'Trace',
+                        link: '/patterns/trace'
+                    },
+                    {
+                        text: 'Mount',
+                        link: '/patterns/mount'
+                    },
+                    {
+                        text: 'Lazy Loading Module',
+                        link: '/patterns/lazy-loading-module'
+                    }
+                ]
+            },
+            {
                 text: 'Getting Started',
                 items: [
                     {

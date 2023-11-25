@@ -15,7 +15,7 @@ head:
 ---
 
 # Lazy-Loading Module
-Modules are eagerly loaded by default. 
+Modules are eagerly loaded by default.
 
 Elysia loads all modules then registers and indexes all of them before starting the server. This enforces that all the modules have loaded before it starts accepting requests.
 
@@ -53,7 +53,7 @@ const app = new Elysia()
 
 Elysia static plugin is also a deferred module, as it loads files and registers files path asynchronously.
 
-To ensure module registration before the server starts, you can use `await` on the deferred module.
+To ensure module registration before the server starts, we can use `await` on the deferred module.
 
 ```typescript
 // index.ts
@@ -78,7 +78,7 @@ const app = new Elysia()
 Using module lazy-loading is recommended when the module is computationally heavy and/or blocking.
 
 ## Testing
-In a test environment, you can use `await app.modules` to wait for deferred and lazy-loading modules.
+In a test environment, we can use `await app.modules` to wait for deferred and lazy-loading modules.
 
 ```typescript
 import { Elysia } from 'elysia'
