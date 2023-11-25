@@ -27,6 +27,15 @@ new Elysia()
     .listen(8080)
 ```
 
+Elysia is build upon the 3 fundamental beliefs.
+
+- Performance
+    - You shall not worry about the underlying performance
+- Simplicity
+    - Simple building blocks and ergonomic API to maximize developer experience.
+- Flexibility
+    - You shall be able to customize most of the library to fit your need
+
 ## Features
 Our most loved feature of Elysia that make Elysia standout from other frameworks.
 
