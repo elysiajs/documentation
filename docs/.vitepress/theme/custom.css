@@ -1,5 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.link {
+    text-decoration: none !important;
+}
+
 :root {
-    --vp-c-brand: #f06292;
+    --vp-c-brand-1: #f06292;
     --vp-c-brand-light: #ff94c2;
     --vp-c-brand-dark: #ba2d65;
     --vp-code-block-bg: #f6f8fa;
@@ -8,12 +16,17 @@
     --vp-c-text-dark-2: #8f8f8f;
     --vp-c-text-dark-3: #8f8f8f;
     --vp-sidebar-bg-color: var(--vp-c-bg);
+    --vp-custom-block-tip-border: transparent;
+    --vp-custom-block-tip-text: var(--vp-c-text-1);
+    --vp-nav-bg-color: color-mix(in srgb, var(--vp-c-bg) 95%, transparent);
 }
 
 .dark {
-    --vp-c-bg: #1f2937;
+    --vp-c-bg: #0f172a;
     --vp-c-bg-alt: #111827;
-    --vp-code-block-bg: #111827;
+    --vp-c-bg-soft: #1e293b;
+    --vp-c-divider: #334155;
+    --vp-code-block-bg: #1e293b;
     --vp-c-bg-alpha-with-backdrop: #1f2937bf;
     --vp-code-copy-code-bg: #273345;
     --vp-code-copy-code-hover-bg: #273345;
@@ -21,13 +34,9 @@
     --vp-c-text-dark-3: #8a8a8a;
 }
 
-.VPNavBar > .container > .content {
-    background-color: var(--vp-c-bg);
-    border-bottom: 1px solid rgba(0,0,0,.1)
-}
-
-.VPNavBar > .container > .content {
-    background: transparent;
+html,
+body {
+    background-color: var(--vp-c-bg) !important;
 }
 
 button.copy::after {
@@ -43,5 +52,73 @@ button.copy::after {
 }
 
 #embedded-editor {
-    @apply w-full h-[720px] border-0 rounded-lg my-6
+    @apply my-6 h-[720px] w-full rounded-lg border-0;
+}
+
+#VPSidebarNav > .group {
+    @apply border-t-0;
+
+    & > .VPSidebarItem {
+        @apply pb-2;
+
+        & > .items {
+            & > div {
+                @apply border-l pl-4 dark:border-l-gray-600;
+
+                &.is-active.has-active {
+                    border-left-color: var(--vp-c-brand-1);
+                }
+            }
+        }
+    }
+}
+
+.VPNavBar {
+    background: linear-gradient(to right, transparent, var(--vp-nav-bg-color));
+    backdrop-filter: blur(12px);
+
+    & > .container > .content {
+        background: color-mix(in srgb, var(--vp-c-bg) 80%, transparent);
+        border-bottom: 0;
+
+        & > .curtain::before {
+            backdrop-filter: blur(12px);
+            background: linear-gradient(
+                var(--vp-nav-bg-color),
+                transparent 90%
+            ) !important;
+        }
+
+        & > .content-body {
+            background-color: transparent;
+        }
+    }
+}
+
+.md-table {
+    @apply w-full max-w-full overflow-x-auto md:!table;
+
+    & > tbody > tr > td {
+        @apply overflow-auto;
+
+        & > div {
+            @apply !my-0 !bg-transparent;
+
+            & > span.lang {
+                @apply hidden;
+            }
+
+            & > button {
+                @apply !right-0 !top-0 scale-75;
+            }
+
+            & > pre {
+                @apply md:!py-2;
+
+                & > code {
+                    @apply md:!px-0;
+                }
+            }
+        }
+    }
 }

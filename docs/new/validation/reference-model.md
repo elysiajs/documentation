@@ -14,10 +14,14 @@ head:
       content: Reference Models allow you to name an existing type models for that use for validation, and use by specifying the name thus refereing the model in lifecycle event or "handler.schema".
 ---
 
-# Reference Models
+# Reference Model
 Sometimes you might find yourself declaring duplicated models, or re-use the same model multiple time.
 
-With reference models, we can named our model and reuse them by referencing with name:
+With reference model, we can named our model and reuse them by referencing with name.
+
+Let's start with a simple scenario.
+
+Suppose we have a controller that handles sign-in with the same identical model.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -35,7 +39,7 @@ const app = new Elysia()
     })
 ```
 
-We can make it cleaner, by declaring the model as a variable.
+We can refactor them by declaring the model as a variable, and reuse them.
 ```typescript
 import { Elysia, t } from 'elysia'
 
@@ -52,13 +56,11 @@ const app = new Elysia()
     })
 ```
 
-This is a good approach to keeping the code clean by creating a separation of concerns.
+This method of separation the concerns is an effective approach for maintaining clean code.
 
-As the complexity of the app increases, you may find yourself reusing multiple models with various controllers.
+You might find yourself reusing multiple models with different controllers as the app gets more complex.
 
-You can make it a bit cleaner by creating a "reference model".
-
-Registering the models with `setModel` allows you to name a model and reference them directly in `schema` with auto-completion.
+We can resolve that by creating a "reference model"  allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -71,13 +73,13 @@ const app = new Elysia()
         })
     })
     .post('/sign-in', ({ body }) => body, {
-            // with auto-completion for existing model name
+        // with auto-completion for existing model name
         body: 'sign',
         response: 'sign'
     })
 ```
 
-Now when we need to quickly access the model's group, we can separate a `setModel` into a plugin which when registered will provide a set of models.
+When we want to access the model's group, we can separate a `model` into a plugin which when registered will provide a set of models instead of multiple import.
 
 ```typescript
 // auth.model.ts
@@ -98,14 +100,16 @@ import { authModel } from './auth.model.ts'
 const app = new Elysia()
     .use(authModel)
     .post('/sign-in', ({ body }) => body, {
-            // with auto-completion for existing model name
+        // with auto-completion for existing model name
         body: 'sign',
         response: 'sign'
     })
 ```
 
+This not only allows us to separate the concerns but also allows us to reuse the model in multiple places while reporting the model into Swagger documentation.
+
 ## Multiple Models
-`setModel` accepts an object with the key as a model name and value as the model definition, multiple models are supported by default.
+`model` accepts an object with the key as a model name and value as the model definition, multiple models are supported by default.
 
 ```typescript
 // auth.model.ts

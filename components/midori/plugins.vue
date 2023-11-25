@@ -25,30 +25,10 @@ const plugins = [
 ] as const
 
 import { onMounted, ref } from 'vue'
+import { useData } from 'vitepress'
 
-const isDark = ref(false)
+const { isDark } = useData()
 
-onMounted(() => {
-    // @ts-ignore
-    isDark.value = document.documentElement.classList.contains('dark')
-
-    // @ts-ignore
-    const attrObserver = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName !== 'class') return
-
-            // @ts-ignore
-            isDark.value = document.documentElement.classList.contains('dark')
-        })
-    })
-
-    // @ts-ignore
-    attrObserver.observe(document.documentElement, { attributes: true })
-
-    return () => {
-        attrObserver.disconnect()
-    }
-})
 </script>
 
 <template>

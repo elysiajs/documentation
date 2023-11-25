@@ -9,6 +9,7 @@ export default defineConfig({
     lang: 'en-US',
     title: 'ElysiaJS',
     // description,
+    ignoreDeadLinks: true,
     lastUpdated: true,
     markdown: {
         theme: {
@@ -94,6 +95,118 @@ export default defineConfig({
             }
         ],
         sidebar: [
+            {
+                text: '👋 Getting Started',
+                items: [
+                    {
+                        text: 'Introduction',
+                        link: '/new/introduction'
+                    },
+                    {
+                        text: 'Quick Start',
+                        link: '/new/quick-start'
+                    },
+                    {
+                        text: 'At Glance',
+                        link: '/new/at-glance'
+                    }
+                ]
+            },
+            {
+                text: '✨ Essential',
+                items: [
+                    {
+                        text: 'Route',
+                        link: '/new/essential/route'
+                    },
+                    {
+                        text: 'Path',
+                        link: '/new/essential/path'
+                    },
+                    {
+                        text: 'Handler',
+                        link: '/new/essential/handler'
+                    },
+                    {
+                        text: 'Context',
+                        link: '/new/essential/context'
+                    },
+                    {
+                        text: 'Plugin',
+                        link: '/new/essential/plugin'
+                    },
+                    {
+                        text: 'Life Cycle',
+                        link: '/new/essential/life-cycle'
+                    },
+                    {
+                        text: 'Schema',
+                        link: '/new/essential/schema'
+                    },
+                    {
+                        text: 'Scope',
+                        link: '/new/essential/scope'
+                    }
+                ]
+            },
+            {
+                text: '🔎 Validation',
+                items: [
+                    {
+                        text: 'Overview',
+                        link: '/new/validation/overview'
+                    },
+                    {
+                        text: 'Primitive Type',
+                        link: '/new/validation/primitive-type'
+                    },
+                    {
+                        text: 'Elysia Type',
+                        link: '/new/validation/elysia-type'
+                    },
+                    {
+                        text: 'Error Provider',
+                        link: '/new/validation/error-provider'
+                    },
+                    {
+                        text: 'Reference Model',
+                        link: '/new/validation/reference-model'
+                    }
+                ]
+            },
+            {
+                text: '🔁 Life Cycle',
+                items: [
+                    {
+                        text: 'Overview',
+                        link: '/new/life-cycle/overview'
+                    },
+                    {
+                        text: 'On Request',
+                        link: '/new/life-cycle/request'
+                    },
+                    {
+                        text: 'Transform',
+                        link: '/new/life-cycle/transform'
+                    },
+                    {
+                        text: 'Before Handle',
+                        link: '/new/life-cycle/before-handle'
+                    },
+                    {
+                        text: 'After Handle',
+                        link: '/new/life-cycle/after-handle'
+                    },
+                    {
+                        text: 'On Error',
+                        link: '/new/life-cycle/on-error'
+                    },
+                    {
+                        text: 'On Response',
+                        link: '/new/life-cycle/on-error'
+                    }
+                ]
+            },
             {
                 text: 'Getting Started',
                 items: [
