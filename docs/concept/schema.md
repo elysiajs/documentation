@@ -124,7 +124,7 @@ Sometimes you might find yourself reusing the same type multiple times.
 
 Using [reference models](/patterns/reference-models), you can name your model and use it by referencing the name:
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .model({
