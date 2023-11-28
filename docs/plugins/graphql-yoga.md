@@ -45,7 +45,7 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Accessing `/swagger` would show you a Swagger endpoint with generated endpoint from Elysia server.
+Accessing `/graphql` in the browser (GET request) would show you a GraphiQL instance for the GraphQL-enabled Elysia server.
 
 optional: you can install custom version of optional peer dependencies as well:
 ```bash
