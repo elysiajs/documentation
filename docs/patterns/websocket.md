@@ -20,7 +20,7 @@ WebSocket is a realtime protocol for communication between your client and serve
 
 Unlike HTTP where our client repeatedly asking the website for information and waiting for a reply each time, WebSocket sets up a direct line where our client and server can send messages back and forth directly, making the conversation quicker and smoother without having to start over each message.
 
-SocketIO is a popular library for WebSocket, but it is not the only one. Elysia uses [uWebSocket] [uWebSocket](https://github.com/uNetworking/uWebSockets) which Bun use under the hood with the same API.
+SocketIO is a popular library for WebSocket, but it is not the only one. Elysia uses [uWebSocket](https://github.com/uNetworking/uWebSockets) which Bun use under the hood with the same API.
 
 To use websocket, simply call `Elysia.ws()`:
 ```typescript
@@ -60,12 +60,12 @@ const app = new Elysia()
 
 WebSocket schema can validate the following:
 
--   message - An incoming message.
--   query - query string or URL parameters.
--   params - Path parameters.
--   header - Request's headers.
--   cookie - Request's cookie
--   response - Value returned from handler
+-   **message** - An incoming message.
+-   **query** - query string or URL parameters.
+-   **params** - Path parameters.
+-   **header** - Request's headers.
+-   **cookie** - Request's cookie
+-   **response** - Value returned from handler
 
 By default Elysia will parse incoming stringified JSON message as Object for validation.
 

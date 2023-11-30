@@ -128,7 +128,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-## List an error
+## Error list
 **ValidationError** provides a method `ValidatorError.all`, allowing us to list all of the error causes.
 
 ```typescript

@@ -16,15 +16,17 @@ head:
 ---
 
 # Trace
-**Trace** allows us to tap into a life-cycle event and identify performance bottlenecks for our app.
+Trace is an API to measure the performance of your server.
+
+Trace allows us to interact with the duration span of each life-cycle events and measure the performance of each function to identify performance bottlenecks of the server.
 
 ![Example of usage of Trace](/assets/trace.webp)
 
-Performance is another important aspect for Elysia.
+Performance is an important aspect for Elysia.
 
 We don't want to be fast for benchmarking purposes, we want you to have a real fast server in real-world scenario.
 
-There are many factors that can slow down your app - and it's hard to identify them, but **trace** can helps solve that problem
+There are many factors that can slow down our app - and it's hard to identify them, but **trace** can helps solve that problem
 
 ## Trace
 Trace can measure lifecycle execution time of each function to audit the performance bottleneck of each cycle.

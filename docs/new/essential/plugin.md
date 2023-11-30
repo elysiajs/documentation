@@ -105,11 +105,11 @@ Elysia avoids this by differentiating the instance by using **name** and **optio
 ```typescript
 import { Elysia } from 'elysia'
 
-const plugin = (config) =>
-    new Elysia({
-        name: 'my-plugin',
-        seed: config,
-    }).get(`${config.prefix}/hi`, () => 'Hi')
+const plugin = (config) => new Elysia({
+        name: 'my-plugin', // [!code ++]
+        seed: config, // [!code ++]
+    })
+    .get(`${config.prefix}/hi`, () => 'Hi')
 
 const app = new Elysia()
     .use(
@@ -130,25 +130,62 @@ import { Elysia } from 'elysia'
 const plugin = new Elysia({ name: 'plugin' })
 
 const app = new Elysia()
-    .use(
-        plugin({
-            prefix: '/v2'
-        })
-    )
+    .use(plugin())
+    .use(plugin())
+    .use(plugin())
+    .use(plugin())
     .listen(3000)
 ```
 
 This allows Elysia to improve performance by reusing the registered plugins instead of processing the plugin over and over again.
-
-This is useful when using [Service Locator](/patterns/service-locator) pattern to provide type inference for the Elysia app.
-
-If no `name` or `seed` is provided, Elysia will not deduplicate the plugin.
 
 ::: tip
 Seed could be anything, varying from a string to a complex object or class.
 
 If the provided value is class, Elysia will then try to use `.toString` method to generate a checksum.
 :::
+
+## Service Locator
+When you apply multiple state and decorators plugin to an instance, the instance will gain type safety.
+
+However, you may notice that when you are trying to use the decorated value in other instance without decorator, you may realize that the type is missing.
+
+```typescript
+import { Elysia } from 'elysia'
+
+const main = new Elysia()
+    .decorate('a', 'a')
+    .use(child)
+
+const child = new Elysia()
+    // ❌ 'a' is missing
+    .get('/', ({ a }) => a)
+```
+
+This is the limitation of TypeScript, Elysia only have reference to the current instance only.
+
+To counter this, Elysia introduce the **Service Locator** pattern.
+
+Service Locator allow us get the plugin for us automatically, when `use` is call, Elysia will do two thing:
+Lookup for plugin checksum and retrieve the value, otherwise register a new one
+Infer type from the plugin
+
+To put it simply, we only need to provide the plugin reference for Elysia to locate the service.
+
+```typescript
+// setup.ts
+const setup = new Elysia({ name: 'setup' })
+    .decorate('a', 'a')
+
+// index.ts
+const main = new Elysia()
+    .use(child)
+
+// child.ts
+const child = new Elysia()
+    .use(setup)
+    .get('/', ({ a }) => a)
+```
 
 ## Official Plugins
 

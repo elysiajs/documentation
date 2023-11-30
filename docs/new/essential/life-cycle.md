@@ -50,14 +50,14 @@ Elysia does the following for every request:
     - Modify `Context` before validation
     - Best for:
         - Mutate existing context to conform with validation.
-        - Adding new context (derive is based on this)
+        - Adding new context (derive   this)
 4. **Validation** (not interceptable)
     - Strictly validate incoming request provided by `Elysia.t`
 5. **Before Handle**
     - Execute right before the route handler
     - **If value is returned, route handler will be skipped**
     - Best for:
-        - Providing custom requirements to access route, eg. user session, autorization.
+        - Providing custom requirements to access route, eg. user session, authorization.
 6. **Handle** (Route Handler)
     - A callback function of each route
 7. **After Handle**

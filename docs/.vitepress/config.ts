@@ -114,6 +114,7 @@ export default defineConfig({
             },
             {
                 text: '✨ Essential',
+                collapsed: true,
                 items: [
                     {
                         text: 'Route',
@@ -151,10 +152,15 @@ export default defineConfig({
             },
             {
                 text: '🔎 Validation',
+                collapsed: true,
                 items: [
                     {
                         text: 'Overview',
                         link: '/new/validation/overview'
+                    },
+                    {
+                        text: 'Schema Type',
+                        link: '/new/validation/schema-type'
                     },
                     {
                         text: 'Primitive Type',
@@ -176,6 +182,7 @@ export default defineConfig({
             },
             {
                 text: '🔁 Life Cycle',
+                collapsed: true,
                 items: [
                     {
                         text: 'Overview',
@@ -184,6 +191,10 @@ export default defineConfig({
                     {
                         text: 'On Request',
                         link: '/new/life-cycle/request'
+                    },
+                    {
+                        text: 'Parse',
+                        link: '/new/life-cycle/parse'
                     },
                     {
                         text: 'Transform',
@@ -203,12 +214,17 @@ export default defineConfig({
                     },
                     {
                         text: 'On Response',
-                        link: '/new/life-cycle/on-error'
+                        link: '/new/life-cycle/on-response'
+                    },
+                    {
+                        text: 'Trace',
+                        link: '/new/life-cycle/trace'
                     }
                 ]
             },
             {
                 text: '🧭 Patterns',
+                collapsed: true,
                 items: [
                     {
                         text: 'Cookie',
@@ -220,15 +236,11 @@ export default defineConfig({
                     },
                     {
                         text: 'Web Socket',
-                        link: '/patterns/cookie'
+                        link: '/patterns/websocket'
                     },
                     {
                         text: 'Documentation',
                         link: '/patterns/creating-documentation'
-                    },
-                    {
-                        text: 'Trace',
-                        link: '/patterns/trace'
                     },
                     {
                         text: 'Mount',

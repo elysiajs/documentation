@@ -46,19 +46,22 @@ This means that the code above is translated into:
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().post('/sign-up', ({ body }) => signUp(body), {
-    body: t.Object({
-        username: t.String(),
-        password: t.String()
+new Elysia()
+    .post('/sign-up', ({ body }) => signUp(body), {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
     })
-})
-.post('/sign-in', (({ body }) => signIn(body), {
-    beforeHandle: isUserExists,
-    body: t.Object({
-        username: t.String(),
-        password: t.String()
+    .post('/sign-in', (({ body }) => signIn(body), {
+        beforeHandle: isUserExists,
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
     })
-}).get('/', () => 'hi').listen(3000)
+    .get('/', () => 'hi')
+    .listen(3000)
 ```
 
 ## Groupped Guard
