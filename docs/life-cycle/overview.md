@@ -1,3 +1,8 @@
+<script setup>
+    import Card from '../../components/nearl/card.vue'
+    import Deck from '../../components/nearl/card-deck.vue'
+</script>
+
 # Life Cycle
 It's recommended that you have read [Essential life-cycle](/new/essential/life-cycle) for better understanding of Elysia's Life Cycle.
 
@@ -7,15 +12,30 @@ Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle.webp)
 
 Below are the request lifecycle available in Elysia:
-1. Request
-2. Parse
-3. Transform
-4. Validation
-5. Before Handle
-6. Handle
-7. After Handle
-8. Error
-9. Response
+
+<Deck>
+    <Card title="Request" href="request">
+        Hello World
+    </Card>
+    <Card title="Parse" href="parse">
+        Hello World
+    </Card>
+    <Card title="Transform" href="transform">
+        Hello World
+    </Card>
+    <Card title="Before Handle" href="before-handle">
+        Hello World
+    </Card>
+    <Card title="After Handle" href="after-handle">
+        Hello World
+    </Card>
+    <Card title="On Error" href="on-error">
+        Hello World
+    </Card>
+    <Card title="On Response" href="on-response">
+        Hello World
+    </Card>
+</Deck>
 
 Below are the additional life-cycle event available in Elysia:
 1. Trace

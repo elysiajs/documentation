@@ -1,16 +1,35 @@
+<script setup>
+    import Card from '../../components/nearl/card.vue'
+    import Deck from '../../components/nearl/card-deck.vue'
+</script>
+
 # Elysia Type
 `Elysia.t` is based on TypeBox with pre-configuration for usage on the server while providing additional types commonly found on server-side validation.
 
 You can find all of the source code of Elysia type in `elysia/type-system`.
 
 The following are types provided by Elysia:
-- Numeric
-- File
-- Files
-- Cookie
-- Nullable
-- MaybeEmpty
-- ObjectString
+
+<Deck>
+    <Card title="Numeric" href="#numeric">
+        Accepts a numeric string or number and then transforms the value into a number
+    </Card>
+    <Card title="File" href="#file">
+        A singular file. Often useful for <strong>file upload</strong> validation
+    </Card>
+    <Card title="Files" href="#files">
+        Extends from <a href="#file">File</a>, but adds support for an array of files in a single field
+    </Card>
+    <Card title="Cookie" href="#cookie">
+        Object-like representation of a Cookie Jar extended from Object type
+    </Card>
+    <Card title="Nullable" href="#nullable">
+    Allow the value to be null but not undefined
+    </Card>
+    <Card title="Maybe Empty" href="#maybeempty">
+        Accepts empty string or null value
+    </Card>
+</Deck>
 
 ## Numeric
 Numeric accepts a numeric string or number and then transforms the value into a number.

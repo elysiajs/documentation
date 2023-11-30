@@ -100,15 +100,19 @@ export default defineConfig({
                 items: [
                     {
                         text: 'Introduction',
-                        link: '/new/introduction'
+                        link: '/introduction'
                     },
                     {
                         text: 'Quick Start',
-                        link: '/new/quick-start'
+                        link: '/quick-start'
                     },
                     {
                         text: 'At Glance',
-                        link: '/new/at-glance'
+                        link: '/at-glance'
+                    },
+                    {
+                        text: 'Table of Content',
+                        link: '/table-of-content'
                     }
                 ]
             },
@@ -118,35 +122,35 @@ export default defineConfig({
                 items: [
                     {
                         text: 'Route',
-                        link: '/new/essential/route'
+                        link: '/essential/route'
                     },
                     {
                         text: 'Path',
-                        link: '/new/essential/path'
+                        link: '/essential/path'
                     },
                     {
                         text: 'Handler',
-                        link: '/new/essential/handler'
+                        link: '/essential/handler'
                     },
                     {
                         text: 'Context',
-                        link: '/new/essential/context'
+                        link: '/essential/context'
                     },
                     {
                         text: 'Plugin',
-                        link: '/new/essential/plugin'
+                        link: '/essential/plugin'
                     },
                     {
                         text: 'Life Cycle',
-                        link: '/new/essential/life-cycle'
+                        link: '/essential/life-cycle'
                     },
                     {
                         text: 'Schema',
-                        link: '/new/essential/schema'
+                        link: '/essential/schema'
                     },
                     {
                         text: 'Scope',
-                        link: '/new/essential/scope'
+                        link: '/essential/scope'
                     }
                 ]
             },
@@ -156,69 +160,69 @@ export default defineConfig({
                 items: [
                     {
                         text: 'Overview',
-                        link: '/new/validation/overview'
+                        link: '/validation/overview'
                     },
                     {
                         text: 'Schema Type',
-                        link: '/new/validation/schema-type'
+                        link: '/validation/schema-type'
                     },
                     {
                         text: 'Primitive Type',
-                        link: '/new/validation/primitive-type'
+                        link: '/validation/primitive-type'
                     },
                     {
                         text: 'Elysia Type',
-                        link: '/new/validation/elysia-type'
+                        link: '/validation/elysia-type'
                     },
                     {
                         text: 'Error Provider',
-                        link: '/new/validation/error-provider'
+                        link: '/validation/error-provider'
                     },
                     {
                         text: 'Reference Model',
-                        link: '/new/validation/reference-model'
+                        link: '/validation/reference-model'
                     }
                 ]
             },
             {
-                text: '🔁 Life Cycle',
+                text: '⏳ Life Cycle',
                 collapsed: true,
                 items: [
                     {
                         text: 'Overview',
-                        link: '/new/life-cycle/overview'
+                        link: '/life-cycle/overview'
                     },
                     {
                         text: 'On Request',
-                        link: '/new/life-cycle/request'
+                        link: '/life-cycle/request'
                     },
                     {
                         text: 'Parse',
-                        link: '/new/life-cycle/parse'
+                        link: '/life-cycle/parse'
                     },
                     {
                         text: 'Transform',
-                        link: '/new/life-cycle/transform'
+                        link: '/life-cycle/transform'
                     },
                     {
                         text: 'Before Handle',
-                        link: '/new/life-cycle/before-handle'
+                        link: '/life-cycle/before-handle'
                     },
                     {
                         text: 'After Handle',
-                        link: '/new/life-cycle/after-handle'
+                        link: '/life-cycle/after-handle'
                     },
                     {
                         text: 'On Error',
-                        link: '/new/life-cycle/on-error'
+                        link: '/life-cycle/on-error'
                     },
                     {
                         text: 'On Response',
-                        link: '/new/life-cycle/on-response'
+                        link: '/life-cycle/on-response'
                     },
                     {
                         text: 'Trace',
-                        link: '/new/life-cycle/trace'
+                        link: '/life-cycle/trace'
                     }
                 ]
             },
@@ -252,151 +256,140 @@ export default defineConfig({
                     }
                 ]
             },
+            // {
+            //     text: 'Concepts',
+            //     items: [
+            //         {
+            //             text: 'Route',
+            //             link: '/concept/route'
+            //         },
+            //         {
+            //             text: 'Handler',
+            //             link: '/concept/handler'
+            //         },
+            //         {
+            //             text: 'State & Decorate',
+            //             link: '/concept/state-decorate'
+            //         },
+            //         {
+            //             text: 'Derive',
+            //             link: '/concept/derive'
+            //         },
+            //         {
+            //             text: 'Plugin',
+            //             link: '/concept/plugin'
+            //         },
+            //         {
+            //             text: 'Group',
+            //             link: '/concept/group'
+            //         },
+            //         {
+            //             text: 'Lifecycle',
+            //             link: '/concept/life-cycle'
+            //         },
+            //         {
+            //             text: 'Schema',
+            //             link: '/concept/schema'
+            //         },
+            //         {
+            //             text: 'Numeric',
+            //             link: '/concept/numeric'
+            //         },
+            //         {
+            //             text: 'Guard',
+            //             link: '/concept/guard'
+            //         },
+            //         {
+            //             text: 'Config',
+            //             link: '/concept/config'
+            //         },
+            //         {
+            //             text: 'Explicit Body',
+            //             link: '/concept/explicit-body'
+            //         }
+            //     ]
+            // },
+            // {
+            //     text: 'Patterns',
+            //     collapsed: true,
+            //     items: [
+            //         {
+            //             text: 'After Handle',
+            //             link: '/patterns/after-handle'
+            //         },
+            //         {
+            //             text: 'Method Chaining',
+            //             link: '/patterns/method-chaining'
+            //         },
+            //         {
+            //             text: 'File Upload',
+            //             link: '/patterns/file-upload'
+            //         },
+            //         {
+            //             text: 'Cookie',
+            //             link: '/patterns/cookie'
+            //         },
+            //         {
+            //             text: 'Cookie Signature',
+            //             link: '/patterns/cookie-signature'
+            //         },
+            //         {
+            //             text: 'Error Handling',
+            //             link: '/patterns/error-handling'
+            //         },
+            //         {
+            //             text: 'Web Socket',
+            //             link: '/patterns/websocket'
+            //         },
+            //         {
+            //             text: 'Reference Model',
+            //             link: '/patterns/reference-models'
+            //         },
+            //         {
+            //             text: 'Dependency Injection',
+            //             link: '/patterns/dependency-injection'
+            //         },
+            //         {
+            //             text: 'Remapping',
+            //             link: '/patterns/remapping'
+            //         },
+            //         {
+            //             text: 'Lazy Loading Module',
+            //             link: '/patterns/lazy-loading-module'
+            //         },
+            //         {
+            //             text: 'Creating Documentation',
+            //             link: '/patterns/creating-documentation'
+            //         },
+            //         {
+            //             text: 'Testing',
+            //             link: '/patterns/testing'
+            //         },
+            //         {
+            //             text: 'Body Parser',
+            //             link: '/patterns/body-parser'
+            //         },
+            //         {
+            //             text: 'Trace',
+            //             link: '/patterns/trace'
+            //         },
+            //         {
+            //             text: 'Mount',
+            //             link: '/patterns/mount'
+            //         },
+            //         {
+            //             text: 'End-to-End Type Safety',
+            //             link: '/patterns/end-to-end-type-safety'
+            //         }
+            //     ]
+            // },
             {
-                text: 'Getting Started',
-                items: [
-                    {
-                        text: 'Introduction',
-                        link: '/introduction'
-                    },
-                    {
-                        text: 'Quick Start',
-                        link: '/quick-start'
-                    }
-                ]
-            },
-            {
-                text: 'Concepts',
-                items: [
-                    {
-                        text: 'Route',
-                        link: '/concept/route'
-                    },
-                    {
-                        text: 'Handler',
-                        link: '/concept/handler'
-                    },
-                    {
-                        text: 'State & Decorate',
-                        link: '/concept/state-decorate'
-                    },
-                    {
-                        text: 'Derive',
-                        link: '/concept/derive'
-                    },
-                    {
-                        text: 'Plugin',
-                        link: '/concept/plugin'
-                    },
-                    {
-                        text: 'Group',
-                        link: '/concept/group'
-                    },
-                    {
-                        text: 'Lifecycle',
-                        link: '/concept/life-cycle'
-                    },
-                    {
-                        text: 'Schema',
-                        link: '/concept/schema'
-                    },
-                    {
-                        text: 'Numeric',
-                        link: '/concept/numeric'
-                    },
-                    {
-                        text: 'Guard',
-                        link: '/concept/guard'
-                    },
-                    {
-                        text: 'Config',
-                        link: '/concept/config'
-                    },
-                    {
-                        text: 'Explicit Body',
-                        link: '/concept/explicit-body'
-                    }
-                ]
-            },
-            {
-                text: 'Patterns',
-                items: [
-                    {
-                        text: 'After Handle',
-                        link: '/patterns/after-handle'
-                    },
-                    {
-                        text: 'Method Chaining',
-                        link: '/patterns/method-chaining'
-                    },
-                    {
-                        text: 'File Upload',
-                        link: '/patterns/file-upload'
-                    },
-                    {
-                        text: 'Cookie',
-                        link: '/patterns/cookie'
-                    },
-                    {
-                        text: 'Cookie Signature',
-                        link: '/patterns/cookie-signature'
-                    },
-                    {
-                        text: 'Error Handling',
-                        link: '/patterns/error-handling'
-                    },
-                    {
-                        text: 'Web Socket',
-                        link: '/patterns/websocket'
-                    },
-                    {
-                        text: 'Reference Model',
-                        link: '/patterns/reference-models'
-                    },
-                    {
-                        text: 'Dependency Injection',
-                        link: '/patterns/dependency-injection'
-                    },
-                    {
-                        text: 'Remapping',
-                        link: '/patterns/remapping'
-                    },
-                    {
-                        text: 'Lazy Loading Module',
-                        link: '/patterns/lazy-loading-module'
-                    },
-                    {
-                        text: 'Creating Documentation',
-                        link: '/patterns/creating-documentation'
-                    },
-                    {
-                        text: 'Testing',
-                        link: '/patterns/testing'
-                    },
-                    {
-                        text: 'Body Parser',
-                        link: '/patterns/body-parser'
-                    },
-                    {
-                        text: 'Trace',
-                        link: '/patterns/trace'
-                    },
-                    {
-                        text: 'Mount',
-                        link: '/patterns/mount'
-                    },
-                    {
-                        text: 'End-to-End Type Safety',
-                        link: '/patterns/end-to-end-type-safety'
-                    }
-                ]
-            },
-            {
-                text: 'Plugins',
+                text: '🔌 Plugins',
                 items: [
                     {
                         text: 'Eden',
                         link: '/plugins/eden/overview',
+                        collapsed: true,
                         items: [
                             {
                                 text: 'Installation',
@@ -419,6 +412,7 @@ export default defineConfig({
                     {
                         text: 'Plugins',
                         link: '/plugins/overview',
+                        collapsed: true,
                         items: [
                             {
                                 text: 'Bearer',

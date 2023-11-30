@@ -43,7 +43,7 @@ Here's a criteria that Elysia uses to pick up type of body parser
 This allows Elysia to optimize body parser ahead of time, and reduce overhead in compile time.
 
 ## Explicit Content Type
-However, in some scenario if Elysia fails to pick the correct body parser function, you can explicitly tell Elysia to use a certain function by specifying `type`
+However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`
 
 ```ts
 app.post('/', ({ body }) => body, {
@@ -52,7 +52,7 @@ app.post('/', ({ body }) => body, {
 })
 ```
 
-This allows you to control Elysia behavior for picking body parser function to fit your needs in a complex scenario.
+Allowing us to control Elysia behavior for picking body parser function to fit our needs in a complex scenario.
 
 `type` may be one of the following:
 ```ts
@@ -70,5 +70,3 @@ type ContentType = |
     | 'multipart/form-data'
     | 'application/x-www-form-urlencoded'
 ```
-
-You can extend Elysia by adding a custom body parser function yourself with `onParse`, see [body parser](/patterns/body-parser).

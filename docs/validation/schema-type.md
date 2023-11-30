@@ -1,13 +1,34 @@
+<script setup>
+    import Card from '../../components/nearl/card.vue'
+    import Deck from '../../components/nearl/card-deck.vue'
+</script>
+
 # Schema Type
 
 Elysia supports declarative schema with the following types:
 
--   **body** - HTTP body.
--   **query** - query string or URL parameters.
--   **params** - Path parameters.
--   **header** - Request's headers.
--   **cookie** - Request's cookie
--   **response** - Value returned from the handler
+<Deck>
+    <Card title="Body" href="#body">
+        Validate an incoming HTTP Message
+    </Card>
+    <Card title="Query" href="#query">
+        Query string or URL parameter
+    </Card>
+    <Card title="Params" href="#query">
+        Path parameters
+    </Card>
+    <Card title="Header" href="#header">
+        Header of the request
+    </Card>
+    <Card title="Cookie" href="#cookie">
+        Cookie of the request
+    </Card>
+    <Card title="Response" href="#response">
+        Response of the request
+    </Card>
+</Deck>
+
+---
 
 These properties should be used in route `hook` and `guard`, Elysia then will validate the request automatically:
 
