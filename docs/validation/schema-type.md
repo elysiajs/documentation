@@ -30,7 +30,7 @@ Elysia supports declarative schema with the following types:
 
 ---
 
-These properties should be used in route `hook` and `guard`, Elysia then will validate the request automatically:
+These properties should be provided as the third argument of the route handler to validate the incoming request.
 
 ```typescript
 import { Elysia, t } from 'elysia'

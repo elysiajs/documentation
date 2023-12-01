@@ -18,12 +18,11 @@ import 'prismjs/components/prism-typescript'
 import '../tailwind.css'
 import './midori.css'
 
-import { onMounted, ref } from 'vue'
-import { useData } from 'vitepress'
-
 import BuiltWithLove from './built-with-love.vue'
 
-const { isDark } = useData()
+import useDark from './use-dark'
+
+const isDark = useDark()
 </script>
 
 <template>

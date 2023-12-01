@@ -1,6 +1,7 @@
 <!-- https://codepen.io/TWilson/pen/jOdWqbZ -->
 <template>
-    <div class="absolute flex flex-col w-full items-center justify-center bg-transparent transition-bg" :class="className">
+    <div class="absolute flex flex-col w-full !max-w-full items-center justify-center bg-transparent transition-bg overflow-hidden"
+        :class="className">
         <div class="jumbo absolute -inset-[10px] opacity-50" :class="{ '-safari': isSafari }" />
     </div>
 </template>
@@ -84,7 +85,14 @@ const props = defineProps<{
 
 const className = ref(props.class || 'h-screen')
 const isSafari = ref(
-    navigator.userAgent.indexOf('Safari') !== -1 &&
-    navigator.userAgent.indexOf('Chrome') === -1
+    typeof window !== "undefined" ?
+        navigator.userAgent.indexOf('Safari') !== -1 &&
+        navigator.userAgent.indexOf('Chrome') === -1 : false
 )
+
+onMounted(() => {
+    isSafari.value =
+        navigator.userAgent.indexOf('Safari') !== -1 &&
+        navigator.userAgent.indexOf('Chrome') === -1
+})
 </script>

@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import { nextTick, provide } from 'vue'
 
+import { useData } from 'vitepress'
+import useDark from '../../../components/midori/use-dark'
 import Ray from '../../../components/midori/ray.vue'
 
-const { isDark } = useData()
+const isDark = useDark()
+const { isDark: darkTheme } = useData()
 
 const enableTransitions = () =>
     'startViewTransition' in document &&
@@ -13,7 +15,7 @@ const enableTransitions = () =>
 
 provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
     if (!enableTransitions()) {
-        isDark.value = !isDark.value
+        darkTheme.value = !darkTheme.value
         return
     }
 
@@ -27,7 +29,7 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
     // @ts-ignore
     await document.startViewTransition(async () => {
-        isDark.value = !isDark.value
+        darkTheme.value = !darkTheme.value
         await nextTick()
     }).ready
 

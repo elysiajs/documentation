@@ -90,7 +90,7 @@ watch(copied, (value) => {
     }
 })
 
-import { useData } from 'vitepress'
+import useDark from './use-dark'
 
-const { isDark } = useData()
+const isDark = useDark()
 </script>

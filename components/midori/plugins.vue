@@ -24,22 +24,17 @@ const plugins = [
     ]
 ] as const
 
-import { onMounted, ref } from 'vue'
-import { useData } from 'vitepress'
+import useDark from './use-dark'
 
-const { isDark } = useData()
-
+const isDark = useDark()
 </script>
 
 <template>
-    <article
-        class="flex justify-between flex-col lg:flex-row items-center w-full max-w-6xl mx-auto my-8 gap-12"
-    >
+    <article class="flex justify-between flex-col lg:flex-row items-center w-full max-w-6xl mx-auto my-8 gap-12">
         <section class="flex flex-col w-full max-w-lg">
             <header class="flex flex-col justify-center items-start">
                 <h2
-                    class="text-5xl md:text-6xl leading-tight font-bold bg-clip-text text-transparent bg-gradient-to-tr from-sky-400 to-fuchsia-400 mb-4"
-                >
+                    class="text-5xl md:text-6xl leading-tight font-bold bg-clip-text text-transparent bg-gradient-to-tr from-sky-400 to-fuchsia-400 mb-4">
                     It works with that
                 </h2>
             </header>
@@ -52,32 +47,20 @@ const { isDark } = useData()
                 it with the community.
             </p>
             <div class="mt-8">
-                <a
-                    href="/plugins/overview"
-                    class="text-xl font-medium bg-blue-200/25 dark:bg-blue-500/25 text-blue-500 px-6 py-3 rounded-xl"
-                >
+                <a href="/plugins/overview"
+                    class="text-xl font-medium bg-blue-200/25 dark:bg-blue-500/25 text-blue-500 px-6 py-3 rounded-xl">
                     Explore plugins
                 </a>
             </div>
         </section>
         <section class="flex flex-col w-full max-w-xl">
-            <ol
-                class="grid grid-cols-2 sm:grid-cols-3 gap-4 list-none w-full text-gray-500 dark:text-gray-400 text-lg"
-            >
-                <li
-                    v-for="[name, icon, href, darkIcon = ''] in plugins"
-                    class="aspect-square rounded-xl border dark:border-gray-700 bg-gradient-to-br from-white to-gray-50 dark:from-gray-700/75 dark:to-gray-800/75 text-xl transform transition-all ease-out duration-200 hover:shadow-lg focus:shadow-lg hover:-translate-y-1.5 focus:-translate-y-1.5"
-                >
-                    <a
-                        :href="href"
-                        :target="href.startsWith('http') ? '_blank' : ''"
-                        class="flex flex-col justify-center items-center gap-3 w-full h-full text-lg font-medium text-gray-600 dark:text-gray-400 overflow-hidden"
-                    >
-                        <img
-                            :src="isDark && darkIcon ? darkIcon ?? icon : icon"
-                            :alt="name"
-                            class="absolute w-36 h-36 opacity-10 filter blur-lg"
-                        />
+            <ol class="grid grid-cols-2 sm:grid-cols-3 gap-4 list-none w-full text-gray-500 dark:text-gray-400 text-lg">
+                <li v-for="[name, icon, href, darkIcon = ''] in plugins"
+                    class="aspect-square rounded-xl border dark:border-gray-700 bg-gradient-to-br from-white to-gray-50 dark:from-gray-700/75 dark:to-gray-800/75 text-xl transform transition-all ease-out duration-200 hover:shadow-lg focus:shadow-lg hover:-translate-y-1.5 focus:-translate-y-1.5">
+                    <a :href="href" :target="href.startsWith('http') ? '_blank' : ''"
+                        class="flex flex-col justify-center items-center gap-3 w-full h-full text-lg font-medium text-gray-600 dark:text-gray-400 overflow-hidden">
+                        <img :src="isDark && darkIcon ? darkIcon ?? icon : icon" :alt="name"
+                            class="absolute w-36 h-36 opacity-10 filter blur-lg" />
                         <img :src="isDark && darkIcon ? darkIcon ?? icon : icon" :alt="name" class="h-14" />
                         {{ name }}
                     </a>

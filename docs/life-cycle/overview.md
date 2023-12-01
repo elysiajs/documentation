@@ -15,32 +15,32 @@ Below are the request lifecycle available in Elysia:
 
 <Deck>
     <Card title="Request" href="request">
-        Hello World
+        Notify new event is received
     </Card>
     <Card title="Parse" href="parse">
-        Hello World
+        Parse body into <b>Context.body</b>
     </Card>
     <Card title="Transform" href="transform">
-        Hello World
+        Modify <b>Context</b> before validation
     </Card>
     <Card title="Before Handle" href="before-handle">
-        Hello World
+        Custom validation before route handler
     </Card>
     <Card title="After Handle" href="after-handle">
-        Hello World
+        Map returned value into a response
     </Card>
     <Card title="On Error" href="on-error">
-        Hello World
+        Capture error when thrown
     </Card>
     <Card title="On Response" href="on-response">
-        Hello World
+        Executed after response sent to the client
+    </Card>
+    <Card title="Trace" href="trace">
+        Audit and capture timespan of each event
     </Card>
 </Deck>
 
-Below are the additional life-cycle event available in Elysia:
-1. Trace
-2. Start
-3. Stop
+---
 
 Every life-cycle could be apply at both:
 1. Local Hook (route)

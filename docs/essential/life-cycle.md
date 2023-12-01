@@ -54,7 +54,7 @@ Elysia does the following for every request:
 4. **Validation** (not interceptable)
     - Strictly validate incoming request provided by `Elysia.t`
 5. **Before Handle**
-    - Execute right before the route handler
+    - Custom validation before route handler
     - **If value is returned, route handler will be skipped**
     - Best for:
         - Providing custom requirements to access route, eg. user session, authorization.
