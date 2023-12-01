@@ -7,13 +7,13 @@ import Deck from '../components/nearl/card-deck.vue'
 There's no correct or organized way to learn Elysia, however we recommended completing the essential chapter first as the chapter briefly covering most of Elysia's features and foundation before jumping to other topics that interested you.
 
 <Deck>
-    <Card title="Essential" href="/new/essential/route">
+    <Card title="Essential" href="/essential/route">
         Important concept and foundation of Elysia
     </Card>
-    <Card title="Validation" href="/new/validation/overview">
+    <Card title="Validation" href="/validation/overview">
         Enforce data type and creating unified type
     </Card>
-    <Card title="Life Cycle" href="/new/life-cycle/overview">
+    <Card title="Life Cycle" href="/life-cycle/overview">
         Intercept event and customize behaviors
     </Card>
     <Card title="Patterns" href="/patterns/cookie">
