@@ -24,7 +24,9 @@ http://localhost:8080/path/page
 
 Elysia use path and method to lookup for the collect resource.
 
-![URL Representation](/essential/url-object.svg)
+<div class="bg-white rounded-lg">
+    <img src="/essential/url-object.svg" alt="URL Representation" />
+</div>
 
 A path starts after the origin. Prefix with **/** and ends before search query **(?)**
 

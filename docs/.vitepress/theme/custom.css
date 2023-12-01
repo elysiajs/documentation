@@ -74,11 +74,18 @@ button.copy::after {
 }
 
 .VPNavBar {
+    @apply !border-0;
     background: linear-gradient(to right, transparent, var(--vp-nav-bg-color));
     backdrop-filter: blur(12px);
 
+    & > .container {
+        & > .content,
+        & > .title {
+            background: color-mix(in srgb, var(--vp-c-bg) 80%, transparent);
+        }
+    }
+
     & > .container > .content {
-        background: color-mix(in srgb, var(--vp-c-bg) 80%, transparent);
         border-bottom: 0;
 
         & > .curtain::before {
