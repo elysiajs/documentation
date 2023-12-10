@@ -15,9 +15,9 @@ head:
 ---
 
 # Quick Start
-Elysia is a library built for Bun.
+Elysia is a library built for Bun, a fast JavaScript runtime.
 
-Bun is all you need to get started.
+To get started, make sure you have Bun installed.
 ```bash
 curl https://bun.sh/install | bash
 ```
@@ -27,12 +27,12 @@ Bootstrap a new project with `bun create`:
 bun create elysia hi-elysia
 ```
 
-Then you should see the folder name `hi-elysia` in your directory.
+You should now see a folder named `hi-elysia` in your directory.
 ```bash
 cd hi-elysia
 ```
 
-Open `src/index.ts`, and you should see:
+The code for your server is inside of `src/index.ts`:
 ```typescript
 import { Elysia } from "elysia";
 
@@ -50,7 +50,7 @@ bun dev
 
 Open your browser and go to `http://localhost:3000`.
 
-You should see your server is running.
+You should see `🦊 Elysia is running at localhost:3000`
 
 ---
 
