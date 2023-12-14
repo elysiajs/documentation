@@ -3,7 +3,7 @@ title: Integration with Astro - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Docker - ElysiaJS
+        content: Integration with Astro - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -14,7 +14,7 @@ head:
         content: You can run Elysia on Astro. Elysia will work normally as expected because of WinterCG compliance.
 ---
 
-# Integration with Nextjs
+# Integration with Astro
 
 With [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/), we can run Elysia on Nextjs route.
 
