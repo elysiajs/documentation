@@ -3,7 +3,7 @@ title: Integration with Nextjs - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Docker - ElysiaJS
+        content: Integration with Nextjs - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -16,7 +16,7 @@ head:
 
 # Integration with Nextjs
 
-With Nextjs App Router, you can run Elysia on Nextjs route.
+With Nextjs App Router, we can run Elysia on Nextjs route.
 
 1. Create **[...slugs]/route.ts** inside app router
 2. In **route.ts**, create or import an existing Elysia server
@@ -25,15 +25,15 @@ With Nextjs App Router, you can run Elysia on Nextjs route.
 ```typescript
 // apps/[...slugs]/routes.ts
 const app = new Elysia()
-    .get('/', () => 'hi')
+    .get('/', () => 'hello Next')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
 
-export const GET = app.handle
-export const POST = app.handle
+export const GET = app.handle // [!code ++]
+export const POST = app.handle // [!code ++]
 ```
 
 Elysia will work normally as expected because of WinterCG compliance, however, some plugins like **Elysia Static** may not work if you are running Nextjs on Node.

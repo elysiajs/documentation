@@ -30,6 +30,7 @@ new Elysia()
     .get('/hello', () => 'Hi')
     .listen(3000)
 ```
+
 We can access the web server by going to **http://localhost:3000**
 
 This code allows us to create a simple web server running at port 3000, and tells Elysia to register the following path with the GET method, then response with following:
@@ -75,9 +76,10 @@ new Elysia()
 ```
 
 Elysia HTTP method accepts the following parameters:
-- **path**: Pathname
-- **function**: Function to response to client
-- **hook**: Additional metadata
+
+-   **path**: Pathname
+-   **function**: Function to response to client
+-   **hook**: Additional metadata
 
 You can read more about HTTP Verb on [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
 
@@ -119,14 +121,15 @@ const app = new Elysia()
 ```
 
 **Elysia.route** accepts the following:
-- **method**: HTTP Verb
-- **path**: Path
-- **function**: Function to response to client
-- **hook**: Additional metadata
+
+-   **method**: HTTP Verb
+-   **path**: Path
+-   **function**: Function to response to client
+-   **hook**: Additional metadata
 
 When navigate to each method, you should see the results as the following:
 | Path | Method | Result |
-| -------- | -------- | -------- |
+| - | --- | --- |
 | / | GET | hello |
 | / | POST | hi |
 | / | M-SEARCH | connect |
@@ -139,7 +142,7 @@ It's recommended to use UPPERCASE convention for defining a custom HTTP Verb wit
 
 ## Elysia.all
 
-Elysia provide an `Elysia.all` for handling any HTTP verb for a specified path using the same API like `Elysia.get` and `Elysia.post`
+Elysia provide an `Elysia.all` for handling any HTTP verb for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
 ```typescript
 import {} from 'elysia'

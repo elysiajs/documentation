@@ -22,6 +22,7 @@
     --vp-custom-block-tip-bg: #ecfdf5;
     --vp-custom-block-tip-border: #dcfce7;
     --vp-custom-block-tip-text: #15803d;
+    --vp-c-brand-nav-active: var(--vp-c-brand-light);
 }
 
 .dark {
@@ -38,6 +39,7 @@
     --vp-custom-block-tip-bg: #064e3b;
     --vp-custom-block-tip-border: #052e16;
     --vp-custom-block-tip-text: #f0fdf4;
+    --vp-c-brand-nav-active: var(--vp-c-brand-dark);
 }
 
 html,
@@ -69,10 +71,14 @@ button.copy::after {
 
         & > .items {
             & > div {
-                @apply border-l pl-4 dark:border-l-gray-600;
+                @apply pl-4 mb-0.5 dark:border-l-gray-600 rounded-lg;
+
+                &:hover, &:focus {
+                    background-color: color-mix(in srgb, var(--vp-c-brand-nav-active) 15%, transparent 100%);
+                }
 
                 &.is-active.has-active {
-                    border-left-color: var(--vp-c-brand-1);
+                    background-color: color-mix(in srgb, var(--vp-c-brand-nav-active) 15%, transparent 100%);
                 }
             }
         }
@@ -137,7 +143,7 @@ button.copy::after {
 }
 
 .custom-block.tip {
-    @apply !my-8 !rounded-xl !shadow-2xl !shadow-green-200/20
+    @apply !my-8 !rounded-xl !shadow-2xl !shadow-green-200/20 dark:!shadow-green-700/30
 }
 
 .vp-doc > * > video {

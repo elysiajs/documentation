@@ -258,133 +258,6 @@ export default defineConfig({
                     }
                 ]
             },
-            // {
-            //     text: 'Concepts',
-            //     items: [
-            //         {
-            //             text: 'Route',
-            //             link: '/concept/route'
-            //         },
-            //         {
-            //             text: 'Handler',
-            //             link: '/concept/handler'
-            //         },
-            //         {
-            //             text: 'State & Decorate',
-            //             link: '/concept/state-decorate'
-            //         },
-            //         {
-            //             text: 'Derive',
-            //             link: '/concept/derive'
-            //         },
-            //         {
-            //             text: 'Plugin',
-            //             link: '/concept/plugin'
-            //         },
-            //         {
-            //             text: 'Group',
-            //             link: '/concept/group'
-            //         },
-            //         {
-            //             text: 'Lifecycle',
-            //             link: '/concept/life-cycle'
-            //         },
-            //         {
-            //             text: 'Schema',
-            //             link: '/concept/schema'
-            //         },
-            //         {
-            //             text: 'Numeric',
-            //             link: '/concept/numeric'
-            //         },
-            //         {
-            //             text: 'Guard',
-            //             link: '/concept/guard'
-            //         },
-            //         {
-            //             text: 'Config',
-            //             link: '/concept/config'
-            //         },
-            //         {
-            //             text: 'Explicit Body',
-            //             link: '/concept/explicit-body'
-            //         }
-            //     ]
-            // },
-            // {
-            //     text: 'Patterns',
-            //     collapsed: true,
-            //     items: [
-            //         {
-            //             text: 'After Handle',
-            //             link: '/patterns/after-handle'
-            //         },
-            //         {
-            //             text: 'Method Chaining',
-            //             link: '/patterns/method-chaining'
-            //         },
-            //         {
-            //             text: 'File Upload',
-            //             link: '/patterns/file-upload'
-            //         },
-            //         {
-            //             text: 'Cookie',
-            //             link: '/patterns/cookie'
-            //         },
-            //         {
-            //             text: 'Cookie Signature',
-            //             link: '/patterns/cookie-signature'
-            //         },
-            //         {
-            //             text: 'Error Handling',
-            //             link: '/patterns/error-handling'
-            //         },
-            //         {
-            //             text: 'Web Socket',
-            //             link: '/patterns/websocket'
-            //         },
-            //         {
-            //             text: 'Reference Model',
-            //             link: '/patterns/reference-models'
-            //         },
-            //         {
-            //             text: 'Dependency Injection',
-            //             link: '/patterns/dependency-injection'
-            //         },
-            //         {
-            //             text: 'Remapping',
-            //             link: '/patterns/remapping'
-            //         },
-            //         {
-            //             text: 'Lazy Loading Module',
-            //             link: '/patterns/lazy-loading-module'
-            //         },
-            //         {
-            //             text: 'Creating Documentation',
-            //             link: '/patterns/creating-documentation'
-            //         },
-            //         {
-            //             text: 'Testing',
-            //             link: '/patterns/testing'
-            //         },
-            //         {
-            //             text: 'Body Parser',
-            //             link: '/patterns/body-parser'
-            //         },
-            //         {
-            //             text: 'Trace',
-            //             link: '/patterns/trace'
-            //         },
-            //         {
-            //             text: 'Mount',
-            //             link: '/patterns/mount'
-            //         },
-            //         {
-            //             text: 'End-to-End Type Safety',
-            //             link: '/patterns/end-to-end-type-safety'
-            //         }
-            //     ]
-            // },
             {
                 text: '🪴 Eden',
                 link: '/eden/overview',
@@ -485,14 +358,19 @@ export default defineConfig({
                         link: '/integrations/nextjs'
                     },
                     {
-                        text: 'Cheat Sheet',
-                        link: '/integrations/cheat-sheet'
-                    }
+                        text: 'Astro',
+                        link: '/integrations/astro'
+                    },
+                    // {
+                    //     text: 'Cheat Sheet',
+                    //     link: '/integrations/cheat-sheet'
+                    // }
                 ]
             }
         ],
         socialLinks: [
             { icon: 'github', link: 'https://github.com/elysiajs/elysia' },
+            { icon: 'twitter', link: 'https://twitter.com/elysiajs' },
             { icon: 'discord', link: 'https://discord.gg/eaFJ2KDJck' }
         ],
         editLink: {

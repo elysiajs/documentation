@@ -1,5 +1,5 @@
 <template>
-    <Ray class="h-screen -top-16 z-[100] pointer-events-none opacity-25 dark:opacity-50" />
+    <Ray class="h-screen -top-16 z-[100] pointer-events-none opacity-30 dark:opacity-50" />
     <div id="splash"
         class="pointer-events-none absolute top-[-70vh] max-w-full justify-center w-full h-screen opacity-50 block gradient">
     </div>
