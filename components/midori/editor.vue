@@ -10,6 +10,7 @@ import { text } from 'stream/consumers'
 
 let code = `const app = new Elysia()
     .get('/', () => 'Hello!')
+    // Try edit this line
     .get('/hello', () => 'Hello from Elysia!')
     .listen(80)
 
@@ -183,11 +184,11 @@ onMounted(() => {
 
         <aside class="flex flex-col md:flex-row justify-center items-center w-full max-w-6xl gap-8 my-8">
             <section
-                class="flex flex-col w-full h-96 border dark:border-gray-600 bg-white dark:bg-gray-700 rounded-2xl"
+                class="flex flex-col w-full h-96 border dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl"
             >
                 <div class="mockup-window flex relative w-full h-full shadow-xl">
                     <Prism
-                        class="elysia-editor !bg-transparent !text-base !font-mono rounded-xl w-full max-w-xl h-full !pt-6 !px-1 outline-none"
+                        class="elysia-editor block !bg-transparent !text-base !font-mono rounded-xl w-full max-w-xl h-full !pt-0 !px-2 outline-none"
                         language="typescript"
                         contenteditable="true"
                     >
@@ -203,9 +204,9 @@ onMounted(() => {
                     </footer>
                 </div>
             </section>
-            <div class="w-full mockup-browser h-96 shadow-xl border dark:border-gray-600 bg-white dark:bg-gray-700 max-w-full">
+            <div class="w-full mockup-browser h-96 shadow-xl border dark:border-slate-700 bg-white dark:bg-slate-800 max-w-full">
                 <div class="mockup-browser-toolbar">
-                    <form class="input font-medium !bg-gray-100 dark:!bg-gray-600" @submit.prevent="execute">
+                    <form class="input font-medium !bg-gray-100 dark:!bg-slate-700" @submit.prevent="execute">
                         <span class="text-gray-400 dark:text-gray-300">localhost</span>
                         <input
                             class="absolute"

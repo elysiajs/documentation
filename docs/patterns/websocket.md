@@ -7,22 +7,26 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws".
+        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws". WebSocket is a realtime protocol for communication between your client and server.
 
     - - meta
       - name: 'og:description'
-        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws".
+        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws". WebSocket is a realtime protocol for communication between your client and server.
 ---
 
 # WebSocket
 
-Elysia WebSocket extends Bun's WebSocket which uses [uWebSocket](https://github.com/uNetworking/uWebSockets) under the hood.
+WebSocket is a realtime protocol for communication between your client and server.
 
-To use websocket, just call `ws()`:
+Unlike HTTP where our client repeatedly asking the website for information and waiting for a reply each time, WebSocket sets up a direct line where our client and server can send messages back and forth directly, making the conversation quicker and smoother without having to start over each message.
+
+SocketIO is a popular library for WebSocket, but it is not the only one. Elysia uses [uWebSocket](https://github.com/uNetworking/uWebSockets) which Bun use under the hood with the same API.
+
+To use websocket, simply call `Elysia.ws()`:
 ```typescript
 import { Elysia } from 'elysia'
 
-const app = new Elysia()
+new Elysia()
     .ws('/ws', {
         message(ws, message) {
             ws.send(message)
@@ -31,7 +35,39 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-Like a normal route, WebSockets also accepts a **schema** object to strictly type and validate requests.
+## WebSocket message validation:
+
+Same as normal route, WebSockets also accepts a **schema** object to strictly type and validate requests.
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .ws('/ws', {
+        // validate incoming message
+        body: t.Object({
+            message: t.String()
+        }),
+        message(ws, { message }) {
+            ws.send({
+                message,
+                time: Date.now()
+            })
+        }
+    })
+    .listen(8080)
+```
+
+WebSocket schema can validate the following:
+
+-   **message** - An incoming message.
+-   **query** - query string or URL parameters.
+-   **params** - Path parameters.
+-   **header** - Request's headers.
+-   **cookie** - Request's cookie
+-   **response** - Value returned from handler
+
+By default Elysia will parse incoming stringified JSON message as Object for validation.
 
 ## Configuration
 You can set Elysia constructor to set the Web Socket value.
@@ -43,9 +79,9 @@ new Elysia({
 })
 ```
 
-Elysia's WebSocket implementation extends Bun's WebSocket configuration so if you wish to configure the websocket you can refer to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) to learn more about this.
+Elysia's WebSocket implementation extends Bun's WebSocket configuration, please refers to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) for more information.
 
-Below is a config that extends from [Bun WebSocket](https://bun.sh/docs/api/websockets#create-a-websocket-server)
+The following are a brief configuration from [Bun WebSocket](https://bun.sh/docs/api/websockets#create-a-websocket-server)
 
 ### perMessageDeflate
 
@@ -113,20 +149,6 @@ options: Customize WebSocket handler behavior
 WebSocketHandler extends config from [config](#config).
 
 Below is a config which is accepted by `ws`.
-
-## schema
-
-Validatation for an incoming WebSocket request.
-
--   headers: validate headers before upgrade to WebSocket
--   params: validate path paramters
--   query: validate query parameters
--   body: validate websocket message
--   response: validate websocket response
-
-::: tip
-It's recommended to use query parameters instead of path parameters in WebSocket, as parsing path parameters is expensive and sometime unrealiable for multiple data with long value.
-:::
 
 ## open
 
@@ -214,28 +236,3 @@ Like `transform`, but execute before validation of WebSocket message
 ## header
 
 Additional headers to add before upgrade connection to WebSocket.
-
-## WebSocket message validation:
-
-Validate incoming WebSocket message.
-
-By default Elysia will parse incoming stringified JSON message as Object for validation.
-
-```typescript
-import { Elysia, t } from 'elysia'
-
-const app = new Elysia()
-    .ws('/ws', {
-        // validate incoming message
-        body: t.Object({
-            message: t.String()
-        }),
-        message(ws, { message }) {
-            ws.send({
-                message,
-                time: Date.now()
-            })
-        }
-    })
-    .listen(8080)
-```

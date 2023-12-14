@@ -14,100 +14,76 @@ head:
       content: ElysiaJS is a fast and friendly bun web framework. Building on top of 3 philosophies, performance, simplicity, flexibility. Designed with TypeScript in mind. Elysia understands what you want and automatically infers the type from your code.
 ---
 
+<script setup>
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
+</script>
+
 # Introduction
-ElysiaJS is a fast, and friendly [Bun](https://bun.sh) web framework.
+Elysia is an ergonomic web framework for building backend servers for Bun with JavaScript or TypeScript.
 
-> <small>Pronounce as "eh-LIHZ-iy-ah"・ エリシア ・ เอลิเซีย</small>
+Design with simplicity and type-safety in mind, allowing you to create server with familiar APIs like Express and Fastify.
 
-Building on top of 3 philosophies:
-- Performance
-    - You shall not worry about the underlying performance
-- Simplicity
-    - Simple building blocks to create an abstraction, not repeating yourself
-- Flexibility
-    - You shall be able to customize most of the library to fit your need
-
-Designed with TypeScript in mind, you don't need to understand TypeScript to take advantage of Elysia. The library understands what you want and automatically infers the type from your code.
-
-Take a look at this:
 ```typescript
 new Elysia()
-    .get('/id/:id', (({ params: { id }}) => id))
+    .get('/', () => 'hi')
+    .get('/id/:id', ({ params: { id }}) => id)
+    .post('/form', ({ body }) => body)
     .listen(8080)
 ```
 
-Elysia understands that you want a path parameter name `id`.
-The library then registers `id` as a type in `params`.
+## Features
+Our most loved feature of Elysia that make Elysia standout from other frameworks.
 
---- 
-You can define a custom type for many things, for example, an incoming request's body.
-```typescript
-import { Elysia, t } from 'elysia'
+| Feature | Description |
+| --- | --- |
+| Performance | Static code analysis to generate optimized code |
+| Unified Type | Shared DTO runtime and compile time validation |
+| End-to-end Type Safety | Single Source of truth for your data both backend and frontend |
+| TypeScript | Extensive type system for full TypeScript experience |
+| JSX Template Engine | Familiar experience for frontend developer |
+| Ergonomic by design | Simple and familiar API for building server |
 
-new Elysia()
-    .post('/sign-in', ({ body }) => signIn(body), {
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
-    })
-    .listen(8080)
-```
+## Platform Agnostic
+Elysia designed but was **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy the Elysia server on Cloudflare Worker, Vercel Edge Function, and most other runtime that support Web Standard Request.
 
-You explicitly tell Elysia that the incoming request body is expected to have a structure as you define it.
+## TypeScript
+Elysia designed to help you write less TypeScript.
 
-Elysia then infers the type from the code you write. Validate the body from the incoming request to ensure the type safety.
+Elysia's Type System is fine-tuned to infer your code into type automatically without needing to write explicit TypeScrip while providing type-safety for both runtime and compile time to provide you with the most ergonomic developer experience.
 
-Then with [plugins](/plugins/overview), Elysia can instantly generate API documentation with Swagger with a single line of code.
-```typescript
-import { Elysia, t } from 'elysia'
-/* [!code ++] */import { swagger } from '@elysiajs/swagger'
+TypeScript is not need to use Elysia, but it's recommended to use Elysia with TypeScript.
 
-new Elysia()
-/* [!code ++] */    .use(swagger())
-    .post('/sign-in', ({ body }) => signIn(body), {
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
-    })
-    .listen(8080)
-```
+## How to use the documentation
+The documentation **designed to be beginner-friendly**. Basic networking and server concept will be briefly covered to help beginners understand how API and the behavior of the framework works.
 
-And finally, you can create a fully type-safe client for consuming Elysia API with Eden (optional).
+There's **no correct way to learn Elysia**, however we recommended completing the essential chapter first as the chapter briefly covering most of Elysia's features and foundation before jumping to other topics that interested you.
 
-```typescript
-// server.ts
-import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+As mentioned before, you can use Elysia with other runtime beside Bun, but the __documentation will assume that you are using Bun__.
 
-/* [!code ++] */const app = new Elysia()
-    .use(swagger())
-    .post('/sign-in', ({ body }) => signIn(body), {
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
-    })
-    .listen(8080)
+On the left side of your screen, you'll find a chapter navigation bar. The pages of the docs are organized sequentially, from basic to advanced. You can follow them step-by-step to learn about building with Elysia. However, you can read them in any order or skip to the pages that apply to your use case.
 
-/* [!code ++] */export type App = typeof app
-```
+On the right side of the screen, you'll find a table of contents for each page for navigation in the page. If you need to find content, **you can use the search bar at the top, or the search shortcut (`Ctrl+K` or `Cmd+K`).**
 
-And on the client:
-```typescript
-// client.ts
-import { edenTreaty } from '@elysiajs/eden'
-import type { App } from './server'
+To get started, check out the Installation Guide.
 
-const app = edenTreaty<App>('http://localhost:8080')
+## Prerequisite Knowledge
+Although Elysia's documentation design to be beginner-friendly, we need to establish a baseline so that the docs can stay focused on Elysia's functionality. We will provide links to relevant documentation whenever we introduce a new concept.
 
-app.signIn.post({
-    username: 'saltyaom',
-    password: 12345678
-}).then(console.log)
-```
+To get the most out of our documentation, it's recommended that you have a basic understanding of Node.js and basic HTTP.
 
-Creating a single source of truth for your data structure, eliminating any possible type conflict between TypeScript, actual requests via validation, API documentation, and frontend client.
+## Our Community
+If you have questions or get stuck about Elysia, feels free to ask our community on GitHub Discussions, Discord, and Twitter.
 
-Ensure that nothing went wrong in development, migration, and production.
+<Deck>
+    <Card title="Discord" href="https://discord.com/invite/phrduBNq?utm_source=Discord%20Widget&utm_medium=Connect">
+        Official ElysiaJS discord community server
+    </Card>
+    <Card title="Twitter" href="https://twitter.com/elysiajs">
+        Track update and status of Elysia
+    </Card>
+    <Card title="GitHub" href="https://github.com/elysiajs">
+        Source code and development
+    </Card>
+</Deck>
+

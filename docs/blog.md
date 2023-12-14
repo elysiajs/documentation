@@ -22,7 +22,7 @@ head:
     import Blogs from '../components/blog/Landing.vue'
 </script>
 
-<Blogs 
+<Blogs
   :blogs="[
       {
         title: 'Introducing Elysia 0.7 - Stellar Stellar',
