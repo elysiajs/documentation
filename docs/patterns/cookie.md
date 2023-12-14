@@ -104,7 +104,7 @@ app.get('/', ({ cookie: { name } }) => {
     }
 }, {
     cookie: t.Cookie({
-        value: t.Object({
+        name: t.Object({
             id: t.Numeric(),
             name: t.String()
         })
