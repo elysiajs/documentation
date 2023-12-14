@@ -7,15 +7,15 @@ head:
 
   - - meta
     - name: 'description'
-      content: Elysia has a life cycle hook to intercept an error, thus separating the concern from the main handler function, we can use ".onError" to handle the error and classified errors with error code.
+      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, its recommended to use on Error in the following sitaution. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytic.
 
   - - meta
     - property: 'og:description'
-      content: Elysia has a life cycle hook to intercept an error, thus separating the concern from the main handler function, we can use ".onError" to handle the error and classified errors with error code.
+      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, its recommended to use on Error in the following sitaution. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytic.
 ---
 
 # Error Handling
-**On Error** is the only life-cycle event that is not always executed on each request, but only when an error is thrown in any other life-cycle at least once for error handling purpose.
+**On Error** is the only life-cycle event that is not always executed on each request, but only when an error is thrown in any other life-cycle at least once.
 
 Designed to capture and resolve an unexpected error, its recommended to use on Error in the following sitaution:
 - To provide custom error message

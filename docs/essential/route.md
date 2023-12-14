@@ -7,26 +7,20 @@ head:
 
     - - meta
       - name: 'description'
-        content: Routing is the most basic but also the most important piece for creating web server. The web server will use the path and HTTP method to determine the function to handle via the router. We call this process routing. Each function that called after the routing process will be referred as "route". By default, Elysia will handle the routing process automatically via underlying Radix tree algorithm.
+        content: To determine the correct response to a client, web server use path and HTTP method to lookup for the correct resource. This process is known as "routing". We can define a route by calling method named after HTTP verb like `Elysia.get`, `Elysia.post` passing a path and a function to execute when matched.
 
     - - meta
       - property: 'og:description'
-        content: Routing is the most basic but also the most important piece for creating web server. The web server will use the path and HTTP method to determine the function to handle via the router. We call this process routing. Each function that called after the routing process will be referred as "route". By default, Elysia will handle the routing process automatically via underlying Radix tree algorithm.
+        content: To determine the correct response to a client, web server use path and HTTP method to lookup for the correct resource. This process is known as "routing". We can define a route by calling method named after HTTP verb like `Elysia.get`, `Elysia.post` passing a path and a function to execute when matched.
 ---
 
 # Route
 
-Routing is the most important aspect for creating web server.
+To determine the correct response to a client, web server use **path and HTTP method** to lookup for the correct resource.
 
-Web server will use path and HTTP method to determine the function to handle via router. We call this process **routing**.
+This process is known as **"routing"**.
 
-Then router allocate the resources and a function as a **"route"**.
-
-By default, Elysia will handle the routing by processing pathname and lookup for route automatically using Radix tree algorithm.
-
-<!-- ![URL Representation](/essential/url-object.svg) -->
-
-You can define a route by calling Elysia function that name after HTTP method name, which accept pathname and function to execute when path match.
+We can define a route by calling **method named after HTTP verb**, passing a path and a function to execute when matched.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -36,27 +30,24 @@ new Elysia()
     .get('/hello', () => 'Hi')
     .listen(3000)
 ```
+We can access the web server by going to **http://localhost:3000**
 
-Accessing [localhost:3000](http://localhost:3000) should have the word "landing", and [localhost:3000/hello](http://localhost:3000/hello) should have the word "Hi".
-
-In other words, navigating to each method should yield results like the following:
+This code allows us to create a simple web server running at port 3000, and tells Elysia to register the following path with the GET method, then response with following:
 
 | Path   | Result  |
 | ------ | ------- |
 | /      | Landing |
 | /hello | Hi      |
 
-::: tip
-GET is the default HTTP method when accessing a web page, but there are much more.
-:::
+Accessing with browser works because **GET** is the default HTTP method.
 
 ## HTTP Verb
 
-When building a web server, you should not rely only on GET requests, as each verb serves a different purpose.
+There are many HTTP method to use in a difference situation, for instance.
 
 ### GET
 
-The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
+Requests using GET should only retrieve data.
 
 ### POST
 
@@ -83,11 +74,12 @@ new Elysia()
     .listen(3000)
 ```
 
-::: tip
-HTTP Verb may sometime also refers as HTTP Method.
+Elysia HTTP method accepts the following parameters:
+- **path**: Pathname
+- **function**: Function to response to client
+- **hook**: Additional metadata
 
-You can read more about HTTP Verb on [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
-:::
+You can read more about HTTP Verb on [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
 
 ## Handle
 
@@ -106,19 +98,15 @@ const app = new Elysia()
 app.handle(new Request('http://localhost/')).then(console.log)
 ```
 
-Unlike mock function, `Elysia.handle` is a function that execute when a new Request is first pass to the server.
+**Elysia.handle** is a function to process an actual request sending to the server.
 
-Elysia then use the `Request` to process all of the data before passing it to a route handler.
+Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
 
-Calling `Elysia.handle` means you can execute a Request pass to the web server, and expect it to behave like an actual Request passing to the server unlike simulating or mock.
-
-`Elysia.handle` is handy for creating unit tests for your Elysia server.
+**Elysia.handle** is usually useful to simulate or creating unit tests.
 
 ## Custom Method
 
-In any case if you need to define a custom HTTP Method or handle the method that Elysia doesn't provide out of the box, you can use `Elysia.route`.
-
-Unlike other route registration function, `Elysia.route` accepts first parameter as HTTP Verb, and the rest parameters follow normal route registration function.
+We can accept custom HHTP Method with `Elysia.route`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -129,6 +117,12 @@ const app = new Elysia()
     .route('M-SEARCH', '/', () => 'connect')
     .listen(3000)
 ```
+
+**Elysia.route** accepts the following:
+- **method**: HTTP Verb
+- **path**: Path
+- **function**: Function to response to client
+- **hook**: Additional metadata
 
 When navigate to each method, you should see the results as the following:
 | Path | Method | Result |

@@ -1,3 +1,19 @@
+---
+title: Validation - ElysiaJS
+head:
+    - - meta
+      - property: 'title'
+        content: Validation - ElysiaJS
+
+    - - meta
+      - name: 'description'
+        content: Elysia offers a complete schema builder to provide type safety for both runtime and compile time, a single source of truth for your data with TypeBox.
+
+    - - meta
+      - name: 'og:description'
+        content: Elysia offers a complete schema builder to provide type safety for both runtime and compile time, a single source of truth for your data with TypeBox.
+---
+
 # Validation
 The point of creating an API server is to take an input and process it.
 
@@ -8,19 +24,19 @@ However, a dynamic language like JavaScript doesn't validate the shape of an inp
 An uninspected input may lead to unexpected behavior, missing data part, and in the worst case, a malicious intent to attack the server.
 
 ## Data Validation
-> Consider data validation as having an extremely meticulous inspector verify everything twice before usage.
->
->
-> It's similar to having **someone** inspect every item you intend to use in your server to ensure it's appropriate and won't break anything.
->
-> In this manner, you can have confidence in creating something without worrying about unanticipated problems.
+Consider data validation as having an extremely meticulous inspector verify everything twice before usage.
+
+It's similar to having **someone** inspect every item you intend to use in your server to ensure it's appropriate and won't break anything.
+
+In this manner, you can have confidence in creating something without worrying about unanticipated problems.
 
 This **someone** is where Elysia takes part.
 
 Elysia offers a complete schema builder to provide type safety for both runtime and compile time, a single source of truth for your data:
-Infers to TypeScript Type automatically
-Strict data validation
-OpenAPI Schema to create Swagger documentation automatically
+
+- Infers to TypeScript Type automatically
+- Strict data validation
+- OpenAPI Schema to create Swagger documentation automatically
 
 Elysia schema is exported as `Elysia.t` or short for **type**.
 

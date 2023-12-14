@@ -1,3 +1,19 @@
+---
+title: Life Cycle Event - ElysiaJS
+head:
+    - - meta
+      - property: 'og:title'
+        content: Life Cycle Event - ElysiaJS
+
+    - - meta
+      - name: 'description'
+        content: Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
+
+    - - meta
+      - property: 'og:description'
+        content: Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
+---
+
 <script setup>
     import Card from '../../components/nearl/card.vue'
     import Deck from '../../components/nearl/card-deck.vue'

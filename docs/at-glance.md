@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Let's take a look at overview of overall what Elysia offers out of the box.
+      content: Designed with ergonomic design, etensive suport for TypeScript, modern JavaScript API, optimized for Bun. Offers an unique experience unified type, and end-to-end type safety while maintaining excellent performance.
 
   - - meta
     - property: 'og:description'
-      content: Let's take a look at overview of overall what Elysia offers out of the box.
+      content: Designed with ergonomic design, etensive suport for TypeScript, modern JavaScript API, optimized for Bun. Offers an unique experience unified type, and end-to-end type safety while maintaining excellent performance.
 ---
 
 # At glance

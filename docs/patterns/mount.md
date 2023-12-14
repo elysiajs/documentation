@@ -24,7 +24,7 @@ In theory, this allows any framework or code that is WinterCG compliant to be ru
 Adhering to this, we implemented the same logic for Elysia by introducing `.mount` method to run with any framework or code that is WinterCG compliant.
 
 ## Mount
-To use `.mount`, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
+To use **.mount**, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
 ```ts
 const app = new Elysia()
     .get('/', () => 'Hello from Elysia')

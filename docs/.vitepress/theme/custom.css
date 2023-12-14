@@ -19,6 +19,9 @@
     --vp-custom-block-tip-border: transparent;
     --vp-custom-block-tip-text: var(--vp-c-text-1);
     --vp-nav-bg-color: color-mix(in srgb, var(--vp-c-bg) 95%, transparent);
+    --vp-custom-block-tip-bg: #ecfdf5;
+    --vp-custom-block-tip-border: #dcfce7;
+    --vp-custom-block-tip-text: #15803d;
 }
 
 .dark {
@@ -32,6 +35,9 @@
     --vp-code-copy-code-hover-bg: #273345;
     --vp-c-text-dark-2: #8a8a8a;
     --vp-c-text-dark-3: #8a8a8a;
+    --vp-custom-block-tip-bg: #064e3b;
+    --vp-custom-block-tip-border: #052e16;
+    --vp-custom-block-tip-text: #f0fdf4;
 }
 
 html,
@@ -128,4 +134,12 @@ button.copy::after {
             }
         }
     }
+}
+
+.custom-block.tip {
+    @apply !my-8 !rounded-xl !shadow-2xl !shadow-green-200/20
+}
+
+.vp-doc > * > video {
+    @apply rounded-lg shadow-xl;
 }

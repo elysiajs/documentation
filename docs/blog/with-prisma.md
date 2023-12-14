@@ -417,7 +417,7 @@ For Prisma we can accelerate our interaction with database, Elysia accelerate ou
 
 Elysia is on a journey to create a new standard for a better developer experience with Bun for high performance TypeScript server that can match the performance of Go and Rust.
 
-If you're looking for a place to start learning about out Bun, consider take a look for what Elysia can offer especially with an [end-to-end type safety](/patterns/end-to-end-type-safety) like tRPC but built on REST standard without any code generation.
+If you're looking for a place to start learning about out Bun, consider take a look for what Elysia can offer especially with an [end-to-end type safety](/eden/overview) like tRPC but built on REST standard without any code generation.
 
 If you're interested in Elysia, feel free to check out our [Discord server](https://discord.gg/eaFJ2KDJck) or see [Elysia on GitHub](https://github.com/elysiajs/elysia)
 </Blog>

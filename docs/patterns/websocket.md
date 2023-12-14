@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws".
+        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws". WebSocket is a realtime protocol for communication between your client and server.
 
     - - meta
       - name: 'og:description'
-        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws".
+        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws". WebSocket is a realtime protocol for communication between your client and server.
 ---
 
 # WebSocket

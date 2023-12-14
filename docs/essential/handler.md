@@ -1,27 +1,27 @@
 ---
-title: State and Decorate - ElysiaJS
+title: Handler - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: State and Decorate - ElysiaJS
+      content: Handler - ElysiaJS
 
   - - meta
     - name: 'description'
-      content: You can extend Elysia to fits your need with ".state" and ".decorate" to add custom value to the "Context", and handler, for example. Database connection, utility function, or cookie.
+      content: handler is a function that responds to the request for each route. Accepting a request information and return a response to the client. Handler can be registered through Elysia.get / Elysia.post
 
   - - meta
     - property: 'og:description'
-      content: You can extend Elysia to fits your need with ".state" and ".decorate" to add custom value to the "Context", and handler, for example. Database connection, utility function, or cookie.
+      content: handler is a function that responds to the request for each route. Accepting a request information and return a response to the client. Handler can be registered through Elysia.get / Elysia.post
 ---
 
 # Handler
-When a request goes through Elysia, Elysia will then use HTTP Verb and pathname to look for a function to respond to.
+When a request is routed through Elysia, it will look for a function to respond to using the HTTP Verb and pathname.
 
-Each resources for the router will be refers as a **route**
+Each router resource will be referred to as a **route**.
 
-The function for respoding to the request for each route is **"route handler"**.
+**"route handler"** is the function that responds to the request for each route.
 
-Route in Elysia is a function that accepts information about the request and return a value back to the sender.
+In Elysia, a route is a function that accepts request information and returns a value to the sender.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -33,9 +33,9 @@ new Elysia()
 ```
 
 ## Request
-Route handler accept an information of the request and store as a `Context` unique for each request.
+Route handler the request and parse into an easy to use `Context`, unique for each request.
 
-You can use context get information about the incoming request.
+We use context get information about the request.
 
 Context is always the first parameter of route handler:
 ```typescript
@@ -52,7 +52,7 @@ Elysia context is consists of:
 - **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extract from a value after pathname starting from '?' question mark sign)
 - **params** - Elysia's path parameters parsed as JavaScript object
 - **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
-- path: Pathname of the request
+- **path**: Pathname of the request
 - **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 - **store** - A global mutable store for Elysia instance
 - **cookie** - A global mutatable signal store for interacting with Cookie (including get/set)
@@ -62,15 +62,18 @@ Elysia context is consists of:
     - **redirect** - Response as a path to redirect to
 
 ::: tip
-It's ok to feels overwhlem of what Context can offers, we will cover all of the property in later chapters so feels free to just checking out and not memorizing all of the property Context offers.
+Context provide several property to help you get information about the request.
 
-Also IDE offers you about availble Context property and what it can do automatically, we don't memorize them.
+It's ok to feels overwhelmed by the amount of property, but you don't have to memorize them all, IDE can auto-complete them for you.
 :::
 
 ## Set
-Unlike other context property, set is a special mutable property act as a representation of the response.
+**set** is a special mutable property act as a representation of the response.
 
-Like setting status code of the response, or to append a custom headers is done by mutating the value of `Context.set`.
+- Set status code of the response,
+- Append custom headers
+
+This is done by mutate the value of `Context.set`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -88,7 +91,7 @@ new Elysia()
 In this example, we create a route handler and **set response status to 418**, and set a response header with `Content-type` to be `text/plain`
 
 ::: tip
-HTTP Status is use to indicate the type of response. If route handler is executed successfully without raising an error, Elysia will return status code as 200 even if not set.
+HTTP Status indicates the type of response. If the route handler is executed successfully without error, Elysia will return the status code 200.
 :::
 
 You can also set a status code using the common name of the status code instead of using number.
@@ -118,10 +121,10 @@ Helping you can focus on business logic rather than boilerplate code.
 import { Elysia } from 'elysia'
 
 new Elysia()
+    // Equivalent to "new Response('hi')"
     .get('/', () => 'hi')
     .listen(3000)
 
-// The value returned from hi is an equivalent to "new Response('hi')"
 ```
 
 However, if you prefers an explicity Response class, Elysia also handles that automatically.

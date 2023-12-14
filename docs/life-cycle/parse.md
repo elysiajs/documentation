@@ -1,3 +1,19 @@
+---
+title: Parse - ElysiaJS
+head:
+    - - meta
+      - property: 'og:title'
+        content: On Response - ElysiaJS
+
+    - - meta
+      - name: 'description'
+        content: Parse is an equivalent of "body parser" in Express. A function to parse body, the return value will be append to `Context.body`, if not, Elysia will continue iterating through additional parser functions assigned by `onParse` until either body is assigned or all parsers have been executed.
+
+    - - meta
+      - property: 'og:description'
+        content: Parse is an equivalent of "body parser" in Express. A function to parse body, the return value will be append to `Context.body`, if not, Elysia will continue iterating through additional parser functions assigned by `onParse` until either body is assigned or all parsers have been executed.
+---
+
 # Parse
 Parse is an equivalent of **body parser** in Express.
 

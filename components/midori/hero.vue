@@ -1,7 +1,7 @@
 <template>
-    <Ray class="h-screen -top-16 z-[100] pointer-events-none opacity-[0.35] dark:opacity-50" />
+    <Ray class="h-screen -top-16 z-[100] pointer-events-none opacity-25 dark:opacity-50" />
     <div id="splash"
-        class="pointer-events-none absolute top-[-70vh] max-w-full flex justify-center w-full h-screen opacity-50 block gradient">
+        class="pointer-events-none absolute top-[-70vh] max-w-full justify-center w-full h-screen opacity-50 block gradient">
     </div>
     <header
         class="relative flex flex-col justify-center items-center font-sans w-full px-6 pt-20 mb-16 md:mb-8 overflow-hidden"

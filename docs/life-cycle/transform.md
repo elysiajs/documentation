@@ -1,3 +1,19 @@
+---
+title: Transform - ElysiaJS
+head:
+  - - meta
+    - property: 'og:title'
+      content: Transform - ElysiaJS
+
+  - - meta
+    - name: 'description'
+      content: Executed just before "Validation" process, designed to mutate context to conform with the validation or appending new value. It's recommended to use transform for the following. Mutate existing context to conform with validation.
+
+  - - meta
+    - name: 'og:description'
+      content: Executed just before "Validation" process, designed to mutate context to conform with the validation or appending new value. It's recommended to use transform for the following. Mutate existing context to conform with validation.
+---
+
 # Transform
 Executed just before **Validation** process, designed to mutate context to conform with the validation or appending new value.
 

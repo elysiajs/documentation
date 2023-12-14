@@ -1,3 +1,19 @@
+---
+title: On Request - ElysiaJS
+head:
+    - - meta
+      - property: 'og:title'
+        content: On Request - ElysiaJS
+
+    - - meta
+      - name: 'description'
+        content: The first life-cycle event to get executed for every new request is recieved. As "onRequest" is designed to provide only the most crucial context to reduce overhead, it is recommended to use in the following scenario. Caching. Rate Limiter / IP/Region Lock. Analytic. Provide custom header, eg. CORS.
+
+    - - meta
+      - property: 'og:description'
+        content: The first life-cycle event to get executed for every new request is recieved. As "onRequest" is designed to provide only the most crucial context to reduce overhead, it is recommended to use in the following scenario. Caching. Rate Limiter / IP/Region Lock. Analytic. Provide custom header, eg. CORS.
+---
+
 # Request
 The first life-cycle event to get executed for every new request is recieved.
 

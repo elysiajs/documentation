@@ -1,3 +1,20 @@
+---
+title: Schema type - ElysiaJS
+head:
+    - - meta
+      - property: 'title'
+        content: Validation
+
+    - - meta
+      - name: 'description'
+        content: Elysia supports declarative schema with the following types. Body for validate an incoming HTTP message. Query for query string or URL parameter. Params for path parameters. Header for request headers. Cookie for  cookies. Response for validating response.
+
+    - - meta
+      - name: 'og:description'
+        content: Elysia supports declarative schema with the following types. Body for validate an incoming HTTP message. Query for query string or URL parameter. Params for path parameters. Header for request headers. Cookie for  cookies. Response for validating response.
+---
+
+
 <script setup>
     import Card from '../../components/nearl/card.vue'
     import Deck from '../../components/nearl/card-deck.vue'

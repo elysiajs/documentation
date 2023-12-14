@@ -7,22 +7,22 @@ head:
 
     - - meta
       - name: 'description'
-        content: Handler is a callback function which accept "Context", helping you access powerful API for accessing data and modifying the response. Context is consists of HTTP Request, body, parsed querystring, path parameters and store.
+        content: Path or pathname is an identifier to locate resouces from a server. Elysia use path and method to lookup for the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 
     - - meta
       - property: 'og:description'
-        content: Handler is a callback function which accept "Context", helping you access powerful API for accessing data and modifying the response. Context is consists of HTTP Request, body, parsed querystring, path parameters and store.
+        content: Path or pathname is an identifier to locate resouces from a server. Elysia use path and method to lookup for the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 ---
 
 # Path
 
-Path or pathname is an identifier to locate a resource from a web server.
+Path or pathname is an identifier to locate resources from a server.
 
 ```bash
 http://localhost:8080/path/page
 ```
 
-Elysia use path and method to lookup for the collect resource.
+Elysia use path and method to lookup for the correct resource.
 
 <div class="bg-white rounded-lg">
     <img src="/essential/url-object.svg" alt="URL Representation" />
@@ -128,7 +128,9 @@ However, when you need a value of the path to be more dynamic and capture the re
 Wildcard can capture the value after segment regardless of amount by using "\*".
 
 ```typescript
-new Elysia().get('/id/*', ({ params }) => params['*']).listen(3000)
+new Elysia()
+    .get('/id/*', ({ params }) => params['*'])
+    .listen(3000)
 ```
 
 Sending a request to the server should return the response as the following:

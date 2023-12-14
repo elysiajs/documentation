@@ -1,9 +1,7 @@
 import { defineConfig } from 'vitepress'
 
-import { join } from 'path'
-
 const description =
-    'Fast, and friendly Bun web framework. Designed on top of 3 philosophies: Performance, Simplicity, Flexibility.'
+    'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
 
 export default defineConfig({
     lang: 'en-US',
@@ -29,7 +27,7 @@ export default defineConfig({
             'meta',
             {
                 property: 'og:image',
-                content: 'https://elysiajs.com/assets/cover.png'
+                content: 'https://elysiajs.com/assets/cover.jpg'
             }
         ],
         [
@@ -57,7 +55,7 @@ export default defineConfig({
             'meta',
             {
                 property: 'twitter:image',
-                content: 'https://elysiajs.com/assets/cover.png'
+                content: 'https://elysiajs.com/assets/cover.jpg'
             }
         ],
         [
@@ -244,7 +242,11 @@ export default defineConfig({
                     },
                     {
                         text: 'Documentation',
-                        link: '/patterns/creating-documentation'
+                        link: '/patterns/documentation'
+                    },
+                    {
+                        text: 'Unit Test',
+                        link: '/patterns/unit-test'
                     },
                     {
                         text: 'Mount',
@@ -384,33 +386,37 @@ export default defineConfig({
             //     ]
             // },
             {
+                text: '🪴 Eden',
+                link: '/eden/overview',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Overview',
+                        link: '/eden/overview.md'
+                    },
+                    {
+                        text: 'Installation',
+                        link: '/eden/installation.md'
+                    },
+                    {
+                        text: 'Eden Treaty',
+                        link: '/eden/treaty.md'
+                    },
+                    {
+                        text: 'Eden Fetch',
+                        link: '/eden/fetch.md'
+                    },
+                    {
+                        text: 'Test',
+                        link: '/eden/test.md'
+                    }
+                ]
+            },
+            {
                 text: '🔌 Plugins',
                 items: [
                     {
-                        text: 'Eden',
-                        link: '/plugins/eden/overview',
-                        collapsed: true,
-                        items: [
-                            {
-                                text: 'Installation',
-                                link: '/plugins/eden/installation.md'
-                            },
-                            {
-                                text: 'Eden Treaty',
-                                link: '/plugins/eden/treaty.md'
-                            },
-                            {
-                                text: 'Eden Fn',
-                                link: '/plugins/eden/fn.md'
-                            },
-                            {
-                                text: 'Eden Fetch',
-                                link: '/plugins/eden/fetch.md'
-                            }
-                        ]
-                    },
-                    {
-                        text: 'Plugins',
+                        text: 'Official Plugins',
                         link: '/plugins/overview',
                         collapsed: true,
                         items: [
@@ -468,10 +474,15 @@ export default defineConfig({
             },
             {
                 text: 'Integration',
+                collapsed: true,
                 items: [
                     {
                         text: 'Docker',
                         link: '/integrations/docker'
+                    },
+                    {
+                        text: 'Nextjs',
+                        link: '/integrations/nextjs'
                     },
                     {
                         text: 'Cheat Sheet',

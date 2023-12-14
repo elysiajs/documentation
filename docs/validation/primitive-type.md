@@ -1,3 +1,19 @@
+---
+title: Primitive Type - ElysiaJS
+head:
+    - - meta
+      - property: 'title'
+        content: Primitive Type
+
+    - - meta
+      - name: 'description'
+        content: There are a lot of familiar name and behavior that intersect with TypeScript counter-part like. String, Number, Boolean, and Object as well as more advance feature like Intersect, KeyOf, Tuple for versatility. If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provide an actual type validation in runtime.
+
+    - - meta
+      - name: 'og:description'
+        content: There are a lot of familiar name and behavior that intersect with TypeScript counter-part like. String, Number, Boolean, and Object as well as more advance feature like Intersect, KeyOf, Tuple for versatility. If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provide an actual type validation in runtime.
+---
+
 # Primitive Type
 
 TypeBox API is designed around and similar to TypeScript type.

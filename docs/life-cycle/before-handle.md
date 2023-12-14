@@ -1,3 +1,19 @@
+---
+title: Before Handle - ElysiaJS
+head:
+    - - meta
+      - property: 'og:title'
+        content: Before Handle - ElysiaJS
+
+    - - meta
+      - name: 'description'
+        content: Execute after validation and before the main route handler. Designed to provide a custom validation to provide a specific requirement before running the main handler. It's recommended to use Before Handle in the following situations. Restricted access check, authorization, user sign-in. Custom request requirement over data structure
+
+    - - meta
+      - property: 'og:description'
+        content: Execute after validation and before the main route handler. Designed to provide a custom validation to provide a specific requirement before running the main handler. It's recommended to use Before Handle in the following situations. Restricted access check, authorization, user sign-in. Custom request requirement over data structure
+---
+
 # Before Handle
 Execute after validation and before the main route handler.
 

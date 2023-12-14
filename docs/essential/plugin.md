@@ -30,14 +30,14 @@ const app = new Elysia()
     .get('/', ({ plugin }) => plugin)
 ```
 
-We can use the plugin by passing an instance to `Elysia.use`.
+We can use the plugin by passing an instance to **Elysia.use**.
 
-The plugin will inherit all properties of the plugin instance, including `state`, `decorate`, `derive`, `route`, `lifecycle`, etc.
+The plugin will inherit all properties of the plugin instance, including **state**, **decorate**, **derive**, **route**, **lifecycle**, etc.
 
 Elysia will also handle the type inference automatically as well, so you can imagine as if you call all of the other instances on the main one.
 
 ::: tip
-Notice that the plugin doesn't contain `.listen`, because `.listen` will allocate a port for the usage, and we only want the main instance to allocate the port.
+Notice that the plugin doesn't contain **.listen**, because **.listen** will allocate a port for the usage, and we only want the main instance to allocate the port.
 :::
 
 ## Separate File
@@ -46,12 +46,15 @@ Using a plugin pattern, you decouple your business logic into a separate file.
 
 ```typescript
 // plugin.ts
-export const plugin = new Elysia().get('/plugin', () => 'hi')
+export const plugin = new Elysia()
+    .get('/plugin', () => 'hi')
 
 // main.ts
 import { plugin } from './plugin'
 
-const app = new Elysia().use(plugin).listen(8080)
+const app = new Elysia()
+    .use(plugin)
+    .listen(8080)
 ```
 
 ## Config
@@ -63,9 +66,12 @@ You can create a function that accepts parameters that may change the behavior o
 ```typescript
 import { Elysia } from 'elysia'
 
-const version = (version = 1) => new Elysia().get('/version', version)
+const version = (version = 1) => new Elysia()
+        .get('/version', version)
 
-const app = new Elysia().use(version(1)).listen(8080)
+const app = new Elysia()
+    .use(version(1))
+    .listen(8080)
 ```
 
 ## Functional callback​
@@ -80,10 +86,14 @@ To define a functional callback, create a function that accepts Elysia as a para
 const plugin = (app: Elysia) => {
     if ('counter' in app.store) return app
 
-    return app.state('counter', 0).get('/plugin', () => 'Hi')
+    return app
+        .state('counter', 0)
+        .get('/plugin', () => 'Hi')
 }
 
-const app = new Elysia().use(plugin).listen(8080)
+const app = new Elysia()
+    .use(plugin)
+    .listen(8080)
 ```
 
 Once passed to `Elysia.use`, functional callback behaves as a normal plugin except the property is assigned directly to
@@ -120,9 +130,9 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-Elysia will use `name` and `seed` to create a checksum to identify if the instance has been registered previously or not, if so, Elysia will skip the registration of the plugin.
+Elysia will use **name** and **seed** to create a checksum to identify if the instance has been registered previously or not, if so, Elysia will skip the registration of the plugin.
 
-If seed is not provided, Elysia will only use `name` to differentiate the instance. This means that the plugin is only registered once even if you registered it multiple times.
+If seed is not provided, Elysia will only use **name** to differentiate the instance. This means that the plugin is only registered once even if you registered it multiple times.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -162,15 +172,13 @@ const child = new Elysia()
     .get('/', ({ a }) => a)
 ```
 
-This is the limitation of TypeScript, Elysia only have reference to the current instance only.
+This is a TypeScript limitation; Elysia can only refer to the current instance.
 
-To counter this, Elysia introduce the **Service Locator** pattern.
+Elysia introduces the **Service Locator** pattern to counteract this.
 
-Service Locator allow us get the plugin for us automatically, when `use` is call, Elysia will do two thing:
-Lookup for plugin checksum and retrieve the value, otherwise register a new one
-Infer type from the plugin
+To put it simply, Elysia will lookup the plugin checksum and get the value or register a new one. Infer the type from the plugin.
 
-To put it simply, we only need to provide the plugin reference for Elysia to locate the service.
+Simply put, we need to provide the plugin reference for Elysia to find the service.
 
 ```typescript
 // setup.ts
@@ -189,12 +197,11 @@ const child = new Elysia()
 
 ## Official Plugins
 
-You can find an officially maintained plugin at Elysia's [plugins](/plugins).
+You can find an officially maintained plugin at Elysia's [plugins](/plugins/overview).
 
 Some plugins include:
 - GraphQL
 - Swagger
-- Static
-- WebSocket
+- Server Sent Event
 
 And various community plugins.

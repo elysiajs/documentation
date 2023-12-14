@@ -1,3 +1,19 @@
+---
+title: Scope - ElysiaJS
+head:
+    - - meta
+      - property: 'og:title'
+        content: Scope - ElysiaJS
+
+    - - meta
+      - name: 'description'
+        content: Elysia offers scope to encapsulate global event, refactor a redundant logic and apply to the certain route using guard, and group.
+
+    - - meta
+      - property: 'og:description'
+        content: Elysia offers scope to encapsulate global event, refactor a redundant logic and apply to the certain route using guard, and group.
+---
+
 # Scope
 
 As mentioned, global Lifecycle and Schema apply to every route after the registration, allowing the use of multiple routes.

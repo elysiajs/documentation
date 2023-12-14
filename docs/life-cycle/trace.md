@@ -7,12 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: You can use `bun:test` to create a unit test with Elysia. Elysia instance has a `handle` method that accepts `Request` and will return a `Response`, the same as creating an HTTP request.
-
+      content: Trace is an API to measure the performance of your server. Allowing us to interact with the duration span of each life-cycle events and measure the performance of each function to identify performance bottlenecks of the server.
 
   - - meta
     - name: 'og:description'
-      content: You can use `bun:test` to create a unit test with Elysia. Elysia instance has a `handle` method that accepts `Request` and will return a `Response`, the same as creating an HTTP request.
+      content: Trace is an API to measure the performance of your server. Allowing us to interact with the duration span of each life-cycle events and measure the performance of each function to identify performance bottlenecks of the server.
 ---
 
 # Trace
