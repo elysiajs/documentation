@@ -35,14 +35,12 @@ new Elysia()
 ## Features
 Our most loved feature of Elysia that make Elysia standout from other frameworks.
 
-| Feature | Description |
-| --- | --- |
-| Performance | Static code analysis to generate optimized code |
-| Unified Type | Shared DTO runtime and compile time validation |
-| End-to-end Type Safety | Single Source of truth for your data both backend and frontend |
-| TypeScript | Extensive type system for full TypeScript experience |
-| JSX Template Engine | Familiar experience for frontend developer |
-| Ergonomic by design | Simple and familiar API for building server |
+- **Performance** - Static code analysis to generate optimized code
+- **Unified Type** - Shared DTO runtime and compile time validation
+- **End-to-end Type Safety** - Sync your data both client and server
+- **TypeScript** - Extensive type system for full TypeScript experience
+- **JSX Template Engine** - Familiar experience for frontend developer
+- **Ergonomic by design** - Simple and familiar API for building server
 
 ## Platform Agnostic
 Elysia designed but was **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy the Elysia server on Cloudflare Worker, Vercel Edge Function, and most other runtime that support Web Standard Request.
