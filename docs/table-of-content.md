@@ -38,6 +38,9 @@ There's no correct or organized way to learn Elysia, however we recommended comp
     <Card title="Plugin" href="/plugins/overview">
         Pre-built plugin to extend Elysia behavior
     </Card>
+    <Card title="Eden" href="/eden/overview">
+        End-to-end type safety client for Elysia
+    </Card>
 </Deck>
 
 ---
