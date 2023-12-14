@@ -16,7 +16,7 @@ head:
 
 # Integration with Astro
 
-With [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/), we can run Elysia on Nextjs route.
+With [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/), we can run Elysia on Astro directly.
 
 1. Set **output** to **server** in **astro.config.mjs** 
 ```javascript
