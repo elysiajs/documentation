@@ -239,12 +239,10 @@ t.Array(
     t.Number(),
     {
         /**
-         * @default 1
          * Minimum number of items
          */
         minItems: 1,
         /**
-         * @default 5
          * Maximum number of items
          */
         maxItems: 5

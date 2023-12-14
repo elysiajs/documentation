@@ -201,7 +201,7 @@ Using remap, Elysia will treat a returned object as a new property, removing any
 :::
 
 ## Affix
-The provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
+To provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
 
 The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
 

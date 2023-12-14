@@ -50,7 +50,7 @@ Elysia does the following for every request:
     - Modify `Context` before validation
     - Best for:
         - Mutate existing context to conform with validation.
-        - Adding new context (derive   this)
+        - Adding new context (derive this)
 4. **Validation** (not interceptable)
     - Strictly validate incoming request provided by `Elysia.t`
 5. **Before Handle**
@@ -139,11 +139,11 @@ new Elysia()
 
 The response should be listed as follows:
 
-| Path  | Content-Type            |
-| ----- | ----------------------- |
-| /     | text/html; charset=utf8 |
-| /hi   | text/html; charset=utf8 |
-| /none | text/; charset=utf8     |
+| Path  | Content-Type             |
+| ----- | ------------------------ |
+| /     | text/html; charset=utf8  |
+| /hi   | text/html; charset=utf8  |
+| /none | text/plain; charset=utf8 |
 
 Events from other plugins are also applied to the route so the order of code is important.
 
