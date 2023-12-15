@@ -108,7 +108,7 @@ Elysia can create 10k instances in a matter of milliseconds, the new Elysia inst
 
 By default, Elysia will register any plugin and handle type definitions.
 
-Some plugins may be used multiple times to provide time inference<sup>[1]</sup>, resulting in duplication of setting initial values or routes.
+Some plugins may be used multiple times to provide type inference, resulting in duplication of setting initial values or routes.
 
 Elysia avoids this by differentiating the instance by using **name** and **optional seeds** to help Elysia identify instance duplication:
 
