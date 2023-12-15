@@ -18,7 +18,7 @@ head:
 
 Being WinterCG compliance, we can use Request / Response class to test an Elysia server.
 
-Elysia provides **Elysia.handle** which accepts **Request**, and returns **Response** which simulates HTTP Request to create unit-tests.
+Elysia provides **Elysia.handle** which accepts Web Standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), and returns [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) to simulates HTTP Request.
 
 We can use [Bun test](https://bun.sh/guides/test/watch-mode) to create Unit Test.
 
@@ -82,4 +82,4 @@ describe('Elysia', () => {
 })
 ```
 
-See [Eden Test] for setup and more information.
+See [Eden Test](/eden/test) for setup and more information.

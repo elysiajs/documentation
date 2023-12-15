@@ -44,7 +44,7 @@ const isDark = useDark()
 
     <div class="dark:bg-gray-900/60">
         <Hero />
-        <article class="flex flex-col gap-4 font-sans px-6">
+        <article class="flex flex-col gap-4 px-6">
             <Fast />
             <Simple />
             <section class="flex flex-col justify-center items-center gap-8 w-full mt-4 mb-16">

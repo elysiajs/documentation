@@ -169,7 +169,7 @@ onMounted(() => {
         class="flex flex-col justify-center items-center w-full max-w-6xl mx-auto mt-6 md:my-12"
     >
         <h2
-            class="text-6xl w-full text-left sm:text-center font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-violet-400 mb-2"
+            class="text-6xl w-full text-left sm:text-center font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-violet-400 mb-6"
         >
             Try it out
         </h2>
@@ -197,7 +197,7 @@ onMounted(() => {
 
                     <footer
                         v-if="editorError"
-                        class="absolute bottom-0 flex flex-col w-full max-h-40 overflow-y-auto text-white font-medium font-sans px-4 py-2 bg-red-500"
+                        class="absolute bottom-0 flex flex-col w-full max-h-40 overflow-y-auto text-white font-medium px-4 py-2 bg-red-500"
                     >
                         {{ editorError.cause }}
                         {{ editorError.stack }}
@@ -220,7 +220,7 @@ onMounted(() => {
 
                 <footer
                     v-if="responseError"
-                    class="absolute bottom-0 flex flex-col w-full max-h-40 overflow-y-auto text-white font-medium font-sans px-4 py-2 bg-red-500"
+                    class="absolute bottom-0 flex flex-col w-full max-h-40 overflow-y-auto text-white font-medium px-4 py-2 bg-red-500"
                 >
                     {{ responseError.cause }}
                     {{ responseError.stack }}

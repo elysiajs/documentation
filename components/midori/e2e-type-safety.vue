@@ -33,13 +33,13 @@ await eden.user.age.patch({
 
 <template>
     <section
-        class="flex flex-col justify-center items-center w-full max-w-6xl mx-auto"
+        class="flex flex-col justify-center items-center w-full max-w-6xl mx-auto py-4"
     >
         <!-- <h3 class="text-2xl mr-auto md:mx-auto font-medium text-gray-400">
             Introducing
         </h3> -->
         <h2
-            class="text-5xl md:text-6xl font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400 mb-4 mr-auto md:mx-auto"
+            class="text-5xl md:text-6xl font-bold !leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400 mb-6 mr-auto md:mx-auto"
         >
             End–to-End Type Safety
         </h2>

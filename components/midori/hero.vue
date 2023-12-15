@@ -8,7 +8,7 @@
         class="pointer-events-none absolute top-[-70vh] max-w-full justify-center w-full h-screen opacity-25 block gradient"
     ></div>
     <header
-        class="relative flex flex-col justify-center items-center font-sans w-full px-6 pt-20 mb-16 md:mb-8 overflow-hidden"
+        class="relative flex flex-col justify-center items-center w-full px-6 pt-20 mb-16 md:mb-8 overflow-hidden"
         style="min-height: calc(100vh - 64px)"
     >
         <h1
@@ -81,13 +81,13 @@
             </span>
         </h2>
         <h3
-            class="text-xl md:text-2xl leading-relaxed text-gray-500 dark:text-gray-400 !leading-normal text-left md:text-center w-full max-w-[49rem]"
+            class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left md:text-center w-full max-w-[49rem]"
         >
-            TypeScript framework supercharged by Bun with
+            TypeScript with
             <span
                 class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"
                 >End-to-End Type Safety</span
-            >, unified type system and outstanding developer experience
+            >, unified type system and outstanding developer experience. Supercharged by Bun.
         </h3>
         <section
             class="flex flex-col sm:flex-row items-start sm:items-center w-full md:w-auto gap-4 mt-10 mb-12"
