@@ -1,6 +1,6 @@
 <template>
     <Ray
-        class="h-[40vh] -top-16 z-[100] pointer-events-none opacity-25 dark:opacity-50"
+        class="h-[70vh] -top-16 z-[100] pointer-events-none opacity-25 dark:opacity-50"
         static
     />
     <div
