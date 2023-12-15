@@ -66,8 +66,9 @@ This is to ensure developers end up with a performant web server they intend to 
 - [Elysia HTTP Error](https://github.com/yfrans/elysia-http-error) - return HTTP errors from Elysia handlers
 - [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - integrate HTTP status codes
 - [NoCache](https://github.com/gaurishhs/elysia-nocache) - disable caching
-- [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - Compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
-
+- [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
+- [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - compress response
+- [Elysia IP](https://github.com/gaurishhs/elysia-ip) - get the IP Address
 ---
 
 If you have a plugin written for Elysia, feels free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇
