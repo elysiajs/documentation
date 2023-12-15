@@ -13,6 +13,7 @@ const graphs = [
     ['Echo', 'Go', 684_368],
     ['Gin', 'Go', 676_019],
     ['Chi', 'Go', 609_492],
+    ['FastAPI', 'PyPy', 448_130],
     ['Fastify', 'Node', 415_600],
     ['Express', 'Node', 113_117]
 ] as const
