@@ -23,7 +23,7 @@
         <img
             :src="props.src"
             :alt="props.alt"
-            class="w-full my-4 shadow-2xl my-6"
+            class="w-full shadow-2xl my-6"
         />
         <main id="blog-content">
             <slot />

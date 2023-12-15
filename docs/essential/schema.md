@@ -49,9 +49,9 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => id, {
-        params: t.Object({
-            id: t.Numeric()
-        })
+        params: t.Object({ // [!code ++]
+            id: t.Numeric() // [!code ++]
+        }) // [!code ++]
     })
     .listen(8080)
 ```
@@ -76,11 +76,11 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/none', () => 'hi')
-    .schema({
-        query: t.Object({
-            name: t.String()
-        })
-    })
+    .schema({ // [!code ++]
+        query: t.Object({ // [!code ++]
+            name: t.String() // [!code ++]
+        }) // [!code ++]
+    }) // [!code ++]
     .get('/query', ({ query: { name } }) => name)
     .listen(3000)
 ```

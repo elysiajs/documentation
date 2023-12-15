@@ -1,5 +1,5 @@
 <template>
-    <Ray class="h-[62.5vh] -top-18 left-0 z-[100] opacity-30 dark:opacity-[.55] pointer-events-none" />
+    <Ray class="h-[40vh] -top-20 left-0 z-[100] opacity-30 dark:opacity-[.55] pointer-events-none" static />
     <header class="flex flex-col justify-center items-center max-w-3xl gap-3 w-full mx-auto pt-20 pb-4">
         <h1 class="text-2xl md:text-3xl text-gray-700 dark:text-gray-100 font-semibold">
             Latest Updates

@@ -260,7 +260,6 @@ export default defineConfig({
             },
             {
                 text: '🪴 Eden',
-                link: '/eden/overview',
                 collapsed: true,
                 items: [
                     {

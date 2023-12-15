@@ -38,8 +38,9 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         {
             duration: 300,
             easing: 'ease-in',
-            pseudoElement: `::view-transition-${isDark.value ? 'old' : 'new'
-                }(root)`
+            pseudoElement: `::view-transition-${
+                isDark.value ? 'old' : 'new'
+            }(root)`
         }
     )
 })
@@ -48,7 +49,10 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 <template>
     <DefaultTheme.Layout>
         <template #doc-top>
-            <Ray class="h-[220px] top-0 left-0 z-[100] opacity-30 dark:opacity-[.55] pointer-events-none" />
+            <Ray
+                class="h-[220px] top-0 left-0 z-[100] opacity-25 dark:opacity-[.55] pointer-events-none"
+                static
+            />
         </template>
     </DefaultTheme.Layout>
 </template>

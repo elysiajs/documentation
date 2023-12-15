@@ -28,14 +28,14 @@ Guard allows us to apply hook and schema into multiple routes all at once.
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .guard(
-        {
-            body: t.Object({
-                username: t.String(),
-                password: t.String()
-            })
-        },
-        (app) =>
+    .guard( // [!code ++]
+        { // [!code ++]
+            body: t.Object({ // [!code ++]
+                username: t.String(), // [!code ++]
+                password: t.String() // [!code ++]
+            }) // [!code ++]
+        }, // [!code ++]
+        (app) => // [!code ++]
             app
                 .post('/sign-up', ({ body }) => signUp(body))
                 .post('/sign-in', ({ body }) => signIn(body), {
@@ -83,14 +83,14 @@ new Elysia()
 ## Groupped Guard
 
 We can use a group with prefixes by providing 3 parameters to the group.
-Prefix
-Guard
-Scope
+1. Prefix - Route prefix
+2. Guard - Schema
+3. Scope - Elysia app callback
 
 With the same API as guard apply to the 2nd parameter, instead of nesting group and guard together.
 
 ```typescript
-// Instead of this
+// From nested group guard
 app.group('/v1', (app) =>
     app.guard(
         {
@@ -100,7 +100,18 @@ app.group('/v1', (app) =>
     )
 )
 
-// Do this
+// Remove the guard
+app.group(
+    '/v1',
+    (app) => app.guard( // [!code --]
+    {
+        body: t.Literal('Rikuhachima Aru')
+    },
+    (app) => app.get('/student', () => 'Rikuhachima Aru')
+    ) // [!code --]
+)
+
+// Inline to group 2nd parameter instead
 app.group(
     '/v1',
     {
@@ -152,7 +163,7 @@ We can accomplish that by adding `scoped: true` to the Elysia instance.
 ```typescript
 import { Elysia } from 'elysia'
 
-const html = new Elysia({ scoped: true })
+const html = new Elysia({ scoped: true }) // [!code ++]
     .onAfterhandle(() => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
