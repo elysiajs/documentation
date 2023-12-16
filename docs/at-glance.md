@@ -87,7 +87,7 @@ This code ensure that our path parameter **id**, will always be a numeric string
 With Elysia schema builder, we can ensure type-safety like a strong-typed language with a single-source of truth.
 
 ## Standard
-Elysia adopts many standard by default, like OpenAPI, WinterCG compilance, and we are a making progress to adopt OpenTelemetry, allowing you to integrate with most the industry standard tools or at-least easily integrate with tools you are familiar with.
+Elysia adopts many standard by default, like OpenAPI, WinterCG compilance, allowing you to integrate with most the industry standard tools or at-least easily integrate with tools you are familiar with.
 
 For instance, as Elysia adopt OpenAPI by default, generating a documentation with Swagger is as easy as adding a one-liner:
 
