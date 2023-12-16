@@ -130,7 +130,7 @@ new Elysia()
 
 Because **derive** is assigned once a new request starts, **derive** can access Request properties like **headers**, **query**, **body** where **store**, and **decorate** can't.
 
-Unlike **state**, and **decorate**. Properties that are assigned by **derive** is unique and not shared with another request.
+Unlike **state**, and **decorate**. Properties which assigned by **derive** is unique and not shared with another request.
 
 ## Pattern
 **state**, **decorate** offers a similar APIs pattern for assigning property to Context as the following:
