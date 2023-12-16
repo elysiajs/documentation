@@ -43,6 +43,9 @@ Below are the request lifecycle available in Elysia:
         Custom validation before route handler
     </Card>
     <Card title="After Handle" href="after-handle">
+        Transform returned value into a new value
+    </Card>
+    <Card title="Map Response" href="on-error">
         Map returned value into a response
     </Card>
     <Card title="On Error" href="on-error">
