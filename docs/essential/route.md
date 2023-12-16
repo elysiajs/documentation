@@ -145,7 +145,7 @@ It's recommended to use UPPERCASE convention for defining a custom HTTP Verb wit
 Elysia provide an `Elysia.all` for handling any HTTP verb for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
 ```typescript
-import {} from 'elysia'
+import { Elysia } from 'elysia'
 
 new Elysia().all('/', () => 'hi').listen(3000)
 ```
