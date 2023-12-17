@@ -131,9 +131,10 @@ This behavior allows us to create a seamless integration for a plugin like regis
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 const html = new Elysia()
-    .onAfterhandle(() => {
+    .onAfterhandle(({ set }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
@@ -150,7 +151,7 @@ The response should be listed as follows:
 
 | Path   | Content-Type            |
 | ------ | ----------------------- |
-| /      | text/html; charset=utf8 |
+| /      | text/plain; charset=utf8 |
 | /inner | text/html; charset=utf8 |
 | /outer | text/html; charset=utf8 |
 
