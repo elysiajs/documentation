@@ -108,7 +108,7 @@ Unlike unit test's mock, **you can expect it to behave like an actual request** 
 
 ## Custom Method
 
-We can accept custom HHTP Method with `Elysia.route`.
+We can accept custom HTTP Method with `Elysia.route`.
 
 ```typescript
 import { Elysia } from 'elysia'
