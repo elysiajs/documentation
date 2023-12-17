@@ -73,7 +73,7 @@ The response should as follows:
 | /id/a?name=Elysia | ✅ | ❌ |
 | /id/a?alias=Elysia | ❌ | ❌ |
 
-When schema is provided, type will be infered from the schema automatically, and generate an OpenAPI type for Swagger documentation generation, leaving out redudant task of providing type manually.
+When schema is provided, type will be inferred from the schema automatically, and generate an OpenAPI type for Swagger documentation generation, leaving out redundant task of providing type manually.
 
 ## Body
 
@@ -87,7 +87,7 @@ Body is provided as same as `body` in `fetch` API.
 fetch('https://elysiajs.com', {
     method: 'POST',
     body: JSON.stringify({
-        hello: 'Elysia'
+        name: 'Elysia'
     })
 })
 ```
@@ -109,8 +109,8 @@ new Elysia()
 The validation should be as follows:
 | Body | Validation |
 | --- | --------- |
-| \{ hello: 'Elysia' \} | ✅ |
-| \{ hello: 1 \} | ❌ |
+| \{ name: 'Elysia' \} | ✅ |
+| \{ name: 1 \} | ❌ |
 | \{ alias: 'Elysia' \} | ❌ |
 | `undefined` | ❌ |
 
@@ -152,14 +152,14 @@ new Elysia()
 The validation should be as follows:
 | Body | Validation |
 | --- | --------- |
-| \{ hello: 'Elysia' \} | ✅ |
-| \{ hello: 1 \} | ❌ |
+| \{ name: 'Elysia' \} | ✅ |
+| \{ name: 1 \} | ❌ |
 | \{ alias: 'Elysia' \} | ❌ |
 | `undefined` | ❌ |
 
 ## Params
 
-For detail explaination, see [path](/new/essential/path), but to summarize.
+For detailed explanation, see [path](/new/essential/path), but to summarize.
 
 Dynamic path is a pattern matching for a specific part of URL segment to which could store a potential important information, to be used later.
 
@@ -171,7 +171,7 @@ For instance **/id/:id** tells Elysia to match any path up until /id, then the n
 
 **params** is use to validate the path parameter object.
 
-**This field is usually doesn't need as Elysia can infers type from path parametr automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
+**This field is usually doesn't need as Elysia can infers type from path parameter automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
 
 ```typescript
 fetch('https://elysiajs.com/id/1')
