@@ -27,7 +27,7 @@ This is to ensure developers end up with a performant web server they intend to 
 - [Bearer](/plugins/bearer) - retrieve [Bearer](https://swagger.io/docs/specification/authentication/bearer-authentication/) token automatically
 - [CORS](/plugins/cors) - set up [Cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 - [Cron](/plugins/cron) - set up [cron](https://en.wikipedia.org/wiki/Cron) job
-- [Eden](/plugins/eden/overview) - end-to-end type safety client for Elysia
+- [Eden](/eden/overview) - end-to-end type safety client for Elysia
 - [GraphQL Apollo](/plugins/graphql-apollo) - run [Apollo GraphQL](https://www.apollographql.com/) on Elysia
 - [GraphQL Yoga](/plugins/graphql-yoga) - run [GraphQL Yoga](https://github.com/dotansimha/graphql-yoga) on Elysia
 - [HTML](/plugins/html) - handle HTML responses
