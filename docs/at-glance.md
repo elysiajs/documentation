@@ -67,7 +67,7 @@ In most framework, you need to provide a generic type to the **id** parameter wh
 Elysia goal is help you write less TypeScript and focus more on Business logic. Let's the complex type be handled by the framework.
 
 ## Unified Type
-To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile time to create a single source of truth for your data-type. Elysia refers this term as **Unified Type**.
+To take a step further, Elysia provides **Elysia.t**, a schema builder to validate type and value in both runtime and compile time to create a single source of truth for your data-type. Elysia refers this term as **Unified Type**.
 
 Let's modify the previous code to accept only a numeric value instead of string.
 ```typescript
@@ -89,7 +89,7 @@ With Elysia schema builder, we can ensure type-safety like a strong-typed langua
 ## Standard
 Elysia adopts many standard by default, like OpenAPI, WinterCG compilance, allowing you to integrate with most the industry standard tools or at-least easily integrate with tools you are familiar with.
 
-For instance, as Elysia adopt OpenAPI by default, generating a documentation with Swagger is as easy as adding a one-liner:
+For instance, as Elysia adopts OpenAPI by default, generating a documentation with Swagger is as easy as adding a one-liner:
 
 ```typescript
 import { Elysia, t } from 'elysia'
