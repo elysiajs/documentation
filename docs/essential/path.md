@@ -44,7 +44,7 @@ We can categorized the URL and path as follows:
 If the path is not specified, the browser and web server will treat the path as '/' as a default value.
 :::
 
-Elysia will lookup each [route](/essential/route) and response using [handler](/essential/handler) function.
+Elysia will lookup each request for [route](/essential/route) and response using [handler](/essential/handler) function.
 
 ## Dynamic path
 
