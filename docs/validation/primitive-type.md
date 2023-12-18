@@ -36,7 +36,7 @@ new Elysia()
 
 This code tells Elysia to validate an incoming HTTP body, make sure that the body is String, and if it is String, then allow it to flow through request pipeline and handler.
 
-If the shape doesn't match, then it will throw an error, into [Error Life Cycle](http://localhost:5173/new/essential/life-cycle.html#events).
+If the shape doesn't match, then it will throw an error, into [Error Life Cycle](/essential/life-cycle.html#events).
 
 ![Elysia Life Cycle](/assets/lifecycle.webp)
 
