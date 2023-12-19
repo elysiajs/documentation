@@ -98,6 +98,7 @@ To use a local hook, you can inline hook into a route handler:
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {
@@ -125,6 +126,7 @@ To add a global hook, you can use `.on` followed by a life cycle event in camelC
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
