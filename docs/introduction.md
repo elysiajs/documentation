@@ -48,9 +48,9 @@ Elysia designed but was **not limited to Bun**. Being [WinterCG compliant](https
 ## TypeScript
 Elysia designed to help you write less TypeScript.
 
-Elysia's Type System is fine-tuned to infer your code into type automatically without needing to write explicit TypeScrip while providing type-safety for both runtime and compile time to provide you with the most ergonomic developer experience.
+Elysia's Type System is fine-tuned to infer your code into type automatically without needing to write explicit TypeScript while providing type-safety for both runtime and compile time to provide you with the most ergonomic developer experience.
 
-TypeScript is not need to use Elysia, but it's recommended to use Elysia with TypeScript.
+TypeScript is not needed to use Elysia, but it's recommended to use Elysia with TypeScript.
 
 ## How to use the documentation
 The documentation **designed to be beginner-friendly**. Basic networking and server concept will be briefly covered to help beginners understand how API and the behavior of the framework works.
