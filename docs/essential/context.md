@@ -15,22 +15,21 @@ head:
 ---
 
 # Context
-Context is information of each request passed to [route handler](/essential/handler).
+Context is information of each request passed to a [route handler](/essential/handler).
 
-Context is unique for each request, and is not shared except it's a `store` property which is a global mutable state object, (aka state).
+Context is unique for each request, and is not shared unless it's a `store` property which is a global mutable state object, (aka state).
 
-Elysia context is consists of:
-- **path** - Path name of the request
+Elysia context consists of:
 - **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
-- **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extract from a value after pathname starting from '?' question mark sign)
+- **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
 - **params** - Elysia's path parameters parsed as JavaScript object
 - **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
-- path: Pathname of the request
+- **path**: Pathname of the request
 - **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 - **store** - A global mutable store for Elysia instance
-- **cookie** - A global mutatable signal store for interacting with Cookie (including get/set)
+- **cookie** - A global mutable signal store for interacting with Cookies (including get/set)
 - **set** - Property to apply to Response:
-    - **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), default to 200 if not set.
+    - **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
     - **headers** - Response headers
     - **redirect** - Response as a path to redirect to
 
@@ -48,7 +47,7 @@ You can extend Elysia's context by using:
 The following APIs add extra functionality to the Context.
 
 ::: tip
-It's recommended to assign property related to request and response, or frequently used function to Context for separation of concern.
+It's recommended to assign properties related to request and response, or frequently used functions to Context for separation of concerns.
 :::
 
 ## Store
@@ -84,7 +83,7 @@ new Elysia()
 ```
 
 ::: tip
-Elysia registers state value into the store automatically without explicit type or additional TypeScript generic is needed.
+Elysia registers state values into the store automatically without explicit type or additional TypeScript generic needed.
 
 This is the magic of the Elysia-type system that does this automatically.
 :::
@@ -130,7 +129,7 @@ new Elysia()
 
 Because **derive** is assigned once a new request starts, **derive** can access Request properties like **headers**, **query**, **body** where **store**, and **decorate** can't.
 
-Unlike **state**, and **decorate**. Properties that are assigned by **derive** is unique and not shared with another request.
+Unlike **state**, and **decorate**. Properties that are assigned by **derive** are unique and not shared with another request.
 
 ## Pattern
 **state**, **decorate** offers a similar APIs pattern for assigning property to Context as the following:

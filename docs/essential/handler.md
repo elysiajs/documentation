@@ -47,33 +47,33 @@ new Elysia()
 ```
 
 ### Context
-Elysia context is consists of:
+Elysia context consists of:
 - **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
-- **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extract from a value after pathname starting from '?' question mark sign)
+- **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
 - **params** - Elysia's path parameters parsed as JavaScript object
 - **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
 - **path**: Pathname of the request
 - **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 - **store** - A global mutable store for Elysia instance
-- **cookie** - A global mutatable signal store for interacting with Cookie (including get/set)
+- **cookie** - A global mutable signal store for interacting with Cookies (including get/set)
 - **set** - Property to apply to Response:
-    - **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), default to 200 if not set.
+    - **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
     - **headers** - Response headers
     - **redirect** - Response as a path to redirect to
 
 ::: tip
-Context provide several property to help you get information about the request.
+Context provides several properties to help you get information about the request.
 
-It's ok to feels overwhelmed by the amount of property, but you don't have to memorize them all, IDE can auto-complete them for you.
+It's ok to feels overwhelmed by the amount of properties, but you don't have to memorize them all, IDE can auto-complete them for you.
 :::
 
 ## Set
-**set** is a special mutable property act as a representation of the response.
+**set** is a special mutable property that acts as a representation of the response.
 
 - Set status code of the response,
 - Append custom headers
 
-This is done by mutate the value of `Context.set`.
+This is done by mutating the value of `Context.set`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -94,7 +94,7 @@ In this example, we create a route handler and **set response status to 418**, a
 HTTP Status indicates the type of response. If the route handler is executed successfully without error, Elysia will return the status code 200.
 :::
 
-You can also set a status code using the common name of the status code instead of using number.
+You can also set a status code using the common name of the status code instead of using a number.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -108,14 +108,14 @@ new Elysia()
     .listen(3000)
 ```
 
-Elysia also provide an auto-completion for searching a certain code for your IDE.
+Elysia also provides an auto-completion for searching a certain code for your IDE.
 
 ## Response
 Elysia is build on top of Web Standard Request/Response.
 
 To comply with the Web Standard, a value returned from route handler will be mapped into a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) by Elysia.
 
-Helping you can focus on business logic rather than boilerplate code.
+Helping you focus on business logic rather than boilerplate code.
 
 ```typescript
 import { Elysia } from 'elysia'

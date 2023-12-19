@@ -80,7 +80,7 @@ new Elysia()
     .listen(3000)
 ```
 
-## Groupped Guard
+## Grouped Guard
 
 We can use a group with prefixes by providing 3 parameters to the group.
 1. Prefix - Route prefix
@@ -134,7 +134,7 @@ import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
 const html = new Elysia()
-    .onAfterhandle(({ set }) => {
+    .onAfterHandle(({ set, response }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
@@ -163,9 +163,10 @@ We can accomplish that by adding `scoped: true` to the Elysia instance.
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 const html = new Elysia({ scoped: true }) // [!code ++]
-    .onAfterhandle(() => {
+    .onAfterHandle(({ set, response }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
@@ -183,9 +184,9 @@ Events that are registered in `guard`, and scoped instance will not be exposed t
 The response should be listed as follows:
 | Path | Content-Type |
 | ----- | ----------------------- |
-| / | text/html; charset=utf8 |
+| / | text/plain; charset=utf8 |
 | /inner | text/html; charset=utf8 |
-| /outer | text/html; charset=utf8 |
+| /outer | text/plain; charset=utf8 |
 
 ### Encapsulation
 
@@ -196,13 +197,13 @@ import { Elysia } from 'elysia'
 
 const scoped = new Elysia({ scoped: true })
     .onAfterhandle(() => {
-        console.log('2')
+        console.log('1')
     })
     .get('/inner', () => 'hi')
 
 new Elysia()
     .onAfterhandle(() => {
-        console.log('1')
+        console.log('2')
     })
     .use(scoped)
     .get('/outer', () => 'hi')

@@ -101,7 +101,7 @@ Once passed to `Elysia.use`, functional callback behaves as a normal plugin exce
 ::: tip
 You shall not worry about the performance difference between a functional callback and creating an instance.
 
-Elysia can create 10k instances in a matter of milliseconds, the new Elysia instance even has better type inference performance than functional callback.
+Elysia can create 10k instances in a matter of milliseconds, the new Elysia instance has even better type inference performance than the functional callback.
 :::
 
 ## Plugin Deduplication

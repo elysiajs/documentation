@@ -41,7 +41,7 @@ Elysia does the following for every request:
     - Notify new event is received, providing only the most minimal context to reduce overhead
     - Best for:
         - Caching
-        - Analytic
+        - Analytics
 2. **Parse**
     - Parse body and add to `Context.body`
     - Best for:
@@ -73,7 +73,7 @@ Elysia does the following for every request:
     - Executed after response sent to the client
     - Best for:
         - Cleaning up response
-        - Analytic
+        - Analytics
 
 These events are designed to help you decouple code into smaller reusable pieces instead of having long, repetitive code in a handler.
 
@@ -128,7 +128,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
-    .onAfterhandle(() => {
+    .onAfterHandle(({ set, response }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
