@@ -44,7 +44,7 @@ This is to ensure developers end up with a performant web server they intend to 
 - [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
 - [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node.js and Deno
 - [Vite](https://github.com/timnghg/elysia-vite) - serve entry HTML file with Vite's scripts injected
-- [Nuxt](https://github.com/trylovetom/elysiajs-nuxt) - easily integrate elysia with nuxt!
+- [Nuxt](https://github.com/trylovetom/elysiajs-nuxt) - easily integrate Elysia with nuxt!
 - [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - secure Elysia apps with various HTTP headers
 - [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - Vite SSR plugin using Elysia server
 - [OAuth2](https://github.com/bogeychan/elysia-oauth2) - handle OAuth 2.0 authorization code flow
@@ -71,4 +71,4 @@ This is to ensure developers end up with a performant web server they intend to 
 - [Elysia IP](https://github.com/gaurishhs/elysia-ip) - get the IP Address
 ---
 
-If you have a plugin written for Elysia, feels free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇
+If you have a plugin written for Elysia, feel free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇
