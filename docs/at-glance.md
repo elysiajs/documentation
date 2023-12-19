@@ -110,7 +110,7 @@ With the Swagger plugin, you can seamlessly generate a Swagger page without addi
 ## End-to-end Type Safety
 With Elysia, type safety is not only limited to server-side only.
 
-With Elysia, you can synchronize your type with your frontend team automacially like tRPC, with Elysia client library, "Eden".
+With Elysia, you can synchronize your type with your frontend team automatically like tRPC, with Elysia client library, "Eden".
 
 ```typescript
 import { Elysia, t } from 'elysia'
