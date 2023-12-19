@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that add support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysiajs/jwt".
+        content: Plugin for Elysia that adds support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysiajs/jwt".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysiajs/jwt".
+        content: Plugin for Elysia that adds support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysiajs/jwt".
 ---
 
 # JWT Plugin
@@ -60,7 +60,7 @@ const app = new Elysia()
 ## Config
 This plugin extends config from [jose](https://github.com/panva/jose).
 
-Below is a config which is accepted by the plugin.
+Below is a config that is accepted by the plugin.
 
 ### name
 Name to register `jwt` function as.
@@ -95,7 +95,7 @@ Below is a config that extends from [cookie](https://npmjs.com/package/cookie)
 
 Signing Algorithm to sign JWT payload with.
 
-Possible property for jose are:
+Possible properties for jose are:
 HS256
 HS384
 HS512
@@ -149,7 +149,7 @@ A hint indicating which key was used to secure the JWS.
 This parameter allows originators to explicitly signal a change of key to recipients as per [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.4)
 
 ### x5t
-(X.509 certificate SHA-1 thumbprint) header parameter is a base64url-encoded SHA-1 digest of the DER encoding of the X.509 certificate [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) corresponding to the key use to digitally sign the JWS as per [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.7)
+(X.509 certificate SHA-1 thumbprint) header parameter is a base64url-encoded SHA-1 digest of the DER encoding of the X.509 certificate [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) corresponding to the key used to digitally sign the JWS as per [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.7)
 
 ### x5c
 (X.509 certificate chain) header parameter contains the X.509 public key certificate or certificate chain [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) corresponding to the key used to digitally sign the JWS as per [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.6)
@@ -176,29 +176,29 @@ This is intended for use by the application when more than one kind of object co
 Below are the value added to the handler.
 
 ### jwt.sign
-A dynamic object of collection related to use with JWT registered by JWT plugin.
+A dynamic object of collection related to use with JWT registered by the JWT plugin.
 
 Type:
 ```typescript
 sign: (payload: JWTPayloadSpec): Promise<string>
 ```
 
-`JWTPayloadSpec` accept the same value as [JWT config](#config)
+`JWTPayloadSpec` accepts the same value as [JWT config](#config)
 
 ### jwt.verify
-Verify payload with provided JWT config
+Verify payload with the provided JWT config
 
 Type:
 ```typescript
 verify(payload: string) => Promise<JWTPayloadSpec | false>
 ```
 
-`JWTPayloadSpec` accept the same value as [JWT config](#config)
+`JWTPayloadSpec` accepts the same value as [JWT config](#config)
 
 ## Pattern
 Below you can find the common patterns to use the plugin.
 
-## Set JWT expire date
+## Set JWT expiration date
 By default, the config is passed to `setCookie` and inherits its value.
 
 ```typescript
