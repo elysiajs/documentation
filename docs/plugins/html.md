@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that add shortcut support for returning HTML in Elysia server. Start by installing the plugin with "bun add @elysiajs/html".
+        content: Plugin for Elysia that adds shortcut support for returning HTML in the Elysia server. Start by installing the plugin with "bun add @elysiajs/html".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add shortcut support for returning HTML in Elysia server. Start by installing the plugin with "bun add @elysiajs/html".
+        content: Plugin for Elysia that adds shortcut support for returning HTML in the Elysia server. Start by installing the plugin with "bun add @elysiajs/html".
 ---
 
 # HTML Plugin
@@ -57,16 +57,16 @@ new Elysia()
     .listen(3000)
 ```
 
-This plugin will automatically add `Content-Type: text/html; charset=utf8` header to the response, add `<!doctype html>` and convert it into a Response object.
+This plugin will automatically add `Content-Type: text/html; charset=utf8` header to the response, add `<!doctype html>`, and convert it into a Response object.
 
 ## JSX
-Elysia HTML is based on [@kitajs/html](https://github.com/kitajs/html) allowing us to define JSX to string in compile time to archive high performance.
+Elysia HTML is based on [@kitajs/html](https://github.com/kitajs/html) allowing us to define JSX to string in compile time to achieve high performance.
 
-Name your file that need to use JSX to ends with affix **"x"**:
+Name your file that needs to use JSX to end with affix **"x"**:
 - .js -> .jsx
 - .ts -> .tsx
 
-To register TypeScript type, please appends the following to **tsconfig.json**:
+To register the TypeScript type, please append the following to **tsconfig.json**:
 ```jsonc
 // tsconfig.json
 {
@@ -99,7 +99,7 @@ new Elysia()
 ```
 
 ## XSS
-Elysia HTML is based use with Kita HTML plugin to detect possible XSS attack in compile time.
+Elysia HTML is based use of the Kita HTML plugin to detect possible XSS attacks in compile time.
 
 You can use a dedicated `safe` attribute to sanitize user value to prevent XSS vulnerability.
 ```tsx
@@ -123,7 +123,7 @@ new Elysia()
     .listen(3000)
 ```
 
-However, when are building a large-scale app, it's best to have a type reminder to detect possible XSS vulnerability in your codebase.
+However, when are building a large-scale app, it's best to have a type reminder to detect possible XSS vulnerabilities in your codebase.
 
 To add a type-safe reminder, please install:
 ```sh
@@ -181,6 +181,6 @@ app.get('/', ({ html }) => html('<html></html>'))
 -   Type: `(value: string) => boolean`
 -   Default: `isHtml` (exported function)
 
-The function used to detect if a string is a html or not. Default implementation if length is greater than 7, starts with `<` and ends with `>`.
+The function is used to detect if a string is a html or not. Default implementation if length is greater than 7, starts with `<` and ends with `>`.
 
 Keep in mind there's no real way to validate HTML, so the default implementation is a best guess.
