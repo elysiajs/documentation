@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Plugin for Elysia that add support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysiajs/cors".
+      content: Plugin for Elysia that adds support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysiajs/cors".
 
   - - meta
     - name: 'og:description'
-      content: Plugin for Elysia that add support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysiajs/cors".
+      content: Plugin for Elysia that adds support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysiajs/cors".
 ---
 
 # CORS Plugin
@@ -40,7 +40,7 @@ Below is a config which is accepted by the plugin
 ### origin
 @default `true`
 
-Indicates whether the response can be shared with requesting code from the given origins.
+Indicates whether the response can be shared with the requesting code from the given origins.
 
 Value can be one of the following:
 - **string** - Name of origin which will directly assign to [Access-Control-Allow-Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) header.
@@ -57,7 +57,7 @@ Value can be one of the following:
 ### methods
 @default `*`
 
-Allowed methods for cross origins requests.
+Allowed methods for cross-origin requests.
 
 Assign [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods) header.
 
@@ -146,4 +146,4 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-This will allows requests from top-level domains with `saltyaom.com'
+This will allow requests from top-level domains with `saltyaom.com'
