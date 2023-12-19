@@ -25,7 +25,7 @@ However, in a real-world scenario, the global event is hard to trace and control
 Guard allows us to apply hook and schema into multiple routes all at once.
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .guard( // [!code ++]
@@ -60,7 +60,7 @@ Guard accepts the same parameter as inline hook, the only difference is that you
 This means that the code above is translated into:
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .post('/sign-up', ({ body }) => signUp(body), {
@@ -196,13 +196,13 @@ It is important to note that the scoped instance, just like `guard`, the instanc
 import { Elysia } from 'elysia'
 
 const scoped = new Elysia({ scoped: true })
-    .onAfterhandle(() => {
+    .onAfterHandle(() => {
         console.log('1')
     })
     .get('/inner', () => 'hi')
 
 new Elysia()
-    .onAfterhandle(() => {
+    .onAfterHandle(() => {
         console.log('2')
     })
     .use(scoped)
