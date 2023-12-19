@@ -72,7 +72,7 @@ Register hook into **every** handler that came after.
 To add a global hook, you can use `.schema` followed by a life cycle event in camelCase:
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/none', () => 'hi')
