@@ -16,7 +16,7 @@ head:
 
 # Route
 
-To determine the correct response to a client, web server use **path and HTTP method** to lookup for the correct resource.
+To determine the correct response to a client, the web server uses **path and HTTP method** to look for the correct resource.
 
 This process is known as **"routing"**.
 
@@ -33,18 +33,18 @@ new Elysia()
 
 We can access the web server by going to **http://localhost:3000**
 
-This code allows us to create a simple web server running at port 3000, and tells Elysia to register the following path with the GET method, then response with following:
+This code allows us to create a simple web server running at port 3000 and tells Elysia to register the following path with the GET method, then respond with the following:
 
 | Path   | Result  |
 | ------ | ------- |
 | /      | Landing |
 | /hello | Hi      |
 
-Accessing with browser works because **GET** is the default HTTP method.
+Accessing with the browser works because **GET** is the default HTTP method.
 
 ## HTTP Verb
 
-There are many HTTP method to use in a difference situation, for instance.
+There are many HTTP methods to use in different situations, for instance.
 
 ### GET
 
@@ -78,16 +78,16 @@ new Elysia()
 Elysia HTTP method accepts the following parameters:
 
 -   **path**: Pathname
--   **function**: Function to response to client
+-   **function**: Function to respond to client
 -   **hook**: Additional metadata
 
 You can read more about HTTP Verb on [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
 
 ## Handle
 
-Most backend developer use REST Client like Postman, Insomnia or Hoppscotch to test their API.
+Most backend developers use REST Clients like Postman, Insomnia, or Hoppscotch to test their API.
 
-However with Elysia, you can trigger a request to your Elysia server programmatically using `Elysia.handle`.
+However, with Elysia, you can trigger a request to your Elysia server programmatically using `Elysia.handle`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -100,15 +100,15 @@ const app = new Elysia()
 app.handle(new Request('http://localhost/')).then(console.log)
 ```
 
-**Elysia.handle** is a function to process an actual request sending to the server.
+**Elysia.handle** is a function to process an actual request sent to the server.
 
 Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
 
-**Elysia.handle** is usually useful to simulate or creating unit tests.
+**Elysia.handle** is useful for simulating or creating unit tests.
 
 ## Custom Method
 
-We can accept custom HHTP Method with `Elysia.route`.
+We can accept a custom HHTP Method with `Elysia.route`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -124,10 +124,10 @@ const app = new Elysia()
 
 -   **method**: HTTP Verb
 -   **path**: Path
--   **function**: Function to response to client
+-   **function**: Function to respond to client
 -   **hook**: Additional metadata
 
-When navigate to each method, you should see the results as the following:
+When navigating to each method, you should see the results as the following:
 | Path | Method | Result |
 | - | --- | --- |
 | / | GET | hello |
@@ -137,12 +137,12 @@ When navigate to each method, you should see the results as the following:
 ::: tip
 Based on [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231#section-4.1), HTTP Verb is case-sensitive.
 
-It's recommended to use UPPERCASE convention for defining a custom HTTP Verb with Elysia.
+It's recommended to use the UPPERCASE convention for defining a custom HTTP Verb with Elysia.
 :::
 
 ## Elysia.all
 
-Elysia provide an `Elysia.all` for handling any HTTP verb for a specified path using the same API like **Elysia.get** and **Elysia.post**
+Elysia provides an `Elysia.all` for handling any HTTP verb for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
 ```typescript
 import {} from 'elysia'
@@ -150,7 +150,7 @@ import {} from 'elysia'
 new Elysia().all('/', () => 'hi').listen(3000)
 ```
 
-Any HTTP verb that match the path, will be handled like the following:
+Any HTTP verb that matches the path, will be handled like the following:
 | Path | Method | Result |
 | ---- | -------- | ------ |
 | / | GET | hi |
@@ -159,15 +159,15 @@ Any HTTP verb that match the path, will be handled like the following:
 
 ## 404
 
-If no path match from defined routes, Elysia will pass the request to `error` lifecycle before returning a "NOT_FOUND" with an HTTP status of 404.
+If no path matches from defined routes, Elysia will pass the request to `error` lifecycle before returning a "NOT_FOUND" with an HTTP status of 404.
 
 ::: tip
-HTTP Status is use to indicate the type of response. By default if everything is correct, server will return a '200 OK' status code (If route match and no error, Elysia will return 200 as default)
+HTTP Status is used to indicate the type of response. By default, if everything is correct, the server will return a '200 OK' status code (If the route match and no error, Elysia will return 200 as default)
 
-If server fail to find any route to handle, like in this case, then server shall return a '404 NOT FOUND' status code.
+If the server fails to find any route to handle, like in this case, then the server shall return a '404 NOT FOUND' status code.
 :::
 
-For Elysia, we can handle a custom 404 error by returning a valuee from 'error` lifecycle like this:
+For Elysia, we can handle a custom 404 error by returning a value from 'error` lifecycle like this:
 
 ```typescript
 import { Elysia } from 'elysia'
