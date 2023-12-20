@@ -14,7 +14,6 @@ head:
         content: Elysia supports declarative schema with the following types. Body for validate an incoming HTTP message. Query for query string or URL parameter. Params for path parameters. Header for request headers. Cookie for  cookies. Response for validating response.
 ---
 
-
 <script setup>
     import Card from '../../components/nearl/card.vue'
     import Deck from '../../components/nearl/card-deck.vue'
@@ -159,7 +158,7 @@ The validation should be as follows:
 
 ## Params
 
-For detail explaination, see [path](/new/essential/path), but to summarize.
+For detail explaination, see [path](/essential/path), but to summarize.
 
 Dynamic path is a pattern matching for a specific part of URL segment to which could store a potential important information, to be used later.
 

@@ -15,6 +15,7 @@ head:
 ---
 
 # Before Handle
+
 Execute after validation and before the main route handler.
 
 Designed to provide a custom validation to provide a specific requirement before running the main handler.
@@ -22,10 +23,12 @@ Designed to provide a custom validation to provide a specific requirement before
 If a value is returned, the route handler will be skipped.
 
 It's recommended to use Before Handle in the following situations:
-- Restricted access check: authorization, user sign-in
-- Custom request requirement over data structure
+
+-   Restricted access check: authorization, user sign-in
+-   Custom request requirement over data structure
 
 ## Example
+
 Below is an example of using the before handle to check for user sign-in.
 
 ```typescript
@@ -44,13 +47,14 @@ new Elysia()
 
 The response should be listed as follows:
 
-| Is signed in | Response      |
-| ------------ | ------------- |
-| ❌           | Unauthorized  |
-| ✅           | Hi            |
+| Is signed in | Response     |
+| ------------ | ------------ |
+| ❌           | Unauthorized |
+| ✅           | Hi           |
 
 ## Guard
-When we need to apply the same before handle to multiple routes, we can use [guard](/new/essential/guard) to apply the same before handle to multiple routes.
+
+When we need to apply the same before handle to multiple routes, we can use [guard](/essential/scope#guard) to apply the same before handle to multiple routes.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -59,8 +63,8 @@ new Elysia()
     .guard(
         {
             beforeHandle({ cookie: { session } }) {
-                if(!validateSession(session.value))
-                    return set.status = 'Unauthorized'
+                if (!validateSession(session.value))
+                    return (set.status = 'Unauthorized')
             }
         },
         (app) =>
