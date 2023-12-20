@@ -116,7 +116,7 @@ With Elysia, you can synchronize your type with your frontend team automacially 
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
-new Elysia()
+const app = new Elysia()
     .use(swagger())
     .get('/id/:id', ({ params: { id }}) => id, {
         params: t.Object({
