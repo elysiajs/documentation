@@ -33,7 +33,7 @@ new Elysia()
 
 We can access the web server by going to **http://localhost:3000**
 
-This code allows us to create a simple web server running at port 3000, and tells Elysia to register the following path with the GET method, then respond with following:
+This code allows us to create a simple web server running at port 3000, and tells Elysia to register the following path with the GET method, then respond the following:
 
 | Path   | Result  |
 | ------ | ------- |
