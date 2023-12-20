@@ -20,12 +20,11 @@ Context is information of each request passed to [route handler](/essential/hand
 Context is unique for each request, and is not shared except it's a `store` property which is a global mutable state object, (aka state).
 
 Elysia context is consists of:
-- **path** - Path name of the request
+- **path** - Pathname of the request
 - **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
 - **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extract from a value after pathname starting from '?' question mark sign)
 - **params** - Elysia's path parameters parsed as JavaScript object
 - **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
-- path: Pathname of the request
 - **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 - **store** - A global mutable store for Elysia instance
 - **cookie** - A global mutatable signal store for interacting with Cookie (including get/set)
