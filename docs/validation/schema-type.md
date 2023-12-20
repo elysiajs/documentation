@@ -171,7 +171,7 @@ For instance **/id/:id** tells Elysia to match any path up until /id, then the n
 
 **params** is use to validate the path parameter object.
 
-**This field is usually doesn't need as Elysia can infers type from path parametr automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
+**This field is usually doesn't need as Elysia can infers type from path parameter automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
 
 ```typescript
 fetch('https://elysiajs.com/id/1')
