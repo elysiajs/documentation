@@ -77,10 +77,10 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     // ❌ TypeError: version doesn't exist in store
-    .get('/error', ({ store }) => store.counter)
-    .state('counter', 0)
+    .get('/error', ({ store }) => store.version)
+    .state('version', 0)
     // ✅ Because we assigned a version before, you can now access it
-    .get('/', ({ store }) => store.counter)
+    .get('/', ({ store }) => store.version)
 ```
 
 ::: tip
