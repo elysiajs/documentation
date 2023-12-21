@@ -101,7 +101,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .decorate('logger', new Logger())
-    // ✅ Because we assigned a version before, you can now access it
+    // ✅ Because we assigned a logger before, you can now access it
     .get('/', ({ logger }) => {
         logger.log('hi')
 
