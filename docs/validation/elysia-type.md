@@ -150,7 +150,7 @@ t.Nullable(t.String())
 
 ## MaybeEmpty
 
-Allow the value to be null but not undefined.
+Allow the value to be undefined but not null.
 
 ```typescript
 t.MaybeEmpty(t.String())
