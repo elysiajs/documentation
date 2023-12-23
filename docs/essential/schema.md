@@ -96,4 +96,4 @@ The response should be listed as follows:
 
 As Lifecycle Event, it is important to remember that the order of Elysia's schema is stored as same as lifecycle, a queue, or first-in-first-out.
 
-Elysia **always** respects the order of code from to bottom followed by the order of life-cycle event and validation schema.
+Elysia **always** respects the order of code from top to bottom followed by the order of life-cycle event and validation schema.
