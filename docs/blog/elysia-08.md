@@ -251,7 +251,7 @@ Now defining a default field in Type Builder, Elysia will provide a default valu
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ query: { hello } }) => hello, {
+    .get('/', ({ query: { name } }) => name, {
         query: t.Object({
             name: t.String({
                 default: 'Elysia'
