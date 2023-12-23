@@ -300,6 +300,8 @@ Elysia will not send the **content-range** if the status code is set to 206, 304
 
 It's recommended to use [ETag plugin](https://github.com/bogeychan/elysia-etag) to handle the correct status code to avoid **content-range** collision from the cache.
 
+This is an initial support for **content-range** header, we have created a discussion to implement more accurate behavior based on [RPC-7233](https://datatracker.ietf.org/doc/html/rfc7233#section-4.2) in the future. Feels free to join the discussion to propose a new behavior for Elysia with **content-range** and **etag generation** at [Discussion 371](https://github.com/elysiajs/elysia/discussions/371).
+
 ### Runtime Memory improvement
 Elysia now reuses the return value of the life cycle event instead of declaring a new dedicated value.
 
