@@ -234,6 +234,10 @@ export default defineConfig({
                         link: '/life-cycle/after-handle'
                     },
                     {
+                        text: 'Map Response',
+                        link: '/life-cycle/map-response'
+                    },
+                    {
                         text: 'On Error',
                         link: '/life-cycle/on-error'
                     },
@@ -282,6 +286,10 @@ export default defineConfig({
                     {
                         text: 'Lazy Loading Module',
                         link: '/patterns/lazy-loading-module'
+                    },
+                    {
+                        text: 'Macro',
+                        link: '/patterns/macro'
                     }
                 ]
             },
