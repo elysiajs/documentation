@@ -158,44 +158,18 @@ This is why we introduce a new life-cycle run after **afterHandle** dedicated to
 
 ## Error Function
 We can set the status code by using either **set.status** or returning a new Response.
-
-This aligns with our goal, to just the literal value to the client instead of worrying about how the server should behave.
-
-However, this is proven to have a challenging integration with Eden. Since we return a literal value, we can't infer the status code from the response making Eden unable to differentiate the response from the status code. 
-
-This results in Eden not being able to use its full potential, especially in error handling as it cannot infer type without declaring explicit response type for each status.
-
-Along with many requests from our users wanting to have a more explicit way to return the status code directly with the value, not wanting to rely on **set.status**, and **new Response** for verbosity or returning a response from utility function declared outside handler function.
-
-This is why we introduce an **error** function to return a status code alongside with value back to the client.
-
 ```typescript
-import { error } from 'elysia'
-
-new Elysia()
-    .get('/', () => error(418, "I'm a teapot"))
-    .listen(3000)
-```
-
-This is equivalent to using `set.status = 418`
-```typescript
-import { error } from 'elysia'
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', ({ set }) => {
         set.status = 418
+
         return "I'm a teapot"
     })
     .listen(3000)
 ```
 
-The difference is that using an **error** function, Elysia will automatically differentiate from the status code into a dedicated response type, helping Eden to infer a response based on status correctly.
-
-This means that by using **error**, we don't have to include the explicit response schema to make Eden infers type correctly for each status code.
-
-## Error Function
-We can set the status code by using either **set.status** or returning a new Response.
-
 This aligns with our goal, to just the literal value to the client instead of worrying about how the server should behave.
 
 However, this is proven to have a challenging integration with Eden. Since we return a literal value, we can't infer the status code from the response making Eden unable to differentiate the response from the status code. 
@@ -207,20 +181,21 @@ Along with many requests from our users wanting to have a more explicit way to r
 This is why we introduce an **error** function to return a status code alongside with value back to the client.
 
 ```typescript
-import { Elysia, error } from 'elysia'
+import { Elysia, error } from 'elysia' // [!code ++]
 
 new Elysia()
-    .get('/', () => error(418, "I'm a teapot"))
+    .get('/', () => error(418, "I'm a teapot")) // [!code ++]
     .listen(3000)
 ```
 
-This is equivalent to using `set.status = 418`
+Which is an equivalent to:
 ```typescript
-import { Elysia, error } from 'elysia'
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', ({ set }) => {
         set.status = 418
+
         return "I'm a teapot"
     })
     .listen(3000)
