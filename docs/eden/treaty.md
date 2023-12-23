@@ -253,3 +253,45 @@ We can use [schema](/essential/schema) to enforce type-safety on WebSockets, jus
 **Eden.subscribe** returns **EdenWebSocket** which extends the [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket) class with type-safety. The syntax is identical with the WebSocket
 
 If more control is need, **EdenWebSocket.raw** can be accessed to interact with the native WebSocket API.
+
+## File Upload
+You may either pass one of the following to the field to attach file:
+- **File**
+- **FileList**
+- **Blob**
+
+Attaching a file will results **content-type** to be **multipart/form-data**
+
+Suppose we have the server as the following:
+```typescript
+// server.ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .post('/image', ({ body: { image, title } }) => title, {
+        body: t.Object({
+            title: t.String(),
+            image: t.Files(),
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+```
+
+We may use the client as follows:
+```typescript
+// client.ts
+import { edenTreaty } from '@elysia/eden'
+import type { Server } from './server'
+
+export const client = edenTreaty<Server>('http://localhost:3000')
+
+const id = <T extends HTMLElement = HTMLElement>(id: string) =>
+    document.getElementById(id)! as T
+
+const { data } = await client.image.post({
+    title: "Misono Mika",
+    image: id<HTMLInputElement>('picture').files!,
+})
+```

@@ -25,7 +25,7 @@ It's recommended to use transform for the following:
 
 ## Example
 
-Below is an example of using transform to mutate params to be numeric values.
+Below is an example of using mapResponse to provide Response compression.
 
 ```typescript
 import { Elysia, mapResponse } from 'elysia'
