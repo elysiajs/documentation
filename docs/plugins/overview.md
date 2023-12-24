@@ -53,6 +53,8 @@ This is to ensure developers end up with a performant web server they intend to 
 - [Logger](https://github.com/bogeychan/elysia-logger) - [pino](https://github.com/pinojs/pino)-based logging middleware
 - [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy on AWS Lambda
 - [Decorators](https://github.com/gaurishhs/elysia-decorators) - use TypeScript decorators
+- [Autoload](https://github.com/kravetsone/elysia-autoload) - filesystem router based on directory structure
+- [Msgpack](https://github.com/kravetsone/elysia-msgpack) - allows you to work with [MessagePack](https://msgpack.org)
 - [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - filesystem routes
 - [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - filesystem and folder-based router for groups
 - [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic HTTP authentication
