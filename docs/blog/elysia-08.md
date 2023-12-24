@@ -307,11 +307,6 @@ Elysia now reuses the return value of the life cycle event instead of declaring 
 
 This reduces the memory usage of Elysia by a little bit better for peak concurrent requests a little better.
 
-### Runtime Memory improvement
-Elysia now reuses the return value of the life cycle event instead of declaring a new dedicated value.
-
-This reduces the memory usage of Elysia by a little bit better for peak concurrent requests a little better.
-
 ### Plugins
 Most official plugins now take advantage of newer **Elysia.headers**, Static Content, **MapResponse** ,and revised code to comply with static code analysis even more to improve the overall performance.
 
