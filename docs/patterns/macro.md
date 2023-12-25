@@ -21,10 +21,10 @@ Macro allows us to define a custom field to the hook.
 **Elysia.macro** allows us to compose custom heavy logic into a simple configuration available in hook, and **guard** with full type safety.
 
 ```typescript
-const plugin = new Elysia({ name: 'plugin' }).macro(({ beforeHandle }) => {
+const plugin = new Elysia({ name: 'plugin' }).macro(({ onBeforeHandle }) => {
     return {
         hi(word: string) {
-            beforeHandle(() => {
+            onBeforeHandle(() => {
                 console.log(word)
             })
         }
@@ -95,10 +95,10 @@ The life cycle function of an extension API accepts additional **options** to en
 -   **function** - function to execute on the event
 
 ```typescript
-const plugin = new Elysia({ name: 'plugin' }).macro(({ beforeHandle }) => {
+const plugin = new Elysia({ name: 'plugin' }).macro(({ onBeforeHandle }) => {
     return {
         hi(word: string) {
-            beforeHandle(
+            onBeforeHandle(
                 { insert: 'before' }, // [!code ++]
                 () => {
                     console.log(word)
@@ -113,7 +113,7 @@ const plugin = new Elysia({ name: 'plugin' }).macro(({ beforeHandle }) => {
 
 -   **insert**
     -   Where should the function be added
-    -   value: **'before' | 'handle'**
+    -   value: **'before' | 'after'**
     -   @default: **'after'**
 -   **stack**
     -   Determine which type of stack should be added
