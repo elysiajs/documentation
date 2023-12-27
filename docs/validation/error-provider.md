@@ -22,24 +22,23 @@ There are 2 ways to provide a custom error message when the validation failed:
 2. Using [onError](/life-cycle/on-error) event
 
 ## Message Property
-
 TypeBox offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
 
 ```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'Hello World!', {
-        body: t.Object(
-            {
-                x: t.Number()
-            },
-            {
-                error: 'x must be a number'
-            }
-        )
-    })
-    .listen(3000)
+	.get('/', () => 'Hello World!', {
+		body: t.Object(
+			{
+				x: t.Number()
+			},
+			{
+				error: 'x must be a number'
+			}
+		)
+	})
+	.listen(3000)
 ```
 
 The following are an example of usage of the error property on various types:
@@ -74,9 +73,12 @@ Invalid Email :(
 <td>
 
 ```typescript
-t.Array(t.String(), {
-    error: 'All members must be a string'
-})
+t.Array(
+    t.String(),
+    {
+        error: 'All members must be a string'
+    }
+)
 ```
 
 </td>
@@ -93,14 +95,11 @@ All members must be a string
 <td>
 
 ```typescript
-t.Object(
-    {
-        x: t.Number()
-    },
-    {
-        error: 'Invalid object UwU'
-    }
-)
+t.Object({
+    x: t.Number()
+}, {
+    error: 'Invalid object UwU'
+})
 ```
 
 </td>
@@ -123,10 +122,11 @@ We can customize the behavior of validation based on [onError](/new/lifecycle/on
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .onError(({ code, error }) => {
-        if (code === 'VALIDATION') return error.message
-    })
-    .listen(3000)
+	.onError(({ code, error }) => {
+		if (code === 'VALIDATION')
+		     return error.message
+	})
+	.listen(3000)
 ```
 
 Narrowed down error type, will be typed as `ValidationError` imported from 'elysia/error'.
@@ -137,40 +137,40 @@ Narrowed down error type, will be typed as `ValidationError` imported from 'elys
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .onError(({ code, error }) => {
-        if (code === 'VALIDATION')
-            return error.validator.Errors(error.value).First().message
-    })
-    .listen(3000)
+	.onError(({ code, error }) => {
+		if (code === 'VALIDATION')
+		     return error.validator.Errors(error.value).First().message
+	})
+	.listen(3000)
 ```
 
 ## Error list
-
 **ValidationError** provides a method `ValidatorError.all`, allowing us to list all of the error causes.
 
 ```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .post('/', ({ body }) => body, {
-        body: t.Object({
-            name: t.String(),
-            age: t.Number()
-        }),
-        error({ code, error }) {
-            switch (code) {
-                case 'VALIDATION':
+	.post('/', ({ body }) => body, {
+		body: t.Object({
+			name: t.String(),
+			age: t.Number()
+		}),
+		error({ code, error }) {
+			switch (code) {
+				case 'VALIDATION':
                     console.log(error.all)
 
                     // Find a specific error name (path is OpenAPI Schema compliance)
-                    const name = error.all.find((x) => x.path === '/name')
+					const name = error.all.find((x) => x.path === '/name')
 
                     // If has a validation error, then log it
-                    if (name) console.log(name)
-            }
-        }
-    })
-    .listen(3000)
+                    if(name)
+    					console.log(name)
+			}
+		}
+	})
+	.listen(3000)
 ```
 
 For more information about TypeBox's validator, see [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck)
