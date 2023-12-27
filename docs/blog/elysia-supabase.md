@@ -30,12 +30,11 @@ head:
 </script>
 
 <Blog
-title="Elysia with Supabase. Your next backend at sonic speed"
-src="/blog/elysia-supabase/elysia-supabase.webp"
-alt="Elysia and Supabase resembance as a CPU place closely together"
-author="saltyaom"
-date="10 Mar 2023"
-
+  title="Elysia with Supabase. Your next backend at sonic speed"
+  src="/blog/elysia-supabase/elysia-supabase.webp"
+  alt="Elysia and Supabase resembance as a CPU place closely together"
+  author="saltyaom"
+  date="10 Mar 2023"
 >
 
 Supabase, an Open Source alternative to Firebase, has become one of the developers' favorite toolkits known for rapid development.
@@ -60,7 +59,7 @@ Things that take many hours to redo in every project are now a matter of a minut
 
 If you haven't heard, Elysia is a Bun-first web framework built with speed and Developer Experience in mind.
 
-Elysia outperforms Express by nearly ~20x faster, while having almost the same syntax as Express and Fastify.
+Elysia outperforms Express by nearly ~20x faster, while having almost the same syntax as Express and Fastify. 
 
 ###### (Performance may vary per machine, we recommended you run [the benchmark](https://github.com/SaltyAom/bun-http-framework-benchmark) on your machine before deciding the performance)
 
@@ -157,27 +156,26 @@ And now, let's apply Supabase to authenticate our user.
 ```ts
 // src/modules/authen.ts
 import { Elysia } from 'elysia'
-import { supabase } from '../../libs' // [!code ++]
+import { supabase } from '../../libs'  // [!code ++]
 
 const authen = (app: Elysia) =>
     app.group('/auth', (app) =>
         app
             .post('/sign-up', async ({ body }) => {
                 const { data, error } = await supabase.auth.signUp(body) // [!code ++]
-                // [!code ++]
+ // [!code ++]
                 if (error) return error // [!code ++]
 
                 return data.user // [!code ++]
                 return 'This route is expected to sign up a user' // [!code --]
             })
             .post('/sign-in', async ({ body }) => {
-                const { data, error } = await supabase.auth.signInWithPassword(
-                    // [!code ++]
+                const { data, error } = await supabase.auth.signInWithPassword( // [!code ++]
                     body // [!code ++]
                 ) // [!code ++]
-                // [!code ++]
+ // [!code ++]
                 if (error) return error // [!code ++]
-                // [!code ++]
+ // [!code ++]
                 return data.user // [!code ++]
                 return 'This route is expected to sign in a user' // [!code --]
             })
@@ -207,18 +205,13 @@ const authen = (app: Elysia) =>
 
                     return data.user
                 },
-                {
-                    // [!code ++]
-                    schema: {
-                        // [!code ++]
-                        body: t.Object({
-                            // [!code ++]
-                            email: t.String({
-                                // [!code ++]
+                { // [!code ++]
+                    schema: { // [!code ++]
+                        body: t.Object({ // [!code ++]
+                            email: t.String({ // [!code ++]
                                 format: 'email' // [!code ++]
                             }), // [!code ++]
-                            password: t.String({
-                                // [!code ++]
+                            password: t.String({ // [!code ++]
                                 minLength: 8 // [!code ++]
                             }) // [!code ++]
                         }) // [!code ++]
@@ -235,18 +228,13 @@ const authen = (app: Elysia) =>
 
                     return data.user
                 },
-                {
-                    // [!code ++]
-                    schema: {
-                        // [!code ++]
-                        body: t.Object({
-                            // [!code ++]
-                            email: t.String({
-                                // [!code ++]
+                { // [!code ++]
+                    schema: { // [!code ++]
+                        body: t.Object({ // [!code ++]
+                            email: t.String({ // [!code ++]
                                 format: 'email' // [!code ++]
                             }), // [!code ++]
-                            password: t.String({
-                                // [!code ++]
+                            password: t.String({ // [!code ++]
                                 minLength: 8 // [!code ++]
                             }) // [!code ++]
                         }) // [!code ++]
@@ -276,16 +264,12 @@ import { supabase } from '../../libs'
 const authen = (app: Elysia) =>
     app.group('/auth', (app) =>
         app
-            .setModel({
-                // [!code ++]
-                sign: t.Object({
-                    // [!code ++]
-                    email: t.String({
-                        // [!code ++]
+            .setModel({ // [!code ++]
+                sign: t.Object({ // [!code ++]
+                    email: t.String({ // [!code ++]
                         format: 'email' // [!code ++]
                     }), // [!code ++]
-                    password: t.String({
-                        // [!code ++]
+                    password: t.String({ // [!code ++]
                         minLength: 8 // [!code ++]
                     }) // [!code ++]
                 }) // [!code ++]
@@ -301,14 +285,11 @@ const authen = (app: Elysia) =>
                 {
                     schema: {
                         body: 'sign', // [!code ++]
-                        body: t.Object({
-                            // [!code --]
-                            email: t.String({
-                                // [!code --]
+                        body: t.Object({ // [!code --]
+                            email: t.String({ // [!code --]
                                 format: 'email' // [!code --]
                             }), // [!code --]
-                            password: t.String({
-                                // [!code --]
+                            password: t.String({ // [!code --]
                                 minLength: 8 // [!code --]
                             }) // [!code --]
                         }) // [!code --]
@@ -328,14 +309,11 @@ const authen = (app: Elysia) =>
                 {
                     schema: {
                         body: 'sign', // [!code ++]
-                        body: t.Object({
-                            // [!code --]
-                            email: t.String({
-                                // [!code --]
+                        body: t.Object({ // [!code --]
+                            email: t.String({ // [!code --]
                                 format: 'email' // [!code --]
                             }), // [!code --]
-                            password: t.String({
-                                // [!code --]
+                            password: t.String({ // [!code --]
                                 minLength: 8 // [!code --]
                             }) // [!code --]
                         }) // [!code --]
@@ -374,37 +352,33 @@ import { cookie } from '@elysiajs/cookie' // [!code ++]
 import { supabase } from '../../libs'
 
 const authen = (app: Elysia) =>
-    app.group(
-        '/auth',
-        (app) =>
-            app
-                .use(
-                    // [!code ++]
-                    cookie({
-                        // [!code ++]
-                        httpOnly: true // [!code ++]
-                        // If you need cookie to deliver via https only // [!code ++]
-                        // secure: true, // [!code ++]
-                        // // [!code ++]
-                        // If you need a cookie to be available for same-site only // [!code ++]
-                        // sameSite: "strict", // [!code ++]
-                        // // [!code ++]
-                        // If you want to encrypt a cookie // [!code ++]
-                        // signed: true, // [!code ++]
-                        // secret: process.env.COOKIE_SECRET, // [!code ++]
-                    }) // [!code ++]
-                ) // [!code ++]
-                .setModel({
-                    sign: t.Object({
-                        email: t.String({
-                            format: 'email'
-                        }),
-                        password: t.String({
-                            minLength: 8
-                        })
+    app.group('/auth', (app) =>
+        app
+            .use( // [!code ++]
+                cookie({ // [!code ++]
+                    httpOnly: true, // [!code ++]
+                    // If you need cookie to deliver via https only // [!code ++]
+                    // secure: true, // [!code ++]
+                    // // [!code ++]
+                    // If you need a cookie to be available for same-site only // [!code ++]
+                    // sameSite: "strict", // [!code ++]
+                    // // [!code ++]
+                    // If you want to encrypt a cookie // [!code ++]
+                    // signed: true, // [!code ++]
+                    // secret: process.env.COOKIE_SECRET, // [!code ++]
+                }) // [!code ++]
+            ) // [!code ++]
+            .setModel({
+                sign: t.Object({
+                    email: t.String({
+                        format: 'email'
+                    }),
+                    password: t.String({
+                        minLength: 8
                     })
                 })
-        // rest of the code
+            })
+            // rest of the code
     )
 ```
 
@@ -424,73 +398,66 @@ import { Elysia, t } from 'elysia'
 import { supabase } from '../../libs'
 
 const authen = (app: Elysia) =>
-    app.group(
-        '/auth',
-        (app) =>
-            app
-                .setModel({
-                    sign: t.Object({
-                        email: t.String({
-                            format: 'email'
-                        }),
-                        password: t.String({
-                            minLength: 8
-                        })
+    app.group('/auth', (app) =>
+        app
+            .setModel({
+                sign: t.Object({
+                    email: t.String({
+                        format: 'email'
+                    }),
+                    password: t.String({
+                        minLength: 8
                     })
                 })
-                .post(
-                    '/sign-up',
-                    async ({ body }) => {
-                        const { data, error } = await supabase.auth.signUp(body)
+            })
+            .post(
+                '/sign-up',
+                async ({ body }) => {
+                    const { data, error } = await supabase.auth.signUp(body)
 
-                        if (error) return error
-                        return data.user
-                    },
-                    {
-                        schema: {
-                            body: 'sign'
-                        }
+                    if (error) return error
+                    return data.user
+                },
+                {
+                    schema: {
+                        body: 'sign'
                     }
-                )
-                .post(
-                    '/sign-in',
-                    async ({ body }) => {
-                        const { data, error } =
-                            await supabase.auth.signInWithPassword(body)
+                }
+            )
+            .post(
+                '/sign-in',
+                async ({ body }) => {
+                    const { data, error } =
+                        await supabase.auth.signInWithPassword(body)
 
-                        if (error) return error
+                    if (error) return error
 
-                        return data.user
-                    },
-                    {
-                        schema: {
-                            body: 'sign'
-                        }
+                    return data.user
+                },
+                {
+                    schema: {
+                        body: 'sign'
                     }
-                )
-                .get(
-                    // [!code ++]
-                    '/refresh', // [!code ++]
-                    async ({ setCookie, cookie: { refresh_token } }) => {
-                        // [!code ++]
-                        const { data, error } =
-                            await supabase.auth.refreshSession({
-                                // [!code ++]
-                                refresh_token // [!code ++]
-                            }) // [!code ++]
-                        // [!code ++]
-                        if (error) return error // [!code ++]
-                        // [!code ++]
-                        setCookie('refresh_token', data.session!.refresh_token) // [!code ++]
-                        // [!code ++]
-                        return data.user // [!code ++]
-                    } // [!code ++]
-                ) // [!code ++]
+                }
+            )
+            .get( // [!code ++]
+                '/refresh', // [!code ++]
+                async ({ setCookie, cookie: { refresh_token } }) => { // [!code ++]
+                    const { data, error } = await supabase.auth.refreshSession({ // [!code ++]
+                        refresh_token // [!code ++]
+                    }) // [!code ++]
+ // [!code ++]
+                    if (error) return error // [!code ++]
+ // [!code ++]
+                    setCookie('refresh_token', data.session!.refresh_token) // [!code ++]
+ // [!code ++]
+                    return data.user // [!code ++]
+                } // [!code ++]
+            ) // [!code ++]
     )
 ```
 
 Finally, add routes to the main server.
-
 ```ts
 import { Elysia, t } from 'elysia'
 
@@ -575,21 +542,18 @@ export const post = (app: Elysia) =>
             '/create',
             async ({ body }) => {
                 let userId: string // [!code ++]
-                // [!code ++]
-                const { data, error } = await supabase.auth.getUser(
-                    // [!code ++]
+   // [!code ++]
+                const { data, error } = await supabase.auth.getUser( // [!code ++]
                     access_token // [!code ++]
                 ) // [!code ++]
-                // [!code ++]
-                if (error) {
-                    // [!code ++]
-                    const { data, error } = await supabase.auth.refreshSession({
-                        // [!code ++]
+   // [!code ++]
+                if(error) { // [!code ++]
+                    const { data, error } = await supabase.auth.refreshSession({ // [!code ++]
                         refresh_token // [!code ++]
                     }) // [!code ++]
-                    // [!code ++]
+   // [!code ++]
                     if (error) throw error // [!code ++]
-                    // [!code ++]
+   // [!code ++]
                     userId = data.user!.id // [!code ++]
                 } // [!code ++]
 
@@ -620,7 +584,6 @@ export const post = (app: Elysia) =>
 Great! Now we can extract `user_id` from our cookie using **supabase.auth.getUser**
 
 ## Derive
-
 Our code work fine for now, but let's paint a little picture.
 
 Let's say you have so many routes that require authorization like this, requiring you to extract the `userId`, it means that you will have a lot of duplicated code here, right?
@@ -702,25 +665,20 @@ export const post = (app: Elysia) =>
             .use(authen) // [!code ++]
             .put(
                 '/create',
-                async ({ body, userId }) => {
-                    // [!code ++]
+                async ({ body, userId }) => { // [!code ++]
                     let userId: string // [!code --]
-                    // [!code --]
-                    const { data, error } = await supabase.auth.getUser(
-                        // [!code --]
+    // [!code --]
+                    const { data, error } = await supabase.auth.getUser( // [!code --]
                         access_token // [!code --]
                     ) // [!code --]
-                    // [!code --]
-                    if (error) {
-                        // [!code --]
-                        const { data, error } =
-                            await supabase.auth.refreshSession({
-                                // [!code --]
-                                refresh_token // [!code --]
-                            }) // [!code --]
-                        // [!code --]
+    // [!code --]
+                    if(error) { // [!code --]
+                        const { data, error } = await supabase.auth.refreshSession({ // [!code --]
+                            refresh_token // [!code --]
+                        }) // [!code --]
+    // [!code --]
                         if (error) throw error // [!code --]
-                        // [!code --]
+    // [!code --]
                         userId = data.user!.id // [!code --]
                     } // [!code --]
 
@@ -745,16 +703,16 @@ export const post = (app: Elysia) =>
                 }
             )
     )
+
 ```
 
-Great right? We don't even see that we handled the authorization by looking at the code like magic.
+Great right? We don't even see that we handled the authorization by looking at the code like magic. 
 
 Putting our focus back on our core business logic instead.
 
 <img class="-png" src="/blog/elysia-supabase/lagrange-create-post.webp" alt="Using Rest Client to create post" />
 
 ## Non-authorized scope
-
 Now let's create one more route to fetch the post from the database.
 
 ```ts
@@ -765,17 +723,15 @@ import { authen, supabase } from '../../libs'
 export const post = (app: Elysia) =>
     app.group('/post', (app) =>
         app
-            .get('/:id', async ({ params: { id } }) => {
-                // [!code ++]
+            .get('/:id', async ({ params: { id } }) => { // [!code ++]
                 const { data, error } = await supabase // [!code ++]
                     .from('post') // [!code ++]
                     .select() // [!code ++]
                     .eq('id', id) // [!code ++]
-                // [!code ++]
+ // [!code ++]
                 if (error) return error // [!code ++]
-                // [!code ++]
-                return {
-                    // [!code ++]
+ // [!code ++]
+                return { // [!code ++]
                     success: !!data[0], // [!code ++]
                     data: data[0] ?? null // [!code ++]
                 } // [!code ++]
@@ -817,7 +773,6 @@ If not, we are going to return `success: false` and `data: null` instead.
 As we mentioned before, the `.use(authen)` is applied to the scoped **but** with only the one declared after itself, which means that anything before isn't affected, and what came after is now authorized only route.
 
 And one last thing, don't forget to add routes to the main server.
-
 ```ts
 import { Elysia, t } from 'elysia'
 
@@ -832,6 +787,7 @@ console.log(
     `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
 )
 ```
+
 
 ## Bonus: Documentation
 

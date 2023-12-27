@@ -30,12 +30,11 @@ head:
 </script>
 
 <Blog
-title="Elysia 0.5 - Radiant"
-src="/blog/elysia-05/radiant.webp"
-alt="Radiant"
-author="saltyaom"
-date="15 May 2023"
-
+    title="Elysia 0.5 - Radiant"
+    src="/blog/elysia-05/radiant.webp"
+    alt="Radiant"
+    author="saltyaom"
+    date="15 May 2023"
 >
 
 Named after Arknights' original music, 「[Radiant](https://youtu.be/QhUjD--UUV4)」composed by Monster Sirent Records.
@@ -43,7 +42,6 @@ Named after Arknights' original music, 「[Radiant](https://youtu.be/QhUjD--UUV4
 Radiant push the boundary of performance with more stability improvement especially types, and dynamic routes.
 
 ## Static Code Analysis
-
 With Elysia 0.4 introducing Ahead of Time compliation, allowing Elysia to optimize function calls, and eliminate many over head we previously had.
 
 Today we are expanding Ahead of Time compliation to be even faster wtih Static Code Analysis, to be the fastest Bun web framework.
@@ -86,12 +84,11 @@ app.post('/id/:id', ({ params: { id } }) => id, {
 With Static Code Analysis, and Ahead of Time compilation, you can rest assure that Elysia is very good at reading your code and adjust itself to maximize the performance automatically.
 
 Static Code Analysis allows us to improve Elysia performance beyond we have imagined, here's a notable mention:
-
--   overall improvement by ~15%
--   static router fast ~33%
--   empty query parsing ~50%
--   strict type body parsing faster by ~100%
--   empty body parsing faster by ~150%
+- overall improvement by ~15%
+- static router fast ~33%
+- empty query parsing ~50%
+- strict type body parsing faster by ~100%
+- empty body parsing faster by ~150%
 
 With this improvement, we are able to surpass **Stricjs** in term of performance, compared using Elysia 0.5.0-beta.0 and Stricjs 2.0.4
 
@@ -121,7 +118,7 @@ TypeBox is a core library that powered Elysia's strict type system known as **El
 
 In this update, we update TypeBox from 0.26 to 0.28 to make even more fine-grained Type System near strictly typed language.
 
-We update Typebox to improve Elysia typing system to match new TypeBox feature with newer version of TypeScript like **Constant Generic**
+We update Typebox to improve Elysia typing system to match new TypeBox feature with newer version of TypeScript like **Constant Generic** 
 
 ```ts
 new Elysia()
@@ -130,7 +127,10 @@ new Elysia()
         'name',
         Type.TemplateLiteral([
             Type.Literal('Elysia '),
-            Type.Union([Type.Literal('The Blessing'), Type.Literal('Radiant')])
+            Type.Union([
+                Type.Literal('The Blessing'),
+                Type.Literal('Radiant')
+            ])
         ])
     )
     // Strictly check for template literal
@@ -148,14 +148,12 @@ That's why we introduced a new Type, **URLEncoded**.
 As we previously mentioned before, Elysia now can take an advantage of schema and optimize itself Ahead of Time, body parsing is one of more expensive area in Elysia, that's why we introduce a dedicated type for parsing body like URLEncoded.
 
 By default, Elysia will parse body based on body's schema type as the following:
-
--   t.URLEncoded -> `application/x-www-form-urlencoded`
--   t.Object -> `application/json`
--   t.File -> `multipart/form-data`
--   the rest -> `text/plain`
+- t.URLEncoded -> `application/x-www-form-urlencoded`
+- t.Object -> `application/json`
+- t.File -> `multipart/form-data`
+- the rest -> `text/plain`
 
 However, you can explictly tells Elysia to parse body with the specific method using `type` as the following:
-
 ```ts
 app.post('/', ({ body }) => body, {
     type: 'json'
@@ -163,7 +161,6 @@ app.post('/', ({ body }) => body, {
 ```
 
 `type` may be one of the following:
-
 ```ts
 type ContentType = |
     // Shorthand for 'text/plain'
@@ -183,13 +180,11 @@ type ContentType = |
 You can find more detail at the [explicit body](/concept/explicit-body) page in concept.
 
 ### Numeric Type
-
 We found that one of the redundant task our developers found using Elysia is to parse numeric string.
 
 That's we introduce a new **Numeric** Type.
 
 Previously on Elysia 0.4, to parse numeric string, we need to use `transform` to manually parse the string ourself.
-
 ```ts
 app.get('/id/:id', ({ params: { id } }) => id, {
     schema: {
@@ -200,14 +195,15 @@ app.get('/id/:id', ({ params: { id } }) => id, {
     transform({ params }) {
         const id = +params.id
 
-        if (!Number.isNaN(id)) params.id = id
+        if(!Number.isNaN(id))
+            params.id = id
     }
 })
 ```
 
 We found that this step is redundant, and full of boiler-plate, we want to tap into this problem and solve it in a declarative way.
 
-Thanks to Static Code Analysis, Numeric type allow you to defined a numeric string and parse it to number automatically.
+Thanks to Static Code Analysis, Numeric type allow you to defined a numeric string and parse it to number automatically. 
 
 Once validated, a numeric type will be parsed as number automatically both on runtime and type level to fits our need.
 
@@ -220,12 +216,11 @@ app.get('/id/:id', ({ params: { id } }) => id, {
 ```
 
 You can use numeric type on any property that support schema typing, including:
-
--   params
--   query
--   headers
--   body
--   response
+- params
+- query
+- headers
+- body
+- response
 
 We hope that you will find this new Numeric type useful in your server.
 
@@ -234,7 +229,6 @@ You can find more detail at [numeric type](/concept/numeric) page in concept.
 With TypeBox 0.28, we are making Elysia type system we more complete, and we excited to see how it play out on your end.
 
 ## Inline Schema
-
 You might have notice already that our example are not using a `schema.type` to create a type anymore, because we are making a **breaking change** to move schema and inline it to hook statement instead.
 
 ```ts
@@ -244,7 +238,7 @@ app.get('/id/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Number()
         })
-    }
+    },
 })
 
 // ? To
@@ -262,7 +256,6 @@ Based on a lot of tinkering and real-world usage, we try to suggest this new cha
 But we also listen the the rest of our community, and try to get around with the argument against this decision:
 
 ### Clear separation
-
 With the old syntax, you have to explicitly tells Elysia that the part you are creating are a schema using `Elysia.t`.
 
 Creating a clear separation between life-cycle and schema are more clear and has a better readability.
@@ -270,7 +263,6 @@ Creating a clear separation between life-cycle and schema are more clear and has
 But from our intense test, we found that most people don't have any problem struggling reading a new syntax, separating life-cycle hook from schema type, we found that it still has clear separation with `t.Type` and function, and a different syntax highlight when reviewing the code, although not as good as clear as explicit schema, but people can get used to the new syntax very quickly especially if they are familiar the Elysia.
 
 ### Auto completion
-
 One of the other area that people are concerned about are reading auto-completion.
 
 Merging schema and life-cycle hook caused the auto-completion to have around 10 properties for auto-complete to suggest, and based on many proven general User Experience research, it can be frastating for user to that many options to choose from, and can cause a steeper learning curve.
@@ -282,7 +274,6 @@ For example, if you want to access a headers, you can acceess `headers` in Conte
 With this, Elysia might have a little more learning curve, however it's a trade-off that we are willing to take for better developer experience.
 
 ## "headers" fields
-
 Previously, you can get headers field by accessing `request.headers.get`, and you might wonder why we don't ship headers by default.
 
 ```ts
@@ -304,7 +295,6 @@ app.post('/headers', ({ headers }) => headers['content-type'])
 Parsed headers will be available as plain object with a lower-case key of the header name.
 
 ## State, Decorate, Model rework
-
 One of the main feature of Elysia is able to customize Elysia to your need.
 
 We revisits `state`, `decorate`, and `setModel`, and we saw that api is not consistant, and can be improved.
@@ -317,23 +307,23 @@ So we renamed `setModel` to `model`, and add support for setting single and mult
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
-    // ? set model using label
-    .model('string', t.String())
-    .model({
-        number: t.Number()
-    })
-    .state('visitor', 1)
-    // ? set model using object
-    .state({
-        multiple: 'value',
-        are: 'now supported!'
-    })
-    .decorate('visitor', 1)
-    // ? set model using object
-    .decorate({
-        name: 'world',
-        number: 2
-    })
+	// ? set model using label
+	.model('string', t.String())
+	.model({
+		number: t.Number()
+	})
+	.state('visitor', 1)
+	// ? set model using object
+	.state({
+		multiple: 'value',
+		are: 'now supported!'
+	})
+	.decorate('visitor', 1)
+	// ? set model using object
+	.decorate({
+		name: 'world',
+		number: 2
+	})
 ```
 
 And as we raised minimum support of TypeScript to 5.0 to improve strictly typed with **Constant Generic**.
@@ -341,15 +331,14 @@ And as we raised minimum support of TypeScript to 5.0 to improve strictly typed 
 `state`, `decorate`, and `model` now support literal type, and template string to strictly validate type both runtime and type-level.
 
 ```ts
-// ? state, decorate, now support literal
+	// ? state, decorate, now support literal
 app.get('/', ({ body }) => number, {
-    body: t.Literal(1),
-    response: t.Literal(2)
-})
+		body: t.Literal(1),
+		response: t.Literal(2)
+	})
 ```
 
 ### Group and Guard
-
 We found that many developers often use `group` with `guard`, we found that nesting them can be later redundant and maybe boilerplate full.
 
 Starting with Elysia 0.5, we add a guard scope for `.group` as an optional second parameter.
@@ -367,21 +356,19 @@ app.group('/v1', (app) =>
 
 // ✅ new, compatible with old syntax
 app.group(
-    '/v1',
-    {
+    '/v1', {
         body: t.Literal('Rikuhachima Aru')
-    },
-    (app) => app.get('/student', () => 'Rikuhachima Aru')
+    }, 
+    app => app.get('/student', () => 'Rikuhachima Aru')
 )
 
 // ✅ compatible with function overload
-app.group('/v1', (app) => app.get('/student', () => 'Rikuhachima Aru'))
+app.group('/v1', app => app.get('/student', () => 'Rikuhachima Aru'))
 ```
 
 We hope that you will find all these new revisited API more useful and fits more to your use-case.
 
 ## Type Stability
-
 Elysia Type System is complex.
 
 We can declare variable on type-level, reference type by name, apply multiple Elysia instance, and even have support for clousure-like at type level, which is really complex to make you have the best developer experience especially with Eden.
@@ -395,30 +382,26 @@ Which means that you can now rely on us to check for type integrity for every re
 ---
 
 ### Notable Improvement:
-
--   Add CommonJS support for running Elysia with Node adapter
--   Remove manual fragment mapping to speed up path extraction
--   Inline validator in `composeHandler` to improve performance
--   Use one time context assignment
--   Add support for lazy context injection via Static Code Analysis
--   Ensure response non nullability
--   Add unioned body validator check
--   Set default object handler to inherits
--   Using `constructor.name` mapping instead of `instanceof` to improve speed
--   Add dedicated error constructor to improve performance
--   Conditional literal fn for checking onRequest iteration
--   improve WebSocket type
+- Add CommonJS support for running Elysia with Node adapter
+- Remove manual fragment mapping to speed up path extraction
+- Inline validator in `composeHandler` to improve performance
+- Use one time context assignment
+- Add support for lazy context injection via Static Code Analysis
+- Ensure response non nullability
+- Add unioned body validator check
+- Set default object handler to inherits
+- Using `constructor.name` mapping instead of `instanceof` to improve speed
+- Add dedicated error constructor to improve performance
+- Conditional literal fn for checking onRequest iteration
+- improve WebSocket type
 
 Breaking Change:
-
--   Rename `innerHandle` to `fetch`
-    -   to migrate: rename `.innerHandle` to `fetch`
--   Rename `.setModel` to `.model`
-    -   to migrate: rename `setModel` to `model`
--   Remove `hook.schema` to `hook`
-
-    -   to migrate: remove schema and curly brace `schema.type`:
-
+- Rename `innerHandle` to `fetch`
+    - to migrate: rename `.innerHandle` to `fetch`
+- Rename `.setModel` to `.model`
+    - to migrate: rename `setModel` to `model`
+- Remove `hook.schema` to `hook`
+    - to migrate: remove schema and curly brace `schema.type`:
     ```ts
     // from
     app.post('/', ({ body }) => body, {
@@ -436,11 +419,9 @@ Breaking Change:
         })
     })
     ```
-
--   remove `mapPathnameRegex` (internal)
+- remove `mapPathnameRegex` (internal)
 
 ## Afterward
-
 Pushing performance boundary of JavaScript with Bun is what we really excited!
 
 Even with the new features every release, Elysia keeps getting faster, with an improved reliabilty and stability, we hope that Elysia will become one of the choice for the next generation TypeScript framework.

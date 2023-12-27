@@ -12,6 +12,7 @@ head:
       - name: 'description'
         content: With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accelerate our interaction with database, Elysia accelerate our creation of backend web server in term of both developer experience and performance.
 
+
     - - meta
       - property: 'og:description'
         content: With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience. For Prisma we can accelerate our interaction with database, Elysia accelerate our creation of backend web server in term of both developer experience and performance.
@@ -35,21 +36,20 @@ src="/blog/with-prisma/prism.webp"
 alt="Triangular Prism placing in the center"
 author="saltyaom"
 date="4 Jun 2023"
-
-> Prisma is a renowned TypeScript ORM for its developer experience.
+>
+Prisma is a renowned TypeScript ORM for its developer experience.
 
 With type-safe and intuitive API that allows us to interact with databases using a fluent and natural syntax.
 
 Writing a database query is as simple as writing a shape of data with TypeScript auto-completion, then Prisma takes care of the rest by generating efficient SQL queries and handling database connections in the background.
 
 One of the standout features of Prisma is its seamless integration with popular databases like:
-
--   PostgreSQL
--   MySQL
--   SQLite
--   SQL Server
--   MongoDB
--   CockroachDB
+- PostgreSQL
+- MySQL
+- SQLite
+- SQL Server
+- MongoDB
+- CockroachDB
 
 So we have the flexibility to choose the database that best suits our project's needs, without compromising on the power and performance that Prisma brings to the table.
 
@@ -84,13 +84,11 @@ bun create elysia elysia-prisma
 Where `elysia-prisma` is our project name (folder destination), feels free to change the name to anything you like.
 
 Now in our folder, and let's install Prisma CLI as dev dependency.
-
 ```ts
 bun add -d prisma
 ```
 
 Then we can setup prisma project with `prisma init`
-
 ```ts
 bunx prisma init
 ```
@@ -99,10 +97,9 @@ bunx prisma init
 
 Once setup, we can see that Prisma will update `.env` file and generate a folder named **prisma** with **schema.prisma** as a file inside.
 
-**schema.prisma** is an database model defined with Prisma's schema language.
+**schema.prisma** is an database model defined with Prisma's schema language. 
 
 Let's update our **schema.prisma** file like this for a demonstration:
-
 ```ts
 generator client {
   provider = "prisma-client-js"
@@ -123,31 +120,28 @@ model User {
 Telling Prisma that we want to create a table name **User** with column as:
 | Column | Type | Constraint |
 | --- | --- | --- |
-| id | Number | Primary Key with auto increment |
+| id  | Number | Primary Key with auto increment |
 | username | String | Unique |
 | password | String | - |
 
 Prisma will then read the schema, and DATABASE_URL from an `.env` file, so before syncing our database we need to define the `DATABASE_URL` first.
 
 Since we don't have any database running, we can setup one using docker:
-
 ```bash
 docker run -p 5432:5432 -e POSTGRES_PASSWORD=12345678 -d postgres
 ```
 
 Now go into `.env` file at the root of our project then edit:
-
 ```
 DATABASE_URL="postgresql://postgres:12345678@localhost:5432/db?schema=public"
 ```
 
 Then we can run `prisma migrate` to sync our database with Prisma schema:
-
 ```bash
 bunx prisma migrate dev --name init
 ```
 
-Prisma then generate a strongly-typed Prisma Client code based on our schema.
+Prisma then generate a strongly-typed Prisma Client code based on our schema. 
 
 This means we get autocomplete and type checking in our code editor, catching potential errors at compile time rather than runtime.
 
@@ -162,14 +156,11 @@ import { PrismaClient } from '@prisma/client' // [!code ++]
 const db = new PrismaClient() // [!code ++]
 
 const app = new Elysia()
-    .post(
-        // [!code ++]
+    .post( // [!code ++]
         '/sign-up', // [!code ++]
-        async ({ body }) =>
-            db.user.create({
-                // [!code ++]
-                data: body // [!code ++]
-            }) // [!code ++]
+        async ({ body }) => db.user.create({ // [!code ++]
+            data: body // [!code ++]
+        }) // [!code ++]
     ) // [!code ++]
     .listen(3000)
 
@@ -189,7 +180,6 @@ As Prisma function doesn't return native Promise, Elysia can not dynamically han
 Now the problem is that the body could be anything, not limited to our expected defined type.
 
 We can improve that by using Elysia's type system.
-
 ```ts
 import { Elysia, t } from 'elysia' // [!code ++]
 import { PrismaClient } from '@prisma/client'
@@ -198,18 +188,14 @@ const db = new PrismaClient()
 
 const app = new Elysia()
     .post(
-        '/sign-up',
-        async ({ body }) =>
-            db.user.create({
-                data: body
-            }),
-        {
-            // [!code ++]
-            body: t.Object({
-                // [!code ++]
+        '/sign-up', 
+        async ({ body }) => db.user.create({
+            data: body
+        }),
+        { // [!code ++]
+            body: t.Object({ // [!code ++]
                 username: t.String(), // [!code ++]
-                password: t.String({
-                    // [!code ++]
+                password: t.String({ // [!code ++]
                     minLength: 8 // [!code ++]
                 }) // [!code ++]
             }) // [!code ++]
@@ -223,7 +209,6 @@ console.log(
 ```
 
 This tells Elysia to validate the body of an incoming request to match the shape, and update TypeScript's type of the `body` inside the callback to match the exact same type:
-
 ```ts
 // 'body' is now typed as the following:
 {
@@ -237,9 +222,7 @@ This means that if you the shape doesn't interlop with database table, it would 
 Which is effective when you need to edit a table or perform a migration, Elysia can log the error immediately line by line because of a type conflict before reaching the production.
 
 ## Error Handling
-
 Since our `username` field is unique, sometime Prisma can throw an error there could be an accidental duplication of `username` when trying to sign up like this:
-
 ```ts
 Invalid `prisma.user.create()` invocation:
 
@@ -247,7 +230,6 @@ Unique constraint failed on the fields: (`username`)
 ```
 
 Default Elysia's error handler can handle the case automatically but we can improve that by specifying a custom error using Elysia's local `onError` hook:
-
 ```ts
 import { Elysia, t } from 'elysia'
 import { PrismaClient } from '@prisma/client'
@@ -257,24 +239,19 @@ const db = new PrismaClient()
 const app = new Elysia()
     .post(
         '/',
-        async ({ body }) =>
-            db.user.create({
-                data: body
-            }),
+        async ({ body }) => db.user.create({
+            data: body
+        }),
         {
-            error({ code }) {
-                // [!code ++]
-                switch (
-                    code // [!code ++]
-                ) {
+            error({ code }) {  // [!code ++]
+                switch (code) {  // [!code ++]
                     // Prisma P2002: "Unique constraint failed on the {constraint}"  // [!code ++]
-                    case 'P2002': // [!code ++]
-                        return {
-                            // [!code ++]
-                            error: 'Username must be unique' // [!code ++]
-                        } // [!code ++]
-                } // [!code ++]
-            }, // [!code ++]
+                    case 'P2002':  // [!code ++]
+                        return {  // [!code ++]
+                            error: 'Username must be unique'  // [!code ++]
+                        }  // [!code ++]
+                }  // [!code ++]
+            },  // [!code ++]
             body: t.Object({
                 username: t.String(),
                 password: t.String({
@@ -295,7 +272,6 @@ Using `error` hook, any error thown inside a callback will be populate to `error
 According to [Prisma documentation](https://www.prisma.io/docs/reference/api-reference/error-reference#p2002), error code 'P2002' means that by performing the query, it will failed a unique constraint.
 
 Since this table only a single `username` field that is unique, we can imply that the error is caused because username is not unique, so we return a custom erorr message of:
-
 ```ts
 {
     error: 'Username must be unique'
@@ -307,7 +283,6 @@ This will return a JSON equivalent of our custom error message when a unique con
 Allowing us to seemlessly define any custom error from Prisma error.
 
 ## Bonus: Reference Schema
-
 When our server grow complex and type becoming more redundant and become a boilerplate, inlining an Elysia type can be improved by using **Reference Schema**.
 
 To put it simply, we can named our schema and reference the type by using the name.
@@ -319,23 +294,19 @@ import { PrismaClient } from '@prisma/client'
 const db = new PrismaClient()
 
 const app = new Elysia()
-    .model({
-        // [!code ++]
-        'user.sign': t.Object({
-            // [!code ++]
+    .model({ // [!code ++]
+        'user.sign': t.Object({ // [!code ++]
             username: t.String(), // [!code ++]
-            password: t.String({
-                // [!code ++]
+            password: t.String({ // [!code ++]
                 minLength: 8 // [!code ++]
             }) // [!code ++]
         }) // [!code ++]
     }) // [!code ++]
     .post(
         '/',
-        async ({ body }) =>
-            db.user.create({
-                data: body
-            }),
+        async ({ body }) => db.user.create({
+            data: body
+        }),
         {
             error({ code }) {
                 switch (code) {
@@ -347,11 +318,9 @@ const app = new Elysia()
                 }
             },
             body: 'user.sign', // [!code ++]
-            body: t.Object({
-                // [!code --]
+            body: t.Object({ // [!code --]
                 username: t.String(), // [!code --]
-                password: t.String({
-                    // [!code --]
+                password: t.String({ // [!code --]
                     minLength: 8 // [!code --]
                 }) // [!code --]
             }) // [!code --]
@@ -369,7 +338,6 @@ This works as same as using an inline but instead you defined it once and refers
 TypeScript and validation code will works as expected.
 
 ## Bonus: Documentation
-
 As a bonus, Elysia type system is also OpenAPI Schema 3.0 compliance, which means that it can generate documentation with tools that support OpenAPI Schema like Swagger.
 
 We can use Elysia Swagger plugin to generate an API documentation in a single line.
@@ -394,8 +362,7 @@ const app = new Elysia()
         async ({ body }) =>
             db.user.create({
                 data: body,
-                select: {
-                    // [!code ++]
+                select: { // [!code ++]
                     id: true, // [!code ++]
                     username: true // [!code ++]
                 } // [!code ++]
@@ -416,8 +383,7 @@ const app = new Elysia()
                     minLength: 8
                 })
             }),
-            response: t.Object({
-                // [!code ++]
+            response: t.Object({ // [!code ++]
                 id: t.Number(), // [!code ++]
                 username: t.String() // [!code ++]
             }) // [!code ++]
@@ -443,7 +409,6 @@ And if anything more, we don't have to worry that we might forget a specificatio
 We can define our route detail with `detail` that also follows OpenAPI Schema 3.0, so we can properly create documentation effortlessly.
 
 ## What's next
-
 With the support of Prisma with Bun and Elysia, we are entering a new era of a new level of developer experience.
 
 For Prisma we can accelerate our interaction with database, Elysia accelerate our creation of backend web server in term of both developer experience and performance.
