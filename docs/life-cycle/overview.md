@@ -20,7 +20,6 @@ head:
 </script>
 
 # Life Cycle
-
 It's recommended that you have read [Essential life-cycle](/new/essential/life-cycle) for better understanding of Elysia's Life Cycle.
 
 Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
@@ -63,7 +62,6 @@ Below are the request lifecycle available in Elysia:
 ---
 
 Every life-cycle could be apply at both:
-
 1. Local Hook (route)
 2. Global Hook
 
