@@ -25,7 +25,9 @@ const plugin = new Elysia()
     .decorate('plugin', 'hi')
     .get('/plugin', ({ plugin }) => plugin)
 
-const app = new Elysia().use(plugin).get('/', ({ plugin }) => plugin)
+const app = new Elysia()
+    .use(plugin)
+    .get('/', ({ plugin }) => plugin)
 ```
 
 We can use the plugin by passing an instance to **Elysia.use**.
@@ -44,12 +46,15 @@ Using a plugin pattern, you decouple your business logic into a separate file.
 
 ```typescript
 // plugin.ts
-export const plugin = new Elysia().get('/plugin', () => 'hi')
+export const plugin = new Elysia()
+    .get('/plugin', () => 'hi')
 
 // main.ts
 import { plugin } from './plugin'
 
-const app = new Elysia().use(plugin).listen(8080)
+const app = new Elysia()
+    .use(plugin)
+    .listen(8080)
 ```
 
 ## Config
@@ -61,9 +66,12 @@ You can create a function that accepts parameters that may change the behavior o
 ```typescript
 import { Elysia } from 'elysia'
 
-const version = (version = 1) => new Elysia().get('/version', version)
+const version = (version = 1) => new Elysia()
+        .get('/version', version)
 
-const app = new Elysia().use(version(1)).listen(8080)
+const app = new Elysia()
+    .use(version(1))
+    .listen(8080)
 ```
 
 ## Functional callback​
@@ -78,10 +86,14 @@ To define a functional callback, create a function that accepts Elysia as a para
 const plugin = (app: Elysia) => {
     if ('counter' in app.store) return app
 
-    return app.state('counter', 0).get('/plugin', () => 'Hi')
+    return app
+        .state('counter', 0)
+        .get('/plugin', () => 'Hi')
 }
 
-const app = new Elysia().use(plugin).listen(8080)
+const app = new Elysia()
+    .use(plugin)
+    .listen(8080)
 ```
 
 Once passed to `Elysia.use`, functional callback behaves as a normal plugin except the property is assigned directly to
@@ -103,11 +115,11 @@ Elysia avoids this by differentiating the instance by using **name** and **optio
 ```typescript
 import { Elysia } from 'elysia'
 
-const plugin = (config) =>
-    new Elysia({
+const plugin = (config) => new Elysia({
         name: 'my-plugin', // [!code ++]
-        seed: config // [!code ++]
-    }).get(`${config.prefix}/hi`, () => 'Hi')
+        seed: config, // [!code ++]
+    })
+    .get(`${config.prefix}/hi`, () => 'Hi')
 
 const app = new Elysia()
     .use(
@@ -144,7 +156,6 @@ If the provided value is class, Elysia will then try to use `.toString` method t
 :::
 
 ## Service Locator
-
 When you apply multiple state and decorators plugin to an instance, the instance will gain type safety.
 
 However, you may notice that when you are trying to use the decorated value in other instance without decorator, you may realize that the type is missing.
@@ -152,7 +163,9 @@ However, you may notice that when you are trying to use the decorated value in o
 ```typescript
 import { Elysia } from 'elysia'
 
-const main = new Elysia().decorate('a', 'a').use(child)
+const main = new Elysia()
+    .decorate('a', 'a')
+    .use(child)
 
 const child = new Elysia()
     // ❌ 'a' is missing
@@ -169,13 +182,17 @@ Simply put, we need to provide the plugin reference for Elysia to find the servi
 
 ```typescript
 // setup.ts
-const setup = new Elysia({ name: 'setup' }).decorate('a', 'a')
+const setup = new Elysia({ name: 'setup' })
+    .decorate('a', 'a')
 
 // index.ts
-const main = new Elysia().use(child)
+const main = new Elysia()
+    .use(child)
 
 // child.ts
-const child = new Elysia().use(setup).get('/', ({ a }) => a)
+const child = new Elysia()
+    .use(setup)
+    .get('/', ({ a }) => a)
 ```
 
 ## Official Plugins
@@ -183,9 +200,8 @@ const child = new Elysia().use(setup).get('/', ({ a }) => a)
 You can find an officially maintained plugin at Elysia's [plugins](/plugins/overview).
 
 Some plugins include:
-
--   GraphQL
--   Swagger
--   Server Sent Event
+- GraphQL
+- Swagger
+- Server Sent Event
 
 And various community plugins.
