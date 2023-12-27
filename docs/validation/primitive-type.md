@@ -107,7 +107,9 @@ boolean
 <td>
 
 ```typescript
-t.Array(t.Number())
+t.Array(
+    t.Number()
+)
 ```
 
 </td>
@@ -182,7 +184,6 @@ Elysia extends all type from TypeBox allowing you to reference most of the API f
 See [TypeBox's Type](https://github.com/sinclairzx81/typebox#json-types) for additional types that are supported by TypeBox.
 
 ## Attribute
-
 TypeBox can accept an argument for more comprehensive behavior based on JSON Schema 7 specification.
 
 <table class="md-table">
@@ -234,23 +235,26 @@ t.Number({
 <td>
 
 ```typescript
-t.Array(t.Number(), {
-    /**
-     * Minimum number of items
-     */
-    minItems: 1,
-    /**
-     * Maximum number of items
-     */
-    maxItems: 5
-})
+t.Array(
+    t.Number(),
+    {
+        /**
+         * Minimum number of items
+         */
+        minItems: 1,
+        /**
+         * Maximum number of items
+         */
+        maxItems: 5
+    }
+)
 ```
 
 </td>
 <td>
 
 ```typescript
-;[1, 2, 3, 4, 5]
+[1,2,3,4,5]
 ```
 
 </td>
@@ -261,18 +265,18 @@ t.Array(t.Number(), {
 
 ```typescript
 t.Object(
-    {
-        x: t.Number()
-    },
-    {
-        /**
-         * @default false
-         * Accept additional properties
-         * that not specified in schema
-         * but still match the type
-         */
-        additionalProperties: true
-    }
+	{
+		x: t.Number()
+	},
+	{
+		/**
+		 * @default false
+		 * Accept additional properties
+		 * that not specified in schema
+		 * but still match the type
+		 */
+		additionalProperties: true
+	}
 )
 ```
 
@@ -292,15 +296,12 @@ y: 200
 See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) For more explaination for each attribute.
 
 ---
-
 <br>
 
 # Honorable Mention
-
 The following are common patterns that are often found useful when creating a schema.
 
 ## Union
-
 Allow multiple types via union.
 
 <table class="md-table">
@@ -314,7 +315,10 @@ Allow multiple types via union.
 <td>
 
 ```typescript
-t.Union([t.String(), t.Number()])
+t.Union([
+    t.String(),
+    t.Number()
+])
 ```
 
 </td>
@@ -339,7 +343,6 @@ Hello
 </table>
 
 ## Optional
-
 Provided in a property of `t.Object`, allowing the field to be undefined or optional.
 
 <table class="md-table">
@@ -385,7 +388,6 @@ t.Object({
 </table>
 
 ## Partial
-
 Allowing all of the field in `t.Object` to be optional.
 
 <table class="md-table">
@@ -466,14 +468,11 @@ Invalid Email :(
 <td>
 
 ```typescript
-t.Object(
-    {
-        x: t.Number()
-    },
-    {
-        error: 'Invalid object UwU'
-    }
-)
+t.Object({
+    x: t.Number()
+}, {
+    error: 'Invalid object UwU'
+})
 ```
 
 </td>
