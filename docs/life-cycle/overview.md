@@ -20,7 +20,7 @@ head:
 </script>
 
 # Life Cycle
-It's recommended that you have read [Essential life-cycle](/new/essential/life-cycle) for better understanding of Elysia's Life Cycle.
+It's recommended that you have read [Essential life-cycle](/essential/life-cycle) for better understanding of Elysia's Life Cycle.
 
 Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
 
