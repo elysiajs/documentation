@@ -185,7 +185,7 @@ new Elysia()
     .state(({ version, ...store }) => ({
         ...store,
         elysiaVersion: 1
-    })
+    }))
     // ✅ Create from state remap
     .get('/', ({ store }) => store.elysiaVersion)
     // ❌ Excluded from state remap
