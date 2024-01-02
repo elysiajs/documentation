@@ -24,7 +24,7 @@ export default {
     },
     fr: {
         label: 'French',
-        lang: 'fr', // optional, will be added  as `lang` attribute on `html` tag
+        lang: 'fr',
         themeConfig: generateThemeConfig('fr')
     }
 }
