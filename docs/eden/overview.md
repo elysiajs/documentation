@@ -52,7 +52,7 @@ Hover over variable and function to see type definition.
 Elysia allows you change the type on server and it will be instantly reflected on the client, helping with auto-completion and type-enforcement.
 
 ## Eden
-Eden is a RRC-like client to connect Elysia  **end-to-end type safety** using only TypeScript's type inference instead of code generation.
+Eden is a RPC-like client to connect Elysia  **end-to-end type safety** using only TypeScript's type inference instead of code generation.
 
 Allowing you to sync client and server types effortlessly, weighing less than 2KB.
 

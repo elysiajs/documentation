@@ -58,7 +58,7 @@ const client = edenTreaty<App>('http://localhost:8080') // [!code ++]
 client.index.get().then(console.log)
 
 // response type: 1895
-client.id.1895.get().then(console.log)
+client.id[1895].get().then(console.log)
 
 // response type: { id: 1895, name: 'Skadi' }
 client.mirror.post({

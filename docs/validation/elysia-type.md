@@ -130,7 +130,7 @@ Cookie extends attributes of [Object](https://json-schema.org/draft/2020-12/json
 
 ### secrets
 
-Secret key for signing cookie.
+The secret key for signing cookies.
 
 Accepts a string or an array of string
 
@@ -150,10 +150,10 @@ t.Nullable(t.String())
 
 ## MaybeEmpty
 
-Allow the value to be null but not undefined.
+Allow the value to be null and undefined.
 
 ```typescript
 t.MaybeEmpty(t.String())
 ```
 
-For additional information, you can find the full source code of the type system in `elysia/type-system`.
+For additional information, you can find the full source code of the type system in [`elysia/type-system`](https://github.com/elysiajs/elysia/blob/main/src/type-system.ts).
