@@ -394,6 +394,10 @@ export default defineConfig({
                     {
                         text: 'Astro',
                         link: '/integrations/astro'
+                    },
+                    {
+                        text: 'SvelteKit',
+                        link: '/integrations/sveltekit'
                     }
                     // {
                     //     text: 'Cheat Sheet',
