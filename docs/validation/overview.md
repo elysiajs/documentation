@@ -49,7 +49,7 @@ For example, Elysia Type introduced some new types like:
 - **File**: A File or Blob of an HTTP Body
 - **Numeric**: Accept numeric string and convert to number
 - **ObjectString**: Stringified JSON, converted into Object
-- **Email Format**: Accept Stirng that complies with email pattern
+- **Email Format**: Accept String that complies with email pattern
 
 An integration like this should take care of the framework by default instead of relying on the user end to set up a custom type on every project, which is why Elysia decided to extend and re-export the TypeBox library instead.
 
