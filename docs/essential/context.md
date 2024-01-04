@@ -78,7 +78,7 @@ new Elysia()
     // ❌ TypeError: counter doesn't exist in store
     .get('/error', ({ store }) => store.counter)
     .state('counter', 0)
-    // ✅ Because we assigned a version before, you can now access it
+    // ✅ Because we assigned a counter before, you can now access it
     .get('/', ({ store }) => store.counter)
 ```
 
