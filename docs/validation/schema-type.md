@@ -87,7 +87,7 @@ The body is provided as same as `body` in `fetch` API.
 fetch('https://elysiajs.com', {
     method: 'POST',
     body: JSON.stringify({
-        hello: 'Elysia'
+        name: 'Elysia'
     })
 })
 ```
@@ -109,8 +109,8 @@ new Elysia()
 The validation should be as follows:
 | Body | Validation |
 | --- | --------- |
-| \{ hello: 'Elysia' \} | ✅ |
-| \{ hello: 1 \} | ❌ |
+| \{ name: 'Elysia' \} | ✅ |
+| \{ name: 1 \} | ❌ |
 | \{ alias: 'Elysia' \} | ❌ |
 | `undefined` | ❌ |
 
@@ -152,8 +152,8 @@ new Elysia()
 The validation should be as follows:
 | Body | Validation |
 | --- | --------- |
-| \{ hello: 'Elysia' \} | ✅ |
-| \{ hello: 1 \} | ❌ |
+| \{ name: 'Elysia' \} | ✅ |
+| \{ name: 1 \} | ❌ |
 | \{ alias: 'Elysia' \} | ❌ |
 | `undefined` | ❌ |
 
