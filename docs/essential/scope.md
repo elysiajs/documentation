@@ -165,7 +165,7 @@ We can accomplish that by adding `scoped: true` to the Elysia instance.
 import { Elysia } from 'elysia'
 
 const html = new Elysia({ scoped: true }) // [!code ++]
-    .onAfterhandle(() => {
+    .onAfterHandle(() => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
@@ -183,9 +183,9 @@ Events that are registered in `guard`, and scoped instance will not be exposed t
 The response should be listed as follows:
 | Path | Content-Type |
 | ----- | ----------------------- |
-| / | text/html; charset=utf8 |
+| / |  |
 | /inner | text/html; charset=utf8 |
-| /outer | text/html; charset=utf8 |
+| /outer |  |
 
 ### Encapsulation
 
