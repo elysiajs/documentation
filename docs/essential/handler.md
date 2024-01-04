@@ -55,7 +55,7 @@ Elysia context is consists of:
 - **path**: Pathname of the request
 - **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 - **store** - A global mutable store for Elysia instance
-- **cookie** - A global mutatable signal store for interacting with Cookie (including get/set)
+- **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
 - **set** - Property to apply to Response:
     - **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), default to 200 if not set.
     - **headers** - Response headers
@@ -138,7 +138,23 @@ new Elysia()
 ```
 
 ::: tip
-Both of the code with primitive value and Response has an near equivalent performance (+- 0.1%).
+Both of the code with primitive value and Response has a near equivalent performance (+- 0.1%).
 
 Please use the one for your preference not performance.
 :::
+
+## Static Content
+Static Content is a type of handler that always returns the same value, for instance file, hardcoded-value.
+
+In Elysia, static content can be register by providing an actual value instead of an function.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/video', Bun.file('kyuukurarin.mp4'))
+    .listen(3000)
+```
+
+This allows Elysia to compile the response ahead of time to optimize performance.

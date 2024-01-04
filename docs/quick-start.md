@@ -55,7 +55,7 @@ Elysia ships you with `dev` command to automatically reload your server on file 
 :::
 
 ## Manual Installation
-To manually create a new Next.js app, install Elysia as a package:
+To manually create a new Elysia app, install Elysia as a package:
 
 ```typescript
 bun add elysia
@@ -90,7 +90,7 @@ If you are using TypeScript, make sure to create, and update `tsconfig.json` to 
 
 ## Structure
 Here's the recommended file structure for Elysia if you don't strictly prefer a specific convention:
-- **src** - Any file that is associated with the development of the Elysia server.
+- **src** - Any file that associate with development of Elysia server.
     - **index.ts** - Entry point for your Elysia server, ideal place for setting global plugin
     - **setup.ts** - Composed of various plugins to be used as a Service Locator
     - **controllers** - Instances which encapsulate multiple endpoints 

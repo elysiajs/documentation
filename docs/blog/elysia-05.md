@@ -177,7 +177,7 @@ type ContentType = |
     | 'application/x-www-form-urlencoded'
 ```
 
-You can find more detail at the [explicit body](/concept/explicit-body) page in concept.
+You can find more detail at the [explicit body](/life-cycle/parse.html#explicit-body) page in concept.
 
 ### Numeric Type
 We found that one of the redundant task our developers found using Elysia is to parse numeric string.
@@ -224,7 +224,7 @@ You can use numeric type on any property that support schema typing, including:
 
 We hope that you will find this new Numeric type useful in your server.
 
-You can find more detail at [numeric type](/concept/numeric) page in concept.
+You can find more detail at [numeric type](/validation/elysia-type.html#numeric) page in concept.
 
 With TypeBox 0.28, we are making Elysia type system we more complete, and we excited to see how it play out on your end.
 

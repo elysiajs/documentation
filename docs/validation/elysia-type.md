@@ -150,10 +150,10 @@ t.Nullable(t.String())
 
 ## MaybeEmpty
 
-Allow the value to be null but not undefined.
+Allow the value to be null and undefined.
 
 ```typescript
 t.MaybeEmpty(t.String())
 ```
 
-For additional information, you can find the full source code of the type system in `elysia/type-system`.
+For additional information, you can find the full source code of the type system in [`elysia/type-system`](https://github.com/elysiajs/elysia/blob/main/src/type-system.ts).
