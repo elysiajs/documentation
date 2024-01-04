@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Path or pathname is an identifier to locate resouces from a server. Elysia use path and method to lookup for the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
+        content: Path or pathname is an identifier to locate resouces from a server. Elysia uses path and method to lookup the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 
     - - meta
       - property: 'og:description'
-        content: Path or pathname is an identifier to locate resouces from a server. Elysia use path and method to lookup for the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
+        content: Path or pathname is an identifier to locate resouces from a server. Elysia uses path and method to lookup the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 ---
 
 # Path
@@ -22,7 +22,7 @@ Path or pathname is an identifier to locate resources from a server.
 http://localhost:8080/path/page
 ```
 
-Elysia use path and method to lookup for the correct resource.
+Elysia uses path and method to lookup the correct resource.
 
 <div class="bg-white rounded-lg">
     <img src="/essential/url-object.svg" alt="URL Representation" />
@@ -44,13 +44,13 @@ We can categorized the URL and path as follows:
 If the path is not specified, the browser and web server will treat the path as '/' as a default value.
 :::
 
-Each request Elysia will lookup for [route](/essential/route) and response using [handler](/essential/handler) function.
+Elysia will lookup each request for [route](/essential/route) and response using [handler](/essential/handler) function.
 
 ## Dynamic path
 
 URL can be both static and dynamic.
 
-Static path means a hardcode string can be used to locate resource from the server while dynamic path matches some part and capture the value to extract extra information rather than a hardcoded string.
+Static path means a hardcoded string can be used to locate resource from the server while dynamic path matches some part and capture the value to extract extra information.
 
 For instance, we can extract the user ID from the pathname, we can do something like:
 
@@ -64,7 +64,7 @@ new Elysia()
 
 We create a dynamic path with `/id/:id` which tells Elysia to match any path up until `/id` and after it could be any value, which is then stored as **params** object.
 
-When requested the server should return the response as follows:
+When requested, the server should return the response as follows:
 
 | Path                   | Response  |
 | ---------------------- | --------- |
