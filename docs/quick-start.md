@@ -55,7 +55,7 @@ Elysia ships you with `dev` command to automatically reload your server on file 
 :::
 
 ## Manual Installation
-To manually create a new Next.js app, install Elysia as a package:
+To manually create a new Elysia app, install Elysia as a package:
 
 ```typescript
 bun add elysia
