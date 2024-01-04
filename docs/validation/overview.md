@@ -24,15 +24,13 @@ However, a dynamic language like JavaScript doesn't validate the shape of an inp
 An uninspected input may lead to unexpected behavior, missing data part, and in the worst case, a malicious intent to attack the server.
 
 ## Data Validation
-Consider data validation as having an extremely meticulous inspector verify everything twice before usage.
+Imagine data validation as having **someone** inspect every input for appropriate shape, so it won't break anything.
 
-It's similar to having **someone** inspect every item you intend to use in your server to ensure it's appropriate and won't break anything.
-
-In this manner, you can have confidence in creating something without worrying about unanticipated problems.
+So we can have confidence in creating something without worrying about problem.
 
 This **someone** is where Elysia takes part.
 
-Elysia offers a complete schema builder to provide type safety for both runtime and compile time, a single source of truth for your data:
+Elysia offers a complete schema builder to provide type safety for both runtime and compile time offering:
 
 - Infers to TypeScript Type automatically
 - Strict data validation
