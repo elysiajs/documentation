@@ -123,7 +123,7 @@ const app = new Elysia()
 **Elysia.route** accepts the following:
 
 -   **method**: HTTP Verb
--   **path**: Path
+-   **path**: Pathname
 -   **function**: Function to response to client
 -   **hook**: Additional metadata
 
@@ -145,7 +145,7 @@ It's recommended to use UPPERCASE convention for defining a custom HTTP Verb wit
 Elysia provides an `Elysia.all` for handling any HTTP method for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
 ```typescript
-import {} from 'elysia'
+import { Elysia } from 'elysia'
 
 new Elysia().all('/', () => 'hi').listen(3000)
 ```
@@ -167,7 +167,7 @@ HTTP Status is used to indicate the type of response. By default if everything i
 If the server fails to find any route to handle, like in this case, then server shall return a '404 NOT FOUND' status code.
 :::
 
-For Elysia, we can handle a custom 404 error by returning a value from the `error` lifecycle like this:
+For Elysia, we can handle a custom 404 error by returning a value from 'error` lifecycle like this:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -188,4 +188,4 @@ When navigating to your web server, you should see the result as follows:
 | /    | POST   | Route not found :\( |
 | /hi  | GET    | Route not found :\( |
 
-You can learn more about lifecycle and error handling in [Lifecycle Event](/essential/lifecycle-event) and [error handling](/concept/error-handling)
+You can learn more about lifecycle and error handling in [Lifecycle Event](/essential/life-cycle) and [error handling](/life-cycle/on-error)

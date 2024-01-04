@@ -57,7 +57,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/id/:id', ({ params: { id }}) => id)
-    .listen(8080)
+    .listen(3000)
 ```
 
 The above code allow you to create a path parameter with the name of id, value that pass after `/id/` will be reflect to `params.id`.
@@ -67,7 +67,7 @@ In most framework, you need to provide a generic type to the **id** parameter wh
 Elysia goal is help you write less TypeScript and focus more on Business logic. Let's the complex type be handled by the framework.
 
 ## Unified Type
-To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile time to create a single source of truth for your data-type. Elysia refers this term as **Unified Type**.
+To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile-time to create a single source of truth for your data-type. Elysia refers this term as **Unified Type**.
 
 Let's modify the previous code to accept only a numeric value instead of string.
 ```typescript
@@ -79,7 +79,7 @@ new Elysia()
             id: t.Numeric()
         })
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 This code ensure that our path parameter **id**, will always be a numeric string and then transform to a number automatically in both runtime, and compile-time (type-level).
@@ -102,7 +102,7 @@ new Elysia()
             id: t.Numeric()
         })
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 With the Swagger plugin, you can seamlessly generate a Swagger page without additional code or specific config and share with your team effortlessly.
@@ -123,7 +123,7 @@ new Elysia()
             id: t.Numeric()
         })
     })
-    .listen(8080)
+    .listen(3000)
 
 export type App = typeof app
 ```
@@ -134,7 +134,7 @@ And on your client-side:
 import { edenTreaty } from '@elysiajs/eden'
 import type { App } from './server'
 
-const app = edenTreaty<App>('http://localhost:8080')
+const app = edenTreaty<App>('http://localhost:3000')
 
 // data is typed as number
 const { data } = await app.id['177013'].get()
@@ -147,4 +147,4 @@ Elysia is not only about helping you to create a confidence backend, but for all
 ---
 <small id="ref-1">1. Measure in requests/second. Benchmark for parsing query, path parameter and set response header on Debian 11, Intel i7-13700K tested on Bun 0.7.2 at 6 Aug 2023. See the benchmark condition [here](https://github.com/SaltyAom/bun-http-framework-benchmark/tree/c7e26fe3f1bfee7ffbd721dbade10ad72a0a14ab#results).</small>
 
-<!-- Uncomment when the web framework benchmark fix the result: <small id="ref-2">2. Based on [Web Framework Benchmark rounds 2023/10/03](https://web-frameworks-benchmark.netlify.app/result?f=elysia&l=go,rust).</small> -->
+<small id="ref-2">2. Based on [TechEmpower Benchmark round 22](https://www.techempower.com/benchmarks/#section=data-r22&hw=ph&test=composite).</small>
