@@ -98,7 +98,7 @@ fetch('https://elysiajs.com', {
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'Hello World!', {
+    .post('/', () => 'Hello World!', {
         body: t.Object({
             name: t.String()
         })
