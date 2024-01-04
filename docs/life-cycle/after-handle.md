@@ -58,16 +58,14 @@ new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {
         afterHandle({ response, set }) {
             if (isHtml(response))
-                new Response(response, {
-                    headers: {
-                        'content-type': 'text/html; charset=utf8'
-                    }
-                })
+                set.headers['content-type'] = 'text/html; charset=utf8'
         }
     })
     .get('/hi', () => '<h1>Hello World</h1>')
     .listen(3000)
 ```
+
+Unlike **beforeHandle**, after a value is returned from **afterHandle**, the iteration of afterHandle **will __NOT__ be skipped.**
 
 ## Context
 `onAfterHandle` Context is extends from `Context` with additional properties of the following:

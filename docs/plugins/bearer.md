@@ -7,15 +7,15 @@ head:
 
   - - meta
     - name: 'description'
-      content: Plugin for Elysia for retreiving Bearer token as specified in RFC6750. Start by installing the plugin with "bun add @elysiajs/bearer".
+      content: Plugin for Elysia for retrieving Bearer token as specified in RFC6750. Start by installing the plugin with "bun add @elysiajs/bearer".
 
   - - meta
     - name: 'og:description'
-      content: Plugin for Elysia for retreiving Bearer token as specified in RFC6750. Start by installing the plugin with "bun add @elysiajs/bearer".
+      content: Plugin for Elysia for retrieving Bearer token as specified in RFC6750. Start by installing the plugin with "bun add @elysiajs/bearer".
 ---
 
 # Bearer Plugin
-Plugin for [elysia](https://github.com/elysiajs/elysia) for retreiving Bearer token.
+Plugin for [elysia](https://github.com/elysiajs/elysia) for retrieving the Bearer token.
 
 Install with:
 ```bash
