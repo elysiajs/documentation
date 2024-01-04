@@ -167,7 +167,7 @@ HTTP Status is use to indicate the type of response. By default if everything is
 If server fail to find any route to handle, like in this case, then server shall return a '404 NOT FOUND' status code.
 :::
 
-For Elysia, we can handle a custom 404 error by returning a valuee from 'error` lifecycle like this:
+For Elysia, we can handle a custom 404 error by returning a value from 'error` lifecycle like this:
 
 ```typescript
 import { Elysia } from 'elysia'
