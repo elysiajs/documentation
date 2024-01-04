@@ -89,7 +89,7 @@ If you are using TypeScript, make sure to create, and update `tsconfig.json` to 
 ```
 
 ## Structure
-Here's the recommended file structure for Elysia if you don't strictly prefers a specific convention:
+Here's the recommended file structure for Elysia if you don't strictly prefer a specific convention:
 - **src** - Any file that associate with development of Elysia server.
     - **index.ts** - Entry point for your Elysia server, ideal place for setting global plugin
     - **setup.ts** - Composed of various plugins to be used as a Service Locator
