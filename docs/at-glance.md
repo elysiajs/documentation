@@ -67,7 +67,7 @@ In most framework, you need to provide a generic type to the **id** parameter wh
 Elysia goal is help you write less TypeScript and focus more on Business logic. Let's the complex type be handled by the framework.
 
 ## Unified Type
-To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile time to create a single source of truth for your data-type. Elysia refers this term as **Unified Type**.
+To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile-time to create a single source of truth for your data-type. Elysia refers this term as **Unified Type**.
 
 Let's modify the previous code to accept only a numeric value instead of string.
 ```typescript
