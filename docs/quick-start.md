@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Elysia is a library built for Bun and the only prerequisite. To start, boostrap a new project with "bun create elysia hi-elysia" and start development server with "bun dev". This is all it need to do a quick start or getting start with ElysiaJS.
+      content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all it needs to do a quick start or get started with ElysiaJS.
 
   - - meta
     - property: 'og:description'
-      content: Elysia is a library built for Bun and the only prerequisite. To start, boostrap a new project with "bun create elysia hi-elysia" and start development server with "bun dev". This is all it need to do a quick start or getting start with ElysiaJS.
+      content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all it needs to do a quick start or get started with ElysiaJS.
 ---
 
 # Quick Start
@@ -21,7 +21,7 @@ System Requirements:
 - TypeScript > 5.0 (for language server)
 
 ## Bun
-Elysia is optimized for Bun which is a JavaScript runtime aims to be drop-in replacement for Node.js.
+Elysia is optimized for Bun which is a JavaScript runtime that aims to be a drop-in replacement for Node.js.
 
 You can install Bun with the command below:
 ```bash
@@ -75,7 +75,7 @@ Open your `package.json` file and add the following scripts:
 
 These scripts refer to the different stages of developing an application:
 
-- **dev** - Start Elysia in development mode with auto reload on code change.
+- **dev** - Start Elysia in development mode with auto-reload on code change.
 - **build** - Build the application for production usage.
 - **start** - Start an Elysia production server.
 
@@ -93,7 +93,7 @@ Here's the recommended file structure for Elysia if you don't strictly prefer a 
 - **src** - Any file that associate with development of Elysia server.
     - **index.ts** - Entry point for your Elysia server, ideal place for setting global plugin
     - **setup.ts** - Composed of various plugins to be used as a Service Locator
-    - **controllers** - Instance which encapsulate multiple endpoints 
+    - **controllers** - Instances which encapsulate multiple endpoints 
     - **libs** - Utility functions
     - **models** - Data Type Objects (DTOs) for Elysia instance
     - **types** - Shared TypeScript type if needed

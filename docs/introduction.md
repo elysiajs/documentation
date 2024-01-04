@@ -22,7 +22,7 @@ import Deck from '../components/nearl/card-deck.vue'
 # Introduction
 Elysia is an ergonomic web framework for building backend servers for Bun with JavaScript or TypeScript.
 
-Design with simplicity and type-safety in mind, allowing you to create server with familiar APIs like Express and Fastify.
+Design with simplicity and type safety in mind, allowing you to create a server with familiar APIs like Express and Fastify.
 
 ```typescript
 new Elysia()
@@ -33,7 +33,7 @@ new Elysia()
 ```
 
 ## Features
-Our most loved feature of Elysia that make Elysia standout from other frameworks.
+Our most loved features of Elysia that make Elysia stand out from other frameworks.
 
 - **Performance** - Static code analysis to generate optimized code
 - **Unified Type** - Shared DTO runtime and compile time validation
@@ -46,7 +46,7 @@ Our most loved feature of Elysia that make Elysia standout from other frameworks
 Elysia designed but was **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy the Elysia server on Cloudflare Worker, Vercel Edge Function, and most other runtime that support Web Standard Request.
 
 ## TypeScript
-Elysia designed to help you write less TypeScript.
+Elysia is designed to help you write less TypeScript.
 
 Elysia's Type System is fine-tuned to infer your code into type automatically without needing to write explicit TypeScript while providing type-safety for both runtime and compile time to provide you with the most ergonomic developer experience.
 
@@ -71,7 +71,7 @@ Although Elysia's documentation is designed to be beginner-friendly, we need to 
 To get the most out of our documentation, it's recommended that you have a basic understanding of Node.js and basic HTTP.
 
 ## Our Community
-If you have questions or get stuck about Elysia, feels free to ask our community on GitHub Discussions, Discord, and Twitter.
+If you have questions or get stuck about Elysia, feel free to ask our community on GitHub Discussions, Discord, and Twitter.
 
 <Deck>
     <Card title="Discord" href="https://discord.com/invite/phrduBNq?utm_source=Discord%20Widget&utm_medium=Connect">

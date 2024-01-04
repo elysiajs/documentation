@@ -73,8 +73,8 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
 -   [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - compress response
 -   [Elysia IP](https://github.com/gaurishhs/elysia-ip) - get the IP Address
-- [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - developing an OAuth2 Server with Elysia
+-   [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - developing an OAuth2 Server with Elysia
 
 ---
 
-If you have a plugin written for Elysia, feels free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇
+If you have a plugin written for Elysia, feel free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇

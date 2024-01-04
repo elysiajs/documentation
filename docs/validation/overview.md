@@ -58,6 +58,6 @@ This chapter is going to cover the basic usage of TypeBox and the new API introd
 
 We recommended reading the essential chapter's [Schema](http://localhost:5173/new/essential/schema.html) first to understand the basic concept of Elysia type.
 
-For a more in-depth topic, we recommend you to check out [TypeBox documentation](https://github.com/sinclairzx81/typebox), as a dedicated documentation is more focused on each type behavior and additional settings it could provide.
+For a more in-depth topic, we recommend you to check out [TypeBox documentation](https://github.com/sinclairzx81/typebox), as dedicated documentation is more focused on each type behavior and additional settings it could provide.
 
-Feels free to jump to the topic that interested you if you are already familiar with TypeBox.
+Feel free to jump to the topic that interests you if you are already familiar with TypeBox.

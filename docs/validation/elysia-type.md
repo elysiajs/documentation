@@ -130,7 +130,7 @@ Cookie extends attributes of [Object](https://json-schema.org/draft/2020-12/json
 
 ### secrets
 
-Secret key for signing cookie.
+The secret key for signing cookies.
 
 Accepts a string or an array of string
 

@@ -40,7 +40,7 @@ This code allows us to create a simple web server running at port 3000, and tell
 | /      | Landing |
 | /hello | Hi      |
 
-Accessing with browser works because **GET** is the default HTTP method.
+Accessing with the browser works because **GET** is the default HTTP method.
 
 ## HTTP Verb
 
@@ -78,7 +78,7 @@ new Elysia()
 Elysia HTTP methods accepts the following parameters:
 
 -   **path**: Pathname
--   **function**: Function to response to client
+-   **function**: Function to respond to client
 -   **hook**: Additional metadata
 
 You can read more about the HTTP methods on [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
@@ -87,7 +87,7 @@ You can read more about the HTTP methods on [HTTP Request Methods](https://devel
 
 Most backend developers use REST clients like Postman, Insomnia or Hoppscotch to test their API.
 
-However with Elysia, you can trigger a request to your Elysia server programmatically using `Elysia.handle`.
+However, with Elysia, you can trigger a request to your Elysia server programmatically using `Elysia.handle`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -100,11 +100,11 @@ const app = new Elysia()
 app.handle(new Request('http://localhost/')).then(console.log)
 ```
 
-**Elysia.handle** is a function to process an actual request sending to the server.
+**Elysia.handle** is a function to process an actual request sent to the server.
 
 Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
 
-**Elysia.handle** is usually useful to simulate or creating unit tests.
+**Elysia.handle** is useful for simulating or creating unit tests.
 
 ## Custom Method
 
@@ -127,7 +127,7 @@ const app = new Elysia()
 -   **function**: Function to response to client
 -   **hook**: Additional metadata
 
-When navigate to each method, you should see the results as the following:
+When navigating to each method, you should see the results as the following:
 | Path | Method | Result |
 | - | --- | --- |
 | / | GET | hello |
@@ -137,7 +137,7 @@ When navigate to each method, you should see the results as the following:
 ::: tip
 Based on [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231#section-4.1), HTTP Verb is case-sensitive.
 
-It's recommended to use UPPERCASE convention for defining a custom HTTP Verb with Elysia.
+It's recommended to use the UPPERCASE convention for defining a custom HTTP Verb with Elysia.
 :::
 
 ## Elysia.all
