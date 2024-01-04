@@ -55,7 +55,7 @@ Elysia context is consists of:
 - **path**: Pathname of the request
 - **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 - **store** - A global mutable store for Elysia instance
-- **cookie** - A global mutatable signal store for interacting with Cookie (including get/set)
+- **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
 - **set** - Property to apply to Response:
     - **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), default to 200 if not set.
     - **headers** - Response headers
