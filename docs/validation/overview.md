@@ -24,15 +24,13 @@ However, a dynamic language like JavaScript doesn't validate the shape of an inp
 An uninspected input may lead to unexpected behavior, missing data part, and in the worst case, a malicious intent to attack the server.
 
 ## Data Validation
-Consider data validation as having an extremely meticulous inspector verify everything twice before usage.
+Imagine data validation as having **someone** inspect every input for appropriate shape, so it won't break anything.
 
-It's similar to having **someone** inspect every item you intend to use in your server to ensure it's appropriate and won't break anything.
-
-In this manner, you can have confidence in creating something without worrying about unanticipated problems.
+So we can have confidence in creating something without worrying about problem.
 
 This **someone** is where Elysia takes part.
 
-Elysia offers a complete schema builder to provide type safety for both runtime and compile time, a single source of truth for your data:
+Elysia offers a complete schema builder to provide type safety for both runtime and compile time offering:
 
 - Infers to TypeScript Type automatically
 - Strict data validation
@@ -60,6 +58,6 @@ This chapter is going to cover the basic usage of TypeBox and the new API introd
 
 We recommended reading the essential chapter's [Schema](http://localhost:5173/new/essential/schema.html) first to understand the basic concept of Elysia type.
 
-For a more in-depth topic, we recommend you to check out [TypeBox documentation](https://github.com/sinclairzx81/typebox), as a dedicated documentation is more focused on each type behavior and additional settings it could provide.
+For a more in-depth topic, we recommend you to check out [TypeBox documentation](https://github.com/sinclairzx81/typebox), as dedicated documentation is more focused on each type behavior and additional settings it could provide.
 
-Feels free to jump to the topic that interested you if you are already familiar with TypeBox.
+Feel free to jump to the topic that interests you if you are already familiar with TypeBox.

@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that add support for using tRPC on Bun with Elysia Server. Start by installing the plugin with "bun add @elysiajs/trpc".
+        content: Plugin for Elysia that adds support for using tRPC on Bun with Elysia Server. Start by installing the plugin with "bun add @elysiajs/trpc".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add support for using tRPC on Bun with Elysia Server. Start by installing the plugin with "bun add @elysiajs/trpc".
+        content: Plugin for Elysia that adds support for using tRPC on Bun with Elysia Server. Start by installing the plugin with "bun add @elysiajs/trpc".
 ---
 
 # tRPC Plugin
@@ -47,7 +47,7 @@ const app = new Elysia().use(trpc(router)).listen(8080);
 ```
 
 ## trpc
-Accept tRPC router and register to Elysia handler.
+Accept the tRPC router and register to Elysia's handler.
 
 type:
 ```
@@ -59,4 +59,4 @@ trpc(router: Router, option?: {
 `Router` is the TRPC Router instance.
 
 ### endpoint
-The path to exposed TRPC endpoint.
+The path to the exposed TRPC endpoint.
