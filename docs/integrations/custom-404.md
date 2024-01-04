@@ -20,7 +20,7 @@ You can define custom 404 using `onError` hook:
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .onError((code, error) => {
+    .onError(({ code, error }) => {
         if (code === 'NOT_FOUND')
             return new Response('Not Found :(', {
                 status: 404

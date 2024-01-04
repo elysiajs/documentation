@@ -115,7 +115,7 @@ Reactive Cookie take a more modern approach like signal to handle cookie with an
 There's no `getCookie`, `setCookie`, everything is just a cookie object.
 
 When you want to use cookie, you just extract the name get/set its value like:
-```ts
+```typescript
 app.get('/', ({ cookie: { name } }) => {
     // Get
     name.value
@@ -134,7 +134,7 @@ With the merge of cookie into the core of Elysia, we introduce a new **Cookie Sc
 
 This is useful when you have to strictly validate cookie session or want to have a strict type or type inference for handling cookie.
 
-```ts
+```typescript
 app.get('/', ({ cookie: { name } }) => {
     // Set
     name.value = {
@@ -161,7 +161,7 @@ Cookie signature is a cryptographic hash appended to a cookie's value, generated
 This make sure that the cookie value is not modified by malicious actor, helps in verifying the authenticity and integrity of the cookie data.
 
 To handle cookie signature in Elysia, it's a simple as providing a `secert` and `sign` property:
-```ts
+```typescript
 new Elysia({
     cookie: {
         secret: 'Fischl von Luftschloss Narfidort'
@@ -189,7 +189,7 @@ By provide a cookie secret, and `sign` property to indicate which cookie should 
 Elysia then sign and unsign cookie value automatically, eliminate the need of **sign** / **unsign** function manually.
 
 Elysia handle Cookie's secret rotation automatically, so if you have to migrate to a new cookie secret, you can just append the secret, and Elysia will use the first value to sign a new cookie, while trying to unsign cookie with the rest of the secret if match.
-```ts
+```typescript
 new Elysia({
     cookie: {
         secret: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']
@@ -207,7 +207,7 @@ This brings new exciting feature like support for TypeBox's `Decode` in Elysia n
 Previously, a custom type like `Numeric` require a dynamic code injection to convert numeric string to number, but with the use of TypeBox's decode, we are allow to define a custom function to encode and decode the value of a type automatically.
 
 Allowing us to simplify type to:
-```ts
+```typescript
 Numeric: (property?: NumericOptions<number>) =>
     Type.Transform(Type.Union([Type.String(), Type.Number(property)]))
         .Decode((value) => {
@@ -231,7 +231,7 @@ We can't wait to see what you will brings with the introduction of `t.Transform`
 With an introduction **Transform**, we have add a new type like `t.ObjectString` to automatically decode a value of Object in request.
 
 This is useful when you have to use **multipart/formdata** for handling file uploading but doesn't support object. You can now just use `t.ObjectString()` to tells Elysia that the field is a stringified JSON, so Elysia can decode it automatically.
-```ts
+```typescript
 new Elysia({
     cookie: {
         secret: 'Fischl von Luftschloss Narfidort'
@@ -279,7 +279,7 @@ To summarize, Elysia allows us to decorate and request and store with any value 
 As the name suggest, this allow us to remap existing `state`, `decorate`, `model`, `derive` to anything we like to prevent name collision, or just wanting to rename a property.
 
 By providing a function as a first parameters, the callback will accept current value, allowing us to remap the value to anything we like.
-```ts
+```typescript
 new Elysia()
     .state({
         a: "a",
@@ -290,7 +290,7 @@ new Elysia()
 ```
 
 This is useful when you have to deal with a plugin that has some duplicate name, allowing you to remap the name of the plugin:
-```ts
+```typescript
 new Elysia()
     .use(
         plugin
@@ -304,11 +304,11 @@ new Elysia()
 Remap function can be use with `state`, `decorate`, `model`, `derive` to helps you define a correct property name and preventing name collision.
 
 ### Affix
-The provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
+To provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
 
-The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
+The **Affix** function, which consists of a **prefix** and **suffix**, allows us to remap all properties of an instance, preventing the name collision of the plugin.
 
-```ts
+```typescript
 const setup = new Elysia({ name: 'setup' })
     .decorate({
         argon: 'a',
@@ -329,7 +329,7 @@ Allowing us to bulk remap a property of the plugin effortlessly, preventing the 
 By default, **affix** will handle both runtime, type-level code automatically, remapping the property to camelCase as naming convention.
 
 In some condition, you can also remap `all` property of the plugin:
-```ts
+```typescript
 const app = new Elysia()
     .use(
         setup
@@ -345,7 +345,7 @@ With the introduction of Elysia 0.7, Elysia can now truly encapsulate an instanc
 
 The new scope model can even prevent event like `onRequest` to be resolve on a main instance which is not possible.
 
-```ts
+```typescript
 const plugin = new Elysia({ scoped: true, prefix: '/hello' })
     .onRequest(() => {
         console.log('In Scoped')

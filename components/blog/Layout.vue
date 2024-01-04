@@ -3,7 +3,7 @@
         <h1 class="!text-3xl !md:text-4xl font-medium">
             {{ props.title }}
         </h1>
-        <aside class="flex gap-3 items-center mt-4">
+        <!-- <aside class="flex gap-3 items-center mt-4">
             <img
                 class="w-9 h-9 rounded-full"
                 :src="profile"
@@ -19,11 +19,11 @@
                     <a :href="twitter" target="_blank">@{{ author.twitter }}</a>
                 </p>
             </div>
-        </aside>
+        </aside> -->
         <img
             :src="props.src"
             :alt="props.alt"
-            class="w-full my-4 shadow-2xl my-6"
+            class="w-full shadow-2xl my-6"
         />
         <main id="blog-content">
             <slot />
@@ -92,7 +92,7 @@ onUnmounted(() => {
 }
 
 #blog {
-    @apply text-lg;
+    @apply text-lg mt-0;
 }
 
 #blog > img {

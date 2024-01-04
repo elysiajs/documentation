@@ -31,21 +31,20 @@ app.get('/', ({ cookie: { name } }) => {
 })
 ```
 
-By default, Reactive Cookie can encode/decode type of object automatically. So if you like to set the cookie as an object, it will just work.
+By default, Reactive Cookie can encode/decode type of object automatically allowing us to treat cookie as an object without worrying about the encoding/decoding. **It just works**.
 
 ## Reactivity
-Elysia cookie is reactive, based on approach like signal.
+The Elysia cookie is reactive. This means that when you change the cookie value, the cookie will be updated automatically based on approach like signal.
 
-Elysia cookie can sync the value of cookie, and set-headers automatically, providing a single source of truth for handling cookie.
+A single source of truth for handling cookies is provided by Elysia cookies, which have the ability to automatically set headers and sync cookie values.
 
-If you don't set the new value for the cookie, the `Set-Cookie` header will not be send to keep the same cookie value, so you don't have to worry about the performance.
+Since cookies are Proxy-dependent objects by default, the extract value can never be **undefined**; instead, it will always be a value of `Cookie<unknown>`, which can be obtained by invoking the **.value** property.
 
-By default, cookie is an object that rely on Proxy, so the extract value can never be **undefined**, it will always be a value of `Cookie<unknown>`, which you can retrieve its value by calling **.value** property.
-
-If you iterate over the cookie jar, the value will be only iterated over an existing cookie value, so you can treat it as a normal object.
+We can treat the cookie jar as a regular object, iteration over it will only iterate over an already-existing cookie value.
 
 ## Cookie Attribute
 To use Cookie attribute, you can either use one of the following:
+
 1. Setting the property directly
 2. Using `set` or `add` to update cookie property.
 
@@ -105,7 +104,7 @@ app.get('/', ({ cookie: { name } }) => {
     }
 }, {
     cookie: t.Cookie({
-        value: t.Object({
+        name: t.Object({
             id: t.Numeric(),
             name: t.String()
         })

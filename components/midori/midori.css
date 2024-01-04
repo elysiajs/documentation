@@ -3,10 +3,19 @@
     height: 1100px;
 }
 
-.gradient.-light {
-    background: radial-gradient(ellipse at center, #d7e0ff 0%, #eaecff 35%, transparent 70%);
+.gradient {
+    background: radial-gradient(
+        ellipse at center,
+        #d7e0ff 0%,
+        #eaecff 35%,
+        transparent 70%
+    );
 }
 
-.gradient.-dark {
-    background: radial-gradient(ellipse at center, #797ee199 0%, transparent 70%);
+.dark .gradient {
+    background: radial-gradient(
+        ellipse at center,
+        #797ee199 0%,
+        transparent 70%
+    );
 }

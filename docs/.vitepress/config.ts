@@ -1,14 +1,13 @@
 import { defineConfig } from 'vitepress'
 
-import { join } from 'path'
-
 const description =
-    'Fast, and friendly Bun web framework. Designed on top of 3 philosophies: Performance, Simplicity, Flexibility.'
+    'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
 
 export default defineConfig({
     lang: 'en-US',
     title: 'ElysiaJS',
     // description,
+    ignoreDeadLinks: true,
     lastUpdated: true,
     markdown: {
         theme: {
@@ -17,6 +16,29 @@ export default defineConfig({
         }
     },
     head: [
+        ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+        [
+            'link',
+            {
+                rel: 'preconnect',
+                href: 'https://fonts.gstatic.com',
+                crossorigin: ''
+            }
+        ],
+        [
+            'link',
+            {
+                href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
+                rel: 'stylesheet'
+            }
+        ],
+        [
+            'meta',
+            {
+                name: 'viewport',
+                content: 'width=device-width,initial-scale=1,user-scalable=no'
+            }
+        ],
         [
             'link',
             {
@@ -28,7 +50,7 @@ export default defineConfig({
             'meta',
             {
                 property: 'og:image',
-                content: 'https://elysiajs.com/assets/cover.png'
+                content: 'https://elysiajs.com/assets/cover.jpg'
             }
         ],
         [
@@ -56,7 +78,7 @@ export default defineConfig({
             'meta',
             {
                 property: 'twitter:image',
-                content: 'https://elysiajs.com/assets/cover.png'
+                content: 'https://elysiajs.com/assets/cover.jpg'
             }
         ],
         [
@@ -95,7 +117,7 @@ export default defineConfig({
         ],
         sidebar: [
             {
-                text: 'Getting Started',
+                text: '👋 Getting Started',
                 items: [
                     {
                         text: 'Introduction',
@@ -104,76 +126,138 @@ export default defineConfig({
                     {
                         text: 'Quick Start',
                         link: '/quick-start'
+                    },
+                    {
+                        text: 'At Glance',
+                        link: '/at-glance'
+                    },
+                    {
+                        text: 'Table of Content',
+                        link: '/table-of-content'
                     }
                 ]
             },
             {
-                text: 'Concepts',
+                text: '✨ Essential',
+                collapsed: true,
                 items: [
                     {
                         text: 'Route',
-                        link: '/concept/route'
+                        link: '/essential/route'
+                    },
+                    {
+                        text: 'Path',
+                        link: '/essential/path'
                     },
                     {
                         text: 'Handler',
-                        link: '/concept/handler'
+                        link: '/essential/handler'
                     },
                     {
-                        text: 'State & Decorate',
-                        link: '/concept/state-decorate'
-                    },
-                    {
-                        text: 'Derive',
-                        link: '/concept/derive'
+                        text: 'Context',
+                        link: '/essential/context'
                     },
                     {
                         text: 'Plugin',
-                        link: '/concept/plugin'
+                        link: '/essential/plugin'
                     },
                     {
-                        text: 'Group',
-                        link: '/concept/group'
-                    },
-                    {
-                        text: 'Lifecycle',
-                        link: '/concept/life-cycle'
+                        text: 'Life Cycle',
+                        link: '/essential/life-cycle'
                     },
                     {
                         text: 'Schema',
-                        link: '/concept/schema'
+                        link: '/essential/schema'
                     },
                     {
-                        text: 'Numeric',
-                        link: '/concept/numeric'
-                    },
-                    {
-                        text: 'Guard',
-                        link: '/concept/guard'
-                    },
-                    {
-                        text: 'Config',
-                        link: '/concept/config'
-                    },
-                    {
-                        text: 'Explicit Body',
-                        link: '/concept/explicit-body'
+                        text: 'Scope',
+                        link: '/essential/scope'
                     }
                 ]
             },
             {
-                text: 'Patterns',
+                text: '🔎 Validation',
+                collapsed: true,
                 items: [
                     {
+                        text: 'Overview',
+                        link: '/validation/overview'
+                    },
+                    {
+                        text: 'Schema Type',
+                        link: '/validation/schema-type'
+                    },
+                    {
+                        text: 'Primitive Type',
+                        link: '/validation/primitive-type'
+                    },
+                    {
+                        text: 'Elysia Type',
+                        link: '/validation/elysia-type'
+                    },
+                    {
+                        text: 'Error Provider',
+                        link: '/validation/error-provider'
+                    },
+                    {
+                        text: 'Reference Model',
+                        link: '/validation/reference-model'
+                    }
+                ]
+            },
+            {
+                text: '⏳ Life Cycle',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Overview',
+                        link: '/life-cycle/overview'
+                    },
+                    {
+                        text: 'On Request',
+                        link: '/life-cycle/request'
+                    },
+                    {
+                        text: 'Parse',
+                        link: '/life-cycle/parse'
+                    },
+                    {
+                        text: 'Transform',
+                        link: '/life-cycle/transform'
+                    },
+                    {
+                        text: 'Before Handle',
+                        link: '/life-cycle/before-handle'
+                    },
+                    {
                         text: 'After Handle',
-                        link: '/patterns/after-handle'
+                        link: '/life-cycle/after-handle'
                     },
                     {
-                        text: 'Method Chaining',
-                        link: '/patterns/method-chaining'
+                        text: 'Map Response',
+                        link: '/life-cycle/map-response'
                     },
                     {
-                        text: 'File Upload',
-                        link: '/patterns/file-upload'
+                        text: 'On Error',
+                        link: '/life-cycle/on-error'
+                    },
+                    {
+                        text: 'On Response',
+                        link: '/life-cycle/on-response'
+                    },
+                    {
+                        text: 'Trace',
+                        link: '/life-cycle/trace'
+                    }
+                ]
+            },
+            {
+                text: '🧭 Patterns',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Group',
+                        link: '/patterns/group'
                     },
                     {
                         text: 'Cookie',
@@ -184,83 +268,64 @@ export default defineConfig({
                         link: '/patterns/cookie-signature'
                     },
                     {
-                        text: 'Error Handling',
-                        link: '/patterns/error-handling'
-                    },
-                    {
                         text: 'Web Socket',
                         link: '/patterns/websocket'
                     },
                     {
-                        text: 'Reference Model',
-                        link: '/patterns/reference-models'
+                        text: 'Documentation',
+                        link: '/patterns/documentation'
                     },
                     {
-                        text: 'Dependency Injection',
-                        link: '/patterns/dependency-injection'
-                    },
-                    {
-                        text: 'Remapping',
-                        link: '/patterns/remapping'
-                    },
-                    {
-                        text: 'Lazy Loading Module',
-                        link: '/patterns/lazy-loading-module'
-                    },
-                    {
-                        text: 'Creating Documentation',
-                        link: '/patterns/creating-documentation'
-                    },
-                    {
-                        text: 'Testing',
-                        link: '/patterns/testing'
-                    },
-                    {
-                        text: 'Body Parser',
-                        link: '/patterns/body-parser'
-                    },
-                    {
-                        text: 'Trace',
-                        link: '/patterns/trace'
+                        text: 'Unit Test',
+                        link: '/patterns/unit-test'
                     },
                     {
                         text: 'Mount',
                         link: '/patterns/mount'
                     },
                     {
-                        text: 'End-to-End Type Safety',
-                        link: '/patterns/end-to-end-type-safety'
+                        text: 'Lazy Loading Module',
+                        link: '/patterns/lazy-loading-module'
+                    },
+                    {
+                        text: 'Macro',
+                        link: '/patterns/macro'
                     }
                 ]
             },
             {
-                text: 'Plugins',
+                text: '🪴 Eden',
+                collapsed: true,
                 items: [
                     {
-                        text: 'Eden',
-                        link: '/plugins/eden/overview',
-                        items: [
-                            {
-                                text: 'Installation',
-                                link: '/plugins/eden/installation.md'
-                            },
-                            {
-                                text: 'Eden Treaty',
-                                link: '/plugins/eden/treaty.md'
-                            },
-                            {
-                                text: 'Eden Fn',
-                                link: '/plugins/eden/fn.md'
-                            },
-                            {
-                                text: 'Eden Fetch',
-                                link: '/plugins/eden/fetch.md'
-                            }
-                        ]
+                        text: 'Overview',
+                        link: '/eden/overview.md'
                     },
                     {
-                        text: 'Plugins',
+                        text: 'Installation',
+                        link: '/eden/installation.md'
+                    },
+                    {
+                        text: 'Eden Treaty',
+                        link: '/eden/treaty.md'
+                    },
+                    {
+                        text: 'Eden Fetch',
+                        link: '/eden/fetch.md'
+                    },
+                    {
+                        text: 'Test',
+                        link: '/eden/test.md'
+                    }
+                ]
+            },
+            {
+                text: '🔌 Plugins',
+                items: [
+                    {
+                        text: 'Official Plugins',
                         link: '/plugins/overview',
+                        collapsed: true,
                         items: [
                             {
                                 text: 'Bearer',
@@ -316,20 +381,34 @@ export default defineConfig({
             },
             {
                 text: 'Integration',
+                collapsed: true,
                 items: [
                     {
                         text: 'Docker',
                         link: '/integrations/docker'
                     },
                     {
-                        text: 'Cheat Sheet',
-                        link: '/integrations/cheat-sheet'
+                        text: 'Nextjs',
+                        link: '/integrations/nextjs'
+                    },
+                    {
+                        text: 'Astro',
+                        link: '/integrations/astro'
+                    },
+                    {
+                        text: 'SvelteKit',
+                        link: '/integrations/sveltekit'
                     }
+                    // {
+                    //     text: 'Cheat Sheet',
+                    //     link: '/integrations/cheat-sheet'
+                    // }
                 ]
             }
         ],
         socialLinks: [
             { icon: 'github', link: 'https://github.com/elysiajs/elysia' },
+            { icon: 'twitter', link: 'https://twitter.com/elysiajs' },
             { icon: 'discord', link: 'https://discord.gg/eaFJ2KDJck' }
         ],
         editLink: {

@@ -11,11 +11,11 @@ head:
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add support for streaming response and Server Sent Event, eg. OpenAI integration. Start by installing the plugin with "bun add @elysiajs/server-timing".
+        content: Plugin for Elysia for performance audit via Server Timing API. Start by installing the plugin with "bun add @elysiajs/server-timing".
 ---
 
 # Server Timing Plugin
-This plugin add support for streaming response or sending Server Sent Event back to client.
+This plugin adds support for auditing performance bottlenecks with Server Timing API
 
 Install with:
 ```bash
@@ -33,11 +33,13 @@ new Elysia()
     .listen(8080)
 ```
 
-Server Timing then will append header 'Server-Timing' with log duration, function name and detail for each life-cycle function.
+Server Timing then will append header 'Server-Timing' with log duration, function name, and detail for each life-cycle function.
 
 To inspect, open browser developer tools > Network > [Request made through Elysia server] > Timing.
 
-Then inspect the Server Timing of your server
+![Developer tools showing Server Timing screenshot](/assets/server-timing.webp)
+
+Now you can effortlessly audit the performance bottleneck of your server.
 
 ## Config
 Below is a config which is accepted by the plugin
@@ -57,12 +59,12 @@ A condition whether server timing should be log
 
 Allow Server Timing to log specified life-cycle events:
 
-Trace accepts object of the following:
+Trace accepts objects of the following:
 - request: capture duration from request
 - parse: capture duration from parse
 - transform: capture duration from transform
 - beforeHandle: capture duration from beforeHandle
-- handle: capture duration from handle
+- handle: capture duration from the handle
 - afterHandle: capture duration from afterHandle
 - total: capture total duration from start to finish
 
@@ -72,7 +74,7 @@ Below you can find the common patterns to use the plugin.
 - [Allow Condition](#allow-condition)
 
 ## Allow Condition
-You may disabled Server Timing on specific route via `allow` property
+You may disable Server Timing on specific routes via `allow` property
 
 ```ts
 import { Elysia } from 'elysia'

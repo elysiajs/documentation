@@ -3,7 +3,7 @@
         class="flex flex-col justify-center items-center gap-4 text-sm text-gray-400 dark:text-gray-400 mt-8 mb-4"
     >
         <p>
-            Built with 💖 by
+            Built with 💖 dear
             <button
                 class="appearance-none text-pink-500 text-sm px-1 py-0.5 rounded hover:bg-pink-500/10 focus:bg-pink-500/15 transition-colors"
                 @click="isToggle = !isToggle"

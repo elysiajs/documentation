@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that add support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
+        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
+        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
 ---
 
 # Swagger Plugin
@@ -34,7 +34,7 @@ new Elysia()
     .listen(8080)
 ```
 
-Accessing `/swagger` would show you a Swagger endpoint with generated endpoint from Elysia server.
+Accessing `/swagger` would show you a Swagger UI with the generated endpoint documentation from the Elysia server.
 
 ## Config
 Below is a config which is accepted by the plugin
@@ -42,7 +42,7 @@ Below is a config which is accepted by the plugin
 ### swagger
 Configuration for customizing Swagger.
 
-Please refers to the [Swagger specification](https://swagger.io/specification/v2/).
+Please refer to the [Swagger specification](https://swagger.io/specification/v2/).
 
 ### excludeStaticFile
 @default `true`
@@ -66,7 +66,7 @@ Value can be one of the following:
 Below you can find the common patterns to use the plugin.
 
 ## Change Swagger Endpoint
-You can change swagger endpoint by setting [path](#path) in plugin config.
+You can change the swagger endpoint by setting [path](#path) in the plugin config.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -97,7 +97,7 @@ new Elysia()
 ```
 
 ## Using Tags
-Elysia has the ability to separate the endpoints into groups by using Swaggers tag system
+Elysia can separate the endpoints into groups by using the Swaggers tag system
 
 Firstly define the available tags in the swagger config object
 

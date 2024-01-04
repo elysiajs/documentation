@@ -22,8 +22,13 @@ head:
     import Blogs from '../components/blog/Landing.vue'
 </script>
 
-<Blogs 
+<Blogs
   :blogs="[
+      {
+        title: 'Introducing Elysia 0.8 - Gate of Steiner',
+        href: '/blog/elysia-08',
+        detail: 'Introducing Macro API, a new way to interact with Elysia. New Lifecycle, resolve, and mapResponse to interact with Elysia even more. Static Content to compile static resource ahead of time. Default Property, Default Header and several improvement.'
+      },
       {
         title: 'Introducing Elysia 0.7 - Stellar Stellar',
         href: '/blog/elysia-07',
