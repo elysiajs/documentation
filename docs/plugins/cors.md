@@ -140,7 +140,7 @@ import { cors } from '@elysiajs/cors'
 
 const app = new Elysia()
     .use(cors({
-        origin: /\*.saltyaom.com$/
+        origin: /.*\.saltyaom\.com$/
     }))
     .get('/', () => 'Hi')
     .listen(8080)
