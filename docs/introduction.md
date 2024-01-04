@@ -59,7 +59,7 @@ There's **no correct way to learn Elysia**; however, we recommend completing the
 
 As mentioned before, you can use Elysia with other runtimes beside Bun, but the __documentation will assume that you are using Bun__.
 
-On the left side of your screen, you'll find a chapter navigation bar. The pages of the docs are organized sequentially, from basic to advanced. You can follow them step-by-step to learn about building with Elysia. However, you can read them in any order or skip to the pages that apply to your use case.
+On the left side of your screen, you'll find a chapter navigation bar. The pages of the docs are organized sequentially, from basic to advanced. You can follow them step-by-step to learn about building with Elysia. However, you can also read them in any order or skip to the pages that apply to your use case.
 
 On the right side of the screen, you'll find a table of contents for each page for navigation in the page. If you need to find content, **you can use the search bar at the top, or the search shortcut (`Ctrl+K` or `Cmd+K`).**
 
