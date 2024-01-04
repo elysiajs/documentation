@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia supports declarative schema with the following types. Body for validate an incoming HTTP message. Query for query string or URL parameter. Params for path parameters. Header for request headers. Cookie for  cookies. Response for validating response.
+        content: Elysia supports declarative schema with the following types. Body for validating an incoming HTTP message. Query for query string or URL parameter. Params for path parameters. Header for request headers. Cookie for  cookies. Response for validating response.
 
     - - meta
       - name: 'og:description'
-        content: Elysia supports declarative schema with the following types. Body for validate an incoming HTTP message. Query for query string or URL parameter. Params for path parameters. Header for request headers. Cookie for  cookies. Response for validating response.
+        content: Elysia supports declarative schema with the following types. Body for validating an incoming HTTP message. Query for query string or URL parameter. Params for path parameters. Header for request headers. Cookie for  cookies. Response for validating response.
 ---
 
 
@@ -73,21 +73,21 @@ The response should as follows:
 | /id/a?name=Elysia | ✅ | ❌ |
 | /id/a?alias=Elysia | ❌ | ❌ |
 
-When schema is provided, type will be infered from the schema automatically, and generate an OpenAPI type for Swagger documentation generation, leaving out redudant task of providing type manually.
+When schema is provided, the type will be inferred from the schema automatically, and generate an OpenAPI type for Swagger documentation generation, leaving out the redundant task of providing type manually.
 
 ## Body
 
 Validate an incoming [HTTP Message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages) (or body).
 
-These message are an additional message for web server to process.
+These messages are additional messages for the webserver to process.
 
-Body is provided as same as `body` in `fetch` API.
+The body is provided as same as `body` in `fetch` API.
 
 ```typescript
 fetch('https://elysiajs.com', {
     method: 'POST',
     body: JSON.stringify({
-        hello: 'Elysia'
+        name: 'Elysia'
     })
 })
 ```
@@ -98,7 +98,7 @@ fetch('https://elysiajs.com', {
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'Hello World!', {
+    .post('/', () => 'Hello World!', {
         body: t.Object({
             name: t.String()
         })
@@ -109,20 +109,20 @@ new Elysia()
 The validation should be as follows:
 | Body | Validation |
 | --- | --------- |
-| \{ hello: 'Elysia' \} | ✅ |
-| \{ hello: 1 \} | ❌ |
+| \{ name: 'Elysia' \} | ✅ |
+| \{ name: 1 \} | ❌ |
 | \{ alias: 'Elysia' \} | ❌ |
 | `undefined` | ❌ |
 
-Elysia disabled body parser for **GET** and **HEAD** message by default, following the specs of HTTP/1.1 [RFC2616](https://www.rfc-editor.org/rfc/rfc2616#section-4.3)
+Elysia disabled body-parser for **GET** and **HEAD** message by default, following the specs of HTTP/1.1 [RFC2616](https://www.rfc-editor.org/rfc/rfc2616#section-4.3)
 
 > If the request method does not include defined semantics for an entity-body, then the message-body SHOULD be ignored when handling the request.
 
-And most browser disable attachment of body by default for **GET** and **HEAD** method.
+Most browsers disable the attachment of the body by default for **GET** and **HEAD** method.
 
 ## Query
 
-Query string or search parameter is an addition string provided after pathname starting with **?** to provide additional information, usually for customize web server behavior like filter or search.
+Query string or search parameter is an addition string provided after pathname starting with **?** to provide additional information, usually for customized web server behavior like filter or search.
 
 ![URL Object](/essential/url-object.svg)
 
@@ -132,7 +132,7 @@ Query is provided after the **?** in Fetch API.
 fetch('https://elysiajs.com/?name=Elysia')
 ```
 
-This field is usually use to enforce important query name or a specific value pattern.
+This field is usually used to enforce an important query name or a specific value pattern.
 
 ### Example
 
@@ -152,26 +152,26 @@ new Elysia()
 The validation should be as follows:
 | Body | Validation |
 | --- | --------- |
-| \{ hello: 'Elysia' \} | ✅ |
-| \{ hello: 1 \} | ❌ |
+| \{ name: 'Elysia' \} | ✅ |
+| \{ name: 1 \} | ❌ |
 | \{ alias: 'Elysia' \} | ❌ |
 | `undefined` | ❌ |
 
 ## Params
 
-For detail explaination, see [path](/new/essential/path), but to summarize.
+For a detailed explanation, see [path](/new/essential/path), but to summarize.
 
-Dynamic path is a pattern matching for a specific part of URL segment to which could store a potential important information, to be used later.
+The dynamic path is a pattern matching for a specific part of the URL segment which could store potentially important information, to be used later.
 
-Elysia use the segment prefix with colon "**:**"
+Elysia uses the segment prefix with a colon "**:**"
 
 ![Path Parameters](/essential/path-parameter.webp)
 
-For instance **/id/:id** tells Elysia to match any path up until /id, then the next segment as params object.
+For instance, **/id/:id** tells Elysia to match any path up until /id, then the next segment as a params object.
 
-**params** is use to validate the path parameter object.
+**params** is used to validate the path parameter object.
 
-**This field is usually doesn't need as Elysia can infers type from path parametr automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
+**This field is usually doesn't need as Elysia can infers type from path parameter automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
 
 ```typescript
 fetch('https://elysiajs.com/id/1')
@@ -199,11 +199,11 @@ The validation should be as follows:
 
 ## Header
 
-HTTP headers let the client and the server pass additional information with an HTTP request or response, usually threat as metadata.
+HTTP headers let the client and the server pass additional information with an HTTP request or response, usually treated as metadata.
 
-This field is usually use to enforce some specific header field, for example `Authorization`.
+This field is usually used to enforce some specific header field, for example, `Authorization`.
 
-Headers is provided as same as `body` in `fetch` API.
+Headers are provided as same as `body` in `fetch` API.
 
 ```typescript
 fetch('https://elysiajs.com/', {
@@ -216,7 +216,7 @@ fetch('https://elysiajs.com/', {
 ::: tip
 Elysia will parse headers as a lower-case key only.
 
-Please make sure that you are using lower-case field name when using header validation.
+Please make sure that you are using a lower-case field name when using header validation.
 :::
 
 ### Example
@@ -241,13 +241,13 @@ The validation should be as follows:
 
 ## Cookie
 
-An HTTP cookie is a small piece of data that server sends to client, it's a data that send with every visits to the same web server to let the server remember information about client.
+An HTTP cookie is a small piece of data that a server sends to the client, it's data that is sent with every visit to the same web server to let the server remember client information.
 
-In a simpler term, a stringified state that sent with every request.
+In simpler terms, a stringified state that sent with every request.
 
-This field is usually use to enforce some specific cookie field.
+This field is usually used to enforce some specific cookie field.
 
-Cookie is a special header field that Fetch API doesn't accept a custom value, but managed by browser. To send a cookie, you must use a `credential` field instead:
+A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credential` field instead:
 
 ```typescript
 fetch('https://elysiajs.com/', {
@@ -269,11 +269,11 @@ new Elysia().get('/', ({ cookie }) => cookie.session.value, {
 
 ## Response
 
-Validate the return value of handler.
+Validate the return value of the handler.
 
-This field isn't usually use unless the need to enforce a specific value of return type is need or for documentation purpose.
+This field isn't usually used unless the need to enforce a specific value of return type is needed or for documentation purposes.
 
-If provided, by default, Elysia will try to enforce type using TypeScript to provide type-hint for your IDE.
+If provided, by default, Elysia will try to enforce type using TypeScript to provide a type hint for your IDE.
 
 ### Example
 
@@ -285,7 +285,7 @@ new Elysia().get('/', () => 'hello world', {
 })
 ```
 
-Response could accept an object with key of HTTP status to enforce response type on specific status.
+The response could accept an object with a key of HTTP status to enforce the response type on a specific status.
 
 ```typescript
 import { Elysia, t } from 'elysia'
