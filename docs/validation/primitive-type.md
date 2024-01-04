@@ -7,22 +7,22 @@ head:
 
     - - meta
       - name: 'description'
-        content: There are a lot of familiar name and behavior that intersect with TypeScript counter-part like. String, Number, Boolean, and Object as well as more advance feature like Intersect, KeyOf, Tuple for versatility. If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provide an actual type validation in runtime.
+        content: There are a lot of familiar names and behaviors that intersect with the TypeScript counterpart. String, Number, Boolean, and Object as well as more advanced features like Intersect, KeyOf, and Tuple for versatility. If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provides an actual type validation in runtime.
 
     - - meta
       - name: 'og:description'
-        content: There are a lot of familiar name and behavior that intersect with TypeScript counter-part like. String, Number, Boolean, and Object as well as more advance feature like Intersect, KeyOf, Tuple for versatility. If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provide an actual type validation in runtime.
+        content: There are a lot of familiar names and behaviors that intersect with the TypeScript counterpart. String, Number, Boolean, and Object as well as more advanced features like Intersect, KeyOf, and Tuple for versatility. If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provides an actual type validation in runtime.
 ---
 
 # Primitive Type
 
 TypeBox API is designed around and similar to TypeScript type.
 
-There are a lot of familiar name and behavior that intersect with TypeScript counter-part like: **String**, **Number**, **Boolean**, and **Object** as well as more advance feature like **Intersect**, **KeyOf**, **Tuple** for versatility.
+There are a lot of familiar names and behaviors that intersect with TypeScript counter-parts like: **String**, **Number**, **Boolean**, and **Object** as well as more advanced features like **Intersect**, **KeyOf**, **Tuple** for versatility.
 
-If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provide an actual type validation in runtime.
+If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provides an actual type validation in runtime.
 
-To create your first schema, import `Elysia.t` from Elysia and starts with the most basic type:
+To create your first schema, import `Elysia.t` from Elysia and start with the most basic type:
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -34,7 +34,7 @@ new Elysia()
     .listen(3000)
 ```
 
-This code tells Elysia to validate an incoming HTTP body, make sure that the body is String, and if it is String, then allow it to flow through request pipeline and handler.
+This code tells Elysia to validate an incoming HTTP body, make sure that the body is String, and if it is String, then allow it to flow through the request pipeline and handler.
 
 If the shape doesn't match, then it will throw an error, into [Error Life Cycle](/essential/life-cycle.html#events).
 
@@ -42,7 +42,7 @@ If the shape doesn't match, then it will throw an error, into [Error Life Cycle]
 
 ## Basic Type
 
-TypeBox provide a basic primitive type with the same behavior as same as TypeScript type.
+TypeBox provides a basic primitive type with the same behavior as same as TypeScript type.
 
 The following table lists the most common basic type:
 
@@ -179,7 +179,7 @@ t.Literal(42)
 
 </table>
 
-Elysia extends all type from TypeBox allowing you to reference most of the API from TypeBox to use in Elysia.
+Elysia extends all types from TypeBox allowing you to reference most of the API from TypeBox to use in Elysia.
 
 See [TypeBox's Type](https://github.com/sinclairzx81/typebox#json-types) for additional types that are supported by TypeBox.
 
@@ -293,7 +293,7 @@ y: 200
 
 </table>
 
-See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) For more explaination for each attribute.
+See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) For more explanation for each attribute.
 
 ---
 <br>
@@ -343,7 +343,7 @@ Hello
 </table>
 
 ## Optional
-Provided in a property of `t.Object`, allowing the field to be undefined or optional.
+Provided in property of `t.Object`, allowing the field to be undefined or optional.
 
 <table class="md-table">
 <tr>
@@ -388,7 +388,7 @@ t.Object({
 </table>
 
 ## Partial
-Allowing all of the field in `t.Object` to be optional.
+Allowing all of the fields in `t.Object` to be optional.
 
 <table class="md-table">
 <tr>

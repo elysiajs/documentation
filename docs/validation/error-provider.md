@@ -7,16 +7,16 @@ head:
 
     - - meta
       - name: 'description'
-        content: There are 2 ways to provide a custom error message when the validation failed. Inline message property. Using onError event. TypeBox offers an additional "error" property, allowing us to return a custom error message if the field is invalid.
+        content: There are 2 ways to provide a custom error message when the validation fails. Inline message property. Using onError event. TypeBox offers an additional "error" property, allowing us to return a custom error message if the field is invalid.
 
     - - meta
       - name: 'og:description'
-        content: There are 2 ways to provide a custom error message when the validation failed. Inline message property. Using onError event. TypeBox offers an additional "error" property, allowing us to return a custom error message if the field is invalid.
+        content: There are 2 ways to provide a custom error message when the validation fails. Inline message property. Using onError event. TypeBox offers an additional "error" property, allowing us to return a custom error message if the field is invalid.
 ---
 
 # Error Provider
 
-There are 2 ways to provide a custom error message when the validation failed:
+There are 2 ways to provide a custom error message when the validation fails:
 
 1. inline `message` property
 2. Using [onError](/life-cycle/on-error) event
@@ -41,7 +41,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-The following are an example of usage of the error property on various types:
+The following is an example of usage of the error property on various types:
 
 <table class="md-table">
 <tr>

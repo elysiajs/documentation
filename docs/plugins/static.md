@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that add support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysiajs/static".
+        content: Plugin for Elysia that adds support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysiajs/static".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysiajs/static".
+        content: Plugin for Elysia that adds support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysiajs/static".
 ---
 
 # Static Plugin
@@ -54,7 +54,7 @@ Below is a config which is accepted by the plugin
 ### assets
 @default `"public"`
 
-Path to folder to expose as static
+Path to the folder to expose as static
 
 ### prefix
 @default `"/public"`
@@ -69,7 +69,7 @@ List of files to ignore from serving as static files
 ### staticLimits
 @default `1024`
 
-By default, the static plugin will register paths to the Router with a static name, if the limits exceed, paths will be lazily added to Router to reduce memory usage.
+By default, the static plugin will register paths to the Router with a static name, if the limits are exceeded, paths will be lazily added to the Router to reduce memory usage.
 Tradeoff memory with performance.
 
 ### alwaysStatic
@@ -88,7 +88,7 @@ Below you can find the common patterns to use the plugin.
 - [Single File](#single-file)
 
 ## Single file
-Suppose you want to return just a single file, you can use `Bun.file` instead of using static plugin
+Suppose you want to return just a single file, you can use `Bun.file` instead of using the static plugin
 ```typescript
 new Elysia()
     .get('/file', () => Bun.file('public/takodachi.png'))

@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that add support for using GraphQL Apollo on Elysia server. Start by installing the plugin with "bun add graphql @elysiajs/apollo @apollo/server".
+        content: Plugin for Elysia that adds support for using GraphQL Apollo on the Elysia server. Start by installing the plugin with "bun add graphql @elysiajs/apollo @apollo/server".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that add support for using GraphQL Apollo on Elysia server. Start by installing the plugin with "bun add graphql @elysiajs/apollo @apollo/server".
+        content: Plugin for Elysia that adds support for using GraphQL Apollo on the Elysia server. Start by installing the plugin with "bun add graphql @elysiajs/apollo @apollo/server".
 ---
 
 # GraphQL Apollo Plugin
@@ -60,9 +60,9 @@ const app = new Elysia()
 Accessing `/graphql` should show Apollo GraphQL playground work with.
 
 ## Context
-Because Elysia is based on Web Standard Request and Response which is different from Node's `HttpRequest` and `HttpResponse` that Express use, result in `req, res` being undefined in context.
+Because Elysia is based on Web Standard Request and Response which is different from Node's `HttpRequest` and `HttpResponse` that Express uses, results in `req, res` being undefined in context.
 
-Because of this, Elysia replace both with `context` like route parameter.
+Because of this, Elysia replaces both with `context` like route parameters.
 ```typescript
 const app = new Elysia()
     .use(
