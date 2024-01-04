@@ -188,4 +188,4 @@ When navigating to your web server, you should see the result as the following:
 | /    | POST   | Route not found :\( |
 | /hi  | GET    | Route not found :\( |
 
-You can learn more about lifecycle and error handling in [Lifecycle Event](/essential/lifecycle-event) and [error handling](/concept/error-handling)
+You can learn more about lifecycle and error handling in [Lifecycle Event](/essential/life-cycle) and [error handling](/life-cycle/on-error)
