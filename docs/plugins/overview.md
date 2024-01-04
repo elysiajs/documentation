@@ -42,7 +42,6 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [WebSocket](/patterns/websocket) - support [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 
 ## Community plugins:
-
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication, simple and clean
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
 -   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node.js and Deno
@@ -74,6 +73,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
 -   [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - compress response
 -   [Elysia IP](https://github.com/gaurishhs/elysia-ip) - get the IP Address
+- [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - developing an OAuth2 Server with Elysia
 
 ---
 
