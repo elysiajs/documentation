@@ -56,7 +56,7 @@ An integration like this should take care of the framework by default instead of
 ## Chapter
 This chapter is going to cover the basic usage of TypeBox and the new API introduced on Elysia type that is not provided in default TypeBox.
 
-We recommended reading the essential chapter's [Schema](http://localhost:5173/new/essential/schema.html) first to understand the basic concept of Elysia type.
+We recommended reading the essential chapter's [Schema](/essential/schema.html) first to understand the basic concept of Elysia type.
 
 For a more in-depth topic, we recommend you to check out [TypeBox documentation](https://github.com/sinclairzx81/typebox), as dedicated documentation is more focused on each type behavior and additional settings it could provide.
 
