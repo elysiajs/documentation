@@ -89,7 +89,7 @@ With Elysia schema builder, we can ensure type safety like a strong-typed langua
 ## Standard
 Elysia adopts many standards by default, like OpenAPI, and WinterCG compliance, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
 
-For instance, as Elysia adopts OpenAPI by default, generating documentation with Swagger is as easy as adding a one-liner:
+For instance, as Elysia adopts OpenAPI by default, generating a documentation with Swagger is as easy as adding a one-liner:
 
 ```typescript
 import { Elysia, t } from 'elysia'
