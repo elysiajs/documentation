@@ -20,12 +20,11 @@ Context is information of each request passed to [route handler](/essential/hand
 Context is unique for each request, and is not shared except it's a `store` property which is a global mutable state object, (aka state).
 
 Elysia context is consists of:
-- **path** - Path name of the request
+- **path** - Pathname of the request
 - **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
 - **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extract from a value after pathname starting from '?' question mark sign)
 - **params** - Elysia's path parameters parsed as JavaScript object
 - **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
-- path: Pathname of the request
 - **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 - **store** - A global mutable store for Elysia instance
 - **cookie** - A global mutatable signal store for interacting with Cookie (including get/set)
@@ -76,7 +75,7 @@ Beware that you cannot use state value before being assigned.
 import { Elysia } from 'elysia'
 
 new Elysia()
-    // ❌ TypeError: version doesn't exist in store
+    // ❌ TypeError: counter doesn't exist in store
     .get('/error', ({ store }) => store.counter)
     .state('counter', 0)
     // ✅ Because we assigned a version before, you can now access it
@@ -101,7 +100,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .decorate('logger', new Logger())
-    // ✅ Because we assigned a version before, you can now access it
+    // ✅ Because we assigned an additional property called logger, you can now access it
     .get('/', ({ logger }) => {
         logger.log('hi')
 
@@ -130,7 +129,7 @@ new Elysia()
 
 Because **derive** is assigned once a new request starts, **derive** can access Request properties like **headers**, **query**, **body** where **store**, and **decorate** can't.
 
-Unlike **state**, and **decorate**. Properties that are assigned by **derive** is unique and not shared with another request.
+Unlike **state**, and **decorate**. Properties which assigned by **derive** is unique and not shared with another request.
 
 ## Pattern
 **state**, **decorate** offers a similar APIs pattern for assigning property to Context as the following:
@@ -185,7 +184,7 @@ new Elysia()
     .state(({ version, ...store }) => ({
         ...store,
         elysiaVersion: 1
-    })
+    }))
     // ✅ Create from state remap
     .get('/', ({ store }) => store.elysiaVersion)
     // ❌ Excluded from state remap
