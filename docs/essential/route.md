@@ -108,7 +108,7 @@ Unlike unit test's mock, **you can expect it to behave like an actual request** 
 
 ## Custom Method
 
-We can accept custom HHTP Method with `Elysia.route`.
+We can accept custom HTTP Method with `Elysia.route`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -167,7 +167,7 @@ HTTP Status is use to indicate the type of response. By default if everything is
 If server fail to find any route to handle, like in this case, then server shall return a '404 NOT FOUND' status code.
 :::
 
-For Elysia, we can handle a custom 404 error by returning a valuee from 'error` lifecycle like this:
+For Elysia, we can handle a custom 404 error by returning a value from 'error` lifecycle like this:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -188,4 +188,4 @@ When navigating to your web server, you should see the result as the following:
 | /    | POST   | Route not found :\( |
 | /hi  | GET    | Route not found :\( |
 
-You can learn more about lifecycle and error handling in [Lifecycle Event](/essential/lifecycle-event) and [error handling](/concept/error-handling)
+You can learn more about lifecycle and error handling in [Lifecycle Event](/essential/life-cycle) and [error handling](/life-cycle/on-error)

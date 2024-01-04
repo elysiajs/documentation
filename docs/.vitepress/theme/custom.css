@@ -26,7 +26,7 @@ html, body {
     --vp-custom-block-tip-bg: #ecfdf5;
     --vp-custom-block-tip-border: #dcfce7;
     --vp-custom-block-tip-text: #15803d;
-    --vp-c-brand-nav-active: var(--vp-c-brand-light);
+    --vp-c-brand-nav-active: color-mix(in srgb, var(--vp-c-brand-light) 15%, transparent 100%);
 }
 
 .dark {
@@ -43,7 +43,7 @@ html, body {
     --vp-custom-block-tip-bg: #064e3b;
     --vp-custom-block-tip-border: #052e16;
     --vp-custom-block-tip-text: #f0fdf4;
-    --vp-c-brand-nav-active: var(--vp-c-brand-dark);
+    --vp-c-brand-nav-active: color-mix(in srgb, var(--vp-c-brand-dark) 30%, transparent 100%);
 }
 
 html,
@@ -78,11 +78,11 @@ button.copy::after {
                 @apply pl-4 mb-0.5 dark:border-l-gray-600 rounded-lg;
 
                 &:hover, &:focus {
-                    background-color: color-mix(in srgb, var(--vp-c-brand-nav-active) 15%, transparent 100%);
+                    background-color: var(--vp-c-brand-nav-active);
                 }
 
                 &.is-active.has-active {
-                    background-color: color-mix(in srgb, var(--vp-c-brand-nav-active) 15%, transparent 100%);
+                    background-color: var(--vp-c-brand-nav-active);
                 }
             }
         }
@@ -153,3 +153,38 @@ button.copy::after {
 .vp-doc > * > video {
     @apply rounded-lg shadow-xl;
 }
+
+/* Wait until Vitepress provide support for view transition */
+/* .VPSidebar {
+    page-transition-tag: sidebar;
+}
+
+.VPNav {
+    page-transition-tag: nav;
+}
+
+.VPDoc {
+    page-transition-tag: doc;
+}
+
+::page-transition-incoming-image(root) {
+    animation: 500ms ease-out both document-enter;
+}
+
+@keyframes document-enter {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+}
+
+::page-transition-out-going-image(root) {
+    animation: 500ms ease-out both document-leave;
+}
+
+@keyframes document-leave {
+    to {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+} */
