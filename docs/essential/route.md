@@ -123,7 +123,7 @@ const app = new Elysia()
 **Elysia.route** accepts the following:
 
 -   **method**: HTTP Verb
--   **path**: Path
+-   **path**: Pathname
 -   **function**: Function to response to client
 -   **hook**: Additional metadata
 
@@ -145,7 +145,7 @@ It's recommended to use UPPERCASE convention for defining a custom HTTP Verb wit
 Elysia provide an `Elysia.all` for handling any HTTP verb for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
 ```typescript
-import {} from 'elysia'
+import { Elysia } from 'elysia'
 
 new Elysia().all('/', () => 'hi').listen(3000)
 ```
