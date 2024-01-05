@@ -37,8 +37,8 @@ import { validateSession } from '@services/users'
 
 new Elysia()
     .get('/', () => 'hi', {
-        onBeforeHandle(({ set, cookie: { session } }) {
-            if(!validateSession(session.value))
+        beforeHandle({ set, cookie: { session } }) {
+          if(!validateSession(session.value))
                 return set.status = 'Unauthorized'
         }
     })
