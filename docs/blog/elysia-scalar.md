@@ -18,11 +18,11 @@ head:
 
     - - meta
       - property: 'og:image'
-        content: https://elysiajs.com/blog/elysia-08/gate-of-steiner.webp
+        content: https://elysiajs.com/blog/elysia-scalar/scalar-by-default.webp
 
     - - meta
       - property: 'twitter:image'
-        content: https://elysiajs.com/blog/elysia-08/gate-of-steiner.webp
+        content: https://elysiajs.com/blog/elysia-scalar/scalar-by-default.web
 ---
 
 <script setup>
