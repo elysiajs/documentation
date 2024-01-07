@@ -34,7 +34,7 @@ head:
     src="/blog/elysia-08/gate-of-steiner.webp"
     alt="Satellite floating in space before the vast world"
     author="saltyaom"
-    date="20 Sep 2023"
+    date="23 Dec 2023"
 >
 
 Named after the ending song of Steins;Gate Zero, [**"Gate of Steiner"**](https://youtu.be/S5fnglcM5VI).

@@ -39,6 +39,16 @@ Accessing `/swagger` would show you a Swagger UI with the generated endpoint doc
 ## Config
 Below is a config which is accepted by the plugin
 
+### provider
+@default `scalar`
+
+UI Provider for documentation. Default to Scalar.
+
+### scalar
+Configuration for customizing Scalar.
+
+Please refer to the [Scalar config](https://github.com/scalar/scalar?tab=readme-ov-file#configuration)
+
 ### swagger
 Configuration for customizing Swagger.
 

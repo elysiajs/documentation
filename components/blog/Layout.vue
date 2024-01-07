@@ -23,7 +23,8 @@
         <img
             :src="props.src"
             :alt="props.alt"
-            class="w-full shadow-2xl my-6"
+            class="w-full my-6"
+            :class="props.shadow ? 'shadow-xl' : 'border'"
         />
         <main id="blog-content">
             <slot />
@@ -51,6 +52,7 @@ const props = defineProps<{
     alt: string
     author: keyof Authors
     date: string
+    shadow?: boolean
 }>()
 
 const author = authors[props.author]
@@ -116,7 +118,7 @@ onUnmounted(() => {
 #blog-content > img,
 #blog-content > * > img {
     @apply rounded-xl my-4;
-    box-shadow: 0 8px 25px rgba(0,0,0,.1)
+    /* box-shadow: 0 8px 25px rgba(0,0,0,.1) */
 }
 
 .-png {
