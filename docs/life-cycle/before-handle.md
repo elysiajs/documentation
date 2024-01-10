@@ -138,7 +138,7 @@ Same as **derive**, properties which assigned by **resolve** is unique and not s
 
 ## Guard resolve
 
-As resole is not available in local hook, it's recommended to use guard to encapsulate the **resolve** event.
+As resolve is not available in local hook, it's recommended to use guard to encapsulate the **resolve** event.
 
 ```typescript
 import { Elysia } from 'elysia'
