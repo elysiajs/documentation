@@ -30,7 +30,7 @@ Elysia uses path and method to lookup the correct resource.
 
 A path starts after the origin. Prefix with **/** and ends before search query **(?)**
 
-We can categorized the URL and path as follows:
+We can categorize the URL and path as follows:
 
 | URL                             | Path         |
 | ------------------------------- | ------------ |
