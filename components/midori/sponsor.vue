@@ -40,18 +40,36 @@
                         }}
                     </p>
                     <p
-                        v-if="sponsor.tier.monthlyPriceInDollars"
+                        v-if="sponsor.tier?.monthlyPriceInDollars"
                         class="text-3xl text-gray-400 bg-clip-text text-transparent bg-gradient-to-tl font-medium from-fuchsia-500 to-blue-500 mt-3 mb-1"
                     >
                         ${{ sponsor.tier.monthlyPriceInDollars }}
                     </p>
                     <p
-                        v-if="sponsor.tier.monthlyPriceInDollars"
+                        v-if="
+                            sponsor.tier?.monthlyPriceInDollars &&
+                            sponsor.tier.isOneTime
+                        "
+                        class="text-sm text-gray-400 bg-clip-text text-transparent bg-gradient-to-tl font-medium from-fuchsia-500 to-blue-500 mb-3"
+                    >
+                        one time
+                    </p>
+                    <p
+                        v-if="
+                            sponsor.tier?.monthlyPriceInDollars &&
+                            !sponsor.tier.isOneTime
+                        "
                         class="text-sm text-gray-400 bg-clip-text text-transparent bg-gradient-to-tl font-medium from-fuchsia-500 to-blue-500 mb-3"
                     >
                         a month
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 my-0">
+                    <p
+                        v-if="
+                            sponsor.tier?.monthlyPriceInDollars &&
+                            !sponsor.tier.isOneTime
+                        "
+                        className="text-sm text-gray-500 dark:text-gray-400 my-0"
+                    >
                         {{
                             dayjs()
                                 .from(dayjs(sponsor.createdAt))
@@ -88,7 +106,9 @@
                     <p className="text-lg font-semibold text-pink-400 mb-2">
                         And you
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Become sponsor</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Become sponsor
+                    </p>
                 </a>
             </li>
         </ul>

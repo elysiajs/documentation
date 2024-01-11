@@ -38,6 +38,7 @@ export default {
                     tier {
                         isCustomAmount
                         monthlyPriceInDollars
+                        isOneTime
                     }
                   }
                 }
@@ -45,9 +46,9 @@ export default {
             }`
             })
         }).then((x) => x.json())
-
         // @ts-ignore
         const data: Sponsor[] = result.data.user.sponsorshipsAsMaintainer.nodes
+        console.log(data);
 
         return data.sort(
             (a, b) =>
