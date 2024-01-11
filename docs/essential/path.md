@@ -11,7 +11,7 @@ head:
 
     - - meta
       - property: 'og:description'
-        content: Path or pathname is an identifier to locate resouces from a server. Elysia uses path and method to lookup the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
+        content: Path or pathname is an identifier to locate resouces from a server. Elysia uses path and mfethod to lookup the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 ---
 
 # Path
@@ -85,7 +85,7 @@ URL segment is each path that is composed into a full path.
 Segment is separated by `/`.
 ![Representation of URL segments](/essential/url-segment.webp)
 
-Path parameters in Elysia are represented by prefixing a segment with ':' follow by a name.
+Path parameters in Elysia are represented by prefixing a segment with ':' followed by a name.
 ![Representation of path parameter](/essential/path-parameter.webp)
 
 Path parameters allow Elysia to capture a specific segment of URL.
