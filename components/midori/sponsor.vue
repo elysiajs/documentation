@@ -45,12 +45,6 @@
                     >
                         ${{ sponsor.tier.monthlyPriceInDollars }}
                     </p>
-                    <p
-                        v-if="sponsor.tier.monthlyPriceInDollars"
-                        class="text-sm text-gray-400 bg-clip-text text-transparent bg-gradient-to-tl font-medium from-fuchsia-500 to-blue-500 mb-3"
-                    >
-                        a month
-                    </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400 my-0">
                         {{
                             dayjs()

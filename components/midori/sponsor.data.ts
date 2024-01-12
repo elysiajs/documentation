@@ -6,6 +6,7 @@ export interface Sponsor {
     }
     createdAt: string
     tier: {
+        isOneTime: boolean
         isCustomAmount: boolean
         monthlyPriceInDollars: number
     }
@@ -36,8 +37,9 @@ export default {
                     }
                     createdAt
                     tier {
-                        isCustomAmount
-                        monthlyPriceInDollars
+                      isOneTime
+                      isCustomAmount
+                      monthlyPriceInDollars
                     }
                   }
                 }
@@ -49,7 +51,7 @@ export default {
         // @ts-ignore
         const data: Sponsor[] = result.data.user.sponsorshipsAsMaintainer.nodes
 
-        return data.sort(
+        return data.filter(x => !x.tier.isOneTime).sort(
             (a, b) =>
                 b?.tier?.monthlyPriceInDollars -
                     a?.tier?.monthlyPriceInDollars ||
