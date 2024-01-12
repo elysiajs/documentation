@@ -122,7 +122,7 @@ new Elysia()
 ## Reference Models
 Sometimes you might find yourself reusing the same type multiple times.
 
-Using [reference models](/patterns/reference-models), you can name your model and use it by referencing the name:
+Using [reference models](/validation/reference-model.html#reference-model), you can name your model and use it by referencing the name:
 ```typescript
 import { Elysia, t } from 'elysia'
 
@@ -140,4 +140,4 @@ const app = new Elysia()
     })
 ```
 
-For more explanation, see [Reference Models](/patterns/reference-models).
+For more explanation, see [Reference Models](/validation/reference-model.html#reference-model).
