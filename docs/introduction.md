@@ -43,7 +43,7 @@ Our most loved features of Elysia that make Elysia stand out from other framewor
 - **Ergonomic by design** - Simple and familiar API for building server
 
 ## Platform Agnostic
-Elysia designed but was **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy the Elysia server on Cloudflare Worker, Vercel Edge Function, and most other runtime that support Web Standard Request.
+Elysia designed but was **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy the Elysia server on Cloudflare Worker, Vercel Edge Function, and most other runtimes that support Web Standard Request.
 
 ## TypeScript
 Elysia is designed to help you write less TypeScript.
@@ -61,7 +61,7 @@ As mentioned before, you can use Elysia with other runtimes beside Bun, but the 
 
 On the left side of your screen, you'll find a chapter navigation bar. The pages of the docs are organized sequentially, from basic to advanced. You can follow them step-by-step to learn about building with Elysia. However, you can also read them in any order or skip to the pages that apply to your use case.
 
-On the right side of the screen, you'll find a table of contents for each page for navigation in the page. If you need to find content, **you can use the search bar at the top, or the search shortcut (`Ctrl+K` or `Cmd+K`).**
+On the right side of the screen, you'll find a table of contents for each page. If you need to find content, **you can use the search bar at the top, or the search shortcut (`Ctrl+K` or `Cmd+K`).**
 
 To get started, check out the Installation Guide.
 

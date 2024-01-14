@@ -25,7 +25,7 @@ Using Eden, we can create an integration test with end-to-end type safety and au
 > Using Eden Treaty to create tests by [irvilerodrigues on Twitter](https://twitter.com/irvilerodrigues/status/1724836632300265926)
 
 ## Setup
-We can use [Bun test](https://bun.sh/guides/test/watch-mode) to create test.
+We can use [Bun test](https://bun.sh/guides/test/watch-mode) to create tests.
 
 Create **test/index.test.ts** in the root of project directory with the following:
 
@@ -56,4 +56,4 @@ Then we can perform tests by running **bun test**
 bun test
 ```
 
-This allows us to perform integration test programmatically instead of manual fetch while supporting type checking automatically.
+This allows us to perform integration tests programmatically instead of manual fetch while supporting type checking automatically.

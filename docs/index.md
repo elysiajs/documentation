@@ -9,11 +9,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between service whether it's tRPC, Swagger or WebSocket. Elysia got you cover, start building next generation TypeScript web server today.
+      content: Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket. Elysia got you covered, start building next generation TypeScript web servers today.
 
   - - meta
     - property: 'og:description'
-      content: Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between service whether it's tRPC, Swagger or WebSocket. Elysia got you cover, start building next generation TypeScript web server today.
+      content: Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket. Elysia got you covered, start building next generation TypeScript web servers today.
 ---
 
 <script setup>

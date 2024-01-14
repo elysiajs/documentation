@@ -83,7 +83,7 @@ A "safe" version of [derive](/life-cycle/before-handle#derive).
 
 Designed to append new value to context after validation process storing in the same stack as **beforeHandle**.
 
-Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from Authorization plugin.
+Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from the Authorization plugin.
 
 ```typescript
 import { Elysia } from 'elysia'
