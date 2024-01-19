@@ -392,6 +392,10 @@ export default defineConfig({
                         link: '/integrations/nextjs'
                     },
                     {
+                        text: 'Expo',
+                        link: '/integrations/expo'
+                    },
+                    {
                         text: 'Astro',
                         link: '/integrations/astro'
                     },
