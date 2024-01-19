@@ -71,7 +71,7 @@ export const POST = app.handle
 This will ensure that Elysia routing will works properly in any location you place in.
 
 ## Deployment
-You can either directly use API route using Elysia and deploy as normal Elysia app normally if need or using experimental Expo server runtime [https://docs.expo.dev/router/reference/api-routes/#deployment].
+You can either directly use API route using Elysia and deploy as normal Elysia app normally if need or using [experimental Expo server runtime](https://docs.expo.dev/router/reference/api-routes/#deployment).
 
 If you are using Expo server runtime, you may use `expo export` command to create optimized build for your expo app, this will include an Expo function which is using Elysia inside `dist/server/_expo/functions/\[...slugs\]+api.js`
 
