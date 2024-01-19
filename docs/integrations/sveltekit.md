@@ -41,7 +41,7 @@ export const POST: RequestHandler = ({ request }) => app.handle(request);
 
 You can treat the Elysia server as if normal SvelteKit server route.
 
-With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden with both client-side and server action
+With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type-safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
 
 Please refer to [SvelteKit Routing](https://kit.svelte.dev/docs/routing#server) for more information.
 

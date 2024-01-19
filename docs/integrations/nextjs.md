@@ -40,7 +40,7 @@ Elysia will work normally as expected because of WinterCG compliance, however, s
 
 You can treat the Elysia server as if normal Nextjs API route.
 
-With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden with both client-side and server action
+With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
 
 Please refers to [Nextjs Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
 
