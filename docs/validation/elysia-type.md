@@ -97,7 +97,7 @@ Maximum size of the file.
 Accept number in byte or suffix of file unit:
 
 ```typescript
-minSize?: number | `${number}${'k' | 'm'}`
+maxSize?: number | `${number}${'k' | 'm'}`
 ```
 
 #### File Unit Suffix:
