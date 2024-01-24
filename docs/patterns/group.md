@@ -14,7 +14,7 @@ head:
         content: Grouping allows you to set prefixes for multiple routes at once, with ".group". Suppose you have many paths with the same prefix - instead of writing the same prefix multiple times, you can group them using a single ".group" method
 ---
 
-# Group
+# Grouping Routes
 
 When creating a web server, you would often have multiple routes sharing the same prefix:
 
@@ -62,7 +62,7 @@ new Elysia()
 
 You may find more information about grouped guards in [scope](/essential/scope.html).
 
-## Prefix
+## Prefixing
 
 We can separate a group into a separate plugin instance to reduce nesting by providing a **prefix** to the constructor.
 
