@@ -261,7 +261,7 @@ fetch('https://elysiajs.com/', {
 import { Elysia, t } from 'elysia'
 
 new Elysia().get('/', ({ cookie }) => cookie.session.value, {
-    params: t.Object({
+    cookie: t.Object({
         session: t.String()
     })
 })
@@ -304,6 +304,6 @@ The validation should be as follows:
 | 'hello' | 200 | ✅ |
 | 1 | 200 | ❌ |
 | 'hello' | 400 | ❌ |
-| 1 | 200 | ✅ |
+| 1 | 400 | ✅ |
 | `false` | 200 | ❌ |
 | `false` | 400 | ❌ |
