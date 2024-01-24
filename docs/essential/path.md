@@ -30,7 +30,7 @@ Elysia uses path and method to lookup the correct resource.
 
 A path starts after the origin. Prefix with **/** and ends before search query **(?)**
 
-We can categorized the URL and path as follows:
+We can categorize the URL and path as follows:
 
 | URL                             | Path         |
 | ------------------------------- | ------------ |
@@ -85,7 +85,7 @@ URL segment is each path that is composed into a full path.
 Segment is separated by `/`.
 ![Representation of URL segments](/essential/url-segment.webp)
 
-Path parameters in Elysia are represented by prefixing a segment with ':' follow by a name.
+Path parameters in Elysia are represented by prefixing a segment with ':' followed by a name.
 ![Representation of path parameter](/essential/path-parameter.webp)
 
 Path parameters allow Elysia to capture a specific segment of URL.
