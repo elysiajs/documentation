@@ -43,9 +43,9 @@ This code behave the same as our first example and should response as follows:
 
 | Path     | Result  |
 | -------- | ------- |
-| /sign-in | Sign in |
-| /sign-in | Sign up |
-| /sign-in | Profile |
+| /user/sign-in | Sign in |
+| /user/sign-in | Sign up |
+| /user/sign-in | Profile |
 
 Group can also accept an optional guard parameter to reduce boilerplate of using group and guard together.
 
