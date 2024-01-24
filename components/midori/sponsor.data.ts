@@ -1,3 +1,5 @@
+import { defineLoader } from 'vitepress';
+
 export interface Sponsor {
     sponsorEntity: {
         login: string
@@ -12,8 +14,11 @@ export interface Sponsor {
     }
 }
 
-export default {
-    async load() {
+declare const data: Sponsor[]
+export { data }
+
+export default defineLoader({
+    async load(): Promise<Sponsor[]> {
         const result = await fetch('https://api.github.com/graphql', {
             method: 'POST',
             headers: {
@@ -49,7 +54,7 @@ export default {
         }).then((x) => x.json())
 
         // @ts-ignore
-        const data: Sponsor[] = result.data.user.sponsorshipsAsMaintainer.nodes
+        const data: Sponsor[] = result.data?.user?.sponsorshipsAsMaintainer?.nodes || []
 
         return data.filter(x => !x.tier.isOneTime).sort(
             (a, b) =>
@@ -59,4 +64,4 @@ export default {
                     new Date(b?.createdAt).getTime()
         )
     }
-}
+})
