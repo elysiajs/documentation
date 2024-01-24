@@ -26,7 +26,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-Navigate to [localhost:3000](http://localhost:3000/) should show 'Hello Elysia' as a result.
+Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello Elysia' as a result.
 
 ## Performance
 Building on Bun and extensive optimization like Static Code Analysis allows Elysia to generate optimized code on the fly.
@@ -62,7 +62,7 @@ new Elysia()
 
 The above code allows you to create a path parameter with the name of id, the value that passes after `/id/` will be reflected in `params.id`.
 
-In most framework, you need to provide a generic type to the **id** parameter while Elysia understand that `params.id` will always be available and type as **string**. Elysia then infers this type without any manual type reference need.
+In most framework, you need to provide a generic type to the **id** parameter while Elysia understand that `params.id` will always be available and type as **string**. Elysia then infers this type without any manual type reference needed.
 
 Elysia's goal is to help you write less TypeScript and focus more on Business logic. Let the complex type be handled by the framework.
 

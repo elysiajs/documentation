@@ -32,11 +32,11 @@ new Elysia({
 ```
 
 ## Listen
-`.listen` will config any value for starting server.
+`.listen` will configure any value for starting the server.
 
 By default `listen` will either accept `number` or `Object`.
 
-For Object, `listen` accept the same value as `Bun.serve`, you can provide any custom one except `serve`.
+For Object, `listen` accepts the same value as `Bun.serve`, you can provide any custom one except `serve`.
 
 ```typescript
 // ✅ This is fine

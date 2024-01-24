@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Context is an information of each request from the client, unique to each request with global mutable store. Context can be customize by using state, decorate and derive.
+      content: Context is information about each request from the client, unique to each request with a global mutable store. Context can be customized using state, decorate and derive.
 
   - - meta
     - property: 'og:description'
-      content: Context is an information of each request from the client, unique to each request with global mutable store. Context can be customize by using state, decorate and derive.
+      content: Context is information about each request from the client, unique to each request with a global mutable store. Context can be customized using state, decorate and derive.
 ---
 
 # Context
@@ -27,7 +27,7 @@ Elysia context is consists of:
 - **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
 - **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 - **store** - A global mutable store for Elysia instance
-- **cookie** - A global mutatable signal store for interacting with Cookie (including get/set)
+- **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
 - **set** - Property to apply to Response:
     - **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), default to 200 if not set.
     - **headers** - Response headers
@@ -40,7 +40,7 @@ Because Elysia only provides essential information about the Request, you can cu
 Extraction of a user ID or another frequently used function related to the request, for example, into Context itself.
 
 You can extend Elysia's context by using:
-- **state** - Create a global mutatable state into **Context.store**
+- **state** - Create a global mutable state into **Context.store**
 - **decorate** - Add additional function or property assigned to **Context**
 - **derive** - Add additional property based on existing property or request which is uniquely assigned to every request.
 
@@ -237,7 +237,7 @@ const app = new Elysia()
 ## Reference and value
 To mutate the state, it's recommended to use **reference** to mutate rather than using an actual value.
 
-When accessing the property from JavaScript, if you define a primitive value from an object property as a new value, the reference is lost, the value is treat as new separate value instead.
+When accessing the property from JavaScript, if you define a primitive value from an object property as a new value, the reference is lost, the value is treated as new separate value instead.
 
 For example:
 ```typescript

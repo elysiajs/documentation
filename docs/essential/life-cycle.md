@@ -128,7 +128,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
-    .onAfterHandle(({ response }) => {
+    .onAfterHandle(({ response, set }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
