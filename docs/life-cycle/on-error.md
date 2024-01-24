@@ -7,17 +7,17 @@ head:
 
   - - meta
     - name: 'description'
-      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, its recommended to use on Error in the following sitaution. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytic.
+      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
 
   - - meta
     - property: 'og:description'
-      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, its recommended to use on Error in the following sitaution. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytic.
+      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
 ---
 
 # Error Handling
 **On Error** is the only life-cycle event that is not always executed on each request, but only when an error is thrown in any other life-cycle at least once.
 
-Designed to capture and resolve an unexpected error, its recommended to use on Error in the following sitaution:
+Designed to capture and resolve an unexpected error, its recommended to use on Error in the following situation:
 - To provide custom error message
 - Fail safe or an error handler or retrying a request
 - Logging and analytic
@@ -31,13 +31,13 @@ new Elysia()
         return new Response(error.toString())
     })
     .get('/', () => {
-        throw new Error('Server is during maintainance')
+        throw new Error('Server is during maintenance'')
 
         return 'unreachable'
     })
 ```
 
-With `onError` we can catch and transform the error into wer custom error message.
+With `onError` we can catch and transform the error into a custom error message.
 
 ::: tip
 It's important that `onError` must be called before the handler we want to apply it to.
@@ -74,7 +74,7 @@ Elysia error code consists of:
 - PARSE
 - UNKNOWN
 
-By default, user thrown error code is `unknown`.
+By default, the thrown error code is `unknown`.
 
 ::: tip
 If no error response is returned, the error will be returned using `error.name`.

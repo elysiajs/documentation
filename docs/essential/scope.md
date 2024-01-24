@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia offers scope to encapsulate global event, refactor a redundant logic and apply to the certain route using guard, and group.
+        content: Elysia offers scope to encapsulate global events, refactor redundant logic and apply to the certain route using guard, and group.
 
     - - meta
       - property: 'og:description'
-        content: Elysia offers scope to encapsulate global event, refactor a redundant logic and apply to the certain route using guard, and group.
+        content: Elysia offers scope to encapsulate global events, refactor redundant logic and apply to the certain route using guard, and group.
 ---
 
 # Scope
@@ -80,7 +80,7 @@ new Elysia()
     .listen(3000)
 ```
 
-## Groupped Guard
+## Grouped Guard
 
 We can use a group with prefixes by providing 3 parameters to the group.
 1. Prefix - Route prefix
@@ -190,7 +190,7 @@ The response should be listed as follows:
 
 ### Encapsulation
 
-It is important to note that the scoped instance, just like `guard`, the instance will inherit the previous events from the main instance but not expose those registered in the scope.
+It is important to note that the scoped instance, just like `guard`, will inherit the previous events from the main instance but not expose those registered in the scope.
 
 ```typescript
 import { Elysia } from 'elysia'

@@ -38,11 +38,11 @@ export const POST = app.handle // [!code ++]
 
 Elysia will work normally as expected because of WinterCG compliance, however, some plugins like **Elysia Static** may not work if you are running Nextjs on Node.
 
-You can treat the Elysia server as if normal Nextjs API route.
+You can treat the Elysia server as a normal Nextjs API route.
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
 
-Please refers to [Nextjs Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
+Please refer to [Nextjs Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
 
 ## Prefix
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
@@ -63,4 +63,4 @@ export const GET = app.handle
 export const POST = app.handle
 ```
 
-This will ensure that Elysia routing will works properly in any location you place in.
+This will ensure that Elysia routing will work properly in any location you place it.

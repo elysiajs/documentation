@@ -152,13 +152,13 @@ This allows Elysia to improve performance by reusing the registered plugins inst
 ::: tip
 Seed could be anything, varying from a string to a complex object or class.
 
-If the provided value is class, Elysia will then try to use `.toString` method to generate a checksum.
+If the provided value is class, Elysia will then try to use the `.toString` method to generate a checksum.
 :::
 
 ## Service Locator
 When you apply multiple state and decorators plugin to an instance, the instance will gain type safety.
 
-However, you may notice that when you are trying to use the decorated value in other instance without decorator, you may realize that the type is missing.
+However, you may notice that when you are trying to use the decorated value in another instance without decorator, the type is missing.
 
 ```typescript
 import { Elysia } from 'elysia'

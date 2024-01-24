@@ -60,7 +60,7 @@ However some plugins like **Elysia Static** may not work if you are running Astr
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden.
 
-Please refers to [Astro Endppoint](https://docs.astro.build/en/core-concepts/endpoints/) for more information.
+Please refer to [Astro Endppoint](https://docs.astro.build/en/core-concepts/endpoints/) for more information.
 
 ## Prefix
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
@@ -83,4 +83,4 @@ export const GET = handle // [!code ++]
 export const POST = handle // [!code ++]
 ```
 
-This will ensure that Elysia routing will works properly in any location you place in.
+This will ensure that Elysia routing will work properly in any location you place it.

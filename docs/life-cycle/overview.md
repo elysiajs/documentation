@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
+        content: Life Cycle allows us to intercept an important event at the predefined point allowing us to customize the behavior of our server as needed.
 
     - - meta
       - property: 'og:description'
-        content: Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
+        content: Life Cycle allows us to intercept an important event at the predefined point allowing us to customize the behavior of our server as needed.
 ---
 
 <script setup>
@@ -22,7 +22,7 @@ head:
 # Life Cycle
 It's recommended that you have read [Essential life-cycle](/essential/life-cycle) for better understanding of Elysia's Life Cycle.
 
-Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
+Life Cycle allows us to intercept an important event at the predefined point allowing us to customize the behavior of our server as needed.
 
 Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle.webp)

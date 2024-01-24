@@ -79,7 +79,7 @@ new Elysia({
 })
 ```
 
-Elysia's WebSocket implementation extends Bun's WebSocket configuration, please refers to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) for more information.
+Elysia's WebSocket implementation extends Bun's WebSocket configuration, please refer to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) for more information.
 
 The following are a brief configuration from [Bun WebSocket](https://bun.sh/docs/api/websockets#create-a-websocket-server)
 
