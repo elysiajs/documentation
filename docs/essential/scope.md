@@ -134,7 +134,7 @@ import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
 const html = new Elysia()
-    .onAfterhandle(({ set }) => {
+    .onAfterhandle(({ set, response }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
@@ -163,9 +163,10 @@ We can accomplish that by adding `scoped: true` to the Elysia instance.
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 const html = new Elysia({ scoped: true }) // [!code ++]
-    .onAfterHandle(() => {
+    .onAfterHandle(({ set, response }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
