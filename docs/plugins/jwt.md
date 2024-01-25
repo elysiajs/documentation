@@ -24,8 +24,7 @@ bun add @elysiajs/jwt
 
 Then use it:
 ```typescript
-import { Elysia, t } from 'elysia'
-import { cookie } from '@elysiajs/cookie'
+import { Elysia } from 'elysia'
 import { jwt } from '@elysiajs/jwt'
 
 const app = new Elysia()
@@ -35,17 +34,18 @@ const app = new Elysia()
             secret: 'Fischl von Luftschloss Narfidort'
         })
     )
-    .use(cookie())
-    .get('/sign/:name', async ({ jwt, cookie, setCookie, params }) => {
-        setCookie('auth', await jwt.sign(params), {
+    .get('/sign/:name', async ({ jwt, cookie: { auth }, params }) => {
+        auth.set({
+            value: await jwt.sign(params),
             httpOnly: true,
             maxAge: 7 * 86400,
+            path: '/profile',
         })
 
-        return `Sign in as ${cookie.auth}`
+        return `Sign in as ${auth.value}`
     })
     .get('/profile', async ({ jwt, set, cookie: { auth } }) => {
-        const profile = await jwt.verify(auth)
+        const profile = await jwt.verify(auth.value)
 
         if (!profile) {
             set.status = 401
@@ -71,7 +71,7 @@ app
     .use(
         jwt({
             name: 'myJWTNamespace',
-            secret: process.env.JWT_SECRETS
+            secret: process.env.JWT_SECRETS!
         })
     )
     .get('/sign/:name', ({ myJWTNamespace, params }) => {
