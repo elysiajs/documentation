@@ -74,7 +74,7 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-## Functional callback​
+## Functional callback
 
 It's recommended to define a new plugin instance instead of using a function callback.
 
@@ -108,7 +108,7 @@ Elysia can create 10k instances in a matter of milliseconds, the new Elysia inst
 
 By default, Elysia will register any plugin and handle type definitions.
 
-Some plugins may be used multiple times to provide time inference<sup>[1]</sup>, resulting in duplication of setting initial values or routes.
+Some plugins may be used multiple times to provide type inference, resulting in duplication of setting initial values or routes.
 
 Elysia avoids this by differentiating the instance by using **name** and **optional seeds** to help Elysia identify instance duplication:
 
@@ -152,13 +152,13 @@ This allows Elysia to improve performance by reusing the registered plugins inst
 ::: tip
 Seed could be anything, varying from a string to a complex object or class.
 
-If the provided value is class, Elysia will then try to use `.toString` method to generate a checksum.
+If the provided value is class, Elysia will then try to use the `.toString` method to generate a checksum.
 :::
 
 ## Service Locator
 When you apply multiple state and decorators plugin to an instance, the instance will gain type safety.
 
-However, you may notice that when you are trying to use the decorated value in other instance without decorator, you may realize that the type is missing.
+However, you may notice that when you are trying to use the decorated value in another instance without decorator, the type is missing.
 
 ```typescript
 import { Elysia } from 'elysia'

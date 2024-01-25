@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia offers scope to encapsulate global event, refactor a redundant logic and apply to the certain route using guard, and group.
+        content: Elysia offers scope to encapsulate global events, refactor redundant logic and apply to the certain route using guard, and group.
 
     - - meta
       - property: 'og:description'
-        content: Elysia offers scope to encapsulate global event, refactor a redundant logic and apply to the certain route using guard, and group.
+        content: Elysia offers scope to encapsulate global events, refactor redundant logic and apply to the certain route using guard, and group.
 ---
 
 # Scope
@@ -28,14 +28,19 @@ Guard allows us to apply hook and schema into multiple routes all at once.
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .guard( // [!code ++]
-        { // [!code ++]
-            body: t.Object({ // [!code ++]
+    .guard(
+        // [!code ++]
+        {
+            // [!code ++]
+            body: t.Object({
+                // [!code ++]
                 username: t.String(), // [!code ++]
                 password: t.String() // [!code ++]
             }) // [!code ++]
         }, // [!code ++]
-        (app) => // [!code ++]
+        (
+            app // [!code ++]
+        ) =>
             app
                 .post('/sign-up', ({ body }) => signUp(body))
                 .post('/sign-in', ({ body }) => signIn(body), {
@@ -83,6 +88,7 @@ new Elysia()
 ## Grouped Guard
 
 We can use a group with prefixes by providing 3 parameters to the group.
+
 1. Prefix - Route prefix
 2. Guard - Schema
 3. Scope - Elysia app callback
@@ -103,12 +109,14 @@ app.group('/v1', (app) =>
 // Remove the guard
 app.group(
     '/v1',
-    (app) => app.guard( // [!code --]
-    {
-        body: t.Literal('Rikuhachima Aru')
-    },
-    (app) => app.get('/student', () => 'Rikuhachima Aru')
-    ) // [!code --]
+    (app) =>
+        app.guard(
+            // [!code --]
+            {
+                body: t.Literal('Rikuhachima Aru')
+            },
+            (app) => app.get('/student', () => 'Rikuhachima Aru')
+        ) // [!code --]
 )
 
 // Inline to group 2nd parameter instead
@@ -134,7 +142,7 @@ import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
 const html = new Elysia()
-    .onAfterHandle(({ set, response }) => {
+    .onAfterHandle(({ response, set }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
@@ -149,11 +157,11 @@ new Elysia()
 
 The response should be listed as follows:
 
-| Path   | Content-Type            |
-| ------ | ----------------------- |
+| Path   | Content-Type             |
+| ------ | ------------------------ |
 | /      | text/plain; charset=utf8 |
-| /inner | text/html; charset=utf8 |
-| /outer | text/html; charset=utf8 |
+| /inner | text/html; charset=utf8  |
+| /outer | text/html; charset=utf8  |
 
 ## Scoped Plugin
 
@@ -190,7 +198,7 @@ The response should be listed as follows:
 
 ### Encapsulation
 
-It is important to note that the scoped instance, just like `guard`, the instance will inherit the previous events from the main instance but not expose those registered in the scope.
+It is important to note that the scoped instance, just like `guard`, will inherit the previous events from the main instance but not expose those registered in the scope.
 
 ```typescript
 import { Elysia } from 'elysia'

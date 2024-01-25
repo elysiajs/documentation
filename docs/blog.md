@@ -25,6 +25,16 @@ head:
 <Blogs
   :blogs="[
       {
+        title: 'Introducing support for Scalar - Elysia',
+        href: '/blog/elysia-scalar',
+        detail: 'We are changing API documentation provider to Scalar instead of Swagger UI by default. Scalar is a modern, beautiful API references for OpenAPI compatible, and customizable  built on-top of Vue. Elysia now ship @elysia/swagger package by using Scalar as a default provider, with option to switch back to Swagger UI if need.'
+      },
+      {
+        title: 'Introducing Elysia 0.8 - Gate of Steiner',
+        href: '/blog/elysia-08',
+        detail: 'Introducing Macro API, a new way to interact with Elysia. New Lifecycle, resolve, and mapResponse to interact with Elysia even more. Static Content to compile static resource ahead of time. Default Property, Default Header and several improvement.'
+      },
+      {
         title: 'Introducing Elysia 0.7 - Stellar Stellar',
         href: '/blog/elysia-07',
         detail: 'Introducing up to 13x faster type inference. Declarative telemetry with trace. Reactive cookie model, and cookie validation. TypeBox 0.31 and custom decoder support. Rewritten Web Socket. Definitions remapping and custom affix. Leading more solid foundation for Elysia for a brighter future.'
