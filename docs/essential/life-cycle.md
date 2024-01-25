@@ -41,7 +41,7 @@ Elysia does the following for every request:
     - Notify new event is received, providing only the most minimal context to reduce overhead
     - Best for:
         - Caching
-        - Analytic
+        - Analytics
 2. **Parse**
     - Parse body and add to `Context.body`
     - Best for:
@@ -73,7 +73,7 @@ Elysia does the following for every request:
     - Executed after response sent to the client
     - Best for:
         - Cleaning up response
-        - Analytic
+        - Analytics
 
 These events are designed to help you decouple code into smaller reusable pieces instead of having long, repetitive code in a handler.
 
@@ -98,6 +98,7 @@ To use a local hook, you can inline hook into a route handler:
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {
@@ -125,6 +126,7 @@ To add a global hook, you can use `.on` followed by a life cycle event in camelC
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
