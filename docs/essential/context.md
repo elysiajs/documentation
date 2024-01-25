@@ -68,7 +68,9 @@ To assign value to `store`, you can use **Elysia.state**:
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().state('version', 1).get('/', ({ store: { version } }) => version)
+new Elysia()
+    .state('version', 1)
+    .get('/', ({ store: { version } }) => version)
 ```
 
 Once you call **state**, value will be added to **store** property, and can be later used after in handler.
@@ -154,7 +156,9 @@ You can use **state**, and **decorate** to assign a value using a key-value patt
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().state('counter', 0).decorate('logger', new Logger())
+new Elysia()
+    .state('counter', 0)
+    .decorate('logger', new Logger())
 ```
 
 This pattern is great for readability for setting a single property.
@@ -214,14 +218,18 @@ To provide a smoother experience, some plugins might have a lot of property valu
 The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
 
 ```ts
-const setup = new Elysia({ name: 'setup' }).decorate({
-    argon: 'a',
-    boron: 'b',
-    carbon: 'c'
-})
+const setup = new Elysia({ name: 'setup' })
+    .decorate({
+        argon: 'a',
+        boron: 'b',
+        carbon: 'c'
+    })
 
 const app = new Elysia()
-    .use(setup.prefix('decorator', 'setup'))
+    .use(
+        setup
+            .prefix('decorator', 'setup')
+    )
     .get('/', ({ setupCarbon }) => setupCarbon)
 ```
 
