@@ -28,20 +28,31 @@ It's recommended to use transform for the following:
 Below is an example of using mapResponse to provide Response compression.
 
 ```typescript
-import { Elysia, mapResponse } from 'elysia'
-import { gzipSync } from 'bun'
+import { Elysia } from 'elysia'
 
 new Elysia()
     .mapResponse(({ response }) => {
+        const isJson = typeof response === 'object'
+
+        const text = isJson
+            ? JSON.stringify(response)
+            : response?.toString() ?? ''
+
         return new Response(
-            gzipSync(
-                typeof response === 'object'
-                    ? JSON.stringify(response)
-                    : response.toString()
-            )
+            Bun.gzipSync(new TextEncoder('utf-8').encode(text)),
+            {
+                headers: {
+                    'Content-Encoding': 'gzip',
+                    'Content-Type': `${
+                        isJson ? 'application/json' : 'text/plain'
+                    }; charset=utf-8`
+                }
+            }
         )
     })
-    .listen(3000)
+    .get('/text', () => 'mapResponse')
+    .get('/json', () => ({ map: 'response' }))
+    .listen(8080)
 ```
 
 Like **parse** and **beforeHandle**, after a value is returned, the next iteration of afterHandle will be skipped.
