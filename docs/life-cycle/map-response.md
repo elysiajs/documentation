@@ -31,18 +31,19 @@ Below is an example of using mapResponse to provide Response compression.
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .mapResponse(({ response }) => {
+    .mapResponse(({ response, set }) => {
         const isJson = typeof response === 'object'
 
         const text = isJson
             ? JSON.stringify(response)
             : response?.toString() ?? ''
 
+        set.headers['Content-Encoding'] = 'gzip'
+
         return new Response(
             Bun.gzipSync(new TextEncoder('utf-8').encode(text)),
             {
                 headers: {
-                    'Content-Encoding': 'gzip',
                     'Content-Type': `${
                         isJson ? 'application/json' : 'text/plain'
                     }; charset=utf-8`
