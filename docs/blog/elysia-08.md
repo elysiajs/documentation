@@ -92,7 +92,7 @@ The documentation of [Macro API](/patterns/macro) is now available in **pattern*
 The next generation of customizability is now only a reach away from your keyboard and imagination.
 
 ## New Life Cycle
-Elysia introduced a new life cycle to to fix an existing problem and highly requested API including **Resolve** and **MapResponse**:
+Elysia introduced a new life cycle to fix an existing problem and highly requested API including **Resolve** and **MapResponse**:
 resolve: a safe version of **derive**. Execute in the same queue as **beforeHandle**
 mapResponse: Execute just after **afterResponse** for providing transform function from primitive value to Web Standard Response
 
