@@ -3,7 +3,7 @@
         <h1 class="!text-3xl !md:text-4xl font-medium">
             {{ props.title }}
         </h1>
-        <aside class="flex gap-3 items-center mt-4">
+        <!-- <aside class="flex gap-3 items-center mt-4">
             <img
                 class="w-9 h-9 rounded-full"
                 :src="profile"
@@ -19,11 +19,12 @@
                     <a :href="twitter" target="_blank">@{{ author.twitter }}</a>
                 </p>
             </div>
-        </aside>
+        </aside> -->
         <img
             :src="props.src"
             :alt="props.alt"
-            class="w-full shadow-2xl my-6"
+            class="w-full my-6"
+            :class="props.shadow ? 'shadow-xl' : 'border'"
         />
         <main id="blog-content">
             <slot />
@@ -51,6 +52,7 @@ const props = defineProps<{
     alt: string
     author: keyof Authors
     date: string
+    shadow?: boolean
 }>()
 
 const author = authors[props.author]
@@ -92,7 +94,7 @@ onUnmounted(() => {
 }
 
 #blog {
-    @apply text-lg;
+    @apply text-lg mt-0;
 }
 
 #blog > img {
@@ -116,7 +118,7 @@ onUnmounted(() => {
 #blog-content > img,
 #blog-content > * > img {
     @apply rounded-xl my-4;
-    box-shadow: 0 8px 25px rgba(0,0,0,.1)
+    /* box-shadow: 0 8px 25px rgba(0,0,0,.1) */
 }
 
 .-png {

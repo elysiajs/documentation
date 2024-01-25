@@ -7,21 +7,21 @@ head:
 
   - - meta
     - name: 'description'
-      content: Reference Models allow you to name an existing type models for that use for validation, and use by specifying the name thus refereing the model in lifecycle event or "handler.schema".
+      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.schema".
 
   - - meta
     - name: 'og:description'
-      content: Reference Models allow you to name an existing type models for that use for validation, and use by specifying the name thus refereing the model in lifecycle event or "handler.schema".
+      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.schema".
 ---
 
 # Reference Model
-Sometimes you might find yourself declaring duplicated models, or re-use the same model multiple time.
+Sometimes you might find yourself declaring duplicated models, or re-using the same model multiple times.
 
-With reference model, we can named our model and reuse them by referencing with name.
+With reference model, we can name our model and reuse them by referencing with name.
 
 Let's start with a simple scenario.
 
-Suppose we have a controller that handles sign-in with the same identical model.
+Suppose we have a controller that handles sign-in with the same model.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -39,7 +39,7 @@ const app = new Elysia()
     })
 ```
 
-We can refactor the code by extract the model as a variable, and reference them.
+We can refactor the code by extracting the model as a variable, and reference them.
 ```typescript
 import { Elysia, t } from 'elysia'
 
@@ -56,7 +56,7 @@ const app = new Elysia()
     })
 ```
 
-This method of separation the concerns is an effective approach but we might find ourself reusing multiple models with different controllers as the app gets more complex.
+This method of separating the concerns is an effective approach but we might find ourselves reusing multiple models with different controllers as the app gets more complex.
 
 We can resolve that by creating a "reference model"  allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
 

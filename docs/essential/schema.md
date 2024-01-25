@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Schema is a strictly typed definitions, use to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
+        content: Schema are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
 
     - - meta
       - property: 'og:description'
-        content: Schema is a strictly typed definitions, use to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
+        content: Schema are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
 ---
 
 # Schema
@@ -20,7 +20,7 @@ One of the most important areas to create a secure web server is to make sure th
 
 Elysia handled this by providing a validation tool out of the box to validate incoming requests using **Schema Builder**.
 
-**Elysia.t**, a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) to validate the value in both runtime and compile time, providing time safety like in a strict type language.
+**Elysia.t**, a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) to validate the value in both runtime and compile-time, providing time safety like in a strict type language.
 
 ## Type
 
@@ -72,7 +72,7 @@ Register hook into **every** handler that came after.
 To add a global hook, you can use `.schema` followed by a life cycle event in camelCase:
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/none', () => 'hi')
@@ -96,4 +96,4 @@ The response should be listed as follows:
 
 As Lifecycle Event, it is important to remember that the order of Elysia's schema is stored as same as lifecycle, a queue, or first-in-first-out.
 
-Elysia **always** respects the order of code from to bottom followed by the order of life-cycle event and validation schema.
+Elysia **always** respects the order of code from top to bottom followed by the order of life-cycle event and validation schema.

@@ -51,7 +51,7 @@ To use Cookie attribute, you can either use one of the following:
 See [cookie attribute config](/patterns/cookie-signature#config) for more information.
 
 ### Assign Property
-You can get/set the property of a cookie as if it's a normal object, the reactivity model will sync the cookie value automatically.
+You can get/set the property of a cookie like any normal object, the reactivity model synchronizes the cookie value automatically.
 
 ```ts
 app.get('/', ({ cookie: { name } }) => {
@@ -65,7 +65,7 @@ app.get('/', ({ cookie: { name } }) => {
 ```
 
 ## set
-**set** allow us to set update multiple cookie property all at once, by **reset all property** and overwrite it with a new value.
+**set** permits updating multiple cookie properties all at once through **reset all property** and overwrite the property with a new value.
 
 ```ts
 app.get('/', ({ cookie: { name } }) => {
@@ -77,10 +77,10 @@ app.get('/', ({ cookie: { name } }) => {
 ```
 
 ## add
-Like **set**, **add** allow us to update multiple cookie property at once, but instead, will only overwrite the property defined instead of resetting.
+Like **set**, **add** allow us to update multiple cookie properties at once, but instead, will only overwrite the property defined instead of resetting.
 
 ## remove
-To remove a cookie, you can either use:
+To remove a cookie, you can use either:
 1. name.remove
 2. delete cookie.name
 
@@ -113,7 +113,7 @@ app.get('/', ({ cookie: { name } }) => {
 ```
 
 ## Nullable Cookie
-To handle nullable cookie value, you can use `t.Optional` on cookie name you want to be nullable.
+To handle nullable cookie value, you can use `t.Optional` on the cookie name you want to be nullable.
 
 ```ts
 app.get('/', ({ cookie: { name } }) => {

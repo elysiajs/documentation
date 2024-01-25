@@ -37,9 +37,9 @@ import { validateSession } from '@services/users'
 
 new Elysia()
     .get('/', () => 'hi', {
-        onBeforeHandle(({ cookie: { session } }) {
-            if(!validateSession(session.value))
-                return set.status = 'Unauthorized'
+        beforeHandle({ set, cookie: { session } }) {
+            if (!validateSession(session.value))
+                return (set.status = 'Unauthorized')
         }
     })
     .listen(3000)
@@ -54,7 +54,7 @@ The response should be listed as follows:
 
 ## Guard
 
-When we need to apply the same before handle to multiple routes, we can use [guard](/essential/scope#guard) to apply the same before handle to multiple routes.
+When we need to apply the same before handle to multiple routes, we can use [guard](#guard) to apply the same before handle to multiple routes.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -62,7 +62,7 @@ import { Elysia } from 'elysia'
 new Elysia()
     .guard(
         {
-            beforeHandle({ cookie: { session } }) {
+            beforeHandle({ set, cookie: { session } }) {
                 if (!validateSession(session.value))
                     return (set.status = 'Unauthorized')
             }
@@ -75,5 +75,88 @@ new Elysia()
                 })
     )
     .get('/', () => 'hi')
+    .listen(3000)
+```
+
+## Resolve
+
+A "safe" version of [derive](/life-cycle/before-handle#derive).
+
+Designed to append new value to context after validation process storing in the same stack as **beforeHandle**.
+
+Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from the Authorization plugin.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .guard(
+        {
+            headers: t.Object({
+                authorization: t.TemplateLiteral('Bearer ${string}')
+            })
+        },
+        (app) =>
+            app
+                .resolve(({ headers: { authorization } }) => {
+                    return {
+                        bearer: authorization.split(' ')[1]
+                    }
+                })
+                .get('/', ({ bearer }) => bearer)
+    )
+    .listen(3000)
+```
+
+Using `resolve` and `onBeforeHandle` is stored in the same queue.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log(1)
+    })
+    .resolve(() => {
+        console.log(2)
+
+        return {}
+    })
+    .onBeforeHandle(() => {
+        console.log(3)
+    })
+```
+
+The console should log as the following:
+
+```bash
+1
+2
+3
+```
+
+Same as **derive**, properties which assigned by **resolve** is unique and not shared with another request.
+
+## Guard resolve
+
+As resolve is not available in local hook, it's recommended to use guard to encapsulate the **resolve** event.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .guard(
+        {
+            beforeHandle: isSignIn
+        },
+        (app) =>
+            app
+                .resolve(({ cookie: { session } }) => {
+                    return {
+                        userId: findUserId(session.value)
+                    }
+                })
+                .get('/profile', ({ userId }) => userId)
+    )
     .listen(3000)
 ```

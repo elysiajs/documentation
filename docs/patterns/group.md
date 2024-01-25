@@ -26,7 +26,7 @@ new Elysia()
     .listen(3000)
 ```
 
-This can be improve with `Elysia.group`, allowing us to apply prefix to multiple routes a the same time by groupping them together.
+This can be improve with `Elysia.group`, allowing us to apply prefix to multiple routes a the same time by grouping them together.
 
 ```typescript
 new Elysia()
@@ -43,9 +43,9 @@ This code behave the same as our first example and should response as follows:
 
 | Path     | Result  |
 | -------- | ------- |
-| /sign-in | Sign in |
-| /sign-in | Sign up |
-| /sign-in | Profile |
+| /user/sign-in | Sign in |
+| /user/sign-in | Sign up |
+| /user/sign-in | Profile |
 
 Group can also accept an optional guard parameter to reduce boilerplate of using group and guard together.
 
@@ -60,7 +60,7 @@ new Elysia()
     .listen(3000)
 ```
 
-You may find more information about groupped guard in [scope](/essential/scope.html).
+You may find more information about grouped guard in [scope](/essential/scope.html).
 
 ## Prefix
 

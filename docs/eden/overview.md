@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Elysia support end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
+      content: Elysia supports end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
 
   - - meta
     - property: 'og:description'
-      content: Elysia support end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
+      content: Elysia supports end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
 ---
 
 # End-to-End Type-Safety
@@ -49,10 +49,10 @@ Others framework that support e2e type safety:
 Hover over variable and function to see type definition.
 ::: -->
 
-Elysia allows you change the type on server and it will be instantly reflected on the client, helping with auto-completion and type-enforcement.
+Elysia allows you to change the type on the server and it will be instantly reflected on the client, helping with auto-completion and type-enforcement.
 
 ## Eden
-Eden is a RRC-like client to connect Elysia  **end-to-end type safety** using only TypeScript's type inference instead of code generation.
+Eden is a RPC-like client to connect Elysia  **end-to-end type safety** using only TypeScript's type inference instead of code generation.
 
 Allowing you to sync client and server types effortlessly, weighing less than 2KB.
 
@@ -104,7 +104,7 @@ const data = await fetch('/name/:name', {
 })
 ```
 
-Using Eden Treaty with a complex type and lot of routes (more than 500 routes per server) on a low-end development device can lead to slow type inference and auto-completion.
+Using Eden Treaty with a complex type and a lot of routes (more than 500 routes per server) on a low-end development device can lead to slow type inference and auto-completion.
 
 Eden Fetch is an alternative and solution for fastest type inference possible while providing full type support like Eden Treaty.
 

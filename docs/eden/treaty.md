@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'og:description'
-      content: Eden Treaty is a object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
+      content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 
   - - meta
     - name: 'og:description'
-      content: Eden Treaty is a object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
+      content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 ---
 
 # Eden Treaty
@@ -81,7 +81,7 @@ Eden will transform `/` into `.` which can be called with a registered `method`,
 - **/nested/path** -> .nested.path
 
 ### Path parameters
-Path parameters will be mapped to automatically by their name in the URL.
+Path parameters will be mapped automatically by their name in the URL.
 
 - **/id/:id** -> .id.`<anyThing>`
 - eg: .id.hi
@@ -108,7 +108,7 @@ Eden Treaty is a fetch wrapper, you can add any valid [Fetch](https://developer.
 app.post({
     $fetch: {
         headers: {
-            'x-origanization': 'MANTIS'
+            'x-organization': 'MANTIS'
         }
     }
 })
@@ -148,14 +148,14 @@ const { id, name } = nendoroid
 
 Both **data**, and **error** will be typed as nullable until you can confirm their statuses with a type guard.
 
-To put it simply, if fetch is sucessful, data will have a value and error will be null, and vice-versa.
+To put it simply, if fetch is successful, data will have a value and error will be null, and vice-versa.
 
 ::: tip
 Error is wrapped with an `Error` with its value return from the server can be retrieve from `Error.value`
 :::
 
 ### Error type based on status
-Both Eden Treaty and Eden Fetch can narrow down an error type based on status code if you explictly provided an error type in the Elysia server.
+Both Eden Treaty and Eden Fetch can narrow down an error type based on status code if you explicitly provided an error type in the Elysia server.
 
 ```typescript
 // server.ts
@@ -212,13 +212,12 @@ if(error) {
 ```
 
 ## WebSocket
-Eden supports WebSocket using the same API as same as normal route.
+Eden supports WebSocket using the same API as a normal route.
 ```typescript
 // Server
-import { Elysia, t, ws } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
-    .use(ws())
     .ws('/chat', {
         message(ws, message) {
             ws.send(message)
@@ -253,3 +252,45 @@ We can use [schema](/essential/schema) to enforce type-safety on WebSockets, jus
 **Eden.subscribe** returns **EdenWebSocket** which extends the [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket) class with type-safety. The syntax is identical with the WebSocket
 
 If more control is need, **EdenWebSocket.raw** can be accessed to interact with the native WebSocket API.
+
+## File Upload
+You may either pass one of the following to the field to attach file:
+- **File**
+- **FileList**
+- **Blob**
+
+Attaching a file will results **content-type** to be **multipart/form-data**
+
+Suppose we have the server as the following:
+```typescript
+// server.ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .post('/image', ({ body: { image, title } }) => title, {
+        body: t.Object({
+            title: t.String(),
+            image: t.Files(),
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+```
+
+We may use the client as follows:
+```typescript
+// client.ts
+import { edenTreaty } from '@elysia/eden'
+import type { Server } from './server'
+
+export const client = edenTreaty<Server>('http://localhost:3000')
+
+const id = <T extends HTMLElement = HTMLElement>(id: string) =>
+    document.getElementById(id)! as T
+
+const { data } = await client.image.post({
+    title: "Misono Mika",
+    image: id<HTMLInputElement>('picture').files!,
+})
+```

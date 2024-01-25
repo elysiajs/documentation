@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Path or pathname is an identifier to locate resouces from a server. Elysia use path and method to lookup for the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
+        content: Path or pathname is an identifier to locate resources from a server. Elysia uses the path and method to look up the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 
     - - meta
       - property: 'og:description'
-        content: Path or pathname is an identifier to locate resouces from a server. Elysia use path and method to lookup for the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
+        content: Path or pathname is an identifier to locate resources from a server. Elysia uses the path and method to look up the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 ---
 
 # Path
@@ -22,13 +22,13 @@ Path or pathname is an identifier to locate resources from a server.
 http://localhost:8080/path/page
 ```
 
-Elysia use path and method to lookup for the correct resource.
+Elysia uses the path and method to look up the correct resource.
 
 <img src="/essential/url-object.svg" alt="URL Representation" />
 
 A path starts after the origin. Prefix with **/** and ends before search query **(?)**
 
-We can categorized the URL and path as follows:
+We can categorize the URL and path as follows:
 
 | URL                             | Path         |
 | ------------------------------- | ------------ |
@@ -42,13 +42,13 @@ We can categorized the URL and path as follows:
 If the path is not specified, the browser and web server will treat the path as '/' as a default value.
 :::
 
-Each request Elysia will lookup for [route](/essential/route) and response using [handler](/essential/handler) function.
+Elysia will lookup each request for [route](/essential/route) and response using [handler](/essential/handler) function.
 
 ## Dynamic path
 
-URL can be both static and dynamic.
+URLs can be both static and dynamic.
 
-Static path means a hardcode string can be used to locate resource from the server while dynamic path matches some part and capture the value to extract extra information rather than a hardcoded string.
+Static path means a hardcoded string can be used to locate resources from the server while dynamic path matches some part and captures the value to extract extra information.
 
 For instance, we can extract the user ID from the pathname, we can do something like:
 
@@ -60,7 +60,7 @@ new Elysia().get('/id/:id', ({ params: { id } }) => id).listen(3000)
 
 We create a dynamic path with `/id/:id` which tells Elysia to match any path up until `/id` and after it could be any value, which is then stored as **params** object.
 
-When requested the server should return the response as follows:
+When requested, the server should return the response as follows:
 
 | Path                   | Response  |
 | ---------------------- | --------- |
@@ -81,7 +81,7 @@ URL segment is each path that is composed into a full path.
 Segment is separated by `/`.
 ![Representation of URL segments](/essential/url-segment.webp)
 
-Path parameters in Elysia are represented by prefixing a segment with ':' follow by a name.
+Path parameters in Elysia are represented by prefixing a segment with ':' followed by a name.
 ![Representation of path parameter](/essential/path-parameter.webp)
 
 Path parameters allow Elysia to capture a specific segment of URL.
@@ -96,7 +96,7 @@ The named path parameter will then be stored in `Context.params`.
 
 ## Multiple path parameter
 
-You can have as much as path parameters as you would like, which will then be stored into a `params`.
+You can have as many path parameters as you would like, which will then be stored into a `params`.
 
 ```typescript
 new Elysia()

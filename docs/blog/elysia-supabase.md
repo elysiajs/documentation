@@ -839,5 +839,5 @@ Elysia is on a journey for creating a Bun-first web framework with new technolog
 
 If you're interested in Elysia, feel free to check out our [Discord server](https://discord.gg/eaFJ2KDJck) or see [Elysia on GitHub](https://github.com/elysiajs/elysia)
 
-Also, you might want to checkout out [Elysia Eden](/plugins/eden/overview), a fully type-safe, no-code-gen fetch client like tRPC for Elysia server.
+Also, you might want to checkout out [Elysia Eden](/eden/overview), a fully type-safe, no-code-gen fetch client like tRPC for Elysia server.
 </Blog>

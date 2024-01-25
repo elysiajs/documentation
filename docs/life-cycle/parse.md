@@ -32,7 +32,7 @@ Below is an example code to retrieve value based on custom headers.
 
 ```typescript
 new Elysia()
-    .onParse(({ request, contentType }) => {
+    .onParse(({ request }, contentType) => {
         if (contentType === 'application/custom-type')
             return request.text()
     })

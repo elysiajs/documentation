@@ -43,7 +43,7 @@ This is to ensure developers end up with a performant web server they intend to 
 
 ## Community plugins:
 
--   [Lucia Auth](https://github.com/elysiajs/elysia-lucia) - authentication, simple and clean
+-   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication, simple and clean
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
 -   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node.js and Deno
 -   [Vite](https://github.com/timnghg/elysia-vite) - serve entry HTML file with Vite's scripts injected
@@ -56,6 +56,8 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Logger](https://github.com/bogeychan/elysia-logger) - [pino](https://github.com/pinojs/pino)-based logging middleware
 -   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy on AWS Lambda
 -   [Decorators](https://github.com/gaurishhs/elysia-decorators) - use TypeScript decorators
+-   [Autoload](https://github.com/kravetsone/elysia-autoload) - filesystem router based on a directory structure that generates types for [Eden](https://elysiajs.com/eden/overview.html)
+-   [Msgpack](https://github.com/kravetsone/elysia-msgpack) - allows you to work with [MessagePack](https://msgpack.org)
 -   [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - filesystem routes
 -   [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - filesystem and folder-based router for groups
 -   [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic HTTP authentication
@@ -72,7 +74,8 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
 -   [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - compress response
 -   [Elysia IP](https://github.com/gaurishhs/elysia-ip) - get the IP Address
+-   [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - developing an OAuth2 Server with Elysia
 
 ---
 
-If you have a plugin written for Elysia, feels free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇
+If you have a plugin written for Elysia, feel free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇

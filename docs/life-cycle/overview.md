@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
+        content: Life Cycle allows us to intercept an important event at the predefined point allowing us to customize the behavior of our server as needed.
 
     - - meta
       - property: 'og:description'
-        content: Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
+        content: Life Cycle allows us to intercept an important event at the predefined point allowing us to customize the behavior of our server as needed.
 ---
 
 <script setup>
@@ -23,7 +23,7 @@ head:
 
 It's recommended that you have read [Essential life-cycle](/essential/life-cycle) for better understanding of Elysia's Life Cycle.
 
-Life Cycle allow us to intercept an important event at the predefined point allowing us to customize the behavior of our server as need.
+Life Cycle allows us to intercept an important event at the predefined point allowing us to customize the behavior of our server as needed.
 
 Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle.webp)
@@ -44,6 +44,9 @@ Below are the request life cycle available in Elysia:
         Custom validation before route handler
     </Card>
     <Card title="After Handle" href="after-handle">
+        Transform returned value into a new value
+    </Card>
+    <Card title="Map Response" href="on-error">
         Map returned value into a response
     </Card>
     <Card title="On Error" href="on-error">
@@ -72,6 +75,7 @@ To use a local hook, you can inline hook into a route handler:
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {
@@ -92,10 +96,11 @@ To add a global hook, you can use `.on` followed by a life cycle event in camelC
 
 ```typescript
 import { Elysia } from 'elysia'
+import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
-    .onAfterhandle(() => {
+    .onAfterhandle(({ response, set }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })

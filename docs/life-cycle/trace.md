@@ -56,7 +56,7 @@ You can trace life cycle of the following:
 -   **error** - handle error thrown during processing request
 -   **response** - send a Response back to the client
 
-Please refers to [life cycle events](/essential/life-cycle#events) for more information:
+Please refer to [Life Cycle Events](/essential/life-cycle#events) for more information:
 ![Elysia Life Cycle](/assets/lifecycle.webp)
 
 ## Children
