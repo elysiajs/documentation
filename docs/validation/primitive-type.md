@@ -107,7 +107,9 @@ boolean
 <td>
 
 ```typescript
-t.Array(t.Number())
+t.Array(
+    t.Number()
+)
 ```
 
 </td>
@@ -234,16 +236,19 @@ t.Number({
 <td>
 
 ```typescript
-t.Array(t.Number(), {
-    /**
-     * Minimum number of items
-     */
-    minItems: 1,
-    /**
-     * Maximum number of items
-     */
-    maxItems: 5
-})
+t.Array(
+    t.Number(),
+    {
+        /**
+         * Minimum number of items
+         */
+        minItems: 1,
+        /**
+         * Maximum number of items
+         */
+        maxItems: 5
+    }
+)
 ```
 
 </td>
@@ -314,7 +319,10 @@ Allow multiple types via union.
 <td>
 
 ```typescript
-t.Union([t.String(), t.Number()])
+t.Union([
+    t.String(),
+    t.Number()
+])
 ```
 
 </td>
@@ -466,14 +474,11 @@ Invalid Email :(
 <td>
 
 ```typescript
-t.Object(
-    {
-        x: t.Number()
-    },
-    {
-        error: 'Invalid object UwU'
-    }
-)
+t.Object({
+    x: t.Number()
+}, {
+    error: 'Invalid object UwU'
+})
 ```
 
 </td>

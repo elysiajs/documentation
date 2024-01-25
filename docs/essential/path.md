@@ -24,7 +24,9 @@ http://localhost:8080/path/page
 
 Elysia uses the path and method to look up the correct resource.
 
-<img src="/essential/url-object.svg" alt="URL Representation" />
+<div class="bg-white rounded-lg">
+    <img src="/essential/url-object.svg" alt="URL Representation" />
+</div>
 
 A path starts after the origin. Prefix with **/** and ends before search query **(?)**
 

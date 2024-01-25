@@ -100,19 +100,22 @@ Measuring functions by index can be hard to trace back to the function code, tha
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .trace(async ({ beforeHandle }) => {
-        for (const child of children) {
-            const { name } = await child
+	.trace(async ({ beforeHandle }) => {
+		for (const child of children) {
+			const { name } = await child
 
-            console.log(name)
+			console.log(name)
             // setup
             // anonymous
-        }
-    })
-    .get('/', () => 'Hi', {
-        beforeHandle: [function setup() {}, () => {}]
-    })
-    .listen(3000)
+		}
+	})
+	.get('/', () => 'Hi', {
+		beforeHandle: [
+			function setup() {},
+			() => {}
+		]
+	})
+	.listen(3000)
 ```
 
 ::: tip

@@ -74,9 +74,12 @@ Invalid Email :(
 <td>
 
 ```typescript
-t.Array(t.String(), {
-    error: 'All members must be a string'
-})
+t.Array(
+    t.String(),
+    {
+        error: 'All members must be a string'
+    }
+)
 ```
 
 </td>
@@ -93,14 +96,11 @@ All members must be a string
 <td>
 
 ```typescript
-t.Object(
-    {
-        x: t.Number()
-    },
-    {
-        error: 'Invalid object UwU'
-    }
-)
+t.Object({
+    x: t.Number()
+}, {
+    error: 'Invalid object UwU'
+})
 ```
 
 </td>
@@ -123,10 +123,11 @@ We can customize the behavior of validation based on [onError](/life-cycle/on-er
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .onError(({ code, error }) => {
-        if (code === 'VALIDATION') return error.message
-    })
-    .listen(3000)
+	.onError(({ code, error }) => {
+		if (code === 'VALIDATION')
+		    return error.message
+	})
+	.listen(3000)
 ```
 
 Narrowed down error type, will be typed as `ValidationError` imported from 'elysia/error'.
@@ -152,25 +153,26 @@ new Elysia()
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .post('/', ({ body }) => body, {
-        body: t.Object({
-            name: t.String(),
-            age: t.Number()
-        }),
-        error({ code, error }) {
-            switch (code) {
-                case 'VALIDATION':
+	.post('/', ({ body }) => body, {
+		body: t.Object({
+			name: t.String(),
+			age: t.Number()
+		}),
+		error({ code, error }) {
+			switch (code) {
+				case 'VALIDATION':
                     console.log(error.all)
 
                     // Find a specific error name (path is OpenAPI Schema compliance)
-                    const name = error.all.find((x) => x.path === '/name')
+					const name = error.all.find((x) => x.path === '/name')
 
                     // If has a validation error, then log it
-                    if (name) console.log(name)
-            }
-        }
-    })
-    .listen(3000)
+                    if(name)
+    					console.log(name)
+			}
+		}
+	})
+	.listen(3000)
 ```
 
 For more information about TypeBox's validator, see [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck).

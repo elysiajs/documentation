@@ -61,8 +61,8 @@ Take a look at this example:
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/id/:id', ({ params: { id }}) => id)
-    .listen(8080)
+    .get('/id/:id', ({ params: { id } }) => id)
+    .listen(3000)
 ```
 
 The above code allows you to create a path parameter with the name of id, the value that passes after `/id/` will be reflected in `params.id`.
