@@ -74,7 +74,7 @@ To get the most out of our documentation, it's recommended that you have a basic
 If you have questions or get stuck about Elysia, feel free to ask our community on GitHub Discussions, Discord, and Twitter.
 
 <Deck>
-    <Card title="Discord" href="https://discord.com/invite/phrduBNq?utm_source=Discord%20Widget&utm_medium=Connect">
+    <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
         Official ElysiaJS discord community server
     </Card>
     <Card title="Twitter" href="https://twitter.com/elysiajs">
