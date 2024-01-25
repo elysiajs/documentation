@@ -95,12 +95,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 
 dayjs.extend(relativeTime)
 
-// @ts-ignore
-import { data, type Sponsor } from './sponsor.data.ts'
-
-console.log({
-    data
-})
+import { data, type Sponsor } from './sponsor.data'
 
 const sponsors: Sponsor[] = data
 </script>

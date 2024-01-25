@@ -74,7 +74,7 @@ const app = new Elysia()
     .listen(8080)
 ```
 
-## Functional callback​
+## Functional callback
 
 It's recommended to define a new plugin instance instead of using a function callback.
 
