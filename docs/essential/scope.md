@@ -28,19 +28,14 @@ Guard allows us to apply hook and schema into multiple routes all at once.
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .guard(
-        // [!code ++]
-        {
-            // [!code ++]
-            body: t.Object({
-                // [!code ++]
+    .guard( // [!code ++]
+        { // [!code ++]
+            body: t.Object({ // [!code ++]
                 username: t.String(), // [!code ++]
                 password: t.String() // [!code ++]
             }) // [!code ++]
         }, // [!code ++]
-        (
-            app // [!code ++]
-        ) =>
+        (app) => // [!code ++]
             app
                 .post('/sign-up', ({ body }) => signUp(body))
                 .post('/sign-in', ({ body }) => signIn(body), {
@@ -109,14 +104,12 @@ app.group('/v1', (app) =>
 // Remove the guard
 app.group(
     '/v1',
-    (app) =>
-        app.guard(
-            // [!code --]
-            {
-                body: t.Literal('Rikuhachima Aru')
-            },
-            (app) => app.get('/student', () => 'Rikuhachima Aru')
-        ) // [!code --]
+    (app) => app.guard( // [!code --]
+    {
+        body: t.Literal('Rikuhachima Aru')
+    },
+    (app) => app.get('/student', () => 'Rikuhachima Aru')
+    ) // [!code --]
 )
 
 // Inline to group 2nd parameter instead

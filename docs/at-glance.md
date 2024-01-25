@@ -23,7 +23,9 @@ Here's a simple hello world in Elysia.
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().get('/', () => 'Hello Elysia').listen(3000)
+new Elysia()
+	.get('/', () => 'Hello Elysia')
+	.listen(3000)
 ```
 
 Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello Elysia' as a result.
@@ -58,7 +60,9 @@ Take a look at this example:
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().get('/id/:id', ({ params: { id } }) => id).listen(3000)
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .listen(3000)
 ```
 
 The above code allows you to create a path parameter with the name of id, the value that passes after `/id/` will be reflected in `params.id`.

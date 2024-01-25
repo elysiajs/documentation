@@ -44,7 +44,9 @@ Context is always the first parameter of route handler:
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().get('/', ({ path }) => path).listen(3000)
+new Elysia()
+    .get('/', ({ path }) => path)
+    .listen(3000)
 ```
 
 ### Context
@@ -136,7 +138,9 @@ If you prefer an explicit Response class, Elysia also handles that automatically
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().get('/', () => new Response('hi')).listen(3000)
+new Elysia()
+    .get('/', () => new Response('hi'))
+    .listen(3000)
 ```
 
 ::: tip
