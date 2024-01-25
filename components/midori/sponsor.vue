@@ -1,34 +1,34 @@
 <template>
     <section class="flex flex-col w-full max-w-6xl mx-auto mt-16">
         <h2
-            class="mb-4 text-5xl font-bold leading-tight text-center text-transparent text-gray-400 bg-clip-text bg-gradient-to-tl from-fuchsia-500 to-blue-500"
+            class="text-5xl leading-tight text-center font-bold text-gray-400 mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-fuchsia-500 to-blue-500"
         >
             Made possible by you
         </h2>
         <p
-            class="w-full max-w-2xl mx-auto text-lg leading-loose text-center text-gray-400 md:text-xl leading"
+            class="text-lg md:text-xl leading-loose text-gray-400 text-center w-full max-w-2xl mx-auto leading"
         >
             Elysia is
             <b class="text-gray-500">not backed by any organization</b>
             <br />
             Made possible by the support of the community and
-            <span class="font-medium text-pink-400 underline">you</span>
+            <span class="text-pink-400 font-medium underline">you</span>
         </p>
         <ul id="sponsors" v-if="sponsors.length > 0" class="my-8">
             <li v-for="sponsor in sponsors" :key="sponsor.sponsorEntity.login">
                 <a
                     :href="`https://github.com/${sponsor.sponsorEntity.login}`"
                     target="_blank"
-                    class="flex flex-col items-center justify-center px-2 py-4 text-center transition-colors hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-800 dark:focus:bg-gray-800 rounded-xl"
+                    class="flex flex-col justify-center items-center text-center hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-800 dark:focus:bg-gray-800 px-2 py-4 rounded-xl transition-colors"
                 >
                     <div
-                        class="w-16 h-16 mb-3 overflow-hidden bg-gray-100 rounded-full mask mask-hexagon"
+                        class="w-16 h-16 rounded-full bg-gray-100 overflow-hidden mask mask-hexagon mb-3"
                     >
                         <img
                             v-if="sponsor.sponsorEntity.avatarUrl"
                             :src="sponsor.sponsorEntity.avatarUrl"
                             alt="Sponsor avatar"
-                            class="object-cover object-center w-16 h-16 rounded-full mask mask-hexagon"
+                            class="w-16 h-16 rounded-full object-cover object-center mask mask-hexagon"
                             loading="lazy"
                         />
                     </div>
@@ -41,7 +41,7 @@
                     </p>
                     <p
                         v-if="sponsor.tier.monthlyPriceInDollars"
-                        class="mt-3 mb-1 text-3xl font-medium text-transparent text-gray-400 bg-clip-text bg-gradient-to-tl from-fuchsia-500 to-blue-500"
+                        class="text-3xl text-gray-400 bg-clip-text text-transparent bg-gradient-to-tl font-medium from-fuchsia-500 to-blue-500 mt-3 mb-1"
                     >
                         ${{ sponsor.tier.monthlyPriceInDollars }}
                     </p>
@@ -57,10 +57,10 @@
             <li>
                 <a
                     href="https://github.com/sponsors/saltyaom"
-                    class="flex flex-col items-center justify-center px-2 py-4 text-center transition-colors hover:bg-pink-100/50 focus:bg-pink-100/50 dark:hover:bg-pink-500/30 dark:focus:bg-pink-500/30 rounded-xl"
+                    class="flex flex-col justify-center items-center text-center hover:bg-pink-100/50 focus:bg-pink-100/50 dark:hover:bg-pink-500/30 dark:focus:bg-pink-500/30 px-2 py-4 rounded-xl transition-colors"
                 >
                     <div
-                        class="flex items-center justify-center mb-2 overflow-hidden text-pink-500 bg-pink-100 rounded-full w-14 h-14 sm:w-16 sm:h-16 dark:bg-pink-400/30 mask mask-hexagon"
+                        class="flex justify-center items-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-pink-100 dark:bg-pink-400/30 overflow-hidden mask mask-hexagon mb-2 text-pink-500"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
