@@ -5,13 +5,13 @@ head:
       - property: 'og:title'
         content: Error Handling - ElysiaJS
 
-  - - meta
-    - name: 'description'
-      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
+    - - meta
+      - name: 'description'
+        content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
 
-  - - meta
-    - property: 'og:description'
-      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
+    - - meta
+      - property: 'og:description'
+        content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
 ---
 
 # Error Handling
