@@ -34,7 +34,7 @@ new Elysia()
         return new Response(error.toString())
     })
     .get('/', () => {
-        throw new Error('Server is during maintenance'')
+        throw new Error('Server is during maintenance')
 
         return 'unreachable'
     })
