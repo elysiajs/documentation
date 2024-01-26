@@ -22,23 +22,24 @@ There are 2 ways to provide a custom error message when the validation fails:
 2. Using [onError](/life-cycle/on-error) event
 
 ## Message Property
+
 TypeBox offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
 
 ```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-	.get('/', () => 'Hello World!', {
-		body: t.Object(
-			{
-				x: t.Number()
-			},
-			{
-				error: 'x must be a number'
-			}
-		)
-	})
-	.listen(3000)
+    .get('/', () => 'Hello World!', {
+        body: t.Object(
+            {
+                x: t.Number()
+            },
+            {
+                error: 'x must be a number'
+            }
+        )
+    })
+    .listen(3000)
 ```
 
 The following is an example of usage of the error property on various types:
@@ -116,7 +117,7 @@ Invalid object UwU
 
 ## onError
 
-We can customize the behavior of validation based on [onError](/new/lifecycle/on-error) event by narrowing down the error code call "**VALIDATION**".
+We can customize the behavior of validation based on [onError](/life-cycle/on-error) event by narrowing down the error code call "**VALIDATION**".
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -124,7 +125,7 @@ import { Elysia, t } from 'elysia'
 new Elysia()
 	.onError(({ code, error }) => {
 		if (code === 'VALIDATION')
-		     return error.message
+		    return error.message
 	})
 	.listen(3000)
 ```
@@ -137,14 +138,15 @@ Narrowed down error type, will be typed as `ValidationError` imported from 'elys
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-	.onError(({ code, error }) => {
-		if (code === 'VALIDATION')
-		     return error.validator.Errors(error.value).First().message
-	})
-	.listen(3000)
+    .onError(({ code, error }) => {
+        if (code === 'VALIDATION')
+            return error.validator.Errors(error.value).First().message
+    })
+    .listen(3000)
 ```
 
 ## Error list
+
 **ValidationError** provides a method `ValidatorError.all`, allowing us to list all of the error causes.
 
 ```typescript
@@ -173,4 +175,4 @@ new Elysia()
 	.listen(3000)
 ```
 
-For more information about TypeBox's validator, see [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck)
+For more information about TypeBox's validator, see [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck).

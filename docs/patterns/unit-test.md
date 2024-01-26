@@ -47,18 +47,19 @@ Then we can perform tests by running **bun test**
 bun test
 ```
 
-New requests to an Elysia server must be a fully valid URL, **NOT** a part of a URL. 
+New requests to an Elysia server must be a fully valid URL, **NOT** a part of a URL.
 
 The request must provide URL as the following:
 
-| URL                    | Valid |
-| ---------------------- | ----- |
-| http://localhost/user" | ✅    |
-| /user                  | ❌    |
+| URL                   | Valid |
+| --------------------- | ----- |
+| http://localhost/user | ✅    |
+| /user                 | ❌    |
 
 We can also use other testing libraries like Jest or testing library to create Elysia unit tests.
 
 ## Eden Test
+
 We can simplify the tests by using Eden Treaty to create a unit-test with support for end-to-end type safety and auto-completion.
 
 ```typescript

@@ -38,8 +38,8 @@ import { validateSession } from '@services/users'
 new Elysia()
     .get('/', () => 'hi', {
         beforeHandle({ set, cookie: { session } }) {
-          if(!validateSession(session.value))
-                return set.status = 'Unauthorized'
+            if (!validateSession(session.value))
+                return (set.status = 'Unauthorized')
         }
     })
     .listen(3000)
@@ -53,6 +53,7 @@ The response should be listed as follows:
 | ✅           | Hi           |
 
 ## Guard
+
 When we need to apply the same before handle to multiple routes, we can use [guard](#guard) to apply the same before handle to multiple routes.
 
 ```typescript

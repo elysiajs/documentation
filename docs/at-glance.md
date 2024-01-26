@@ -137,7 +137,7 @@ const app = new Elysia()
 export type App = typeof app
 ```
 
-And on your client side:
+And on your client-side:
 
 ```typescript
 // client.ts

@@ -159,7 +159,7 @@ Any HTTP method that matches the path, will be handled as follows:
 
 ## 404
 
-If no path matches the defined routes, Elysia will pass the request to `error` lifecycle before returning a "NOT_FOUND" with an HTTP status of 404.
+If no path matches the defined routes, Elysia will pass the request to `error` life cycle before returning a "NOT_FOUND" with an HTTP status of 404.
 
 ::: tip
 HTTP Status is used to indicate the type of response. By default if everything is correct, the server will return a '200 OK' status code (If a route matches and there is no error, Elysia will return 200 as default)
@@ -167,7 +167,7 @@ HTTP Status is used to indicate the type of response. By default if everything i
 If the server fails to find any route to handle, like in this case, then the server shall return a '404 NOT FOUND' status code.
 :::
 
-For Elysia, we can handle a custom 404 error by returning a value from 'error` lifecycle like this:
+For Elysia, we can handle a custom 404 error by returning a value from 'error` life cycle like this:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -188,4 +188,4 @@ When navigating to your web server, you should see the result as follows:
 | /    | POST   | Route not found :\( |
 | /hi  | GET    | Route not found :\( |
 
-You can learn more about lifecycle and error handling in [Lifecycle Event](/essential/life-cycle) and [error handling](/life-cycle/on-error)
+You can learn more about life cycle and error handling in [Life Cycle Events](/essential/life-cycle#events) and [Error Handling](/life-cycle/on-error).

@@ -1,28 +1,31 @@
 ---
 title: Error Handling - ElysiaJS
 head:
-  - - meta
-    - property: 'og:title'
-      content: Error Handling - ElysiaJS
+    - - meta
+      - property: 'og:title'
+        content: Error Handling - ElysiaJS
 
-  - - meta
-    - name: 'description'
-      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
+    - - meta
+      - name: 'description'
+        content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
 
-  - - meta
-    - property: 'og:description'
-      content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
+    - - meta
+      - property: 'og:description'
+        content: Execute when an error is thrown in any other life-cycle at least once. Designed to capture and resolve an unexpected error, it's recommended to use on Error in the following situation. To provide custom error message. Fail safe or an error handler or retrying a request. Logging and analytics.
 ---
 
 # Error Handling
+
 **On Error** is the only life-cycle event that is not always executed on each request, but only when an error is thrown in any other life-cycle at least once.
 
 Designed to capture and resolve an unexpected error, its recommended to use on Error in the following situation:
-- To provide custom error message
-- Fail safe or an error handler or retrying a request
-- Logging and analytic
+
+-   To provide custom error message
+-   Fail safe or an error handler or retrying a request
+-   Logging and analytic
 
 ## Example
+
 Elysia catches all the errors thrown in the handler, classifies the error code, and pipes them to `onError` middleware.
 
 ```typescript
@@ -44,6 +47,7 @@ It's important that `onError` must be called before the handler we want to apply
 :::
 
 For example, returning custom 404 messages:
+
 ```typescript
 import { Elysia, NotFoundError } from 'elysia'
 
@@ -55,24 +59,28 @@ new Elysia()
             return 'Not Found :('
         }
     })
-	.post('/', () => {
-		throw new NotFoundError();
-	})
+    .post('/', () => {
+        throw new NotFoundError()
+    })
     .listen(8080)
 ```
 
 ## Context
+
 `onError` Context is extends from `Context` with additional properties of the following:
-- error: Error object thrown
-- code: Error Code
+
+-   error: Error object thrown
+-   code: Error Code
 
 ### Error Code
+
 Elysia error code consists of:
-- NOT_FOUND
-- INTERNAL_SERVER_ERROR
-- VALIDATION
-- PARSE
-- UNKNOWN
+
+-   NOT_FOUND
+-   INTERNAL_SERVER_ERROR
+-   VALIDATION
+-   PARSE
+-   UNKNOWN
 
 By default, the thrown error code is `unknown`.
 
@@ -81,6 +89,7 @@ If no error response is returned, the error will be returned using `error.name`.
 :::
 
 ## Custom Error
+
 Elysia supports custom error both in the type-level and implementation level.
 
 To provide a custom error code, we can use `Eylsia.error` to add a custom error code, helping us to easily classify and narrow down the error type for full type safety with auto-complete as the following:
@@ -97,7 +106,7 @@ new Elysia()
         MyError
     })
     .onError(({ code, error }) => {
-        switch(code) {
+        switch (code) {
             // With auto-completion
             case 'MyError':
                 // With type narrowing
@@ -105,23 +114,25 @@ new Elysia()
                 return error
         }
     })
-	.get('/', () => {
-		throw new MyError('Hello Error');
-	})
+    .get('/', () => {
+        throw new MyError('Hello Error')
+    })
 ```
 
 Properties of `error` code is based on the properties of `error`, the said properties will be used to classify the error code.
 
 ## Local Error
-Same as others life-cycle, we provide an error into an [scope](/new/essential/scope) using guard:
+
+Same as others life-cycle, we provide an error into an [scope](/essential/scope) using guard:
+
 ```typescript
 new Elysia()
     .get('/', () => 'Hello', {
         beforeHandle({ set, request: { headers } }) {
-            if(!isSignIn(headers)) {
+            if (!isSignIn(headers)) {
                 set.status = 401
 
-                throw new Error("Unauthorized")
+                throw new Error('Unauthorized')
             }
         },
         error({ error }) {

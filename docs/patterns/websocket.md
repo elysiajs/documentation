@@ -23,6 +23,7 @@ Unlike HTTP where our client repeatedly asking the website for information and w
 SocketIO is a popular library for WebSocket, but it is not the only one. Elysia uses [uWebSocket](https://github.com/uNetworking/uWebSockets) which Bun use under the hood with the same API.
 
 To use websocket, simply call `Elysia.ws()`:
+
 ```typescript
 import { Elysia } from 'elysia'
 
@@ -70,7 +71,9 @@ WebSocket schema can validate the following:
 By default Elysia will parse incoming stringified JSON message as Object for validation.
 
 ## Configuration
+
 You can set Elysia constructor to set the Web Socket value.
+
 ```ts
 new Elysia({
     websocket: {
@@ -146,7 +149,7 @@ options: Customize WebSocket handler behavior
 
 ## WebSocketHandler
 
-WebSocketHandler extends config from [config](#config).
+WebSocketHandler extends config from [config](#configuration).
 
 Below is a config which is accepted by `ws`.
 

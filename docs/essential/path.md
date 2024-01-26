@@ -57,9 +57,7 @@ For instance, we can extract the user ID from the pathname, we can do something 
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia()
-    .get('/id/:id', ({ params: { id } }) => id)
-    .listen(3000)
+new Elysia().get('/id/:id', ({ params: { id } }) => id).listen(3000)
 ```
 
 We create a dynamic path with `/id/:id` which tells Elysia to match any path up until `/id` and after it could be any value, which is then stored as **params** object.
@@ -128,9 +126,7 @@ However, when you need a value of the path to be more dynamic and capture the re
 Wildcard can capture the value after segment regardless of amount by using "\*".
 
 ```typescript
-new Elysia()
-    .get('/id/*', ({ params }) => params['*'])
-    .listen(3000)
+new Elysia().get('/id/*', ({ params }) => params['*']).listen(3000)
 ```
 
 Sending a request to the server should return the response as the following:

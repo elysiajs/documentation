@@ -184,6 +184,7 @@ Elysia extends all types from TypeBox allowing you to reference most of the API 
 See [TypeBox's Type](https://github.com/sinclairzx81/typebox#json-types) for additional types that are supported by TypeBox.
 
 ## Attribute
+
 TypeBox can accept an argument for more comprehensive behavior based on JSON Schema 7 specification.
 
 <table class="md-table">
@@ -254,7 +255,7 @@ t.Array(
 <td>
 
 ```typescript
-[1,2,3,4,5]
+;[1, 2, 3, 4, 5]
 ```
 
 </td>
@@ -265,18 +266,18 @@ t.Array(
 
 ```typescript
 t.Object(
-	{
-		x: t.Number()
-	},
-	{
-		/**
-		 * @default false
-		 * Accept additional properties
-		 * that not specified in schema
-		 * but still match the type
-		 */
-		additionalProperties: true
-	}
+    {
+        x: t.Number()
+    },
+    {
+        /**
+         * @default false
+         * Accept additional properties
+         * that not specified in schema
+         * but still match the type
+         */
+        additionalProperties: true
+    }
 )
 ```
 
@@ -296,12 +297,15 @@ y: 200
 See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) For more explanation for each attribute.
 
 ---
+
 <br>
 
 # Honorable Mention
+
 The following are common patterns that are often found useful when creating a schema.
 
 ## Union
+
 Allow multiple types via union.
 
 <table class="md-table">
@@ -343,7 +347,8 @@ Hello
 </table>
 
 ## Optional
-Provided in property of `t.Object`, allowing the field to be undefined or optional.
+
+Provided in a property of `t.Object`, allowing the field to be undefined or optional.
 
 <table class="md-table">
 <tr>
@@ -388,6 +393,7 @@ t.Object({
 </table>
 
 ## Partial
+
 Allowing all of the fields in `t.Object` to be optional.
 
 <table class="md-table">
