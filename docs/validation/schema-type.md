@@ -80,11 +80,12 @@ Validate an incoming [HTTP Message](https://developer.mozilla.org/en-US/docs/Web
 
 These messages are additional messages for the webserver to process.
 
-The body is provided as same as `body` in `fetch` API.
+The body is provided as same as `body` in `fetch` API. The content type should be set accordingly to the defined body.
 
 ```typescript
 fetch('https://elysiajs.com', {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
         name: 'Elysia'
     })
