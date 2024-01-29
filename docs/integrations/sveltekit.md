@@ -7,16 +7,16 @@ head:
 
     - - meta
       - name: 'description'
-        content: With SvelteKit, you can run Elysia on server route.
+        content: With SvelteKit, you can run Elysia on server routes.
 
     - - meta
       - property: 'og:description'
-        content: With SvelteKit, you can run Elysia on server route.
+        content: With SvelteKit, you can run Elysia on server routes.
 ---
 
 # Integration with SvelteKit
 
-With SvelteKit, you can run Elysia on server route.
+With SvelteKit, you can run Elysia on server routes.
 
 1. Create **src/routes/[...slugs]/+server.ts**.
 2. In **+server.ts**, create or import an existing Elysia server
@@ -39,7 +39,7 @@ export const GET: RequestHandler = ({ request }) => app.handle(request);
 export const POST: RequestHandler = ({ request }) => app.handle(request);
 ```
 
-You can treat the Elysia server as if normal SvelteKit server route.
+You can treat the Elysia server as a normal SvelteKit server route.
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type-safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
 
@@ -67,4 +67,4 @@ export const GET: RequestHandler = ({ request }) => app.handle(request);
 export const POST: RequestHandler = ({ request }) => app.handle(request);
 ```
 
-This will ensure that Elysia routing will works properly in any location you place in.
+This will ensure that Elysia routing will work properly in any location you place it.

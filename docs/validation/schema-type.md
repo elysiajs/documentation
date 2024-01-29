@@ -14,7 +14,6 @@ head:
         content: Elysia supports declarative schema with the following types. Body for validating an incoming HTTP message. Query for query string or URL parameter. Params for path parameters. Header for request headers. Cookie for  cookies. Response for validating response.
 ---
 
-
 <script setup>
     import Card from '../../components/nearl/card.vue'
     import Deck from '../../components/nearl/card-deck.vue'
@@ -81,11 +80,12 @@ Validate an incoming [HTTP Message](https://developer.mozilla.org/en-US/docs/Web
 
 These messages are additional messages for the webserver to process.
 
-The body is provided as same as `body` in `fetch` API.
+The body is provided as same as `body` in `fetch` API. The content type should be set accordingly to the defined body.
 
 ```typescript
 fetch('https://elysiajs.com', {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
         name: 'Elysia'
     })
@@ -159,7 +159,7 @@ The validation should be as follows:
 
 ## Params
 
-For a detailed explanation, see [path](/new/essential/path), but to summarize.
+For detail explanation, see [path](/essential/path), but to summarize.
 
 The dynamic path is a pattern matching for a specific part of the URL segment which could store potentially important information, to be used later.
 
@@ -261,7 +261,7 @@ fetch('https://elysiajs.com/', {
 import { Elysia, t } from 'elysia'
 
 new Elysia().get('/', ({ cookie }) => cookie.session.value, {
-    params: t.Object({
+    cookie: t.Object({
         session: t.String()
     })
 })
@@ -304,6 +304,6 @@ The validation should be as follows:
 | 'hello' | 200 | ✅ |
 | 1 | 200 | ❌ |
 | 'hello' | 400 | ❌ |
-| 1 | 200 | ✅ |
+| 1 | 400 | ✅ |
 | `false` | 200 | ❌ |
 | `false` | 400 | ❌ |

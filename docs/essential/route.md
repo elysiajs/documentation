@@ -7,16 +7,16 @@ head:
 
     - - meta
       - name: 'description'
-        content: To determine the correct response to a client, web server use path and HTTP method to lookup for the correct resource. This process is known as "routing". We can define a route by calling method named after HTTP verb like `Elysia.get`, `Elysia.post` passing a path and a function to execute when matched.
+        content: To determine the correct response to a client, the web server uses path and HTTP method to look up for the correct resource. This process is known as "routing". We can define a route by calling a method named after an HTTP verb like `Elysia.get`, `Elysia.post` passing a path and a function to execute when matched.
 
     - - meta
       - property: 'og:description'
-        content: To determine the correct response to a client, web server use path and HTTP method to lookup for the correct resource. This process is known as "routing". We can define a route by calling method named after HTTP verb like `Elysia.get`, `Elysia.post` passing a path and a function to execute when matched.
+        content: To determine the correct response to a client, the web server uses path and HTTP method to look up for the correct resource. This process is known as "routing". We can define a route by calling a method named after an HTTP verb like `Elysia.get`, `Elysia.post` passing a path and a function to execute when matched.
 ---
 
 # Route
 
-To determine the correct response to a client, web servers use the request's **path and HTTP method** to lookup the correct resource.
+To determine the correct response to a client, web servers use the request's **path and HTTP method** to look up the correct resource.
 
 This process is known as **"routing"**.
 
@@ -78,7 +78,7 @@ new Elysia()
 Elysia HTTP methods accepts the following parameters:
 
 -   **path**: Pathname
--   **function**: Function to respond to client
+-   **function**: Function to respond to the client
 -   **hook**: Additional metadata
 
 You can read more about the HTTP methods on [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
@@ -108,7 +108,7 @@ Unlike unit test's mock, **you can expect it to behave like an actual request** 
 
 ## Custom Method
 
-We can accept custom HTTP Method with `Elysia.route`.
+We can accept custom HTTP Methods with `Elysia.route`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -124,7 +124,7 @@ const app = new Elysia()
 
 -   **method**: HTTP Verb
 -   **path**: Pathname
--   **function**: Function to response to client
+-   **function**: Function to response to the client
 -   **hook**: Additional metadata
 
 When navigating to each method, you should see the results as the following:
@@ -159,15 +159,15 @@ Any HTTP method that matches the path, will be handled as follows:
 
 ## 404
 
-If no path matches the defined routes, Elysia will pass the request to `error` lifecycle before returning a "NOT_FOUND" with an HTTP status of 404.
+If no path matches the defined routes, Elysia will pass the request to `error` life cycle before returning a "NOT_FOUND" with an HTTP status of 404.
 
 ::: tip
 HTTP Status is used to indicate the type of response. By default if everything is correct, the server will return a '200 OK' status code (If a route matches and there is no error, Elysia will return 200 as default)
 
-If the server fails to find any route to handle, like in this case, then server shall return a '404 NOT FOUND' status code.
+If the server fails to find any route to handle, like in this case, then the server shall return a '404 NOT FOUND' status code.
 :::
 
-For Elysia, we can handle a custom 404 error by returning a value from 'error` lifecycle like this:
+For Elysia, we can handle a custom 404 error by returning a value from 'error` life cycle like this:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -188,4 +188,4 @@ When navigating to your web server, you should see the result as follows:
 | /    | POST   | Route not found :\( |
 | /hi  | GET    | Route not found :\( |
 
-You can learn more about lifecycle and error handling in [Lifecycle Event](/essential/life-cycle) and [error handling](/life-cycle/on-error)
+You can learn more about life cycle and error handling in [Life Cycle Events](/essential/life-cycle#events) and [Error Handling](/life-cycle/on-error).

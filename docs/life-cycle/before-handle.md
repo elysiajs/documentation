@@ -37,9 +37,9 @@ import { validateSession } from '@services/users'
 
 new Elysia()
     .get('/', () => 'hi', {
-        onBeforeHandle(({ set, cookie: { session } }) {
-            if(!validateSession(session.value))
-                return set.status = 'Unauthorized'
+        beforeHandle({ set, cookie: { session } }) {
+            if (!validateSession(session.value))
+                return (set.status = 'Unauthorized')
         }
     })
     .listen(3000)
@@ -53,6 +53,7 @@ The response should be listed as follows:
 | ✅           | Hi           |
 
 ## Guard
+
 When we need to apply the same before handle to multiple routes, we can use [guard](#guard) to apply the same before handle to multiple routes.
 
 ```typescript
@@ -83,7 +84,7 @@ A "safe" version of [derive](/life-cycle/before-handle#derive).
 
 Designed to append new value to context after validation process storing in the same stack as **beforeHandle**.
 
-Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from Authorization plugin.
+Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from the Authorization plugin.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -138,7 +139,7 @@ Same as **derive**, properties which assigned by **resolve** is unique and not s
 
 ## Guard resolve
 
-As resole is not available in local hook, it's recommended to use guard to encapsulate the **resolve** event.
+As resolve is not available in local hook, it's recommended to use guard to encapsulate the **resolve** event.
 
 ```typescript
 import { Elysia } from 'elysia'

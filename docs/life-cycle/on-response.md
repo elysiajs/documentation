@@ -7,19 +7,19 @@ head:
 
     - - meta
       - name: 'description'
-        content: Executed after the response sent to client. It's recommended to use **On Response** in the following situations. Clean up response. Loggic and analytic.
+        content: Executed after the response sent to the client. It's recommended to use **On Response** in the following situations. Clean up response. Logging and analytics.
 
     - - meta
       - property: 'og:description'
-        content: Executed after the response sent to client. It's recommended to use **On Response** in the following situations. Clean up response. Loggic and analytic.
+        content: Executed after the response sent to the client. It's recommended to use **On Response** in the following situations. Clean up response. Logging and analytics.
 ---
 
 # Response
-Executed after the response sent to client.
+Executed after the response sent to the client.
 
 It's recommended to use **On Response** in the following situations:
 - Clean up response
-- Loggic and analytic
+- Logging and analytics
 
 ## Example
 Below is an example of using the before handle to check for user sign-in.

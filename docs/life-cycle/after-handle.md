@@ -69,6 +69,6 @@ Unlike **beforeHandle**, after a value is returned from **afterHandle**, the ite
 
 ## Context
 `onAfterHandle` Context is extends from `Context` with additional properties of the following:
-- response: Response to return to client
+- response: Response to return to the client
 
 All of the context is based on normal context and can be used like normal context in route handler.

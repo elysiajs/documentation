@@ -25,22 +25,24 @@ Following the same idea as Arch Linux (btw, I use Arch):
 This is to ensure developers end up with a performant web server they intend to create. By extension, Elysia includes pre-built common pattern plugins for convenient developer usage:
 
 ## Official plugins:
-- [Bearer](/plugins/bearer) - retrieve [Bearer](https://swagger.io/docs/specification/authentication/bearer-authentication/) token automatically
-- [CORS](/plugins/cors) - set up [Cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
-- [Cron](/plugins/cron) - set up [cron](https://en.wikipedia.org/wiki/Cron) job
-- [Eden](/eden/overview) - end-to-end type safety client for Elysia
-- [GraphQL Apollo](/plugins/graphql-apollo) - run [Apollo GraphQL](https://www.apollographql.com/) on Elysia
-- [GraphQL Yoga](/plugins/graphql-yoga) - run [GraphQL Yoga](https://github.com/dotansimha/graphql-yoga) on Elysia
-- [HTML](/plugins/html) - handle HTML responses
-- [JWT](/plugins/jwt) - authenticate with [JWTs](https://jwt.io/)
-- [Server Timing](/plugins/server-timing) - audit performance bottlenecks with the [Server-Timing API](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing)
-- [Static](/plugins/static) - serve static files/folders
-- [Stream](/plugins/stream) - integrate response streaming and [server-sent events (SSEs)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
-- [Swagger](/plugins/swagger) - generate [Swagger](https://swagger.io/) documentation
-- [tRPC](/plugins/trpc) - support [tRPC](https://trpc.io/)
-- [WebSocket](/patterns/websocket) - support [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
+
+-   [Bearer](/plugins/bearer) - retrieve [Bearer](https://swagger.io/docs/specification/authentication/bearer-authentication/) token automatically
+-   [CORS](/plugins/cors) - set up [Cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+-   [Cron](/plugins/cron) - set up [cron](https://en.wikipedia.org/wiki/Cron) job
+-   [Eden](/eden/overview) - end-to-end type safety client for Elysia
+-   [GraphQL Apollo](/plugins/graphql-apollo) - run [Apollo GraphQL](https://www.apollographql.com/) on Elysia
+-   [GraphQL Yoga](/plugins/graphql-yoga) - run [GraphQL Yoga](https://github.com/dotansimha/graphql-yoga) on Elysia
+-   [HTML](/plugins/html) - handle HTML responses
+-   [JWT](/plugins/jwt) - authenticate with [JWTs](https://jwt.io/)
+-   [Server Timing](/plugins/server-timing) - audit performance bottlenecks with the [Server-Timing API](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing)
+-   [Static](/plugins/static) - serve static files/folders
+-   [Stream](/plugins/stream) - integrate response streaming and [server-sent events (SSEs)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
+-   [Swagger](/plugins/swagger) - generate [Swagger](https://swagger.io/) documentation
+-   [tRPC](/plugins/trpc) - support [tRPC](https://trpc.io/)
+-   [WebSocket](/patterns/websocket) - support [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 
 ## Community plugins:
+
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication, simple and clean
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
 -   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node.js and Deno

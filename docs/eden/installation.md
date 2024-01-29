@@ -22,7 +22,7 @@ bun add -d elysia
 ```
 
 ::: tip
-Eden need Elysia to infers utilities type.
+Eden needs Elysia to infer utilities type.
 
 Make sure to install Elysia with the version matching on the server.
 :::
@@ -68,7 +68,7 @@ client.mirror.post({
 ```
 
 ## Gotcha
-Sometime Eden may not infers type from Elysia correctly, the following are the most common workaround to fix Eden type inference.
+Sometimes Eden may not infer type from Elysia correctly, the following are the most common workaround to fix Eden type inference.
 
 ### Type Strict
 Make sure to enable strict mode in **tsconfig.json**
@@ -86,9 +86,9 @@ Eden depends Elysia class to import Elysia instance and infers type correctly.
 Make sure that both client and server have a matching Elysia version.
 
 ### TypeScript version
-Elysia is using a newer feature and syntax of TypeScript to infers type in a most performance way, feature like Const Generic, Template Literal are heavily use.
+Elysia uses newer features and syntax of TypeScript to infer types in a the most performant way. Features like Const Generic and Template Literal are heavily used.
 
-Make sure your client have a **minimum TypeScript version if >= 5.0**
+Make sure your client has a **minimum TypeScript version if >= 5.0**
 
 ### Method Chaining
 To make Eden works, Elysia must be using **method chaining**

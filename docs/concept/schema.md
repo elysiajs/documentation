@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Schema is a strictly typed definitions, use to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
+      content: Schema are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
 
   - - meta
     - property: 'og:description'
-      content: Schema is a strictly typed definitions, use to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
+      content: Schema are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
 ---
 
 # Schema
@@ -122,7 +122,7 @@ new Elysia()
 ## Reference Models
 Sometimes you might find yourself reusing the same type multiple times.
 
-Using [reference models](/patterns/reference-models), you can name your model and use it by referencing the name:
+Using [reference models](/validation/reference-model.html#reference-model), you can name your model and use it by referencing the name:
 ```typescript
 import { Elysia, t } from 'elysia'
 
@@ -140,4 +140,4 @@ const app = new Elysia()
     })
 ```
 
-For more explanation, see [Reference Models](/patterns/reference-models).
+For more explanation, see [Reference Models](/validation/reference-model.html#reference-model).
