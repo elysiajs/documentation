@@ -256,8 +256,8 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'Group',
-                        link: '/patterns/group'
+                        text: 'Grouping',
+                        link: '/patterns/grouping'
                     },
                     {
                         text: 'Cookie',
