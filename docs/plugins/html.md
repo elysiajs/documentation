@@ -130,7 +130,7 @@ To add a type-safe reminder, please install:
 bun add @kitajs/ts-html-plugin
 ```
 
-Then appends the following **tsconfig.json
+Then appends the following **tsconfig.json**
 ```jsonc
 // tsconfig.json
 {
