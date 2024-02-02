@@ -256,8 +256,8 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'Group',
-                        link: '/patterns/group'
+                        text: 'Grouping Routes',
+                        link: '/patterns/grouping-routes'
                     },
                     {
                         text: 'Cookie',
