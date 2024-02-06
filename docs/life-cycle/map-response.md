@@ -56,6 +56,6 @@ new Elysia()
     .listen(8080)
 ```
 
-Like **parse** and **beforeHandle**, after a value is returned, the next iteration of afterHandle will be skipped.
+Like **parse** and **beforeHandle**, after a value is returned, the next iteration of **mapResponse** will be skipped.
 
 Elysia will handle the merging process of **set.headers** from **mapResponse** automatically. We don't need to worry about appending **set.headers** to Response manually.
