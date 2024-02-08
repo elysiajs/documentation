@@ -18,12 +18,12 @@ head:
 
 With Nextjs App Router, we can run Elysia on Nextjs route.
 
-1. Create **[...slugs]/route.ts** inside app router
+1. Create **[[...slugs]]/route.ts** inside app router
 2. In **route.ts**, create or import an existing Elysia server
 3. Export the handler with the name of method you want to expose
 
 ```typescript
-// apps/[...slugs]/routes.ts
+// app/[[...slugs]]/route.ts
 const app = new Elysia()
     .get('/', () => 'hello Next')
     .post('/', ({ body }) => body, {
@@ -45,12 +45,13 @@ With this approach, you can have co-location of both frontend and backend in a s
 Please refer to [Nextjs Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
 
 ## Prefix
+
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
 
-For example, if you place Elysia server in **apps/api/[...slugs]/routes.ts**, you need to annotate prefix as **/api** to Elysia server.
+For example, if you place Elysia server in **app/api/[[...slugs]]/route.ts**, you need to annotate prefix as **/api** to Elysia server.
 
-```typescript
-// apps/api/[...slugs]/routes.ts
+```typescript{2}
+// app/api/[[...slugs]]/route.ts
 const app = new Elysia({ prefix: '/api' })
     .get('/', () => 'hi')
     .post('/', ({ body }) => body, {
