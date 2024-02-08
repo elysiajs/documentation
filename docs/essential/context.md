@@ -129,7 +129,7 @@ new Elysia()
         const auth = headers['Authorization']
 
         return {
-            bearer: auth.startsWith('Bearer ') ? auth.slice(7) : null
+            bearer: auth?.startsWith('Bearer ') ? auth.slice(7) : null
         }
     })
     .get('/', ({ bearer }) => bearer)
