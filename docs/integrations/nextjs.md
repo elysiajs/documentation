@@ -45,12 +45,13 @@ With this approach, you can have co-location of both frontend and backend in a s
 Please refer to [Nextjs Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
 
 ## Prefix
+
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
 
-For example, if you place Elysia server in **apps/api/[...slugs]/routes.ts**, you need to annotate prefix as **/api** to Elysia server.
+For example, if you place Elysia server in **app/api/[[...slugs]]/route.ts**, you need to annotate prefix as **/api** to Elysia server.
 
-```typescript
-// apps/api/[[...slugs]]/route.ts
+```typescript{2}
+// app/api/[[...slugs]]/route.ts
 const app = new Elysia({ prefix: '/api' })
     .get('/', () => 'hi')
     .post('/', ({ body }) => body, {
