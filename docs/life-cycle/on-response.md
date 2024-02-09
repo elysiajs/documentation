@@ -22,7 +22,7 @@ It's recommended to use **On Response** in the following situations:
 - Logging and analytics
 
 ## Example
-Below is an example of using the before handle to check for user sign-in.
+Below is an example of using the response handle to check for user sign-in.
 
 ```typescript
 import { Elysia } from '../src'
