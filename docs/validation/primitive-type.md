@@ -255,7 +255,7 @@ t.Array(
 <td>
 
 ```typescript
-;[1, 2, 3, 4, 5]
+[1, 2, 3, 4, 5]
 ```
 
 </td>
@@ -429,7 +429,7 @@ t.Partial(
 
 <td>
 
-```
+```typescript
 {
     y: 123
 }
