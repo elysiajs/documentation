@@ -158,7 +158,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', 'Hello Elysia')
-    .get('/video', Bun.file('kyuukurarin.mp4'))
+    .get('/video', Bun.file('public/kyuukurarin.mp4'))
     .listen(3000)
 ```
 
