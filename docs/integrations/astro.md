@@ -35,7 +35,7 @@ export default defineConfig({
 4. Export the handler with the name of method you want to expose
 
 ```typescript
-// apps/[...slugs].ts
+// pages/[...slugs].ts
 const app = new Elysia()
     .get('/api', () => 'hi')
     .post('/api', ({ body }) => body, {
@@ -68,10 +68,10 @@ Please refer to [Astro Endppoint](https://docs.astro.build/en/core-concepts/endp
 
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
 
-For example, if you place Elysia server in **apps/api/[...slugs].ts**, you need to annotate prefix as **/api** to Elysia server.
+For example, if you place Elysia server in **pages/api/[...slugs].ts**, you need to annotate prefix as **/api** to Elysia server.
 
 ```typescript
-// apps/api/[...slugs].ts
+// pages/api/[...slugs].ts
 const app = new Elysia({ prefix: '/api' }) // [!code ++]
     .get('/', () => 'hi')
     .post('/', ({ body }) => body, {
