@@ -92,7 +92,7 @@ If no error response is returned, the error will be returned using `error.name`.
 
 Elysia supports custom error both in the type-level and implementation level.
 
-To provide a custom error code, we can use `Eylsia.error` to add a custom error code, helping us to easily classify and narrow down the error type for full type safety with auto-complete as the following:
+To provide a custom error code, we can use `Elysia.error` to add a custom error code, helping us to easily classify and narrow down the error type for full type safety with auto-complete as the following:
 
 ```typescript
 class MyError extends Error {
