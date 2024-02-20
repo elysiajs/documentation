@@ -122,7 +122,7 @@ Most browsers disable the attachment of the body by default for **GET** and **HE
 
 ## Query
 
-Query string or search parameter is an addition string provided after pathname starting with **?** to provide additional information, usually for customized web server behavior like filter or search.
+A query string is a part of the URL that starts with **?** and can contain one or more query parameters, which are key-value pairs used to convey additional information to the server, usually for customized behavior like filter or search.
 
 ![URL Object](/essential/url-object.svg)
 
@@ -132,7 +132,7 @@ Query is provided after the **?** in Fetch API.
 fetch('https://elysiajs.com/?name=Elysia')
 ```
 
-This field is usually used to enforce an important query name or a specific value pattern.
+When specifying query parameters, it's crucial to understand that all query parameter values must be represented as strings. This is due to how they are encoded and appended to the URL.
 
 ### Example
 
