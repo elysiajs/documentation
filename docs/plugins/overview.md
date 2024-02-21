@@ -75,6 +75,9 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - compress response
 -   [Elysia IP](https://github.com/gaurishhs/elysia-ip) - get the IP Address
 -   [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - developing an OAuth2 Server with Elysia
+-   [Elysia Flash Messages](https://github.com/gtramontina/elysia-flash-messages) - enable flash messages
+-   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - unnoficial [WorkOS' AuthKit](https://www.authkit.com/) authentication
+-   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - simpler error handling
 
 ---
 
