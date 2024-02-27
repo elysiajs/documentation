@@ -215,6 +215,6 @@ The response should be listed as follows:
 | Path | Log |
 | ----- | ----------------------- |
 | /inner | 1, 2 |
-| /outer | 1 |
+| /outer | 2 |
 
 Scope and guard only prevent the event from being inherited but the scope itself will inherit the events.
