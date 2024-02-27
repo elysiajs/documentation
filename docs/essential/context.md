@@ -126,7 +126,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .derive(({ headers }) => {
-        const auth = headers['Authorization']
+        const auth = headers['authorization']
 
         return {
             bearer: auth?.startsWith('Bearer ') ? auth.slice(7) : null
