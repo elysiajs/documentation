@@ -62,7 +62,7 @@ However some plugins like **Elysia Static** may not work if you are running Astr
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden.
 
-Please refer to [Astro Endppoint](https://docs.astro.build/en/core-concepts/endpoints/) for more information.
+Please refer to [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/) for more information.
 
 ## Prefix
 
