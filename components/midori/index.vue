@@ -55,7 +55,9 @@ const isDark = useDark()
                 <TypeStrict>
                     <slot name="typestrict"></slot>
                 </TypeStrict>
-                <OpenAPI />
+                <OpenAPI>
+                    <slot name="openapi"></slot>
+                </OpenAPI>
             </section>
             <E2ETypeSafety />
             <Plugins />
@@ -80,7 +82,7 @@ const isDark = useDark()
     width: -moz-fit-content;
     width: fit-content;
     min-width: 100%;
-    line-height: var(--vp-code-line-height);
+    line-height: 1.5rem;
     font-size: var(--vp-code-font-size);
     color: var(--vp-code-block-color);
     transition: color 0.5s;

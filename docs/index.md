@@ -56,5 +56,20 @@ new Elysia()
 
 ```
   </template>
+
+  <template v-slot:openapi>
+
+```ts
+import { Elysia, t } from 'elysia'
+import { swagger } from '@elysiajs/swagger'
+import { users, feed } from './controllers'
+
+new Elysia()
+    .use(swagger())
+    .use(users)
+    .use(feed)
+    .listen(3000)
+```
+  </template>
 </Landing>
 ```
