@@ -32,8 +32,29 @@ new Elysia()
         hello: 'world'
     }))
     .listen(3000)
+
 ```
 
+  </template>
+
+  <template v-slot:typestrict>
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post(
+        '/profile',
+        ({ body }) => body,
+        {
+            body: t.Object({
+                username: t.String()
+            })
+        }
+    )
+    .listen(3000)
+
+```
   </template>
 </Landing>
 ```

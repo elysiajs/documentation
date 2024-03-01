@@ -52,7 +52,9 @@ const isDark = useDark()
                 <JustReturn>
                     <slot name="justreturn"></slot>
                 </JustReturn>
-                <TypeStrict />
+                <TypeStrict>
+                    <slot name="typestrict"></slot>
+                </TypeStrict>
                 <OpenAPI />
             </section>
             <E2ETypeSafety />

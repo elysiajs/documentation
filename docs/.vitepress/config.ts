@@ -16,13 +16,13 @@ export default defineConfig({
         }
     },
     // ![INFO] uncomment for support hot reload on WSL - https://github.com/vitejs/vite/issues/1153#issuecomment-785467271
-    // vite: {
-    //     server: {
-    //         watch: {
-    //             usePolling: true
-    //         }
-    //     }
-    // },
+    vite: {
+        server: {
+            watch: {
+                usePolling: true
+            }
+        }
+    },
     head: [
         ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
         [
