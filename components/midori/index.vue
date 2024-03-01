@@ -13,8 +13,6 @@ import Community from './community.vue'
 import QuickStart from './quickstart.vue'
 import Sponsor from './sponsor.vue'
 
-import 'prismjs'
-import 'prismjs/components/prism-typescript'
 
 import '../tailwind.css'
 import './midori.css'
@@ -29,19 +27,6 @@ const isDark = useDark()
 <template>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
-
-    <link v-if="isDark" rel="preload"
-        href="https://cdn.jsdelivr.net/gh/katorlys/prism-theme-github/themes/prism-theme-github-light.css" priority="high"
-        as="style" />
-    <link v-else rel="preload"
-        href="https://cdn.jsdelivr.net/gh/katorlys/prism-theme-github/themes/prism-theme-github-dark.css" priority="high"
-        as="style" />
-
-    <link v-if="isDark" rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/katorlys/prism-theme-github/themes/prism-theme-github-dark.css" type="text/css" />
-    <link v-else rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/katorlys/prism-theme-github/themes/prism-theme-github-light.css"
-        type="text/css" />
 
     <div id="landing" class="dark:bg-gray-900/60">
         <Hero />
@@ -68,7 +53,14 @@ const isDark = useDark()
                 </template>
             </E2ETypeSafety>
             <Plugins />
-            <Editor />
+            <Suspense>
+                <Editor />
+                <template #fallback>
+                    <video muted autoplay loop>
+                        <source src="/assets/elysia.mp4" />
+                    </video>
+                </template>
+            </Suspense>
             <Community />
             <Sponsor />
             <hr class="border-gray-200 dark:border-gray-600" />

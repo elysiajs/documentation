@@ -1,36 +1,3 @@
-<script setup lang="ts">
-import Prism from 'vue-prism-component'
-
-const server = `// server.ts
-import { Elysia, t } from 'elysia'
-
-const app = new Elysia()
-    .patch(
-        '/user/age',
-        ({ body }) => signIn(body), 
-        {
-            body: t.Object({
-                name: t.String(),
-                age: t.Number()
-            })
-        }
-    )
-    .listen(80)
-    
-export type App = typeof app`
-
-const client = `// client.ts
-import { edenTreaty } from '@elysiajs/eden'
-import type { App } from 'server'
-    
-const eden = edenTreaty<App>('http://localhost')
-
-await eden.user.age.patch({
-    name: 'saltyaom',
-    age: '21'
-})`
-</script>
-
 <template>
     <section class="flex flex-col justify-center items-center w-full max-w-6xl mx-auto py-4">
         <!-- <h3 class="text-2xl mr-auto md:mx-auto font-medium text-gray-400">
@@ -54,25 +21,20 @@ await eden.user.age.patch({
 
         <section class="flex flex-col lg:flex-row gap-8 w-full max-w-5xl my-8">
             <div class="w-full !text-base !font-mono rounded-xl">
-                <slot name="server">test</slot>
+                <slot name="server"></slot>
             </div>
             <div class="relative w-full !text-base !font-mono rounded-xl">
                 <slot name="client"></slot>
-                <!-- <div
-                    class="absolute p-1 rounded bg-red-400/25"
-                    style="
-                        top: 13.5em;
-                        left: 6.375em;
-                        width: 2.5em;
+                <div class="absolute p-1 rounded bg-red-400/25" style="
+                        top: 13.2em;
+                        left: 5.9em;
+                        width: 2.2em;
                         height: 1.375em;
-                    "
-                />
-                <p
-                    class="absolute px-3 py-1.5 rounded bg-white dark:bg-gray-700 border dark:border-gray-600"
-                    style="top: 15.25em; left: 3.25em"
-                >
+                    " />
+                <p class="absolute px-3 py-1.5 rounded bg-white dark:bg-gray-700 border dark:border-gray-600"
+                    style="top: 15.25em; left: 3.25em">
                     Type 'string' is not assignable to type 'number'
-                </p> -->
+                </p>
             </div>
         </section>
     </section>
