@@ -1,13 +1,24 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import Prism from 'vue-prism-component'
-import PrismJS from 'prismjs';
-const { highlight, languages } = PrismJS
-
 import { Elysia } from 'elysia'
+import { onMounted, ref, watch } from 'vue'
+import { getHighlighterCore } from 'shiki/core'
+import getWasm from 'shiki/wasm'
+import javascript from 'shiki/langs/javascript.mjs'
+import githubDark from 'shiki/themes/github-dark.mjs'
+import githubLight from 'shiki/themes/github-light.mjs'
+import useDark from './use-dark'
 
-let code = `const app = new Elysia()
-    .get('/', () => 'Hello!')
+const isDark = useDark()
+
+const highlighter = await getHighlighterCore({
+    themes: [githubDark, githubLight],
+    langs: [javascript],
+    loadWasm: getWasm
+})
+
+
+let code = /* js */ `const app = new Elysia()
+    .get('/', () => ({ some: "json" }))
     // Try edit this line
     .get('/hello', () => 'Hello from Elysia!')
     .listen(80)
@@ -73,7 +84,7 @@ let url = ref('/hello')
 let response = ref('Hello from Elysia!')
 
 let instance = new Elysia()
-    .get('/', () => 'Hello!')
+    .get('/', () => ({ some: "json" }))
     .get('/hello', () => 'Hello from Elysia!') as Elysia<any, any>
 
 let editorError = ref(undefined as Error | undefined)
@@ -97,22 +108,37 @@ const execute = async () => {
             response.value = x.headers
                 .get('Content-Type')
                 .includes('application/json')
-                ? JSON.stringify(await x.json())
+                ? JSON.stringify(await x.json(), null, 4)
                 : await x.text()
         })
 }
 
+watch(isDark, (isDark) => {
+    const editor = document.querySelector<HTMLElement>('pre.elysia-editor');
+
+    editor.innerHTML = highlighter.codeToHtml(
+        editor.innerText, {
+        theme: isDark ? 'github-dark' : 'github-light',
+        lang: 'javascript',
+    })
+})
+
 onMounted(() => {
     const editor = document.querySelector<HTMLElement>('pre.elysia-editor')
+
+    editor.innerHTML = highlighter.codeToHtml(code, {
+        theme: isDark ? 'github-dark' : 'github-light',
+        lang: 'javascript',
+    })
 
     function rehighlight(event) {
         const restore = saveCaretPosition(this)
 
-        editor.innerHTML = highlight(
-            event.currentTarget.innerText,
-            languages.typescript,
-            'typescript'
-        )
+        editor.innerHTML = highlighter.codeToHtml(
+            event.currentTarget.innerText, {
+            theme: isDark ? 'github-dark' : 'github-light',
+            lang: 'javascript',
+        })
 
         restore()
     }
@@ -170,11 +196,9 @@ onMounted(() => {
         <aside class="flex flex-col md:flex-row justify-center items-center w-full max-w-6xl gap-8 my-8">
             <section class="flex flex-col w-full h-96 border dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl">
                 <div class="mockup-window flex relative w-full h-full shadow-xl">
-                    <Prism
-                        class="elysia-editor block !bg-transparent !text-base !font-mono rounded-xl w-full max-w-xl h-full !pt-0 !px-2 outline-none"
-                        language="typescript" contenteditable="true">
-                        {{ code }}
-                    </Prism>
+                    <pre class="elysia-editor block !bg-transparent !text-base !font-mono rounded-xl w-full max-w-xl h-full !pt-0 !px-2 outline-none"
+                        contenteditable="true">
+                    </pre>
 
                     <footer v-if="editorError"
                         class="absolute bottom-0 flex flex-col w-full max-h-40 overflow-y-auto text-white font-medium px-4 py-2 bg-red-500">
@@ -202,3 +226,14 @@ onMounted(() => {
         </aside>
     </article>
 </template>
+
+<style>
+.elysia-editor>pre {
+    padding: 0 10px;
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.elysia-editor>pre:focus-visible {
+    outline: none;
+}
+</style>
