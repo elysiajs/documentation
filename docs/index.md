@@ -71,5 +71,46 @@ new Elysia()
     .listen(3000)
 ```
   </template>
+
+<template v-slot:server>
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .patch(
+        '/user/age',
+        ({ body }) => signIn(body), 
+        {
+            body: t.Object({
+                name: t.String(),
+                age: t.Number()
+            })
+        }
+    )
+    .listen(80)
+    
+export type App = typeof app
+```
+  </template>
+
+  <template v-slot:client>
+
+```ts
+// client.ts
+import { edenTreaty } from '@elysiajs/eden'
+import type { App } from 'server'
+    
+const eden = edenTreaty<App>('http://localhost')
+
+await eden.user.age.patch({
+    name: 'saltyaom',
+    age: '21'
+})
+```
+  </template>
+
+
 </Landing>
 ```

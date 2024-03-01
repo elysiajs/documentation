@@ -59,7 +59,14 @@ const isDark = useDark()
                     <slot name="openapi"></slot>
                 </OpenAPI>
             </section>
-            <E2ETypeSafety />
+            <E2ETypeSafety>
+                <template v-slot:server>
+                    <slot name="server"></slot>
+                </template>
+                <template v-slot:client>
+                    <slot name="client"></slot>
+                </template>
+            </E2ETypeSafety>
             <Plugins />
             <Editor />
             <Community />
