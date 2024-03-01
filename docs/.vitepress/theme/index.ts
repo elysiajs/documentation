@@ -1,11 +1,10 @@
 // https://vitepress.dev/guide/custom-theme
-import { h } from 'vue'
 import DefaultTheme from 'vitepress/theme'
-// @ts-ignore
-import Layout from '../../.vitepress/theme/layout.vue'
+import Layout from './layout.vue'
 import './custom.css'
+import { Theme } from 'vitepress'
 
 export default {
     extends: DefaultTheme,
     Layout
-}
+} satisfies Theme
