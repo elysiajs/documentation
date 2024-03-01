@@ -29,11 +29,12 @@
     "windicss": "^3.5.6"
   },
   "devDependencies": {
+    "@types/bun": "^1.0.8",
     "@types/node": "^20.9.4",
-    "bun-types": "^1.0.13",
     "cheerio": "1.0.0-rc.12",
     "flexsearch": "^0.7.31",
     "markdown-it": "^13.0.2",
+    "view-transitions-api-types": "^0.1.1",
     "vitepress": "1.0.0-rc.29",
     "vue": "^3.3.8"
   },
