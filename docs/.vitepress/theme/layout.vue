@@ -1,4 +1,6 @@
 <script setup lang="ts">
+
+
 import DefaultTheme from 'vitepress/theme'
 import { nextTick, provide } from 'vue'
 
@@ -18,7 +20,6 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         darkTheme.value = !darkTheme.value
         return
     }
-
     const clipPath = [
         `circle(0px at ${x}px ${y}px)`,
         `circle(${Math.hypot(
@@ -27,8 +28,7 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         )}px at ${x}px ${y}px)`
     ]
 
-    // @ts-ignore
-    await document.startViewTransition(async () => {
+    if (document.startViewTransition !== undefined) await document.startViewTransition(async () => {
         darkTheme.value = !darkTheme.value
         await nextTick()
     }).ready
@@ -38,9 +38,8 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         {
             duration: 300,
             easing: 'ease-in',
-            pseudoElement: `::view-transition-${
-                isDark.value ? 'old' : 'new'
-            }(root)`
+            pseudoElement: `::view-transition-${isDark.value ? 'old' : 'new'
+                }(root)`
         }
     )
 })
@@ -49,10 +48,7 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 <template>
     <DefaultTheme.Layout>
         <template #doc-top>
-            <Ray
-                class="h-[220px] top-0 left-0 z-[100] opacity-25 dark:opacity-[.55] pointer-events-none"
-                static
-            />
+            <Ray class="h-[220px] top-0 left-0 z-[100] opacity-25 dark:opacity-[.55] pointer-events-none" static />
         </template>
     </DefaultTheme.Layout>
 </template>

@@ -20,12 +20,7 @@
                 </p>
             </div>
         </aside> -->
-        <img
-            :src="props.src"
-            :alt="props.alt"
-            class="w-full my-6"
-            :class="props.shadow ? 'shadow-xl' : 'border'"
-        />
+        <img :src="props.src" :alt="props.alt" class="w-full my-6" :class="props.shadow ? 'shadow-xl' : 'border'" />
         <main id="blog-content">
             <slot />
         </main>
@@ -64,14 +59,12 @@ onMounted(() => {
     mutated.forEach((selector) => {
         console.log(document.querySelector(selector))
 
-        // @ts-ignore
         document.querySelector(selector)?.classList.add('blog')
     })
 })
 
 onUnmounted(() => {
     mutated.forEach((selector) => {
-        // @ts-ignore
         document.querySelector(selector)?.classList.remove('blog')
     })
 })
@@ -97,26 +90,26 @@ onUnmounted(() => {
     @apply text-lg mt-0;
 }
 
-#blog > img {
+#blog>img {
     @apply rounded-lg;
 }
 
-#blog > h1 {
+#blog>h1 {
     @apply !text-3xl md:!text-4xl font-semibold;
 }
 
-#blog > h2 {
+#blog>h2 {
     @apply !text-2xl md:!text-3xl font-semibold;
 }
 
-#blog > h3 {
+#blog>h3 {
     @apply !text-xl md:!text-2xl font-semibold;
 }
 
-#blog-content > video,
-#blog-content > * > video,
-#blog-content > img,
-#blog-content > * > img {
+#blog-content>video,
+#blog-content>*>video,
+#blog-content>img,
+#blog-content>*>img {
     @apply rounded-xl my-4;
     /* box-shadow: 0 8px 25px rgba(0,0,0,.1) */
 }
@@ -127,7 +120,7 @@ onUnmounted(() => {
 }
 
 @media (min-width: 768px) {
-    #blog > h1 {
+    #blog>h1 {
         line-height: 3.25rem !important;
     }
 }

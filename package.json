@@ -21,19 +21,19 @@
     "postcss": "^8.4.31",
     "postcss-nesting": "^12.0.1",
     "postcss-preset-env": "^9.3.0",
-    "prismjs": "^1.29.0",
+    "shiki": "^1.1.7",
     "tailwindcss": "^3.3.5",
     "vite": "^5.0.2",
     "vite-plugin-icons": "^0.6.5",
-    "vue-prism-component": "^2.0.0",
     "windicss": "^3.5.6"
   },
   "devDependencies": {
+    "@types/bun": "^1.0.8",
     "@types/node": "^20.9.4",
-    "bun-types": "^1.0.13",
     "cheerio": "1.0.0-rc.12",
     "flexsearch": "^0.7.31",
     "markdown-it": "^13.0.2",
+    "view-transitions-api-types": "^0.1.1",
     "vitepress": "1.0.0-rc.29",
     "vue": "^3.3.8"
   },

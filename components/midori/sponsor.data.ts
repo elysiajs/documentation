@@ -1,4 +1,4 @@
-import { defineLoader } from 'vitepress';
+import { defineLoader } from 'vitepress'
 
 export interface Sponsor {
     sponsorEntity: {
@@ -53,15 +53,17 @@ export default defineLoader({
             })
         }).then((x) => x.json())
 
-        // @ts-ignore
-        const data: Sponsor[] = result.data?.user?.sponsorshipsAsMaintainer?.nodes || []
+        const data: Sponsor[] =
+            result.data?.user?.sponsorshipsAsMaintainer?.nodes || []
 
-        return data.filter(x => !x.tier.isOneTime).sort(
-            (a, b) =>
-                b?.tier?.monthlyPriceInDollars -
-                    a?.tier?.monthlyPriceInDollars ||
-                new Date(a?.createdAt).getTime() -
-                    new Date(b?.createdAt).getTime()
-        )
+        return data
+            .filter((x) => !x.tier.isOneTime)
+            .sort(
+                (a, b) =>
+                    b?.tier?.monthlyPriceInDollars -
+                        a?.tier?.monthlyPriceInDollars ||
+                    new Date(a?.createdAt).getTime() -
+                        new Date(b?.createdAt).getTime()
+            )
     }
 })
