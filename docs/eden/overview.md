@@ -14,7 +14,7 @@ head:
       content: Elysia supports end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
 ---
 
-# End-to-End Type-Safety
+# End-to-End Type Safety
 Imagine you have a toy train set. 
 
 Each piece of the train track has to fit perfectly with the next one, like puzzle pieces. 
@@ -57,35 +57,35 @@ Eden is a RPC-like client to connect Elysia  **end-to-end type safety** using on
 Allowing you to sync client and server types effortlessly, weighing less than 2KB.
 
 Eden is consists of 2 modules:
-1. Eden Treaty **(recommended)**: simplified RPC-like object-based client.
-2. Eden Fetch: Fetch-like client for instant type-inference.
+1. Eden Treaty **(recommended)**: an improved version RFC version of Eden Treaty
+2. Eden Fetch: Fetch-like client with type safety.
 
 Below is an overview, use-case and comparison for each module.
 
 ## Eden Treaty (Recommended)
 Eden Treaty is an object-like representation of an Elysia server providing end-to-end type safety and a significantly improved developer experience.
 
-With Eden Treaty you can effortlessly connect Elysia server with full-type support and auto-completion, being confident that code is free from type-error.
+With Eden Treaty we can connect interact Elysia server with full-type support and auto-completion, error handling with type narrowing, and creating type safe unit test.
 
 Example usage of Eden Treaty:
 ```typescript
-import { edenTreaty } from '@elysiajs/eden'
+import { treaty } from '@elysiajs/eden'
 import type { App } from './server'
 
-const app = edenTreaty<App>('http://localhost:8080')
+const app = treaty<App>('http://localhost:8080')
 
 // Call [GET] at '/'
-const { data, error } = app.get()
+const { data, error } = app.index.get()
 
-// Call [POST] at '/nendoroid/id/:id'
-const { data: nendoroid, error } = await app.nendoroid.id['1895'].post({
-    id: 1895,
-    name: 'Skadi'
+// Call [POST] at '/nendoroid/:id'
+const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
+    name: 'Skadi',
+    from: 'Arknights'
 })
 ```
 
 ## Eden Fetch
-A fetch-like alternative to Eden Treaty with faster type inference.
+A fetch-like alternative to Eden Treaty for developers that prefers fetch syntax.
 ```typescript
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
@@ -103,10 +103,6 @@ const data = await fetch('/name/:name', {
     }
 })
 ```
-
-Using Eden Treaty with a complex type and a lot of routes (more than 500 routes per server) on a low-end development device can lead to slow type inference and auto-completion.
-
-Eden Fetch is an alternative and solution for fastest type inference possible while providing full type support like Eden Treaty.
 
 ::: tip NOTE
 Unlike Eden Treaty, Eden Fetch doesn't provide Web Socket implementation for Elysia server

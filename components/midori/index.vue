@@ -13,7 +13,6 @@ import Community from './community.vue'
 import QuickStart from './quickstart.vue'
 import Sponsor from './sponsor.vue'
 
-
 import '../tailwind.css'
 import './midori.css'
 

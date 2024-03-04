@@ -124,41 +124,39 @@ app.group(
 
 ## Plugin
 
-By default, the Elysia **plugin doesn't encapsulate the event**.
+By default plugin will only **apply hook to itself and descendants** only.
 
-If the global event is registered in a plugin, then the instance that inherits the plugin will also inherit the event including hook and schema.
-
-This behavior allows us to create a seamless integration for a plugin like registering an HTML plugin and then all of a sudden, the response just returns a correct header.
+If the hook is registered in a plugin, instances that inherit the plugin will **NOT** inherit hooks and schema.
 
 ```typescript
-import { Elysia } from 'elysia'
-import { isHtml } from '@elysiajs/html'
-
-const html = new Elysia()
-    .onAfterHandle(({ response, set }) => {
-        if (isHtml(response))
-            set.headers['Content-Type'] = 'text/html; charset=utf8'
+const plugin = new Elysia()
+    .onBeforeHandle(() => {
+        console.log('hi')
     })
-    .get('/inner', () => '<h1>Hello World</h1>')
+    .get('/child', () => 'log hi')
 
-new Elysia()
-    .get('/', () => '<h1>Hello World</h1>')
-    .use(html)
-    .get('/outer', () => '<h1>Hello World</h1>')
-    .listen(3000)
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'not log hi')
 ```
 
-The response should be listed as follows:
+To apply hook to globally, we need to specify hook as global.
+```typescript
+const plugin = new Elysia()
+    .onBeforeHandle({ as: 'global' }, () => {
+        console.log('hi')
+    })
+    .get('/child', () => 'log hi')
 
-| Path   | Content-Type             |
-| ------ | ------------------------ |
-| /      | text/plain; charset=utf8 |
-| /inner | text/html; charset=utf8  |
-| /outer | text/html; charset=utf8  |
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'log hi')
+```
 
-## Scoped Plugin
+<!-- Probably deprecated in favor of local-first hook? Leave it here as undecided -->
+<!-- ## Scoped Plugin
 
-However, sometimes we want to encapsulate the event and not "leak" the event out of the plugin.
+Sometimes we may want to encapsulate the event and not "leak" the event out of the plugin.
 
 We can accomplish that by adding `scoped: true` to the Elysia instance.
 
@@ -218,3 +216,5 @@ The response should be listed as follows:
 | /outer | 2 |
 
 Scope and guard only prevent the event from being inherited but the scope itself will inherit the events.
+
+--->

@@ -46,3 +46,8 @@ There's no correct way to learn Elysia, but we recommended **completing the esse
 ---
 
 Once you've completed the essential chapter, you may jump to any topic that interests you. We have organized a recommended chapter in order as it may reference to previous chapter.
+
+### Prerequisite Knowledge
+Although Elysia's documentation is designed to be beginner-friendly, we need to establish a baseline so that the docs can stay focused on Elysia's functionality. We will provide links to relevant documentation whenever we introduce a new concept.
+
+To get the most out of our documentation, it's recommended that you have a basic understanding of Node.js and basic HTTP.

@@ -16,11 +16,9 @@ head:
 
 # Route
 
-To determine the correct response to a client, web servers use the request's **path and HTTP method** to look up the correct resource.
+Web servers use the request's **path and HTTP method** to look up the correct resource, refers as **"routing"**.
 
-This process is known as **"routing"**.
-
-We can define a route by calling a **method named after one of the HTTP verbs**, passing a path and a function to execute when matched.
+We can define a route by calling a **method named after HTTP verbs**, passing a path and a function to execute when matched.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -33,14 +31,18 @@ new Elysia()
 
 We can access the web server by going to **http://localhost:3000**
 
-This code allows us to create a simple web server running at port 3000, and tells Elysia to register the following path with the GET method, then respond as follows:
+This code create a web server running at port 3000, and register the following path with the GET method which response as follows:
 
 | Path   | Result  |
 | ------ | ------- |
 | /      | Landing |
 | /hello | Hi      |
 
-Accessing with the browser works because **GET** is the default HTTP method.
+::: tip
+By default, web browser will sent GET method when vising the page.
+
+This is why accessing get with the browser works.
+:::
 
 ## HTTP Verb
 
@@ -52,15 +54,15 @@ Requests using GET should only retrieve data.
 
 ### POST
 
-The POST method submits an entity to the specified resource, often causing a change in state or side effects on the server.
+Submits a payload to the specified resource, often causing state change or side effect.
 
 ### PUT
 
-The PUT method replaces all current representations of the target resource using the request's payload.
+Replaces all current representations of the target resource using the request's payload.
 
 ### DELETE
 
-The DELETE method deletes the specified resource.
+Deletes the specified resource.
 
 ---
 
@@ -85,9 +87,9 @@ You can read more about the HTTP methods on [HTTP Request Methods](https://devel
 
 ## Handle
 
-Most backend developers use REST clients like Postman, Insomnia or Hoppscotch to test their API.
+Most developers use REST clients like Postman, Insomnia or Hoppscotch to test their API.
 
-However, with Elysia, you can trigger a request to your Elysia server programmatically using `Elysia.handle`.
+However, Elysia can be programmatically test using `Elysia.handle`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -102,9 +104,11 @@ app.handle(new Request('http://localhost/')).then(console.log)
 
 **Elysia.handle** is a function to process an actual request sent to the server.
 
+::: tip
 Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
 
-**Elysia.handle** is useful for simulating or creating unit tests.
+But also useful for simulating or creating unit tests.
+:::
 
 ## Custom Method
 
@@ -116,7 +120,7 @@ import { Elysia } from 'elysia'
 const app = new Elysia()
     .get('/', () => 'hello')
     .post('/', () => 'hi')
-    .route('M-SEARCH', '/', () => 'connect')
+    .route('M-SEARCH', '/', () => 'connect') // [!code ++]
     .listen(3000)
 ```
 
@@ -159,15 +163,9 @@ Any HTTP method that matches the path, will be handled as follows:
 
 ## 404
 
-If no path matches the defined routes, Elysia will pass the request to `error` life cycle before returning a "NOT_FOUND" with an HTTP status of 404.
+If no path matches the defined routes, Elysia will pass the request to `error` life cycle before returning a **"NOT_FOUND"** with an HTTP status of 404.
 
-::: tip
-HTTP Status is used to indicate the type of response. By default if everything is correct, the server will return a '200 OK' status code (If a route matches and there is no error, Elysia will return 200 as default)
-
-If the server fails to find any route to handle, like in this case, then the server shall return a '404 NOT FOUND' status code.
-:::
-
-For Elysia, we can handle a custom 404 error by returning a value from 'error` life cycle like this:
+We can handle a custom 404 error by returning a value from 'error` life cycle like this:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -189,3 +187,9 @@ When navigating to your web server, you should see the result as follows:
 | /hi  | GET    | Route not found :\( |
 
 You can learn more about life cycle and error handling in [Life Cycle Events](/essential/life-cycle#events) and [Error Handling](/life-cycle/on-error).
+
+::: tip
+HTTP Status is used to indicate the type of response. By default if everything is correct, the server will return a '200 OK' status code (If a route matches and there is no error, Elysia will return 200 as default)
+
+If the server fails to find any route to handle, like in this case, then the server shall return a '404 NOT FOUND' status code.
+:::

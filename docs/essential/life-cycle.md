@@ -16,20 +16,28 @@ head:
 
 # Life Cycle
 
-Also, known as middleware in other frameworks like Express.
+Also knows as middleware with name in Express or Hook in Fastify.
 
-Imagine you want to return a text of HTML. Usually, you would need to manually set "Content-Type" headers as "text/html" to help the browser interpret that the response is HTML.
+Imagine we want to return a text of HTML.
 
-But what if after we send a response, we could add some code to detect if the response is an HTML string and add a header to the response automatically?
+We need to set **"Content-Type"** headers as **"text/html"** to for browser to render HTML.
+
+Explicitly specify that response is HTML could be repetitive if there are a lot of handlers, says ~200 endpoints.
+
+We can see a duplicated code for just to specify that response is HTML.
+
+But what if after we sent a response, we could detect if a response is an HTML string then append headers automatically?
 
 That's when the concept of Life Cycle comes into play.
+
+---
 
 Life Cycle allows us to intercept important events, and customize the behavior of Elysia, like adding an HTML header automatically.
 
 Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle.webp)
 
-You don't have to understand/memorize all of the events in one go.
+You don't have to understand/memorize all of the events in one go, we will be covering each on the next chapter.
 
 ## Events
 
@@ -179,4 +187,34 @@ Console should log as the following:
 1
 2
 3
+```
+
+## Hook type
+Starting from Elysia 1.0 Elysia will treat hook at local first.
+
+If a hook is register on an instance, it will only apply to itself and descendants only.
+
+```typescript
+const plugin = new Elysia()
+    .onBeforeHandle(() => {
+        console.log('hi')
+    })
+    .get('/child', () => 'log hi')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'not log hi')
+```
+
+To apply hook to globally, we need to specify hook as global.
+```typescript
+const plugin = new Elysia()
+    .onBeforeHandle({ as: 'global' }, () => {
+        console.log('hi')
+    })
+    .get('/child', () => 'log hi')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'log hi')
 ```

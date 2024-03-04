@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.schema".
+      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.guard".
 
   - - meta
     - name: 'og:description'
-      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.schema".
+      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.guard".
 ---
 
 # Reference Model

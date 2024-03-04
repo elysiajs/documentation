@@ -49,16 +49,16 @@ export type App = typeof app // [!code ++]
 Then consume the Elysia API on client side:
 ```typescript
 // client.ts
-import { edenTreaty } from '@elysiajs/eden'
+import { treaty } from '@elysiajs/eden'
 import type { App } from './server' // [!code ++]
 
-const client = edenTreaty<App>('http://localhost:8080') // [!code ++]
+const client = treaty<App>('http://localhost:8080') // [!code ++]
 
 // response type: 'Hi Elysia'
 client.index.get().then(console.log)
 
 // response type: 1895
-client.id[1895].get().then(console.log)
+client.nendoroid({ id: 1895 }).get().then(console.log)
 
 // response type: { id: 1895, name: 'Skadi' }
 client.mirror.post({

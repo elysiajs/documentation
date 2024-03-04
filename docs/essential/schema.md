@@ -69,14 +69,14 @@ The response should be listed as follows:
 
 Register hook into **every** handler that came after.
 
-To add a global hook, you can use `.schema` followed by a life cycle event in camelCase:
+To add a global hook, you can use `.guard` followed by a life cycle event in camelCase:
 
 ```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/none', () => 'hi')
-    .schema({ // [!code ++]
+    .guard({ // [!code ++]
         query: t.Object({ // [!code ++]
             name: t.String() // [!code ++]
         }) // [!code ++]

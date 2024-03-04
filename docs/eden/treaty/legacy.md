@@ -1,9 +1,9 @@
 ---
-title: Eden Treaty - ElysiaJS
+title: Eden Treaty Legacy - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Eden Treaty - ElysiaJS
+      content: Eden Treaty Legacy - ElysiaJS
 
   - - meta
     - name: 'og:description'
@@ -14,7 +14,14 @@ head:
       content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 ---
 
-# Eden Treaty
+# Eden Treaty Legacy
+
+::: tip NOTE
+This is a documentation for Eden Treaty 1 or (edenTreaty)
+
+For a new project, we recommended starting with Eden Treaty 2 (treaty) instead.
+:::
+
 Eden Treaty is an object-like representation of an Elysia server.
 
 Providing accessor like a normal object with type directly from the server, helping us to move faster, and make sure that nothing break
