@@ -42,21 +42,21 @@ function saveCaretPosition(context) {
     }
 }
 
-function nextCaretPosition(context) {
-    const selection = window.getSelection()
-    const range = selection.getRangeAt(0)
-    range.setStart(context, 0)
-    const len = range.toString().length
+// function nextCaretPosition(context) {
+//     const selection = window.getSelection()
+//     const range = selection.getRangeAt(0)
+//     range.setStart(context, 0)
+//     const len = range.toString().length
 
-    return function restore() {
-        const pos = getTextNodeAtPosition(context, len)
-        selection.removeAllRanges()
+//     return function restore() {
+//         const pos = getTextNodeAtPosition(context, len)
+//         selection.removeAllRanges()
 
-        const range = new Range()
-        range.setStart(pos.node, pos.position)
-        selection.addRange(range)
-    }
-}
+//         const range = new Range()
+//         range.setStart(pos.node, pos.position)
+//         selection.addRange(range)
+//     }
+// }
 
 function getTextNodeAtPosition(root, index) {
     const NODE_TYPE = NodeFilter.SHOW_TEXT
@@ -113,12 +113,12 @@ const execute = async () => {
         })
 }
 
-watch(isDark, (isDark) => {
+watch(isDark, (value) => {
     const editor = document.querySelector<HTMLElement>('pre.elysia-editor');
 
     editor.innerHTML = highlighter.codeToHtml(
         editor.innerText, {
-        theme: isDark ? 'github-dark' : 'github-light',
+        theme: value ? 'github-dark' : 'github-light',
         lang: 'javascript',
     })
 })
