@@ -311,7 +311,6 @@ export default defineConfig({
                     },
                     {
                         text: 'Eden Treaty',
-                        link: '/eden/treaty/overview',
                         collapsed: false,
                         items: [
                             {
