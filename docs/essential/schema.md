@@ -20,7 +20,7 @@ One of the most important areas to create a secure web server is to make sure th
 
 Elysia handled this by providing a validation tool out of the box to validate incoming requests using **Schema Builder**.
 
-**Elysia.t**, a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) to validate the value in both runtime and compile-time, providing time safety like in a strict type language.
+**Elysia.t**, a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) to validate the value in both runtime and compile-time, providing type safety like in a strict type language.
 
 ## Type
 
