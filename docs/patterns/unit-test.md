@@ -16,11 +16,11 @@ head:
 
 # Unit Test
 
-Being WinterCG compliance, we can use Request / Response class to test an Elysia server.
+Being WinterCG compliant, we can use Request / Response classes to test an Elysia server.
 
-Elysia provides **Elysia.handle** which accepts Web Standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), and returns [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) to simulates HTTP Request.
+Elysia provides the **Elysia.handle** method, which accepts a Web Standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) and returns [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response), simulating an HTTP Request.
 
-We can use [Bun test](https://bun.sh/guides/test/watch-mode) to create Unit Test.
+Bun includes a built-in [test runner](https://bun.sh/docs/cli/test) that offers a Jest-like API through the `bun:test` module, facilitating the creation of unit tests.
 
 Create **test/index.test.ts** in the root of project directory with the following:
 
