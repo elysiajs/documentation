@@ -69,14 +69,14 @@ The response should be listed as follows:
 
 Register hook into **every** handler that came after.
 
-To add a global hook, you can use `.schema` followed by a life cycle event in camelCase:
+To add a global hook, you can use `.guard` and provide the schema for each of the properties (body, query, params, etc as listed above) to be validated:
 
 ```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/none', () => 'hi')
-    .schema({ // [!code ++]
+    .guard({ // [!code ++]
         query: t.Object({ // [!code ++]
             name: t.String() // [!code ++]
         }) // [!code ++]
@@ -85,7 +85,7 @@ new Elysia()
     .listen(3000)
 ```
 
-The response should be listed as follows:
+This code ensures that the query must have **name** with a string value for every handler after it. The response should be listed as follows:
 
 | Path          | Response |
 | ------------- | -------- |
@@ -94,6 +94,4 @@ The response should be listed as follows:
 | /query        | error    |
 | /query?name=a | a        |
 
-As Lifecycle Event, it is important to remember that the order of Elysia's schema is stored as same as lifecycle, a queue, or first-in-first-out.
-
-Elysia **always** respects the order of code from top to bottom followed by the order of life-cycle event and validation schema.
+If multiple global schemas are defined for same property, the latest one will have the preference. If both local and global schemas are defined, the local one will have the preference.
