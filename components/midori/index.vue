@@ -18,10 +18,6 @@ import '../tailwind.css'
 import './midori.css'
 
 import BuiltWithLove from './built-with-love.vue'
-
-import useDark from './use-dark'
-
-const isDark = useDark()
 </script>
 
 <template>
@@ -48,6 +44,7 @@ const isDark = useDark()
                 <template v-slot:server>
                     <slot name="server"></slot>
                 </template>
+
                 <template v-slot:client>
                     <slot name="client"></slot>
                 </template>
@@ -55,6 +52,7 @@ const isDark = useDark()
             <Plugins />
             <Suspense>
                 <Editor />
+
                 <template #fallback>
                     <video muted autoplay loop>
                         <source src="/assets/elysia.mp4" />
