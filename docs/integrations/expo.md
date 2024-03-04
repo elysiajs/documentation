@@ -47,7 +47,7 @@ You can treat the Elysia server as if normal Expo API route.
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
 
-Please refers to [API route](https://docs.expo.dev/router/reference/api-routes/) for more information.
+Please refer to [API route](https://docs.expo.dev/router/reference/api-routes/) for more information.
 
 ## Prefix
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
