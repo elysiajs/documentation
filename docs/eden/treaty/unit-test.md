@@ -3,7 +3,7 @@ title: Eden Treaty Unit Test - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Eden Treaty Config - ElysiaJS
+        content: Eden Treaty Unit Test - ElysiaJS
 
     - - meta
       - name: 'og:description'
