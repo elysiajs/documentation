@@ -26,14 +26,13 @@ import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia().get('/hello', () => 'hi')
-
 const api = treaty(app)
 
 describe('Elysia', () => {
     it('return a response', async () => {
-        const { data, error } = await api.hello.get()
+        const { data } = await api.hello.get()
 
-        expect(response).toBe('hi')
+        expect(data).toBe('hi')
     })
 })
 ```
