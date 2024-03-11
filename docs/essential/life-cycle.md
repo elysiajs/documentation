@@ -234,7 +234,8 @@ const current = new Elysia()
     .onBeforeHandle({ as: type }, () => {
         console.log('hi')
     })
-    .get('/child', () => 'hello')
+    .use(child)
+    .get('/current', () => 'hello')
 
 const parent = new Elysia()
     .use(current)
