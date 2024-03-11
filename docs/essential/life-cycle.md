@@ -190,26 +190,28 @@ Console should log as the following:
 ```
 
 ## Hook type
-Starting from Elysia 1.0 Elysia will treat hook at local first.
+Starting from Elysia 1.0 introduce a **hook type**, to specify if the hook should be local-only, or global.
 
-If a hook is register on an instance, it will only apply to itself and descendants only.
+Elysia hook type are as the following:
+- local (default) - apply to only current instance and descendant only
+- scoped - apply to only 1 ascendant, current instance and descendants
+- global - apply to all instance that apply the plugin (all ascendants, current, and descendants)
 
-```typescript
-const plugin = new Elysia()
-    .onBeforeHandle(() => {
-        console.log('hi')
-    })
-    .get('/child', () => 'log hi')
+If not specified, hook is local by default.
 
-const main = new Elysia()
-    .use(plugin)
-    .get('/parent', () => 'not log hi')
-```
+::: tip
+Starting from Elysia 1.0 hook is local by default while Elysia < 1.0 will be global only.
+
+This is a breaking change.
+:::
+
+To specify hook's type, add a `{ as: hookType }` to hook.
 
 To apply hook to globally, we need to specify hook as global.
 ```typescript
 const plugin = new Elysia()
-    .onBeforeHandle({ as: 'global' }, () => {
+    .onBeforeHandle(() => { // [!code --]
+    .onBeforeHandle({ as: 'global' }, () => { // [!code ++]
         console.log('hi')
     })
     .get('/child', () => 'log hi')
@@ -218,3 +220,35 @@ const main = new Elysia()
     .use(plugin)
     .get('/parent', () => 'log hi')
 ```
+
+Let's create a plugin to illustrate how hook type work.
+
+```typescript
+// ? Value base on table value provided below
+const type = 'local'
+
+const child = new Elysia()
+    .get('/child', () => 'hello')
+
+const current = new Elysia()
+    .onBeforeHandle({ as: type }, () => {
+        console.log('hi')
+    })
+    .get('/child', () => 'hello')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', () => 'hello')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', () => 'hello')
+```
+
+By changing the `type` value, the result should be as follows:
+
+| type       | child | current | parent | main |
+| ---------- | ----- | ------- | ------ | ---- |
+| 'local'    | ✅    | ✅       | ❌     | ❌   | 
+| 'scope'    | ✅    | ✅       | ✅     | ❌   | 
+| 'global'   | ✅    | ✅       | ✅     | ✅   | 
