@@ -294,6 +294,10 @@ export default defineConfig({
                     {
                         text: 'Macro',
                         link: '/patterns/macro'
+                    },
+                    {
+                        text: 'MVC model',
+                        link: '/patterns/mvc'
                     }
                 ]
             },
@@ -432,6 +436,10 @@ export default defineConfig({
                     {
                         text: 'SvelteKit',
                         link: '/integrations/sveltekit'
+                    },
+                    {
+                        text: 'Drizzle',
+                        link: '/integrations/drizzle'
                     }
                     // {
                     //     text: 'Cheat Sheet',

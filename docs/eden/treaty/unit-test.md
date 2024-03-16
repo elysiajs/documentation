@@ -15,7 +15,7 @@ head:
 ---
 
 # Unit Test
-According to [Eden Treaty config](eden/treaty/config.html#urlorinstance) and [Unit Test](/patterns/unit-test), we may pass an Elysia instance to Eden Treaty directly to interact with Elysia server directly without sending a network request.
+According to [Eden Treaty config](/eden/treaty/config.html#urlorinstance) and [Unit Test](/patterns/unit-test), we may pass an Elysia instance to Eden Treaty directly to interact with Elysia server directly without sending a network request.
 
 We may use this patterns to create a unit test with end-to-end type safety and type-level test all at once.
 
