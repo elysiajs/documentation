@@ -118,7 +118,7 @@ const AController = new Elysia()
         Hi.doStuff(stuff)
     })
 
-const controller = plugin(AController)
+const controller = treaty(AController)
 const { data, error } = await controller.index.get()
 ```
 
