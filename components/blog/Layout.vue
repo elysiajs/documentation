@@ -3,7 +3,7 @@
         <h1 class="!text-3xl !md:text-4xl font-medium">
             {{ props.title }}
         </h1>
-        <!-- <aside class="flex gap-3 items-center mt-4">
+        <aside class="flex gap-3 items-center mt-4">
             <img
                 class="w-9 h-9 rounded-full"
                 :src="profile"
@@ -19,8 +19,8 @@
                     <a :href="twitter" target="_blank">@{{ author.twitter }}</a>
                 </p>
             </div>
-        </aside> -->
-        <img :src="props.src" :alt="props.alt" class="w-full my-6" :class="props.shadow ? 'shadow-xl' : 'border'" />
+        </aside>
+        <img :src="props.src" :alt="props.alt" class="w-full mt-6 mb-2" :class="props.shadow ? 'shadow-xl' : 'border'" />
         <main id="blog-content">
             <slot />
         </main>
@@ -57,8 +57,6 @@ const twitter = `https://twitter.com/${author.twitter}`
 const mutated = ['.aside', '.content', '.content-container', '.VPDocFooter']
 onMounted(() => {
     mutated.forEach((selector) => {
-        console.log(document.querySelector(selector))
-
         document.querySelector(selector)?.classList.add('blog')
     })
 })

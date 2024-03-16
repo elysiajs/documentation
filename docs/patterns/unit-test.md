@@ -27,6 +27,7 @@ Create **test/index.test.ts** in the root of project directory with the followin
 ```typescript
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
 
 describe('Elysia', () => {
     it('return a response', async () => {
@@ -58,29 +59,27 @@ The request must provide URL as the following:
 
 We can also use other testing libraries like Jest or testing library to create Elysia unit tests.
 
-## Eden Test
+## Eden Treaty test
 
-We can simplify the tests by using Eden Treaty to create a unit-test with support for end-to-end type safety and auto-completion.
+We may use Eden Treaty to create an end-to-end type safety test for Elysia server as follows:
 
 ```typescript
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysiajs/eden'
 
-import { edenTreaty } from '@elysiajs/eden'
+const app = new Elysia().get('/hello', () => 'hi')
 
-const app = new Elysia()
-    .get('/', () => 'hi')
-    .listen(3000)
-
-const api = edenTreaty<typeof app>('http://localhost:3000')
+const api = treaty(app)
 
 describe('Elysia', () => {
     it('return a response', async () => {
-        const { data } = await api.get()
+        const { data, error } = await api.hello.get()
 
-        expect(data).toBe('hi')
+        expect(response).toBe('hi')
     })
 })
 ```
 
-See [Eden Test](/eden/test) for setup and more information.
+See [Eden Treaty Unit Test](/eden/treaty/unit-test) for setup and more information.

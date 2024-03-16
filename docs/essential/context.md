@@ -16,9 +16,9 @@ head:
 
 # Context
 
-Context is information of each request passed to a [route handler](/essential/handler).
+Context is a request information passed to a [route handler](/handler).
 
-Context is unique for each request, and is not shared unless it's a `store` property which is a global mutable state object, (aka state).
+Context is unique for each request, and is not shared except for `store` which is a global mutable state.
 
 Elysia context consists of:
 
@@ -34,20 +34,22 @@ Elysia context consists of:
     -   **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
     -   **headers** - Response headers
     -   **redirect** - Response as a path to redirect to
+-   **error** - A function to return custom status code
 
 ## Extending context
 
-Because Elysia only provides essential information about the Request, you can customize the Context to meet your specific requirements.
+As Elysia only provides essential information, we can customize Context for our specific need for instance:
+- extracting user ID as variable
+- inject a common pattern repository
+- add a database connection
 
-Extraction of a user ID or another frequently used function related to the request, for example, into Context itself.
+---
 
-You can extend Elysia's context by using:
+We can extend Elysia's context by using the following APIs to customize the Context:
 
 -   **state** - Create a global mutable state into **Context.store**
 -   **decorate** - Add additional function or property assigned to **Context**
--   **derive** - Add additional property based on existing property or request which is uniquely assigned to every request.
-
-The following APIs add extra functionality to the Context.
+-   **derive** / **resolve** - Additional property based on existing property, uniquely assigned to each request.
 
 ::: tip
 It's recommended to assign properties related to request and response, or frequently used functions to Context for separation of concerns.
@@ -55,15 +57,13 @@ It's recommended to assign properties related to request and response, or freque
 
 ## Store
 
-**State** is a global mutable object shared across the Elysia app.
+**State** is a global mutable object or state shared across the Elysia app.
 
-If you are familiar with frontend libraries like React, Vue, or Svelte, there's a concept of Global State Management, which is also partially implemented in Elysia via state and store.
+If we are familiar with frontend libraries like React, Vue, or Svelte, there's a concept of Global State Management, which is also partially implemented in Elysia via state and store.
 
-**store** is a representation of a single-source-of-truth global mutable object for the entire Elysia app.
+- **store** is a representation of a single-source-of-truth global mutable object for the entire Elysia app.
 
-**state** is a function to assign an initial value to **store**, which could be mutated later.
-
-To assign value to `store`, you can use **Elysia.state**:
+- **state** is a function to assign an initial value to **store**, which could be mutated later.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -73,9 +73,7 @@ new Elysia()
     .get('/', ({ store: { version } }) => version)
 ```
 
-Once you call **state**, value will be added to **store** property, and can be later used after in handler.
-
-Beware that you cannot use state value before being assigned.
+Once **state** is called, value will be added to **store** property, and can be used in handler.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -84,21 +82,21 @@ new Elysia()
     // ❌ TypeError: counter doesn't exist in store
     .get('/error', ({ store }) => store.counter)
     .state('counter', 0)
-    // ✅ Because we assigned a counter before, you can now access it
+    // ✅ Because we assigned a counter before, we can now access it
     .get('/', ({ store }) => store.counter)
 ```
 
 ::: tip
-Elysia registers state values into the store automatically without explicit type or additional TypeScript generic needed.
+Beware that we cannot use state value before assign.
 
-This is the magic of the Elysia-type system that does this automatically.
+Elysia registers state values into the store automatically without explicit type or additional TypeScript generic needed.
 :::
 
 ## Decorate
 
-Like **store**, **decorate** assigns an additional property to **Context** directly.
+**decorate** assigns an additional property to **Context** directly without prefix.
 
-The only difference is that the value should be read-only and not reassigned later.
+The difference is that the value should be read-only and not reassigned later.
 
 This is an ideal way to assign additional functions, singleton, or immutable property to all handlers.
 
@@ -107,7 +105,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .decorate('logger', new Logger())
-    // ✅ Because we assigned an additional property called logger, you can now access it
+    // ✅ defined from the previous line
     .get('/', ({ logger }) => {
         logger.log('hi')
 
@@ -117,9 +115,11 @@ new Elysia()
 
 ## Derive
 
-Like `decorate`, you can assign an additional property to **Context** directly.
+Like `decorate`, we can assign an additional property to **Context** directly.
 
-But instead of setting the property before the server is started. **derive** assigns a property when each request happens. Allowing us to extract a piece of information into a property instead.
+Instead of assign before server started, **derive** assigns when request happens.
+
+Allowing us to "derive" (create a new property based on existing property).
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -139,6 +139,12 @@ Because **derive** is assigned once a new request starts, **derive** can access 
 
 Unlike **state**, and **decorate**. Properties that are assigned by **derive** are unique and not shared with another request.
 
+::: tip
+Derive is similar to resolve but store in a different queue.
+
+**derive** is stored in [transform](/life-cycle/transform) queue while **resolve** stored in [beforeHandle](/life-cycle/before-handle) queue.
+:::
+
 ## Pattern
 
 **state**, **decorate** offers a similar APIs pattern for assigning property to Context as the following:
@@ -151,7 +157,7 @@ Where **derive** can be only used with **remap** because it depends on existing 
 
 ### key-value
 
-You can use **state**, and **decorate** to assign a value using a key-value pattern.
+We can use **state**, and **decorate** to assign a value using a key-value pattern.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -237,7 +243,7 @@ Allowing us to bulk remap a property of the plugin effortlessly, preventing the 
 
 By default, **affix** will handle both runtime, type-level code automatically, remapping the property to camelCase as naming convention.
 
-In some condition, you can also remap `all` property of the plugin:
+In some condition, we can also remap `all` property of the plugin:
 
 ```ts
 const app = new Elysia()
@@ -249,7 +255,7 @@ const app = new Elysia()
 
 To mutate the state, it's recommended to use **reference** to mutate rather than using an actual value.
 
-When accessing the property from JavaScript, if you define a primitive value from an object property as a new value, the reference is lost, the value is treated as new separate value instead.
+When accessing the property from JavaScript, if we define a primitive value from an object property as a new value, the reference is lost, the value is treated as new separate value instead.
 
 For example:
 
@@ -278,7 +284,7 @@ console.log(store.counter) // ❌ 0
 console.log(counter) // ✅ 1
 ```
 
-As you can see, once a primitive value is redefined as a new variable, the reference **"link"** will be missing, causing unexpected behavior.
+Once a primitive value is redefined as a new variable, the reference **"link"** will be missing, causing unexpected behavior.
 
 This can apply to `store`, as it's a global mutable object instead.
 

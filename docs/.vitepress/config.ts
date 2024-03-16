@@ -128,16 +128,12 @@ export default defineConfig({
                 text: '👋 Getting Started',
                 items: [
                     {
-                        text: 'Introduction',
-                        link: '/introduction'
+                        text: 'At Glance',
+                        link: '/at-glance'
                     },
                     {
                         text: 'Quick Start',
                         link: '/quick-start'
-                    },
-                    {
-                        text: 'At Glance',
-                        link: '/at-glance'
                     },
                     {
                         text: 'Table of Content',
@@ -298,6 +294,10 @@ export default defineConfig({
                     {
                         text: 'Macro',
                         link: '/patterns/macro'
+                    },
+                    {
+                        text: 'MVC model',
+                        link: '/patterns/mvc'
                     }
                 ]
             },
@@ -315,16 +315,42 @@ export default defineConfig({
                     },
                     {
                         text: 'Eden Treaty',
-                        link: '/eden/treaty.md'
+                        collapsed: false,
+                        items: [
+                            {
+                                text: 'Overview',
+                                link: '/eden/treaty/overview'
+                            },
+                            {
+                                text: 'Parameters',
+                                link: '/eden/treaty/parameters'
+                            },
+                            {
+                                text: 'Response',
+                                link: '/eden/treaty/response'
+                            },
+                            {
+                                text: 'Web Socket',
+                                link: '/eden/treaty/websocket'
+                            },
+                            {
+                                text: 'Config',
+                                link: '/eden/treaty/config'
+                            },
+                            {
+                                text: 'Unit Test',
+                                link: '/eden/treaty/unit-test'
+                            },
+                            {
+                                text: 'Legacy (Treaty 1)',
+                                link: '/eden/treaty/legacy.md'
+                            }        
+                        ]
                     },
                     {
                         text: 'Eden Fetch',
                         link: '/eden/fetch.md'
                     },
-                    {
-                        text: 'Test',
-                        link: '/eden/test.md'
-                    }
                 ]
             },
             {
@@ -410,6 +436,10 @@ export default defineConfig({
                     {
                         text: 'SvelteKit',
                         link: '/integrations/sveltekit'
+                    },
+                    {
+                        text: 'Drizzle',
+                        link: '/integrations/drizzle'
                     }
                     // {
                     //     text: 'Cheat Sheet',

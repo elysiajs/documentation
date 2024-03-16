@@ -14,9 +14,15 @@ head:
         content: Designed with ergonomic design, extensive support for TypeScript, modern JavaScript API, optimized for Bun. Offers a unique experience unified type, and end-to-end type safety while maintaining excellent performance.
 ---
 
-# At glance
+<script setup>
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
+</script>
 
-Elysia is designed with familiar API from Express and Fastify with extensive support for TypeScript, modern JavaScript API, and optimized for Bun.
+# At glance
+Elysia is an ergonomic web framework for building backend servers with Bun.
+
+Designed with simplicity and type safety in mind with familiar API with extensive support for TypeScript, optimized for Bun.
 
 Here's a simple hello world in Elysia.
 
@@ -24,8 +30,10 @@ Here's a simple hello world in Elysia.
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.get('/', () => 'Hello Elysia')
-	.listen(3000)
+    .get('/', () => 'hi')
+    .get('/user/:id', ({ params: { id }}) => id)
+    .post('/form', ({ body }) => body)
+    .listen(8080)
 ```
 
 Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello Elysia' as a result.
@@ -38,22 +46,23 @@ Elysia can outperform most of the web frameworks available today<a href="#ref-1"
 
 | Framework     | Runtime | Average     | Plain Text | Dynamic Parameters | JSON Body  |
 | ------------- | ------- | ----------- | ---------- | ------------------ | ---------- |
-| Elysia        | bun     | 275,063.507 | 326,868.9  | 261,729.3          | 236,592.32 |
-| Bun           | bun     | 273,634.127 | 322,071.07 | 251,679.46         | 247,151.85 |
-| Hono          | bun     | 257,532.08  | 320,757.07 | 233,769.22         | 218,069.95 |
-| Web Standard  | bun     | 242,838.703 | 288,692.76 | 226,591.45         | 213,231.9  |
-| Hyper Express | node    | 242,045.913 | 354,697.63 | 277,109.51         | 94,330.6   |
-| h3            | node    | 112,677.263 | 137,556.49 | 101,431.5          | 99,043.8   |
-| Fastify       | node    | 64,145.95   | 74,631.46  | 66,235.48          | 51,570.91  |
-| Koa           | node    | 38,696.13   | 44,741.88  | 39,790.11          | 31,556.4   |
-| Hapi          | node    | 28,170.763  | 42,780.44  | 15,350.06          | 26,381.79  |
-| Adonis        | node    | 23,367.073  | 22,673.54  | 21,442.97          | 25,984.71  |
-| Express       | node    | 16,301.823  | 17,974.35  | 17,090.62          | 13,840.5   |
-| Nest          | node    | 14,978.863  | 16,926.01  | 15,507.62          | 12,502.96  |
+| bun           | bun     | 262,660.433 | 326,375.76 | 237,083.18         | 224,522.36 |
+| elysia        | bun     | 255,574.717 | 313,073.64 | 241,891.57         | 211,758.94 |
+| hyper-express | node    | 234,395.837 | 311,775.43 | 249,675            | 141,737.08 |
+| hono          | bun     | 203,937.883 | 239,229.82 | 201,663.43         | 170,920.4  |
+| h3            | node    | 96,515.027  | 114,971.87 | 87,935.94          | 86,637.27  |
+| oak           | deno    | 46,569.853  | 55,174.24  | 48,260.36          | 36,274.96  |
+| fastify       | bun     | 65,897.043  | 92,856.71  | 81,604.66          | 23,229.76  |
+| fastify       | node    | 60,322.413  | 71,150.57  | 62,060.26          | 47,756.41  |
+| koa           | node    | 39,594.14   | 46,219.64  | 40,961.72          | 31,601.06  |
+| express       | bun     | 29,715.537  | 39,455.46  | 34,700.85          | 14,990.3   |
+| express       | node    | 15,913.153  | 17,736.92  | 17,128.7           | 12,873.84  |
 
 ## TypeScript
 
-Elysia is built with a complex type system trying to infer every possible detail from simple path parameters to full-blown recursive instance deep merge to provide you the most out of TypeScript.
+Elysia is designed to help you write less TypeScript.
+
+Elysia's Type System is fine-tuned to infer your code into type automatically without needing to write explicit TypeScript while providing type-safety for both runtime and compile time to provide you with the most ergonomic developer experience.
 
 Take a look at this example:
 
@@ -61,15 +70,15 @@ Take a look at this example:
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/user/:id', ({ params: { id } }) => id)
     .listen(3000)
 ```
 
-The above code allows you to create a path parameter with the name of id, the value that passes after `/id/` will be reflected in `params.id`.
-
-In most framework, you need to provide a generic type to the **id** parameter while Elysia understand that `params.id` will always be available and type as **string**. Elysia then infers this type without any manual type reference needed.
+The above code create a path parameter "id", the value that replace `:id` will be passed to `params.id` both in runtime and type without manual type declaration.
 
 Elysia's goal is to help you write less TypeScript and focus more on Business logic. Let the complex type be handled by the framework.
+
+TypeScript is not needed to use Elysia, but it's recommended to use Elysia with TypeScript.
 
 ## Unified Type
 
@@ -81,7 +90,7 @@ Let's modify the previous code to accept only a numeric value instead of a strin
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/id/:id', ({ params: { id } }) => id, {
+    .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Numeric()
         })
@@ -105,7 +114,7 @@ import { swagger } from '@elysiajs/swagger'
 
 new Elysia()
     .use(swagger())
-    .get('/id/:id', ({ params: { id } }) => id, {
+    .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Numeric()
         })
@@ -127,7 +136,7 @@ import { swagger } from '@elysiajs/swagger'
 
 const app = new Elysia()
     .use(swagger())
-    .get('/id/:id', ({ params: { id } }) => id, {
+    .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Numeric()
         })
@@ -141,18 +150,38 @@ And on your client-side:
 
 ```typescript
 // client.ts
-import { edenTreaty } from '@elysiajs/eden'
+import { treaty } from '@elysiajs/eden'
 import type { App } from './server'
 
-const app = edenTreaty<App>('http://localhost:3000')
+const app = treaty<App>('http://localhost:3000')
 
-// data is typed as number
-const { data } = await app.id['177013'].get()
+// Get data from /user/617
+const { data } = await app.user({ id: 617 }).get()
 ```
 
 With Eden, you can use the existing Elysia type to query Elysia server **without code generation** and synchronize type for both frontend and backend automatically.
 
 Elysia is not only about helping you to create a confident backend but for all that is beautiful in this world.
+
+## Platform Agnostic
+
+Elysia was designed but was **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy the Elysia server on Cloudflare Worker, Vercel Edge Function, and most other runtimes that support Web Standard Request.
+
+## Our Community
+
+If you have questions or get stuck about Elysia, feel free to ask our community on GitHub Discussions, Discord, and Twitter.
+
+<Deck>
+    <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
+        Official ElysiaJS discord community server
+    </Card>
+    <Card title="Twitter" href="https://twitter.com/elysiajs">
+        Track update and status of Elysia
+    </Card>
+    <Card title="GitHub" href="https://github.com/elysiajs">
+        Source code and development
+    </Card>
+</Deck>
 
 ---
 

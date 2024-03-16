@@ -85,6 +85,30 @@ button.copy::after {
                     background-color: var(--vp-c-brand-nav-active);
                 }
             }
+
+            & > .VPSidebarItem {
+                @apply pl-4 mb-0.5 dark:border-l-gray-600 rounded-lg;
+
+                & > div {
+                    & > div {
+                        @apply pl-2 mb-0.5 dark:border-l-gray-600 rounded-lg -translate-x-2;
+
+                        &:hover, &:focus {
+                            background-color: var(--vp-c-brand-nav-active);
+                        }
+        
+                        &.is-active.has-active {
+                            background-color: var(--vp-c-brand-nav-active);
+                        }
+                    }
+
+                    & > .caret {
+                        &:hover, &:focus {
+                            background-color: transparent;
+                        }
+                    }
+                }
+            }
         }
     }
 }

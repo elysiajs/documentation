@@ -38,7 +38,7 @@
                 Type Safety</span>, unified type system and outstanding developer experience. Supercharged by Bun.
         </h3>
         <section class="flex flex-col sm:flex-row items-start sm:items-center w-full md:w-auto gap-4 mt-10 mb-12">
-            <a class="text-white font-medium text-lg bg-blue-500 px-6 py-2.5 rounded-full" href="/introduction">
+            <a class="text-white font-medium text-lg bg-blue-500 px-6 py-2.5 rounded-full" href="/at-glance">
                 Get Started
             </a>
             <div class="relative flex flex-1 gap-3 text-blue-500">

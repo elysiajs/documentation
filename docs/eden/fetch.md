@@ -15,7 +15,7 @@ head:
 ---
 
 # Eden Fetch
-A fetch-like alternative to Eden Treaty with faster type inference.
+A fetch-like alternative to Eden Treaty .
 
 With Eden Fetch can interact with Elysia server in a type-safe manner using Fetch API.
 
@@ -101,6 +101,12 @@ const { id, name } = nendoroid
 ```
 
 ## When should I use Eden Fetch over Eden Treaty
+Unlike Elysia < 1.0, Eden Fetch is not faster than Eden Treaty anymore.
+
+The preference is base on you and your team agreement, however we recommend to use [Eden Treaty](/eden/treaty/overview) instead.
+
+For Elysia < 1.0:
+
 Using Eden Treaty requires a lot of down-level iteration to map all possible types in a single go, while in contrast, Eden Fetch can be lazily executed until you pick a route.
 
 With complex types and a lot of server routes, using Eden Treaty on a low-end development device can lead to slow type inference and auto-completion.
