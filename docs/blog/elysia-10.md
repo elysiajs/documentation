@@ -18,11 +18,11 @@ head:
 
     - - meta
       - property: 'og:image'
-        content: https://elysiajs.com/blog/elysia-08/gate-of-steiner.webp
+        content: https://elysiajs.com/blog/elysia-10/lament-of-the-fallen.webp
 
     - - meta
       - property: 'twitter:image'
-        content: https://elysiajs.com/blog/elysia-08/gate-of-steiner.webp
+        content: https://elysiajs.com/blog/elysia-10/lament-of-the-fallen.webp
 
     - - script
       - src: https://platform.twitter.com/widgets.js
