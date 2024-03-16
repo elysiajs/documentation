@@ -360,7 +360,7 @@ For example, narrowing down an available status code.
 
 Inline error can be destructured from handler as follows:
 ```typescript
-import { Elysia } from 'elysai'
+import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/hello', ({ error }) => {
