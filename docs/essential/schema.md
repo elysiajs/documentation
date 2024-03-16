@@ -69,14 +69,14 @@ The response should be listed as follows:
 
 Register hook into **every** handler that came after.
 
-To add a global hook, you can use `.schema` followed by a life cycle event in camelCase:
+You can add validation schema in global hooks:
 
 ```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/none', () => 'hi')
-    .schema({ // [!code ++]
+    .onBeforeHandle({ // [!code ++]
         query: t.Object({ // [!code ++]
             name: t.String() // [!code ++]
         }) // [!code ++]
