@@ -93,7 +93,7 @@ new Elysia()
     })
 ```
 
-If you would like to call or perform unit test on controller, use [Elysia.handle](http://localhost:5173/essential/route.html#handle).
+If you would like to call or perform unit test on controller, use [Elysia.handle](/essential/route.html#handle).
 
 ```typescript
 const app = new Elysia()
@@ -118,7 +118,7 @@ const AController = new Elysia()
         Hi.doStuff(stuff)
     })
 
-const controller = plugin(AController)
+const controller = treaty(AController)
 const { data, error } = await controller.index.get()
 ```
 
