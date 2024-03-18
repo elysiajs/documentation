@@ -153,68 +153,96 @@ const main = new Elysia()
     .get('/parent', () => 'log hi')
 ```
 
-<!-- Probably deprecated in favor of local-first hook? Leave it here as undecided -->
-<!-- ## Scoped Plugin
 
-Sometimes we may want to encapsulate the event and not "leak" the event out of the plugin.
+## Hook type
+Starting from Elysia 1.0 introduce a **hook type**, to specify if the hook should be local-only, or global.
 
-We can accomplish that by adding `scoped: true` to the Elysia instance.
+Elysia hook type are as the following:
+- local (default) - apply to only current instance and descendant only
+- scoped - apply to only 1 ascendant, current instance and descendants
+- global - apply to all instance that apply the plugin (all ascendants, current, and descendants)
+
+If not specified, hook is local by default.
+
+::: tip
+Starting from Elysia 1.0 hook is local by default while Elysia < 1.0 will be global only.
+
+This is a breaking change.
+:::
+
+To specify hook's type, add a `{ as: hookType }` to hook.
+
+To apply hook to globally, we need to specify hook as global.
+```typescript
+const plugin = new Elysia()
+    .onBeforeHandle(() => { // [!code --]
+    .onBeforeHandle({ as: 'global' }, () => { // [!code ++]
+        console.log('hi')
+    })
+    .get('/child', () => 'log hi')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'log hi')
+```
+
+Let's create a plugin to illustrate how hook type work.
+
+```typescript
+// ? Value base on table value provided below
+const type = 'local'
+
+const child = new Elysia()
+    .get('/child', () => 'hello')
+
+const current = new Elysia()
+    .onBeforeHandle({ as: type }, () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', () => 'hello')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', () => 'hello')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', () => 'hello')
+```
+
+By changing the `type` value, the result should be as follows:
+
+| type       | child | current | parent | main |
+| ---------- | ----- | ------- | ------ | ---- |
+| 'local'    | ✅    | ✅       | ❌     | ❌   | 
+| 'scoped'    | ✅    | ✅       | ✅     | ❌   | 
+| 'global'   | ✅    | ✅       | ✅     | ✅   | 
+
+## guard
+Guard is a hard limit for hook type.
+
+Any life-cycle defined in `guard`, and `group` **will always** be contained in scope, even if hook type is **global**
 
 ```typescript
 import { Elysia } from 'elysia'
-import { isHtml } from '@elysiajs/html'
 
-const html = new Elysia({ scoped: true }) // [!code ++]
-    .onAfterHandle(({ set, response }) => {
-        if (isHtml(response))
-            set.headers['Content-Type'] = 'text/html; charset=utf8'
+const plugin = new Elysia()
+    .beforeHandle({ as: 'global' }, () => {
+        console.log('hi')
     })
-    .get('/inner', () => '<h1>Hello World</h1>')
 
-new Elysia()
-    .get('/', () => '<h1>Hello World</h1>')
-    .use(html)
-    .get('/outer', () => '<h1>Hello World</h1>')
+const app = new Elysia()
+    .guard(app => app
+        .use(plugin)
+        .get('/inner', () => 'inner')
+    )
+    .get('/outer', () => 'outer')
     .listen(3000)
 ```
 
-Events that are registered in `guard`, and scoped instance will not be exposed to other instances, thus containing the event like `guard`
-
-The response should be listed as follows:
-| Path | Content-Type |
-| ----- | ----------------------- |
-| / | text/plain; charset=utf8 |
-| /inner | text/html; charset=utf8 |
-| /outer | text/plain; charset=utf8 |
-
-### Encapsulation
-
-It is important to note that the scoped instance, just like `guard`, will inherit the previous events from the main instance but not expose those registered in the scope.
-
-```typescript
-import { Elysia } from 'elysia'
-
-const scoped = new Elysia({ scoped: true })
-    .onAfterHandle(() => {
-        console.log('1')
-    })
-    .get('/inner', () => 'hi')
-
-new Elysia()
-    .onAfterHandle(() => {
-        console.log('2')
-    })
-    .use(scoped)
-    .get('/outer', () => 'hi')
-    .listen(3000)
-```
-
-The response should be listed as follows:
-| Path | Log |
-| ----- | ----------------------- |
-| /inner | 1, 2 |
-| /outer | 2 |
-
-Scope and guard only prevent the event from being inherited but the scope itself will inherit the events.
-
---->
+Evaluating the route, should logs as follows:
+| route       | log  |
+| ----------- | ---- |
+| /inner      | ❌   |
+| /outer      | ✅   |

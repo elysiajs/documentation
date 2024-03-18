@@ -346,7 +346,7 @@ Most of the server might not need to apply migration yourself but **heavily depe
 
 For a complete migration note, see [Elysia#513](https://github.com/elysiajs/elysia/issues/513).
 
-For the documentation of hook type, see [Lifecycle#hook-type](https://beta.elysiajs.com/essential/life-cycle.html#hook-type)
+For the documentation of hook type, see [Lifecycle#hook-type](https://beta.elysiajs.com/essential/scope.html#hook-type)
 
 ## Inline error
 Starting from Elysia 0.8, we can use the `error` function to return a response with a status code for Eden inference.
