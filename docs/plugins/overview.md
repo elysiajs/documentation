@@ -54,6 +54,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple, lightweight rate limiter
 -   [Logysia](https://github.com/tristanisham/logysia) - classic logging middleware
 -   [Logger](https://github.com/bogeychan/elysia-logger) - [pino](https://github.com/pinojs/pino)-based logging middleware
+-   [Elylog](https://github.com/eajr/elylog) - simple stdout logging library with some customization
 -   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy on AWS Lambda
 -   [Decorators](https://github.com/gaurishhs/elysia-decorators) - use TypeScript decorators
 -   [Autoload](https://github.com/kravetsone/elysia-autoload) - filesystem router based on a directory structure that generates types for [Eden](https://elysiajs.com/eden/overview.html)
