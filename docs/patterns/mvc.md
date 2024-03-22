@@ -44,7 +44,7 @@ new Elysia()
 Elysia does a lot to ensure type integrity, and if you pass an entire Context type to a controller, these might be the problems:
 1. Elysia type is complex and heavily depends on plugin and multiple level of chaining.
 2. Hard to type, Elysia type could change at anytime, especially with decorators, and store
-3. Type castigin may cause lost of type integrity or unable to ensure type and runtime code.
+3. Type casting may cause lost of type integrity or unable to ensure type and runtime code.
 4. Harder for [Sucrose](/blog/elysia-10#sucrose) *(Elysia's "kind of" compiler)* to statically analyze your code
 
 We recommended using object destructuring to extract what you need and pass it to **"Service"** instead.
