@@ -14,6 +14,70 @@ head:
         content: Context is information about each request from the client, unique to each request with a global mutable store. Context can be customized using state, decorate and derive.
 ---
 
+
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import { Elysia } from 'elysia'
+
+const demo1 = new Elysia()
+    .state('version', 1)
+    .get('/', ({ store: { version } }) => version)
+
+const demo2 = new Elysia()
+    // @ts-expect-error
+    .get('/error', ({ store }) => store.counter)
+    .state('version', 1)
+    .get('/', ({ store: { version } }) => version)
+
+const demo3 = new Elysia()
+    .derive(({ headers }) => {
+        const auth = headers['authorization']
+
+        return {
+            bearer: auth?.startsWith('Bearer ') ? auth.slice(7) : null
+        }
+    })
+    .get('/', ({ bearer }) => bearer ?? '12345')
+
+const demo4 = new Elysia()
+    .state('counter', 0)
+    .state('version', 1)
+    .state(({ version, ...store }) => ({
+        ...store,
+        elysiaVersion: 1
+    }))
+    // ✅ Create from state remap
+    .get('/elysia-version', ({ store }) => store.elysiaVersion)
+    // ❌ Excluded from state remap
+    .get('/version', ({ store }) => store.version)
+
+const setup = new Elysia({ name: 'setup' })
+    .decorate({
+        argon: 'a',
+        boron: 'b',
+        carbon: 'c'
+    })
+
+const demo5 = new Elysia()
+    .use(
+        setup
+            .prefix('decorator', 'setup')
+    )
+    .get('/', ({ setupCarbon }) => setupCarbon)
+
+const demo6 = new Elysia()
+    .use(setup.prefix('all', 'setup'))
+    .get('/', ({ setupCarbon }) => setupCarbon)
+
+const demo7 = new Elysia()
+    .state('counter', 0)
+    // ✅ Using reference, value is shared
+    .get('/', ({ store }) => store.counter++)
+    // ❌ Creating a new variable on primitive value, the link is lost
+    .get('/error', ({ store: { counter } }) => counter)
+
+</script>
+
 # Context
 
 Context is a request information passed to a [route handler](/handler).
@@ -73,6 +137,8 @@ new Elysia()
     .get('/', ({ store: { version } }) => version)
 ```
 
+<Playground :elysia="demo1" />
+
 Once **state** is called, value will be added to **store** property, and can be used in handler.
 
 ```typescript
@@ -85,6 +151,8 @@ new Elysia()
     // ✅ Because we assigned a counter before, we can now access it
     .get('/', ({ store }) => store.counter)
 ```
+
+<Playground :elysia="demo2" />
 
 ::: tip
 Beware that we cannot use state value before assign.
@@ -134,6 +202,8 @@ new Elysia()
     })
     .get('/', ({ bearer }) => bearer)
 ```
+
+<Playground :elysia="demo3" />
 
 Because **derive** is assigned once a new request starts, **derive** can access Request properties like **headers**, **query**, **body** where **store**, and **decorate** can't.
 
@@ -204,10 +274,12 @@ new Elysia()
         elysiaVersion: 1
     }))
     // ✅ Create from state remap
-    .get('/', ({ store }) => store.elysiaVersion)
+    .get('/elysia-version', ({ store }) => store.elysiaVersion)
     // ❌ Excluded from state remap
-    .get('/', ({ store }) => store.version)
+    .get('/version', ({ store }) => store.version)
 ```
+
+<Playground :elysia="demo4" />
 
 It's a good idea to use state remap to create a new initial value from the existing value.
 
@@ -224,6 +296,8 @@ To provide a smoother experience, some plugins might have a lot of property valu
 The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
 
 ```ts
+import { Elysia } from 'elysia'
+
 const setup = new Elysia({ name: 'setup' })
     .decorate({
         argon: 'a',
@@ -239,6 +313,8 @@ const app = new Elysia()
     .get('/', ({ setupCarbon }) => setupCarbon)
 ```
 
+<Playground :elysia="demo5" />
+
 Allowing us to bulk remap a property of the plugin effortlessly, preventing the name collision of the plugin.
 
 By default, **affix** will handle both runtime, type-level code automatically, remapping the property to camelCase as naming convention.
@@ -246,6 +322,8 @@ By default, **affix** will handle both runtime, type-level code automatically, r
 In some condition, we can also remap `all` property of the plugin:
 
 ```ts
+import { Elysia } from 'elysia'
+
 const app = new Elysia()
     .use(setup.prefix('all', 'setup'))
     .get('/', ({ setupCarbon }) => setupCarbon)
@@ -298,3 +376,5 @@ new Elysia()
     // ❌ Creating a new variable on primitive value, the link is lost
     .get('/error', ({ store: { counter } }) => counter)
 ```
+
+<Playground :elysia="demo7" />

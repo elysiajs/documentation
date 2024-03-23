@@ -33,7 +33,7 @@ new Elysia()
             ws.send(message)
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## WebSocket message validation:
@@ -56,7 +56,7 @@ const app = new Elysia()
             })
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 WebSocket schema can validate the following:
@@ -135,7 +135,7 @@ const app = new Elysia()
             ws.send(message)
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 Type:

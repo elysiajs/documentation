@@ -72,7 +72,7 @@ Example usage of Eden Treaty:
 import { treaty } from '@elysiajs/eden'
 import type { App } from './server'
 
-const app = treaty<App>('http://localhost:8080')
+const app = treaty<App>('http://localhost:')
 
 // Call [GET] at '/'
 const { data, error } = app.index.get()
@@ -90,7 +90,7 @@ A fetch-like alternative to Eden Treaty for developers that prefers fetch syntax
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
 
-const fetch = edenFetch<App>('http://localhost:8080')
+const fetch = edenFetch<App>('http://localhost:')
 
 const data = await fetch('/name/:name', {
     method: 'POST',

@@ -62,7 +62,7 @@ new Elysia()
     .post('/', () => {
         throw new NotFoundError()
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Context

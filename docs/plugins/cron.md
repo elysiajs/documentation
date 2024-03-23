@@ -40,7 +40,7 @@ new Elysia()
             }
         })
     )
-    .listen(8080)
+    .listen(3000)
 ```
 
 The above code will log `heartbeat` every 10 seconds.
@@ -137,7 +137,7 @@ const app = new Elysia()
 
         return 'Stop heartbeat'
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Predefined patterns
@@ -163,7 +163,7 @@ const app = new Elysia()
 
         return 'Stop heartbeat'
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 

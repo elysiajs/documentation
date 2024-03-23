@@ -31,7 +31,7 @@ new Elysia()
     .use(swagger())
     .get('/', () => 'hi')
     .post('/hello', () => 'world')
-    .listen(8080)
+    .listen(3000)
 ```
 
 Accessing `/swagger` would show you a Swagger UI with the generated endpoint documentation from the Elysia server.
@@ -86,7 +86,7 @@ new Elysia()
     .use(swagger({
         path: '/v2/swagger'
     }))
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Customize Swagger info
@@ -103,7 +103,7 @@ new Elysia()
             }
         }
     }))
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Using Tags

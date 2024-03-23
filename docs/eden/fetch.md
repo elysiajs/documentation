@@ -35,7 +35,7 @@ const app = new Elysia()
             name: t.String()
         })
     })
-    .listen(8080)
+    .listen(3000)
 
 export type App = typeof app
 ```
@@ -46,7 +46,7 @@ Then import the server type, and consume the Elysia API on client:
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
 
-const fetch = edenFetch<App>('http://localhost:8080')
+const fetch = edenFetch<App>('http://localhost:')
 
 // response type: 'Hi Elysia'
 const pong = await fetch('/', {})

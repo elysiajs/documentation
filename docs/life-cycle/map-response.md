@@ -53,7 +53,7 @@ new Elysia()
     })
     .get('/text', () => 'mapResponse')
     .get('/json', () => ({ map: 'response' }))
-    .listen(8080)
+    .listen(3000)
 ```
 
 Like **parse** and **beforeHandle**, after a value is returned, the next iteration of **mapResponse** will be skipped.

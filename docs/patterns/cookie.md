@@ -19,16 +19,19 @@ To use Cookie, you can extract the cookie property and access its name and value
 
 There's no get/set, you can extract the cookie name and retrieve or update its value directly.
 ```ts
-app.get('/', ({ cookie: { name } }) => {
-    // Get
-    name.value
+import { Elysia } from 'elysia'
 
-    // Set
-    name.value = "New Value"
-    name.value = {
-        hello: 'world'
-    }
-})
+new Elysia()
+    .get('/', ({ cookie: { name } }) => {
+        // Get
+        name.value
+
+        // Set
+        name.value = "New Value"
+        name.value = {
+            hello: 'world'
+        }
+    })
 ```
 
 By default, Reactive Cookie can encode/decode type of object automatically allowing us to treat cookie as an object without worrying about the encoding/decoding. **It just works**.

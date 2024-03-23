@@ -42,7 +42,7 @@ const app = new Elysia()
             name: t.String()
         })
     })
-    .listen(8080)
+    .listen(3000)
 
 export type App = typeof app // [!code ++]
 ```
@@ -53,7 +53,7 @@ Then import the server type, and consume the Elysia API on client:
 import { edenTreaty } from '@elysiajs/eden'
 import type { App } from './server' // [!code ++]
 
-const app = edenTreaty<App>('http://localhost:8080')
+const app = edenTreaty<App>('http://localhost:')
 
 // response type: 'Hi Elysia'
 const { data: pong, error } = app.get()
@@ -188,7 +188,7 @@ const app = new Elysia()
             401: 'error' // [!code ++]
         }
     })
-    .listen(8080)
+    .listen(3000)
 
 export type App = typeof app
 ```
@@ -232,7 +232,7 @@ const app = new Elysia()
         body: t.String(),
         response: t.String()
     })
-    .listen(8080)
+    .listen(3000)
 
 type App = typeof app
 ```
@@ -241,7 +241,7 @@ To start listening to real-time data, call the `.subscribe` method:
 ```typescript
 // Client
 import { edenTreaty } from '@elysiajs/eden'
-const app = edenTreaty<App>('http://localhost:8080')
+const app = edenTreaty<App>('http://localhost:')
 
 const chat = app.chat.subscribe()
 

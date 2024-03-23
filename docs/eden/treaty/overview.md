@@ -33,7 +33,7 @@ const app = new Elysia()
             name: t.String()
         })
     })
-    .listen(8080)
+    .listen(3000)
 
 export type App = typeof app // [!code ++]
 ```
@@ -45,7 +45,7 @@ Then import the server type, and consume the Elysia API on client:
 import { treaty } from '@elysiajs/eden'
 import type { App } from './server' // [!code ++]
 
-const app = treaty<App>('http://localhost:8080')
+const app = treaty<App>('http://localhost:')
 
 // response type: 'Hi Elysia'
 const { data: pong, error } = app.hi.get()

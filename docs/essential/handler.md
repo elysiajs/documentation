@@ -14,6 +14,17 @@ head:
         content: handler is a function that responds to the request for each route. Accepting request information and returning a response to the client. Handler can be registered through Elysia.get / Elysia.post
 ---
 
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import { Elysia } from 'elysia'
+
+const demo1 = new Elysia()
+    .get('/', ({ path }) => path)
+
+const demo2 = new Elysia()
+    .get('/', ({ error }) => error(418, "Kirifuji Nagisa"))
+</script>
+
 # Handler
 
 After a resource is located, a function that respond is refers as **handler**
@@ -27,6 +38,28 @@ new Elysia()
     .listen(3000)
 ```
 
+Handler maybe a literal value, and can be inlined.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/video', Bun.file('kyuukurarin.mp4'))
+    .listen(3000)
+```
+
+Using an inline value always returns the same value which is useful to optimize performance for static resource like file.
+
+This allows Elysia to compile the response ahead of time to optimize performance.
+
+::: tip
+Providing an inline value is not a cache.
+
+Static Resource value, headers and status can be mutate dynamically using lifecycle.
+:::
+
+
 ## Context
 
 Context is an request's information sent to server.
@@ -38,6 +71,8 @@ new Elysia()
     .get('/', ({ path }) => path)
     .listen(3000)
 ```
+
+<Playground :elysia="demo1" />
 
 We will be covering context property in the next page [context](/essential/context), for now lets see what handler is capable of.
 
@@ -63,9 +98,11 @@ A dedicated `error` function for returning status code with response.
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ error }) => error(418, "I like tea"))
+    .get('/', ({ error }) => error(418, "Kirifuji Nagisa"))
     .listen(3000)
 ```
+
+<Playground :elysia="demo2" />
 
 It's recommend to use `error` inside main handler as it has better inference:
 
@@ -74,7 +111,7 @@ It's recommend to use `error` inside main handler as it has better inference:
 - type narrowing for error handling using End-to-end type safety (Eden)
 
 ## set.status
-Set a default status code if not provided by.
+Set a default status code if not provided.
 
 It's recommended to use in a plugin that only only need to return a specific status code while allowing user to return a custom value for example, HTTP 201/206 or 403/405 etc.
 
@@ -85,7 +122,7 @@ new Elysia()
     .onBeforeHandle(({ set }) => {
         set.status = 418
 
-        return 'I like tea'
+        return 'Kirifuji Nagisa'
     })
     .get('/', () => 'hi')
     .listen(3000)
@@ -105,7 +142,7 @@ new Elysia()
         // with auto-completion
         set.status = "I'm a teapot"
 
-        return 'I like tea'
+        return 'Kirifuji Nagisa'
     })
     .listen(3000)
 ```
@@ -133,7 +170,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', ({ set }) => {
-        set.redirect = 'https://youtu.be/whpVWVWBW4U?si=duN5cBbJuWgCrQRA&t=8'
+        set.redirect = 'https://youtu.be/whpVWVWBW4U?&t=8'
     })
     .listen(3000)
 ```
@@ -169,27 +206,4 @@ new Elysia()
 
 ::: tip
 Using a primitive value or `Response` has near identical performance (+- 0.1%), so pick the one you prefer, regardless of performance.
-:::
-
-## Static Content
-
-Static Content is a type of handler that always returns the same value, for instance file, hardcoded-value.
-
-In Elysia, static content can be registered by providing an actual value instead of a function.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .get('/', 'Hello Elysia')
-    .get('/video', Bun.file('kyuukurarin.mp4'))
-    .listen(3000)
-```
-
-This allows Elysia to compile the response ahead of time to optimize performance.
-
-::: tip
-Static response is not a cache.
-
-It doesn't append and inherits any cache capability nor behavior of cache headers.
 :::

@@ -17,6 +17,18 @@ head:
 <script setup>
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
+import Playground from '../components/nearl/playground.vue'
+
+import { Elysia } from 'elysia'
+
+const demo1 = new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .get('/user/:id', ({ params: { id }}) => id)
+    .post('/form', ({ body }) => body)
+
+const demo2 = new Elysia()
+    .get('/user/:id', ({ params: { id }}) => id)
+    .get('/user/abc', () => 'abc')
 </script>
 
 # At glance
@@ -30,13 +42,36 @@ Here's a simple hello world in Elysia.
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'hi')
+    .get('/', () => 'Hello Elysia')
     .get('/user/:id', ({ params: { id }}) => id)
     .post('/form', ({ body }) => body)
-    .listen(8080)
+    .listen(3000)
 ```
 
 Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello Elysia' as a result.
+
+<Playground 
+    :elysia="demo1"
+    :alias="{
+        '/user/:id': '/user/1'
+    }"
+    :mock="{
+        '/user/:id': {
+            GET: '1'
+        },
+        '/form': {
+            POST: JSON.stringify({
+                hello: 'Elysia'
+            })
+        }
+    }" 
+/>
+
+::: tip
+Click on path highlight in blue to change path to preview a response.
+
+Elysia can runs on browser and the result you see are actually run using Elysia.
+:::
 
 ## Performance
 
@@ -75,6 +110,18 @@ new Elysia()
 ```
 
 The above code create a path parameter "id", the value that replace `:id` will be passed to `params.id` both in runtime and type without manual type declaration.
+
+<Playground 
+    :elysia="demo2"
+    :alias="{
+        '/user/:id': '/user/123'
+    }"
+    :mock="{
+        '/user/:id': {
+            GET: '123'
+        },
+    }" 
+/>
 
 Elysia's goal is to help you write less TypeScript and focus more on Business logic. Let the complex type be handled by the framework.
 

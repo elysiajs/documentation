@@ -16,7 +16,7 @@
     "autoprefixer": "^10.4.16",
     "daisyui": "^4.4.2",
     "dayjs": "^1.11.10",
-    "elysia": "^0.7.29",
+    "elysia": "1.0.7",
     "openai": "^4.19.1",
     "postcss": "^8.4.31",
     "postcss-nesting": "^12.0.1",

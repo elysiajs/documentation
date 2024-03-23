@@ -14,12 +14,44 @@ head:
         content: Path or pathname is an identifier to locate resources from a server. Elysia uses the path and method to look up the correct resource. Path in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 ---
 
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+
+import { Elysia } from 'elysia'
+
+const demo1 = new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/id/123', '123')
+    .get('/id/anything', 'anything')
+    .get('/id', ({ error }) => error(404))
+    .get('/id/anything/test', ({ error }) => error(404))
+
+const demo2 = new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/id/123', '123')
+    .get('/id/anything', 'anything')
+    .get('/id', ({ error }) => error(404))
+    .get('/id/:id/:name', ({ params: { id, name } }) => id + ' ' + name)
+
+const demo3 = new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/id/123', '123')
+    .get('/id/anything', 'anything')
+    .get('/id', ({ error }) => error(404))
+    .get('/id/:id/:name', ({ params: { id, name } }) => id + '/' + name)
+
+const demo4 = new Elysia()
+    .get('/id/1', () => 'static path')
+    .get('/id/:id', () => 'dynamic path')
+    .get('/id/*', () => 'wildcard path')
+</script>
+
 # Path
 
 Path or pathname is an identifier to locate resources from a server.
 
 ```bash
-http://localhost:8080/path/page
+http://localhost:/path/page
 ```
 
 Elysia uses the path and method to look up the correct resource.
@@ -57,16 +89,31 @@ For instance, we can extract the user ID from the pathname, we can do something 
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().get('/id/:id', ({ params: { id } }) => id).listen(3000)
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .listen(3000)
 ```
 
 We create a dynamic path with `/id/:id` which tells Elysia to match any path up until `/id` and after it could be any value, which is then stored as **params** object.
+
+<Playground
+  :elysia="demo1"
+  :alias="{
+    '/id/:id': '/id/1'
+  }"
+  :mock="{
+    '/id/:id': {
+      GET: '1'
+    }
+  }" 
+/>
 
 When requested, the server should return the response as follows:
 
 | Path                   | Response  |
 | ---------------------- | --------- |
 | /id/1                  | 1         |
+| /id/123                | 123       |
 | /id/anything           | anything  |
 | /id/anything?name=salt | anything  |
 | /id                    | Not Found |
@@ -107,11 +154,28 @@ new Elysia()
     .listen(3000)
 ```
 
+<Playground
+  :elysia="demo2"
+  :alias="{
+    '/id/:id': '/id/1',
+    '/id/:id/:name': '/id/anything/rest'
+  }"
+  :mock="{
+    '/id/:id': {
+      GET: '1'
+    },
+    '/id/:id/:name': {
+      GET: 'anything rest'
+    }
+  }" 
+/>
+
 Requesting to the server should return the response as the following:
 
 | Path                   | Response      |
 | ---------------------- | ------------- |
 | /id/1                  | 1             |
+| /id/123                | 123           |
 | /id/anything           | anything      |
 | /id/anything?name=salt | anything      |
 | /id                    | Not Found     |
@@ -126,14 +190,33 @@ However, when you need a value of the path to be more dynamic and capture the re
 Wildcard can capture the value after segment regardless of amount by using "\*".
 
 ```typescript
-new Elysia().get('/id/*', ({ params }) => params['*']).listen(3000)
+new Elysia()
+    .get('/id/*', ({ params }) => params['*'])
+    .listen(3000)
 ```
+
+<Playground
+  :elysia="demo3"
+  :alias="{
+    '/id/:id': '/id/1',
+    '/id/:id/:name': '/id/anything/rest'
+  }"
+  :mock="{
+    '/id/:id': {
+      GET: '1'
+    },
+    '/id/:id/:name': {
+      GET: 'anything/rest'
+    }
+  }" 
+/>
 
 Sending a request to the server should return the response as the following:
 
 | Path                   | Response      |
 | ---------------------- | ------------- |
 | /id/1                  | 1             |
+| /id/123                | 123           |
 | /id/anything           | anything      |
 | /id/anything?name=salt | anything      |
 | /id                    | Not Found     |
@@ -172,6 +255,19 @@ new Elysia()
     .get('/id/*', () => 'wildcard path')
     .listen(3000)
 ```
+
+<Playground
+  :elysia="demo4"
+    :alias="{
+    '/id/:id': '/id/2',
+    '/id/*': '/id/2/a'
+  }"
+  :mock="{
+    '/id/*': {
+      GET: 'wildcard path'
+    }
+  }" 
+/>
 
 Sending a request to the server should return the response as the following:
 

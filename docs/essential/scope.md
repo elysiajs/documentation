@@ -16,6 +16,36 @@ head:
 
 # Scope
 
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import Elysia from 'elysia'
+
+const demo1 = new Elysia()
+    .post('/student', 'Rikuhachima Aru')
+
+const plugin2 = new Elysia()
+    .onBeforeHandle({ as: 'global' }, () => {
+        return 'hi'
+    })
+    .get('/child', () => 'child')
+
+const demo2 = new Elysia()
+    .use(plugin2)
+    .get('/parent', () => 'parent')
+
+const plugin3 = new Elysia()
+    .onBeforeHandle({ as: 'global' }, () => {
+        return 'overwrite'
+    })
+
+const demo3 = new Elysia()
+    .guard(app => app
+        .use(plugin3)
+        .get('/inner', () => 'inner')
+    )
+    .get('/outer', () => 'outer')
+</script>
+
 As mentioned, global Lifecycle and Schema apply to every route after the registration, allowing the use of multiple routes.
 
 However, in a real-world scenario, the global event is hard to trace and control properly. This is why Elysia has an encapsulation scope to ensure that the event will only apply to a certain group of routes.
@@ -90,37 +120,52 @@ We can use a group with prefixes by providing 3 parameters to the group.
 
 With the same API as guard apply to the 2nd parameter, instead of nesting group and guard together.
 
+Consider the following example:
 ```typescript
-// From nested group guard
-app.group('/v1', (app) =>
-    app.guard(
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .group('/v1', (app) =>
+        app.guard(
+            {
+                body: t.Literal('Rikuhachima Aru')
+            },
+            (app) => app.post('/student', () => 'Rikuhachima Aru')
+        )
+    )
+    .listen(3000)
+```
+
+
+From nested groupped guard, we may merge group and guard together by providing guard scope to 2nd parameter of group:
+```typescript
+new Elysia()
+    .group(
+        '/v1',
+        (app) => app.guard( // [!code --]
         {
             body: t.Literal('Rikuhachima Aru')
         },
-        (app) => app.get('/student', () => 'Rikuhachima Aru')
+        (app) => app.post('/student', () => 'Rikuhachima Aru')
+        ) // [!code --]
     )
-)
-
-// Remove the guard
-app.group(
-    '/v1',
-    (app) => app.guard( // [!code --]
-    {
-        body: t.Literal('Rikuhachima Aru')
-    },
-    (app) => app.get('/student', () => 'Rikuhachima Aru')
-    ) // [!code --]
-)
-
-// Inline to group 2nd parameter instead
-app.group(
-    '/v1',
-    {
-        body: t.Literal('Rikuhachima Aru')
-    },
-    (app) => app.get('/student', () => 'Rikuhachima Aru')
-)
+    .listen(3000)
 ```
+
+Which results in the follows syntax:
+```typescript
+new Elysia()
+    .group(
+        '/v1',
+        {
+            body: t.Literal('Rikuhachima Aru')
+        },
+        (app) => app.post('/student', () => 'Rikuhachima Aru')
+    )
+    .listen(3000)
+```
+
+<Playground :elysia="demo1" />
 
 ## Plugin
 
@@ -144,15 +189,16 @@ To apply hook to globally, we need to specify hook as global.
 ```typescript
 const plugin = new Elysia()
     .onBeforeHandle({ as: 'global' }, () => {
-        console.log('hi')
+        return 'hi'
     })
-    .get('/child', () => 'log hi')
+    .get('/child', () => 'child')
 
 const main = new Elysia()
     .use(plugin)
-    .get('/parent', () => 'log hi')
+    .get('/parent', () => 'parent')
 ```
 
+<Playground :elysia="demo2" />
 
 ## Hook type
 Starting from Elysia 1.0 introduce a **hook type**, to specify if the hook should be local-only, or global.
@@ -228,8 +274,8 @@ Any life-cycle defined in `guard`, and `group` **will always** be contained in s
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
-    .beforeHandle({ as: 'global' }, () => {
-        console.log('hi')
+    .onBeforeHandle({ as: 'global' }, () => {
+        return 'overwrite'
     })
 
 const app = new Elysia()
@@ -241,8 +287,10 @@ const app = new Elysia()
     .listen(3000)
 ```
 
+<Playground :elysia="demo3" />
+
 Evaluating the route, should logs as follows:
-| route       | log  |
-| ----------- | ---- |
-| /inner      | ❌   |
-| /outer      | ✅   |
+| route       | response  |
+| ----------- | --------- |
+| /inner      | overwrite |
+| /outer      | outer     |

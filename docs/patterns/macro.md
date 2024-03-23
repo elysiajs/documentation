@@ -31,9 +31,11 @@ const plugin = new Elysia({ name: 'plugin' }).macro(({ onBeforeHandle }) => {
     }
 })
 
-const app = new Elysia().use(plugin).get('/', () => 'hi', {
-    hi: 'Elysia'
-})
+const app = new Elysia()
+    .use(plugin)
+    .get('/', () => 'hi', {
+        hi: 'Elysia'
+    })
 ```
 
 Accessing the path should log **"Elysia"** as the results.
@@ -49,20 +51,22 @@ We then assigned **hi** to **"Elysia"**, the value was then sent back to the **h
 Which is an equivalent of pushing function to **beforeHandle** as the following:
 
 ```typescript
-const app = new Elysia().get('/', () => 'hi', {
-    beforeHandle() {
-        console.log('Elysia')
-    }
-})
+const app = new Elysia()
+    .get('/', () => 'hi', {
+        beforeHandle() {
+            console.log('Elysia')
+        }
+    })
 ```
 
 **macro** shine when a logic is more complex than accepting a new function, for example creating an authorization layer for each route.
 
 ```typescript
-const app = new Elysia().get('/', () => 'hi', {
-    isAuth: true,
-    role: 'admin'
-})
+const app = new Elysia()
+    .get('/', () => 'hi', {
+        isAuth: true,
+        role: 'admin'
+    })
 ```
 
 The field can accept anything ranging from string to function, allowing us to create a custom life cycle event.
@@ -95,18 +99,19 @@ The life cycle function of an extension API accepts additional **options** to en
 -   **function** - function to execute on the event
 
 ```typescript
-const plugin = new Elysia({ name: 'plugin' }).macro(({ onBeforeHandle }) => {
-    return {
-        hi(word: string) {
-            onBeforeHandle(
-                { insert: 'before' }, // [!code ++]
-                () => {
-                    console.log(word)
-                }
-            )
+const plugin = new Elysia({ name: 'plugin' })
+    .macro(({ onBeforeHandle }) => {
+        return {
+            hi(word: string) {
+                onBeforeHandle(
+                    { insert: 'before' }, // [!code ++]
+                    () => {
+                        console.log(word)
+                    }
+                )
+            }
         }
-    }
-})
+    })
 ```
 
 **Options** may accept the following parameter:

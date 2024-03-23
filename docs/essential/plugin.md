@@ -14,6 +14,62 @@ head:
         content: A plugin is a way to decouple logic into smaller parts, defining reusable components across the server. Plugin can register by using `use`, registering a plugin will combine types between plugin and current instance, and the scope of hooks, and schema get merged too.
 ---
 
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .decorate('plugin', 'hi')
+    .get('/plugin', ({ plugin }) => plugin)
+
+const demo1 = new Elysia()
+    .get('/', ({ plugin }) => plugin)
+    .use(plugin)
+
+const plugin2 = (app) => {
+    if ('counter' in app.store) return app
+
+    return app
+        .state('counter', 0)
+        .get('/plugin', () => 'Hi')
+}
+
+const demo2 = new Elysia()
+    .use(plugin2)
+    .get('/counter', ({ store: { counter } }) => counter)
+
+const version = (version = 1) => new Elysia()
+        .get('/version', version)
+
+const demo3 = new Elysia()
+    .use(version(1))
+
+const setup = new Elysia({ name: 'setup' })
+    .decorate('a', 'a')
+
+const plugin3 = (config) => new Elysia({
+        name: 'my-plugin', 
+        seed: config, 
+    })
+    .get(`${config.prefix}/hi`, () => 'Hi')
+
+const demo4 = new Elysia()
+    .use(
+        plugin3({
+            prefix: '/v2'
+        })
+    )
+
+// child.ts
+const child = new Elysia()
+    .use(setup)
+    .get('/', ({ a }) => a)
+
+// index.ts
+const demo5 = new Elysia()
+    .use(child)
+</script>
+
 # Plugin
 
 Plugin is a pattern that decouples functionality into smaller parts. Creating reusable components for our web server.
@@ -21,6 +77,8 @@ Plugin is a pattern that decouples functionality into smaller parts. Creating re
 Defining a plugin is to define a separate instance.
 
 ```typescript
+import { Elysia } from 'elysia'
+
 const plugin = new Elysia()
     .decorate('plugin', 'hi')
     .get('/plugin', ({ plugin }) => plugin)
@@ -31,6 +89,8 @@ const app = new Elysia()
 ```
 
 We can use the plugin by passing an instance to **Elysia.use**.
+
+<Playground :elysia="demo1" />
 
 The plugin will inherit all properties of the plugin instance, including **state**, **decorate**, **derive**, **route**, **lifecycle**, etc.
 
@@ -54,7 +114,7 @@ import { plugin } from './plugin'
 
 const app = new Elysia()
     .use(plugin)
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Config
@@ -71,7 +131,7 @@ const version = (version = 1) => new Elysia()
 
 const app = new Elysia()
     .use(version(1))
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Functional callback
@@ -83,6 +143,8 @@ Functional callback allows us to access the existing property of the main instan
 To define a functional callback, create a function that accepts Elysia as a parameter.
 
 ```typescript
+import { Elysia } from 'elysia'
+
 const plugin = (app: Elysia) => {
     if ('counter' in app.store) return app
 
@@ -93,8 +155,11 @@ const plugin = (app: Elysia) => {
 
 const app = new Elysia()
     .use(plugin)
-    .listen(8080)
+    .get('/counter', ({ store: { counter } }) => counter)
+    .listen(3000)
 ```
+
+<Playground :elysia="demo3" />
 
 Once passed to `Elysia.use`, functional callback behaves as a normal plugin except the property is assigned directly to
 
@@ -129,6 +194,8 @@ const app = new Elysia()
     )
     .listen(3000)
 ```
+
+<Playground :elysia="demo4" />
 
 Elysia will use **name** and **seed** to create a checksum to identify if the instance has been registered previously or not, if so, Elysia will skip the registration of the plugin.
 
@@ -185,15 +252,17 @@ Simply put, we need to provide the plugin reference for Elysia to find the servi
 const setup = new Elysia({ name: 'setup' })
     .decorate('a', 'a')
 
-// index.ts
-const main = new Elysia()
-    .use(child)
-
 // child.ts
 const child = new Elysia()
     .use(setup)
     .get('/', ({ a }) => a)
+
+// index.ts
+const main = new Elysia()
+    .use(child)
 ```
+
+<Playground :elysia="demo5" />
 
 ## Official Plugins
 

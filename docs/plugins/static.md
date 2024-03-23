@@ -29,7 +29,7 @@ import { staticPlugin } from '@elysiajs/static'
 
 new Elysia()
     .use(staticPlugin())
-    .listen(8080)
+    .listen(3000)
 ```
 
 By default, the static plugin default folder is `public`, and registered with `/public` prefix.

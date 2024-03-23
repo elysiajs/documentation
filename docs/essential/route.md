@@ -14,6 +14,34 @@ head:
         content: To determine the correct response to a client, the web server uses path and HTTP method to look up for the correct resource. This process is known as "routing". We can define a route by calling a method named after an HTTP verb like `Elysia.get`, `Elysia.post` passing a path and a function to execute when matched.
 ---
 
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import { Elysia } from 'elysia'
+
+const demo1 = new Elysia()
+    .get('/', () => 'hello')
+    .post('/hi', () => 'hi')
+
+const demo2 = new Elysia()
+    .get('/', () => 'hello')
+    .post('/hi', () => 'world')
+
+const demo3 = new Elysia()
+    .get('/get', () => 'hello')
+    .post('/post', () => 'hi')
+    .route('M-SEARCH', '/m-search', () => 'connect') 
+
+const demo4 = new Elysia()
+    .get('/', () => 'hello')
+    .post('/', () => 'hello')
+    .delete('/', () => 'hello')
+
+const demo5 = new Elysia()
+    .get('/', () => 'hello')
+    .post('/', () => 'hello')
+    .get('/hi', ({ error }) => error(404))
+</script>
+
 # Route
 
 Web servers use the request's **path and HTTP method** to look up the correct resource, refers as **"routing"**.
@@ -31,17 +59,12 @@ new Elysia()
 
 We can access the web server by going to **http://localhost:3000**
 
-This code create a web server running at port 3000, and register the following path with the GET method which response as follows:
-
-| Path   | Result  |
-| ------ | ------- |
-| /      | Landing |
-| /hello | Hi      |
+<Playground :elysia="demo1" />
 
 ::: tip
 By default, web browser will sent GET method when vising the page.
 
-This is why accessing get with the browser works.
+This is why accessing GET routes using a browser works.
 :::
 
 ## HTTP Verb
@@ -76,6 +99,8 @@ new Elysia()
     .post('/hi', () => 'hi')
     .listen(3000)
 ```
+
+<Playground :elysia="demo2" />
 
 Elysia HTTP methods accepts the following parameters:
 
@@ -141,11 +166,13 @@ We can accept custom HTTP Methods with `Elysia.route`.
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .get('/', () => 'hello')
-    .post('/', () => 'hi')
-    .route('M-SEARCH', '/', () => 'connect') // [!code ++]
+    .get('/get', () => 'hello')
+    .post('/post', () => 'hi')
+    .route('M-SEARCH', '/m-search', () => 'connect') // [!code ++]
     .listen(3000)
 ```
+
+<Playground :elysia="demo3" />
 
 **Elysia.route** accepts the following:
 
@@ -179,6 +206,8 @@ new Elysia()
     .listen(3000)
 ```
 
+<Playground :elysia="demo4" />
+
 Any HTTP method that matches the path, will be handled as follows:
 | Path | Method | Result |
 | ---- | -------- | ------ |
@@ -202,6 +231,8 @@ new Elysia()
     })
     .listen(3000)
 ```
+
+<Playground :elysia="demo5" />
 
 When navigating to your web server, you should see the result as follows:
 

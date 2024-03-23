@@ -17,6 +17,23 @@ head:
 <script setup>
     import Card from '../../components/nearl/card.vue'
     import Deck from '../../components/nearl/card-deck.vue'
+
+    import Playground from '../../components/nearl/playground.vue'
+    import { Elysia, t, ValidationError } from 'elysia'
+
+    const demo1 = new Elysia()
+        .get('/id/1', '1')
+        .get('/id/a', () => {
+            throw new ValidationError(
+                'params',
+                t.Object({
+                    id: t.Numeric()
+                }),
+                {
+                    id: 'a'
+                }
+            )
+        })
 </script>
 
 # Schema Type
@@ -62,6 +79,8 @@ new Elysia()
     })
     .listen(3000)
 ```
+
+<Playground :elysia="demo1" />
 
 The response should as follows:
 | URL | Query | Params |
@@ -191,6 +210,8 @@ new Elysia()
     .listen(3000)
 ```
 
+<Playground :elysia="demo1" />
+
 The validation should be as follows:
 | URL | Validation |
 | --- | --------- |
@@ -260,11 +281,12 @@ fetch('https://elysiajs.com/', {
 ```typescript
 import { Elysia, t } from 'elysia'
 
-new Elysia().get('/', ({ cookie }) => cookie.session.value, {
-    cookie: t.Object({
-        session: t.String()
+new Elysia()
+    .get('/', ({ cookie }) => cookie.session.value, {
+        cookie: t.Object({
+            session: t.String()
+        })
     })
-})
 ```
 
 ## Response
@@ -280,9 +302,10 @@ If provided, by default, Elysia will try to enforce type using TypeScript to pro
 ```typescript
 import { Elysia, t } from 'elysia'
 
-new Elysia().get('/', () => 'hello world', {
-    response: t.String()
-})
+new Elysia()
+    .get('/', () => 'hello world', {
+        response: t.String()
+    })
 ```
 
 The response could accept an object with a key of HTTP status to enforce the response type on a specific status.
@@ -290,12 +313,13 @@ The response could accept an object with a key of HTTP status to enforce the res
 ```typescript
 import { Elysia, t } from 'elysia'
 
-new Elysia().get('/', () => 'hello world', {
-    response: {
-        200: t.String(),
-        400: t.Number()
-    }
-})
+new Elysia()
+    .get('/', () => 'hello world', {
+        response: {
+            200: t.String(),
+            400: t.Number()
+        }
+    })
 ```
 
 The validation should be as follows:
