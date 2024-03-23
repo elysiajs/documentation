@@ -85,6 +85,29 @@ Elysia HTTP methods accepts the following parameters:
 
 You can read more about the HTTP methods on [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
 
+## Method Chaining
+Rule of thumb, **ALWAYS** use method chaining in Elysia.
+
+```typescript
+import { Elysia } from 'elysia'
+
+// ❌ don't
+const app = new Elysia()
+
+app.get('/', () => 'hello')
+
+app.post('/', () => 'world')
+
+// ✅ do
+const app = new Elysia()
+    .get('/', () => 'hello')
+    .post('/', () => 'world')
+```
+
+Elysia is using method chaining to synchronize type safety for later use.
+
+Without method chaining, Elysia can't ensure your type integrity which will have of usage in later chapters.
+
 ## Handle
 
 Most developers use REST clients like Postman, Insomnia or Hoppscotch to test their API.
@@ -151,7 +174,9 @@ Elysia provides an `Elysia.all` for handling any HTTP method for a specified pat
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().all('/', () => 'hi').listen(3000)
+new Elysia()
+    .all('/', () => 'hi')
+    .listen(3000)
 ```
 
 Any HTTP method that matches the path, will be handled as follows:

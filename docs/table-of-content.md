@@ -32,7 +32,7 @@ There's no correct way to learn Elysia, but we recommended **completing the esse
     <Card title="Life Cycle" href="/life-cycle/overview">
         Intercept events and customize behaviors
     </Card>
-    <Card title="Patterns" href="/patterns/cookie">
+    <Card title="Patterns" href="/patterns/group">
         Common patterns and best practices
     </Card>
     <Card title="Plugin" href="/plugins/overview">

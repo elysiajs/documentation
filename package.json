@@ -34,8 +34,8 @@
     "flexsearch": "^0.7.31",
     "markdown-it": "^13.0.2",
     "view-transitions-api-types": "^0.1.1",
-    "vitepress": "1.0.0-rc.29",
-    "vue": "^3.3.8"
+    "vitepress": "^1.0.1",
+    "vue": "^3.4.21"
   },
   "scripts": {
     "dev": "vitepress dev docs",
