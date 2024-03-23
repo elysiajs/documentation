@@ -268,11 +268,11 @@ In simpler terms, a stringified state that sent with every request.
 
 This field is usually used to enforce some specific cookie field.
 
-A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credential` field instead:
+A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credentials` field instead:
 
 ```typescript
 fetch('https://elysiajs.com/', {
-    credential: 'include'
+    credentials: 'include'
 })
 ```
 
