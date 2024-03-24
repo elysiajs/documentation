@@ -76,7 +76,7 @@ Plugin is a pattern that decouples functionality into smaller parts. Creating re
 
 Defining a plugin is to define a separate instance.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
@@ -104,12 +104,26 @@ Notice that the plugin doesn't contain **.listen**, because **.listen** will all
 
 Using a plugin pattern, you decouple your business logic into a separate file.
 
-```typescript
+First, we define an instance in a difference file:
+```typescript twoslash
 // plugin.ts
+import { Elysia } from 'elysia'
+
 export const plugin = new Elysia()
     .get('/plugin', () => 'hi')
+```
 
+And then we import the instance into the main file:
+```typescript twoslash
+// @filename: plugin.ts
+import { Elysia } from 'elysia'
+
+export const plugin = new Elysia()
+    .get('/plugin', () => 'hi')
+// @filename: index.ts
+// ---cut---
 // main.ts
+import { Elysia } from 'elysia'
 import { plugin } from './plugin'
 
 const app = new Elysia()
@@ -123,7 +137,7 @@ To make the plugin more useful, allowing customization via config is recommended
 
 You can create a function that accepts parameters that may change the behavior of the plugin to make it more reusable.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const version = (version = 1) => new Elysia()
@@ -142,16 +156,12 @@ Functional callback allows us to access the existing property of the main instan
 
 To define a functional callback, create a function that accepts Elysia as a parameter.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
-const plugin = (app: Elysia) => {
-    if ('counter' in app.store) return app
-
-    return app
-        .state('counter', 0)
-        .get('/plugin', () => 'Hi')
-}
+const plugin = (app: Elysia) => app
+    .state('counter', 0)
+    .get('/plugin', () => 'Hi')
 
 const app = new Elysia()
     .use(plugin)
@@ -177,10 +187,11 @@ Some plugins may be used multiple times to provide type inference, resulting in 
 
 Elysia avoids this by differentiating the instance by using **name** and **optional seeds** to help Elysia identify instance duplication:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
-const plugin = (config) => new Elysia({
+const plugin = <T extends string>(config: { prefix: T }) => 
+    new Elysia({
         name: 'my-plugin', // [!code ++]
         seed: config, // [!code ++]
     })
@@ -201,16 +212,16 @@ Elysia will use **name** and **seed** to create a checksum to identify if the in
 
 If seed is not provided, Elysia will only use **name** to differentiate the instance. This means that the plugin is only registered once even if you registered it multiple times.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia({ name: 'plugin' })
 
 const app = new Elysia()
-    .use(plugin())
-    .use(plugin())
-    .use(plugin())
-    .use(plugin())
+    .use(plugin)
+    .use(plugin)
+    .use(plugin)
+    .use(plugin)
     .listen(3000)
 ```
 
@@ -227,16 +238,17 @@ When you apply multiple state and decorators plugin to an instance, the instance
 
 However, you may notice that when you are trying to use the decorated value in another instance without decorator, the type is missing.
 
-```typescript
+```typescript twoslash
+// @errors: 2339
 import { Elysia } from 'elysia'
-
-const main = new Elysia()
-    .decorate('a', 'a')
-    .use(child)
 
 const child = new Elysia()
     // ❌ 'a' is missing
     .get('/', ({ a }) => a)
+
+const main = new Elysia()
+    .decorate('a', 'a')
+    .use(child)
 ```
 
 This is a TypeScript limitation; Elysia can only refer to the current instance.
@@ -247,7 +259,9 @@ To put it simply, Elysia will lookup the plugin checksum and get the value or re
 
 Simply put, we need to provide the plugin reference for Elysia to find the service.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 // setup.ts
 const setup = new Elysia({ name: 'setup' })
     .decorate('a', 'a')

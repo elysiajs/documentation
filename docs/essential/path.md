@@ -86,7 +86,7 @@ Static path means a hardcoded string can be used to locate resources from the se
 
 For instance, we can extract the user ID from the pathname, we can do something like:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -147,7 +147,9 @@ The named path parameter will then be stored in `Context.params`.
 
 You can have as many path parameters as you would like, which will then be stored into a `params`.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
     .get('/id/:id/:name', ({ params: { id, name } }) => id + ' ' + name)
@@ -189,7 +191,9 @@ However, when you need a value of the path to be more dynamic and capture the re
 
 Wildcard can capture the value after segment regardless of amount by using "\*".
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 new Elysia()
     .get('/id/*', ({ params }) => params['*'])
     .listen(3000)
@@ -246,7 +250,7 @@ The priority of the path is aligned as follows:
 
 If the path is resolved as the static wild dynamic path is presented, Elysia will resolve the static path rather than the dynamic path
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()

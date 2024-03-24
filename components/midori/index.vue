@@ -58,14 +58,14 @@ const isDark = useDark()
                 </template>
             </E2ETypeSafety>
             <Plugins />
-            <Suspense>
+            <!-- <Suspense>
                 <Editor />
                 <template #fallback>
                     <video muted autoplay loop>
                         <source src="/assets/elysia.mp4" />
                     </video>
                 </template>
-            </Suspense>
+            </Suspense> -->
             <Community />
             <Sponsor />
             <hr class="border-gray-200 dark:border-gray-600" />

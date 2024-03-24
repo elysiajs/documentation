@@ -104,7 +104,7 @@ The local hook is executed on a specific route.
 
 To use a local hook, you can inline hook into a route handler:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -132,7 +132,7 @@ Register hook into **every** handler that came after.
 
 To add a global hook, you can use `.on` followed by a life cycle event in camelCase:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -163,7 +163,7 @@ The order of Elysia's life-cycle code is very important.
 
 Elysia's life-cycle event is stored as a queue, aka first-in first-out. So Elysia will **always** respect the order of code from top-to-bottom followed by the order of life-cycle events.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()

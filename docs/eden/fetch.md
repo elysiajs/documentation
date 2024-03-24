@@ -22,12 +22,12 @@ With Eden Fetch can interact with Elysia server in a type-safe manner using Fetc
 ---
 
 First export your existing Elysia server type:
-```typescript
+```typescript twoslash
 // server.ts
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
-    .get('/', () => 'Hi Elysia')
+    .get('/hi', () => 'Hi Elysia')
     .get('/id/:id', ({ params: { id } }) => id)
     .post('/mirror', ({ body }) => body, {
         body: t.Object({
@@ -41,15 +41,32 @@ export type App = typeof app
 ```
 
 Then import the server type, and consume the Elysia API on client:
-```typescript
+```typescript twoslash
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+// @filename: client.ts
+// ---cut---
 // client.ts
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
 
-const fetch = edenFetch<App>('http://localhost:')
+const fetch = edenFetch<App>('http://localhost:3000')
 
 // response type: 'Hi Elysia'
-const pong = await fetch('/', {})
+const pong = await fetch('/hi', {})
 
 // response type: 1895
 const id = await fetch('/id/:id', {
@@ -70,31 +87,56 @@ const nendoroid = await fetch('/mirror', {
 
 ## Error Handling
 You can handle errors the same way as Eden Treaty:
-```typescript
+```typescript twoslash
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+
+// @filename: client.ts
+// ---cut---
+// client.ts
+import { edenFetch } from '@elysiajs/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
 // response type: { id: 1895, name: 'Skadi' }
-const { data: nendoroid, error } = app.mirror.post({
-    id: 1895,
-    name: 'Skadi'
+const { data: nendoroid, error } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
 })
 
 if(error) {
     switch(error.status) {
         case 400:
         case 401:
-            warnUser(error.value)
+            throw error.value
             break
 
         case 500:
         case 502:
-            emergencyCallDev(error.value)
+            throw error.value
             break
 
         default:
-            reportError(error.value)
+            throw error.value
             break
     }
-
-    throw error
 }
 
 const { id, name } = nendoroid

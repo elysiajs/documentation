@@ -129,7 +129,7 @@ If we are familiar with frontend libraries like React, Vue, or Svelte, there's a
 
 - **state** is a function to assign an initial value to **store**, which could be mutated later.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -141,7 +141,9 @@ new Elysia()
 
 Once **state** is called, value will be added to **store** property, and can be used in handler.
 
-```typescript
+```typescript twoslash
+// @errors: 2339
+
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -168,8 +170,14 @@ The difference is that the value should be read-only and not reassigned later.
 
 This is an ideal way to assign additional functions, singleton, or immutable property to all handlers.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
+
+class Logger {
+    log(value: string) {
+        console.log(value)
+    }
+}
 
 new Elysia()
     .decorate('logger', new Logger())
@@ -189,7 +197,7 @@ Instead of assign before server started, **derive** assigns when request happens
 
 Allowing us to "derive" (create a new property based on existing property).
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -229,8 +237,14 @@ Where **derive** can be only used with **remap** because it depends on existing 
 
 We can use **state**, and **decorate** to assign a value using a key-value pattern.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
+
+class Logger {
+    log(value: string) {
+        console.log(value)
+    }
+}
 
 new Elysia()
     .state('counter', 0)
@@ -263,7 +277,8 @@ Allowing us to create a new value from existing value like renaming or removing 
 
 By providing a function, and returning an entirely new object to reassign the value.
 
-```typescript
+```typescript twoslash
+// @errors: 2339
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -295,7 +310,7 @@ To provide a smoother experience, some plugins might have a lot of property valu
 
 The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
 
-```ts
+```ts twoslash
 import { Elysia } from 'elysia'
 
 const setup = new Elysia({ name: 'setup' })
@@ -321,11 +336,18 @@ By default, **affix** will handle both runtime, type-level code automatically, r
 
 In some condition, we can also remap `all` property of the plugin:
 
-```ts
+```ts twoslash
 import { Elysia } from 'elysia'
 
+const setup = new Elysia({ name: 'setup' })
+    .decorate({
+        argon: 'a',
+        boron: 'b',
+        carbon: 'c'
+    })
+
 const app = new Elysia()
-    .use(setup.prefix('all', 'setup'))
+    .use(setup.prefix('all', 'setup')) // [!code ++]
     .get('/', ({ setupCarbon }) => setupCarbon)
 ```
 
@@ -337,7 +359,7 @@ When accessing the property from JavaScript, if we define a primitive value from
 
 For example:
 
-```typescript
+```typescript twoslash
 const store = {
     counter: 0
 }
@@ -350,7 +372,7 @@ We can use **store.counter** to access and mutate the property.
 
 However, if we define a counter as a new value
 
-```typescript
+```typescript twoslash
 const store = {
     counter: 0
 }
@@ -366,7 +388,7 @@ Once a primitive value is redefined as a new variable, the reference **"link"** 
 
 This can apply to `store`, as it's a global mutable object instead.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()

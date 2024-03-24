@@ -31,9 +31,14 @@ It's recommended to use Before Handle in the following situations:
 
 Below is an example of using the before handle to check for user sign-in.
 
-```typescript
+```typescript twoslash
+// @filename: user.ts
+export const validateSession = (a: string): boolean => true
+
+// @filename: index.ts
+// ---cut---
 import { Elysia } from 'elysia'
-import { validateSession } from '@services/users'
+import { validateSession } from './user'
 
 new Elysia()
     .get('/', () => 'hi', {
@@ -56,8 +61,22 @@ The response should be listed as follows:
 
 When we need to apply the same before handle to multiple routes, we can use [guard](#guard) to apply the same before handle to multiple routes.
 
-```typescript
+```typescript twoslash
+// @filename: user.ts
+export const validateSession = (a: string): boolean => true
+export const isUserExists = (a: unknown): boolean => true
+export const signUp = (body: unknown): boolean => true
+export const signIn = (body: unknown): boolean => true
+
+// @filename: index.ts
+// ---cut---
 import { Elysia } from 'elysia'
+import { 
+    signUp,
+    signIn,
+    validateSession, 
+    isUserExists
+} from './user'
 
 new Elysia()
     .guard(
@@ -86,8 +105,13 @@ Designed to append new value to context after validation process storing in the 
 
 Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from the Authorization plugin.
 
-```typescript
-import { Elysia } from 'elysia'
+```typescript twoslash
+// @filename: user.ts
+export const validateSession = (a: string): boolean => true
+
+// @filename: index.ts
+// ---cut---
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .guard(
@@ -110,7 +134,7 @@ new Elysia()
 
 Using `resolve` and `onBeforeHandle` is stored in the same queue.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -141,8 +165,15 @@ Same as **derive**, properties which assigned by **resolve** is unique and not s
 
 As resolve is not available in local hook, it's recommended to use guard to encapsulate the **resolve** event.
 
-```typescript
+```typescript twoslash
+// @filename: user.ts
+export const isSignIn = (body: any): boolean | undefined => true
+export const findUserById = (id: string) => id
+
+// @filename: index.ts
+// ---cut---
 import { Elysia } from 'elysia'
+import { isSignIn, findUserById } from './user'
 
 new Elysia()
     .guard(
@@ -151,11 +182,9 @@ new Elysia()
         },
         (app) =>
             app
-                .resolve(({ cookie: { session } }) => {
-                    return {
-                        userId: findUserId(session.value)
-                    }
-                })
+                .resolve(({ cookie: { session } }) => ({
+                    userId: findUserById(session.value)
+                }))
                 .get('/profile', ({ userId }) => userId)
     )
     .listen(3000)

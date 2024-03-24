@@ -23,7 +23,7 @@ head:
 <Landing>
   <template v-slot:justreturn>
   
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -39,7 +39,7 @@ new Elysia()
 
   <template v-slot:typestrict>
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -74,14 +74,21 @@ new Elysia()
 
 <template v-slot:server>
 
-```ts
+```typescript twoslash
+// @filename: server.ts
+// ---cut---
 // server.ts
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .patch(
         '/user/age',
-        ({ body }) => signIn(body), 
+        ({ body, error }) => {
+            if(body.age <= 18) 
+                return error(400)
+
+            return body
+        },
         {
             body: t.Object({
                 name: t.String(),
@@ -97,17 +104,51 @@ export type App = typeof app
 
   <template v-slot:client>
 
-```ts
-// client.ts
-import { edenTreaty } from '@elysiajs/eden'
-import type { App } from 'server'
-    
-const eden = edenTreaty<App>('http://localhost')
+```typescript twoslash
+// @errors: 2322
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
 
-await eden.user.age.patch({
+const app = new Elysia()
+    .patch(
+        '/user/age',
+        ({ body, error }) => {
+            if(body.age <= 18) 
+                return error(400)
+
+            return body
+        },
+        {
+            body: t.Object({
+                name: t.String(),
+                age: t.Number()
+            })
+        }
+    )
+    .listen(80)
+
+export type App = typeof app
+
+// @filename: client.ts
+// ---cut---
+// client.ts
+import { treaty } from '@elysiajs/eden'
+import type { App } from './server'
+
+const api = treaty<App>('localhost')
+
+const { data, error } = await api.user.age.patch({
     name: 'saltyaom',
     age: '21'
 })
+
+if(error)
+    switch(error.status) {
+        case 400:
+            throw error.value
+    }
+
+console.log(data)
 ```
   </template>
 

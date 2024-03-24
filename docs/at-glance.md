@@ -38,7 +38,7 @@ Designed with simplicity and type safety in mind with familiar API with extensiv
 
 Here's a simple hello world in Elysia.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -101,7 +101,7 @@ Elysia's Type System is fine-tuned to infer your code into type automatically wi
 
 Take a look at this example:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -133,7 +133,7 @@ To take a step further, Elysia provide **Elysia.t**, a schema builder to validat
 
 Let's modify the previous code to accept only a numeric value instead of a string.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -147,6 +147,10 @@ new Elysia()
 
 This code ensures that our path parameter **id**, will always be a numeric string and then transform to a number automatically in both runtime and compile-time (type-level).
 
+::: tip
+Hover over "id" in the above code snippet to see a type definition.
+:::
+
 With Elysia schema builder, we can ensure type safety like a strong-typed language with a single source of truth.
 
 ## Standard
@@ -155,7 +159,7 @@ Elysia adopts many standards by default, like OpenAPI, and WinterCG compliance, 
 
 For instance, as Elysia adopts OpenAPI by default, generating a documentation with Swagger is as easy as adding a one-liner:
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -177,7 +181,7 @@ With Elysia, type safety is not only limited to server-side only.
 
 With Elysia, you can synchronize your type with your frontend team automatically like tRPC, with Elysia's client library, "Eden".
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -195,12 +199,27 @@ export type App = typeof app
 
 And on your client-side:
 
-```typescript
+```typescript twoslash
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/user/:id', ({ params: { id } }) => id, {
+        params: t.Object({
+            id: t.Numeric()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+
+// @filename: client.ts
+// ---cut---
 // client.ts
 import { treaty } from '@elysiajs/eden'
 import type { App } from './server'
 
-const app = treaty<App>('http://localhost:3000')
+const app = treaty<App>('localhost:3000')
 
 // Get data from /user/617
 const { data } = await app.user({ id: 617 }).get()

@@ -54,11 +54,15 @@ However, in a real-world scenario, the global event is hard to trace and control
 
 Guard allows us to apply hook and schema into multiple routes all at once.
 
-```typescript
+```typescript twoslash
+const signUp = <T>(a: T) => a
+const signIn = <T>(a: T) => a
+const isUserExists = <T>(a: T) => a
+// ---cut---
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .guard( // [!code ++]
+    .guard(
         { // [!code ++]
             body: t.Object({ // [!code ++]
                 username: t.String(), // [!code ++]
@@ -89,7 +93,11 @@ Guard accepts the same parameter as inline hook, the only difference is that you
 
 This means that the code above is translated into:
 
-```typescript
+```typescript twoslash
+const signUp = <T>(a: T) => a
+const signIn = <T>(a: T) => a
+const isUserExists = (a: any) => a
+// ---cut---
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -99,7 +107,7 @@ new Elysia()
             password: t.String()
         })
     })
-    .post('/sign-in', (({ body }) => signIn(body), {
+    .post('/sign-in', ({ body }) => body, {
         beforeHandle: isUserExists,
         body: t.Object({
             username: t.String(),
@@ -121,8 +129,8 @@ We can use a group with prefixes by providing 3 parameters to the group.
 With the same API as guard apply to the 2nd parameter, instead of nesting group and guard together.
 
 Consider the following example:
-```typescript
-import { Elysia } from 'elysia'
+```typescript twoslash
+import { Elysia, t } from 'elysia'
 
 new Elysia()
     .group('/v1', (app) =>
@@ -138,7 +146,9 @@ new Elysia()
 
 
 From nested groupped guard, we may merge group and guard together by providing guard scope to 2nd parameter of group:
-```typescript
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
 new Elysia()
     .group(
         '/v1',
@@ -153,7 +163,9 @@ new Elysia()
 ```
 
 Which results in the follows syntax:
-```typescript
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
 new Elysia()
     .group(
         '/v1',
@@ -173,7 +185,9 @@ By default plugin will only **apply hook to itself and descendants** only.
 
 If the hook is registered in a plugin, instances that inherit the plugin will **NOT** inherit hooks and schema.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 const plugin = new Elysia()
     .onBeforeHandle(() => {
         console.log('hi')
@@ -186,7 +200,9 @@ const main = new Elysia()
 ```
 
 To apply hook to globally, we need to specify hook as global.
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 const plugin = new Elysia()
     .onBeforeHandle({ as: 'global' }, () => {
         return 'hi'
@@ -219,10 +235,11 @@ This is a breaking change.
 To specify hook's type, add a `{ as: hookType }` to hook.
 
 To apply hook to globally, we need to specify hook as global.
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 const plugin = new Elysia()
-    .onBeforeHandle(() => { // [!code --]
-    .onBeforeHandle({ as: 'global' }, () => { // [!code ++]
+    .onBeforeHandle({ as: 'global' }, () => {
         console.log('hi')
     })
     .get('/child', () => 'log hi')
@@ -234,7 +251,9 @@ const main = new Elysia()
 
 Let's create a plugin to illustrate how hook type work.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 // ? Value base on table value provided below
 const type = 'local'
 
@@ -270,7 +289,7 @@ Guard is a hard limit for hook type.
 
 Any life-cycle defined in `guard`, and `group` **will always** be contained in scope, even if hook type is **global**
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()

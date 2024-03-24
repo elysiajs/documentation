@@ -48,7 +48,7 @@ Web servers use the request's **path and HTTP method** to look up the correct re
 
 We can define a route by calling a **method named after HTTP verbs**, passing a path and a function to execute when matched.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -91,7 +91,7 @@ Deletes the specified resource.
 
 To handle each of the different verbs, Elysia has a built-in API for several HTTP verbs by default, similar to `Elysia.get`
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -113,15 +113,15 @@ You can read more about the HTTP methods on [HTTP Request Methods](https://devel
 ## Method Chaining
 Rule of thumb, **ALWAYS** use method chaining in Elysia.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 // ❌ don't
-const app = new Elysia()
+const app1 = new Elysia()
 
-app.get('/', () => 'hello')
+app1.get('/', () => 'hello')
 
-app.post('/', () => 'world')
+app1.post('/', () => 'world')
 
 // ✅ do
 const app = new Elysia()
@@ -139,7 +139,7 @@ Most developers use REST clients like Postman, Insomnia or Hoppscotch to test th
 
 However, Elysia can be programmatically test using `Elysia.handle`.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -162,7 +162,7 @@ But also useful for simulating or creating unit tests.
 
 We can accept custom HTTP Methods with `Elysia.route`.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -198,7 +198,7 @@ It's recommended to use the UPPERCASE convention for defining a custom HTTP Verb
 
 Elysia provides an `Elysia.all` for handling any HTTP method for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -221,7 +221,7 @@ If no path matches the defined routes, Elysia will pass the request to `error` l
 
 We can handle a custom 404 error by returning a value from 'error` life cycle like this:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()

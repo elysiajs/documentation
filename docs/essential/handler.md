@@ -29,7 +29,7 @@ const demo2 = new Elysia()
 
 After a resource is located, a function that respond is refers as **handler**
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -40,7 +40,7 @@ new Elysia()
 
 Handler maybe a literal value, and can be inlined.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -64,7 +64,7 @@ Static Resource value, headers and status can be mutate dynamically using lifecy
 
 Context is an request's information sent to server.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -94,7 +94,7 @@ We can return a custom status code by using either:
 ## error
 A dedicated `error` function for returning status code with response.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -115,7 +115,7 @@ Set a default status code if not provided.
 
 It's recommended to use in a plugin that only only need to return a specific status code while allowing user to return a custom value for example, HTTP 201/206 or 403/405 etc.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -134,7 +134,7 @@ HTTP Status indicates the type of response. If the route handler is executed suc
 
 You can also set a status code using the common name of the status code instead of using a number.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -150,7 +150,7 @@ new Elysia()
 ## set.headers
 Allowing us to append or delete a response headers represent as Object.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -165,7 +165,7 @@ new Elysia()
 ## set.redirect
 Redirect a request to another resource.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -185,7 +185,7 @@ To comply with the Web Standard, a value returned from route handler will be map
 
 Letting you focus on business logic rather than boilerplate code.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -196,7 +196,7 @@ new Elysia()
 
 If you prefer an explicit Response class, Elysia also handles that automatically.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()

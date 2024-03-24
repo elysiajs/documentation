@@ -72,7 +72,7 @@ The local schema is executed on a specific route.
 
 To validate a local schema, you can inline schema into a route handler:
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -101,7 +101,7 @@ Register hook into **every** handler that came after.
 
 To add a global hook, you can use `.guard` followed by a life cycle event in camelCase:
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()

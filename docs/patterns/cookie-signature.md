@@ -23,7 +23,9 @@ This make sure that the cookie value is not modified by malicious actor, helps i
 
 ## Using Cookie Signature
 By provide a cookie secret, and `sign` property to indicate which cookie should have a signature verification.
-```ts
+```ts twoslash
+import { Elysia, t } from 'elysia'
+
 new Elysia()
     .get('/', ({ cookie: { profile } }) => {
         profile.value = {
@@ -48,10 +50,12 @@ Elysia then sign and unsign cookie value automatically.
 ## Constructor
 You can use Elysia constructor to set global cookie `secret`, and `sign` value to apply to all route globally instead of inlining to every route you need.
 
-```ts
+```ts twoslash
+import { Elysia, t } from 'elysia'
+
 new Elysia({
     cookie: {
-        secret: 'Fischl von Luftschloss Narfidort',
+        secrets: 'Fischl von Luftschloss Narfidort',
         sign: ['profile']
     }
 })
@@ -75,10 +79,12 @@ Elysia handle Cookie's secret rotation automatically.
 
 Cookie Rotation is a migration technique to sign a cookie with a newer secret, while also be able to verify the old signature of the cookie.
 
-```ts
+```ts twoslash
+import { Elysia } from 'elysia'
+
 new Elysia({
     cookie: {
-        secret: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']
+        secrets: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']
     }
 })
 ```

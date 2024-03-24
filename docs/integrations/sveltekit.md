@@ -22,10 +22,9 @@ With SvelteKit, you can run Elysia on server routes.
 2. In **+server.ts**, create or import an existing Elysia server
 3. Export the handler with the name of method you want to expose
 
-```typescript
+```typescript twoslash
 // src/routes/[...slugs]/+server.ts
 import { Elysia, t } from 'elysia';
-import type { RequestHandler } from './$types';
 
 const app = new Elysia()
     .get('/', () => 'hello SvelteKit')
@@ -35,8 +34,10 @@ const app = new Elysia()
         })
     })
 
-export const GET: RequestHandler = ({ request }) => app.handle(request);
-export const POST: RequestHandler = ({ request }) => app.handle(request);
+type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
+
+export const GET: RequestHandler = ({ request }) => app.handle(request)
+export const POST: RequestHandler = ({ request }) => app.handle(request)
 ```
 
 You can treat the Elysia server as a normal SvelteKit server route.
@@ -50,12 +51,11 @@ If you place an Elysia server not in the root directory of the app router, you n
 
 For example, if you place Elysia server in **src/routes/api/[...slugs]/+server.ts**, you need to annotate prefix as **/api** to Elysia server.
 
-```typescript
+```typescript twoslash
 // src/routes/api/[...slugs]/+server.ts
 import { Elysia, t } from 'elysia';
-import type { RequestHandler } from './$types';
 
-const app = new Elysia({ prefix: '/api' })
+const app = new Elysia({ prefix: '/api' }) // [!code ++]
     .get('/', () => 'hi')
     .post('/', ({ body }) => body, {
         body: t.Object({
@@ -63,8 +63,10 @@ const app = new Elysia({ prefix: '/api' })
         })
     })
 
-export const GET: RequestHandler = ({ request }) => app.handle(request);
-export const POST: RequestHandler = ({ request }) => app.handle(request);
+type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
+
+export const GET: RequestHandler = ({ request }) => app.handle(request)
+export const POST: RequestHandler = ({ request }) => app.handle(request)
 ```
 
 This will ensure that Elysia routing will work properly in any location you place it.

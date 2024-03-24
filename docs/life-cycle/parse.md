@@ -30,7 +30,9 @@ It's recommended to use the `onParse` event to provide a custom body parser that
 ## Example
 Below is an example code to retrieve value based on custom headers.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 new Elysia()
     .onParse(({ request }, contentType) => {
         if (contentType === 'application/custom-type')
@@ -53,13 +55,16 @@ By default, Elysia will try to determine body parsing function ahead of time and
 Elysia is able to determine that body function by reading `body`.
 
 Take a look at this example:
-```ts
-app.post('/', ({ body }) => body, {
-    body: t.Object({
-        username: t.String(),
-        password: t.String()
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/', ({ body }) => body, {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
     })
-})
 ```
 
 Elysia read the body schema and found that, the type is entirely an object, so it's likely that the body will be JSON. Elysia then picks the JSON body parser function ahead of time and tries to parse the body.
@@ -76,17 +81,20 @@ This allows Elysia to optimize body parser ahead of time, and reduce overhead in
 ## Explicit Content Type
 However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`
 
-```ts
-app.post('/', ({ body }) => body, {
-    // Short form of application/json
-    type: 'json',
-})
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .post('/', ({ body }) => body, {
+        // Short form of application/json
+        type: 'json',
+    })
 ```
 
 Allowing us to control Elysia behavior for picking body parser function to fit our needs in a complex scenario.
 
 `type` may be one of the following:
-```ts
+```typescript
 type ContentType = |
     // Shorthand for 'text/plain'
     | 'text'

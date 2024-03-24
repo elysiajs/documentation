@@ -45,7 +45,9 @@ head:
 
 When creating a web server, you would often have multiple routes sharing the same prefix:
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 new Elysia()
     .post('/user/sign-in', () => 'Sign in')
     .post('/user/sign-up', () => 'Sign up')
@@ -57,7 +59,9 @@ new Elysia()
 
 This can be improved with `Elysia.group`, allowing us to apply prefixes to multiple routes at the same time by grouping them together:
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 new Elysia()
     .group('/user', (app) =>
         app
@@ -80,10 +84,16 @@ This code behaves the same as our first example and should be structured as foll
 
 `.group()` can also accept an optional guard parameter to reduce boilerplate of using groups and guards together:
 
-```typescript
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
 new Elysia()
-    .group('/user', { body: t.Literal('Rikuhachima Aru') }, (app) =>
-        app
+    .group(
+        '/user', 
+        { 
+            body: t.Literal('Rikuhachima Aru')
+        },
+        (app) => app
             .post('/sign-in', () => 'Sign in')
             .post('/sign-up', () => 'Sign up')
             .post('/profile', () => 'Profile')
@@ -97,7 +107,7 @@ You may find more information about grouped guards in [scope](/essential/scope.h
 
 We can separate a group into a separate plugin instance to reduce nesting by providing a **prefix** to the constructor.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const users = new Elysia({ prefix: '/user' })
