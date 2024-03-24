@@ -84,7 +84,7 @@ const app = new Elysia()
     .patch(
         '/user/age',
         ({ body, error }) => {
-            if(body.age <= 18) 
+            if(body.age < 18) 
                 return error(400)
 
             return body
@@ -113,7 +113,7 @@ const app = new Elysia()
     .patch(
         '/user/age',
         ({ body, error }) => {
-            if(body.age <= 18) 
+            if(body.age < 18) 
                 return error(400)
 
             return body
