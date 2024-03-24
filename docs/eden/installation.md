@@ -70,7 +70,7 @@ export type App = typeof app // [!code ++]
 import { treaty } from '@elysiajs/eden'
 import type { App } from './server' // [!code ++]
 
-const client = treaty<App>('http://localhost') // [!code ++]
+const client = treaty<App>('localhost:3000') // [!code ++]
 
 // response: Hi Elysia
 const { data: index } = await client.index.get()
