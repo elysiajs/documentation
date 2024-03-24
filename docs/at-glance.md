@@ -68,7 +68,9 @@ Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello E
 />
 
 ::: tip
-Click on path highlight in blue to change path to preview a response.
+Hover over the code snippet to see the type definition.
+
+In the mock browser, click on path highlight in blue to change path to preview a response and
 
 Elysia can runs on browser and the result you see are actually run using Elysia.
 :::
