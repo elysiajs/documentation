@@ -435,6 +435,7 @@ And finally, if you have problems with migration and additional questions relate
     allowtransparency="true"
     frameborder="0"
     sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+    loadin="lazy"
 />
 
 ## Notable Improvement
