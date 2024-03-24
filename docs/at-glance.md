@@ -22,7 +22,7 @@ import Playground from '../components/nearl/playground.vue'
 import { Elysia } from 'elysia'
 
 const demo1 = new Elysia()
-    .get('/', () => 'Hello Elysia')
+    .get('/', 'Hello Elysia')
     .get('/user/:id', ({ params: { id }}) => id)
     .post('/form', ({ body }) => body)
 
