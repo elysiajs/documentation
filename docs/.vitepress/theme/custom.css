@@ -113,33 +113,60 @@ button.copy::after {
     }
 }
 
+/* .VPLocalNav {
+    background-color: rgba(255, 255, 255, .7) !important;
+    backdrop-filter: blur(12px);
+    
+    & > .container {
+        background-color: transparent;
+    }
+} */
+
+.mockup-browser-toolbar > .input::before {
+    width: 12px;
+}
+
+.VPNav {
+    &:hover {
+        z-index: 50 !important;
+
+        & > .VPNavBar {
+            @apply dark:!bg-slate-900/0 dark:transition-none;
+            background-color: rgba(255, 255, 255, .4) !important;
+        }
+    }
+}
+
 .VPNavBar {
-    @apply !border-0;
-    background: linear-gradient(to right, transparent, var(--vp-nav-bg-color));
+    @apply !border-0 dark:!bg-slate-900/70;
+    background-color: rgba(255, 255, 255, .8) !important;
     backdrop-filter: blur(12px);
 
     & > .container {
+        /* background-color: rgba(255, 255, 255, .6) !important; */
+
         & > .content,
         & > .title {
             background: color-mix(in srgb, var(--vp-c-bg) 80%, transparent);
         }
     }
 
-    & > .container > .content {
+    /* Curtain is removed from VitePress? */
+    /* & > .container > .content {
         border-bottom: 0;
 
         & > .curtain::before {
             backdrop-filter: blur(12px);
             background: linear-gradient(
                 var(--vp-nav-bg-color),
-                transparent 90%
+                transparent 100%
             ) !important;
         }
 
         & > .content-body {
             background-color: transparent;
         }
-    }
+    } */
 }
 
 .md-table {

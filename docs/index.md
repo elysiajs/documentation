@@ -59,7 +59,19 @@ new Elysia()
 
   <template v-slot:openapi>
 
-```ts
+```ts twoslash
+// @filename: controllers.ts
+import { Elysia } from 'elysia'
+
+export const users = new Elysia()
+    .get('/users', 'Dreamy Euphony')
+
+export const feed = new Elysia()
+    .get('/feed', ['Hoshino', 'Griseo', 'Astro'])
+
+// @filename: server.ts
+// ---cut---
+// server.ts
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 import { users, feed } from './controllers'
