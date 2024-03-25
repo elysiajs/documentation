@@ -92,7 +92,7 @@ We refer to each function that intercepts the life cycle event as **"hook"**, as
 Hooks can be categorized into 2 types:
 
 1. Local Hook: Execute on a specific route
-2. Global Hook: Execute on every route
+2. Interceptor Hook: Execute on every route
 
 ::: tip
 The hook will accept the same Context as a handler, you can imagine you adding a route handler but at a specific point.
@@ -126,11 +126,11 @@ The response should be listed as follows:
 | /    | text/html; charset=utf8  |
 | /hi  | text/plain; charset=utf8 |
 
-## Global Hook
+## Interceptor Hook
 
-Register hook into **every** handler that came after.
+Register hook into every handler **of the current instance** that came after.
 
-To add a global hook, you can use `.on` followed by a life cycle event in camelCase:
+To add an interceptor hook, you can use `.on` followed by a life cycle event in camelCase:
 
 ```typescript twoslash
 import { Elysia } from 'elysia'

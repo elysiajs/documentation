@@ -40,6 +40,7 @@ const demo2 = new Elysia()
         }) 
     }) 
     .get('/query', ({ query: { name } }) => name)
+    .get('/any', ({ query }) => query)
 </script>
 
 # Schema
@@ -77,6 +78,7 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => id, {
+                               // ^?
         params: t.Object({ // [!code ++]
             id: t.Numeric() // [!code ++]
         }) // [!code ++]
@@ -112,10 +114,22 @@ new Elysia()
         }) // [!code ++]
     }) // [!code ++]
     .get('/query', ({ query: { name } }) => name)
+                    // ^?
+    .get('/any', ({ query }) => query)
     .listen(3000)
 ```
 
-<Playground :elysia="demo2" />
+<Playground
+    :elysia="demo2"
+    :mock="{
+        '/query': {
+            GET: 'Elysia'
+        },
+        '/any': {
+            GET: JSON.stringify({ name: 'Elysia', race: 'Elf' })
+        },
+    }" 
+/>
 
 The response should be listed as follows:
 

@@ -21,7 +21,9 @@ import { Elysia } from 'elysia'
 
 const demo1 = new Elysia()
     .state('version', 1)
-    .get('/', ({ store: { version } }) => version)
+    .get('/a', ({ store: { version } }) => version)
+    .get('/b', ({ store }) => store)
+    .get('/c', () => 'still ok')
 
 const demo2 = new Elysia()
     // @ts-expect-error
@@ -134,7 +136,11 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .state('version', 1)
-    .get('/', ({ store: { version } }) => version)
+    .get('/a', ({ store: { version } }) => version)
+                // ^?
+    .get('/b', ({ store }) => store)
+    .get('/c', () => 'still ok')
+    .listen(3000)
 ```
 
 <Playground :elysia="demo1" />
@@ -260,11 +266,12 @@ Assigning multiple properties is better contained in an object for a single assi
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().decorate({
-    logger: new Logger(),
-    trace: new Trace(),
-    telemetry: new Telemetry()
-})
+new Elysia()
+    .decorate({
+        logger: new Logger(),
+        trace: new Trace(),
+        telemetry: new Telemetry()
+    })
 ```
 
 The object offers a less repetitive API for setting multiple values.
@@ -325,7 +332,7 @@ const app = new Elysia()
         setup
             .prefix('decorator', 'setup')
     )
-    .get('/', ({ setupCarbon }) => setupCarbon)
+    .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
 
 <Playground :elysia="demo5" />
@@ -348,7 +355,7 @@ const setup = new Elysia({ name: 'setup' })
 
 const app = new Elysia()
     .use(setup.prefix('all', 'setup')) // [!code ++]
-    .get('/', ({ setupCarbon }) => setupCarbon)
+    .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
 
 ## Reference and value

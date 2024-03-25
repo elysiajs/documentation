@@ -86,6 +86,8 @@ const plugin = new Elysia()
 const app = new Elysia()
     .use(plugin)
     .get('/', ({ plugin }) => plugin)
+               // ^?
+    .listen(3000)
 ```
 
 We can use the plugin by passing an instance to **Elysia.use**.
@@ -260,20 +262,21 @@ To put it simply, Elysia will lookup the plugin checksum and get the value or re
 Simply put, we need to provide the plugin reference for Elysia to find the service.
 
 ```typescript twoslash
+// @errors: 2339
 import { Elysia } from 'elysia'
 
 // setup.ts
 const setup = new Elysia({ name: 'setup' })
     .decorate('a', 'a')
 
-// child.ts
-const child = new Elysia()
-    .use(setup)
+// index.ts
+const error = new Elysia()
     .get('/', ({ a }) => a)
 
-// index.ts
 const main = new Elysia()
-    .use(child)
+    .use(setup)
+    .get('/', ({ a }) => a)
+    //           ^?
 ```
 
 <Playground :elysia="demo5" />

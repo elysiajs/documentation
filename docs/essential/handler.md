@@ -135,12 +135,13 @@ HTTP Status indicates the type of response. If the route handler is executed suc
 You can also set a status code using the common name of the status code instead of using a number.
 
 ```typescript twoslash
+// @errors 2322
 import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', ({ set }) => {
-        // with auto-completion
-        set.status = "I'm a teapot"
+        set.status
+          // ^?
 
         return 'Kirifuji Nagisa'
     })

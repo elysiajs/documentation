@@ -78,6 +78,7 @@ describe('Elysia', () => {
         const { data, error } = await api.hello.get()
 
         expect(data).toBe('hi')
+              // ^?
     })
 })
 ```

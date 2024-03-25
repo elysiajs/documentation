@@ -217,7 +217,7 @@ Any HTTP method that matches the path, will be handled as follows:
 
 ## 404
 
-If no path matches the defined routes, Elysia will pass the request to `error` life cycle before returning a **"NOT_FOUND"** with an HTTP status of 404.
+If no path matches the defined routes, Elysia will pass the request to [error](/life-cycle/on-error) life cycle before returning a **"NOT_FOUND"** with an HTTP status of 404.
 
 We can handle a custom 404 error by returning a value from 'error` life cycle like this:
 
@@ -227,7 +227,8 @@ import { Elysia } from 'elysia'
 new Elysia()
     .get('/', () => 'hi')
     .onError(({ code }) => {
-        if (code === 'NOT_FOUND') return 'Route not found :('
+        if (code === 'NOT_FOUND')
+            return 'Route not found :('
     })
     .listen(3000)
 ```

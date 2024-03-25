@@ -91,6 +91,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
+                      // ^?
     .listen(3000)
 ```
 
@@ -153,6 +154,7 @@ import { Elysia } from 'elysia'
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
     .get('/id/:id/:name', ({ params: { id, name } }) => id + ' ' + name)
+                             // ^?
     .listen(3000)
 ```
 
@@ -196,6 +198,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/id/*', ({ params }) => params['*'])
+                    // ^?
     .listen(3000)
 ```
 

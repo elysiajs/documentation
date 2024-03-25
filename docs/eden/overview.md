@@ -74,12 +74,14 @@ import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .get('/', 'hi')
+    .get('/users', () => 'Skadi')
     .put('/nendoroid/:id', ({ body }) => body, {
         body: t.Object({
             name: t.String(),
             from: t.String()
         })
     })
+    .get('/nendoroid/:id/name', () => 'Skadi')
     .listen(3000)
 
 export type App = typeof app
@@ -90,6 +92,13 @@ import { treaty } from '@elysiajs/eden'
 import type { App } from './server'
 
 const app = treaty<App>('localhost:3000')
+
+// @noErrors
+app.
+//  ^|
+
+
+
 
 // Call [GET] at '/'
 const { data } = await app.index.get()

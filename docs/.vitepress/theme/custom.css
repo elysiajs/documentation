@@ -131,8 +131,12 @@ button.copy::after {
         z-index: 50 !important;
 
         & > .VPNavBar {
-            @apply dark:!bg-slate-900/0 dark:transition-none;
+            @apply dark:!bg-slate-900/40;
             background-color: rgba(255, 255, 255, .4) !important;
+
+            & > .wrapper > .container > .content > .content-body {
+                @apply bg-transparent;
+            }
         }
     }
 }

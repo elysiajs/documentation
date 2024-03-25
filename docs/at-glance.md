@@ -108,6 +108,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/user/:id', ({ params: { id } }) => id)
+                        // ^?
     .listen(3000)
 ```
 
@@ -129,9 +130,9 @@ Elysia's goal is to help you write less TypeScript and focus more on Business lo
 
 TypeScript is not needed to use Elysia, but it's recommended to use Elysia with TypeScript.
 
-## Unified Type
+## Type Integrity
 
-To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile-time to create a single source of truth for your data-type. Elysia refers this term as **Unified Type**.
+To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile-time to create a single source of truth for your data-type.
 
 Let's modify the previous code to accept only a numeric value instead of a string.
 
@@ -140,6 +141,7 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/user/:id', ({ params: { id } }) => id, {
+                                // ^?
         params: t.Object({
             id: t.Numeric()
         })
@@ -225,6 +227,9 @@ const app = treaty<App>('localhost:3000')
 
 // Get data from /user/617
 const { data } = await app.user({ id: 617 }).get()
+      // ^?
+
+console.log(data)
 ```
 
 With Eden, you can use the existing Elysia type to query Elysia server **without code generation** and synchronize type for both frontend and backend automatically.

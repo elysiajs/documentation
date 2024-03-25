@@ -149,7 +149,7 @@ new Elysia()
 
 **ValidationError** provides a method `ValidatorError.all`, allowing us to list all of the error causes.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()

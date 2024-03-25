@@ -73,6 +73,7 @@ new Elysia()
             app
                 .post('/sign-up', ({ body }) => signUp(body))
                 .post('/sign-in', ({ body }) => signIn(body), {
+                                                     // ^?
                     beforeHandle: isUserExists
                 })
     )
@@ -138,7 +139,8 @@ new Elysia()
             {
                 body: t.Literal('Rikuhachima Aru')
             },
-            (app) => app.post('/student', () => 'Rikuhachima Aru')
+            (app) => app.post('/student', ({ body }) => body)
+                                            // ^?
         )
     )
     .listen(3000)
@@ -156,7 +158,7 @@ new Elysia()
         {
             body: t.Literal('Rikuhachima Aru')
         },
-        (app) => app.post('/student', () => 'Rikuhachima Aru')
+        (app) => app.post('/student', ({ body }) => body)
         ) // [!code --]
     )
     .listen(3000)
@@ -172,7 +174,8 @@ new Elysia()
         {
             body: t.Literal('Rikuhachima Aru')
         },
-        (app) => app.post('/student', () => 'Rikuhachima Aru')
+        (app) => app.post('/student', ({ body }) => body)
+                                       // ^?
     )
     .listen(3000)
 ```

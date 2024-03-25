@@ -83,6 +83,10 @@ const { data: nendoroid } = await client.mirror.post({
     id: 1895,
     name: 'Skadi'
 })
+
+// @noErrors
+client.
+//     ^|
 ```
 
 ## Gotcha

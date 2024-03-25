@@ -27,10 +27,11 @@ head:
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'Hello World')
-    .get('/json', () => ({
+    .get('/', 'Hello World')
+    .get('/json', {
         hello: 'world'
-    }))
+    })
+    .get('/id/:id', ({ params: { id } }) => id)
     .listen(3000)
 
 ```
@@ -45,6 +46,7 @@ import { Elysia, t } from 'elysia'
 new Elysia()
     .post(
         '/profile',
+        // ↓ hover me ↓
         ({ body }) => body,
         {
             body: t.Object({
@@ -71,7 +73,6 @@ export const feed = new Elysia()
 
 // @filename: server.ts
 // ---cut---
-// server.ts
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 import { users, feed } from './controllers'
@@ -94,10 +95,13 @@ import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .patch(
-        '/user/age',
+        '/user/profile',
         ({ body, error }) => {
             if(body.age < 18) 
-                return error(400)
+                return error(400, "Oh no")
+
+            if(body.name === 'Nagisa')
+                return error(418)
 
             return body
         },
@@ -117,16 +121,19 @@ export type App = typeof app
   <template v-slot:client>
 
 ```typescript twoslash
-// @errors: 2322
+// @errors: 2322 1003
 // @filename: server.ts
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
     .patch(
-        '/user/age',
+        '/user/profile',
         ({ body, error }) => {
             if(body.age < 18) 
-                return error(400)
+                return error(400, "Oh no")
+
+            if(body.name === 'Nagisa')
+                return error(418)
 
             return body
         },
@@ -149,7 +156,7 @@ import type { App } from './server'
 
 const api = treaty<App>('localhost')
 
-const { data, error } = await api.user.age.patch({
+const { data, error } = await api.user.profile.patch({
     name: 'saltyaom',
     age: '21'
 })
@@ -158,9 +165,15 @@ if(error)
     switch(error.status) {
         case 400:
             throw error.value
-    }
+//                         ^?
 
-console.log(data)
+        case 418:
+            throw error.value
+//                         ^?
+}
+
+data
+// ^?
 ```
   </template>
 
