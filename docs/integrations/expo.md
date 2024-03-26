@@ -54,7 +54,7 @@ Please refer to [API route](https://docs.expo.dev/router/reference/api-routes/) 
 ## Prefix
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
 
-For example, if you place Elysia server in **apps/api/[...slugs]+api.ts**, you need to annotate prefix as **/api** to Elysia server.
+For example, if you place Elysia server in **app/api/[...slugs]+api.ts**, you need to annotate prefix as **/api** to Elysia server.
 
 ```typescript twoslash
 // app/api/[...slugs]+api.ts
