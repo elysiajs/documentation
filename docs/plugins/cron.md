@@ -145,8 +145,7 @@ const app = new Elysia()
 You can use predefined patterns from `@elysiajs/cron/schelude`
 ```typescript
 import { Elysia } from 'elysia'
-import { cron } from '@elysiajs/cron'
-import { Patterns } from '@elysiajs/cron/schelude'
+import { cron, Patterns } from '@elysiajs/cron'
 
 const app = new Elysia()
     use(
