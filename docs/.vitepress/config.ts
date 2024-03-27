@@ -165,16 +165,16 @@ export default defineConfig({
                         link: '/essential/context'
                     },
                     {
-                        text: 'Plugin',
-                        link: '/essential/plugin'
-                    },
-                    {
                         text: 'Life Cycle',
                         link: '/essential/life-cycle'
                     },
                     {
                         text: 'Schema',
                         link: '/essential/schema'
+                    },
+                    {
+                        text: 'Plugin',
+                        link: '/essential/plugin'
                     },
                     {
                         text: 'Scope',

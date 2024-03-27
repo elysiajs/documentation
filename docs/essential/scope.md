@@ -46,9 +46,71 @@ const demo3 = new Elysia()
     .get('/outer', () => 'outer')
 </script>
 
-As mentioned, global Lifecycle and Schema apply to every route after the registration, allowing the use of multiple routes.
+By default, hook and schema is scope to current instance only not global.
 
-However, in a real-world scenario, the global event is hard to trace and control properly. This is why Elysia has an encapsulation scope to ensure that the event will only apply to a certain group of routes.
+Elysia has an encapsulation scope for better versatility control of life-cycle.
+
+## Hook type
+Hook type is to specify the scope of hook whether is should be encapsulated or global.
+
+Elysia hook type are as the following:
+- **local** (default) - apply to only current instance and descendant only
+- **scoped** - apply to parent, current instance and descendants
+- **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
+
+If not specified, hook is local by default.
+
+To specify hook's type, add a `{ as: hookType }` to hook.
+
+To apply hook to globally, we need to specify hook as global.
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .onBeforeHandle({ as: 'global' }, () => { // [!code ++]
+        console.log('hi')
+    })
+    .get('/child', () => 'log hi')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'log hi')
+```
+
+Let's create a plugin to illustrate how hook type work.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+// ? Value base on table value provided below
+const type = 'local'
+
+const child = new Elysia()
+    .get('/child', () => 'hello')
+
+const current = new Elysia()
+    .onBeforeHandle({ as: type }, () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', () => 'hello')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', () => 'hello')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', () => 'hello')
+```
+
+By changing the `type` value, the result should be as follows:
+
+| type       | child | current | parent | main |
+| ---------- | ----- | ------- | ------ | ---- |
+| 'local'    | ✅    | ✅       | ❌     | ❌   | 
+| 'scoped'    | ✅    | ✅       | ✅     | ❌   | 
+| 'global'   | ✅    | ✅       | ✅     | ✅   | 
 
 ## Guard
 
@@ -118,6 +180,36 @@ new Elysia()
     .get('/', () => 'hi')
     .listen(3000)
 ```
+
+### Guard scope
+Guard is a hard limit for hook type.
+
+Any life-cycle defined in `guard`, and `group` **will always** be contained in scope, even if hook type is **global**
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .onBeforeHandle({ as: 'global' }, () => {
+        return 'overwrite'
+    })
+
+const app = new Elysia()
+    .guard(app => app
+        .use(plugin)
+        .get('/inner', () => 'inner')
+    )
+    .get('/outer', () => 'outer')
+    .listen(3000)
+```
+
+<Playground :elysia="demo3" />
+
+Evaluating the route, should logs as follows:
+| route       | response  |
+| ----------- | --------- |
+| /inner      | overwrite |
+| /outer      | outer     |
 
 ## Grouped Guard
 
@@ -218,101 +310,3 @@ const main = new Elysia()
 ```
 
 <Playground :elysia="demo2" />
-
-## Hook type
-Starting from Elysia 1.0 introduce a **hook type**, to specify if the hook should be local-only, or global.
-
-Elysia hook type are as the following:
-- local (default) - apply to only current instance and descendant only
-- scoped - apply to only 1 ascendant, current instance and descendants
-- global - apply to all instance that apply the plugin (all ascendants, current, and descendants)
-
-If not specified, hook is local by default.
-
-::: tip
-Starting from Elysia 1.0 hook is local by default while Elysia < 1.0 will be global only.
-
-This is a breaking change.
-:::
-
-To specify hook's type, add a `{ as: hookType }` to hook.
-
-To apply hook to globally, we need to specify hook as global.
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .onBeforeHandle({ as: 'global' }, () => {
-        console.log('hi')
-    })
-    .get('/child', () => 'log hi')
-
-const main = new Elysia()
-    .use(plugin)
-    .get('/parent', () => 'log hi')
-```
-
-Let's create a plugin to illustrate how hook type work.
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-// ? Value base on table value provided below
-const type = 'local'
-
-const child = new Elysia()
-    .get('/child', () => 'hello')
-
-const current = new Elysia()
-    .onBeforeHandle({ as: type }, () => {
-        console.log('hi')
-    })
-    .use(child)
-    .get('/current', () => 'hello')
-
-const parent = new Elysia()
-    .use(current)
-    .get('/parent', () => 'hello')
-
-const main = new Elysia()
-    .use(parent)
-    .get('/main', () => 'hello')
-```
-
-By changing the `type` value, the result should be as follows:
-
-| type       | child | current | parent | main |
-| ---------- | ----- | ------- | ------ | ---- |
-| 'local'    | ✅    | ✅       | ❌     | ❌   | 
-| 'scoped'    | ✅    | ✅       | ✅     | ❌   | 
-| 'global'   | ✅    | ✅       | ✅     | ✅   | 
-
-## guard
-Guard is a hard limit for hook type.
-
-Any life-cycle defined in `guard`, and `group` **will always** be contained in scope, even if hook type is **global**
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .onBeforeHandle({ as: 'global' }, () => {
-        return 'overwrite'
-    })
-
-const app = new Elysia()
-    .guard(app => app
-        .use(plugin)
-        .get('/inner', () => 'inner')
-    )
-    .get('/outer', () => 'outer')
-    .listen(3000)
-```
-
-<Playground :elysia="demo3" />
-
-Evaluating the route, should logs as follows:
-| route       | response  |
-| ----------- | --------- |
-| /inner      | overwrite |
-| /outer      | outer     |
