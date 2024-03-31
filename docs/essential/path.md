@@ -235,7 +235,7 @@ A wildcard is useful for capturing a path until a specific point.
 You can use a wildcard with a path parameter.
 :::
 
-## Summarize
+## Summary
 
 To summarize, the path in Elysia can be grouped into 3 types:
 
