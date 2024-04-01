@@ -78,6 +78,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Flash Messages](https://github.com/gtramontina/elysia-flash-messages) - enable flash messages
 -   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - unnoficial [WorkOS' AuthKit](https://www.authkit.com/) authentication
 -   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - simpler error handling
+-   [Elysia env](https://github.com/yolk-oss/elysia-env) - typesafe environment variables with typebox
 
 ---
 
