@@ -83,6 +83,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Unify-Elysia](https://github.com/qlaffont/unify-elysia) - Unify error code for Elysia
 -   [Unify-Elysia-GQL](https://github.com/qlaffont/unify-elysia-gql) - Unify error code for Elysia GraphQL Server (Yoga & Apollo)
 -   [Elysia Auth Drizzle](https://github.com/qlaffont/elysia-auth-drizzle) - Library who handle authentification with JWT (Header/Cookie/QueryParam).
+-   [graceful-server-elysia](https://github.com/qlaffont/graceful-server-elysia) - Library inspired by [graceful-server](https://github.com/gquittet/graceful-server).
 
 ---
 
