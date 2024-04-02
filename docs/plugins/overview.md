@@ -80,6 +80,9 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Flash Messages](https://github.com/gtramontina/elysia-flash-messages) - enable flash messages
 -   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - unnoficial [WorkOS' AuthKit](https://www.authkit.com/) authentication
 -   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - simpler error handling
+-   [Unify-Elysia](https://github.com/qlaffont/unify-elysia) - Unify error code for Elysia
+-   [Unify-Elysia-GQL](https://github.com/qlaffont/unify-elysia-gql) - Unify error code for Elysia GraphQL Server (Yoga & Apollo)
+-   [Elysia Auth Drizzle](https://github.com/qlaffont/elysia-auth-drizzle) - Library who handle authentification with JWT (Header/Cookie/QueryParam).
 
 ---
 
