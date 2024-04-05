@@ -32,9 +32,7 @@ const demo3 = new Elysia()
     .route('M-SEARCH', '/m-search', () => 'connect')
 
 const demo4 = new Elysia()
-    .get('/', () => 'hello')
-    .post('/', () => 'hello')
-    .delete('/', () => 'hello')
+    .all('/', () => 'hi')
 
 const demo5 = new Elysia()
     .get('/', () => 'hi')
