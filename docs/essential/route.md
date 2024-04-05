@@ -19,8 +19,8 @@ import Playground from '../../components/nearl/playground.vue'
 import { Elysia } from 'elysia'
 
 const demo1 = new Elysia()
-    .get('/', () => 'hello')
-    .post('/hello', () => 'hi')
+    .get('/', () => 'Landing')
+    .get('/hello', () => 'Hi')
 
 const demo2 = new Elysia()
     .get('/', () => 'hello')
