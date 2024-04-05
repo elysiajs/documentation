@@ -37,9 +37,9 @@ const demo4 = new Elysia()
     .delete('/', () => 'hello')
 
 const demo5 = new Elysia()
-    .get('/', () => 'hello')
-    .post('/', () => 'hello')
-    .get('/hi', ({ error }) => error(404))
+    .get('/', () => 'hi')
+    .post('/', ({ error }) => error(404, 'Route not found :('))
+    .get('/hi', ({ error }) => error(404, 'Route not found :('))
 </script>
 
 # Route
