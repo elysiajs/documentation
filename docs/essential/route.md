@@ -96,7 +96,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
+    .post('/hi', () => 'world')
     .listen(3000)
 ```
 
