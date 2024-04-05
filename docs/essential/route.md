@@ -29,7 +29,7 @@ const demo2 = new Elysia()
 const demo3 = new Elysia()
     .get('/get', () => 'hello')
     .post('/post', () => 'hi')
-    .route('M-SEARCH', '/m-search', () => 'connect') 
+    .route('M-SEARCH', '/m-search', () => 'connect')
 
 const demo4 = new Elysia()
     .get('/', () => 'hello')
