@@ -20,7 +20,7 @@ import { Elysia } from 'elysia'
 
 const demo1 = new Elysia()
     .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
+    .post('/hello', () => 'hi')
 
 const demo2 = new Elysia()
     .get('/', () => 'hello')
