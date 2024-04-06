@@ -80,6 +80,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Flash Messages](https://github.com/gtramontina/elysia-flash-messages) - enable flash messages
 -   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - unnoficial [WorkOS' AuthKit](https://www.authkit.com/) authentication
 -   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - simpler error handling
+-   [Elysia Drizzle Schema](https://github.com/Edsol/elysia-drizzle-schema) - Helps to use Drizzle ORM schema inside elysia swagger model.
 
 ---
 
