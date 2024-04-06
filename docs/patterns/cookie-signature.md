@@ -39,7 +39,7 @@ new Elysia()
                 name: t.String()
             })
         }, {
-            secret: 'Fischl von Luftschloss Narfidort',
+            secrets: 'Fischl von Luftschloss Narfidort',
             sign: ['profile']
         })
     })
