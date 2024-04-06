@@ -81,6 +81,10 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - unnoficial [WorkOS' AuthKit](https://www.authkit.com/) authentication
 -   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - simpler error handling
 -   [Elysia Drizzle Schema](https://github.com/Edsol/elysia-drizzle-schema) - Helps to use Drizzle ORM schema inside elysia swagger model.
+-   [Unify-Elysia](https://github.com/qlaffont/unify-elysia) - Unify error code for Elysia
+-   [Unify-Elysia-GQL](https://github.com/qlaffont/unify-elysia-gql) - Unify error code for Elysia GraphQL Server (Yoga & Apollo)
+-   [Elysia Auth Drizzle](https://github.com/qlaffont/elysia-auth-drizzle) - Library who handle authentification with JWT (Header/Cookie/QueryParam).
+-   [graceful-server-elysia](https://github.com/qlaffont/graceful-server-elysia) - Library inspired by [graceful-server](https://github.com/gquittet/graceful-server).
 
 ---
 
