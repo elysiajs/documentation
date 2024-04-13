@@ -33,6 +33,15 @@ const demo2 = new Elysia()
     .use(plugin2)
     .get('/parent', () => 'parent')
 
+const mock2 = {
+    '/child': {
+        'GET': 'hi'
+    },
+    '/parent': {
+        'GET': 'hi'
+    }
+}
+
 const plugin3 = new Elysia()
     .onBeforeHandle({ as: 'global' }, () => {
         return 'overwrite'
@@ -44,6 +53,15 @@ const demo3 = new Elysia()
         .get('/inner', () => 'inner')
     )
     .get('/outer', () => 'outer')
+
+const mock3 = {
+    '/inner': {
+        'GET': 'overwrite'
+    },
+    '/outer': {
+        'GET': 'outer'
+    }
+}
 </script>
 
 By default, hook and schema is scope to current instance only not global.
@@ -203,7 +221,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-<Playground :elysia="demo3" />
+<Playground :elysia="demo3" :mock="mock3" />
 
 Evaluating the route, should logs as follows:
 | route       | response  |
@@ -309,4 +327,4 @@ const main = new Elysia()
     .get('/parent', () => 'parent')
 ```
 
-<Playground :elysia="demo2" />
+<Playground :elysia="demo2" :mock="mock2" />
