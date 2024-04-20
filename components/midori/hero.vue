@@ -19,8 +19,8 @@
         <img
             src="/assets/elysia_v.webp"
             alt="Curved text logo saying 'Elysia JS'"
-            class="max-w-[52ch] w-full object-contain object-left md:object-center mr-auto md:mr-0"
-            style="aspect-ratio: 2 / 1"
+            class="max-w-[40ch] w-full object-contain object-left md:object-center mr-auto md:mr-0"
+            style="aspect-ratio: 1.5 / 1"
         />
         <h2
             class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400 mb-6"
@@ -112,7 +112,7 @@
                     bun create elysia app
                 </code>
                 <button
-                    class="p-3 rounded-2xl active:rounded-full hover:bg-blue-200/25 focus:bg-blue-200/25 active:bg-blue-200/50 hover:dark:bg-blue-500/20 focus:dark:bg-blue-500/20 active:dark:bg-blue-500/20 transition-all"
+                    class="hidden sm:inline-flex p-3 rounded-2xl active:rounded-full hover:bg-blue-200/25 focus:bg-blue-200/25 active:bg-blue-200/50 hover:dark:bg-blue-500/20 focus:dark:bg-blue-500/20 active:dark:bg-blue-500/20 transition-all"
                     @click="copied = true"
                 >
                     <svg
