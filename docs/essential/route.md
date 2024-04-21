@@ -53,7 +53,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', () => 'hello')
-    .get('/hello', () => 'hi')
+    .get('/hi', () => 'hi')
     .listen(3000)
 ```
 
