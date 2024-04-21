@@ -19,8 +19,8 @@ import Playground from '../../components/nearl/playground.vue'
 import { Elysia } from 'elysia'
 
 const demo1 = new Elysia()
-    .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
+    .get('/', () => 'Landing')
+    .get('/hello', () => 'Hi')
 
 const demo2 = new Elysia()
     .get('/', () => 'hello')
@@ -29,17 +29,15 @@ const demo2 = new Elysia()
 const demo3 = new Elysia()
     .get('/get', () => 'hello')
     .post('/post', () => 'hi')
-    .route('M-SEARCH', '/m-search', () => 'connect') 
+    .route('M-SEARCH', '/m-search', () => 'connect')
 
 const demo4 = new Elysia()
-    .get('/', () => 'hello')
-    .post('/', () => 'hello')
-    .delete('/', () => 'hello')
+    .all('/', () => 'hi')
 
 const demo5 = new Elysia()
-    .get('/', () => 'hello')
-    .post('/', () => 'hello')
-    .get('/hi', ({ error }) => error(404))
+    .get('/', () => 'hi')
+    .post('/', ({ error }) => error(404, 'Route not found :('))
+    .get('/hi', ({ error }) => error(404, 'Route not found :('))
 </script>
 
 # Route
@@ -96,7 +94,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
+    .post('/hi', () => 'world')
     .listen(3000)
 ```
 
