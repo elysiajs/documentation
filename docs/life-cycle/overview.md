@@ -73,7 +73,7 @@ The local hook is executed on a specific route.
 
 To use a local hook, you can inline hook into a route handler:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -94,13 +94,13 @@ Register hook into **every** handler that came after.
 
 To add a global hook, you can use `.on` followed by a life cycle event in camelCase:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
-    .onAfterhandle(({ response, set }) => {
+    .onAfterHandle(({ response, set }) => {
         if (isHtml(response))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })

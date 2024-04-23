@@ -25,7 +25,7 @@ There are 2 ways to provide a custom error message when the validation fails:
 
 TypeBox offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -149,7 +149,7 @@ new Elysia()
 
 **ValidationError** provides a method `ValidatorError.all`, allowing us to list all of the error causes.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()

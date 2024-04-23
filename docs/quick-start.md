@@ -15,12 +15,6 @@ head:
 ---
 
 # Quick Start
-System Requirements:
-- [Bun](https://bun.sh)
-- MacOS, Windows (including WSL), and Linux are supported.
-- TypeScript > 5.0 (for language server)
-
-## Bun
 Elysia is optimized for Bun which is a JavaScript runtime that aims to be a drop-in replacement for Node.js.
 
 You can install Bun with the command below:
@@ -29,9 +23,7 @@ curl https://bun.sh/install | bash
 ```
 
 ## Automatic Installation
-We recommend starting a new Elysia server using `bun create elysia`, which sets up everything automatically for you.
-
-To create a project, run:
+We recommend starting a new Elysia server using `bun create elysia`, which sets up everything automatically.
 
 ```bash
 bun create elysia app

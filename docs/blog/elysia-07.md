@@ -192,7 +192,7 @@ Elysia handle Cookie's secret rotation automatically, so if you have to migrate 
 ```typescript
 new Elysia({
     cookie: {
-        secret: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']
+        secrets: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']
     }
 })
 ```

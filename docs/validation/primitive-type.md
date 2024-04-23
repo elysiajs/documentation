@@ -24,7 +24,7 @@ If you are familiar with TypeScript, creating a TypeBox schema has the same beha
 
 To create your first schema, import `Elysia.t` from Elysia and start with the most basic type:
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()

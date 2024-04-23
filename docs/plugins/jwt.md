@@ -54,7 +54,7 @@ const app = new Elysia()
 
         return `Hello ${profile.name}`
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Config

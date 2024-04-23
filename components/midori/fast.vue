@@ -8,14 +8,13 @@ const scalePadding = (value: number) =>
 const format = new Intl.NumberFormat().format
 
 const graphs = [
-    ['Warp', 'Rust', 1_439_141],
     ['Swoole', 'PHP', 1_035_418],
-    ['Echo', 'Go', 684_368],
     ['Gin', 'Go', 676_019],
-    ['Chi', 'Go', 609_492],
+    ['Spring', 'Java', 506_087],
     ['FastAPI', 'PyPy', 448_130],
     ['Fastify', 'Node', 415_600],
-    ['Express', 'Node', 113_117]
+    ['Express', 'Node', 113_117],
+    ['Nest', 'Node', 105_064]
 ] as const
 </script>
 

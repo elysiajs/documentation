@@ -13,7 +13,6 @@ import Community from './community.vue'
 import QuickStart from './quickstart.vue'
 import Sponsor from './sponsor.vue'
 
-
 import '../tailwind.css'
 import './midori.css'
 
@@ -22,14 +21,20 @@ import BuiltWithLove from './built-with-love.vue'
 
 <template>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin="true"
+    />
 
     <div id="landing" class="dark:bg-gray-900/60">
         <Hero />
         <article class="flex flex-col gap-4 px-6">
             <Fast />
             <Simple />
-            <section class="flex flex-col justify-center items-center gap-8 w-full mt-4 mb-16">
+            <section
+                class="flex flex-col justify-center items-center gap-8 w-full mt-4 mb-16"
+            >
                 <JustReturn>
                     <slot name="justreturn"></slot>
                 </JustReturn>
@@ -50,7 +55,7 @@ import BuiltWithLove from './built-with-love.vue'
                 </template>
             </E2ETypeSafety>
             <Plugins />
-            <Suspense>
+            <!-- <Suspense>
                 <Editor />
 
                 <template #fallback>
@@ -58,14 +63,19 @@ import BuiltWithLove from './built-with-love.vue'
                         <source src="/assets/elysia.mp4" />
                     </video>
                 </template>
-            </Suspense>
+            </Suspense> -->
             <Community />
             <Sponsor />
             <hr class="border-gray-200 dark:border-gray-600" />
             <figure
-                class="max-w-6xl w-full mx-auto rounded-2xl overflow-hidden my-12 shadow-xl bg-gray-50 dark:bg-gray-800">
-                <img class="w-full object-cover object-center" src="/assets/feature-sheet.webp"
-                    alt="Elysia Feature Sheet" />
+                class="max-w-6xl w-full mx-auto rounded-2xl overflow-hidden my-12 shadow-xl bg-gray-50 dark:bg-gray-800"
+            >
+                <img
+                    class="w-full object-cover object-center"
+                    src="/assets/feature-sheet.webp"
+                    alt="Elysia Feature Sheet"
+                    loading="lazy"
+                />
             </figure>
             <QuickStart />
             <BuiltWithLove />
@@ -74,7 +84,7 @@ import BuiltWithLove from './built-with-love.vue'
 </template>
 
 <style>
-#landing div[class*='language-']>pre>code {
+#landing div[class*='language-'] > pre > code {
     display: block;
     width: -moz-fit-content;
     width: fit-content;
@@ -86,7 +96,7 @@ import BuiltWithLove from './built-with-love.vue'
     font-size: 16px;
 }
 
-#landing div[class*='language-']>pre {
+#landing div[class*='language-'] > pre {
     position: relative;
     z-index: 1;
     padding: 1em;
@@ -94,8 +104,8 @@ import BuiltWithLove from './built-with-love.vue'
     overflow-x: auto;
 }
 
-#landing div[class*='language-']>span.lang,
-#landing div[class*='language-']>button {
+#landing div[class*='language-'] > span.lang,
+#landing div[class*='language-'] > button {
     display: none;
 }
 

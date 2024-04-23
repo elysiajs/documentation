@@ -25,10 +25,12 @@ const isDark = useDark()
             </p>
         </section>
         <section class="flex flex-col w-full max-w-xl rounded-lg overflow-hidden">
-            <iframe class="w-full h-64"
-                :src="'https://discord.com/widget?id=1044804142461362206&theme=' + (isDark ? 'dark' : 'light')"
-                allowtransparency="true" frameborder="0"
-                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts" />
+        <iframe class="w-full h-64"
+            :src="'https://discord.com/widget?id=1044804142461362206&theme=' + (isDark ? 'dark' : 'light')"
+            allowtransparency="true"
+            frameborder="0"
+            loading="lazy"
+            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts" />
         </section>
     </article>
 </template>

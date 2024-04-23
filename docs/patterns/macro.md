@@ -20,20 +20,23 @@ Macro allows us to define a custom field to the hook.
 
 **Elysia.macro** allows us to compose custom heavy logic into a simple configuration available in hook, and **guard** with full type safety.
 
-```typescript
-const plugin = new Elysia({ name: 'plugin' }).macro(({ onBeforeHandle }) => {
-    return {
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia({ name: 'plugin' })
+    .macro(({ onBeforeHandle }) => ({
         hi(word: string) {
             onBeforeHandle(() => {
                 console.log(word)
             })
         }
-    }
-})
+    }))
 
-const app = new Elysia().use(plugin).get('/', () => 'hi', {
-    hi: 'Elysia'
-})
+const app = new Elysia()
+    .use(plugin)
+    .get('/', () => 'hi', {
+        hi: 'Elysia'
+    })
 ```
 
 Accessing the path should log **"Elysia"** as the results.
@@ -48,21 +51,42 @@ We then assigned **hi** to **"Elysia"**, the value was then sent back to the **h
 
 Which is an equivalent of pushing function to **beforeHandle** as the following:
 
-```typescript
-const app = new Elysia().get('/', () => 'hi', {
-    beforeHandle() {
-        console.log('Elysia')
-    }
-})
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'hi', {
+        beforeHandle() {
+            console.log('Elysia')
+        }
+    })
 ```
 
 **macro** shine when a logic is more complex than accepting a new function, for example creating an authorization layer for each route.
 
-```typescript
-const app = new Elysia().get('/', () => 'hi', {
-    isAuth: true,
-    role: 'admin'
-})
+```typescript twoslash
+// @filename: auth.ts
+import { Elysia } from 'elysia'
+
+export const auth = new Elysia()
+    .macro(() => {
+        return {
+            isAuth(isAuth: boolean) {},
+            role(role: 'user' | 'admin') {},
+        }
+    })
+
+// @filename: index.ts
+// ---cut---
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+
+const app = new Elysia()
+    .use(auth)
+    .get('/', () => 'hi', {
+        isAuth: true,
+        role: 'admin'
+    })
 ```
 
 The field can accept anything ranging from string to function, allowing us to create a custom life cycle event.
@@ -94,19 +118,22 @@ The life cycle function of an extension API accepts additional **options** to en
 -   **options** (optional) - determine which stack
 -   **function** - function to execute on the event
 
-```typescript
-const plugin = new Elysia({ name: 'plugin' }).macro(({ onBeforeHandle }) => {
-    return {
-        hi(word: string) {
-            onBeforeHandle(
-                { insert: 'before' }, // [!code ++]
-                () => {
-                    console.log(word)
-                }
-            )
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia({ name: 'plugin' })
+    .macro(({ onBeforeHandle }) => {
+        return {
+            hi(word: string) {
+                onBeforeHandle(
+                    { insert: 'before' }, // [!code ++]
+                    () => {
+                        console.log(word)
+                    }
+                )
+            }
         }
-    }
-})
+    })
 ```
 
 **Options** may accept the following parameter:

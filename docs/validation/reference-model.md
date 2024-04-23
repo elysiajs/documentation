@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.schema".
+      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.guard".
 
   - - meta
     - name: 'og:description'
-      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.schema".
+      content: Reference Models allow you to name existing type models and use that name for validation, and use by specifying the name thus referencing the model in lifecycle event or "handler.guard".
 ---
 
 # Reference Model
@@ -23,7 +23,7 @@ Let's start with a simple scenario.
 
 Suppose we have a controller that handles sign-in with the same model.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -40,7 +40,7 @@ const app = new Elysia()
 ```
 
 We can refactor the code by extracting the model as a variable, and reference them.
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 // Maybe in a different file eg. models.ts
@@ -60,7 +60,7 @@ This method of separating the concerns is an effective approach but we might fi
 
 We can resolve that by creating a "reference model"  allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -79,7 +79,7 @@ const app = new Elysia()
 
 When we want to access the model's group, we can separate a `model` into a plugin which when registered will provide a set of models instead of multiple import.
 
-```typescript
+```typescript twoslash
 // auth.model.ts
 import { Elysia, t } from 'elysia'
 
@@ -90,10 +90,26 @@ export const authModel = new Elysia()
             password: t.String()
         })
     })
+```
 
+Then in an instance file:
+```typescript twoslash
+// @filename: auth.model.ts
+import { Elysia, t } from 'elysia'
+
+export const authModel = new Elysia()
+    .model({
+        sign: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+
+// @filename: index.ts
+// ---cut---
 // index.ts
 import { Elysia } from 'elysia'
-import { authModel } from './auth.model.ts'
+import { authModel } from './auth.model'
 
 const app = new Elysia()
     .use(authModel)
@@ -109,17 +125,17 @@ This not only allows us to separate the concerns but also allows us to reuse the
 ## Multiple Models
 `model` accepts an object with the key as a model name and value as the model definition, multiple models are supported by default.
 
-```typescript
+```typescript twoslash
 // auth.model.ts
 import { Elysia, t } from 'elysia'
 
 export const authModel = new Elysia()
     .model({
+        number: t.Number(),
         sign: t.Object({
             username: t.String(),
             password: t.String()
-        }),
-        number: t.Number()
+        })
     })
 ```
 
@@ -128,9 +144,11 @@ Duplicated model names will cause Elysia to throw an error. To prevent declaring
 
 Let's say that we have all models stored at `models/<name>.ts`, and declare the prefix of the model as a namespace.
 
-```typescript
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
 // admin.model.ts
-export const authModel = new Elysia()
+export const adminModels = new Elysia()
     .model({
         'admin.auth': t.Object({
             username: t.String(),
@@ -139,7 +157,7 @@ export const authModel = new Elysia()
     })
 
 // user.model.ts
-export const authModel = new Elysia()
+export const userModels = new Elysia()
     .model({
         'user.auth': t.Object({
             username: t.String(),

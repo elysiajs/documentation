@@ -54,7 +54,7 @@ const app = new Elysia()
             }
         })
     )
-    .listen(8080)
+    .listen(3000)
 ```
 
 Accessing `/graphql` should show Apollo GraphQL playground work with.
@@ -78,7 +78,7 @@ const app = new Elysia()
             }
         })
     )
-    .listen(8080)
+    .listen(3000)
 ```
 
 

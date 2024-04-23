@@ -40,7 +40,7 @@ new Elysia()
             }
         })
     )
-    .listen(8080)
+    .listen(3000)
 ```
 
 The above code will log `heartbeat` every 10 seconds.
@@ -137,7 +137,7 @@ const app = new Elysia()
 
         return 'Stop heartbeat'
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Predefined patterns
@@ -145,11 +145,10 @@ const app = new Elysia()
 You can use predefined patterns from `@elysiajs/cron/schelude`
 ```typescript
 import { Elysia } from 'elysia'
-import { cron } from '@elysiajs/cron'
-import { Patterns } from '@elysiajs/cron/schelude'
+import { cron, Patterns } from '@elysiajs/cron'
 
 const app = new Elysia()
-    use(
+    .use(
         cron({
             name: 'heartbeat',
             pattern: Patterns.everySecond(),
@@ -163,7 +162,7 @@ const app = new Elysia()
 
         return 'Stop heartbeat'
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 
@@ -171,7 +170,7 @@ const app = new Elysia()
 
 Function  | Description
 ------------- | -------------
-`.everySenconds(2)`  |  Run the task every 2 seconds
+`.everySeconds(2)`  |  Run the task every 2 seconds
 `.everyMinutes(5)`  |  Run the task every 5 minutes
 `.everyHours(3)`  |  Run the task every 3 hours
 `.everyHoursAt(3, 15)`  |   Run the task every 3 hours at 15 minutes

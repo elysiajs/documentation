@@ -16,17 +16,18 @@ head:
 
 # Unit Test
 
-Being WinterCG compliance, we can use Request / Response class to test an Elysia server.
+Being WinterCG compliant, we can use Request / Response classes to test an Elysia server.
 
-Elysia provides **Elysia.handle** which accepts Web Standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), and returns [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) to simulates HTTP Request.
+Elysia provides the **Elysia.handle** method, which accepts a Web Standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) and returns [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response), simulating an HTTP Request.
 
-We can use [Bun test](https://bun.sh/guides/test/watch-mode) to create Unit Test.
+Bun includes a built-in [test runner](https://bun.sh/docs/cli/test) that offers a Jest-like API through the `bun:test` module, facilitating the creation of unit tests.
 
 Create **test/index.test.ts** in the root of project directory with the following:
 
-```typescript
+```typescript twoslash
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
 
 describe('Elysia', () => {
     it('return a response', async () => {
@@ -58,29 +59,28 @@ The request must provide URL as the following:
 
 We can also use other testing libraries like Jest or testing library to create Elysia unit tests.
 
-## Eden Test
+## Eden Treaty test
 
-We can simplify the tests by using Eden Treaty to create a unit-test with support for end-to-end type safety and auto-completion.
+We may use Eden Treaty to create an end-to-end type safety test for Elysia server as follows:
 
-```typescript
+```typescript twoslash
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysiajs/eden'
 
-import { edenTreaty } from '@elysiajs/eden'
+const app = new Elysia().get('/hello', 'hi')
 
-const app = new Elysia()
-    .get('/', () => 'hi')
-    .listen(3000)
-
-const api = edenTreaty<typeof app>('http://localhost:3000')
+const api = treaty(app)
 
 describe('Elysia', () => {
     it('return a response', async () => {
-        const { data } = await api.get()
+        const { data, error } = await api.hello.get()
 
         expect(data).toBe('hi')
+              // ^?
     })
 })
 ```
 
-See [Eden Test](/eden/test) for setup and more information.
+See [Eden Treaty Unit Test](/eden/treaty/unit-test) for setup and more information.

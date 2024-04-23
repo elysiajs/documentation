@@ -27,8 +27,10 @@ bun create expo-app --template tabs
 3. In **[...slugs]+api.ts**, create or import an existing Elysia server
 4. Export the handler with the name of method you want to expose
 
-```typescript
+```typescript twoslash
 // app/[...slugs]+api.ts
+import { Elysia, t } from 'elysia'
+
 const app = new Elysia()
     .get('/', () => 'hello Next')
     .post('/', ({ body }) => body, {
@@ -47,16 +49,18 @@ You can treat the Elysia server as if normal Expo API route.
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
 
-Please refers to [API route](https://docs.expo.dev/router/reference/api-routes/) for more information.
+Please refer to [API route](https://docs.expo.dev/router/reference/api-routes/) for more information.
 
 ## Prefix
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
 
-For example, if you place Elysia server in **apps/api/[...slugs]+api.ts**, you need to annotate prefix as **/api** to Elysia server.
+For example, if you place Elysia server in **app/api/[...slugs]+api.ts**, you need to annotate prefix as **/api** to Elysia server.
 
-```typescript
+```typescript twoslash
 // app/api/[...slugs]+api.ts
-const app = new Elysia({ prefix: '/api' })
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' }) // ![code ++]
     .get('/', () => 'hi')
     .post('/', ({ body }) => body, {
         body: t.Object({
@@ -76,7 +80,7 @@ You can either directly use API route using Elysia and deploy as normal Elysia a
 If you are using Expo server runtime, you may use `expo export` command to create optimized build for your expo app, this will include an Expo function which is using Elysia at **dist/server/_expo/functions/[...slugs\]+api.js**
 
 ::: tip
-Please note that Expo Function are treat as Edge function instead of normal server, so running the Edge function directly will not allocate anyport.
+Please note that Expo Function are treated as Edge function instead of normal server, so running the Edge function directly will not allocate any port.
 :::
 
 You may use the Expo function adapter provided by Expo to deploy your Edge Function.
