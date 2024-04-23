@@ -30,7 +30,7 @@ import { serverTiming } from '@elysiajs/server-timing'
 new Elysia()
     .use(serverTiming())
     .get('/', () => 'hello')
-    .listen(8080)
+    .listen(3000)
 ```
 
 Server Timing then will append header 'Server-Timing' with log duration, function name, and detail for each life-cycle function.

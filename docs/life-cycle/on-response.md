@@ -24,8 +24,8 @@ It's recommended to use **On Response** in the following situations:
 ## Example
 Below is an example of using the response handle to check for user sign-in.
 
-```typescript
-import { Elysia } from '../src'
+```typescript twoslash
+import { Elysia } from 'elysia'
 
 new Elysia()
 	.onResponse(() => {

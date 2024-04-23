@@ -14,34 +14,57 @@ head:
         content: handler is a function that responds to the request for each route. Accepting request information and returning a response to the client. Handler can be registered through Elysia.get / Elysia.post
 ---
 
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import { Elysia } from 'elysia'
+
+const demo1 = new Elysia()
+    .get('/', ({ path }) => path)
+
+const demo2 = new Elysia()
+    .get('/', ({ error }) => error(418, "Kirifuji Nagisa"))
+</script>
+
 # Handler
 
-When a request is routed through Elysia, it will look for a function to respond to using the HTTP Verb and pathname.
+After a resource is located, a function that respond is refers as **handler**
 
-Each router resource will be referred to as a **route**.
-
-**"route handler"** is the function that responds to the request for each route.
-
-In Elysia, a route is a function that accepts request information and returns a value to the sender.
-
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    // the function `() => 'hello world'` is a route handler
+    // the function `() => 'hello world'` is a handler
     .get('/', () => 'hello world')
     .listen(3000)
 ```
 
-## Request
+Handler maybe a literal value, and can be inlined.
 
-Route handler the request and parse into an easy to use `Context`, unique for each request.
+```typescript twoslash
+import { Elysia } from 'elysia'
 
-We use context to get information about the request.
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/video', Bun.file('kyuukurarin.mp4'))
+    .listen(3000)
+```
 
-Context is always the first parameter of route handler:
+Using an inline value always returns the same value which is useful to optimize performance for static resource like file.
 
-```typescript
+This allows Elysia to compile the response ahead of time to optimize performance.
+
+::: tip
+Providing an inline value is not a cache.
+
+Static Resource value, headers and status can be mutate dynamically using lifecycle.
+:::
+
+
+## Context
+
+Context is an request's information sent to server.
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -49,52 +72,61 @@ new Elysia()
     .listen(3000)
 ```
 
-### Context
+<Playground :elysia="demo1" />
 
-Elysia context consists of:
-
--   **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
--   **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
--   **params** - Elysia's path parameters parsed as JavaScript object
--   **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
--   **path**: Pathname of the request
--   **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
--   **store** - A global mutable store for Elysia instance
--   **cookie** - A global mutable signal store for interacting with Cookies (including get/set)
--   **set** - Property to apply to Response:
-    -   **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
-    -   **headers** - Response headers
-    -   **redirect** - Response as a path to redirect to
-
-::: tip
-Context provides several properties to help you get information about the request.
-
-It's ok to feel overwhelmed by the amount of properties, but you don't have to memorize them all, an IDE can auto-complete them for you.
-:::
+We will be covering context property in the next page [context](/essential/context), for now lets see what handler is capable of.
 
 ## Set
 
-**set** is a special mutable property that acts as a representation of the response.
+**set** is a mutable property that form a response accessible via `Context.set`.
 
--   Set status code of the response,
--   Append custom headers
+- **set.status** - Set custom status code
+- **set.headers** - Append custom headers
+- **set.redirect** - Append redirect
 
-This is done by mutating the value of `Context.set`.
 
-```typescript
+## Status
+We can return a custom status code by using either:
+
+- **error** function (recommended)
+- **set.status**
+
+## error
+A dedicated `error` function for returning status code with response.
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ set }) => {
-        set.status = 418
-        set.headers['Content-Type'] = 'text/plain'
-
-        return 'hi'
-    })
+    .get('/', ({ error }) => error(418, "Kirifuji Nagisa"))
     .listen(3000)
 ```
 
-In this example, we create a route handler and **set response status to 418**, and set a response header with `Content-type` to be `text/plain`
+<Playground :elysia="demo2" />
+
+It's recommend to use `error` inside main handler as it has better inference:
+
+- allows TypeScript to check if a return value is correctly type to response schema
+- autocompletion for type narrowing base on status code
+- type narrowing for error handling using End-to-end type safety (Eden)
+
+## set.status
+Set a default status code if not provided.
+
+It's recommended to use in a plugin that only only need to return a specific status code while allowing user to return a custom value for example, HTTP 201/206 or 403/405 etc.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(({ set }) => {
+        set.status = 418
+
+        return 'Kirifuji Nagisa'
+    })
+    .get('/', () => 'hi')
+    .listen(3000)
+```
 
 ::: tip
 HTTP Status indicates the type of response. If the route handler is executed successfully without error, Elysia will return the status code 200.
@@ -102,19 +134,49 @@ HTTP Status indicates the type of response. If the route handler is executed suc
 
 You can also set a status code using the common name of the status code instead of using a number.
 
-```typescript
+```typescript twoslash
+// @errors 2322
 import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', ({ set }) => {
-        set.status = 'Unauthorized'
+        set.status
+          // ^?
 
-        return 'hi'
+        return 'Kirifuji Nagisa'
     })
     .listen(3000)
 ```
 
-Elysia also provides auto-completion for searching a certain code in your IDE.
+## set.headers
+Allowing us to append or delete a response headers represent as Object.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set }) => {
+        set.headers['x-powered-by'] = 'Elysia'
+
+        return 'a mimir'
+    })
+    .listen(3000)
+```
+
+## set.redirect
+Redirect a request to another resource.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set }) => {
+        set.redirect = 'https://youtu.be/whpVWVWBW4U?&t=8'
+    })
+    .listen(3000)
+```
+
+When using redirect, returned value is not required and will be ignored. As response will be from another resource.
 
 ## Response
 
@@ -124,7 +186,7 @@ To comply with the Web Standard, a value returned from route handler will be map
 
 Letting you focus on business logic rather than boilerplate code.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -135,7 +197,7 @@ new Elysia()
 
 If you prefer an explicit Response class, Elysia also handles that automatically.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -146,20 +208,3 @@ new Elysia()
 ::: tip
 Using a primitive value or `Response` has near identical performance (+- 0.1%), so pick the one you prefer, regardless of performance.
 :::
-
-## Static Content
-
-Static Content is a type of handler that always returns the same value, for instance file, hardcoded-value.
-
-In Elysia, static content can be registered by providing an actual value instead of a function.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .get('/', 'Hello Elysia')
-    .get('/video', Bun.file('kyuukurarin.mp4'))
-    .listen(3000)
-```
-
-This allows Elysia to compile the response ahead of time to optimize performance.

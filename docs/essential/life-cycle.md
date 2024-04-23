@@ -16,20 +16,28 @@ head:
 
 # Life Cycle
 
-Also, known as middleware in other frameworks like Express.
+Also known as middleware with name in Express or Hook in Fastify.
 
-Imagine you want to return a text of HTML. Usually, you would need to manually set "Content-Type" headers as "text/html" to help the browser interpret that the response is HTML.
+Imagine we want to return a text of HTML.
 
-But what if after we send a response, we could add some code to detect if the response is an HTML string and add a header to the response automatically?
+We need to set **"Content-Type"** headers as **"text/html"** to for browser to render HTML.
+
+Explicitly specifying that response is HTML could be repetitive if there are a lot of handlers, says ~200 endpoints.
+
+We can see a duplicated code for just specifying that response is HTML.
+
+But what if after we sent a response, we could detect if a response is an HTML string then append headers automatically?
 
 That's when the concept of Life Cycle comes into play.
+
+---
 
 Life Cycle allows us to intercept important events, and customize the behavior of Elysia, like adding an HTML header automatically.
 
 Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle.webp)
 
-You don't have to understand/memorize all of the events in one go.
+You don't have to understand/memorize all of the events in one go, we will be covering each on the next chapter.
 
 ## Events
 
@@ -38,7 +46,7 @@ Most of the events you are going to use are highlighted in the blue area but to 
 Elysia does the following for every request:
 
 1. **Request**
-    - Notify new event is received, providing only the most minimal context to reduce overhead
+    - Notify when a new event is received, providing only the most minimal context to reduce overhead
     - Best for:
         - Caching
         - Analytics
@@ -79,15 +87,15 @@ These events are designed to help you decouple code into smaller reusable pieces
 
 ## Hook
 
-We refer to each function that intercepts the life cycle event as **"hook"**, as the function hook into the lifecycle event.
+We refer to each function that intercepts the life cycle event as **"hook"**, as the function hooks into the lifecycle event.
 
 Hooks can be categorized into 2 types:
 
 1. Local Hook: Execute on a specific route
-2. Global Hook: Execute on every route
+2. Interceptor Hook: Execute on every route
 
 ::: tip
-The hook will accept the same Context as a handler, you can imagine you adding a route handler but at a specific point.
+The hook will accept the same Context as a handler, you can imagine adding a route handler but at a specific point.
 :::
 
 ## Local Hook
@@ -96,7 +104,7 @@ The local hook is executed on a specific route.
 
 To use a local hook, you can inline hook into a route handler:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -118,13 +126,13 @@ The response should be listed as follows:
 | /    | text/html; charset=utf8  |
 | /hi  | text/plain; charset=utf8 |
 
-## Global Hook
+## Interceptor Hook
 
-Register hook into **every** handler that came after.
+Register hook into every handler **of the current instance** that came after.
 
-To add a global hook, you can use `.on` followed by a life cycle event in camelCase:
+To add an interceptor hook, you can use `.on` followed by a life cycle event in camelCase:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -155,7 +163,7 @@ The order of Elysia's life-cycle code is very important.
 
 Elysia's life-cycle event is stored as a queue, aka first-in first-out. So Elysia will **always** respect the order of code from top-to-bottom followed by the order of life-cycle events.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()

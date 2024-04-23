@@ -142,7 +142,7 @@ new Elysia()
             })
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 Now you can create a validation error for your API not limited to only the first error.

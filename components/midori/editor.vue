@@ -42,21 +42,21 @@ function saveCaretPosition(context) {
     }
 }
 
-function nextCaretPosition(context) {
-    const selection = window.getSelection()
-    const range = selection.getRangeAt(0)
-    range.setStart(context, 0)
-    const len = range.toString().length
+// function nextCaretPosition(context) {
+//     const selection = window.getSelection()
+//     const range = selection.getRangeAt(0)
+//     range.setStart(context, 0)
+//     const len = range.toString().length
 
-    return function restore() {
-        const pos = getTextNodeAtPosition(context, len)
-        selection.removeAllRanges()
+//     return function restore() {
+//         const pos = getTextNodeAtPosition(context, len)
+//         selection.removeAllRanges()
 
-        const range = new Range()
-        range.setStart(pos.node, pos.position)
-        selection.addRange(range)
-    }
-}
+//         const range = new Range()
+//         range.setStart(pos.node, pos.position)
+//         selection.addRange(range)
+//     }
+// }
 
 function getTextNodeAtPosition(root, index) {
     const NODE_TYPE = NodeFilter.SHOW_TEXT
@@ -113,12 +113,12 @@ const execute = async () => {
         })
 }
 
-watch(isDark, (isDark) => {
+watch(isDark, (value) => {
     const editor = document.querySelector<HTMLElement>('pre.elysia-editor');
 
     editor.innerHTML = highlighter.codeToHtml(
         editor.innerText, {
-        theme: isDark ? 'github-dark' : 'github-light',
+        theme: value ? 'github-dark' : 'github-light',
         lang: 'javascript',
     })
 })
@@ -127,7 +127,7 @@ onMounted(() => {
     const editor = document.querySelector<HTMLElement>('pre.elysia-editor')
 
     editor.innerHTML = highlighter.codeToHtml(code, {
-        theme: isDark ? 'github-dark' : 'github-light',
+        theme: isDark.value ? 'github-dark' : 'github-light',
         lang: 'javascript',
     })
 
@@ -136,7 +136,7 @@ onMounted(() => {
 
         editor.innerHTML = highlighter.codeToHtml(
             event.currentTarget.innerText, {
-            theme: isDark ? 'github-dark' : 'github-light',
+            theme: isDark.value ? 'github-dark' : 'github-light',
             lang: 'javascript',
         })
 
@@ -194,7 +194,8 @@ onMounted(() => {
         </p>
 
         <aside class="flex flex-col md:flex-row justify-center items-center w-full max-w-6xl gap-8 my-8">
-            <section class="flex flex-col w-full h-96 border dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl">
+            <section
+                class="flex flex-col w-full h-96 border dark:border-slate-700 bg-white dark:bg-slate-800 rounded-2xl">
                 <div class="mockup-window flex relative w-full h-full shadow-xl">
                     <pre class="elysia-editor block !bg-transparent !text-base !font-mono rounded-xl w-full max-w-xl h-full !pt-0 !px-2 outline-none"
                         contenteditable="true">

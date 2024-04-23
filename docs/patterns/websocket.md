@@ -24,7 +24,7 @@ SocketIO is a popular library for WebSocket, but it is not the only one. Elysia 
 
 To use websocket, simply call `Elysia.ws()`:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -33,14 +33,14 @@ new Elysia()
             ws.send(message)
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## WebSocket message validation:
 
 Same as normal route, WebSockets also accepts a **schema** object to strictly type and validate requests.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -56,7 +56,7 @@ const app = new Elysia()
             })
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 WebSocket schema can validate the following:
@@ -74,7 +74,9 @@ By default Elysia will parse incoming stringified JSON message as Object for val
 
 You can set Elysia constructor to set the Web Socket value.
 
-```ts
+```ts twoslash
+import { Elysia } from 'elysia'
+
 new Elysia({
     websocket: {
         idleTimeout: 30
@@ -126,7 +128,7 @@ Create a websocket handler
 
 Example:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -135,7 +137,7 @@ const app = new Elysia()
             ws.send(message)
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 Type:

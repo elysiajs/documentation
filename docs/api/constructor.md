@@ -41,12 +41,12 @@ For Object, `listen` accepts the same value as `Bun.serve`, you can provide any 
 ```typescript
 // ✅ This is fine
 new Elysia()
-    .listen(8080)
+    .listen(3000)
 
 // ✅ This is fine
 new Elysia()
     .listen({
-        port: 8080,
+        port: 3000,
         hostname: '0.0.0.0'
     })
 ```
@@ -59,7 +59,7 @@ For providing WebSocket, please use [`WebSocket`](/patterns/websocket)
 You can provide a custom port from ENV by using `process.env`
 ```typescript
 new Elysia()
-    .listen(process.env.PORT ?? 8080)
+    .listen(process.env.PORT ?? )
 ```
 
 ## Retrieve Port
@@ -69,7 +69,7 @@ Using callback in `.listen`
 
 ```typescript
 const app = new Elysia()
-    .listen(8080, ({ hostname, port }) => {
+    .listen(, ({ hostname, port }) => {
         console.log(`Running at http://${hostname}:${port}`)
     })
 

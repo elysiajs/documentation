@@ -29,7 +29,7 @@ import { cors } from '@elysiajs/cors'
 
 new Elysia()
     .use(cors())
-    .listen(8080)
+    .listen(3000)
 ```
 
 This will set Elysia to accept requests from any origin. 
@@ -143,7 +143,7 @@ const app = new Elysia()
         origin: /.*\.saltyaom\.com$/
     }))
     .get('/', () => 'Hi')
-    .listen(8080)
+    .listen(3000)
 ```
 
 This will allow requests from top-level domains with `saltyaom.com'

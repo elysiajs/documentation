@@ -26,6 +26,8 @@ Adhering to this, we implemented the same logic for Elysia by introducing `.moun
 ## Mount
 To use **.mount**, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
 ```ts
+import { Elysia } from 'elysia'
+
 const app = new Elysia()
     .get('/', () => 'Hello from Elysia')
     .mount('/hono', hono.fetch)
@@ -51,6 +53,8 @@ This allows you to execute all the aforementioned code in a single server enviro
 
 If the framework also supports a **.mount** function, you can deeply nest a framework that supports it.
 ```ts
+import { Elysia } from 'elysia'
+
 const elysia = new Elysia()
     .get('/Hello from Elysia inside Hono inside Elysia')
 
@@ -68,6 +72,8 @@ const main = new Elysia()
 Moreover, you can re-use multiple existing Elysia projects on your server.
 
 ```ts
+import { Elysia } from 'elysia'
+
 import A from 'project-a/elysia'
 import B from 'project-b/elysia'
 import C from 'project-c/elysia'

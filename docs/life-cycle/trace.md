@@ -32,7 +32,7 @@ There are many factors that can slow down our app - and it's hard to identify th
 
 Trace can measure life cycle execution time of each function to audit the performance bottleneck of each cycle.
 
-```ts
+```ts twoslash
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -63,7 +63,7 @@ Please refer to [Life Cycle Events](/essential/life-cycle#events) for more infor
 
 You can tap deeper and measure each function of a life-cycle event by using the **children** property of a life-cycle event
 
-```ts
+```ts twoslash
 import { Elysia } from 'elysia'
 
 const sleep = (time = 1000) =>
@@ -71,6 +71,8 @@ const sleep = (time = 1000) =>
 
 const app = new Elysia()
     .trace(async ({ beforeHandle }) => {
+        const { children } = await beforeHandle
+
         for (const child of children) {
             const { time: start, end, name } = await child
 
@@ -96,11 +98,13 @@ Every life cycle has support for children except for `handle`
 
 Measuring functions by index can be hard to trace back to the function code, that's why trace provides a **name** property to easily identify the function by name.
 
-```ts
+```ts twoslash
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
 	.trace(async ({ beforeHandle }) => {
+        const { children } = await beforeHandle
+
 		for (const child of children) {
 			const { name } = await child
 
@@ -130,7 +134,7 @@ This is useful when you need support an API like Server-Timing.
 
 ![Example of usage of Trace](/assets/server-timing.webp)
 
-```ts
+```ts twoslash
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -153,7 +157,7 @@ Sometimes, `beforeHandle` or handler can throw an error, skipping the execution 
 
 By default if this happens, each life-cycle will be resolved automatically, and you can track if the API is executed or not by using `skip` property
 
-```ts
+```ts twoslash
 import { Elysia } from 'elysia'
 
 const app = new Elysia()

@@ -39,12 +39,12 @@
                             '[Private]'
                         }}
                     </p>
-                    <p
+                    <!-- <p
                         v-if="sponsor.tier.monthlyPriceInDollars"
                         class="text-3xl text-gray-400 bg-clip-text text-transparent bg-gradient-to-tl font-medium from-fuchsia-500 to-blue-500 mt-3 mb-1"
                     >
                         ${{ sponsor.tier.monthlyPriceInDollars }}
-                    </p>
+                    </p> -->
                     <p className="text-sm text-gray-500 dark:text-gray-400 my-0">
                         {{
                             dayjs()

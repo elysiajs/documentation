@@ -25,7 +25,7 @@ bun add @elysiajs/swagger
 ```
 
 And register the plugin to the server:
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -40,8 +40,12 @@ For more information about Swagger plugin, see the [Swagger plugin page](/plugin
 
 However, sometime defining a type only isn't clear what the route might work. You can use `schema.detail` fields to explictly define what the route is all about.
 
-```typescript
-app
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { swagger } from '@elysiajs/swagger'
+
+new Elysia()
+    .use(swagger())
     .post('/sign-in', ({ body }) => body, {
         body: t.Object(
             {

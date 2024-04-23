@@ -18,17 +18,20 @@ head:
 To use Cookie, you can extract the cookie property and access its name and value directly.
 
 There's no get/set, you can extract the cookie name and retrieve or update its value directly.
-```ts
-app.get('/', ({ cookie: { name } }) => {
-    // Get
-    name.value
+```ts twoslash
+import { Elysia } from 'elysia'
 
-    // Set
-    name.value = "New Value"
-    name.value = {
-        hello: 'world'
-    }
-})
+new Elysia()
+    .get('/', ({ cookie: { name } }) => {
+        // Get
+        name.value
+
+        // Set
+        name.value = "New Value"
+        name.value = {
+            hello: 'world'
+        }
+    })
 ```
 
 By default, Reactive Cookie can encode/decode type of object automatically allowing us to treat cookie as an object without worrying about the encoding/decoding. **It just works**.
@@ -53,27 +56,33 @@ See [cookie attribute config](/patterns/cookie-signature#config) for more inform
 ### Assign Property
 You can get/set the property of a cookie like any normal object, the reactivity model synchronizes the cookie value automatically.
 
-```ts
-app.get('/', ({ cookie: { name } }) => {
-    // get
-    name.domain
+```ts twoslash
+import { Elysia } from 'elysia'
 
-    // set
-    name.domain = 'millennium.sh'
-    name.httpOnly = true
-})
+new Elysia()
+    .get('/', ({ cookie: { name } }) => {
+        // get
+        name.domain
+
+        // set
+        name.domain = 'millennium.sh'
+        name.httpOnly = true
+    })
 ```
 
 ## set
 **set** permits updating multiple cookie properties all at once through **reset all property** and overwrite the property with a new value.
 
-```ts
-app.get('/', ({ cookie: { name } }) => {
-    name.set({
-        domain: 'millennium.sh',
-        httpOnly: true
+```ts twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ cookie: { name } }) => {
+        name.set({
+            domain: 'millennium.sh',
+            httpOnly: true
+        })
     })
-})
 ```
 
 ## add
@@ -84,52 +93,61 @@ To remove a cookie, you can use either:
 1. name.remove
 2. delete cookie.name
 
-```ts
-app.get('/', ({ cookie, cookie: { name } }) => {
-    name.remove()
+```ts twoslash
+import { Elysia } from 'elysia'
 
-    delete cookie.name
-})
+new Elysia()
+    .get('/', ({ cookie, cookie: { name } }) => {
+        name.remove()
+
+        delete cookie.name
+    })
 ```
 
 ## Cookie Schema
 You can strictly validate cookie type and providing type inference for cookie by using cookie schema with `t.Cookie`.
 
-```ts
-app.get('/', ({ cookie: { name } }) => {
-    // Set
-    name.value = {
-        id: 617,
-        name: 'Summoning 101'
-    }
-}, {
-    cookie: t.Cookie({
-        name: t.Object({
-            id: t.Numeric(),
-            name: t.String()
+```ts twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/', ({ cookie: { name } }) => {
+        // Set
+        name.value = {
+            id: 617,
+            name: 'Summoning 101'
+        }
+    }, {
+        cookie: t.Cookie({
+            name: t.Object({
+                id: t.Numeric(),
+                name: t.String()
+            })
         })
     })
-})
 ```
 
 ## Nullable Cookie
 To handle nullable cookie value, you can use `t.Optional` on the cookie name you want to be nullable.
 
-```ts
-app.get('/', ({ cookie: { name } }) => {
-    // Set
-    name.value = {
-        id: 617,
-        name: 'Summoning 101'
-    }
-}, {
-    cookie: t.Cookie({
-        value: t.Optional(
-            t.Object({
-                id: t.Numeric(),
-                name: t.String()
-            })
-        )
+```ts twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/', ({ cookie: { name } }) => {
+        // Set
+        name.value = {
+            id: 617,
+            name: 'Summoning 101'
+        }
+    }, {
+        cookie: t.Cookie({
+            value: t.Optional(
+                t.Object({
+                    id: t.Numeric(),
+                    name: t.String()
+                })
+            )
+        })
     })
-})
 ```

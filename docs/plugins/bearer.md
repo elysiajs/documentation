@@ -41,7 +41,7 @@ const app = new Elysia()
             }
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 This plugin is for retrieving a Bearer token specified in [RFC6750](https://www.rfc-editor.org/rfc/rfc6750#section-2).

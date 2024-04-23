@@ -27,8 +27,10 @@ It's recommended to use transform for the following:
 
 Below is an example of using mapResponse to provide Response compression.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
+
+const encoder = new TextEncoder()
 
 new Elysia()
     .mapResponse(({ response, set }) => {
@@ -41,7 +43,7 @@ new Elysia()
         set.headers['Content-Encoding'] = 'gzip'
 
         return new Response(
-            Bun.gzipSync(new TextEncoder('utf-8').encode(text)),
+            Bun.gzipSync(encoder.encode(text)),
             {
                 headers: {
                     'Content-Type': `${
@@ -53,7 +55,7 @@ new Elysia()
     })
     .get('/text', () => 'mapResponse')
     .get('/json', () => ({ map: 'response' }))
-    .listen(8080)
+    .listen(3000)
 ```
 
 Like **parse** and **beforeHandle**, after a value is returned, the next iteration of **mapResponse** will be skipped.

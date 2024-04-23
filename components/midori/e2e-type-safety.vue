@@ -14,10 +14,14 @@
             Move fast and break nothing like tRPC.
         </p>
 
-        <a class="text-lg font-medium bg-blue-50 text-blue-500 dark:text-blue-400 dark:bg-blue-500/20 mr-auto md:mx-auto px-4 py-2 rounded-xl mt-6"
+        <p class="text-lg font-medium bg-green-100/50 text-green-500 dark:text-green-400 dark:bg-green-500/20 mr-auto md:mx-auto px-4 py-2 rounded-xl mt-6">
+            Hover code below to see type definition
+        </p>
+
+        <!-- <a class="text-lg font-medium bg-blue-50 text-blue-500 dark:text-blue-400 dark:bg-blue-500/20 mr-auto md:mx-auto px-4 py-2 rounded-xl mt-6"
             href="/eden/overview">
             See how it works
-        </a>
+        </a> -->
 
         <section class="flex flex-col lg:flex-row gap-8 w-full max-w-5xl my-8">
             <div class="w-full !text-base !font-mono rounded-xl">
@@ -25,16 +29,16 @@
             </div>
             <div class="relative w-full !text-base !font-mono rounded-xl">
                 <slot name="client"></slot>
-                <div class="absolute p-1 rounded bg-red-400/25" style="
-                        top: 13.2em;
-                        left: 5.9em;
+                <!-- <div class="absolute p-1 rounded bg-red-400/25" style="
+                        top: 13.1em;
+                        left: 6.5em;
                         width: 2.2em;
                         height: 1.375em;
                     " />
                 <p class="absolute px-3 py-1.5 rounded bg-white dark:bg-gray-700 border dark:border-gray-600"
                     style="top: 15.25em; left: 3.25em">
                     Type 'string' is not assignable to type 'number'
-                </p>
+                </p> -->
             </div>
         </section>
     </section>
