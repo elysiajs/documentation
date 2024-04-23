@@ -25,11 +25,22 @@ As `onRequest` is designed to provide only the most crucial context to reduce ov
 
 ## Example
 Below is a pseudo code to enforce rate-limit on a certain IP address.
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
+// ---cut-start---
+const rateLimiter = new Elysia()
+    .decorate({
+        ip: '127.0.0.1' as string,
+        rateLimiter: {
+            check(ip: string) {
+                return true as boolean
+            }
+        }
+    })
+// ---cut-end---
 new Elysia()
-    .decorate(rateLimiter)
+    .use(rateLimiter)
     .onRequest(({ rateLimiter, ip, set }) => {
         if(rateLimiter.check(ip)) {
             set.status = 420

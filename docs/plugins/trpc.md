@@ -43,7 +43,7 @@ const router = t.router({
 
 export type Router = typeof router;
 
-const app = new Elysia().use(trpc(router)).listen(8080);
+const app = new Elysia().use(trpc(router)).listen(3000);
 ```
 
 ## trpc

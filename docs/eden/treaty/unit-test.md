@@ -19,13 +19,13 @@ According to [Eden Treaty config](/eden/treaty/config.html#urlorinstance) and [U
 
 We may use this patterns to create a unit test with end-to-end type safety and type-level test all at once.
 
-```typescript
+```typescript twoslash
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
-const app = new Elysia().get('/hello', () => 'hi')
+const app = new Elysia().get('/hello', 'hi')
 const api = treaty(app)
 
 describe('Elysia', () => {
@@ -33,6 +33,8 @@ describe('Elysia', () => {
         const { data } = await api.hello.get()
 
         expect(data).toBe('hi')
+              // ^?
+
     })
 })
 ```

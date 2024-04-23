@@ -68,17 +68,43 @@ Eden Treaty is an object-like representation of an Elysia server providing end-t
 With Eden Treaty we can connect interact Elysia server with full-type support and auto-completion, error handling with type narrowing, and creating type safe unit test.
 
 Example usage of Eden Treaty:
-```typescript
+```typescript twoslash
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hi')
+    .get('/users', () => 'Skadi')
+    .put('/nendoroid/:id', ({ body }) => body, {
+        body: t.Object({
+            name: t.String(),
+            from: t.String()
+        })
+    })
+    .get('/nendoroid/:id/name', () => 'Skadi')
+    .listen(3000)
+
+export type App = typeof app
+
+// @filename: index.ts
+// ---cut---
 import { treaty } from '@elysiajs/eden'
 import type { App } from './server'
 
-const app = treaty<App>('http://localhost:8080')
+const app = treaty<App>('localhost:3000')
+
+// @noErrors
+app.
+//  ^|
+
+
+
 
 // Call [GET] at '/'
-const { data, error } = app.index.get()
+const { data } = await app.index.get()
 
 // Call [POST] at '/nendoroid/:id'
-const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
+const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).post({
     name: 'Skadi',
     from: 'Arknights'
 })
@@ -86,13 +112,30 @@ const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
 
 ## Eden Fetch
 A fetch-like alternative to Eden Treaty for developers that prefers fetch syntax.
-```typescript
+```typescript twoslash
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hi')
+    .post('/name/:name', ({ body }) => body, {
+        body: t.Object({
+            branch: t.String(),
+            type: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+
+// @filename: index.ts
+// ---cut---
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
 
-const fetch = edenFetch<App>('http://localhost:8080')
+const fetch = edenFetch<App>('http://localhost:3000')
 
-const data = await fetch('/name/:name', {
+const { data } = await fetch('/name/:name', {
     method: 'POST',
     params: {
         name: 'Saori'

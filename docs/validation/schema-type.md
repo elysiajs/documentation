@@ -17,6 +17,23 @@ head:
 <script setup>
     import Card from '../../components/nearl/card.vue'
     import Deck from '../../components/nearl/card-deck.vue'
+
+    import Playground from '../../components/nearl/playground.vue'
+    import { Elysia, t, ValidationError } from 'elysia'
+
+    const demo1 = new Elysia()
+        .get('/id/1', '1')
+        .get('/id/a', () => {
+            throw new ValidationError(
+                'params',
+                t.Object({
+                    id: t.Numeric()
+                }),
+                {
+                    id: 'a'
+                }
+            )
+        })
 </script>
 
 # Schema Type
@@ -48,7 +65,7 @@ Elysia supports declarative schema with the following types:
 
 These properties should be provided as the third argument of the route handler to validate the incoming request.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -62,6 +79,8 @@ new Elysia()
     })
     .listen(3000)
 ```
+
+<Playground :elysia="demo1" />
 
 The response should as follows:
 | URL | Query | Params |
@@ -82,7 +101,7 @@ These messages are additional messages for the webserver to process.
 
 The body is provided as same as `body` in `fetch` API. The content type should be set accordingly to the defined body.
 
-```typescript
+```typescript twoslash
 fetch('https://elysiajs.com', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -94,7 +113,7 @@ fetch('https://elysiajs.com', {
 
 ### Example
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -128,7 +147,7 @@ A query string is a part of the URL that starts with **?** and can contain one o
 
 Query is provided after the **?** in Fetch API.
 
-```typescript
+```typescript twoslash
 fetch('https://elysiajs.com/?name=Elysia')
 ```
 
@@ -136,7 +155,7 @@ When specifying query parameters, it's crucial to understand that all query para
 
 ### Example
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -173,23 +192,25 @@ For instance, **/id/:id** tells Elysia to match any path up until /id, then the 
 
 **This field is usually doesn't need as Elysia can infers type from path parameter automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
 
-```typescript
+```typescript twoslash
 fetch('https://elysiajs.com/id/1')
 ```
 
 ### Example
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/id/:id', ({ query }) => query, {
+    .get('/id/:id', ({ params }) => params, {
         params: t.Object({
             id: t.Numeric()
         })
     })
     .listen(3000)
 ```
+
+<Playground :elysia="demo1" />
 
 The validation should be as follows:
 | URL | Validation |
@@ -205,7 +226,7 @@ This field is usually used to enforce some specific header field, for example, `
 
 Headers are provided as same as `body` in `fetch` API.
 
-```typescript
+```typescript twoslash
 fetch('https://elysiajs.com/', {
     headers: {
         authorization: 'Bearer 12345'
@@ -221,7 +242,7 @@ Please make sure that you are using a lower-case field name when using header va
 
 ### Example
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -247,24 +268,25 @@ In simpler terms, a stringified state that sent with every request.
 
 This field is usually used to enforce some specific cookie field.
 
-A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credential` field instead:
+A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credentials` field instead:
 
-```typescript
+```typescript twoslash
 fetch('https://elysiajs.com/', {
-    credential: 'include'
+    credentials: 'include'
 })
 ```
 
 ### Example
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
-new Elysia().get('/', ({ cookie }) => cookie.session.value, {
-    cookie: t.Object({
-        session: t.String()
+new Elysia()
+    .get('/', ({ cookie }) => cookie.session.value, {
+        cookie: t.Object({
+            session: t.String()
+        })
     })
-})
 ```
 
 ## Response
@@ -277,25 +299,27 @@ If provided, by default, Elysia will try to enforce type using TypeScript to pro
 
 ### Example
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
-new Elysia().get('/', () => 'hello world', {
-    response: t.String()
-})
+new Elysia()
+    .get('/', () => 'hello world', {
+        response: t.String()
+    })
 ```
 
 The response could accept an object with a key of HTTP status to enforce the response type on a specific status.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
-new Elysia().get('/', () => 'hello world', {
-    response: {
-        200: t.String(),
-        400: t.Number()
-    }
-})
+new Elysia()
+    .get('/', () => 'hello world', {
+        response: {
+            200: t.String(),
+            400: t.Number()
+        }
+    })
 ```
 
 The validation should be as follows:
@@ -307,3 +331,15 @@ The validation should be as follows:
 | 1 | 400 | ✅ |
 | `false` | 200 | ❌ |
 | `false` | 400 | ❌ |
+
+## Constructor
+You can use the Elysia constructor to set the behavior for unknown fields on outgoing and incoming bodies via the `normalize` option. By default, elysia will raise an error in case a request or response contains fields which are not explicitly allowed in the schema of the respective handler.
+You can change this by setting `normalize` to true when constructing your elysia instance.
+
+```ts twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia({
+    normalize: true
+})
+```

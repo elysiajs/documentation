@@ -28,12 +28,12 @@ Both parameters is type safe and will be guided by TypeScript automatically:
     - headers
     - fetch
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
-    .post('/user', () => 'hi', {
+    .post('/user', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
@@ -42,10 +42,12 @@ const app = new Elysia()
 
 const api = treaty<typeof app>('localhost:3000')
 
+// ✅ works
 api.user.post({
     name: 'Elysia'
 })
 
+// ✅ also works
 api.user.post({
     name: 'Elysia'
 }, {
@@ -68,8 +70,8 @@ If the method **"GET"** or **"HEAD"**:
     -   headers
     -   fetch
 
-```typescript
-import { Elysia, t } from 'elysia'
+```typescript twoslash
+import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
@@ -78,16 +80,19 @@ const app = new Elysia()
 
 const api = treaty<typeof app>('localhost:3000')
 
+// ✅ works
 api.hello.get({
     // This is optional as not specified in schema
-    headers
+    headers: {
+        hello: 'world'
+    }
 })
 ```
 
 ## Empty body
 If body is optional or not need but query or headers is required, you may pass the body as `null` or `undefined` instead.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -103,7 +108,7 @@ const api = treaty<typeof app>('localhost:3000')
 
 api.user.post(null, {
     query: {
-        id: 2
+        name: 'Ely'
     }
 })
 ```
@@ -112,7 +117,7 @@ api.user.post(null, {
 
 Eden Treaty is a fetch wrapper, we may add any valid [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) parameters to Eden by passing it to `$fetch`:
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -147,9 +152,9 @@ We may either pass one of the following to attach file(s):
 Attaching a file will results **content-type** to be **multipart/form-data**
 
 Suppose we have the server as the following:
-```typescript
-import { Elysia } from 'elysia'
-import { treaty } from '@elysia/eden'
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
     .post('/image', ({ body: { image, title } }) => title, {
@@ -164,7 +169,7 @@ export const api = treaty<typeof app>('localhost:3000')
 
 const images = document.getElementById('images') as HTMLInputElement
 
-const { data } = await client.image.post({
+const { data } = await api.image.post({
     title: "Misono Mika",
     image: images.files!,
 })

@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitepress'
 
+import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
+
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
 
@@ -13,7 +15,8 @@ export default defineConfig({
         theme: {
             light: 'github-light',
             dark: 'github-dark'
-        }
+        },
+        codeTransformers: [transformerTwoslash()]
     },
     // ![INFO] uncomment for support hot reload on WSL - https://github.com/vitejs/vite/issues/1153#issuecomment-785467271
     vite: {
@@ -162,16 +165,16 @@ export default defineConfig({
                         link: '/essential/context'
                     },
                     {
-                        text: 'Plugin',
-                        link: '/essential/plugin'
-                    },
-                    {
                         text: 'Life Cycle',
                         link: '/essential/life-cycle'
                     },
                     {
                         text: 'Schema',
                         link: '/essential/schema'
+                    },
+                    {
+                        text: 'Plugin',
+                        link: '/essential/plugin'
                     },
                     {
                         text: 'Scope',
@@ -260,8 +263,8 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'Grouping Routes',
-                        link: '/patterns/grouping-routes'
+                        text: 'Group',
+                        link: '/patterns/group'
                     },
                     {
                         text: 'Cookie',
@@ -344,13 +347,13 @@ export default defineConfig({
                             {
                                 text: 'Legacy (Treaty 1)',
                                 link: '/eden/treaty/legacy.md'
-                            }        
+                            }
                         ]
                     },
                     {
                         text: 'Eden Fetch',
                         link: '/eden/fetch.md'
-                    },
+                    }
                 ]
             },
             {

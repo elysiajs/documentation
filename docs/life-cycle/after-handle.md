@@ -27,7 +27,7 @@ It's recommended to use After Handle in the following situations:
 
 Below is an example of using the after handle to add HTML content type to response headers.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -55,7 +55,7 @@ If a value is returned After Handle will use a return value as a new response va
 
 The above example could be rewritten as the following:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 

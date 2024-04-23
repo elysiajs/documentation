@@ -36,7 +36,7 @@ new Elysia()
 
         stream.close()
     }))
-    .listen(8080)
+    .listen(3000)
 ```
 
 By default, `Stream` will return `Response` with `content-type` of `text/event-stream; charset=utf8`.

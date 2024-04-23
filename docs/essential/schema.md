@@ -14,6 +14,35 @@ head:
         content: Schema are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
 ---
 
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import { Elysia, t, ValidationError } from 'elysia'
+
+const demo1 = new Elysia()
+    .get('/id/1', 1)
+	.get('/id/a', () => {
+		throw new ValidationError(
+			'params',
+			t.Object({
+				id: t.Numeric()
+			}),
+			{
+				id: 'a'
+			}
+		)
+	})
+
+const demo2 = new Elysia()
+    .get('/none', () => 'hi')
+    .guard({ 
+        query: t.Object({ 
+            name: t.String() 
+        }) 
+    }) 
+    .get('/query', ({ query: { name } }) => name)
+    .get('/any', ({ query }) => query)
+</script>
+
 # Schema
 
 One of the most important areas to create a secure web server is to make sure that requests are in the correct shape.
@@ -44,17 +73,20 @@ The local schema is executed on a specific route.
 
 To validate a local schema, you can inline schema into a route handler:
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => id, {
+                               // ^?
         params: t.Object({ // [!code ++]
             id: t.Numeric() // [!code ++]
         }) // [!code ++]
     })
-    .listen(8080)
+    .listen(3000)
 ```
+
+<Playground :elysia="demo1" />
 
 This code ensures that our path parameter **id**, will always be a numeric string and then transform to a number automatically in both runtime and compile-time (type-level).
 
@@ -71,7 +103,7 @@ Register hook into **every** handler that came after.
 
 To add a global hook, you can use `.guard` followed by a life cycle event in camelCase:
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -82,8 +114,22 @@ new Elysia()
         }) // [!code ++]
     }) // [!code ++]
     .get('/query', ({ query: { name } }) => name)
+                    // ^?
+    .get('/any', ({ query }) => query)
     .listen(3000)
 ```
+
+<Playground
+    :elysia="demo2"
+    :mock="{
+        '/query': {
+            GET: 'Elysia'
+        },
+        '/any': {
+            GET: JSON.stringify({ name: 'Elysia', race: 'Elf' })
+        },
+    }" 
+/>
 
 The response should be listed as follows:
 

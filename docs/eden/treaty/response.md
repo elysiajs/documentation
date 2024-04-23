@@ -17,14 +17,14 @@ head:
 # Response
 Once fetch method is called, Eden Treaty return an Promise with object as follows:
 - data - returned value of the response (2xx)
-- error - returnd value from the response (>= 3xx)
+- error - returned value from the response (>= 3xx)
 - response `Response` - Web Standard Response class
 - status `number` - HTTP status code
 - headers `FetchRequestInit['headers']` - response's headers
 
 Once returned, you must provide an error handling to ensure that value is truly returned to access the value, otherwise the value will be nullable.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -43,7 +43,7 @@ const app = new Elysia()
 
 const api = treaty<typeof app>('localhost:3000')
 
-const submit = (name: string) => {
+const submit = async (name: string) => {
     const { data, error } = await api.user.post({
         name
     })

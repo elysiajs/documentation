@@ -17,6 +17,18 @@ head:
 <script setup>
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
+import Playground from '../components/nearl/playground.vue'
+
+import { Elysia } from 'elysia'
+
+const demo1 = new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id }}) => id)
+    .post('/form', ({ body }) => body)
+
+const demo2 = new Elysia()
+    .get('/user/:id', ({ params: { id }}) => id)
+    .get('/user/abc', () => 'abc')
 </script>
 
 # At glance
@@ -26,17 +38,42 @@ Designed with simplicity and type safety in mind with familiar API with extensiv
 
 Here's a simple hello world in Elysia.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'hi')
+    .get('/', () => 'Hello Elysia')
     .get('/user/:id', ({ params: { id }}) => id)
     .post('/form', ({ body }) => body)
-    .listen(8080)
+    .listen(3000)
 ```
 
 Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello Elysia' as a result.
+
+<Playground 
+    :elysia="demo1"
+    :alias="{
+        '/user/:id': '/user/1'
+    }"
+    :mock="{
+        '/user/:id': {
+            GET: '1'
+        },
+        '/form': {
+            POST: JSON.stringify({
+                hello: 'Elysia'
+            })
+        }
+    }" 
+/>
+
+::: tip
+Hover over the code snippet to see the type definition.
+
+In the mock browser, click on path highlight in blue to change path to preview a response and
+
+Elysia can runs on browser and the result you see are actually run using Elysia.
+:::
 
 ## Performance
 
@@ -66,31 +103,45 @@ Elysia's Type System is fine-tuned to infer your code into type automatically wi
 
 Take a look at this example:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/user/:id', ({ params: { id } }) => id)
+                        // ^?
     .listen(3000)
 ```
 
 The above code create a path parameter "id", the value that replace `:id` will be passed to `params.id` both in runtime and type without manual type declaration.
 
+<Playground 
+    :elysia="demo2"
+    :alias="{
+        '/user/:id': '/user/123'
+    }"
+    :mock="{
+        '/user/:id': {
+            GET: '123'
+        },
+    }" 
+/>
+
 Elysia's goal is to help you write less TypeScript and focus more on Business logic. Let the complex type be handled by the framework.
 
 TypeScript is not needed to use Elysia, but it's recommended to use Elysia with TypeScript.
 
-## Unified Type
+## Type Integrity
 
-To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile-time to create a single source of truth for your data-type. Elysia refers this term as **Unified Type**.
+To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile-time to create a single source of truth for your data-type.
 
 Let's modify the previous code to accept only a numeric value instead of a string.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/user/:id', ({ params: { id } }) => id, {
+                                // ^?
         params: t.Object({
             id: t.Numeric()
         })
@@ -100,6 +151,10 @@ new Elysia()
 
 This code ensures that our path parameter **id**, will always be a numeric string and then transform to a number automatically in both runtime and compile-time (type-level).
 
+::: tip
+Hover over "id" in the above code snippet to see a type definition.
+:::
+
 With Elysia schema builder, we can ensure type safety like a strong-typed language with a single source of truth.
 
 ## Standard
@@ -108,7 +163,7 @@ Elysia adopts many standards by default, like OpenAPI, and WinterCG compliance, 
 
 For instance, as Elysia adopts OpenAPI by default, generating a documentation with Swagger is as easy as adding a one-liner:
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -130,7 +185,7 @@ With Elysia, type safety is not only limited to server-side only.
 
 With Elysia, you can synchronize your type with your frontend team automatically like tRPC, with Elysia's client library, "Eden".
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -148,15 +203,33 @@ export type App = typeof app
 
 And on your client-side:
 
-```typescript
+```typescript twoslash
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/user/:id', ({ params: { id } }) => id, {
+        params: t.Object({
+            id: t.Numeric()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+
+// @filename: client.ts
+// ---cut---
 // client.ts
 import { treaty } from '@elysiajs/eden'
 import type { App } from './server'
 
-const app = treaty<App>('http://localhost:3000')
+const app = treaty<App>('localhost:3000')
 
 // Get data from /user/617
 const { data } = await app.user({ id: 617 }).get()
+      // ^?
+
+console.log(data)
 ```
 
 With Eden, you can use the existing Elysia type to query Elysia server **without code generation** and synchronize type for both frontend and backend automatically.

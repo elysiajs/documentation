@@ -22,7 +22,7 @@ import { Elysia } from 'elysia'
 
 const app = new Elysia()
     .get('/ping', () => 'pong')
-    .listen(8080)
+    .listen(3000)
 
 console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`)
 ```
@@ -36,7 +36,7 @@ new Elysia()
     .post('/hi', () => 'From Post')
     .put('/hi', () => 'From Put')
     .route('M-SEARCH', () => 'Custom Method')
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Path Params
@@ -46,7 +46,7 @@ import { Elysia } from 'elysia'
 new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
     .get('/rest/*', () => 'Rest')
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Return JSON
@@ -57,7 +57,7 @@ new Elysia()
     .get('/json', () => ({
         hi: 'Elysia'
     }))
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Header and status code
@@ -71,7 +71,7 @@ new Elysia()
 
         return 'I\'m teapod'
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Group
@@ -86,7 +86,7 @@ new Elysia()
             .post("/sign-in", ({ body }) => body)
             .put("/sign-up", ({ body }) => body)
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Hook and Schema
@@ -109,7 +109,7 @@ new Elysia()
             console.log("After handle")
         }
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Guard
@@ -124,7 +124,7 @@ new Elysia()
         // Invalid: will throws error, and TypeScript will report error
         .get('/invalid', () => 1)
     )
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## State and Decorate
@@ -138,7 +138,7 @@ new Elysia()
         getDate, 
         store: { version } 
     }) => `${version} ${getDate()}`)
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Redirect
@@ -150,7 +150,7 @@ new Elysia()
     .get('/redirect', ({ set }) => {
         set.redirect = '/'
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Plugin
@@ -164,5 +164,5 @@ const plugin = new Elysia()
 new Elysia()
     .use(plugin)
     .get('/version', ({ store }) => store['plugin-version'])
-    .listen(8080)
+    .listen(3000)
 ```

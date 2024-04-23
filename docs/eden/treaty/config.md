@@ -27,11 +27,29 @@ Eden will change the behavior based on type as follows:
 ### URL Endpoint (string)
 If URL endpoint is passed, Eden Treaty will use `fetch` or `config.fetcher` to create a network request to an Elysia instance.
 
-```typescript
-import { treaty } from '@elysiajs/eden'
-import type { server } from './server'
+```typescript twoslash
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
 
-const api = treaty<typeof server>('localhost:3000')
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app // [!code ++]
+
+// @filename: client.ts
+// ---cut---
+import { treaty } from '@elysiajs/eden'
+import type { App } from './server'
+
+const api = treaty<App>('localhost:3000')
 ```
 
 You may or may not specified a protocol for URL endpoint.
@@ -50,11 +68,15 @@ If Elysia instance is passed, Eden Treaty will create a `Request` class and pass
 
 This allows us to interact with Elysia server directly without request overhead, or the need start a server.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
-import { server } from './server'
 
-const api = treaty(server)
+const app = new Elysia()
+    .get('/hi', 'Hi Elysia')
+    .listen(3000)
+
+const api = treaty(app)
 ```
 
 If an instance is passed, generic is not needed to be pass as Eden Treaty can infers the type from a parameter directly.
@@ -72,30 +94,58 @@ This patterns is recommended for performing unit tests, or creating a type-safe 
 ## Fetch
 Default parameters append to 2nd parameters of fetch extends type of **Fetch.RequestInit**.
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app // [!code ++]
+import { treaty } from '@elysiajs/eden'
+// ---cut---
+treaty<App>('localhost:3000', {
     fetch: {
-        headers: {
-            'X-Custom': 'Griseo'
-        }
+        credentials: 'include'
     }
 })
 ```
 
 All parameters that passed to fetch, will be passed to fetcher, which is an equivalent to:
-```typescript
-fetch('localhost:3000', {
-    headers: {
-        'X-Custom': 'Griseo'
-    }
+```typescript twoslash
+fetch('http://localhost:3000', {
+    credentials: 'include'
 })
 ```
 
 ## Headers
 Provide an additional default headers to fetch, a shorthand of `options.fetch.headers`.
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+import { treaty } from '@elysiajs/eden'
+// ---cut---
+treaty<App>('localhost:3000', {
     headers: {
         'X-Custom': 'Griseo'
     }
@@ -103,7 +153,7 @@ treaty<typeof server>('localhost:3000', {
 ```
 
 All parameters that passed to fetch, will be passed to fetcher, which is an equivalent to:
-```typescript
+```typescript twoslash
 fetch('localhost:3000', {
     headers: {
         'X-Custom': 'Griseo'
@@ -118,8 +168,24 @@ headers may accepts the following as parameters:
 ### Headers Object
 If object is passed, then it will be passed to fetch directly
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+import { treaty } from '@elysiajs/eden'
+// ---cut---
+treaty<App>('localhost:3000', {
     headers: {
         'X-Custom': 'Griseo'
     }
@@ -129,8 +195,24 @@ treaty<typeof server>('localhost:3000', {
 ### Function
 You may specify a headers as a function to return custom headers based on condition
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+import { treaty } from '@elysiajs/eden'
+// ---cut---
+treaty<App>('localhost:3000', {
     headers(path, options) {
         if(path.startsWith('user'))
             return {
@@ -150,8 +232,24 @@ headers function accepts 2 parameters:
 ### Array
 You may define a headers function as an array if multiple condition is need.
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+import { treaty } from '@elysiajs/eden'
+// ---cut---
+treaty<App>('localhost:3000', {
     headers: [
       (path, options) => {
         if(path.startsWith('user'))
@@ -173,13 +271,16 @@ Eden Treaty will prioritize the order headers if duplicated as follows:
 3. fetch - Passed in `config.fetch.headers`
 
 For example, for the following example:
-```typescript
-const api = treaty<typeof server>('localhost:3000', {
-    fetch: {
-        headers: {
-            authorization: 'Bearer Kosma'
-        }
-    },
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+    .get('/profile', 'a')
+
+type App = typeof app
+// ---cut---
+const api = treaty<App>('localhost:3000', {
     headers: {
         authorization: 'Bearer Aponia'
     }
@@ -193,8 +294,8 @@ api.profile.get({
 ```
 
 This will be results in:
-```typescript
-fetch('localhost:3000', {
+```typescript twoslash
+fetch('http://localhost:3000', {
     headers: {
         authorization: 'Bearer Griseo'
     }
@@ -206,8 +307,16 @@ If inline function doesn't specified headers, then the result will be "**Bearer 
 ## Fetcher
 Provide a custom fetcher function instead of using an environment's default fetch.
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+    .get('/profile', 'a')
+
+type App = typeof app
+// ---cut---
+treaty<App>('localhost:3000', {
     fetcher(url, options) {
         return fetch(url, options)
     }
@@ -221,8 +330,16 @@ Intercept and modify fetch request before firing.
 
 You may return object to append the value to **RequestInit**.
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+    .get('/profile', 'a')
+
+type App = typeof app
+// ---cut---
+treaty<App>('localhost:3000', {
     onRequest(path, options) {
         if(path.startsWith('user'))
             return {
@@ -244,8 +361,16 @@ If value is returned, Eden Treaty will perform a **shallow merge** for returned 
 ### Array
 You may define an onRequest function as an array if multiple condition is need.
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+    .get('/profile', 'a')
+
+type App = typeof app
+// ---cut---
+treaty<App>('localhost:3000', {
     onRequest: [
       (path, options) => {
         if(path.startsWith('user'))
@@ -264,8 +389,16 @@ Eden Treaty will **run all functions** and even if the value is already returns.
 ## onResponse
 Intercept and modify fetch's response or return a new value.
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+    .get('/profile', 'a')
+
+type App = typeof app
+// ---cut---
+treaty<App>('localhost:3000', {
     onResponse(response) {
         if(response.ok)
             return response.json()
@@ -279,8 +412,16 @@ treaty<typeof server>('localhost:3000', {
 ### Array
 You may define an onResponse function as an array if multiple condition is need.
 
-```typescript
-treaty<typeof server>('localhost:3000', {
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+    .get('/profile', 'a')
+
+type App = typeof app
+// ---cut---
+treaty<App>('localhost:3000', {
     onResponse: [
         (response) => {
             if(response.ok)

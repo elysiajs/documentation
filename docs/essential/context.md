@@ -14,6 +14,72 @@ head:
         content: Context is information about each request from the client, unique to each request with a global mutable store. Context can be customized using state, decorate and derive.
 ---
 
+
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import { Elysia } from 'elysia'
+
+const demo1 = new Elysia()
+    .state('version', 1)
+    .get('/a', ({ store: { version } }) => version)
+    .get('/b', ({ store }) => store)
+    .get('/c', () => 'still ok')
+
+const demo2 = new Elysia()
+    // @ts-expect-error
+    .get('/error', ({ store }) => store.counter)
+    .state('version', 1)
+    .get('/', ({ store: { version } }) => version)
+
+const demo3 = new Elysia()
+    .derive(({ headers }) => {
+        const auth = headers['authorization']
+
+        return {
+            bearer: auth?.startsWith('Bearer ') ? auth.slice(7) : null
+        }
+    })
+    .get('/', ({ bearer }) => bearer ?? '12345')
+
+const demo4 = new Elysia()
+    .state('counter', 0)
+    .state('version', 1)
+    .state(({ version, ...store }) => ({
+        ...store,
+        elysiaVersion: 1
+    }))
+    // ✅ Create from state remap
+    .get('/elysia-version', ({ store }) => store.elysiaVersion)
+    // ❌ Excluded from state remap
+    .get('/version', ({ store }) => store.version)
+
+const setup = new Elysia({ name: 'setup' })
+    .decorate({
+        argon: 'a',
+        boron: 'b',
+        carbon: 'c'
+    })
+
+const demo5 = new Elysia()
+    .use(
+        setup
+            .prefix('decorator', 'setup')
+    )
+    .get('/', ({ setupCarbon }) => setupCarbon)
+
+const demo6 = new Elysia()
+    .use(setup.prefix('all', 'setup'))
+    .get('/', ({ setupCarbon }) => setupCarbon)
+
+const demo7 = new Elysia()
+    .state('counter', 0)
+    // ✅ Using reference, value is shared
+    .get('/', ({ store }) => store.counter++)
+    // ❌ Creating a new variable on primitive value, the link is lost
+    .get('/error', ({ store: { counter } }) => counter)
+
+</script>
+
 # Context
 
 Context is a request information passed to a [route handler](/handler).
@@ -65,17 +131,25 @@ If we are familiar with frontend libraries like React, Vue, or Svelte, there's a
 
 - **state** is a function to assign an initial value to **store**, which could be mutated later.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
     .state('version', 1)
-    .get('/', ({ store: { version } }) => version)
+    .get('/a', ({ store: { version } }) => version)
+                // ^?
+    .get('/b', ({ store }) => store)
+    .get('/c', () => 'still ok')
+    .listen(3000)
 ```
+
+<Playground :elysia="demo1" />
 
 Once **state** is called, value will be added to **store** property, and can be used in handler.
 
-```typescript
+```typescript twoslash
+// @errors: 2339
+
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -85,6 +159,8 @@ new Elysia()
     // ✅ Because we assigned a counter before, we can now access it
     .get('/', ({ store }) => store.counter)
 ```
+
+<Playground :elysia="demo2" />
 
 ::: tip
 Beware that we cannot use state value before assign.
@@ -100,8 +176,14 @@ The difference is that the value should be read-only and not reassigned later.
 
 This is an ideal way to assign additional functions, singleton, or immutable property to all handlers.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
+
+class Logger {
+    log(value: string) {
+        console.log(value)
+    }
+}
 
 new Elysia()
     .decorate('logger', new Logger())
@@ -121,7 +203,7 @@ Instead of assign before server started, **derive** assigns when request happens
 
 Allowing us to "derive" (create a new property based on existing property).
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -134,6 +216,8 @@ new Elysia()
     })
     .get('/', ({ bearer }) => bearer)
 ```
+
+<Playground :elysia="demo3" />
 
 Because **derive** is assigned once a new request starts, **derive** can access Request properties like **headers**, **query**, **body** where **store**, and **decorate** can't.
 
@@ -159,8 +243,14 @@ Where **derive** can be only used with **remap** because it depends on existing 
 
 We can use **state**, and **decorate** to assign a value using a key-value pattern.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
+
+class Logger {
+    log(value: string) {
+        console.log(value)
+    }
+}
 
 new Elysia()
     .state('counter', 0)
@@ -176,11 +266,12 @@ Assigning multiple properties is better contained in an object for a single assi
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia().decorate({
-    logger: new Logger(),
-    trace: new Trace(),
-    telemetry: new Telemetry()
-})
+new Elysia()
+    .decorate({
+        logger: new Logger(),
+        trace: new Trace(),
+        telemetry: new Telemetry()
+    })
 ```
 
 The object offers a less repetitive API for setting multiple values.
@@ -193,7 +284,8 @@ Allowing us to create a new value from existing value like renaming or removing 
 
 By providing a function, and returning an entirely new object to reassign the value.
 
-```typescript
+```typescript twoslash
+// @errors: 2339
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -204,10 +296,12 @@ new Elysia()
         elysiaVersion: 1
     }))
     // ✅ Create from state remap
-    .get('/', ({ store }) => store.elysiaVersion)
+    .get('/elysia-version', ({ store }) => store.elysiaVersion)
     // ❌ Excluded from state remap
-    .get('/', ({ store }) => store.version)
+    .get('/version', ({ store }) => store.version)
 ```
+
+<Playground :elysia="demo4" />
 
 It's a good idea to use state remap to create a new initial value from the existing value.
 
@@ -223,7 +317,9 @@ To provide a smoother experience, some plugins might have a lot of property valu
 
 The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
 
-```ts
+```ts twoslash
+import { Elysia } from 'elysia'
+
 const setup = new Elysia({ name: 'setup' })
     .decorate({
         argon: 'a',
@@ -236,8 +332,10 @@ const app = new Elysia()
         setup
             .prefix('decorator', 'setup')
     )
-    .get('/', ({ setupCarbon }) => setupCarbon)
+    .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
+
+<Playground :elysia="demo5" />
 
 Allowing us to bulk remap a property of the plugin effortlessly, preventing the name collision of the plugin.
 
@@ -245,10 +343,19 @@ By default, **affix** will handle both runtime, type-level code automatically, r
 
 In some condition, we can also remap `all` property of the plugin:
 
-```ts
+```ts twoslash
+import { Elysia } from 'elysia'
+
+const setup = new Elysia({ name: 'setup' })
+    .decorate({
+        argon: 'a',
+        boron: 'b',
+        carbon: 'c'
+    })
+
 const app = new Elysia()
-    .use(setup.prefix('all', 'setup'))
-    .get('/', ({ setupCarbon }) => setupCarbon)
+    .use(setup.prefix('all', 'setup')) // [!code ++]
+    .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
 
 ## Reference and value
@@ -259,7 +366,7 @@ When accessing the property from JavaScript, if we define a primitive value from
 
 For example:
 
-```typescript
+```typescript twoslash
 const store = {
     counter: 0
 }
@@ -272,7 +379,7 @@ We can use **store.counter** to access and mutate the property.
 
 However, if we define a counter as a new value
 
-```typescript
+```typescript twoslash
 const store = {
     counter: 0
 }
@@ -288,7 +395,7 @@ Once a primitive value is redefined as a new variable, the reference **"link"** 
 
 This can apply to `store`, as it's a global mutable object instead.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -298,3 +405,5 @@ new Elysia()
     // ❌ Creating a new variable on primitive value, the link is lost
     .get('/error', ({ store: { counter } }) => counter)
 ```
+
+<Playground :elysia="demo7" />

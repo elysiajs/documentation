@@ -16,166 +16,75 @@ head:
 
 # Scope
 
-As mentioned, global Lifecycle and Schema apply to every route after the registration, allowing the use of multiple routes.
+<script setup>
+import Playground from '../../components/nearl/playground.vue'
+import Elysia from 'elysia'
 
-However, in a real-world scenario, the global event is hard to trace and control properly. This is why Elysia has an encapsulation scope to ensure that the event will only apply to a certain group of routes.
+const demo1 = new Elysia()
+    .post('/student', 'Rikuhachima Aru')
 
-## Guard
-
-Guard allows us to apply hook and schema into multiple routes all at once.
-
-```typescript
-import { Elysia, t } from 'elysia'
-
-new Elysia()
-    .guard( // [!code ++]
-        { // [!code ++]
-            body: t.Object({ // [!code ++]
-                username: t.String(), // [!code ++]
-                password: t.String() // [!code ++]
-            }) // [!code ++]
-        }, // [!code ++]
-        (app) => // [!code ++]
-            app
-                .post('/sign-up', ({ body }) => signUp(body))
-                .post('/sign-in', ({ body }) => signIn(body), {
-                    beforeHandle: isUserExists
-                })
-    )
-    .get('/', () => 'hi')
-    .listen(3000)
-```
-
-This code applies validation for `body` to both '/sign-in' and '/sign-up' instead of inlining the schema one by one but applies not to '/'.
-
-We can summarize the route validation as the following:
-| Path | Has validation |
-| ------- | ------------- |
-| /sign-up | ✅ |
-| /sign-in | ✅ |
-| / | ❌ |
-
-Guard accepts the same parameter as inline hook, the only difference is that you can apply hook to multiple routes in the scope.
-
-This means that the code above is translated into:
-
-```typescript
-import { Elysia, t } from 'elysia'
-
-new Elysia()
-    .post('/sign-up', ({ body }) => signUp(body), {
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
-    })
-    .post('/sign-in', (({ body }) => signIn(body), {
-        beforeHandle: isUserExists,
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
-    })
-    .get('/', () => 'hi')
-    .listen(3000)
-```
-
-## Grouped Guard
-
-We can use a group with prefixes by providing 3 parameters to the group.
-
-1. Prefix - Route prefix
-2. Guard - Schema
-3. Scope - Elysia app callback
-
-With the same API as guard apply to the 2nd parameter, instead of nesting group and guard together.
-
-```typescript
-// From nested group guard
-app.group('/v1', (app) =>
-    app.guard(
-        {
-            body: t.Literal('Rikuhachima Aru')
-        },
-        (app) => app.get('/student', () => 'Rikuhachima Aru')
-    )
-)
-
-// Remove the guard
-app.group(
-    '/v1',
-    (app) => app.guard( // [!code --]
-    {
-        body: t.Literal('Rikuhachima Aru')
-    },
-    (app) => app.get('/student', () => 'Rikuhachima Aru')
-    ) // [!code --]
-)
-
-// Inline to group 2nd parameter instead
-app.group(
-    '/v1',
-    {
-        body: t.Literal('Rikuhachima Aru')
-    },
-    (app) => app.get('/student', () => 'Rikuhachima Aru')
-)
-```
-
-## Plugin
-
-By default plugin will only **apply hook to itself and descendants** only.
-
-If the hook is registered in a plugin, instances that inherit the plugin will **NOT** inherit hooks and schema.
-
-```typescript
-const plugin = new Elysia()
-    .onBeforeHandle(() => {
-        console.log('hi')
-    })
-    .get('/child', () => 'log hi')
-
-const main = new Elysia()
-    .use(plugin)
-    .get('/parent', () => 'not log hi')
-```
-
-To apply hook to globally, we need to specify hook as global.
-```typescript
-const plugin = new Elysia()
+const plugin2 = new Elysia()
     .onBeforeHandle({ as: 'global' }, () => {
-        console.log('hi')
+        return 'hi'
     })
-    .get('/child', () => 'log hi')
+    .get('/child', () => 'child')
 
-const main = new Elysia()
-    .use(plugin)
-    .get('/parent', () => 'log hi')
-```
+const demo2 = new Elysia()
+    .use(plugin2)
+    .get('/parent', () => 'parent')
 
+const mock2 = {
+    '/child': {
+        'GET': 'hi'
+    },
+    '/parent': {
+        'GET': 'hi'
+    }
+}
+
+const plugin3 = new Elysia()
+    .onBeforeHandle({ as: 'global' }, () => {
+        return 'overwrite'
+    })
+
+const demo3 = new Elysia()
+    .guard(app => app
+        .use(plugin3)
+        .get('/inner', () => 'inner')
+    )
+    .get('/outer', () => 'outer')
+
+const mock3 = {
+    '/inner': {
+        'GET': 'overwrite'
+    },
+    '/outer': {
+        'GET': 'outer'
+    }
+}
+</script>
+
+By default, hook and schema is scope to current instance only not global.
+
+Elysia has an encapsulation scope for better versatility control of life-cycle.
 
 ## Hook type
-Starting from Elysia 1.0 introduce a **hook type**, to specify if the hook should be local-only, or global.
+Hook type is to specify the scope of hook whether is should be encapsulated or global.
 
 Elysia hook type are as the following:
-- local (default) - apply to only current instance and descendant only
-- scoped - apply to only 1 ascendant, current instance and descendants
-- global - apply to all instance that apply the plugin (all ascendants, current, and descendants)
+- **local** (default) - apply to only current instance and descendant only
+- **scoped** - apply to parent, current instance and descendants
+- **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
 
 If not specified, hook is local by default.
-
-::: tip
-Starting from Elysia 1.0 hook is local by default while Elysia < 1.0 will be global only.
-
-This is a breaking change.
-:::
 
 To specify hook's type, add a `{ as: hookType }` to hook.
 
 To apply hook to globally, we need to specify hook as global.
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 const plugin = new Elysia()
-    .onBeforeHandle(() => { // [!code --]
     .onBeforeHandle({ as: 'global' }, () => { // [!code ++]
         console.log('hi')
     })
@@ -188,7 +97,9 @@ const main = new Elysia()
 
 Let's create a plugin to illustrate how hook type work.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 // ? Value base on table value provided below
 const type = 'local'
 
@@ -219,17 +130,86 @@ By changing the `type` value, the result should be as follows:
 | 'scoped'    | ✅    | ✅       | ✅     | ❌   | 
 | 'global'   | ✅    | ✅       | ✅     | ✅   | 
 
-## guard
+## Guard
+
+Guard allows us to apply hook and schema into multiple routes all at once.
+
+```typescript twoslash
+const signUp = <T>(a: T) => a
+const signIn = <T>(a: T) => a
+const isUserExists = <T>(a: T) => a
+// ---cut---
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard(
+        { // [!code ++]
+            body: t.Object({ // [!code ++]
+                username: t.String(), // [!code ++]
+                password: t.String() // [!code ++]
+            }) // [!code ++]
+        }, // [!code ++]
+        (app) => // [!code ++]
+            app
+                .post('/sign-up', ({ body }) => signUp(body))
+                .post('/sign-in', ({ body }) => signIn(body), {
+                                                     // ^?
+                    beforeHandle: isUserExists
+                })
+    )
+    .get('/', () => 'hi')
+    .listen(3000)
+```
+
+This code applies validation for `body` to both '/sign-in' and '/sign-up' instead of inlining the schema one by one but applies not to '/'.
+
+We can summarize the route validation as the following:
+| Path | Has validation |
+| ------- | ------------- |
+| /sign-up | ✅ |
+| /sign-in | ✅ |
+| / | ❌ |
+
+Guard accepts the same parameter as inline hook, the only difference is that you can apply hook to multiple routes in the scope.
+
+This means that the code above is translated into:
+
+```typescript twoslash
+const signUp = <T>(a: T) => a
+const signIn = <T>(a: T) => a
+const isUserExists = (a: any) => a
+// ---cut---
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/sign-up', ({ body }) => signUp(body), {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+    .post('/sign-in', ({ body }) => body, {
+        beforeHandle: isUserExists,
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+    .get('/', () => 'hi')
+    .listen(3000)
+```
+
+### Guard scope
 Guard is a hard limit for hook type.
 
 Any life-cycle defined in `guard`, and `group` **will always** be contained in scope, even if hook type is **global**
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
-    .beforeHandle({ as: 'global' }, () => {
-        console.log('hi')
+    .onBeforeHandle({ as: 'global' }, () => {
+        return 'overwrite'
     })
 
 const app = new Elysia()
@@ -241,8 +221,110 @@ const app = new Elysia()
     .listen(3000)
 ```
 
+<Playground :elysia="demo3" :mock="mock3" />
+
 Evaluating the route, should logs as follows:
-| route       | log  |
-| ----------- | ---- |
-| /inner      | ❌   |
-| /outer      | ✅   |
+| route       | response  |
+| ----------- | --------- |
+| /inner      | overwrite |
+| /outer      | outer     |
+
+## Grouped Guard
+
+We can use a group with prefixes by providing 3 parameters to the group.
+
+1. Prefix - Route prefix
+2. Guard - Schema
+3. Scope - Elysia app callback
+
+With the same API as guard apply to the 2nd parameter, instead of nesting group and guard together.
+
+Consider the following example:
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group('/v1', (app) =>
+        app.guard(
+            {
+                body: t.Literal('Rikuhachima Aru')
+            },
+            (app) => app.post('/student', ({ body }) => body)
+                                            // ^?
+        )
+    )
+    .listen(3000)
+```
+
+
+From nested groupped guard, we may merge group and guard together by providing guard scope to 2nd parameter of group:
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group(
+        '/v1',
+        (app) => app.guard( // [!code --]
+        {
+            body: t.Literal('Rikuhachima Aru')
+        },
+        (app) => app.post('/student', ({ body }) => body)
+        ) // [!code --]
+    )
+    .listen(3000)
+```
+
+Which results in the follows syntax:
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group(
+        '/v1',
+        {
+            body: t.Literal('Rikuhachima Aru')
+        },
+        (app) => app.post('/student', ({ body }) => body)
+                                       // ^?
+    )
+    .listen(3000)
+```
+
+<Playground :elysia="demo1" />
+
+## Plugin
+
+By default plugin will only **apply hook to itself and descendants** only.
+
+If the hook is registered in a plugin, instances that inherit the plugin will **NOT** inherit hooks and schema.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .onBeforeHandle(() => {
+        console.log('hi')
+    })
+    .get('/child', () => 'log hi')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'not log hi')
+```
+
+To apply hook to globally, we need to specify hook as global.
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .onBeforeHandle({ as: 'global' }, () => {
+        return 'hi'
+    })
+    .get('/child', () => 'child')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'parent')
+```
+
+<Playground :elysia="demo2" :mock="mock2" />

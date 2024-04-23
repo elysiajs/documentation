@@ -24,7 +24,7 @@ Bun includes a built-in [test runner](https://bun.sh/docs/cli/test) that offers 
 
 Create **test/index.test.ts** in the root of project directory with the following:
 
-```typescript
+```typescript twoslash
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
@@ -63,13 +63,13 @@ We can also use other testing libraries like Jest or testing library to create E
 
 We may use Eden Treaty to create an end-to-end type safety test for Elysia server as follows:
 
-```typescript
+```typescript twoslash
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
-const app = new Elysia().get('/hello', () => 'hi')
+const app = new Elysia().get('/hello', 'hi')
 
 const api = treaty(app)
 
@@ -77,7 +77,8 @@ describe('Elysia', () => {
     it('return a response', async () => {
         const { data, error } = await api.hello.get()
 
-        expect(response).toBe('hi')
+        expect(data).toBe('hi')
+              // ^?
     })
 })
 ```

@@ -27,7 +27,18 @@ This page is a guide to use Elysia with MVC pattern.
 
 **DO NOT** create a separate controller, use Elysia itself as a controller instead.
 
-```typescript
+```typescript twoslash
+const Controller = {
+    hi(context: any) {}
+}
+
+const Service = {
+    do1(v?: string) {},
+    do2(v?: string) {}
+}
+// ---cut---
+import { Elysia } from 'elysia'
+ 
 // ❌ don't:
 new Elysia()
     .get('/', Controller.hi)
@@ -35,7 +46,7 @@ new Elysia()
 // ✅ do:
 new Elysia()
     // Get what you need
-    .get('/', ({ name }) => {
+    .get('/', ({ query: { name } }) => {
         Service.do1(name)
         Service.do2(name)
     })
@@ -51,8 +62,16 @@ We recommended using object destructuring to extract what you need and pass it t
 
 By passing an entire `Controller.method` to Elysia is an equivalent of having 2 controllers passing data back and forth. It's against the design of framework and MVC pattern itself.
 
-```typescript
+```typescript twoslash
+const Service = {
+    doStuff(stuff?: string) {
+        return stuff
+    }
+}
+// ---cut---
 // ❌ don't:
+import { Elysia, type Context } from 'elysia'
+
 abstract class Controller {
     static root(context: Context<any, any>) {
         return Service.doStuff(context.stuff)
@@ -84,7 +103,25 @@ export class AppController {
 ```
 
 Instead treaty an Elysia instance as a controller itself.
-```typescript
+```typescript twoslash
+// @filename: service.ts
+import { Elysia } from 'elysia'
+
+export const HiService = new Elysia()
+    .decorate({
+        stuff: 'a',
+        Hi: {
+            doStuff(stuff: string) {
+                return stuff
+            }
+        }
+    })
+
+// @filename: index.ts
+// ---cut---
+import { Elysia } from 'elysia'
+import { HiService } from './service'
+
 // ✅ do:
 new Elysia()
     .use(HiService)
@@ -95,7 +132,25 @@ new Elysia()
 
 If you would like to call or perform unit test on controller, use [Elysia.handle](/essential/route.html#handle).
 
-```typescript
+```typescript twoslash
+// @filename: service.ts
+import { Elysia } from 'elysia'
+
+export const HiService = new Elysia()
+    .decorate({
+        stuff: 'a',
+        Hi: {
+            doStuff(stuff: string) {
+                return stuff
+            }
+        }
+    })
+
+// @filename: index.ts
+// ---cut---
+import { Elysia } from 'elysia'
+import { HiService } from './service'
+
 const app = new Elysia()
     .use(HiService)
     .get('/', ({ Hi, stuff }) => {
@@ -108,15 +163,31 @@ app.handle(new Request('http://localhost/'))
 
 Or even better, use [Eden](/eden/treaty/unit-test.html) with end-to-end type safety.
 
-```typescript
+```typescript twoslash
+// @filename: service.ts
+import { Elysia } from 'elysia'
+
+export const HiService = new Elysia()
+    .decorate({
+        stuff: 'a',
+        Hi: {
+            doStuff(stuff: string) {
+                return stuff
+            }
+        }
+    })
+
+// @filename: index.ts
+// ---cut---
+
 import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
+import { HiService } from './service'
+
 const AController = new Elysia()
     .use(HiService)
-    .get('/', ({ Hi, stuff }) => {
-        Hi.doStuff(stuff)
-    })
+    .get('/', ({ Hi, stuff }) => Hi.doStuff(stuff))
 
 const controller = treaty(AController)
 const { data, error } = await controller.index.get()
@@ -127,19 +198,23 @@ Service is a set of utility/helper functions for each module, in our case, Elysi
 
 Any logic that can be decoupled from controller may be live inside a **Service**.
 
-```typescript
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
 abstract class Service {
-    static fibo(number: number) {
+    static fibo(number: number): number {
         if(number < 2)
             return number
 
-        return fibo(number - 1) + fibo(number - 2)
+        return Service.fibo(number - 1) + Service.fibo(number - 2)
     }
 }
 
 new Elysia()
     .get('/fibo', ({ body }) => {
         return Service.fibo(body)
+    }, {
+        body: t.Numeric()
     })
 ```
 
@@ -147,22 +222,24 @@ If your service doesn't need to store a property, you may use `abstract class` a
 
 But if your service involve local mutation eg. caching, you may want to initiate an instance instead.
 
-```typescript
-class Service {
-    public cache = new Set<number, number>()
+```typescript twoslash
+import { Elysia, t } from 'elysia'
 
-    fibo(number: number) {
+class Service {
+    public cache = new Map<number, number>()
+
+    fibo(number: number): number {
         if(number < 2)
             return number
 
         if(this.cache.has(number))
-            return this.cache.get(number)
+            return this.cache.get(number)!
 
-        const a = fibo(number - 1)
-        const b = fibo(number - 2)
+        const a = this.fibo(number - 1)
+        const b = this.fibo(number - 2)
 
-        this.cache.set(number - 1) = a
-        this.cache.set(number - 2) = b
+        this.cache.set(number - 1, a)
+        this.cache.set(number - 2, b)
 
         return a + b
     }
@@ -172,8 +249,10 @@ new Elysia()
     .decorate({
         Service: new Service()
     })
-    .get('/fibo', ({ body, Service }) => {
+    .get('/fibo', ({ Service, body }) => {
         return Service.fibo(body)
+    }, {
+        body: t.Numeric()
     })
 ```
 
@@ -202,20 +281,24 @@ If your service are going to be used in multiple instance, or may require some p
 
 Elysia handle [plugin deduplication](/essential/plugin.html#plugin-deduplication) by default so you don't have to worry about performance, as it's going to be Singleton if you specified a **"name"** property.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 const AuthService = new Elysia({ name: 'Service.Auth' })
-    .decorate({
-        Auth: {
-            isSignIn: (name: string) => name !== null
-        }
-    })
     .derive({ as: 'scoped' }, ({ cookie: { session } }) => {
         return {
             Auth: {
-                user: session.value,
+                user: session.value
             }
         }
     })
+    .macro(({ onBeforeHandle }) => ({
+        isSignIn(value: boolean) {
+            onBeforeHandle(({ Auth, error }) => {
+                if (!Auth?.user || !Auth.user) return error(401)
+            })
+        }
+    }))
 
 const UserController = new Elysia()
     .use(AuthService)
@@ -231,7 +314,7 @@ Model or [DTO (Data Transfer Object)](https://en.wikipedia.org/wiki/Data_transfe
 We recommended using [Elysia reference model](/validation/reference-model.html#reference-model) or creating an object or class of DTOs for each module.
 
 1. Using Elysia's model reference
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 const AuthModel = new Elysia({ name: 'Model.Auth' })
@@ -247,13 +330,11 @@ const AuthModel = new Elysia({ name: 'Model.Auth' })
 const UserController = new Elysia({ prefix: '/auth' })
     .use(AuthModel)
     .post('/sign-in', async ({ body, cookie: { session } }) => {
-        session.value = await UserService.signIn()
-
         return {
             success: true
         }
     }, {
-        body: 'user.sign'
+        body: 'auth.sign'
     })
 ```
 
@@ -270,29 +351,33 @@ Elysia support JSX as template engine using [Elysia HTML plugin](/plugins/html)
 You **may** create a rendering service or embedding view directly is up to you, but according to MVC pattern, you are likely to create a seperate service for handling view instead.
 
 1. Embedding View directly, this may be useful if you have to render multiple view, eg. using [HTMX](https://htmx.org):
-```tsx
+```tsx twoslash
+import React from 'react'
+// ---cut---
+import { Elysia } from 'elysia'
+
 new Elysia()
     .get('/', ({ query: { name } }) => {
-        doStuff(name)
-
         return (
             <h1>hello {name}</h1>
         )
-    )
+    })
 ```
 
 2. Dedicated View as a service:
-```tsx
+```tsx twoslash
+import React from 'react'
+// ---cut---
+import { Elysia } from 'elysia'
+
 abstract class Render {
-    static root(name: string) {
+    static root(name?: string) {
         return <h1>hello {name}</h1>
     }
 }
 
 new Elysia()
     .get('/', ({ query: { name } }) => {
-        doStuff(name)
-
         return Render.root(name)
     })
 ```

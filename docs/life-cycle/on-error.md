@@ -28,7 +28,9 @@ Designed to capture and resolve an unexpected error, its recommended to use on E
 
 Elysia catches all the errors thrown in the handler, classifies the error code, and pipes them to `onError` middleware.
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 new Elysia()
     .onError(({ code, error }) => {
         return new Response(error.toString())
@@ -48,7 +50,7 @@ It's important that `onError` must be called before the handler we want to apply
 
 For example, returning custom 404 messages:
 
-```typescript
+```typescript twoslash
 import { Elysia, NotFoundError } from 'elysia'
 
 new Elysia()
@@ -62,7 +64,7 @@ new Elysia()
     .post('/', () => {
         throw new NotFoundError()
     })
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Context
@@ -94,7 +96,9 @@ Elysia supports custom error both in the type-level and implementation level.
 
 To provide a custom error code, we can use `Elysia.error` to add a custom error code, helping us to easily classify and narrow down the error type for full type safety with auto-complete as the following:
 
-```typescript
+```typescript twoslash
+import { Elysia } from 'elysia'
+
 class MyError extends Error {
     constructor(public message: string) {
         super(message)
@@ -110,7 +114,7 @@ new Elysia()
             // With auto-completion
             case 'MyError':
                 // With type narrowing
-                // Error is typed as CustomError
+                // Hover to see error is typed as `CustomError`
                 return error
         }
     })
@@ -125,7 +129,11 @@ Properties of `error` code is based on the properties of `error`, the said prope
 
 Same as others life-cycle, we provide an error into an [scope](/essential/scope) using guard:
 
-```typescript
+```typescript twoslash
+const isSignIn = (headers: Headers): boolean => true
+// ---cut---
+import { Elysia } from 'elysia'
+
 new Elysia()
     .get('/', () => 'Hello', {
         beforeHandle({ set, request: { headers } }) {

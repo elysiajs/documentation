@@ -26,5 +26,5 @@ new Elysia()
                 status: 404
             })
     })
-    .listen(8080)
+    .listen(3000)
 ```

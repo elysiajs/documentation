@@ -42,7 +42,7 @@ const app = new Elysia()
             }
         })
     )
-    .listen(8080)
+    .listen(3000)
 ```
 
 Accessing `/graphql` in the browser (GET request) would show you a GraphiQL instance for the GraphQL-enabled Elysia server.
@@ -82,7 +82,7 @@ const app = new Elysia()
             }
         })
     )
-    .listen(8080)
+    .listen(3000)
 ```
 
 ## Config

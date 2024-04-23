@@ -32,8 +32,34 @@ Both will be registered after the server is started.
 ## Deferred Module
 The deferred module is an async plugin that can be registered after the server is started.
 
-```typescript
+```typescript twoslash
+// @filename: files.ts
+export const loadAllFiles = async () => <string[]>[]
+
+// @filename: plugin.ts
+// ---cut---
 // plugin.ts
+import { Elysia } from 'elysia'
+import { loadAllFiles } from './files'
+
+export const loadStatic = async (app: Elysia) => {
+    const files = await loadAllFiles()
+
+    files.forEach((file) => app
+        .get(file, () => Bun.file(file))
+    )
+
+    return app
+}
+```
+
+And in the main file:
+```typescript twoslash
+// @filename: plugin.ts
+import { Elysia } from 'elysia'
+
+export const loadAllFiles = async () => <string[]>[]
+
 export const loadStatic = async (app: Elysia) => {
     const files = await loadAllFiles()
 
@@ -44,7 +70,10 @@ export const loadStatic = async (app: Elysia) => {
     return app
 }
 
-// index.ts
+// @filename: index.ts
+// ---cut---
+// plugin.ts
+import { Elysia } from 'elysia'
 import { loadStatic } from './plugin'
 
 const app = new Elysia()
@@ -53,22 +82,19 @@ const app = new Elysia()
 
 Elysia static plugin is also a deferred module, as it loads files and registers files path asynchronously.
 
-To ensure module registration before the server starts, we can use `await` on the deferred module.
-
-```typescript
-// index.ts
-import { loadStatic } from './plugin'
-
-const app = new Elysia()
-    .use(await loadStatic)
-```
-
 ## Lazy Load Module
 Same as the async plugin, the lazy-load module will be registered after the server is started.
 
 A lazy-load module can be both sync or async function, as long as the module is used with `import` the module will be lazy-loaded.
 
-```typescript
+```typescript twoslash
+// @filename: plugin.ts
+import { Elysia } from 'elysia'
+
+export default new Elysia()
+
+// @filename: index.ts
+// ---cut---
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -77,13 +103,14 @@ const app = new Elysia()
 
 Using module lazy-loading is recommended when the module is computationally heavy and/or blocking.
 
+To ensure module registration before the server starts, we can use `await` on the deferred module.
+
 ## Testing
 In a test environment, we can use `await app.modules` to wait for deferred and lazy-loading modules.
 
-```typescript
-import { Elysia } from 'elysia'
-
+```typescript twoslash
 import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
 
 describe('Modules', () => {
     it('inline async', async () => {
@@ -94,8 +121,11 @@ describe('Modules', () => {
 
         await app.modules
 
-        const res = await app.handle(req('/async')).then((r) => r.text())
+        const res = await app
+            .handle(new Request('http://localhost/async'))
+            .then((r) => r.text())
 
         expect(res).toBe('async')
     })
+})
 ```
