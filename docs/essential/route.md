@@ -19,8 +19,8 @@ import Playground from '../../components/nearl/playground.vue'
 import { Elysia } from 'elysia'
 
 const demo1 = new Elysia()
-    .get('/', () => 'Landing')
-    .get('/hello', () => 'Hi')
+    .get('/', () => 'hello')
+    .get('/hi', () => 'hi')
 
 const demo2 = new Elysia()
     .get('/', () => 'hello')
@@ -32,11 +32,12 @@ const demo3 = new Elysia()
     .route('M-SEARCH', '/m-search', () => 'connect') 
 
 const demo4 = new Elysia()
-    .all('/', () => 'hi')
+    .get('/', () => 'hi')
+    .post('/', () => 'hi')
 
 const demo5 = new Elysia()
     .get('/', () => 'hello')
-    .get('/hi', ({ error }) => error(404))
+    .get('/hi', ({ error }) => error(404, 'Route not found :('))
 </script>
 
 # Route

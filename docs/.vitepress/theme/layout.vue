@@ -5,6 +5,7 @@ import { nextTick, provide } from 'vue'
 import { useData } from 'vitepress'
 import useDark from '../../../components/midori/use-dark'
 import Ray from '../../../components/midori/ray.vue'
+// import Header from './header.vue'
 
 const isDark = useDark()
 const { isDark: darkTheme } = useData()
@@ -55,6 +56,9 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
                 static
             />
         </template>
+        <!-- <template #nav-bar-title-after>
+            <Header />
+        </template> -->
     </DefaultTheme.Layout>
 </template>
 

@@ -7,7 +7,7 @@ head:
 
     - - meta
       - name: 'description'
-        content: A path or pathname is an identifier to locate resources of a server. Elysia uses the path and method to look up the correct resource. Paths in Elysia can be categorized into 3 types: Static, Dynamic and Wildcard.
+        content: A path or pathname is an identifier to locate resources of a server. Elysia uses the path and method to look up the correct resource. Paths in Elysia can be categorized into 3 types. Static, Dynamic and Wildcard.
 
     - - meta
       - property: 'og:description'
