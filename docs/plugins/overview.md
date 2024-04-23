@@ -52,6 +52,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - secure Elysia apps with various HTTP headers
 -   [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - Vite SSR plugin using Elysia server
 -   [OAuth2](https://github.com/bogeychan/elysia-oauth2) - handle OAuth 2.0 authorization code flow
+-   [Elysia OpenID Client](https://github.com/macropygia/elysia-openid-client) - OpenID client based on [openid-client](https://github.com/panva/node-openid-client)
 -   [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple, lightweight rate limiter
 -   [Logysia](https://github.com/tristanisham/logysia) - classic logging middleware
 -   [Logestic](https://github.com/cybercoder-naj/logestic) - An advanced and customisable logging library for ElysiaJS
