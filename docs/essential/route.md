@@ -49,8 +49,8 @@ We can define a route by calling a **method named after HTTP verbs**, passing a 
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'Landing')
-    .get('/hello', () => 'Hi')
+    .get('/', () => 'hello')
+    .get('/hi', () => 'hi')
     .listen(3000)
 ```
 
