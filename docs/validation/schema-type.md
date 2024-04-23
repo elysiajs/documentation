@@ -202,7 +202,7 @@ fetch('https://elysiajs.com/id/1')
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/id/:id', ({ query }) => query, {
+    .get('/id/:id', ({ params }) => params, {
         params: t.Object({
             id: t.Numeric()
         })

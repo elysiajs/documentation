@@ -148,7 +148,7 @@ import { Elysia } from 'elysia'
 import { cron, Patterns } from '@elysiajs/cron'
 
 const app = new Elysia()
-    use(
+    .use(
         cron({
             name: 'heartbeat',
             pattern: Patterns.everySecond(),
@@ -170,7 +170,7 @@ const app = new Elysia()
 
 Function  | Description
 ------------- | -------------
-`.everySenconds(2)`  |  Run the task every 2 seconds
+`.everySeconds(2)`  |  Run the task every 2 seconds
 `.everyMinutes(5)`  |  Run the task every 5 minutes
 `.everyHours(3)`  |  Run the task every 3 hours
 `.everyHoursAt(3, 15)`  |   Run the task every 3 hours at 15 minutes

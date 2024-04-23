@@ -27,6 +27,7 @@ html, body {
     --vp-custom-block-tip-border: #dcfce7;
     --vp-custom-block-tip-text: #15803d;
     --vp-c-brand-nav-active: color-mix(in srgb, var(--vp-c-brand-light) 15%, transparent 100%);
+    --vp-nav-logo-height: 28px;
 }
 
 .dark {
@@ -62,6 +63,14 @@ button.copy::after {
 .VPNavBarTitle.has-sidebar .title {
     border: 0;
 }
+
+/* .VPNavBarTitle > a > span {
+    @apply hidden;
+}
+
+.logo {
+    @apply hidden;
+} */
 
 #embedded-editor {
     @apply my-6 h-[720px] w-full rounded-lg border-0;

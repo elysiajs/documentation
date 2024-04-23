@@ -16,15 +16,15 @@ head:
 
 # Life Cycle
 
-Also knows as middleware with name in Express or Hook in Fastify.
+Also known as middleware with name in Express or Hook in Fastify.
 
 Imagine we want to return a text of HTML.
 
 We need to set **"Content-Type"** headers as **"text/html"** to for browser to render HTML.
 
-Explicitly specify that response is HTML could be repetitive if there are a lot of handlers, says ~200 endpoints.
+Explicitly specifying that response is HTML could be repetitive if there are a lot of handlers, says ~200 endpoints.
 
-We can see a duplicated code for just to specify that response is HTML.
+We can see a duplicated code for just specifying that response is HTML.
 
 But what if after we sent a response, we could detect if a response is an HTML string then append headers automatically?
 
@@ -46,7 +46,7 @@ Most of the events you are going to use are highlighted in the blue area but to 
 Elysia does the following for every request:
 
 1. **Request**
-    - Notify new event is received, providing only the most minimal context to reduce overhead
+    - Notify when a new event is received, providing only the most minimal context to reduce overhead
     - Best for:
         - Caching
         - Analytics
@@ -87,7 +87,7 @@ These events are designed to help you decouple code into smaller reusable pieces
 
 ## Hook
 
-We refer to each function that intercepts the life cycle event as **"hook"**, as the function hook into the lifecycle event.
+We refer to each function that intercepts the life cycle event as **"hook"**, as the function hooks into the lifecycle event.
 
 Hooks can be categorized into 2 types:
 
@@ -95,7 +95,7 @@ Hooks can be categorized into 2 types:
 2. Interceptor Hook: Execute on every route
 
 ::: tip
-The hook will accept the same Context as a handler, you can imagine you adding a route handler but at a specific point.
+The hook will accept the same Context as a handler, you can imagine adding a route handler but at a specific point.
 :::
 
 ## Local Hook

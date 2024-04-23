@@ -19,12 +19,12 @@ import Playground from '../../components/nearl/playground.vue'
 import { Elysia } from 'elysia'
 
 const demo1 = new Elysia()
-    .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
+    .get('/', () => 'Landing')
+    .get('/hello', () => 'Hi')
 
 const demo2 = new Elysia()
     .get('/', () => 'hello')
-    .post('/hi', () => 'world')
+    .post('/hi', () => 'hi')
 
 const demo3 = new Elysia()
     .get('/get', () => 'hello')
@@ -32,13 +32,10 @@ const demo3 = new Elysia()
     .route('M-SEARCH', '/m-search', () => 'connect') 
 
 const demo4 = new Elysia()
-    .get('/', () => 'hello')
-    .post('/', () => 'hello')
-    .delete('/', () => 'hello')
+    .all('/', () => 'hi')
 
 const demo5 = new Elysia()
     .get('/', () => 'hello')
-    .post('/', () => 'hello')
     .get('/hi', ({ error }) => error(404))
 </script>
 
@@ -52,8 +49,8 @@ We can define a route by calling a **method named after HTTP verbs**, passing a 
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'Landing')
-    .get('/hello', () => 'Hi')
+    .get('/', () => 'hello')
+    .get('/hi', () => 'hi')
     .listen(3000)
 ```
 
