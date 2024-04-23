@@ -119,6 +119,8 @@ new Elysia()
     .listen(3000)
 ```
 
+This code ensures that the query must have **name** with a string value for every handler after it. The response should be listed as follows:
+
 <Playground
     :elysia="demo2"
     :mock="{
@@ -140,6 +142,4 @@ The response should be listed as follows:
 | /query        | error    |
 | /query?name=a | a        |
 
-As Lifecycle Event, it is important to remember that the order of Elysia's schema is stored as same as lifecycle, a queue, or first-in-first-out.
-
-Elysia **always** respects the order of code from top to bottom followed by the order of life-cycle event and validation schema.
+If multiple global schemas are defined for same property, the latest one will have the preference. If both local and global schemas are defined, the local one will have the preference.
