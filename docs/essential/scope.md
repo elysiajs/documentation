@@ -104,22 +104,22 @@ import { Elysia } from 'elysia'
 const type = 'local'
 
 const child = new Elysia()
-    .get('/child', () => 'hello')
+    .get('/child', () => 'hi')
 
 const current = new Elysia()
     .onBeforeHandle({ as: type }, () => {
         console.log('hi')
     })
     .use(child)
-    .get('/current', () => 'hello')
+    .get('/current', () => 'hi')
 
 const parent = new Elysia()
     .use(current)
-    .get('/parent', () => 'hello')
+    .get('/parent', () => 'hi')
 
 const main = new Elysia()
     .use(parent)
-    .get('/main', () => 'hello')
+    .get('/main', () => 'hi')
 ```
 
 By changing the `type` value, the result should be as follows:
@@ -328,3 +328,82 @@ const main = new Elysia()
 ```
 
 <Playground :elysia="demo2" :mock="mock2" />
+
+## Propagate
+Once plugin is `use`, it will demote a scope of itself for encapsulation.
+
+However, sometime we also want to persists the plugin, for example: reusing scope plugin.
+
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const subPlugin = new Elysia()
+    .derive({ as: 'scoped' }, () => ({ sub: 'hi' }))
+
+const plugin = new Elysia()
+    .use(subPlugin)
+    .get('/sub', ({ sub }) => sub)
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/main', ({ sub }) => sub)
+```
+
+In this example, we want to reuse `subPlugin` in `plugin` and apply to `main`.
+
+However, `scoped` is demote to `local` from applying to `plugin` cause it to not apply to `main`
+
+To illustrate, this is a scope of the `subPlugin` being apply to an instance.
+
+```
+subPlugin  ->  plugin  ->  main
+ (scoped)      (local)    (none)
+```
+
+To persists a plugin to `main`, we can promote a `local` scope into `scoped` by using `propagate`.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const subPlugin = new Elysia()
+    .derive({ as: 'scoped' }, () => ({ sub: 'hi' }))
+
+const plugin = new Elysia()
+    .use(subPlugin)
+    .propagate() // [!code ++]
+    .get('/sub', ({ sub }) => sub)
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/main', ({ sub }) => sub)
+```
+
+`propagate` will promote all `local` property into `scoped`, allowing it be applied to a parent instance.
+
+### Propagate order
+Elysia read code from top to bottom as same as `propagate`, so the order is important.
+
+`propagate` will apply **all the previous** property into `scoped`, if you want to declare a `local` property, consider applying it after `propagate` instead.
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const subPlugin = new Elysia()
+    .derive({ as: 'scoped' }, () => ({ sub: 'hi' }))
+
+const plugin = new Elysia()
+    .use(subPlugin)
+    .derive({ as: 'local' }, () => ({ propagated: 'hi' })) // [!code ++]
+    .propagate()
+    .derive({ as: 'local' }, () => ({ notPropagated: 'hi' })) // [!code ++]
+    .get('/sub', ({ sub }) => sub)
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/main', ({ sub }) => sub)
+    .get('/propagated', ({ propagated }) => propagated)
+    .get('/not-propagated', ({ notPropagated }) => notPropagated)
+```
+
+Here we can see that **propagated** derive is declared as `local` but is applied to main because it's called before `propagate` while **notPropagated** is not applied because it is defined after `propagate`.
