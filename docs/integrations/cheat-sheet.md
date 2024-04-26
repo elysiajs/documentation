@@ -147,8 +147,8 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', () => 'hi')
-    .get('/redirect', ({ set }) => {
-        set.redirect = '/'
+    .get('/redirect', ({ redirect }) => {
+        return redirect('/')
     })
     .listen(3000)
 ```

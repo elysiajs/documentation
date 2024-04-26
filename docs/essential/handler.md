@@ -163,15 +163,19 @@ new Elysia()
     .listen(3000)
 ```
 
-## set.redirect
+## redirect
 Redirect a request to another resource.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ set }) => {
-        set.redirect = 'https://youtu.be/whpVWVWBW4U?&t=8'
+    .get('/', ({ redirect }) => {
+        return redirect('https://youtu.be/whpVWVWBW4U?&t=8')
+    })
+    .get('/custom-status', ({ redirect }) => {
+        // You can also set custom status to redirect
+        return redirect('https://youtu.be/whpVWVWBW4U?&t=8', 302)
     })
     .listen(3000)
 ```
