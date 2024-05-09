@@ -39,7 +39,7 @@ const app = new Elysia()
     .trace(async ({ handle }) => {
         const { time, end } = await handle
 
-        console.log('beforeHandle took', (await end) - time)
+        console.log('handle took', (await end) - time)
     })
     .get('/', () => 'Hi')
     .listen(3000)
