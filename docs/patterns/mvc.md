@@ -102,7 +102,7 @@ export class AppController {
 }
 ```
 
-Instead treaty an Elysia instance as a controller itself.
+Instead treat an Elysia instance as a controller itself.
 ```typescript twoslash
 // @filename: service.ts
 import { Elysia } from 'elysia'
