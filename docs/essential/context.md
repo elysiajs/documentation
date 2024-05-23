@@ -94,6 +94,7 @@ Elysia context consists of:
 -   **params** - Elysia's path parameters parsed as JavaScript object
 -   **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
 -   **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
+-   **redirect** - A function to redirect a response
 -   **store** - A global mutable store for Elysia instance
 -   **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
 -   **set** - Property to apply to Response:

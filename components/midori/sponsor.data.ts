@@ -27,29 +27,34 @@ export default defineLoader({
             },
             body: JSON.stringify({
                 query: `{
-              user(login: "saltyaom") {
-                sponsorshipsAsMaintainer(
-                    first: 100,
-                ) {
-                  totalRecurringMonthlyPriceInDollars
-                  nodes {
-                    sponsorEntity {
-                      ... on User {
-                        login
-                        name
-                        avatarUrl
+                  user(login: "saltyaom") {
+                    sponsorshipsAsMaintainer(
+                        first: 100
+                    ) {
+                      totalRecurringMonthlyPriceInDollars
+                      nodes {
+                        sponsorEntity {
+                          ... on User {
+                            login
+                            name
+                            avatarUrl
+                          }
+                          ... on Organization {
+                            login
+                            name
+                            avatarUrl
+                          }
+                        }
+                        createdAt
+                        tier {
+                          isOneTime
+                          isCustomAmount
+                          monthlyPriceInDollars
+                        }
                       }
                     }
-                    createdAt
-                    tier {
-                      isOneTime
-                      isCustomAmount
-                      monthlyPriceInDollars
-                    }
                   }
-                }
-              }
-            }`
+                }`
             })
         }).then((x) => x.json())
 
