@@ -43,7 +43,7 @@ This is to ensure developers end up with a performant web server they intend to 
 
 ## Community plugins:
 
--   [BunSai](https://github.com/levii-pires/bunsai) - full-stack agnostic framework for the web, built upon Bun and Elysia
+-   [BunSai](https://github.com/levii-pires/bunsai2) - full-stack agnostic framework for the web, built upon Bun and Elysia
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication, simple and clean
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
 -   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node.js and Deno
