@@ -114,8 +114,8 @@ export default defineConfig({
         logo: '/assets/elysia.svg',
         nav: [
             {
-                text: 'Quick Start',
-                link: '/quick-start'
+                text: 'Cheat sheet',
+                link: '/integrations/cheat-sheet'
             },
             {
                 text: 'Plugins',
@@ -179,7 +179,11 @@ export default defineConfig({
                     {
                         text: 'Scope',
                         link: '/essential/scope'
-                    }
+                    },
+                    {
+                        text: 'What\'s next',
+                        link: '/essential/what-next'
+                    }                    
                 ]
             },
             {

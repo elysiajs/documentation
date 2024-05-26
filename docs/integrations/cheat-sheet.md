@@ -15,32 +15,41 @@ head:
 ---
 
 # Cheat Sheet
+Here are a quick overview for a common Elysia patterns
 
-## Ping Pong
-```typescript
+## Hello World
+A simple hello world
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
-const app = new Elysia()
-    .get('/ping', () => 'pong')
+new Elysia()
+    .get('/', () => 'Hello World')
     .listen(3000)
-
-console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`)
 ```
 
-## Custom Method
-```typescript
+## Custom HTTP Method
+Define route using custom HTTP methods/verbs
+
+See [Route](/essential/route.html#custom-method)
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/hi', () => 'Hi')
     .post('/hi', () => 'From Post')
     .put('/hi', () => 'From Put')
-    .route('M-SEARCH', () => 'Custom Method')
+    .route('M-SEARCH', '/hi', () => 'Custom Method')
     .listen(3000)
 ```
 
-## Path Params
-```typescript
+## Path Parameter
+Using dynamic path parameter
+
+See [Path](/essential/path.html)
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -50,32 +59,63 @@ new Elysia()
 ```
 
 ## Return JSON
-```typescript
+Elysia convert JSON to response automatically
+
+See [Handler](/essential/handler.html)
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/json', () => ({
-        hi: 'Elysia'
-    }))
+    .get('/json', () => {
+        return {
+            hello: 'Elysia'
+        }
+    })
     .listen(3000)
 ```
 
-## Header and status code
-```typescript
+## Return a file
+A file can be return in as formdata response
+
+The response must 1-level deep object
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ set }) => {
-        set.status = 418
+    .get('/json', () => {
+        return {
+            hello: 'Elysia',
+            image: Bun.file('public/cat.jpg')
+        }
+    })
+    .listen(3000)
+```
+
+## Header and status
+Set a custom header and a status code
+
+See [Handler](/essential/handler.html)
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set, error }) => {
         set.headers['x-powered-by'] = 'Elysia'
 
-        return 'I\'m teapod'
+        return error(418, "I'm teapod")
     })
     .listen(3000)
 ```
 
 ## Group
-```typescript
+Define a prefix once for sub routes
+
+See [Group](/patterns/group.html)
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -89,8 +129,30 @@ new Elysia()
     .listen(3000)
 ```
 
-## Hook and Schema
-```typescript
+## Schema
+Enforce a data type of a route
+
+See [Schema](/essential/schema.html)
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/mirror', ({ body: { username } }) => username, {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+    .listen(3000)
+```
+
+## Lifecycle Hook
+Intercept an Elysia event in order
+
+See [Lifecycle](/essential/life-cycle.html)
+
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -113,7 +175,12 @@ new Elysia()
 ```
 
 ## Guard
-```typescript
+Enforce a data type of sub routes
+
+See [Scope](/essential/scope.html#guard)
+
+```typescript twoslash
+// @errors: 2345
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -127,8 +194,12 @@ new Elysia()
     .listen(3000)
 ```
 
-## State and Decorate
-```typescript
+## Customize context
+Add custom variable to route context
+
+See [Context](/essential/context.html)
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -142,7 +213,11 @@ new Elysia()
 ```
 
 ## Redirect
-```typescript
+Redirect a response
+
+See [Handler](/essential/handler.html#redirect)
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -154,7 +229,11 @@ new Elysia()
 ```
 
 ## Plugin
-```typescript
+Create a separate instance
+
+See [Plugin](/essential/plugin)
+
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
@@ -166,3 +245,101 @@ new Elysia()
     .get('/version', ({ store }) => store['plugin-version'])
     .listen(3000)
 ```
+
+## Web Socket
+Create a realtime connection using Web Socket
+
+See [Web Socket](/patterns/websocket)
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .ws('/ping', {
+        message(ws, message) {
+            ws.send('hello ' + message)
+        }
+    })
+    .listen(3000)
+```
+
+## OpenAPI documentation
+Create a interactive documentation using Scalar (or optionally Swagger)
+
+See [Documentation](/patterns/documentation)
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .ws('/ping', {
+        message(ws, message) {
+            ws.send('hello ' + message)
+        }
+    })
+    .listen(3000)
+```
+
+## Unit Test
+Write a unit test of your Elysia app
+
+See [Unit Test](/patterns/unit-test)
+
+```typescript twoslash
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Elysia', () => {
+    it('return a response', async () => {
+        const app = new Elysia().get('/', () => 'hi')
+
+        const response = await app
+            .handle(new Request('http://localhost/'))
+            .then((res) => res.text())
+
+        expect(response).toBe('hi')
+    })
+})
+```
+
+## Custom body parser
+Create a custom logic for parsing body
+
+See [Parse](/life-cycle/parse.html)
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onParse(({ request, contentType }) => {
+        if (contentType === 'application/custom-type')
+            return request.text()
+    })
+```
+
+## GraphQL
+Create a custom GraphQL server using GraphQL Yoga or Apollo
+
+See [GraphQL Yoga](/plugins/graphql-yoga)
+
+```typescript
+import { Elysia } from 'elysia'
+import { yoga } from '@elysiajs/graphql-yoga'
+
+const app = new Elysia()
+    .use(
+        yoga({
+            typeDefs: /* GraphQL */`
+                type Query {
+                    hi: String
+                }
+            `,
+            resolvers: {
+                Query: {
+                    hi: () => 'Hello from Elysia'
+                }
+            }
+        })
+    )
+    .listen(3000)```

@@ -35,11 +35,11 @@ There's no correct way to learn Elysia, but we recommended **completing the esse
     <Card title="Patterns" href="/patterns/group">
         Common patterns and best practices
     </Card>
-    <Card title="Plugin" href="/plugins/overview">
-        Pre-built plugin to extend Elysia behavior
-    </Card>
     <Card title="Eden" href="/eden/overview">
         End-to-end type safety client for Elysia
+    </Card>
+    <Card title="Cheat sheet" href="/integrations/cheat-sheet">
+        A quick overview of Elysia
     </Card>
 </Deck>
 
