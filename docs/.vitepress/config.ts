@@ -114,7 +114,7 @@ export default defineConfig({
         logo: '/assets/elysia.svg',
         nav: [
             {
-                text: 'Cheat sheet',
+                text: 'Cheat Sheet',
                 link: '/integrations/cheat-sheet'
             },
             {
