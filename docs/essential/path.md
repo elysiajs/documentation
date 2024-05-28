@@ -218,7 +218,7 @@ new Elysia()
   }" 
 />
 
-In this case the server will respons as follows:
+In this case the server will respond as follows:
 
 | Path                   | Response      |
 | ---------------------- | ------------- |
