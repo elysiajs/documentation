@@ -60,7 +60,7 @@ We can access the web server by going to **http://localhost:3000**
 <Playground :elysia="demo1" />
 
 ::: tip
-By default, web browser will sent GET method when vising the page.
+By default, web browsers will send a GET method when visiting a page.
 
 This is why accessing GET routes using a browser works.
 :::
