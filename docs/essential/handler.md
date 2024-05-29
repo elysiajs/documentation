@@ -113,7 +113,7 @@ It's recommend to use `error` inside main handler as it has better inference:
 ## set.status
 Set a default status code if not provided.
 
-It's recommended to use in a plugin that only only need to return a specific status code while allowing user to return a custom value for example, HTTP 201/206 or 403/405 etc.
+It's recommended to use this in a plugin that only needs to return a specific status code while allowing the user to return a custom value. For example, HTTP 201/206 or 403/405, etc.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
