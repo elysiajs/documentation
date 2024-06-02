@@ -46,4 +46,4 @@ const app = new Elysia()
 
 This plugin is for retrieving a Bearer token specified in [RFC6750](https://www.rfc-editor.org/rfc/rfc6750#section-2).
 
-This plugin DOES NOT handle authentication validation for your server, rather the plugin leaves the decision for developers to apply logic for handle validation check themself.
+This plugin DOES NOT handle authentication validation for your server. Instead, the plugin leaves the decision to developers to apply logic for handling validation check themselves.
