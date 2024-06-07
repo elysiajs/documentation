@@ -57,12 +57,12 @@ new Elysia()
 
 We can access the web server by going to **http://localhost:3000**
 
+By default, web browsers will send a GET method when visiting a page.
+
 <Playground :elysia="demo1" />
 
 ::: tip
-By default, web browsers will send a GET method when visiting a page.
-
-This is why accessing GET routes using a browser works.
+Using an interactive browser above, hover on a blue highlight area to see difference result between each path
 :::
 
 ## HTTP Verb

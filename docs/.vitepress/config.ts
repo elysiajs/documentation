@@ -128,7 +128,7 @@ export default defineConfig({
         ],
         sidebar: [
             {
-                text: '👋 Getting Started',
+                text: 'Getting Started',
                 items: [
                     {
                         text: 'At Glance',
@@ -145,7 +145,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: '✨ Essential',
+                text: 'Essential',
                 collapsed: true,
                 items: [
                     {
@@ -187,7 +187,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: '🔎 Validation',
+                text: 'Validation',
                 collapsed: true,
                 items: [
                     {
@@ -217,7 +217,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: '⏳ Life Cycle',
+                text: 'Life Cycle',
                 collapsed: true,
                 items: [
                     {
@@ -263,7 +263,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: '🧭 Patterns',
+                text: 'Patterns',
                 collapsed: true,
                 items: [
                     {
@@ -309,7 +309,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: '🪴 Eden',
+                text: 'Eden',
                 collapsed: true,
                 items: [
                     {
@@ -361,7 +361,7 @@ export default defineConfig({
                 ]
             },
             {
-                text: '🔌 Plugins',
+                text: 'Plugins',
                 items: [
                     {
                         text: 'Official Plugins',
