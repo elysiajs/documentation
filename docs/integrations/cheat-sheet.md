@@ -275,6 +275,8 @@ import { swagger } from '@elysiajs/swagger'
 const app = new Elysia()
     .use(swagger())
     .listen(3000)
+
+console.log(`View documentation at "${app.server!.url}swagger" in your browser`);
 ```
 
 ## Unit Test
