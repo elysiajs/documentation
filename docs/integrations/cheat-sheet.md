@@ -270,14 +270,10 @@ See [Documentation](/patterns/documentation)
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
+import { swagger } from '@elysiajs/swagger'
 
-new Elysia()
-    .ws('/ping', {
-        message(ws, message) {
-            ws.send('hello ' + message)
-        }
-    })
-    .listen(3000)
+const app = new Elysia()
+    .use(swagger())
 ```
 
 ## Unit Test
