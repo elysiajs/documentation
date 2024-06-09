@@ -274,6 +274,7 @@ import { swagger } from '@elysiajs/swagger'
 
 const app = new Elysia()
     .use(swagger())
+    .listen(3000)
 ```
 
 ## Unit Test
