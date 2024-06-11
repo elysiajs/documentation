@@ -38,7 +38,11 @@ cd app
 Start a development server by:
 ```bash
 bun dev
-```
+
+Build project for production etc:
+```bash
+bun build ./src/* --outdir ./dist
+
 
 Navigate to [localhost:3000](http://localhost:3000) should greet you with "Hello Elysia".
 
