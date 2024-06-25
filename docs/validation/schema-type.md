@@ -47,7 +47,7 @@ Elysia supports declarative schema with the following types:
     <Card title="Query" href="#query">
         Query string or URL parameter
     </Card>
-    <Card title="Params" href="#query">
+    <Card title="Params" href="#params">
         Path parameters
     </Card>
     <Card title="Header" href="#header">
