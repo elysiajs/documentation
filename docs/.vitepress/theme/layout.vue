@@ -65,7 +65,7 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
 <template>
     <link rel="preload" as="image" href="/assets/elysia_v.webp" fetchpriority="high">
-    <link rel="preload" as="image" href="https://media.tenor.com/cyORI7kwShQAAAAi/shigure-ui-dance.gif" fetchpriority="low">
+    <link rel="preload" as="image" href="/assets/shigure-ui.webp" fetchpriority="low">
     <DefaultTheme.Layout>
         <template #doc-top>
             <Ray
@@ -109,7 +109,7 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 }
 
 ::view-transition-new(root) {
-    mask: url('https://media.tenor.com/cyORI7kwShQAAAAi/shigure-ui-dance.gif')
+    mask: url('/assets/shigure-ui.webp')
         center / 0 no-repeat;
     animation: scale var(--switch-duration);
 }
