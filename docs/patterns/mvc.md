@@ -256,7 +256,7 @@ new Elysia()
     })
 ```
 
-You may use [Elysia.decorate](/essential/context#decorate) to embedded class instance into Elysia or not is depends on your case.
+You may use [Elysia.decorate](/essential/context#decorate) to embed a class instance into Elysia, or not, it depends on your usecase.
 
 Using [Elysia.decorate](/essential/context#decorate) is an equivalent of using **dependency injection** in NestJS:
 ```typescript
