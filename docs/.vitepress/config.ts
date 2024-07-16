@@ -183,7 +183,7 @@ export default defineConfig({
                     {
                         text: 'What\'s next',
                         link: '/essential/what-next'
-                    }                    
+                    }
                 ]
             },
             {
@@ -253,8 +253,8 @@ export default defineConfig({
                         link: '/life-cycle/on-error'
                     },
                     {
-                        text: 'On Response',
-                        link: '/life-cycle/on-response'
+                        text: 'After Response',
+                        link: '/life-cycle/after-response'
                     },
                     {
                         text: 'Trace',
@@ -305,6 +305,10 @@ export default defineConfig({
                     {
                         text: 'MVC model',
                         link: '/patterns/mvc'
+                    },
+                    {
+                        text: 'Stream',
+                        link: '/patterns/stream'
                     }
                 ]
             },

@@ -74,3 +74,24 @@ If server response with HTTP status >= 300, then value will be always be null, a
 
 Otherwise, response will be passed to data.
 :::
+
+## Stream response
+Eden will will interpret a stream response from a generator function as `AsyncGenerator`
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield 1
+		yield 2
+		yield 3
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+```

@@ -64,39 +64,57 @@ const mock3 = {
 }
 </script>
 
-By default, hook and schema is scope to current instance only not global.
+By default, hook and schema will apply to **current instance only**.
 
-Elysia has an encapsulation scope for better versatility control of life-cycle.
+Elysia has an encapsulation scope for to prevent unintentional side effects.
 
-## Hook type
-Hook type is to specify the scope of hook whether is should be encapsulated or global.
+## Scope
+Scope type is to specify the scope of hook whether is should be encapsulated or global.
 
-Elysia hook type are as the following:
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive(() => {
+        return { hi: 'ok' }
+    })
+    .get('/child', ({ hi }) => hi)
+
+const main = new Elysia()
+    .use(plugin)
+    // ⚠️ Hi is missing
+    .get('/parent', ({ hi }) => hi)
+```
+
+From the above code, we can see that `hi` is missing from the parent instance because the scope is local by default if not specified, and will not apply to parent.
+
+To apply the hook to the parent instance, we can use the `as` to specify scope of the hook.
+
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive({ as: 'scoped' }, () => { // [!code ++]
+        return { hi: 'ok' }
+    })
+    .get('/child', ({ hi }) => hi)
+
+const main = new Elysia()
+    .use(plugin)
+    // ✅ Hi is now available
+    .get('/parent', ({ hi }) => hi)
+```
+
+## Scope level
+Elysia has 3 levels of scope as the following:
+Scope type are as the following:
 - **local** (default) - apply to only current instance and descendant only
 - **scoped** - apply to parent, current instance and descendants
 - **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
 
-If not specified, hook is local by default.
-
-To specify hook's type, add a `{ as: hookType }` to hook.
-
-To apply hook to globally, we need to specify hook as global.
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .onBeforeHandle({ as: 'global' }, () => { // [!code ++]
-        console.log('hi')
-    })
-    .get('/child', () => 'log hi')
-
-const main = new Elysia()
-    .use(plugin)
-    .get('/parent', () => 'log hi')
-```
-
-Let's create a plugin to illustrate how hook type work.
-
+Let's review what each scope type does by using the following example:
 ```typescript twoslash
 import { Elysia } from 'elysia'
 
@@ -107,7 +125,7 @@ const child = new Elysia()
     .get('/child', () => 'hi')
 
 const current = new Elysia()
-    .onBeforeHandle({ as: type }, () => {
+    .onBeforeHandle({ as: type }, () => { // [!code ++]
         console.log('hi')
     })
     .use(child)
@@ -126,9 +144,9 @@ By changing the `type` value, the result should be as follows:
 
 | type       | child | current | parent | main |
 | ---------- | ----- | ------- | ------ | ---- |
-| 'local'    | ✅    | ✅       | ❌     | ❌   | 
-| 'scoped'    | ✅    | ✅       | ✅     | ❌   | 
-| 'global'   | ✅    | ✅       | ✅     | ✅   | 
+| 'local'    | ✅    | ✅       | ❌     | ❌   |
+| 'scoped'    | ✅    | ✅       | ✅     | ❌   |
+| 'global'   | ✅    | ✅       | ✅     | ✅   |
 
 ## Guard
 
@@ -199,36 +217,6 @@ new Elysia()
     .listen(3000)
 ```
 
-### Guard scope
-Guard is a hard limit for hook type.
-
-Any life-cycle defined in `guard`, and `group` **will always** be contained in scope, even if hook type is **global**
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .onBeforeHandle({ as: 'global' }, () => {
-        return 'overwrite'
-    })
-
-const app = new Elysia()
-    .guard(app => app
-        .use(plugin)
-        .get('/inner', () => 'inner')
-    )
-    .get('/outer', () => 'outer')
-    .listen(3000)
-```
-
-<Playground :elysia="demo3" :mock="mock3" />
-
-Evaluating the route, should logs as follows:
-| route       | response  |
-| ----------- | --------- |
-| /inner      | overwrite |
-| /outer      | outer     |
-
 ## Grouped Guard
 
 We can use a group with prefixes by providing 3 parameters to the group.
@@ -292,6 +280,105 @@ new Elysia()
 
 <Playground :elysia="demo1" />
 
+## Scope cast
+To apply hook to parent may use one of the following:
+1. `inline as` apply only to a single hook
+2. `guard as` apply to all hook in a guard
+3. `instance as` apply to all hook in an instance
+
+### 1. Inline as
+Every event listener will accept `as` parameter to specify the scope of the hook.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive({ as: 'scoped' }, () => { // [!code ++]
+        return { hi: 'ok' }
+    })
+    .get('/child', ({ hi }) => hi)
+
+const main = new Elysia()
+    .use(plugin)
+    // ✅ Hi is now available
+    .get('/parent', ({ hi }) => hi)
+```
+
+However, this method is apply to only a single hook, and may not be suitable for multiple hooks.
+
+### 2. Guard as
+Every event listener will accept `as` parameter to specify the scope of the hook.
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+	.guard({
+		as: 'scoped', // [!code ++]
+		response: t.String(),
+		beforeHandle() {
+			console.log('ok')
+		}
+	})
+    .get('/child', () => 'ok')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', () => 'hello')
+```
+
+Guard alllowing us to apply `schema` and `hook` to multiple routes all at once while specifying the scope.
+
+However, it doesn't support `derive` and `resolve` method.
+
+### 3. Instance as
+`as` will read all hooks and schema scope of the current instance, modify.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive(() => { // [!code ++]
+        return { hi: 'ok' }
+    })
+    .get('/child', ({ hi }) => hi)
+    .as('plugin')
+
+const main = new Elysia()
+    .use(plugin)
+    // ✅ Hi is now available
+    .get('/parent', ({ hi }) => hi)
+```
+
+Sometimes we want to reapply plugin to parent instance as well but as it's limited by `scoped` mechanism, it's limited to 1 parent only.
+
+To apply to the parent instance, we need to **"lift the scope up** to the parent instance, and `as` is the perfect method to do so.
+
+Which means if you have `local` scope, and want to apply it to the parent instance, you can use `as('plugin')` to lift it up.
+```typescript twoslash
+// @errors: 2304 2345
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+	.guard({
+		response: t.String()
+	})
+	.onBeforeHandle(() => { console.log('called') })
+	.get('/ok', () => 'ok')
+	.get('/not-ok', () => 1)
+	.as('plugin') // [!code ++]
+
+const instance = new Elysia()
+	.use(plugin)
+	.get('/no-ok-parent', () => 2)
+	.as('plugin') // [!code ++]
+
+const parent = new Elysia()
+	.use(instance)
+	// This now error because `scoped` is lifted up to parent
+	.get('/ok', () => 3)
+```
+
 ## Plugin
 
 By default plugin will only **apply hook to itself and descendants** only.
@@ -317,10 +404,11 @@ To apply hook to globally, we need to specify hook as global.
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
-    .onBeforeHandle({ as: 'global' }, () => {
+    .onBeforeHandle(() => {
         return 'hi'
     })
     .get('/child', () => 'child')
+    .as('plugin')
 
 const main = new Elysia()
     .use(plugin)
@@ -328,82 +416,3 @@ const main = new Elysia()
 ```
 
 <Playground :elysia="demo2" :mock="mock2" />
-
-## Propagate
-Once plugin is `use`, it will demote a scope of itself for encapsulation.
-
-However, sometime we also want to persists the plugin, for example: reusing scope plugin.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const subPlugin = new Elysia()
-    .derive({ as: 'scoped' }, () => ({ sub: 'hi' }))
-
-const plugin = new Elysia()
-    .use(subPlugin)
-    .get('/sub', ({ sub }) => sub)
-
-const main = new Elysia()
-    .use(plugin)
-    .get('/main', ({ sub }) => sub)
-```
-
-In this example, we want to reuse `subPlugin` in `plugin` and apply to `main`.
-
-However, `scoped` is demote to `local` from applying to `plugin` cause it to not apply to `main`
-
-To illustrate, this is a scope of the `subPlugin` being apply to an instance.
-
-```
-subPlugin  ->  plugin  ->  main
- (scoped)      (local)    (none)
-```
-
-To persists a plugin to `main`, we can promote a `local` scope into `scoped` by using `propagate`.
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-const subPlugin = new Elysia()
-    .derive({ as: 'scoped' }, () => ({ sub: 'hi' }))
-
-const plugin = new Elysia()
-    .use(subPlugin)
-    .propagate() // [!code ++]
-    .get('/sub', ({ sub }) => sub)
-
-const main = new Elysia()
-    .use(plugin)
-    .get('/main', ({ sub }) => sub)
-```
-
-`propagate` will promote all `local` property into `scoped`, allowing it be applied to a parent instance.
-
-### Propagate order
-Elysia read code from top to bottom as same as `propagate`, so the order is important.
-
-`propagate` will apply **all the previous** property into `scoped`, if you want to declare a `local` property, consider applying it after `propagate` instead.
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const subPlugin = new Elysia()
-    .derive({ as: 'scoped' }, () => ({ sub: 'hi' }))
-
-const plugin = new Elysia()
-    .use(subPlugin)
-    .derive({ as: 'local' }, () => ({ propagated: 'hi' })) // [!code ++]
-    .propagate()
-    .derive({ as: 'local' }, () => ({ notPropagated: 'hi' })) // [!code ++]
-    .get('/sub', ({ sub }) => sub)
-
-const main = new Elysia()
-    .use(plugin)
-    .get('/main', ({ sub }) => sub)
-    .get('/propagated', ({ propagated }) => propagated)
-    .get('/not-propagated', ({ notPropagated }) => notPropagated)
-```
-
-Here we can see that **propagated** derive is declared as `local` but is applied to main because it's called before `propagate` while **notPropagated** is not applied because it is defined after `propagate`.
