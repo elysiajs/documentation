@@ -401,6 +401,10 @@ export default defineConfig({
                                 link: '/plugins/jwt'
                             },
                             {
+                                text: 'OpenTelemetry',
+                                link: '/plugins/opentelemetry'
+                            },
+                            {
                                 text: 'Server Timing',
                                 link: '/plugins/server-timing'
                             },
