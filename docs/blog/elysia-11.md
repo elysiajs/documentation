@@ -185,7 +185,7 @@ const bad = new Elysia()
 
 const good = new Elysia()
 	// ✅ span name will be getProfile
-	.derive(async function ({ cookie: { session } }) => {
+	.derive(async function getProfile({ cookie: { session } }) {
 		return {
 			user: await getProfile(session)
 		}
