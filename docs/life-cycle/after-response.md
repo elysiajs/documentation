@@ -1,23 +1,23 @@
 ---
-title: On Response - ElysiaJS
+title: After Response - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: On Response - ElysiaJS
+        content: On After Response - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Executed after the response sent to the client. It's recommended to use **On Response** in the following situations. Clean up response. Logging and analytics.
+        content: Executed after the response sent to the client. It's recommended to use **On After Response** in the following situations. Clean up response. Logging and analytics.
 
     - - meta
       - property: 'og:description'
-        content: Executed after the response sent to the client. It's recommended to use **On Response** in the following situations. Clean up response. Logging and analytics.
+        content: Executed after the response sent to the client. It's recommended to use **On After Response** in the following situations. Clean up response. Logging and analytics.
 ---
 
-# Response
+# After Response
 Executed after the response sent to the client.
 
-It's recommended to use **On Response** in the following situations:
+It's recommended to use **After Response** in the following situations:
 - Clean up response
 - Logging and analytics
 
@@ -28,7 +28,7 @@ Below is an example of using the response handle to check for user sign-in.
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.onResponse(() => {
+	.onAfterResponse(() => {
 		console.log('Response', performance.now())
 	})
 	.listen(3000)

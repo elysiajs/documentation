@@ -77,7 +77,7 @@ Elysia does the following for every request:
     - Best for:
         - Provide a custom error response
         - Catching error response
-9. **Response**
+9. **After Response**
     - Executed after response sent to the client
     - Best for:
         - Cleaning up response

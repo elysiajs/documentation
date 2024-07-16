@@ -24,6 +24,11 @@ head:
 
 <Blogs
   :blogs="[
+	  {
+	    title: 'Elysia 1.1 - Grown-up\'s Paradise',
+	    href: '/blog/elysia-11',
+	    detail: 'Introducing OpenTelemetry, and Trace v2. Data coercion and normalization. Guard plugin and bulk cast. Optional path parameter. Decorator and Response status reconcilation. Generator response stream.'
+	  },
       {
         title: 'Elysia 1.0 - Lament of the Fallen',
         href: '/blog/elysia-10',
