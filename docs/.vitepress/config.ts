@@ -366,6 +366,7 @@ export default defineConfig({
             },
             {
                 text: 'Plugins',
+                collapsed: true,
                 items: [
                     {
                         text: 'Overview',
