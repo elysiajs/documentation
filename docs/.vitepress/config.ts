@@ -181,7 +181,7 @@ export default defineConfig({
                         link: '/essential/scope'
                     },
                     {
-                        text: 'What\'s next',
+                        text: "What's next",
                         link: '/essential/what-next'
                     }
                 ]
@@ -368,63 +368,64 @@ export default defineConfig({
                 text: 'Plugins',
                 items: [
                     {
-                        text: 'Official Plugins',
-                        link: '/plugins/overview',
-                        collapsed: true,
-                        items: [
-                            {
-                                text: 'Bearer',
-                                link: '/plugins/bearer'
-                            },
-                            {
-                                text: 'CORS',
-                                link: '/plugins/cors'
-                            },
-                            {
-                                text: 'Cron',
-                                link: '/plugins/cron'
-                            },
-                            {
-                                text: 'GraphQL Apollo',
-                                link: '/plugins/graphql-apollo'
-                            },
-                            {
-                                text: 'GraphQL Yoga',
-                                link: '/plugins/graphql-yoga'
-                            },
-                            {
-                                text: 'HTML',
-                                link: '/plugins/html'
-                            },
-                            {
-                                text: 'JWT',
-                                link: '/plugins/jwt'
-                            },
-                            {
-                                text: 'OpenTelemetry',
-                                link: '/plugins/opentelemetry'
-                            },
-                            {
-                                text: 'Server Timing',
-                                link: '/plugins/server-timing'
-                            },
-                            {
-                                text: 'Static',
-                                link: '/plugins/static'
-                            },
-                            {
-                                text: 'Stream',
-                                link: '/plugins/stream'
-                            },
-                            {
-                                text: 'Swagger',
-                                link: '/plugins/swagger'
-                            },
-                            {
-                                text: 'trpc',
-                                link: '/plugins/trpc'
-                            }
-                        ]
+                        text: 'Overview',
+                        link: '/plugins/overview'
+                    },
+                    {
+                        text: 'Bearer',
+                        link: '/plugins/bearer'
+                    },
+                    {
+                        text: 'Bearer',
+                        link: '/plugins/bearer'
+                    },
+                    {
+                        text: 'CORS',
+                        link: '/plugins/cors'
+                    },
+                    {
+                        text: 'Cron',
+                        link: '/plugins/cron'
+                    },
+                    {
+                        text: 'GraphQL Apollo',
+                        link: '/plugins/graphql-apollo'
+                    },
+                    {
+                        text: 'GraphQL Yoga',
+                        link: '/plugins/graphql-yoga'
+                    },
+                    {
+                        text: 'HTML',
+                        link: '/plugins/html'
+                    },
+                    {
+                        text: 'JWT',
+                        link: '/plugins/jwt'
+                    },
+                    {
+                        text: 'OpenTelemetry',
+                        link: '/plugins/opentelemetry'
+                    },
+                    {
+                        text: 'Server Timing',
+                        link: '/plugins/server-timing'
+                    },
+                    {
+                        text: 'Static',
+                        link: '/plugins/static'
+                    },
+                    {
+                        text: 'Stream',
+                        link: '/plugins/stream'
+                    },
+                    {
+                        text: 'Swagger',
+                        link: '/plugins/swagger'
+                    },
+                    {
+                        text: 'trpc',
+                        link: '/plugins/trpc'
                     }
                 ]
             },

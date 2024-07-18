@@ -76,7 +76,8 @@ Otherwise, response will be passed to data.
 :::
 
 ## Stream response
-Eden will will interpret a stream response from a generator function as `AsyncGenerator`
+Eden will will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
