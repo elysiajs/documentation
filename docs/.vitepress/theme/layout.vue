@@ -82,10 +82,12 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 <style>
 :root {
     --switch-duration: 1.75s;
+    --switch-name: scale;
 }
 
 .-animated {
     --switch-duration: 1s;
+    --switch-name: scale-fast;
 }
 
 /* ::view-transition-old(root),
@@ -106,17 +108,18 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
 ::view-transition-group(root) {
     animation-timing-function: var(--expo-in);
+    z-index: 100;
 }
 
 ::view-transition-new(root) {
     mask: url('/assets/shigure-ui.webp')
         center / 0 no-repeat;
-    animation: scale var(--switch-duration);
+    animation: var(--switch-name) var(--switch-duration);
 }
 
 ::view-transition-old(root),
 .dark::view-transition-old(root) {
-    animation: scale var(--switch-duration);
+    animation: var(--switch-name) var(--switch-duration);
 }
 
 @keyframes scale {
@@ -127,6 +130,21 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         mask-size: 50vmax;
     }
     90% {
+        mask-size: 50vmax;
+    }
+    100% {
+        mask-size: 2000vmax;
+    }
+}
+
+@keyframes scale-fast {
+    0% {
+        mask-size: 0;
+    }
+    10% {
+        mask-size: 50vmax;
+    }
+    80% {
         mask-size: 50vmax;
     }
     100% {
