@@ -163,6 +163,10 @@ new Elysia()
     .listen(3000)
 ```
 
+::: warning
+The names of headers should be lowercase to force case-sensitivity consistency for HTTP headers and auto-completion, eg. use `set-cookie` rather than `Set-Cookie`.
+:::
+
 ## redirect
 Redirect a request to another resource.
 
