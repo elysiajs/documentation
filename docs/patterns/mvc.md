@@ -37,8 +37,8 @@ const Service = {
     do2(v?: string) {}
 }
 // ---cut---
-import { Elysia } from 'elysia'
- 
+import { Elysia, t } from 'elysia'
+
 // ❌ don't:
 new Elysia()
     .get('/', Controller.hi)
@@ -49,6 +49,10 @@ new Elysia()
     .get('/', ({ query: { name } }) => {
         Service.do1(name)
         Service.do2(name)
+    }, {
+    	query: t.Object({
+			name: t.String()
+     	})
     })
 ```
 
@@ -256,7 +260,7 @@ new Elysia()
     })
 ```
 
-You may use [Elysia.decorate](/essential/context#decorate) to embedded class instance into Elysia or not is depends on your case.
+You may use [Elysia.decorate](/essential/context#decorate) to embed a class instance into Elysia, or not, it depends on your usecase.
 
 Using [Elysia.decorate](/essential/context#decorate) is an equivalent of using **dependency injection** in NestJS:
 ```typescript
@@ -368,7 +372,7 @@ new Elysia()
 ```tsx twoslash
 import React from 'react'
 // ---cut---
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 abstract class Render {
     static root(name?: string) {
@@ -379,6 +383,10 @@ abstract class Render {
 new Elysia()
     .get('/', ({ query: { name } }) => {
         return Render.root(name)
+    }, {
+    	query: t.Object({
+			name: t.String()
+		})
     })
 ```
 

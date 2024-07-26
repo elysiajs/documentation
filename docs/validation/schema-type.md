@@ -47,7 +47,7 @@ Elysia supports declarative schema with the following types:
     <Card title="Query" href="#query">
         Query string or URL parameter
     </Card>
-    <Card title="Params" href="#query">
+    <Card title="Params" href="#params">
         Path parameters
     </Card>
     <Card title="Header" href="#header">
@@ -74,7 +74,7 @@ new Elysia()
             name: t.String()
         }),
         params: t.Object({
-            id: t.Numeric()
+            id: t.Number()
         })
     })
     .listen(3000)
@@ -204,7 +204,7 @@ import { Elysia, t } from 'elysia'
 new Elysia()
     .get('/id/:id', ({ params }) => params, {
         params: t.Object({
-            id: t.Numeric()
+            id: t.Number()
         })
     })
     .listen(3000)
@@ -283,7 +283,7 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
     .get('/', ({ cookie }) => cookie.session.value, {
-        cookie: t.Object({
+        cookie: t.Cookie({
             session: t.String()
         })
     })

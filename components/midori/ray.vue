@@ -77,7 +77,7 @@
     inset: 0;
     background-image: var(--stripes), var(--rainbow);
     background-size: 200%, 100%;
-    background-attachment: fixed;
+    /* background-attachment: fixed; */
     mix-blend-mode: difference;
 }
 

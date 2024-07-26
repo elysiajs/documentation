@@ -142,7 +142,7 @@ const app = new Elysia()
 
 ## Predefined patterns
 
-You can use predefined patterns from `@elysiajs/cron/schelude`
+You can use predefined patterns from `@elysiajs/cron/schedule`
 ```typescript
 import { Elysia } from 'elysia'
 import { cron, Patterns } from '@elysiajs/cron'

@@ -74,7 +74,7 @@ const plugin = new Elysia({ name: 'plugin' }).macro(({ beforeHandle }) => {
     return {
         role(type: 'admin' | 'user') {
             beforeHandle(
-                { insert: 'before' }, 
+                { insert: 'before' },
                 async ({ cookie: { session } }) => {
                   const user = await validateSession(session.value)
                   await validateRole('admin', user)
@@ -149,7 +149,7 @@ new Elysia()
 
 Why not use **afterHandle** but introduce a new API?
 
-Because **afterHandle** is designed to read and modify a primitive value. Storing plugins like HTML, and Compression which depends on creating Web Standard Response. 
+Because **afterHandle** is designed to read and modify a primitive value. Storing plugins like HTML, and Compression which depends on creating Web Standard Response.
 
 This means that plugins registered after this type of plugin will be unable to read a value or modify the value making the plugin behavior incorrect.
 
@@ -172,7 +172,7 @@ new Elysia()
 
 This aligns with our goal, to just the literal value to the client instead of worrying about how the server should behave.
 
-However, this is proven to have a challenging integration with Eden. Since we return a literal value, we can't infer the status code from the response making Eden unable to differentiate the response from the status code. 
+However, this is proven to have a challenging integration with Eden. Since we return a literal value, we can't infer the status code from the response making Eden unable to differentiate the response from the status code.
 
 This results in Eden not being able to use its full potential, especially in error handling as it cannot infer type without declaring explicit response type for each status.
 
@@ -255,7 +255,7 @@ new Elysia()
         query: t.Object({
             name: t.String({
                 default: 'Elysia'
-            }) 
+            })
         })
     })
     .listen(3000)
@@ -374,7 +374,7 @@ Example:
 - remove `derive` from `PreContext`
 - Elysia type doesn't output custom `error`
 
-## Afterward
+## Afterword
 It has been a great journey since the first release.
 
 Elysia evolved from a generic REST API framework to an ergonomic framework to support End-to-end type safety, OpenAPI documentation generation, we we would like to keep introduce more exciting features in the future.
@@ -392,7 +392,7 @@ We are now trying to provide more support for each runtime, plugin, and integrat
 And since the release of 0.7, we have seen fewer issues compared to the previous releases.
 
 Now **we are preparing for the first stable release of Elysia**, Elysia 1.0 aiming to release **in Q1 2024** to repay your kindness.
-Elysia will now enter soft API lockdown mode, to prevent an API change and make sure that there will be no or less breaking change once the stable release arrives. 
+Elysia will now enter soft API lockdown mode, to prevent an API change and make sure that there will be no or less breaking change once the stable release arrives.
 
 So you can expect your Elysia app to work starting from 0.7 with no or minimal change to support the stable release of Elysia.
 

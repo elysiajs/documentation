@@ -3,7 +3,18 @@
 @tailwind utilities;
 
 html, body {
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+ font-family: -apple-system, BlinkMacSystemFont, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+@font-face {
+	font-family: "Geist Mono";
+	src: url("/assets/GeistMono-Regular.woff2") format("woff2"),
+		url("/assets/GeistMono-Regular.woff") format("woff");
+}
+
+code, kbd, samp, pre, pre.vp-code, pre.vp-code > code, .font-mono {
+	font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace !important;
+	font-size: 1.05em;
 }
 
 .link {
@@ -167,7 +178,7 @@ button.copy::after {
 /* .VPLocalNav {
     background-color: rgba(255, 255, 255, .7) !important;
     backdrop-filter: blur(12px);
-    
+
     & > .container {
         background-color: transparent;
     }
