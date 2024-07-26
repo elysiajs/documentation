@@ -93,6 +93,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Logixlysia](https://github.com/PunGrumpy/logixlysia) - A beautiful and simple logging middleware for ElysiaJS with colors and timestamps.
 -   [Elysia Fault](https://github.com/vitorpldev/elysia-fault) - A simple and customizable error handling middleware with the possibility of creating your own HTTP errors
 -   [Elysia Compress](https://github.com/vermaysha/elysia-compress) - ElysiaJS plugin to compress responses inspired by [@fastify/compress](https://github.com/fastify/fastify-compress)
+-   [Elysia Accepts](https://github.com/morigs/elysia-accepts) - Elysia plugin for accept headers parsing and content negotiation
 ---
 
 If you have a plugin written for Elysia, feel free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇
