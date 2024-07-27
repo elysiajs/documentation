@@ -84,7 +84,7 @@ Value can be one of the following:
     - eg: `['Content-Type', 'Authorization']`
 
 ---
-### exposedHeaders
+### exposeHeaders
 @default `*`
 
 Response CORS with specified headers.
