@@ -72,7 +72,7 @@ Hover over the code snippet to see the type definition.
 
 In the mock browser, click on path highlight in blue to change path to preview a response and
 
-Elysia can runs on browser and the result you see are actually run using Elysia.
+Elysia can run on browser and the results you see are actually ran using Elysia.
 :::
 
 ## Performance
@@ -112,7 +112,7 @@ new Elysia()
     .listen(3000)
 ```
 
-The above code create a path parameter "id", the value that replace `:id` will be passed to `params.id` both in runtime and type without manual type declaration.
+The above code create a path parameter "id", the value that replaces `:id` will be passed to `params.id` both in runtime and type without manual type declaration.
 
 <Playground 
     :elysia="demo2"
@@ -126,7 +126,7 @@ The above code create a path parameter "id", the value that replace `:id` will b
     }" 
 />
 
-Elysia's goal is to help you write less TypeScript and focus more on Business logic. Let the complex type be handled by the framework.
+Elysia's goal is to help you write less TypeScript and focus more on Business logic. Let the complex types be handled by the framework.
 
 TypeScript is not needed to use Elysia, but it's recommended to use Elysia with TypeScript.
 
@@ -149,7 +149,7 @@ new Elysia()
     .listen(3000)
 ```
 
-This code ensures that our path parameter **id**, will always be a numeric string and then transform to a number automatically in both runtime and compile-time (type-level).
+This code ensures that our path parameter **id**, will always be a numeric string and then transforms it into a number automatically in both runtime and compile-time (type-level).
 
 ::: tip
 Hover over "id" in the above code snippet to see a type definition.
@@ -181,9 +181,9 @@ With the Swagger plugin, you can seamlessly generate a Swagger page without addi
 
 ## End-to-end Type Safety
 
-With Elysia, type safety is not only limited to server-side only.
+With Elysia, type safety is not limited to server-side only.
 
-With Elysia, you can synchronize your type with your frontend team automatically like tRPC, with Elysia's client library, "Eden".
+With Elysia, you can synchronize your types with your frontend team automatically like tRPC, with Elysia's client library, "Eden".
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -232,9 +232,9 @@ const { data } = await app.user({ id: 617 }).get()
 console.log(data)
 ```
 
-With Eden, you can use the existing Elysia type to query Elysia server **without code generation** and synchronize type for both frontend and backend automatically.
+With Eden, you can use the existing Elysia types to query Elysia server **without code generation** and synchronize types for both frontend and backend automatically.
 
-Elysia is not only about helping you to create a confident backend but for all that is beautiful in this world.
+Elysia is not only about helping you create a confident backend but for all that is beautiful in this world.
 
 ## Platform Agnostic
 
