@@ -7,16 +7,16 @@ head:
 
     - - meta
       - name: 'og:description'
-        content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
+        content: Eden Treaty is an object-like representation of an Elysia server, providing end-to-end type safety and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 
     - - meta
       - name: 'og:description'
-        content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
+        content: Eden Treaty is an object-like representation of an Elysia server, providing end-to-end type safety and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 ---
 
 # Eden Treaty
 
-Eden Treaty is an object representation to interact with server with type safety, auto-completion, and error handling.
+Eden Treaty is an object representation to interact with a server and features type safety, auto-completion, and error handling.
 
 To use Eden Treaty, first export your existing Elysia server type:
 
@@ -38,7 +38,7 @@ const app = new Elysia()
 export type App = typeof app // [!code ++]
 ```
 
-Then import the server type, and consume the Elysia API on client:
+Then import the server type and consume the Elysia API on the client:
 
 ```typescript twoslash
 // @filename: server.ts
@@ -71,19 +71,19 @@ const { data, error } = await app.hi.get()
 
 ## Tree like syntax
 
-HTTP Path is a resource indicator for file-system tree.
+HTTP Path is a resource indicator for a file system tree.
 
-File system is consists of multiple level of folders for example:
+File system consists of multiple levels of folders, for example:
 
 -   /documents/elysia
 -   /documents/kalpas
 -   /documents/kelvin
 
-Each level is separate by **/** (slash) and a name.
+Each level is separated by **/** (slash) and a name.
 
-However in JavaScript, instead of using **"/"** (slash) we use **"."** (dot) instead to access a deeper resources.
+However in JavaScript, instead of using **"/"** (slash) we use **"."** (dot) to access deeper resources.
 
-Eden Treaty turns an Elysia server into a file-system tree like system to access in JavaScript frontend instead.
+Eden Treaty turns an Elysia server into a tree-like file system that can be accessed in the JavaScript frontend instead.
 
 | Path         | Treaty       |
 | ------------ | ------------ |
@@ -91,7 +91,7 @@ Eden Treaty turns an Elysia server into a file-system tree like system to access
 | /hi          | .hi          |
 | /deep/nested | .deep.nested |
 
-Combined with HTTP method, allowing us fully interact with Elysia server.
+Combined with the HTTP method, we can interact with the Elysia server.
 
 | Path         | Method | Treaty              |
 | ------------ | ------ | ------------------- |
@@ -102,18 +102,18 @@ Combined with HTTP method, allowing us fully interact with Elysia server.
 
 ## Dynamic path
 
-However, dynamic path parameter cannot be express by using notation, if fully replaced then we don't know what the parameter name is supposed to be.
+However, dynamic path parameters cannot be expressed using notation. If they are fully replaced, we don't know what the parameter name is supposed to be.
 
 ```typescript
-// ❌ Unclear what the value is suppose to represent?
+// ❌ Unclear what the value is supposed to represent?
 treaty.item['skadi']
 ```
 
-To handle this, we can specify a dynamic path using function to provide key value instead.
+To handle this, we can specify a dynamic path using a function to provide a key value instead.
 
 ```typescript
 // ✅ Clear that value is dynamic path is 'name'
-treaty.item({ name: 'Skadi' })
+treaty.item({ name: 'Skadi' }).get()
 ```
 
 | Path            | Treaty                           |
