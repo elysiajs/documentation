@@ -172,10 +172,10 @@ The validation should be as follows:
 | Query | Validation |
 | ---- | --------- |
 | /?name=Elysia | ✅ |
-| /?name=1 | ❌ |
+| /?name=1 | ✅ |
 | /?alias=Elysia | ❌ |
 | /?name=ElysiaJS&alias=Elysia | ✅ |
-| `undefined` | ❌ |
+| / | ❌ |
 
 ## Params
 
