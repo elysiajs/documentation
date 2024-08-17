@@ -23,7 +23,7 @@ With Nextjs App Router, we can run Elysia on Nextjs route.
 3. Export the handler with the name of method you want to expose
 
 ```typescript twoslash
-// app/[[...slugs]]/route.ts
+// app/api/[[...slugs]]/route.ts
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia({ prefix: '/api' })
