@@ -169,11 +169,12 @@ new Elysia()
 ```
 
 The validation should be as follows:
-| Body | Validation |
-| --- | --------- |
-| \{ name: 'Elysia' \} | ✅ |
-| \{ name: 1 \} | ❌ |
-| \{ alias: 'Elysia' \} | ❌ |
+| Query | Validation |
+| ---- | --------- |
+| /?name=Elysia | ✅ |
+| /?name=1 | ❌ |
+| /?alias=Elysia | ❌ |
+| /?name=ElysiaJS&alias=Elysia | ✅ |
 | `undefined` | ❌ |
 
 ## Params
