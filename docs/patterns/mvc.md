@@ -18,7 +18,7 @@ head:
 
 Elysia is pattern agnostic framework, we the decision up to you and your team for coding patterns to use.
 
-However, we found that there are several who are using MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) on Elysia, and found it's hard to decouple and handling with types.
+However, we found that several people are using the MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) on Elysia, and found it's hard to decouple and handling with types.
 
 This page is a guide to use Elysia with MVC pattern.
 
@@ -222,9 +222,9 @@ new Elysia()
     })
 ```
 
-If your service doesn't need to store a property, you may use `abstract class` and `static` instead to avoid allocating class instance.
+If your service doesn't need to store a property, you may use `abstract class` and `static` instead to avoid allocating a class instance.
 
-But if your service involve local mutation eg. caching, you may want to initiate an instance instead.
+But if your service involves local mutation eg. caching, you may want to initiate an instance instead.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -281,9 +281,9 @@ export class AppController {
 
 ### Request Dependent Service
 
-If your service are going to be used in multiple instance, or may require some property from request. We recommended creating an dedicated Elysia instance as a **Service** instead.
+If your service is going to be used in multiple instances or may require some properties from the request, we recommend creating a dedicated Elysia instance as a **Service** instead.
 
-Elysia handle [plugin deduplication](/essential/plugin.html#plugin-deduplication) by default so you don't have to worry about performance, as it's going to be Singleton if you specified a **"name"** property.
+Elysia handles [plugin deduplication](/essential/plugin.html#plugin-deduplication) by default, so you don't have to worry about performance, as it will be a singleton if you specify a **"name"** property.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -313,7 +313,7 @@ const UserController = new Elysia()
 ```
 
 ## Model
-Model or [DTO (Data Transfer Object)](https://en.wikipedia.org/wiki/Data_transfer_object) is handle by [Elysia.t (Validation)](/validation/overview.html#data-validation).
+Model or [DTO (Data Transfer Object)](https://en.wikipedia.org/wiki/Data_transfer_object) is handled by [Elysia.t (Validation)](/validation/overview.html#data-validation).
 
 We recommended using [Elysia reference model](/validation/reference-model.html#reference-model) or creating an object or class of DTOs for each module.
 
