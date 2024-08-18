@@ -106,7 +106,7 @@ However, dynamic path parameters cannot be expressed using notation. If they are
 
 ```typescript
 // ❌ Unclear what the value is supposed to represent?
-treaty.item['skadi']
+treaty.item['skadi'].get()
 ```
 
 To handle this, we can specify a dynamic path using a function to provide a key value instead.
