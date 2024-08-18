@@ -28,13 +28,13 @@ To create your first schema, import `Elysia.t` from Elysia and start with the mo
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'Hello World!', {
-        response: t.String()
-    })
-    .listen(3000)
+  .post('/', ({ body }) => `Hello ${body}`, {
+    body: t.String(),
+  })
+  .listen(3000);
 ```
 
-This code tells Elysia to validate an incoming HTTP response, make sure that the response is String, and if it is String, then allow it to flow through the request pipeline and handler.
+This code tells Elysia to validate an incoming HTTP body, make sure that the body is String, and if it is String, then allow it to flow through the request pipeline and handler.
 
 If the shape doesn't match, then it will throw an error, into [Error Life Cycle](/essential/life-cycle.html#events).
 
