@@ -28,10 +28,10 @@ To create your first schema, import `Elysia.t` from Elysia and start with the mo
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'Hello World!', {
-        body: t.String()
-    })
-    .listen(3000)
+  .post('/', ({ body }) => `Hello ${body}`, {
+    body: t.String(),
+  })
+  .listen(3000);
 ```
 
 This code tells Elysia to validate an incoming HTTP body, make sure that the body is String, and if it is String, then allow it to flow through the request pipeline and handler.
