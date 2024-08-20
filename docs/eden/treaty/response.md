@@ -22,7 +22,7 @@ Once the fetch method is called, Eden Treaty return a promise containing an obje
 - status `number` - HTTP status code
 - headers `FetchRequestInit['headers']` - response headers
 
-Once returned, you must provide error handling to ensure that the response data value is unwrapped, otherwise the value will be nullable. Elysia provides a `error()` helper function to handle the error, and Eden will provide a type narrowing for the error value. 
+Once returned, you must provide error handling to ensure that the response data value is unwrapped, otherwise the value will be nullable. Elysia provides a `error()` helper function to handle the error, and Eden will provide type narrowing for the error value. 
 
 ```typescript twoslash
 import { Elysia, error, t } from 'elysia'
