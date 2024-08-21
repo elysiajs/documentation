@@ -49,8 +49,14 @@ const app = new Elysia()
         body: t.Object({
             message: t.String()
         }),
+        query: t.Object({
+            id: t.String()
+        }),
         message(ws, { message }) {
+            // Get schema from `ws.data`
+            const { id } = ws.data.query
             ws.send({
+                id,
                 message,
                 time: Date.now()
             })
