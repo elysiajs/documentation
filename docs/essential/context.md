@@ -82,7 +82,7 @@ const demo7 = new Elysia()
 
 # Context
 
-Context is a request information passed to a [route handler](/handler).
+Context is a request information passed to a [route handler](/essential/handler).
 
 Context is unique for each request, and is not shared except for `store` which is a global mutable state.
 
