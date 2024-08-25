@@ -25,7 +25,7 @@ Once the fetch method is called, Eden Treaty return a promise containing an obje
 Once returned, you must provide error handling to ensure that the response data value is unwrapped, otherwise the value will be nullable. Elysia provides a `error()` helper function to handle the error, and Eden will provide type narrowing for the error value. 
 
 ```typescript twoslash
-import { Elysia, error, t } from 'elysia'
+import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
