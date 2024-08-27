@@ -171,7 +171,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-<Playground :elysia="demo3" />
+<Playground :elysia="demo2" />
 
 Once passed to `Elysia.use`, functional callback behaves as a normal plugin except the property is assigned directly to
 
