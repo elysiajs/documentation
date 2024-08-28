@@ -28,7 +28,7 @@ Then use it:
 
 ```tsx
 import { Elysia } from 'elysia'
-import { html } from '@elysiajs/html'
+import { html, Html } from '@elysiajs/html'
 
 new Elysia()
     .use(html())
@@ -81,7 +81,7 @@ To register the TypeScript type, please append the following to **tsconfig.json*
 That's it, now you can JSX as your template engine:
 ```tsx
 import { Elysia } from 'elysia'
-import { html } from '@elysiajs/html' // [!code ++]
+import { html, Html } from '@elysiajs/html' // [!code ++]
 
 new Elysia()
     .use(html()) // [!code ++]
@@ -98,13 +98,20 @@ new Elysia()
     .listen(3000)
 ```
 
+If the error `Cannot find name 'Html'. Did you mean 'html'?` occurs, this import must be added to the JSX template:
+```tsx
+import { Html } from '@elysiajs/html'
+```
+
+It is important that it is written in uppercase.
+
 ## XSS
 Elysia HTML is based use of the Kita HTML plugin to detect possible XSS attacks in compile time.
 
 You can use a dedicated `safe` attribute to sanitize user value to prevent XSS vulnerability.
 ```tsx
 import { Elysia, t } from 'elysia'
-import { html } from '@elysiajs/html'
+import { html, Html } from '@elysiajs/html'
 
 new Elysia()
     .use(html())
