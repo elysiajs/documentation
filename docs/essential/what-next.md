@@ -7,19 +7,19 @@ head:
 
     - - meta
       - name: 'description'
-        content: Lifecycle event is a concept for each stage of Elysia processing, "Life Cycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+        content: The lifecycle event in ElysiaJS represents each stage of processing. A "Life Cycle" or "Hook" acts as an event listener, intercepting and responding to events throughout the process. Hooks enable you to customize and transform data within the pipeline, allowing you to fully optimize Elysia’s capabilities.
 
     - - meta
       - property: 'og:description'
-        content: Lifecycle event is a concept for each stage of Elysia processing, "Life Cycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+        content: The lifecycle event in ElysiaJS represents each stage of processing. A "Life Cycle" or "Hook" acts as an event listener, intercepting and responding to events throughout the process. Hooks enable you to customize and transform data within the pipeline, allowing you to fully optimize Elysia’s capabilities.
 ---
 
 # What's next
-Congratulation! You have just completed an essential chapter for developing with Elysia.
+Congratulations on completing the "Essential" chapter of Elysia development!
 
-Essential chapter cover a basic building block, however there are some several useful concepts you might want to read, each take less ~15 minutes to complete.
+While the Essential chapter provides a solid foundation, there are several valuable concepts worth exploring. Each chapter takes less than 15 minutes to read.
 
-Here's a recommended chapters we recommended in order (Feels free to jump to the chapter you are interested first).
+We recommend the following chapters to deepen your knowledge. Feel free to explore them in any order that interests you.
 
 <script setup>
     import Card from '../../components/nearl/card.vue'
@@ -49,7 +49,7 @@ Here's a recommended chapters we recommended in order (Feels free to jump to the
 
 ## If you are stuck
 
-Feels free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further question.
+If you encounter any challenges, our community is here to help. Connect with us on GitHub Discussions, Discord, or Twitter for further support.
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
@@ -63,4 +63,4 @@ Feels free to ask our community on GitHub Discussions, Discord, and Twitter, if 
     </Card>
 </Deck>
 
-We wish you happy on your journey with Elysia ❤️
+We wish you a successful journey with Elysia ❤️
