@@ -34,7 +34,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Accessing `/swagger` would show you a Swagger UI with the generated endpoint documentation from the Elysia server.
+Accessing `/swagger` would show you a Swagger UI with the generated endpoint documentation from the Elysia server. You can also access the raw OpenAPI spec at `/swagger/json`.
 
 ## Config
 Below is a config which is accepted by the plugin
