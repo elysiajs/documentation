@@ -44,7 +44,7 @@ This is to ensure developers end up with a performant web server they intend to 
 
 ## Community plugins:
 
--   [BunSai](https://github.com/levii-pires/bunsai2) - full-stack agnostic framework for the web, built upon Bun and Elysia
+-   [BunSai](https://github.com/nikiskaarup/bunsai2) - full-stack agnostic framework for the web, built upon Bun and Elysia
 -   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - scaffolding your Elysia project with the environment with easy (help with ORM, Linters and Plugins)!
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication, simple and clean
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
