@@ -58,7 +58,6 @@ Open your `package.json` file and add the following scripts:
 {
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "bun build src/index.ts",
     "start": "NODE_ENV=production bun src/index.ts",
     "test": "bun test"
   }
@@ -68,7 +67,6 @@ Open your `package.json` file and add the following scripts:
 These scripts refer to the different stages of developing an application:
 
 - **dev** - Start Elysia in development mode with auto-reload on code change.
-- **build** - Build the application for production usage.
 - **start** - Start an Elysia production server.
 
 If you are using TypeScript, make sure to create, and update `tsconfig.json` to include `compilerOptions.strict` to `true`:
