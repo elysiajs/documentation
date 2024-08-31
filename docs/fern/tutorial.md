@@ -715,7 +715,12 @@ export const note = new Elysia({ prefix: '/note' })
 
 This allow us to log the request before it is processed, and we can see the request body and path parameters.
 
-By default, lifecycle hook is encapsulated. Hook is applied to routes in the same plugin it, and is not applied to other plugins (routes that not defined in the same plugin).
+### Scope
+
+By default, **lifecycle hook is encapsulated**. Hook is applied to routes in the same instance, and is not applied to other plugins (routes that not defined in the same plugin).
+
+This means `onTransform` log will not be called on other instance, unless we explcity defined as `scoped` or `global`.
+
 
 ## Error handling
 One of the most important aspect of API is to make sure nothing goes wrong, and if it does, we need to handle it properly.
