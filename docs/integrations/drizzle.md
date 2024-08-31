@@ -37,14 +37,14 @@ const user = sqliteTable('user', {
     password: text('password').notNull(),
 })
 
-const createUser = createInsertSchema(user)
+const insertUserSchema = createInsertSchema(user)
 
 const auth = new Elysia({ prefix: '/auth' })
     .put(
         '/sign-up',
-        ({ body }) => createUser(body),
+        ({ body }) => body,
         {
-            body: t.Omit(createUser, ['id'])
+            body: t.Omit(insertUserSchema, ['id'])
         }
     )
 ```
@@ -64,7 +64,7 @@ const user = sqliteTable('user', {
     image: text('image')
 })
 
-const createUser = createInsertSchema(user, {
+const insertUserSchema = createInsertSchema(user, {
     image: t.File({ // [!code ++]
         type: 'image', // [!code ++]
         maxSize: '2m' // [!code ++]
@@ -77,10 +77,10 @@ const auth = new Elysia({ prefix: '/auth' })
         async ({ body: { image, ...body } }) => {
             const imageURL = await uploadImage(image) // [!code ++]
 // [!code ++]
-            return createUser({ image: imageURL, ...body }) // [!code ++]
+            return { image: imageURL, ...body } // [!code ++]
         },
         {
-            body: t.Omit(createUser, ['id'])
+            body: t.Omit(insertUserSchema, ['id'])
         }
     )
 ```
