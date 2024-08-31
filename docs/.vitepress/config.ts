@@ -443,6 +443,16 @@ export default defineConfig({
                     //     link: '/integrations/cheat-sheet'
                     // }
                 ]
+            },
+            {
+                text: 'Support',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Troubleshooting',
+                        link: '/support/troubleshooting'
+                    }
+                ]
             }
         ],
         socialLinks: [
