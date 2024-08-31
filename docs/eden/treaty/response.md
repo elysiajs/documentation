@@ -15,14 +15,14 @@ head:
 ---
 
 # Response
-Once fetch method is called, Eden Treaty return an Promise with object as follows:
+Once the fetch method is called, Eden Treaty return a promise containing an object with the following properties:
 - data - returned value of the response (2xx)
 - error - returned value from the response (>= 3xx)
 - response `Response` - Web Standard Response class
 - status `number` - HTTP status code
-- headers `FetchRequestInit['headers']` - response's headers
+- headers `FetchRequestInit['headers']` - response headers
 
-Once returned, you must provide an error handling to ensure that value is truly returned to access the value, otherwise the value will be nullable.
+Once returned, you must provide error handling to ensure that the response data value is unwrapped, otherwise the value will be nullable. Elysia provides a `error()` helper function to handle the error, and Eden will provide type narrowing for the error value. 
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -61,22 +61,22 @@ const submit = async (name: string) => {
                 throw error.value
         }
 
-    // Once error is handle, type will be unwrapped
+    // Once the error is handled, type will be unwrapped
     // type: string
     return data
 }
 ```
 
-By default, Elysia will infers error and response type to TypeScript automatically, and Eden will be providing an auto-completion and type narrowing for accurate behavior.
+By default, Elysia infers `error` and `response` type to TypeScript automatically, and Eden will be providing auto-completion and type narrowing for accurate behavior.
 
 ::: tip
-If server response with HTTP status >= 300, then value will be always be null, and error will have a returned value instead.
+If the server responds with an HTTP status >= 300, then value will be always be null, and `error` will have a returned value instead.
 
 Otherwise, response will be passed to data.
 :::
 
 ## Stream response
-Eden will will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+Eden will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
 
 
 ```typescript twoslash

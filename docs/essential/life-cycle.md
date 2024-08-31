@@ -16,23 +16,23 @@ head:
 
 # Life Cycle
 
-Also known as middleware with name in Express or Hook in Fastify.
+Also known as middleware in Express or Hook in Fastify.
 
-Imagine we want to return a text of HTML.
+Imagine we want to return some HTML.
 
-We need to set **"Content-Type"** headers as **"text/html"** to for browser to render HTML.
+We need to set **"Content-Type"** headers as **"text/html"** for the browser to render HTML.
 
-Explicitly specifying that response is HTML could be repetitive if there are a lot of handlers, says ~200 endpoints.
+Explicitly specifying that the response is HTML could be repetitive if there are a lot of handlers, say ~200 endpoints.
 
-We can see a duplicated code for just specifying that response is HTML.
+This can lead to a lot of duplicated code just to specify the **"text/html"** **"Content-Type"**
 
-But what if after we sent a response, we could detect if a response is an HTML string then append headers automatically?
+But what if after we send a response, we could detect that the response is an HTML string then append the header automatically?
 
 That's when the concept of Life Cycle comes into play.
 
 ---
 
-Life Cycle allows us to intercept important events, and customize the behavior of Elysia, like adding an HTML header automatically.
+Life Cycle allows us to intercept important events, and customize the behavior of Elysia, like adding an HTML Content-Type header automatically.
 
 Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle.webp)
@@ -181,7 +181,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Console should log as the following:
+Console should log the following:
 
 ```bash
 1
