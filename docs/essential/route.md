@@ -49,15 +49,11 @@ We can define a route by calling a **method named after HTTP verbs**, passing a 
 ```typescript twoslash
 import { Elysia } from 'elysia'
 
-export const app = new Elysia()
+new Elysia()
     .get('/', () => 'hello')
     .get('/hi', () => 'hi')
     .listen(3000)
 ```
-
-::: warning
-Do **not** `export default app` as Bun's [auto-execution](https://bun.sh/docs/api/http#object-syntax) feature will cause the Elysia server to run twice.
-:::
 
 We can access the web server by going to **http://localhost:3000**
 
