@@ -58,7 +58,7 @@ Open your `package.json` file and add the following scripts:
 {
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "bun build src/index.ts",
+    "build": "bun build src/index.ts --target bun --outdir ./build",
     "start": "NODE_ENV=production bun src/index.ts",
     "test": "bun test"
   }
