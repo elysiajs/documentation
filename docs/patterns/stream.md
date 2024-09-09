@@ -79,7 +79,7 @@ While streaming a response, it's common that request may be cancelled before the
 Elysia will automatically stop the generator function when the request is cancelled.
 
 ## Eden
-Eden will will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+Eden will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
