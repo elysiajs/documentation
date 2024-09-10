@@ -16,7 +16,7 @@ head:
 
 # MVC Pattern
 
-Elysia is pattern agnostic framework, we the decision up to you and your team for coding patterns to use.
+Elysia is a pattern-agnostic framework, leaving the decision of which coding patterns to use up to you and your team.
 
 However, we found that several people are using the MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) on Elysia, and found it's hard to decouple and handling with types.
 
@@ -59,8 +59,8 @@ new Elysia()
 Elysia does a lot to ensure type integrity, and if you pass an entire Context type to a controller, these might be the problems:
 1. Elysia type is complex and heavily depends on plugin and multiple level of chaining.
 2. Hard to type, Elysia type could change at anytime, especially with decorators, and store
-3. Type casting may cause lost of type integrity or unable to ensure type and runtime code.
-4. Harder for [Sucrose](/blog/elysia-10#sucrose) *(Elysia's "kind of" compiler)* to statically analyze your code
+3. Type casting may lead to a loss of type integrity or an inability to ensure consistency between types and runtime code.
+4. This makes it more challenging for [Sucrose](/blog/elysia-10#sucrose) *(Elysia's "kind of" compiler)* to statically analyze your code
 
 We recommended using object destructuring to extract what you need and pass it to **"Service"** instead.
 
@@ -392,6 +392,6 @@ new Elysia()
 
 ---
 
-As being said, Elysia is pattern agnostic framework, and we only a recommendation guide for handling Elysia with MVC.
+As mentioned, Elysia is a pattern-agnostic framework, and we only provide a recommendation guide for handling Elysia with the MVC pattern.
 
-You may choose to follows or not is up to your and your team preference and agreement.
+It’s entirely up to you and your team whether to follow this recommendation based on your preferences and agreement.
