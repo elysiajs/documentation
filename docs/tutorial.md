@@ -69,7 +69,7 @@ Elysia use Bun with `--watch` flag to automatically reload the server when you m
 To add a new route, we specify an HTTP method, a pathname, and a value.
 
 Let's start by opening the `src/index.ts` file as follows:
-```typescript twoslash [index.ts]
+```typescript [index.ts]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -90,7 +90,7 @@ There are several HTTP methods we can use, but we will use the following for thi
 
 Other methods are available, use the same syntax as `get`
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -127,7 +127,7 @@ bun add @elysiajs/swagger
 
 Then apply the plugin to the Elysia instance.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 

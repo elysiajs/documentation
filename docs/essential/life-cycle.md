@@ -195,17 +195,6 @@ Below is a pseudo code to enforce rate-limit on a certain IP address.
 ```typescript
 import { Elysia } from 'elysia'
 
-// ---cut-start---
-const rateLimiter = new Elysia()
-    .decorate({
-        ip: '127.0.0.1' as string,
-        rateLimiter: {
-            check(ip: string) {
-                return true as boolean
-            }
-        }
-    })
-// ---cut-end---
 new Elysia()
     .use(rateLimiter)
     .onRequest(({ rateLimiter, ip, set }) => {
@@ -418,11 +407,6 @@ It's recommended to use Before Handle in the following situations:
 Below is an example of using the before handle to check for user sign-in.
 
 ```typescript
-// @filename: user.ts
-export const validateSession = (a?: string): boolean => true
-
-// @filename: index.ts
-// ---cut---
 import { Elysia } from 'elysia'
 import { validateSession } from './user'
 
@@ -448,14 +432,6 @@ The response should be listed as follows:
 When we need to apply the same before handle to multiple routes, we can use [guard](#guard) to apply the same before handle to multiple routes.
 
 ```typescript
-// @filename: user.ts
-export const validateSession = (a?: string): boolean => true
-export const isUserExists = (a: unknown): boolean => true
-export const signUp = (body: unknown): boolean => true
-export const signIn = (body: unknown): boolean => true
-
-// @filename: index.ts
-// ---cut---
 import { Elysia } from 'elysia'
 import {
     signUp,
@@ -492,11 +468,6 @@ Designed to append new value to context after validation process storing in the 
 Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from the Authorization plugin.
 
 ```typescript
-// @filename: user.ts
-export const validateSession = (a: string): boolean => true
-
-// @filename: index.ts
-// ---cut---
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -552,12 +523,6 @@ Same as **derive**, properties which assigned by **resolve** is unique and not s
 As resolve is not available in local hook, it's recommended to use guard to encapsulate the **resolve** event.
 
 ```typescript
-// @filename: user.ts
-export const isSignIn = (body: any): boolean | undefined => true
-export const findUserById = (id?: string) => id
-
-// @filename: index.ts
-// ---cut---
 import { Elysia } from 'elysia'
 import { isSignIn, findUserById } from './user'
 
@@ -772,7 +737,7 @@ Elysia supports custom error both in the type-level and implementation level.
 
 To provide a custom error code, we can use `Elysia.error` to add a custom error code, helping us to easily classify and narrow down the error type for full type safety with auto-complete as the following:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 class MyError extends Error {
@@ -806,8 +771,6 @@ Properties of `error` code is based on the properties of `error`, the said prope
 Same as others life-cycle, we provide an error into an [scope](/essential/scope) using guard:
 
 ```typescript
-const isSignIn = (headers: Headers): boolean => true
-// ---cut---
 import { Elysia } from 'elysia'
 
 new Elysia()

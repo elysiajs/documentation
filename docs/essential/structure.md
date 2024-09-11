@@ -28,15 +28,6 @@ This page is a guide to on how to follows Elysia structure best practice combine
 **DO NOT** create a separate controller, use Elysia itself as a controller instead.
 
 ```typescript
-const Controller = {
-    hi(context: any) {}
-}
-
-const Service = {
-    do1(v?: string) {},
-    do2(v?: string) {}
-}
-// ---cut---
 import { Elysia, t } from 'elysia'
 
 // ❌ don't:
@@ -67,12 +58,6 @@ We recommended using object destructuring to extract what you need and pass it t
 By passing an entire `Controller.method` to Elysia is an equivalent of having 2 controllers passing data back and forth. It's against the design of framework and MVC pattern itself.
 
 ```typescript
-const Service = {
-    doStuff(stuff?: string) {
-        return stuff
-    }
-}
-// ---cut---
 // ❌ don't:
 import { Elysia, type Context } from 'elysia'
 
@@ -108,21 +93,6 @@ export class AppController {
 
 Instead treat an Elysia instance as a controller itself.
 ```typescript
-// @filename: service.ts
-import { Elysia } from 'elysia'
-
-export const HiService = new Elysia()
-    .decorate({
-        stuff: 'a',
-        Hi: {
-            doStuff(stuff: string) {
-                return stuff
-            }
-        }
-    })
-
-// @filename: index.ts
-// ---cut---
 import { Elysia } from 'elysia'
 import { HiService } from './service'
 
@@ -292,8 +262,6 @@ You **may** create a rendering service or embedding view directly is up to you, 
 
 1. Embedding View directly, this may be useful if you have to render multiple view, eg. using [HTMX](https://htmx.org):
 ```tsx
-import React from 'react'
-// ---cut---
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -306,8 +274,6 @@ new Elysia()
 
 2. Dedicated View as a service:
 ```tsx
-import React from 'react'
-// ---cut---
 import { Elysia, t } from 'elysia'
 
 abstract class Render {
