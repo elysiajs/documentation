@@ -123,6 +123,10 @@ export default defineConfig({
                         link: '/quick-start'
                     },
                     {
+                        text: 'Tutorial',
+                        link: '/tutorial'
+                    },
+                    {
                         text: 'Table of Content',
                         link: '/table-of-content'
                     }
@@ -132,21 +136,17 @@ export default defineConfig({
                 text: 'Essential',
                 collapsed: true,
                 items: [
+	                {
+	                    text: 'Structure',
+	                    link: '/essential/structure'
+	                },
                     {
                         text: 'Route',
                         link: '/essential/route'
                     },
                     {
-                        text: 'Path',
-                        link: '/essential/path'
-                    },
-                    {
                         text: 'Handler',
                         link: '/essential/handler'
-                    },
-                    {
-                        text: 'Context',
-                        link: '/essential/context'
                     },
                     {
                         text: 'Life Cycle',
@@ -251,24 +251,16 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'Group',
-                        link: '/patterns/group'
-                    },
-                    {
                         text: 'Cookie',
                         link: '/patterns/cookie'
-                    },
-                    {
-                        text: 'Cookie Signature',
-                        link: '/patterns/cookie-signature'
                     },
                     {
                         text: 'Web Socket',
                         link: '/patterns/websocket'
                     },
                     {
-                        text: 'Documentation',
-                        link: '/patterns/documentation'
+                        text: 'OpenAPI',
+                        link: '/patterns/openapi'
                     },
                     {
                         text: 'Unit Test',

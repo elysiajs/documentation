@@ -3126,13 +3126,15 @@ And- that's it 🎉
 
 We have created a simple API using Elysia, we have learned how to create a simple API, how to handle errors, and how to observe our server using OpenTelemetry.
 
-Tutorial cover most of the concept we need to know to create Elysia server, however there are some several useful concepts you might want to know, each chapter take around 15-20 minutes to complete if follows along.
+You could to take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
+
+This Tutorial cover most of the concept we need to know to create Elysia server, however there are some several useful concepts you might want to know, each chapter take around 15-20 minutes to complete if follows along.
 
 Here's a recommended chapters we recommended in order (Feels free to jump to the chapter you are interested first).
 
 <script setup>
-    import Card from '../../components/nearl/card.vue'
-    import Deck from '../../components/nearl/card-deck.vue'
+    import Card from '../components/nearl/card.vue'
+    import Deck from '../components/nearl/card-deck.vue'
 </script>
 
 <Deck>

@@ -3,7 +3,7 @@ title: Structure - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: MVC Model - ElysiaJS
+        content: Structure - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -20,7 +20,7 @@ Elysia is design agnostic framework, we leave the decision to you for your favor
 
 However, there are several concern from trying to adapt an MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) with Elysia, and found it's hard to decouple and handle types.
 
-This page is a guide to on how to use Elysia with MVC pattern but can be adapted to any coding pattern you like.
+This page is a guide to on how to follows Elysia structure best practice combined with MVC pattern but can be adapted to any coding pattern you like.
 
 ## Controller
 1 Elysia instance = 1 controller.

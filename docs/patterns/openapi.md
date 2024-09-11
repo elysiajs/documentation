@@ -1,9 +1,9 @@
 ---
-title: Creating Documentation - ElysiaJS
+title: OpenAPI - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Creating Documentation - ElysiaJS
+      content: OpenAPI - ElysiaJS
 
   - - meta
     - name: 'description'
@@ -14,7 +14,7 @@ head:
       content: Elysia has first-class support and follows OpenAPI schema by default. Allowing any Elysia server to generate a Swagger page and serve as documentation automatically by using just 1 line of the Elysia Swagger plugin.
 ---
 
-# Creating Documentation
+# OpenAPI
 Elysia has first-class support and follows OpenAPI schema by default.
 
 Allowing any Elysia server to generate a Swagger page and serve as documentation automatically by using just 1 line of the Elysia Swagger plugin.
