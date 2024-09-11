@@ -340,6 +340,91 @@ Unlike unit test's mock, **you can expect it to behave like an actual request** 
 But also useful for simulating or creating unit tests.
 :::
 
+## Stream
+To return a response streaming out of the box by using a generator function with `yield` keyword.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield 1
+		yield 2
+		yield 3
+	})
+```
+
+This this example, we may stream a response by using `yield` keyword.
+
+### Set headers
+Elysia will defers returning response headers until the first chunk is yielded.
+
+This allows us to set headers before the response is streamed.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.get('/ok', function* ({ set }) {
+		// This will set headers
+		set.headers['x-name'] = 'Elysia'
+		yield 1
+		yield 2
+
+		// This will do nothing
+		set.headers['x-id'] = '1'
+		yield 3
+	})
+```
+
+Once the first chunk is yielded, Elysia will send the headers and the first chunk in the same response.
+
+Setting headers after the first chunk is yielded will do nothing.
+
+## Conditional Stream
+If the response is returned without yield, Elysia will automatically convert stream to normal response instead.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.get('/ok', function* ({ set }) {
+		if (Math.random() > 0.5) return 'ok'
+
+		yield 1
+		yield 2
+		yield 3
+	})
+```
+
+This allows us to conditionally stream a response or return a normal response if necessary.
+
+## Abort
+While streaming a response, it's common that request may be cancelled before the response is fully streamed.
+
+Elysia will automatically stop the generator function when the request is cancelled.
+
+### Eden
+Eden will will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield 1
+		yield 2
+		yield 3
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+```
+
 ## Extending context
 
 As Elysia only provides essential information, we can customize Context for our specific need for instance:
@@ -349,9 +434,17 @@ As Elysia only provides essential information, we can customize Context for our 
 
 We may extend Elysia's context by using the following APIs to customize the Context:
 
--   [state](#state) - a global mutable state.
+-   [state](#state) - a global mutable state
 -   [decorate](#decorate) - additional property assigned to **Context**
 -   [derive](#derive) / [resolve](#resolve) - create a new value from existing property
+
+### When to extend context
+You should only extend context when:
+- A property is a global mutable state, and shared across multiple routes using [state](#state)
+- A property is associated with a request or response using [decorate](#decorate)
+- A property is derived from an existing property using [derive](#derive) / [resolve](#resolve)
+
+Otherwise, we recommend defining a value or function separately than extending the context.
 
 ::: tip
 It's recommended to assign properties related to request and response, or frequently used functions to Context for separation of concerns.
@@ -696,6 +789,139 @@ new Elysia()
 ```
 
 <Playground :elysia="demo7" />
+
+## Macro
+
+Macro allows us to define a custom field to the hook.
+
+**Elysia.macro** allows us to compose custom heavy logic into a simple configuration available in hook, and **guard** with full type safety.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia({ name: 'plugin' })
+    .macro(({ onBeforeHandle }) => ({
+        hi(word: string) {
+            onBeforeHandle(() => {
+                console.log(word)
+            })
+        }
+    }))
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/', () => 'hi', {
+        hi: 'Elysia'
+    })
+```
+
+Accessing the path should log **"Elysia"** as the results.
+
+## API
+
+**macro** should return an object, each key is reflected to the hook, and the provided value inside the hook will be sent back as the first parameter.
+
+In previous example, we create **hi** accepting a **string**.
+
+We then assigned **hi** to **"Elysia"**, the value was then sent back to the **hi** function, and then the function added a new event to **beforeHandle** stack.
+
+Which is an equivalent of pushing function to **beforeHandle** as the following:
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'hi', {
+        beforeHandle() {
+            console.log('Elysia')
+        }
+    })
+```
+
+**macro** shine when a logic is more complex than accepting a new function, for example creating an authorization layer for each route.
+
+```typescript twoslash
+// @filename: auth.ts
+import { Elysia } from 'elysia'
+
+export const auth = new Elysia()
+    .macro(() => {
+        return {
+            isAuth(isAuth: boolean) {},
+            role(role: 'user' | 'admin') {},
+        }
+    })
+
+// @filename: index.ts
+// ---cut---
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+
+const app = new Elysia()
+    .use(auth)
+    .get('/', () => 'hi', {
+        isAuth: true,
+        role: 'admin'
+    })
+```
+
+The field can accept anything ranging from string to function, allowing us to create a custom life cycle event.
+
+macro will be executed in order from top-to-bottom according to definition in hook, ensure that the stack should be handle in correct order.
+
+## Parameters
+
+**Elysia.macro** parameters to interact with the life cycle event as the following:
+
+-   onParse
+-   onTransform
+-   onBeforeHandle
+-   onAfterHandle
+-   onError
+-   onResponse
+-   events - Life cycle store
+    -   global: Life cycle of a global stack
+    -   local: Life cycle of an inline hook (route)
+
+Parameters start with **on** is a function to appends function into a life cycle stack.
+
+While **events** is an actual stack that stores an order of the life-cycle event. You may mutate the stack directly or using the helper function provided by Elysia.
+
+## Options
+
+The life cycle function of an extension API accepts additional **options** to ensure control over life cycle events.
+
+-   **options** (optional) - determine which stack
+-   **function** - function to execute on the event
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia({ name: 'plugin' })
+    .macro(({ onBeforeHandle }) => {
+        return {
+            hi(word: string) {
+                onBeforeHandle(
+                    { insert: 'before' }, // [!code ++]
+                    () => {
+                        console.log(word)
+                    }
+                )
+            }
+        }
+    })
+```
+
+**Options** may accept the following parameter:
+
+-   **insert**
+    -   Where should the function be added
+    -   value: **'before' | 'after'**
+    -   @default: **'after'**
+-   **stack**
+    -   Determine which type of stack should be added
+    -   value: **'global' | 'local'**
+    -   @default: **'local'**
 
 ## TypeScript
 Elysia automatically type context base on various of factors like store, decorators, schema.

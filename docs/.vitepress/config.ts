@@ -153,96 +153,16 @@ export default defineConfig({
                         link: '/essential/life-cycle'
                     },
                     {
-                        text: 'Schema',
-                        link: '/essential/schema'
+                        text: 'Validation',
+                        link: '/essential/validation'
                     },
                     {
                         text: 'Plugin',
                         link: '/essential/plugin'
                     },
                     {
-                        text: 'Scope',
-                        link: '/essential/scope'
-                    },
-                    {
                         text: "What's next",
                         link: '/essential/what-next'
-                    }
-                ]
-            },
-            {
-                text: 'Validation',
-                collapsed: true,
-                items: [
-                    {
-                        text: 'Overview',
-                        link: '/validation/overview'
-                    },
-                    {
-                        text: 'Schema Type',
-                        link: '/validation/schema-type'
-                    },
-                    {
-                        text: 'Primitive Type',
-                        link: '/validation/primitive-type'
-                    },
-                    {
-                        text: 'Elysia Type',
-                        link: '/validation/elysia-type'
-                    },
-                    {
-                        text: 'Error Provider',
-                        link: '/validation/error-provider'
-                    },
-                    {
-                        text: 'Reference Model',
-                        link: '/validation/reference-model'
-                    }
-                ]
-            },
-            {
-                text: 'Life Cycle',
-                collapsed: true,
-                items: [
-                    {
-                        text: 'Overview',
-                        link: '/life-cycle/overview'
-                    },
-                    {
-                        text: 'On Request',
-                        link: '/life-cycle/request'
-                    },
-                    {
-                        text: 'Parse',
-                        link: '/life-cycle/parse'
-                    },
-                    {
-                        text: 'Transform',
-                        link: '/life-cycle/transform'
-                    },
-                    {
-                        text: 'Before Handle',
-                        link: '/life-cycle/before-handle'
-                    },
-                    {
-                        text: 'After Handle',
-                        link: '/life-cycle/after-handle'
-                    },
-                    {
-                        text: 'Map Response',
-                        link: '/life-cycle/map-response'
-                    },
-                    {
-                        text: 'On Error',
-                        link: '/life-cycle/on-error'
-                    },
-                    {
-                        text: 'After Response',
-                        link: '/life-cycle/after-response'
-                    },
-                    {
-                        text: 'Trace',
-                        link: '/life-cycle/trace'
                     }
                 ]
             },
@@ -271,20 +191,8 @@ export default defineConfig({
                         link: '/patterns/mount'
                     },
                     {
-                        text: 'Lazy Loading Module',
-                        link: '/patterns/lazy-loading-module'
-                    },
-                    {
-                        text: 'Macro',
-                        link: '/patterns/macro'
-                    },
-                    {
-                        text: 'MVC model',
-                        link: '/patterns/mvc'
-                    },
-                    {
-                        text: 'Stream',
-                        link: '/patterns/stream'
+                        text: 'Trace',
+                        link: '/life-cycle/trace'
                     }
                 ]
             },

@@ -52,17 +52,42 @@ new Elysia()
                 username: t.String(),
                 password: t.String()
             },
-            {
-                description: 'Expected an username and password'
-            }
+            { // [!code ++]
+                description: 'Expected an username and password' // [!code ++]
+            } // [!code ++]
         ),
-        detail: {
-            summary: 'Sign in the user',
-            tags: ['authentication']
-        }
+        detail: { // [!code ++]
+            summary: 'Sign in the user', // [!code ++]
+            tags: ['authentication'] // [!code ++]
+        } // [!code ++]
     })
 ```
 
 The detail fields follows an OpenAPI V3 definition with auto-completion and type-safety by default.
 
 Detail is then passed to Swagger to put the description to Swagger route.
+
+## Hide
+You can hide the route from the Swagger page by setting `detail.hide` to `true`
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import { swagger } from '@elysiajs/swagger'
+
+new Elysia()
+    .use(swagger())
+    .post('/sign-in', ({ body }) => body, {
+        body: t.Object(
+            {
+                username: t.String(),
+                password: t.String()
+            },
+            {
+                description: 'Expected an username and password'
+            }
+        ),
+        detail: { // [!code ++]
+        	hide: true // [!code ++]
+        } // [!code ++]
+    })
+```
