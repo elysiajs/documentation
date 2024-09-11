@@ -317,7 +317,9 @@ new Elysia()
                     console.log(error.all)
 
                     // Find a specific error name (path is OpenAPI Schema compliance)
-					const name = error.all.find((x) => x.path === '/name')
+                    const name = error.all.find(
+						(x) => x.summary && x.path === '/name'
+					)
 
                     // If has a validation error, then log it
                     if(name)

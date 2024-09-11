@@ -66,10 +66,10 @@ Open your browser and go to **http://localhost:3000**, you should see **Hello El
 Elysia use Bun with `--watch` flag to automatically reload the server when you make changes.
 
 ## Route
-
 To add a new route, we specify an HTTP method, a pathname, and a value.
 
-```typescript twoslash
+Let's start by opening the `src/index.ts` file as follows:
+```typescript twoslash [index.ts]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -159,8 +159,7 @@ Now, let's create a singleton class to store our notes.
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
-class Note {
-    // [!code ++]
+class Note { // [!code ++]
     constructor(public data: string[] = ['Moonhalo']) {} // [!code ++]
 } // [!code ++]
 
@@ -197,8 +196,7 @@ const app = new Elysia()
     .use(swagger())
     .decorate('note', new Note())
     .get('/note', ({ note }) => note.data)
-    .get('/note/:index', ({ note, params: { index } }) => {
-        // [!code ++]
+    .get('/note/:index', ({ note, params: { index } }) => { // [!code ++]
         return note.data[index] // [!code ++]
     }) // [!code ++]
     .listen(3000)
@@ -235,14 +233,12 @@ const app = new Elysia()
         ({ note, params: { index } }) => {
             return note.data[index]
         },
-        {
-            // [!code ++]
-            params: t.Object({
-                // [!code ++]
+        { // [!code ++]
+            params: t.Object({ // [!code ++]
                 index: t.Number() // [!code ++]
             }) // [!code ++]
-        }
-    ) // [!code ++]
+        } // [!code ++]
+    )
     .listen(3000)
 ```
 
@@ -291,8 +287,7 @@ const app = new Elysia()
     .get('/note', ({ note }) => note.data)
     .get(
         '/note/:index',
-        ({ note, params: { index }, error }) => {
-            // [!code ++]
+        ({ note, params: { index }, error }) => { // [!code ++]
             return note.data[index] ?? error(404) // [!code ++]
         },
         {
@@ -400,8 +395,7 @@ import { swagger } from '@elysiajs/swagger'
 
 import { note } from './note' // [!code ++]
 
-class Note {
-    // [!code --]
+class Note { // [!code --]
     constructor(public data: string[] = ['Moonhalo']) {} // [!code --]
 } // [!code --]
 
@@ -412,14 +406,11 @@ const app = new Elysia()
     .get('/note', ({ note }) => note.data) // [!code --]
     .get(
         '/note/:index',
-        ({ note, params: { index }, error }) => {
-            // [!code --]
+        ({ note, params: { index }, error }) => { // [!code --]
             return note.data[index] ?? error(404, 'oh no :(') // [!code --]
         },
-        {
-            // [!code --]
-            params: t.Object({
-                // [!code --]
+        { // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }) // [!code --]
         }
@@ -447,20 +438,17 @@ import { Elysia, t } from 'elysia'
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
 
-    add(note: string) {
-        // [!code ++]
+    add(note: string) { // [!code ++]
         this.data.push(note) // [!code ++]
 
         return this.data // [!code ++]
     } // [!code ++]
 
-    remove(index: number) {
-        // [!code ++]
+    remove(index: number) { // [!code ++]
         return this.data.splice(index, 1) // [!code ++]
     } // [!code ++]
 
-    update(index: number, note: string) {
-        // [!code ++]
+    update(index: number, note: string) { // [!code ++]
         return (this.data[index] = note) // [!code ++]
     } // [!code ++]
 }
@@ -468,10 +456,8 @@ class Note {
 export const note = new Elysia()
     .decorate('note', new Note())
     .get('/note', ({ note }) => note.data)
-    .put('/note', ({ note, body: { data } }) => note.add(data), {
-        // [!code ++]
-        body: t.Object({
-            // [!code ++]
+    .put('/note', ({ note, body: { data } }) => note.add(data), { // [!code ++]
+        body: t.Object({ // [!code ++]
             data: t.String() // [!code ++]
         }) // [!code ++]
     }) // [!code ++]
@@ -486,40 +472,31 @@ export const note = new Elysia()
             })
         }
     )
-    .delete(
-        // [!code ++]
+    .delete( // [!code ++]
         '/note/:index', // [!code ++]
-        ({ note, params: { index }, error }) => {
-            // [!code ++]
+        ({ note, params: { index }, error }) => { // [!code ++]
             if (index in note.data) return note.remove(index) // [!code ++]
-            // [!code ++]
+
             return error(422) // [!code ++]
         }, // [!code ++]
-        {
-            // [!code ++]
-            params: t.Object({
-                // [!code ++]
+        { // [!code ++]
+            params: t.Object({ // [!code ++]
                 index: t.Number() // [!code ++]
             }) // [!code ++]
         } // [!code ++]
     ) // [!code ++]
-    .patch(
-        // [!code ++]
+    .patch( // [!code ++]
         '/note/:index', // [!code ++]
-        ({ note, params: { index }, body: { data }, error }) => {
-            // [!code ++]
+        ({ note, params: { index }, body: { data }, error }) => { // [!code ++]
             if (index in note.data) return note.update(index, data) // [!code ++]
-            // [!code ++]
+
             return error(422) // [!code ++]
         }, // [!code ++]
-        {
-            // [!code ++]
-            params: t.Object({
-                // [!code ++]
+        { // [!code ++]
+            params: t.Object({ // [!code ++]
                 index: t.Number() // [!code ++]
             }), // [!code ++]
-            body: t.Object({
-                // [!code ++]
+            body: t.Object({ // [!code ++]
                 data: t.String() // [!code ++]
             }) // [!code ++]
         } // [!code ++]
@@ -561,7 +538,7 @@ class Note {
 export const note = new Elysia({ prefix: '/note' }) // [!code ++]
     .decorate('note', new Note())
     .group('/note', (app) =>
-        app // [!code --]
+        app // [!code ++]
             .get('/', ({ note }) => note.data) // [!code ++]
             .put('/', ({ note, body: { data } }) => note.add(data), {
                 body: t.Object({
@@ -608,7 +585,7 @@ export const note = new Elysia({ prefix: '/note' }) // [!code ++]
                     })
                 }
             )
-    ) // [!code --]
+    ) // [!code ++]
 ```
 
 :::
@@ -688,8 +665,7 @@ export const note = new Elysia({ prefix: '/note' })
             return error(422)
         },
         {
-            params: t.Object({
-                // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }), // [!code --]
             body: t.Object({
@@ -915,7 +891,7 @@ export const user = new Elysia({ prefix: '/user' })
 	     	{ // [!code ++]
 		     	secrets: 'seia' // [!code ++]
 	     	} // [!code ++]
-	     	) // [!code ++]
+	    ) // [!code ++]
     }) // [!code ++]
     .model((model) => ({ // [!code ++]
     	...model, // [!code ++]
@@ -2375,7 +2351,7 @@ const app = new Elysia()
     .use(swagger())
     .onError(({ error, code }) => { // [!code ++]
         if (code === 'NOT_FOUND') return 'Not Found :(' // [!code ++]
-        // [!code ++]
+
         console.error(error) // [!code ++]
     }) // [!code ++]
     .use(note)
