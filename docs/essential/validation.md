@@ -446,6 +446,29 @@ new Elysia()
 	})
 ```
 
+## Optional
+To make a field optional, we may use `t.Optional`.
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.get('/optional', ({ query }) => query, {
+                       // ^?
+
+
+
+
+		query: t.Optional(
+			t.Object({
+				name: t.String()
+			})
+		)
+	})
+```
+
+This is an Elysia specific feature, allowing us to make a field optional.
+
 ## Guard
 
 Guard can be used to apply schema to multiple handlers.
