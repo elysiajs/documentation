@@ -50,7 +50,7 @@ new Elysia()
 
 Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello Elysia' as a result.
 
-<Playground 
+<Playground
     :elysia="demo1"
     :alias="{
         '/user/:id': '/user/1'
@@ -64,7 +64,7 @@ Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello E
                 hello: 'Elysia'
             })
         }
-    }" 
+    }"
 />
 
 ::: tip
@@ -112,9 +112,11 @@ new Elysia()
     .listen(3000)
 ```
 
+<br>
+
 The above code create a path parameter "id", the value that replaces `:id` will be passed to `params.id` both in runtime and type without manual type declaration.
 
-<Playground 
+<Playground
     :elysia="demo2"
     :alias="{
         '/user/:id': '/user/123'
@@ -123,7 +125,7 @@ The above code create a path parameter "id", the value that replaces `:id` will 
         '/user/:id': {
             GET: '123'
         },
-    }" 
+    }"
 />
 
 Elysia's goal is to help you write less TypeScript and focus more on Business logic. Let the complex types be handled by the framework.

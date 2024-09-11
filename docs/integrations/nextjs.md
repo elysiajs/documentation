@@ -22,7 +22,7 @@ With Nextjs App Router, we can run Elysia on Nextjs route.
 2. In **route.ts**, create or import an existing Elysia server
 3. Export the handler with the name of method you want to expose
 
-```typescript twoslash
+```typescript
 // app/api/[[...slugs]]/route.ts
 import { Elysia, t } from 'elysia'
 
@@ -52,7 +52,7 @@ Because our Elysia server is not in the root directory of the app router, you ne
 
 For example, if you place Elysia server in **app/user/[[...slugs]]/route.ts**, you need to annotate prefix as **/user** to Elysia server.
 
-```typescript twoslash
+```typescript
 // app/api/[[...slugs]]/route.ts
 import { Elysia, t } from 'elysia'
 

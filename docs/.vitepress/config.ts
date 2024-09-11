@@ -159,10 +159,6 @@ export default defineConfig({
                     {
                         text: 'Plugin',
                         link: '/essential/plugin'
-                    },
-                    {
-                        text: "What's next",
-                        link: '/essential/what-next'
                     }
                 ]
             },

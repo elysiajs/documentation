@@ -98,12 +98,12 @@ Web servers use the request's **path and HTTP method** to look up the correct re
 
 We can define a route by calling a **method named after HTTP verbs**, passing a path and a function to execute when matched.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'hello')
-    .get('/hi', () => 'hi')
+    .get('/', 'hello')
+    .get('/hi', 'hi')
     .listen(3000)
 ```
 
@@ -135,13 +135,13 @@ The priorities are as follows:
 
 If the path is resolved as the static wild dynamic path is presented, Elysia will resolve the static path rather than the dynamic path
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/id/1', () => 'static path')
-    .get('/id/:id', () => 'dynamic path')
-    .get('/id/*', () => 'wildcard path')
+    .get('/id/1', 'static path')
+    .get('/id/:id', 'dynamic path')
+    .get('/id/*', 'wildcard path')
     .listen(3000)
 ```
 
@@ -427,12 +427,12 @@ Deletes the specified resource.
 
 To handle each of the different verbs, Elysia has a built-in API for several HTTP verbs by default, similar to `Elysia.get`
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
+    .get('/', 'hello')
+    .post('/hi', 'hi')
     .listen(3000)
 ```
 
@@ -450,13 +450,13 @@ You can read more about the HTTP methods on [HTTP Request Methods](https://devel
 
 We can accept custom HTTP Methods with `Elysia.route`.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .get('/get', () => 'hello')
-    .post('/post', () => 'hi')
-    .route('M-SEARCH', '/m-search', () => 'connect') // [!code ++]
+    .get('/get', 'hello')
+    .post('/post', 'hi')
+    .route('M-SEARCH', '/m-search', 'connect') // [!code ++]
     .listen(3000)
 ```
 
@@ -486,11 +486,11 @@ It's recommended to use the UPPERCASE convention for defining a custom HTTP Verb
 
 Elysia provides an `Elysia.all` for handling any HTTP method for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .all('/', () => 'hi')
+    .all('/', 'hi')
     .listen(3000)
 ```
 
@@ -509,12 +509,12 @@ Most developers use REST clients like Postman, Insomnia or Hoppscotch to test th
 
 However, Elysia can be programmatically test using `Elysia.handle`.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
+    .get('/', 'hello')
+    .post('/hi', 'hi')
     .listen(3000)
 
 app.handle(new Request('http://localhost/')).then(console.log)
@@ -538,7 +538,7 @@ We can handle a custom 404 error by returning a value from 'error` life cycle li
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'hi')
+    .get('/', 'hi')
     .onError(({ code }) => {
         if (code === 'NOT_FOUND')
             return 'Route not found :('
@@ -568,13 +568,13 @@ If the server fails to find any route to handle, like in this case, then the ser
 
 When creating a web server, you would often have multiple routes sharing the same prefix:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .post('/user/sign-in', () => 'Sign in')
-    .post('/user/sign-up', () => 'Sign up')
-    .post('/user/profile', () => 'Profile')
+    .post('/user/sign-in', 'Sign in')
+    .post('/user/sign-up', 'Sign up')
+    .post('/user/profile', 'Profile')
     .listen(3000)
 ```
 
@@ -588,9 +588,9 @@ import { Elysia } from 'elysia'
 new Elysia()
     .group('/user', (app) =>
         app
-            .post('/sign-in', () => 'Sign in')
-            .post('/sign-up', () => 'Sign up')
-            .post('/profile', () => 'Profile')
+            .post('/sign-in', 'Sign in')
+            .post('/sign-up', 'Sign up')
+            .post('/profile', 'Profile')
     )
     .listen(3000)
 ```
@@ -617,9 +617,9 @@ new Elysia()
             body: t.Literal('Rikuhachima Aru')
         },
         (app) => app
-            .post('/sign-in', () => 'Sign in')
-            .post('/sign-up', () => 'Sign up')
-            .post('/profile', () => 'Profile')
+            .post('/sign-in', 'Sign in')
+            .post('/sign-up', 'Sign up')
+            .post('/profile', 'Profile')
     )
     .listen(3000)
 ```
@@ -630,17 +630,17 @@ You may find more information about grouped guards in [scope](/essential/scope.h
 
 We can separate a group into a separate plugin instance to reduce nesting by providing a **prefix** to the constructor.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const users = new Elysia({ prefix: '/user' })
-    .post('/sign-in', () => 'Sign in')
-    .post('/sign-up', () => 'Sign up')
-    .post('/profile', () => 'Profile')
+    .post('/sign-in', 'Sign in')
+    .post('/sign-up', 'Sign up')
+    .post('/profile', 'Profile')
 
 new Elysia()
     .use(users)
-    .get('/', () => 'hello world')
+    .get('/', 'hello world')
     .listen(3000)
 ```
 

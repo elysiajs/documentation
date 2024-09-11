@@ -159,15 +159,7 @@ export const plugin = new Elysia()
 ```
 
 And then we import the instance into the main file:
-```typescript twoslash
-// @filename: plugin.ts
-import { Elysia } from 'elysia'
-
-export const plugin = new Elysia()
-    .get('/plugin', () => 'hi')
-// @filename: index.ts
-// ---cut---
-// main.ts
+```typescript
 import { Elysia } from 'elysia'
 import { plugin } from './plugin'
 
@@ -182,7 +174,7 @@ To make the plugin more useful, allowing customization via config is recommended
 
 You can create a function that accepts parameters that may change the behavior of the plugin to make it more reusable.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const version = (version = 1) => new Elysia()
@@ -232,7 +224,7 @@ Some plugins may be used multiple times to provide type inference, resulting in 
 
 Elysia avoids this by differentiating the instance by using **name** and **optional seeds** to help Elysia identify instance duplication:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = <T extends string>(config: { prefix: T }) =>
@@ -257,7 +249,7 @@ Elysia will use **name** and **seed** to create a checksum to identify if the in
 
 If seed is not provided, Elysia will only use **name** to differentiate the instance. This means that the plugin is only registered once even if you registered it multiple times.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia({ name: 'plugin' })
@@ -387,29 +379,29 @@ Scope type are as the following:
 - **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
 
 Let's review what each scope type does by using the following example:
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 // ? Value base on table value provided below
 const type = 'local'
 
 const child = new Elysia()
-    .get('/child', () => 'hi')
+    .get('/child', 'hi')
 
 const current = new Elysia()
     .onBeforeHandle({ as: type }, () => { // [!code ++]
         console.log('hi')
     })
     .use(child)
-    .get('/current', () => 'hi')
+    .get('/current', 'hi')
 
 const parent = new Elysia()
     .use(current)
-    .get('/parent', () => 'hi')
+    .get('/parent', 'hi')
 
 const main = new Elysia()
     .use(parent)
-    .get('/main', () => 'hi')
+    .get('/main', 'hi')
 ```
 
 By changing the `type` value, the result should be as follows:
@@ -447,7 +439,7 @@ new Elysia()
                     beforeHandle: isUserExists
                 })
     )
-    .get('/', () => 'hi')
+    .get('/', 'hi')
     .listen(3000)
 ```
 
@@ -581,7 +573,7 @@ However, this method is apply to only a single hook, and may not be suitable for
 ### 2. Guard as
 Every event listener will accept `as` parameter to specify the scope of the hook.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 const plugin = new Elysia()
@@ -592,11 +584,11 @@ const plugin = new Elysia()
 			console.log('ok')
 		}
 	})
-    .get('/child', () => 'ok')
+    .get('/child', 'ok')
 
 const main = new Elysia()
     .use(plugin)
-    .get('/parent', () => 'hello')
+    .get('/parent', 'hello')
 ```
 
 Guard alllowing us to apply `schema` and `hook` to multiple routes all at once while specifying the scope.
@@ -657,34 +649,34 @@ By default plugin will only **apply hook to itself and descendants** only.
 
 If the hook is registered in a plugin, instances that inherit the plugin will **NOT** inherit hooks and schema.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
     .onBeforeHandle(() => {
         console.log('hi')
     })
-    .get('/child', () => 'log hi')
+    .get('/child', 'log hi')
 
 const main = new Elysia()
     .use(plugin)
-    .get('/parent', () => 'not log hi')
+    .get('/parent', 'not log hi')
 ```
 
 To apply hook to globally, we need to specify hook as global.
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
     .onBeforeHandle(() => {
         return 'hi'
     })
-    .get('/child', () => 'child')
+    .get('/child', 'child')
     .as('plugin')
 
 const main = new Elysia()
     .use(plugin)
-    .get('/parent', () => 'parent')
+    .get('/parent', 'parent')
 ```
 
 <Playground :elysia="_demo2" :mock="_mock2" />
@@ -707,12 +699,7 @@ Both will be registered after the server is started.
 ## Deferred Module
 The deferred module is an async plugin that can be registered after the server is started.
 
-```typescript twoslash
-// @filename: files.ts
-export const loadAllFiles = async () => <string[]>[]
-
-// @filename: plugin.ts
-// ---cut---
+```typescript
 // plugin.ts
 import { Elysia } from 'elysia'
 import { loadAllFiles } from './files'
@@ -729,25 +716,7 @@ export const loadStatic = async (app: Elysia) => {
 ```
 
 And in the main file:
-```typescript twoslash
-// @filename: plugin.ts
-import { Elysia } from 'elysia'
-
-export const loadAllFiles = async () => <string[]>[]
-
-export const loadStatic = async (app: Elysia) => {
-    const files = await loadAllFiles()
-
-    files.forEach((file) => app
-        .get(file, () => Bun.file(file))
-    )
-
-    return app
-}
-
-// @filename: index.ts
-// ---cut---
-// plugin.ts
+```typescript
 import { Elysia } from 'elysia'
 import { loadStatic } from './plugin'
 
@@ -762,14 +731,7 @@ Same as the async plugin, the lazy-load module will be registered after the serv
 
 A lazy-load module can be both sync or async function, as long as the module is used with `import` the module will be lazy-loaded.
 
-```typescript twoslash
-// @filename: plugin.ts
-import { Elysia } from 'elysia'
-
-export default new Elysia()
-
-// @filename: index.ts
-// ---cut---
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -783,7 +745,7 @@ To ensure module registration before the server starts, we can use `await` on th
 ## Testing
 In a test environment, we can use `await app.modules` to wait for deferred and lazy-loading modules.
 
-```typescript twoslash
+```typescript
 import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
 

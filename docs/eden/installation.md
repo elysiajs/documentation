@@ -28,7 +28,7 @@ Make sure to install Elysia with the version matching on the server.
 :::
 
 First, export your existing Elysia server type:
-```typescript twoslash
+```typescript
 // server.ts
 import { Elysia, t } from 'elysia'
 

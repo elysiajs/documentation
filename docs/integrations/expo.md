@@ -27,7 +27,7 @@ bun create expo-app --template tabs
 3. In **[...slugs]+api.ts**, create or import an existing Elysia server
 4. Export the handler with the name of method you want to expose
 
-```typescript twoslash
+```typescript
 // app/[...slugs]+api.ts
 import { Elysia, t } from 'elysia'
 
@@ -56,7 +56,7 @@ If you place an Elysia server not in the root directory of the app router, you n
 
 For example, if you place Elysia server in **app/api/[...slugs]+api.ts**, you need to annotate prefix as **/api** to Elysia server.
 
-```typescript twoslash
+```typescript
 // app/api/[...slugs]+api.ts
 import { Elysia, t } from 'elysia'
 

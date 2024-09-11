@@ -22,7 +22,7 @@ With SvelteKit, you can run Elysia on server routes.
 2. In **+server.ts**, create or import an existing Elysia server
 3. Export the handler with the name of method you want to expose
 
-```typescript twoslash
+```typescript
 // src/routes/[...slugs]/+server.ts
 import { Elysia, t } from 'elysia';
 

@@ -90,7 +90,7 @@ The local hook is executed on a specific route.
 
 To use a local hook, you can inline hook into a route handler:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -118,7 +118,7 @@ Register hook into every handler **of the current instance** that came after.
 
 To add an interceptor hook, you can use `.on` followed by a life cycle event in camelCase:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -155,7 +155,7 @@ The order of Elysia's life-cycle code is very important.
 
 Elysia's life-cycle event is stored as a queue, aka first-in first-out. So Elysia will **always** respect the order of code from top-to-bottom followed by the order of life-cycle events.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -192,7 +192,7 @@ As `onRequest` is designed to provide only the most crucial context to reduce ov
 
 ### Example
 Below is a pseudo code to enforce rate-limit on a certain IP address.
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 // ---cut-start---
@@ -245,7 +245,7 @@ It's recommended to use the `onParse` event to provide a custom body parser that
 ### Example
 Below is an example code to retrieve value based on custom headers.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -270,7 +270,7 @@ By default, Elysia will try to determine body parsing function ahead of time and
 Elysia is able to determine that body function by reading `body`.
 
 Take a look at this example:
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -296,7 +296,7 @@ This allows Elysia to optimize body parser ahead of time, and reduce overhead in
 ### Explicit Content Type
 However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -335,7 +335,7 @@ It's recommended to use transform for the following:
 ### Example
 Below is an example of using transform to mutate params to be numeric values.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -358,7 +358,7 @@ Designed to append new value to context directly before validation process stori
 
 Unlike **state** and **decorate** that assigned value before the server started. **derive** assigns a property when each request happens. Allowing us to extract a piece of information into a property instead.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -379,7 +379,7 @@ Unlike **state**, and **decorate**. Properties which assigned by **derive** is u
 ### Queue
 `derive` and `transform` is stored in the same queue.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -417,7 +417,7 @@ It's recommended to use Before Handle in the following situations:
 
 Below is an example of using the before handle to check for user sign-in.
 
-```typescript twoslash
+```typescript
 // @filename: user.ts
 export const validateSession = (a?: string): boolean => true
 
@@ -447,7 +447,7 @@ The response should be listed as follows:
 
 When we need to apply the same before handle to multiple routes, we can use [guard](#guard) to apply the same before handle to multiple routes.
 
-```typescript twoslash
+```typescript
 // @filename: user.ts
 export const validateSession = (a?: string): boolean => true
 export const isUserExists = (a: unknown): boolean => true
@@ -491,7 +491,7 @@ Designed to append new value to context after validation process storing in the 
 
 Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from the Authorization plugin.
 
-```typescript twoslash
+```typescript
 // @filename: user.ts
 export const validateSession = (a: string): boolean => true
 
@@ -520,7 +520,7 @@ new Elysia()
 
 Using `resolve` and `onBeforeHandle` is stored in the same queue.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -551,7 +551,7 @@ Same as **derive**, properties which assigned by **resolve** is unique and not s
 
 As resolve is not available in local hook, it's recommended to use guard to encapsulate the **resolve** event.
 
-```typescript twoslash
+```typescript
 // @filename: user.ts
 export const isSignIn = (body: any): boolean | undefined => true
 export const findUserById = (id?: string) => id
@@ -589,7 +589,7 @@ It's recommended to use After Handle in the following situations:
 
 Below is an example of using the after handle to add HTML content type to response headers.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -617,7 +617,7 @@ If a value is returned After Handle will use a return value as a new response va
 
 The above example could be rewritten as the following:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { isHtml } from '@elysiajs/html'
 
@@ -655,7 +655,7 @@ It's recommended to use transform for the following:
 
 Below is an example of using mapResponse to provide Response compression.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const encoder = new TextEncoder()
@@ -704,7 +704,7 @@ Designed to capture and resolve an unexpected error, its recommended to use on E
 
 Elysia catches all the errors thrown in the handler, classifies the error code, and pipes them to `onError` middleware.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -726,7 +726,7 @@ It's important that `onError` must be called before the handler we want to apply
 
 For example, returning custom 404 messages:
 
-```typescript twoslash
+```typescript
 import { Elysia, NotFoundError } from 'elysia'
 
 new Elysia()
@@ -772,7 +772,7 @@ Elysia supports custom error both in the type-level and implementation level.
 
 To provide a custom error code, we can use `Elysia.error` to add a custom error code, helping us to easily classify and narrow down the error type for full type safety with auto-complete as the following:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 class MyError extends Error {
@@ -805,7 +805,7 @@ Properties of `error` code is based on the properties of `error`, the said prope
 
 Same as others life-cycle, we provide an error into an [scope](/essential/scope) using guard:
 
-```typescript twoslash
+```typescript
 const isSignIn = (headers: Headers): boolean => true
 // ---cut---
 import { Elysia } from 'elysia'
@@ -836,7 +836,7 @@ It's recommended to use **After Response** in the following situations:
 ### Example
 Below is an example of using the response handle to check for user sign-in.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()

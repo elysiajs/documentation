@@ -34,7 +34,7 @@ export default defineConfig({
 3. Create or import an existing Elysia server in **[...slugs].ts**
 4. Export the handler with the name of method you want to expose
 
-```typescript twoslash
+```typescript
 // pages/[...slugs].ts
 import { Elysia, t } from 'elysia'
 
@@ -72,7 +72,7 @@ If you place an Elysia server not in the root directory of the app router, you n
 
 For example, if you place Elysia server in **pages/api/[...slugs].ts**, you need to annotate prefix as **/api** to Elysia server.
 
-```typescript twoslash
+```typescript
 // pages/api/[...slugs].ts
 import { Elysia, t } from 'elysia'
 

@@ -28,7 +28,7 @@ Both parameters is type safe and will be guided by TypeScript automatically:
     - headers
     - fetch
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -70,7 +70,7 @@ If the method **"GET"** or **"HEAD"**:
     -   headers
     -   fetch
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -92,7 +92,7 @@ api.hello.get({
 ## Empty body
 If body is optional or not need but query or headers is required, you may pass the body as `null` or `undefined` instead.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -117,7 +117,7 @@ api.user.post(null, {
 
 Eden Treaty is a fetch wrapper, we may add any valid [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) parameters to Eden by passing it to `$fetch`:
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -152,7 +152,7 @@ We may either pass one of the following to attach file(s):
 Attaching a file will results **content-type** to be **multipart/form-data**
 
 Suppose we have the server as the following:
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 

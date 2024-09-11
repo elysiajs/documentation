@@ -25,7 +25,7 @@ bun add @elysiajs/swagger
 ```
 
 And register the plugin to the server:
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -42,7 +42,7 @@ We add route information by providing a schema type.
 
 However, sometime defining a type only isn't clear what the route might work. You can use `schema.detail` fields to explictly define what the route is all about.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -100,7 +100,7 @@ A declaration of which security mechanisms can be used for this operation. The l
 ## Hide
 You can hide the route from the Swagger page by setting `detail.hide` to `true`
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -125,7 +125,7 @@ new Elysia()
 ## Tags group
 Elysia may accept tags to add an entire instance or group of routes to a specific tag.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia({
@@ -138,7 +138,7 @@ new Elysia({
 ## Guard
 Alternatively, Elysia may accept guards to add an entire instance or group of routes to a specific guard.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()

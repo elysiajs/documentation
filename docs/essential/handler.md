@@ -92,7 +92,7 @@ Accepting request information and returning a response to the client.
 
 Altenatively, handler is also known as a **Controller** in other frameworks.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -103,7 +103,7 @@ new Elysia()
 
 Handler maybe a literal value, and can be inlined.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -178,7 +178,7 @@ We can return a custom status code by using either:
 - **error** function (recommended)
 - **set.status** (legacy)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -193,7 +193,7 @@ new Elysia()
 ### error
 A dedicated `error` function for returning status code with response.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -325,7 +325,7 @@ To comply with the Web Standard, a value returned from route handler will be map
 
 Letting you focus on business logic rather than boilerplate code.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -336,7 +336,7 @@ new Elysia()
 
 If you prefer an explicit Response class, Elysia also handles that automatically.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -352,7 +352,7 @@ Using a primitive value or `Response` has near identical performance (+- 0.1%), 
 
 As Elysia is built on top of Web Syandard Request, we can programmatically test it using `Elysia.handle`.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -374,7 +374,7 @@ But also useful for simulating or creating unit tests.
 ## Stream
 To return a response streaming out of the box by using a generator function with `yield` keyword.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -415,11 +415,11 @@ Setting headers after the first chunk is yielded will do nothing.
 ## Conditional Stream
 If the response is returned without yield, Elysia will automatically convert stream to normal response instead.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-	.get('/ok', function* ({ set }) {
+	.get('/ok', function* () {
 		if (Math.random() > 0.5) return 'ok'
 
 		yield 1
@@ -656,7 +656,7 @@ Where **derive** can be only used with **remap** because it depends on existing 
 
 We can use **state**, and **decorate** to assign a value using a key-value pattern.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 class Logger {
@@ -779,7 +779,7 @@ When accessing the property from JavaScript, if we define a primitive value from
 
 For example:
 
-```typescript twoslash
+```typescript
 const store = {
     counter: 0
 }
@@ -792,7 +792,7 @@ We can use **store.counter** to access and mutate the property.
 
 However, if we define a counter as a new value
 
-```typescript twoslash
+```typescript
 const store = {
     counter: 0
 }
@@ -808,7 +808,7 @@ Once a primitive value is redefined as a new variable, the reference **"link"** 
 
 This can apply to `store`, as it's a global mutable object instead.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -858,7 +858,7 @@ We then assigned **hi** to **"Elysia"**, the value was then sent back to the **h
 
 Which is an equivalent of pushing function to **beforeHandle** as the following:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -925,7 +925,7 @@ The life cycle function of an extension API accepts additional **options** to en
 -   **options** (optional) - determine which stack
 -   **function** - function to execute on the event
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia({ name: 'plugin' })

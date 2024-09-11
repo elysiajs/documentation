@@ -20,7 +20,7 @@ Eden Treaty is an object representation to interact with a server and features t
 
 To use Eden Treaty, first export your existing Elysia server type:
 
-```typescript twoslash
+```typescript
 // server.ts
 import { Elysia, t } from 'elysia'
 
@@ -67,6 +67,7 @@ const app = treaty<App>('localhost:3000')
 
 // response type: 'Hi Elysia'
 const { data, error } = await app.hi.get()
+      // ^?
 ```
 
 ## Tree like syntax

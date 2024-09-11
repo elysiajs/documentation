@@ -99,7 +99,7 @@ Elysia supports declarative schema with the following types:
 
 These properties should be provided as the third argument of the route handler to validate the incoming request.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -168,7 +168,7 @@ These messages are additional messages for the webserver to process.
 
 The body is provided as same as `body` in `fetch` API. The content type should be set accordingly to the defined body.
 
-```typescript twoslash
+```typescript
 fetch('https://elysiajs.com', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -240,7 +240,7 @@ A query string is a part of the URL that starts with **?** and can contain one o
 
 Query is provided after the **?** in Fetch API.
 
-```typescript twoslash
+```typescript
 fetch('https://elysiajs.com/?name=Elysia')
 ```
 
@@ -282,7 +282,7 @@ Path parameter <small>(not to confused with querystring or query parameter)</sma
 
 **This field is usually not needed as Elysia can infer types from path parameters automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
 
-```typescript twoslash
+```typescript
 fetch('https://elysiajs.com/id/1')
 ```
 
@@ -326,7 +326,7 @@ This field is usually used to enforce some specific header field, for example, `
 
 Headers are provided as same as `body` in `fetch` API.
 
-```typescript twoslash
+```typescript
 fetch('https://elysiajs.com/', {
     headers: {
         authorization: 'Bearer 12345'
@@ -394,7 +394,7 @@ This field is usually used to enforce some specific cookie field.
 
 A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credentials` field instead:
 
-```typescript twoslash
+```typescript
 fetch('https://elysiajs.com/', {
     credentials: 'include'
 })
@@ -403,7 +403,7 @@ fetch('https://elysiajs.com/', {
 ## Response
 Response is the data returned from the handler.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -421,7 +421,7 @@ new Elysia()
 ### Response per status
 Response can be set per status code.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -519,7 +519,7 @@ You can use the Elysia constructor to set the behavior for unknown fields on out
 
 You can change this by setting `normalize` to true when constructing your elysia instance.
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia({
@@ -1160,7 +1160,7 @@ There are 2 ways to provide a custom error message when the validation fails:
 
 Elysia's offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -1277,14 +1277,14 @@ Over a string, Elysia type's error can also accepts a function to programaticall
 
 The error function accepts same argument as same as `ValidationError`
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
     .post('/', () => 'Hello World!', {
         body: t.Object({
             x: t.Number({
-                error(error) {
+                error() {
                     return 'Expected x to be a number'
                 }
             })
@@ -1312,12 +1312,10 @@ Please consider the following table:
 <tr>
 <td>
 
-```typescript twoslash
-import { t } from 'elysia'
-// ---cut---
+```typescript
 t.Object({
     x: t.Number({
-        error(error) {
+        error() {
             return 'Expected x to be a number'
         }
     })
@@ -1342,12 +1340,10 @@ Expected x to be a number
 <tr>
 <td>
 
-```typescript twoslash
-import { t } from 'elysia'
-// ---cut---
+```typescript
 t.Object({
     x: t.Number({
-        error(error) {
+        error() {
             return 'Expected x to be a number'
         }
     })
@@ -1370,18 +1366,16 @@ t.Object({
 <tr>
 <td>
 
-```typescript twoslash
-import { t } from 'elysia'
-// ---cut---
+```typescript
 t.Object(
     {
         x: t.Number({
-            error(error) {
+            error() {
                 return 'Expected x to be a number'
             }
         })
     }, {
-        error(error) {
+        error() {
             return 'Expected value to be an object'
         }
     }
@@ -1407,7 +1401,7 @@ Expected value to be an object
 
 We can customize the behavior of validation based on [onError](/life-cycle/on-error) event by narrowing down the error code call "**VALIDATION**".
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -1422,7 +1416,7 @@ Narrowed down error type, will be typed as `ValidationError` imported from 'elys
 
 **ValidationError** exposed a property name **validator** typed as [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck), allowing us to interact with TypeBox functionality out of the box.
 
-```typescript
+```typescript twoslash
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -1532,7 +1526,7 @@ const app = new Elysia()
 
 When we want to access the model's group, we can separate a `model` into a plugin which when registered will provide a set of models instead of multiple import.
 
-```typescript twoslash
+```typescript
 // auth.model.ts
 import { Elysia, t } from 'elysia'
 
@@ -1578,7 +1572,7 @@ This not only allows us to separate the concerns but also allows us to reuse the
 ## Multiple Models
 `model` accepts an object with the key as a model name and value as the model definition, multiple models are supported by default.
 
-```typescript twoslash
+```typescript
 // auth.model.ts
 import { Elysia, t } from 'elysia'
 
@@ -1597,7 +1591,7 @@ Duplicated model names will cause Elysia to throw an error. To prevent declaring
 
 Let's say that we have all models stored at `models/<name>.ts`, and declare the prefix of the model as a namespace.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 // admin.model.ts

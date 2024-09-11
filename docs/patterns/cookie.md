@@ -18,7 +18,7 @@ head:
 To use Cookie, you can extract the cookie property and access its name and value directly.
 
 There's no get/set, you can extract the cookie name and retrieve or update its value directly.
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -53,7 +53,7 @@ See [cookie attribute config](/patterns/cookie-signature#config) for more inform
 ### Assign Property
 You can get/set the property of a cookie like any normal object, the reactivity model synchronizes the cookie value automatically.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -70,7 +70,7 @@ new Elysia()
 ## set
 **set** permits updating multiple cookie properties all at once through **reset all property** and overwrite the property with a new value.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -90,7 +90,7 @@ To remove a cookie, you can use either:
 1. name.remove
 2. delete cookie.name
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -214,7 +214,7 @@ Elysia handle Cookie's secret rotation automatically.
 
 Cookie Rotation is a migration technique to sign a cookie with a newer secret, while also be able to verify the old signature of the cookie.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia({

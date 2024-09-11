@@ -27,7 +27,7 @@ This page is a guide to on how to follows Elysia structure best practice combine
 
 **DO NOT** create a separate controller, use Elysia itself as a controller instead.
 
-```typescript twoslash
+```typescript
 const Controller = {
     hi(context: any) {}
 }
@@ -66,7 +66,7 @@ We recommended using object destructuring to extract what you need and pass it t
 
 By passing an entire `Controller.method` to Elysia is an equivalent of having 2 controllers passing data back and forth. It's against the design of framework and MVC pattern itself.
 
-```typescript twoslash
+```typescript
 const Service = {
     doStuff(stuff?: string) {
         return stuff
@@ -107,7 +107,7 @@ export class AppController {
 ```
 
 Instead treat an Elysia instance as a controller itself.
-```typescript twoslash
+```typescript
 // @filename: service.ts
 import { Elysia } from 'elysia'
 
@@ -139,7 +139,7 @@ Service is a set of utility/helper functions decoupled as a business logic to us
 
 Any technical logic that can be decoupled from controller may live inside a **Service**.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 abstract class Service {
@@ -163,7 +163,7 @@ If your service doesn't need to store a property, you may use `abstract class` a
 
 But if your service involve local mutation eg. caching, you may want to initiate an instance instead.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 class Service {
@@ -221,7 +221,7 @@ If your service are going to be used in multiple instance, or may require some p
 
 Elysia handle [plugin deduplication](/essential/plugin.html#plugin-deduplication) by default so you don't have to worry about performance, as it's going to be Singleton if you specified a **"name"** property.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const AuthService = new Elysia({ name: 'Service.Auth' })
@@ -254,7 +254,7 @@ Model or [DTO (Data Transfer Object)](https://en.wikipedia.org/wiki/Data_transfe
 We recommended using [Elysia reference model](/validation/reference-model.html#reference-model) or creating an object or class of DTOs for each module.
 
 1. Using Elysia's model reference
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 const AuthModel = new Elysia({ name: 'Model.Auth' })
@@ -291,7 +291,7 @@ Elysia support JSX as template engine using [Elysia HTML plugin](/plugins/html)
 You **may** create a rendering service or embedding view directly is up to you, but according to MVC pattern, you are likely to create a seperate service for handling view instead.
 
 1. Embedding View directly, this may be useful if you have to render multiple view, eg. using [HTMX](https://htmx.org):
-```tsx twoslash
+```tsx
 import React from 'react'
 // ---cut---
 import { Elysia } from 'elysia'
@@ -305,7 +305,7 @@ new Elysia()
 ```
 
 2. Dedicated View as a service:
-```tsx twoslash
+```tsx
 import React from 'react'
 // ---cut---
 import { Elysia, t } from 'elysia'
