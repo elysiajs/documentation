@@ -170,17 +170,21 @@ export default defineConfig({
                 text: 'Patterns',
                 collapsed: true,
                 items: [
+					{
+						text: 'Configuration',
+						link: '/patterns/configuration'
+					},
                     {
                         text: 'Cookie',
                         link: '/patterns/cookie'
                     },
                     {
-                        text: 'Web Socket',
-                        link: '/patterns/websocket'
-                    },
-                    {
                         text: 'OpenAPI',
                         link: '/patterns/openapi'
+                    },
+                    {
+                        text: 'Web Socket',
+                        link: '/patterns/websocket'
                     },
                     {
                         text: 'Unit Test',

@@ -150,6 +150,7 @@ new Elysia()
     -   **headers** - Response headers
     -   **redirect** - Response as a path to redirect to
 -   **error** - A function to return custom status code
+-   **server** - Bun server instance
 
 ## Set
 
@@ -206,7 +207,7 @@ It's recommend to use `error` inside main handler as it has better inference:
 
 - allows TypeScript to check if a return value is correctly type to response schema
 - autocompletion for type narrowing base on status code
-- type narrowing for error handling using End-to-end type safety (Eden)
+- type narrowing for error handling using End-to-end type safety ([Eden](/overview/eden))
 
 ### set.status
 Set a default status code if not provided.
@@ -285,6 +286,36 @@ new Elysia()
 ```
 
 When using redirect, returned value is not required and will be ignored. As response will be from another resource.
+
+## Server
+Server instance is accessible via `Context.server` to interact with the server.
+
+Server could be nullable as it could be running in a different environment (test).
+
+If server is running (allocating) using Bun, `server` will be available (not null).
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/port', ({ server }) => {
+		return server?.port
+	})
+	.listen(3000)
+```
+
+### Request IP
+We can get request IP by using `server.ip` method
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/ip', ({ server, request }) => {
+		return server?.ip(request)
+	})
+	.listen(3000)
+```
 
 ## Response
 
@@ -405,7 +436,7 @@ While streaming a response, it's common that request may be cancelled before the
 Elysia will automatically stop the generator function when the request is cancelled.
 
 ### Eden
-Eden will will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+[Eden](/eden/overview) will will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
