@@ -347,7 +347,7 @@ export default defineConfig({
         ],
         outline: {
             level: [2, 3],
-            label: 'Table of Content'
+            label: 'Outline'
         },
         socialLinks: [
             { icon: 'github', link: 'https://github.com/elysiajs/elysia' },
