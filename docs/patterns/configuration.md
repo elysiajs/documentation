@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content:
+      content: Elysia can be configured by passing an object to the constructor. We can configure Elysia behavior by passing an object to the constructor.
 
   - - meta
     - property: 'og:description'
-      content:
+      content: Elysia can be configured by passing an object to the constructor. We can configure Elysia behavior by passing an object to the constructor.
 ---
 
 # Configuration

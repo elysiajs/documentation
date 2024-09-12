@@ -136,10 +136,10 @@ export default defineConfig({
                 text: 'Essential',
                 collapsed: true,
                 items: [
-	                {
-	                    text: 'Structure',
-	                    link: '/essential/structure'
-	                },
+                    {
+                        text: 'Structure',
+                        link: '/essential/structure'
+                    },
                     {
                         text: 'Route',
                         link: '/essential/route'
@@ -166,10 +166,10 @@ export default defineConfig({
                 text: 'Patterns',
                 collapsed: true,
                 items: [
-					{
-						text: 'Configuration',
-						link: '/patterns/configuration'
-					},
+                    {
+                        text: 'Configuration',
+                        link: '/patterns/configuration'
+                    },
                     {
                         text: 'Cookie',
                         link: '/patterns/cookie'
@@ -192,7 +192,7 @@ export default defineConfig({
                     },
                     {
                         text: 'Trace',
-                        link: '/life-cycle/trace'
+                        link: '/patterns/trace'
                     }
                 ]
             },
