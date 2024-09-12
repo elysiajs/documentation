@@ -145,9 +145,11 @@ Elysia will also handle the type inference automatically as well, so you can ima
 Notice that the plugin doesn't contain **.listen**, because **.listen** will allocate a port for the usage, and we only want the main instance to allocate the port.
 :::
 
-## Separate File
+## Plugin
 
-Using a plugin pattern, you decouple your business logic into a separate file.
+Every Elysia instance can be a plugin.
+
+We can decouple our logic into a new separate Elysia instance and use it as a plugin.
 
 First, we define an instance in a difference file:
 ```typescript twoslash
@@ -168,7 +170,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-## Config
+### Config
 
 To make the plugin more useful, allowing customization via config is recommended.
 
@@ -185,7 +187,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-## Functional callback
+### Functional callback
 
 It's recommended to define a new plugin instance instead of using a function callback.
 
@@ -270,7 +272,7 @@ Seed could be anything, varying from a string to a complex object or class.
 If the provided value is class, Elysia will then try to use the `.toString` method to generate a checksum.
 :::
 
-## Service Locator
+### Service Locator
 When you apply multiple state and decorators plugin to an instance, the instance will gain type safety.
 
 However, you may notice that when you are trying to use the decorated value in another instance without decorator, the type is missing.
@@ -315,102 +317,6 @@ const main = new Elysia()
 ```
 
 <Playground :elysia="demo5" />
-
-## Official Plugins
-
-You can find an officially maintained plugin at Elysia's [plugins](/plugins/overview).
-
-Some plugins include:
-- GraphQL
-- Swagger
-- Server Sent Event
-
-And various community plugins.
-
-## Scope
-
-By default, hook and schema will apply to **current instance only**.
-
-Elysia has an encapsulation scope for to prevent unintentional side effects.
-
-Scope type is to specify the scope of hook whether is should be encapsulated or global.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .derive(() => {
-        return { hi: 'ok' }
-    })
-    .get('/child', ({ hi }) => hi)
-
-const main = new Elysia()
-    .use(plugin)
-    // ⚠️ Hi is missing
-    .get('/parent', ({ hi }) => hi)
-```
-
-From the above code, we can see that `hi` is missing from the parent instance because the scope is local by default if not specified, and will not apply to parent.
-
-To apply the hook to the parent instance, we can use the `as` to specify scope of the hook.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .derive({ as: 'scoped' }, () => { // [!code ++]
-        return { hi: 'ok' }
-    })
-    .get('/child', ({ hi }) => hi)
-
-const main = new Elysia()
-    .use(plugin)
-    // ✅ Hi is now available
-    .get('/parent', ({ hi }) => hi)
-```
-
-## Scope level
-Elysia has 3 levels of scope as the following:
-Scope type are as the following:
-- **local** (default) - apply to only current instance and descendant only
-- **scoped** - apply to parent, current instance and descendants
-- **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
-
-Let's review what each scope type does by using the following example:
-```typescript
-import { Elysia } from 'elysia'
-
-// ? Value base on table value provided below
-const type = 'local'
-
-const child = new Elysia()
-    .get('/child', 'hi')
-
-const current = new Elysia()
-    .onBeforeHandle({ as: type }, () => { // [!code ++]
-        console.log('hi')
-    })
-    .use(child)
-    .get('/current', 'hi')
-
-const parent = new Elysia()
-    .use(current)
-    .get('/parent', 'hi')
-
-const main = new Elysia()
-    .use(parent)
-    .get('/main', 'hi')
-```
-
-By changing the `type` value, the result should be as follows:
-
-| type       | child | current | parent | main |
-| ---------- | ----- | ------- | ------ | ---- |
-| 'local'    | ✅    | ✅       | ❌     | ❌   |
-| 'scoped'    | ✅    | ✅       | ✅     | ❌   |
-| 'global'   | ✅    | ✅       | ✅     | ✅   |
 
 ## Guard
 
@@ -481,7 +387,7 @@ new Elysia()
     .listen(3000)
 ```
 
-## Grouped Guard
+### Grouped Guard
 
 We can use a group with prefixes by providing 3 parameters to the group.
 
@@ -544,7 +450,92 @@ new Elysia()
 
 <Playground :elysia="_demo1" />
 
-## Scope cast
+## Scope
+
+By default, hook and schema will apply to **current instance only**.
+
+Elysia has an encapsulation scope for to prevent unintentional side effects.
+
+Scope type is to specify the scope of hook whether is should be encapsulated or global.
+
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive(() => {
+        return { hi: 'ok' }
+    })
+    .get('/child', ({ hi }) => hi)
+
+const main = new Elysia()
+    .use(plugin)
+    // ⚠️ Hi is missing
+    .get('/parent', ({ hi }) => hi)
+```
+
+From the above code, we can see that `hi` is missing from the parent instance because the scope is local by default if not specified, and will not apply to parent.
+
+To apply the hook to the parent instance, we can use the `as` to specify scope of the hook.
+
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive({ as: 'scoped' }, () => { // [!code ++]
+        return { hi: 'ok' }
+    })
+    .get('/child', ({ hi }) => hi)
+
+const main = new Elysia()
+    .use(plugin)
+    // ✅ Hi is now available
+    .get('/parent', ({ hi }) => hi)
+```
+
+### Scope level
+Elysia has 3 levels of scope as the following:
+Scope type are as the following:
+- **local** (default) - apply to only current instance and descendant only
+- **scoped** - apply to parent, current instance and descendants
+- **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
+
+Let's review what each scope type does by using the following example:
+```typescript
+import { Elysia } from 'elysia'
+
+// ? Value base on table value provided below
+const type = 'local'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle({ as: type }, () => { // [!code ++]
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')
+```
+
+By changing the `type` value, the result should be as follows:
+
+| type       | child | current | parent | main |
+| ---------- | ----- | ------- | ------ | ---- |
+| 'local'    | ✅    | ✅       | ❌     | ❌   |
+| 'scoped'    | ✅    | ✅       | ✅     | ❌   |
+| 'global'   | ✅    | ✅       | ✅     | ✅   |
+
+### Scope cast
 To apply hook to parent may use one of the following:
 1. `inline as` apply only to a single hook
 2. `guard as` apply to all hook in a guard
@@ -643,7 +634,7 @@ const parent = new Elysia()
 	.get('/ok', () => 3)
 ```
 
-## Plugin
+### Descendant
 
 By default plugin will only **apply hook to itself and descendants** only.
 
@@ -681,7 +672,7 @@ const main = new Elysia()
 
 <Playground :elysia="_demo2" :mock="_mock2" />
 
-## Lazy-Loading Module
+## Lazy Load
 Modules are eagerly loaded by default.
 
 Elysia loads all modules then registers and indexes all of them before starting the server. This enforces that all the modules have loaded before it starts accepting requests.
@@ -696,7 +687,7 @@ By default, any async plugin without await is treated as a deferred module and t
 
 Both will be registered after the server is started.
 
-## Deferred Module
+### Deferred Module
 The deferred module is an async plugin that can be registered after the server is started.
 
 ```typescript
@@ -726,7 +717,7 @@ const app = new Elysia()
 
 Elysia static plugin is also a deferred module, as it loads files and registers files path asynchronously.
 
-## Lazy Load Module
+### Lazy Load Module
 Same as the async plugin, the lazy-load module will be registered after the server is started.
 
 A lazy-load module can be both sync or async function, as long as the module is used with `import` the module will be lazy-loaded.
@@ -742,7 +733,7 @@ Using module lazy-loading is recommended when the module is computationally heav
 
 To ensure module registration before the server starts, we can use `await` on the deferred module.
 
-## Testing
+### Testing
 In a test environment, we can use `await app.modules` to wait for deferred and lazy-loading modules.
 
 ```typescript

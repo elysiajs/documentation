@@ -415,7 +415,7 @@ Submits a payload to the specified resource, often causing state change or side 
 
 Replaces all current representations of the target resource using the request's payload.
 
-## Patch
+### Patch
 
 Applies partial modifications to a resource.
 
@@ -626,7 +626,7 @@ new Elysia()
 
 You may find more information about grouped guards in [scope](/essential/scope.html).
 
-## Prefix
+### Prefix
 
 We can separate a group into a separate plugin instance to reduce nesting by providing a **prefix** to the constructor.
 

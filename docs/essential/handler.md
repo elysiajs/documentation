@@ -172,7 +172,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-## set.status
+### status
 We can return a custom status code by using either:
 
 - **error** function (recommended)
@@ -190,7 +190,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-### error
+### set.error
 A dedicated `error` function for returning status code with response.
 
 ```typescript
@@ -249,7 +249,7 @@ new Elysia()
     .listen(3000)
 ```
 
-## set.headers
+### set.headers
 Allowing us to append or delete a response headers represent as Object.
 
 ```typescript twoslash
@@ -268,7 +268,7 @@ new Elysia()
 The names of headers should be lowercase to force case-sensitivity consistency for HTTP headers and auto-completion, eg. use `set-cookie` rather than `Set-Cookie`.
 :::
 
-## redirect
+### redirect
 Redirect a request to another resource.
 
 ```typescript twoslash
@@ -412,7 +412,7 @@ Once the first chunk is yielded, Elysia will send the headers and the first chun
 
 Setting headers after the first chunk is yielded will do nothing.
 
-## Conditional Stream
+### Conditional Stream
 If the response is returned without yield, Elysia will automatically convert stream to normal response instead.
 
 ```typescript
@@ -430,7 +430,7 @@ const app = new Elysia()
 
 This allows us to conditionally stream a response or return a normal response if necessary.
 
-## Abort
+### Abort
 While streaming a response, it's common that request may be cancelled before the response is fully streamed.
 
 Elysia will automatically stop the generator function when the request is cancelled.
@@ -623,7 +623,7 @@ new Elysia()
 ### Key takeaway
 - **resolve is called at beforehandle, or after validation** happens. Elysia can safely confirm the type of request property resulting in as **typed**.
 
-## Error from resolve/derive
+### Error from resolve/derive
 As resolve and derive is based on **transform** and **beforeHandle** lifecycle, we can return an error from resolve and derive. If error is returned from **derive**, Elysia will return early exit and return the error as response.
 
 ```typescript twoslash
@@ -848,7 +848,7 @@ const app = new Elysia()
 
 Accessing the path should log **"Elysia"** as the results.
 
-## API
+### API
 
 **macro** should return an object, each key is reflected to the hook, and the provided value inside the hook will be sent back as the first parameter.
 
@@ -900,7 +900,7 @@ The field can accept anything ranging from string to function, allowing us to cr
 
 macro will be executed in order from top-to-bottom according to definition in hook, ensure that the stack should be handle in correct order.
 
-## Parameters
+### Parameters
 
 **Elysia.macro** parameters to interact with the life cycle event as the following:
 
@@ -918,7 +918,7 @@ Parameters start with **on** is a function to appends function into a life cycle
 
 While **events** is an actual stack that stores an order of the life-cycle event. You may mutate the stack directly or using the helper function provided by Elysia.
 
-## Options
+### Options
 
 The life cycle function of an extension API accepts additional **options** to ensure control over life cycle events.
 

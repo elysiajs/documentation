@@ -66,25 +66,25 @@ See [TLS Options](#tls-options) for available configuration.
 ## Config
 Below is a config accepted by Elysia:
 
-## prefix
+### prefix
 @default ``
 
 Path prefix of the instance
 
-## name
+### name
 Name of the instance for debugging, and plugin deduplication purpose
 
-## seed
+### seed
 Seed for generating checksum for [plugin deduplication](/essential/plugin.html#plugin-deduplication)
 
-## detail
+### detail
 OpenAPI documentation for documentation generation
 
 This configuration extends [Swagger Specification](https://swagger.io/specification).
 
 @see [Swagger Specification](https://swagger.io/specification)
 
-## tags
+### tags
 OpenAPI tags for documentation generation
 
 Decorate all instance routes with tags
@@ -93,7 +93,7 @@ This configuration extends [Tag Object](https://swagger.io/specification/#tag-ob
 
 @see [Tag Object](https://swagger.io/specification/#tag-object)
 
-## precompile
+### precompile
 @default `false`
 
 Warm up Elysia before starting the server
@@ -104,7 +104,7 @@ If set to false, Elysia will perform Just in Time compilation
 
 Only required for root instance (instance which use listen) to effect
 
-## aot
+### aot
 @default `false`
 
 Ahead of Time compliation
@@ -116,7 +116,7 @@ Reduced performance but faster startup time
 
 Whether should Elysia tolerate suffix `/` or vice-versa
 
-### Example
+#### Example
 If `strictPath` is set to `true`, Elysia will match `/id` and not `/id/`
 
 ```ts
@@ -154,7 +154,7 @@ Whether Elysia should use Bun's static response.
 
 This allows Elysia to improve static content performance and reduce memory significantly.
 
-### Example
+#### Example
 Elysia will use Bun's static response for static content
 ```ts
 import { Elysia } from 'elysia'

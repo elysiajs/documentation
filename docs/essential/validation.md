@@ -63,7 +63,7 @@ new Elysia()
     .listen(3000)
 ```
 
-### Why Elysia use TypeBox
+### TypeBox
 
 **Elysia.t**, a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provide type-safety on both runtime, compile-time, and OpenAPI schema for generating OpenAPI/Swagger documentation.
 
@@ -362,6 +362,22 @@ Cookie must be provided in the form of `t.Cookie` or `t.Object`.
 
 Same as `headers`, header has `additionalProperties` set to `true` by default.
 
+### Specs
+
+An HTTP cookie is a small piece of data that a server sends to the client, it's data that is sent with every visit to the same web server to let the server remember client information.
+
+In simpler terms, a stringified state that sent with every request.
+
+This field is usually used to enforce some specific cookie field.
+
+A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credentials` field instead:
+
+```typescript
+fetch('https://elysiajs.com/', {
+    credentials: 'include'
+})
+```
+
 ### t.Cookie
 `t.Cookie` is a special type that is equivalent to `t.Object` but allow to set cookie specific options.
 
@@ -382,22 +398,6 @@ new Elysia()
 			httpOnly: true
 		})
 	})
-```
-
-### Specs
-
-An HTTP cookie is a small piece of data that a server sends to the client, it's data that is sent with every visit to the same web server to let the server remember client information.
-
-In simpler terms, a stringified state that sent with every request.
-
-This field is usually used to enforce some specific cookie field.
-
-A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credentials` field instead:
-
-```typescript
-fetch('https://elysiajs.com/', {
-    credentials: 'include'
-})
 ```
 
 ## Response
@@ -553,7 +553,7 @@ If the shape doesn't match, then it will throw an error, into [Error Life Cycle]
 
 ![Elysia Life Cycle](/assets/lifecycle.webp)
 
-## Basic Type
+### Basic Type
 
 TypeBox provides a basic primitive type with the same behavior as same as TypeScript type.
 
@@ -696,7 +696,7 @@ Elysia extends all types from TypeBox allowing you to reference most of the API 
 
 See [TypeBox's Type](https://github.com/sinclairzx81/typebox#json-types) for additional types that are supported by TypeBox.
 
-## Attribute
+### Attribute
 
 TypeBox can accept an argument for more comprehensive behavior based on JSON Schema 7 specification.
 
@@ -813,11 +813,11 @@ See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-sch
 
 <br>
 
-# Honorable Mention
+## Honorable Mention
 
 The following are common patterns that are often found useful when creating a schema.
 
-## Union
+### Union
 
 Allow multiple types via union.
 
@@ -859,7 +859,7 @@ Hello
 
 </table>
 
-## Optional
+### Optional
 
 Provided in a property of `t.Object`, allowing the field to be undefined or optional.
 
@@ -905,7 +905,7 @@ t.Object({
 
 </table>
 
-## Partial
+### Partial
 
 Allowing all of the fields in `t.Object` to be optional.
 
@@ -1035,7 +1035,7 @@ The following are types provided by Elysia:
     </Card>
 </Deck>
 
-## Numeric (legacy)
+### Numeric (legacy)
 
 Numeric accepts a numeric string or number and then transforms the value into a number.
 
@@ -1051,7 +1051,7 @@ Numeric accepts the same attribute as [Numeric Instance](https://json-schema.org
 This is not need as Elysia type already transform Number to Numeric automatically
 :::
 
-## File
+### File
 
 A singular file. Often useful for **file upload** validation.
 
@@ -1061,7 +1061,7 @@ t.File()
 
 File extends attribute of base schema, with additional property as follows:
 
-### type
+#### type
 
 A format of the file like image, video, audio.
 
@@ -1071,7 +1071,7 @@ If an array is provided, will attempt to validate if any of the format is valid.
 type?: MaybeArray<string>
 ```
 
-### minSize
+#### minSize
 
 Minimum size of the file.
 
@@ -1081,7 +1081,7 @@ Accept number in byte or suffix of file unit:
 minSize?: number | `${number}${'k' | 'm'}`
 ```
 
-### maxSize
+#### maxSize
 
 Maximum size of the file.
 
@@ -1097,7 +1097,7 @@ The following are the specifications of the file unit:
 m: MegaByte (1048576 byte)
 k: KiloByte (1024 byte)
 
-## Files
+### Files
 
 Extends from [File](#file), but adds support for an array of files in a single field.
 
@@ -1107,7 +1107,7 @@ t.Files()
 
 File extends attributes of base schema, array, and File.
 
-## Cookie
+### Cookie
 
 Object-like representation of a Cookie Jar extended from Object type.
 
@@ -1119,7 +1119,7 @@ t.Cookie({
 
 Cookie extends attributes of [Object](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-obj) and [Cookie](https://github.com/jshttp/cookie#options-1) with additional properties follows:
 
-### secrets
+#### secrets
 
 The secret key for signing cookies.
 
@@ -1131,7 +1131,7 @@ secrets?: string | string[]
 
 If an array is provided, [Key Rotation](https://crypto.stackexchange.com/questions/41796/whats-the-purpose-of-key-rotation) will be used, the newly signed value will use the first secret as the key.
 
-## Nullable
+### Nullable
 
 Allow the value to be null but not undefined.
 
@@ -1139,7 +1139,7 @@ Allow the value to be null but not undefined.
 t.Nullable(t.String())
 ```
 
-## MaybeEmpty
+### MaybeEmpty
 
 Allow the value to be null and undefined.
 
@@ -1156,7 +1156,7 @@ There are 2 ways to provide a custom error message when the validation fails:
 1. inline `error` property
 2. Using [onError](/life-cycle/on-error) event
 
-## Error Property
+### Error Property
 
 Elysia's offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
 
@@ -1272,7 +1272,7 @@ Expected x to be a number
 
 </table>
 
-## Error message as function
+### Error message as function
 Over a string, Elysia type's error can also accepts a function to programatically return custom error for each property.
 
 The error function accepts same argument as same as `ValidationError`
@@ -1397,7 +1397,7 @@ Expected value to be an object
 
 </table>
 
-## onError
+### onError
 
 We can customize the behavior of validation based on [onError](/life-cycle/on-error) event by narrowing down the error code call "**VALIDATION**".
 
@@ -1427,7 +1427,7 @@ new Elysia()
     .listen(3000)
 ```
 
-## Error list
+### Error list
 
 **ValidationError** provides a method `ValidatorError.all`, allowing us to list all of the error causes.
 
@@ -1569,7 +1569,7 @@ const app = new Elysia()
 
 This not only allows us to separate the concerns but also allows us to reuse the model in multiple places while reporting the model into Swagger documentation.
 
-## Multiple Models
+### Multiple Models
 `model` accepts an object with the key as a model name and value as the model definition, multiple models are supported by default.
 
 ```typescript
@@ -1586,7 +1586,7 @@ export const authModel = new Elysia()
     })
 ```
 
-## Naming Convention
+### Naming Convention
 Duplicated model names will cause Elysia to throw an error. To prevent declaring duplicate model names, we can use the following naming convention.
 
 Let's say that we have all models stored at `models/<name>.ts`, and declare the prefix of the model as a namespace.

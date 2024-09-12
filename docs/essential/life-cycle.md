@@ -190,7 +190,7 @@ As `onRequest` is designed to provide only the most crucial context to reduce ov
 - Analytic
 - Provide custom header, eg. CORS
 
-### Example
+#### Example
 Below is a pseudo code to enforce rate-limit on a certain IP address.
 ```typescript
 import { Elysia } from 'elysia'
@@ -231,7 +231,7 @@ By default, Elysia will parse the body with content-type of:
 
 It's recommended to use the `onParse` event to provide a custom body parser that Elysia doesn't provide.
 
-### Example
+#### Example
 Below is an example code to retrieve value based on custom headers.
 
 ```typescript
@@ -321,7 +321,7 @@ It's recommended to use transform for the following:
 - Mutate existing context to conform with validation.
 - `derive` is based on `onTransform` with support for providing type.
 
-### Example
+#### Example
 Below is an example of using transform to mutate params to be numeric values.
 
 ```typescript
@@ -402,7 +402,7 @@ It's recommended to use Before Handle in the following situations:
 -   Restricted access check: authorization, user sign-in
 -   Custom request requirement over data structure
 
-### Example
+#### Example
 
 Below is an example of using the before handle to check for user sign-in.
 
@@ -550,7 +550,7 @@ It's recommended to use After Handle in the following situations:
 -   Transform requests into a new value, eg. Compression, Event Stream
 -   Add custom headers based on the response value, eg. **Content-Type**
 
-### Example
+#### Example
 
 Below is an example of using the after handle to add HTML content type to response headers.
 
@@ -616,7 +616,7 @@ It's recommended to use transform for the following:
 -   Compression
 -   Map value into a Web Standard Response
 
-### Example
+#### Example
 
 Below is an example of using mapResponse to provide Response compression.
 
@@ -665,7 +665,7 @@ Designed to capture and resolve an unexpected error, its recommended to use on E
 -   Fail safe or an error handler or retrying a request
 -   Logging and analytic
 
-### Example
+#### Example
 
 Elysia catches all the errors thrown in the handler, classifies the error code, and pipes them to `onError` middleware.
 
@@ -796,7 +796,7 @@ It's recommended to use **After Response** in the following situations:
 - Clean up response
 - Logging and analytics
 
-### Example
+#### Example
 Below is an example of using the response handle to check for user sign-in.
 
 ```typescript
