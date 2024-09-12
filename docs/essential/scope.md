@@ -66,7 +66,7 @@ const mock3 = {
 
 By default, hook and schema will apply to **current instance only**.
 
-Elysia has an encapsulation scope for to prevent unintentional side effects.
+Elysia has an encapsulation scope to prevent unintentional side effects.
 
 ## Scope
 Scope type is to specify the scope of hook whether is should be encapsulated or global.
