@@ -201,4 +201,64 @@ const { data } = await api.profile.patch({
 
 </template>
 
+<template v-slot:test-code>
+
+```typescript twoslash
+// @errors: 2345 2304
+// @filename: index.ts
+import { Elysia, t } from 'elysia'
+
+export const app = new Elysia()
+    .put(
+        '/user',
+        ({ body, error }) => {
+        	if(body.username === 'mika')
+				return error(400, {
+					success: false,
+					message: 'Username already taken'
+				} as const)
+
+            return {
+            	success: true,
+             	message: 'User created'
+            } as const
+        },
+        {
+            body: t.Object({
+            	username: t.String(),
+             	password: t.String()
+            })
+        }
+    )
+
+// @filename: client.ts
+// ---cut---
+import { treaty } from '@elysiajs/eden'
+import { app } from './index'
+import { test, expect } from 'bun:test'
+
+const server = treaty(app)
+
+test('should handle duplicated user', async () => {
+	const { error } = await server.user.put({
+	    username: 'mika',
+	})
+
+	expect(error?.value).toEqual({
+		success: false,
+		message: 'Username already taken'
+	})
+})
+```
+
+</template>
+
+<template v-slot:test-script>
+
+```bash
+$ bun test
+```
+
+</template>
+
 </Fern>

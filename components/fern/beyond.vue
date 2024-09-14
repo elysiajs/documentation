@@ -199,7 +199,7 @@ function move(event: MouseEvent) {
 
 #opentelemetry {
     & > section {
-        @apply relative flex flex-col justify-center gap-1.5 bg-gray-50 rounded-3xl border overflow-hidden;
+        @apply relative flex flex-col pl-4 justify-center gap-1.5 bg-gray-50 rounded-3xl border overflow-hidden;
 
         background-image: linear-gradient(to right, #ddd 1px, transparent 1px);
         background-size: 6rem 6em;

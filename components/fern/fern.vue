@@ -7,6 +7,9 @@ import TypeIntegrity from './type-integrity.vue'
 import Easy from './easy.vue'
 import Doc from './doc.vue'
 import Beyond from './beyond.vue'
+import Test from './test.vue'
+import Tweets from './tweets.vue'
+import Sponsors from './sponsor.vue'
 import BuiltWithLove from './built-with-love.vue'
 
 import '../tailwind.css'
@@ -51,9 +54,19 @@ import '../tailwind.css'
                 <slot name="doc" />
             </Doc>
             <Beyond>
-            	<slot name="e2e-type-safety" />
+                <slot name="e2e-type-safety" />
             </Beyond>
             <Benchmark />
+            <Test>
+                <template v-slot:test-code>
+                    <slot name="test-code" />
+                </template>
+                <template v-slot:test-script>
+                    <slot name="test-script" />
+                </template>
+            </Test>
+            <Tweets />
+            <Sponsors />
             <Features />
             <BuiltWithLove />
         </article>
