@@ -197,11 +197,9 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .use(rateLimiter)
-    .onRequest(({ rateLimiter, ip, set }) => {
-        if(rateLimiter.check(ip)) {
-            set.status = 420
-            return 'Enhance your calm'
-        }
+    .onRequest(({ rateLimiter, ip, set, error }) => {
+        if(rateLimiter.check(ip))
+            return error(420, 'Enhance your calm')
     })
     .get('/', () => 'hi')
     .listen(3000)
@@ -412,9 +410,9 @@ import { validateSession } from './user'
 
 new Elysia()
     .get('/', () => 'hi', {
-        beforeHandle({ set, cookie: { session } }) {
+        beforeHandle({ set, cookie: { session }, error }) {
             if (!validateSession(session.value))
-                return (set.status = 'Unauthorized')
+                return error(401)
         }
     })
     .listen(3000)
@@ -443,9 +441,9 @@ import {
 new Elysia()
     .guard(
         {
-            beforeHandle({ set, cookie: { session } }) {
+            beforeHandle({ set, cookie: { session }, error }) {
                 if (!validateSession(session.value))
-                    return (set.status = 'Unauthorized')
+                    return error(401)
             }
         },
         (app) =>
@@ -689,6 +687,7 @@ With `onError` we can catch and transform the error into a custom error message.
 It's important that `onError` must be called before the handler we want to apply it to.
 :::
 
+### Custom 404 message
 For example, returning custom 404 messages:
 
 ```typescript
@@ -696,11 +695,8 @@ import { Elysia, NotFoundError } from 'elysia'
 
 new Elysia()
     .onError(({ code, error, set }) => {
-        if (code === 'NOT_FOUND') {
-            set.status = 404
-
-            return 'Not Found :('
-        }
+        if (code === 'NOT_FOUND')
+            return error(404, 'Not Found :(')
     })
     .post('/', () => {
         throw new NotFoundError()
@@ -775,12 +771,9 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', () => 'Hello', {
-        beforeHandle({ set, request: { headers } }) {
-            if (!isSignIn(headers)) {
-                set.status = 401
-
-                throw new Error('Unauthorized')
-            }
+        beforeHandle({ set, request: { headers }, error }) {
+            if (!isSignIn(headers))
+                return error(401)
         },
         error({ error }) {
             return 'Handled'

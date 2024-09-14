@@ -348,6 +348,33 @@ new Elysia()
 Using a primitive value or `Response` has near identical performance (+- 0.1%), so pick the one you prefer, regardless of performance.
 :::
 
+## Formdata
+We may return a `FormData` by using returning `form` utility directly from the handler.
+
+```typescript
+import { Elysia, form } from 'elysia'
+
+new Elysia()
+	.get('/', () => form({
+		name: 'Tea Party',
+		images: [Bun.file('nagi.web'), Bun.file('mika.webp')]
+	}))
+	.listen(3000)
+```
+
+This pattern is useful if even need to return a file or multipart form data.
+
+### Return a single file
+Or alternatively, you can return a single file by returning `Bun.file` directly without `form`.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', () => Bun.file('nagi.web'))
+	.listen(3000)
+```
+
 ## Handle
 
 As Elysia is built on top of Web Syandard Request, we can programmatically test it using `Elysia.handle`.

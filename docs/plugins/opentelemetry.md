@@ -14,6 +14,8 @@ head:
       content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysiajs/opentelemetry".
 ---
 
+# OpenTelemetry
+
 To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
 
 ```typescript

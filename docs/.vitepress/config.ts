@@ -170,6 +170,10 @@ export default defineConfig({
                         text: 'Configuration',
                         link: '/patterns/configuration'
                     },
+					{
+						text: 'Deployment',
+						link: '/patterns/deployment'
+					},
                     {
                         text: 'Cookie',
                         link: '/patterns/cookie'
@@ -315,10 +319,6 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'Docker',
-                        link: '/integrations/docker'
-                    },
-                    {
                         text: 'Nextjs',
                         link: '/integrations/nextjs'
                     },
@@ -337,11 +337,11 @@ export default defineConfig({
                     {
                         text: 'Drizzle',
                         link: '/integrations/drizzle'
+                    },
+                    {
+                        text: 'Cheat Sheet',
+                        link: '/integrations/cheat-sheet'
                     }
-                    // {
-                    //     text: 'Cheat Sheet',
-                    //     link: '/integrations/cheat-sheet'
-                    // }
                 ]
             }
         ],

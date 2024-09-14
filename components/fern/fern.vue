@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import Hero from './hero.vue'
-import Sensible from './sensible.vue'
+import Note from './note.vue'
+import Features from './features.vue'
+import Benchmark from './benchmark.vue'
+import TypeIntegrity from './type-integrity.vue'
+import Easy from './easy.vue'
+import Doc from './doc.vue'
+import Beyond from './beyond.vue'
 import BuiltWithLove from './built-with-love.vue'
 
 import '../tailwind.css'
@@ -21,25 +27,34 @@ import '../tailwind.css'
     <div id="landing" class="dark:bg-gray-900/60">
         <Hero />
         <article
-            class="flex flex-col gap-4 px-6 text-2xl text-gray-500/75 leading-normal"
+            class="flex flex-col gap-4 text-gray-500/75 leading-normal text-lg"
         >
-            <Sensible>
-                <template v-slot:sensible-0>
-                    <slot name="sensible-0" />
+            <Note />
+            <Easy>
+                <slot name="easy" />
+            </Easy>
+            <TypeIntegrity>
+                <template v-slot:type-1>
+                    <slot name="type-1" />
                 </template>
-
-                <template v-slot:sensible-1>
-                    <slot name="sensible-1" />
+                <template v-slot:type-2>
+                    <slot name="type-2" />
                 </template>
-
-                <template v-slot:sensible-2>
-                    <slot name="sensible-2" />
+                <template v-slot:type-3>
+                    <slot name="type-3" />
                 </template>
-
-                <template v-slot:sensible-3>
-                    <slot name="sensible-3" />
+                <template v-slot:type-4>
+                    <slot name="type-4" />
                 </template>
-            </Sensible>
+            </TypeIntegrity>
+            <Doc>
+                <slot name="doc" />
+            </Doc>
+            <Beyond>
+            	<slot name="e2e-type-safety" />
+            </Beyond>
+            <Benchmark />
+            <Features />
             <BuiltWithLove />
         </article>
     </div>

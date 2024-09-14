@@ -1,9 +1,9 @@
 <template>
     <footer
-        class="flex flex-col justify-center items-center gap-4 text-sm text-gray-400 dark:text-gray-400 mt-8 mb-4"
+        class="flex flex-col justify-center items-center gap-2 text-sm text-gray-400 dark:text-gray-400 mt-8 mb-6"
     >
         <p>
-            Built with 💖 dear
+            Built with 💖 for
             <button
                 class="appearance-none text-pink-500 text-sm px-1 py-0.5 rounded hover:bg-pink-500/10 focus:bg-pink-500/15 transition-colors"
                 @click="isToggle = !isToggle"
@@ -21,7 +21,7 @@
                 href="https://youtu.be/k-K28-A4fBc"
                 target="_blank"
             >
-                <video muted autoplay loop>
+                <video muted autoplay loop class="rounded-3xl">
                     <source src="/assets/elysia.mp4" />
                 </video>
             </a>

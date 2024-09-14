@@ -22,47 +22,181 @@ head:
 
 <Fern>
 
-<template v-slot:sensible-0>
+<template v-slot:type-1>
 
 ```typescript twoslash
+// @noErrors
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', 'hi~')
-    .get('/hi', () => 'Do you miss me?')
-    .listen(3000)
+	.get('/id/:id', ({ params, set }) => {
+	                   // ^?
+
+
+
+
+		set.headers.a
+		//           ^|
+
+
+		return 'Su'
+	})
+
+	.get('/optional/:name?', ({ params: { name } }) => {
+	                                   // ^?
+        return name ?? 'Pardofelis'
+	})
+	.listen(3000)
 ```
 
 </template>
 
-<template v-slot:sensible-1>
+<template v-slot:type-2>
 
 ```typescript twoslash
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 new Elysia()
-    .get('/', ({ set, error }) => {
-    	set.headers.server = 'Elysia'
+	.patch('/profile', ({ body }) => body.profile, {
+	                    // ^?
 
-     	return error(418, "I'm a teapot")
-    })
-    .listen(3000)
+
+
+
+		body: t.Object({
+			id: t.Number(),
+			profile: t.File({ type: 'image' })
+		})
+	})
+	.listen(3000)
 ```
 
 </template>
 
-<template v-slot:sensible-2>
+<template v-slot:type-3>
 
 ```typescript twoslash
+// @errors: 2345
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.get('/profile', ({ error }) => {
+		if(Math.random() > .5)
+			return error(418, 'Mika')
+
+		return 'ok'
+	}, {
+		response: {
+			200: t.Literal('ok'),
+			418: t.Literal('Nagisa')
+		}
+	})
+	.listen(3000)
+```
+
+</template>
+
+<template v-slot:type-4>
+
+```typescript twoslash
+// @noErrors
+import { Elysia, t } from 'elysia'
+
+const role = new Elysia({ name: 'macro' })
+	.macro(({ onBeforeHandle }) => ({
+		role(type: 'user' | 'staff' | 'admin') {
+			onBeforeHandle(({ headers, error }) => {
+				if(headers.authorization !== type)
+					return error(401)
+			})
+		}
+	}))
+
+new Elysia()
+	.use(role)
+	.get('/admin/check', 'ok', {
+        r
+      // ^|
+	})
+	.listen(3000)
+```
+
+</template>
+
+<template v-slot:easy>
+
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', function*() {
-    	yield 1
-     	yield 2
-      	yield 3
-    })
-    .listen(3000)
+	.get('/', 'Hello World')
+	.get('/image', Bun.file('mika.webp'))
+	.get('/stream', function* () {
+		yield 'Hello'
+		yield 'World'
+	})
+	.ws('/realtime', {
+		message(ws, message) {
+			ws.send('got:' + message)
+		}
+	})
+	.listen(3000)
+```
+
+</template>
+
+<template v-slot:doc>
+
+```typescript
+import { Elysia } from 'elysia'
+import swagger from '@elysiajs/swagger'
+
+new Elysia()
+	.use(swagger())
+	.use(character)
+	.use(auth)
+	.listen(3000)
+```
+
+</template>
+
+<template v-slot:e2e-type-safety>
+
+```typescript twoslash
+// @noErrors
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .patch(
+        '/profile',
+        ({ body, error }) => {
+            if(body.age < 18)
+                return error(400, "Oh no")
+
+            return body
+        },
+        {
+            body: t.Object({
+                age: t.Number()
+            })
+        }
+    )
+    .listen(80)
+
+export type App = typeof app
+
+// @filename: client.ts
+// ---cut---
+import { treaty } from '@elysiajs/eden'
+import type { App } from './server'
+
+const api = treaty<App>('api.elysiajs.com')
+
+const { data } = await api.profile.patch({
+      // ^?
+    age: 21
+})
 ```
 
 </template>

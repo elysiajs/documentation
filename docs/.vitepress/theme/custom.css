@@ -305,3 +305,7 @@ button.copy::after {
         transform: translateY(-100px);
     }
 } */
+
+.fern-gap {
+	@apply px-4 lg:px-0;
+}
