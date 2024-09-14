@@ -59,7 +59,7 @@ new Elysia()
 ```
 
 ## Return JSON
-Elysia convert JSON to response automatically
+Elysia converts response to JSON automatically
 
 See [Handler](/essential/handler.html)
 
