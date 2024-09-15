@@ -123,12 +123,18 @@ This code ensures that the query must have **name** with a string value for ever
 
 <Playground
     :elysia="demo2"
+    :alias="{
+        '/query': '/query?name=Elysia'
+    }"
     :mock="{
+        '/none': {
+            GET: 'hi'
+        },
         '/query': {
             GET: 'Elysia'
         },
         '/any': {
-            GET: JSON.stringify({ name: 'Elysia', race: 'Elf' })
+            GET: JSON.stringify({'type':'validation','on':'query','property':'/name','message':'Expected required property','expected':{'name':''},'found':{},'errors':[{'type':45,'schema':{'type':'string'},'path':'/name','message':'Expected required property'},{'type':54,'schema':{'type':'string'},'path':'/name','message':'Expected string'}]}, null, '\t')
         },
     }" 
 />
