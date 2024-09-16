@@ -8,8 +8,7 @@
                     :style="{ left: `${left}%` }"
                 >
                     <p
-                        class="absolute pl-2 text-xs font-semibold font-mono text-sky-500"
-                        style="top: 3.625rem"
+                        class="absolute top-14 pl-2 text-sm font-semibold font-mono text-sky-500"
                         :style="{ left: left > 80 ? '-4rem' : '0' }"
                     >
                         {{ (left / 4).toFixed(2) }}ms
