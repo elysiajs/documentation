@@ -68,7 +68,7 @@
 
 <style scoped>
 #benchmark {
-    @apply relative flex flex-col md:flex-row items-center gap-24 max-w-5xl w-full my-4 py-12 px-6 mx-auto;
+    @apply relative flex flex-col md:flex-row items-center gap-12 md:gap-24 max-w-5xl w-full my-4 py-12 px-6 mx-auto;
 }
 
 .fog {
