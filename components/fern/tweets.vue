@@ -62,7 +62,7 @@ it's @scalar's ethos to be a catalyst for OSS"
                     id="hd_nvim"
                     user="Herrington Darkholme"
                     image="/tweets/herrington.webp"
-                    content="Just in time for Bun 1.0 - Lucia 2.5 now supports @elysiajs out of the box!! You can also use Bun.serve() directly as well. This release also comes with 2 new OAuth providers, Strava and AWS Cognito!"
+                    content="Was introduced to @elysiaJS today and it looks pretty solid. end-to-end type safety/guard/swapper are killer features of the modern web! (and it's fast)"
                     href="https://x.com/hd_nvim/status/1735182378036027650"
                 />
                 <Tweet
