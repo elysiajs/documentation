@@ -3,7 +3,7 @@
         <div class="grid">
             <div class="fog" />
         </div>
-        <header class="flex flex-row md:flex-col justify-around md:justify-center z-10 w-full md:max-w-[10.5rem]">
+        <header class="flex flex-col sm:flex-row md:flex-col justify-around md:justify-center z-10 w-full md:max-w-[10.5rem]">
             <div class="title md:mb-10">
                 <h3 class="text-gradient from-pink-400 to-fuchsia-400">21x</h3>
                 <p>faster than Express</p>
