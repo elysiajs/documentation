@@ -8,11 +8,12 @@
         <p
             class="text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto dark:text-gray-400 dark:font-medium"
         >
-            Elysia is
+            Elysia is a
             <span class="text-gray-700 dark:text-gray-200 font-medium"
-                >not own by an organization</span
+                >community-driven project</span
             >
-            but is driven by the community.
+            <br />
+            Your support fuels its growth and innovation.
             <br />
             Elysia development is only possible thanks to your support
         </p>
@@ -139,7 +140,7 @@ const sponsors: Sponsor[] = data
             }
 
             & > p {
-            	@apply my-0;
+                @apply my-0;
             }
         }
     }
