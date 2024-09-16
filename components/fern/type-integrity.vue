@@ -140,14 +140,14 @@ const form = ref(1)
             }
 
             & > div {
-                @apply flex justify-center items-center min-h-10 h-full px-2 sm:px-4 font-medium text-gray-500 dark:text-gray-300 rounded-full hover:bg-gray-400/15 has-[:checked]:bg-gray-400/20 has-[:checked]:dark:bg-white/15 transition-colors ease-out duration-200 cursor-pointer;
+                @apply flex justify-center items-center min-h-10 h-full px-6 md:px-4 font-medium text-gray-500 dark:text-gray-300 rounded-full hover:bg-gray-400/15 has-[:checked]:bg-gray-400/20 has-[:checked]:dark:bg-white/15 transition-colors ease-out duration-200 cursor-pointer;
 
                 & > input[type='radio'] {
-                    @apply appearance-none;
+                    @apply appearance-none w-0 h-0 hidden;
                 }
 
                 & > label {
-                	@apply cursor-pointer;
+                	@apply text-center cursor-pointer;
                 }
             }
         }

@@ -4,7 +4,7 @@
             <header class="flex flex-col flex-1 text-xl gap-6">
                 <div class="flex flex-col gap-3 mb-2">
                     <h3 class="text-2xl font-medium text-700">Our Princicle</h3>
-                    <h2 class="text-6xl text-gray-700 dark:text-gray-300 font-medium leading-[4.25rem]">
+                    <h2 class="text-6xl font-semibold text-gradient from-sky-500 to-violet-500 leading-[4.25rem]">
                         Design for Human
                     </h2>
                 </div>
