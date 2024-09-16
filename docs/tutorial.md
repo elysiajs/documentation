@@ -18,7 +18,7 @@ head:
 
 We will be building a small CRUD note-taking API server.
 
-There's no database or other "production ready" features. Tihs tutorial is going to only focus on Elysia feature and how to use Elysia only.
+There's no database or other "production ready" features. This tutorial is going to only focus on Elysia feature and how to use Elysia only.
 
 We expected it to take around 15-20 minutes if you follow along.
 

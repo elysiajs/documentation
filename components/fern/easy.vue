@@ -4,7 +4,9 @@
             <header class="flex flex-col flex-1 text-xl gap-6">
                 <div class="flex flex-col gap-3 mb-2">
                     <h3 class="text-2xl font-medium text-700">Our Princicle</h3>
-                    <h2 class="text-6xl font-semibold text-gradient from-sky-500 to-violet-500 leading-[4.25rem]">
+                    <h2
+                        class="text-6xl font-semibold text-gradient from-sky-500 to-violet-500 leading-[4.25rem]"
+                    >
                         Design for Human
                     </h2>
                 </div>
@@ -17,10 +19,10 @@
                     for you to focus on building
                 </p>
                 <p class="leading-normal">
-                    A framework that feels like
+                    A framework that feel
                     <span
                         class="text-gradient from-violet-500 to-sky-500 font-semibold"
-                        >just JavaScript</span
+                        >just like JavaScript</span
                     >
                 </p>
             </header>
@@ -208,7 +210,7 @@
                 );
 
             html.dark & {
-            	box-shadow: 0 16px 40px rgba(0, 123, 255, 0.15);
+                box-shadow: 0 16px 40px rgba(0, 123, 255, 0.15);
 
                 background-image: radial-gradient(
                         closest-side at center,

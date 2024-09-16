@@ -139,7 +139,7 @@
                     End-to-end Type Safety
                 </h2>
                 <p>
-                    Like tRPC, Elysia provide type-safety from the backend to
+                    Like tRPC, Elysia provides type-safety from the backend to
                     the frontend without code generation. Interaction between
                     frontend and backend is type-checked at compile time.
                 </p>
