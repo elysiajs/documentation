@@ -3128,35 +3128,7 @@ We have created a simple API using Elysia, we have learned how to create a simpl
 
 You could to take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
 
-This Tutorial cover most of the concept we need to know to create Elysia server, however there are some several useful concepts you might want to know, each chapter take around 15-20 minutes to complete if follows along.
-
-Here's a recommended chapters we recommended in order (Feels free to jump to the chapter you are interested first).
-
-<script setup>
-    import Card from '../components/nearl/card.vue'
-    import Deck from '../components/nearl/card-deck.vue'
-</script>
-
-<Deck>
-    <Card title="Validation" href="/validation/overview">
-        Schema to enforce data type
-    </Card>
-    <Card title="Life Cycle" href="/life-cycle/overview">
-        Intercept correct order for each request
-    </Card>
-    <Card title="Plugin" href="/plugins/overview">
-        Checkout plugins and ecosystem
-    </Card>
-    <Card title="Eden" href="/eden/overview">
-        Integrate your frontend with E2E type safety
-    </Card>
-    <Card title="MVC model" href="/patterns/mvc">
-        Using MVC model with Elysia
-    </Card>
-    <Card title="Cheat sheet" href="/integrations/cheat-sheet">
-        A quick overview of Elysia
-    </Card>
-</Deck>
+This Tutorial cover most of the concept we need to know to create Elysia server, however there are some several useful concepts you might want to know.
 
 ### If you are stuck
 
