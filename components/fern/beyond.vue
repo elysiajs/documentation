@@ -8,14 +8,15 @@
                     :style="{ left: `${left}%` }"
                 >
                     <p
-                        class="absolute top-12 pl-2 text-xs font-semibold font-mono text-sky-500"
+                        class="absolute pl-2 text-xs font-semibold font-mono text-sky-500"
+                        style="top: 3.625rem"
                         :style="{ left: left > 80 ? '-4rem' : '0' }"
                     >
                         {{ (left / 4).toFixed(2) }}ms
                     </p>
                 </div>
                 <p
-                    class="absolute z-10 top-2 right-2 text-xs border px-2 py-1 rounded-full bg-gray-50/40 backdrop-blur-sm pointer-events-none"
+                    class="absolute z-10 top-2 right-2 text-xs border dark:border-gray-600 px-2 py-1 rounded-full bg-gray-50/40 dark:bg-gray-700/40 backdrop-blur-sm pointer-events-none"
                 >
                     POST /character/:id/chat
                 </p>
@@ -165,13 +166,13 @@ function move(event: MouseEvent) {
 
 <style>
 #beyond {
-    @apply flex flex-col md:flex-row justify-between items-start w-full max-w-5xl mx-auto my-8 gap-2;
+    @apply flex flex-col md:flex-row justify-between items-start w-full max-w-5xl mx-auto my-8 gap-8 sm:gap-2;
 
     & > article {
-        @apply flex flex-col w-full p-2 rounded-2xl overflow-hidden;
+        @apply flex flex-col w-full sm:p-2 rounded-2xl overflow-hidden;
 
         & > header {
-            @apply flex flex-col w-full;
+            @apply flex flex-col w-full dark:font-medium;
 
             & > h2 {
                 @apply text-3xl font-semibold mb-4 font-sans;
@@ -199,11 +200,19 @@ function move(event: MouseEvent) {
 
 #opentelemetry {
     & > section {
-        @apply relative flex flex-col pl-4 justify-center gap-1.5 bg-gray-50 rounded-3xl border overflow-hidden;
+        @apply relative flex flex-col pl-4 justify-center gap-1.5 bg-gray-50 dark:bg-gray-800 rounded-3xl border dark:border-gray-700 overflow-hidden;
 
         background-image: linear-gradient(to right, #ddd 1px, transparent 1px);
         background-size: 6rem 6em;
         background-position: 2rem;
+
+        html.dark & {
+            background-image: linear-gradient(
+                to right,
+                #646464 1px,
+                transparent 1px
+            );
+        }
 
         & > .pointer {
             @apply absolute top-0 flex flex-col bg-sky-400 justify-center gap-1.5;
@@ -224,9 +233,8 @@ function move(event: MouseEvent) {
 
 #e2e-type-safety {
     & > section {
-        @apply rounded-xl border border-y-violet-200 border-x-blue-200 overflow-hidden;
+        @apply rounded-xl border border-y-violet-200 border-x-blue-200 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-gray-800;
 
-        background-color: rgba(255, 255, 255, 1);
         background-image: radial-gradient(
                 closest-side at center,
                 rgba(255, 255, 255, 1) 70%,
@@ -273,11 +281,59 @@ function move(event: MouseEvent) {
                 transparent 50%
             );
 
+        html.dark & {
+            background-image: radial-gradient(
+                    closest-side at center,
+                    theme(colors.gray.800) 70%,
+                    transparent 150%
+                ),
+                radial-gradient(
+                    closest-side at center,
+                    theme(colors.gray.800) 90%,
+                    transparent 150%
+                ),
+                radial-gradient(
+                    at 9% 67%,
+                    hsla(223, 100%, 65%, 0.14) 0px,
+                    transparent 50%
+                ),
+                radial-gradient(
+                    at 22% 0%,
+                    hsla(210, 100%, 69%, 0.29) 0px,
+                    transparent 50%
+                ),
+                radial-gradient(
+                    at 97% 49%,
+                    hsla(240, 100%, 87%, 0.35) 0px,
+                    transparent 50%
+                ),
+                radial-gradient(
+                    at 100% 75%,
+                    hsla(280, 100%, 75%, 0.26) 0px,
+                    transparent 50%
+                ),
+                radial-gradient(
+                    at 75% 100%,
+                    hsla(22, 100%, 77%, 0.19) 0px,
+                    transparent 50%
+                ),
+                radial-gradient(
+                    at 40% 100%,
+                    hsla(240, 100%, 70%, 0.15) 0px,
+                    transparent 50%
+                ),
+                radial-gradient(
+                    at 72% 0%,
+                    hsla(343, 100%, 76%, 0.17) 0px,
+                    transparent 50%
+                );
+        }
+
         & > div {
             @apply !bg-transparent rounded-xl;
 
             & > pre {
-            	@apply !p-3 lg:!p-4;
+                @apply !p-3 lg:!p-4;
             }
         }
     }

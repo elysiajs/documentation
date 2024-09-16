@@ -78,6 +78,14 @@
         transparent 0%,
         rgba(255, 255, 255, 1) 100%
     );
+
+    html.dark & {
+	    background-image: radial-gradient(
+	        closest-side at center,
+	        transparent 0%,
+	        theme(colors.gray.900) 100%
+	    );
+    }
 }
 
 .grid {
@@ -86,6 +94,11 @@
     background-image: linear-gradient(#ddd 1px, transparent 1px),
         linear-gradient(to right, #ddd 1px, transparent 1px);
     background-size: 40px 40px;
+
+    html.dark & {
+    	background-image: linear-gradient(#646464 1px, transparent 1px),
+			linear-gradient(to right, #646464 1px, transparent 1px);
+    }
 }
 
 .title {
@@ -111,7 +124,7 @@
         @apply flex justify-start items-center gap-4 w-full h-6;
 
         & > h6 {
-            @apply w-36 min-w-36 font-mono text-lg font-medium text-gray-500;
+            @apply w-36 min-w-36 font-mono text-lg font-medium text-gray-500 dark:text-gray-400;
 
             & > span {
                 @apply text-sm text-gray-400 font-normal;
@@ -119,7 +132,7 @@
         }
 
         & > div {
-            @apply flex justify-end items-center w-full h-6 font-bold font-mono text-gray-500 text-sm pr-3 bg-gray-200 rounded-2xl;
+            @apply flex justify-end items-center w-full h-6 font-bold font-mono text-gray-500 dark:text-gray-400 text-sm pr-3 bg-gray-200 dark:bg-gray-600 rounded-2xl;
         }
 
         & > p {

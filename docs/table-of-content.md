@@ -23,23 +23,23 @@ head:
 There's no correct way to learn Elysia, but we recommended **completing the essential chapter first** as the chapter briefly covers most of Elysia's features and foundation before jumping to other topics that interest you.
 
 <Deck>
-    <Card title="Essential" href="/essential/route">
-        Important concept and foundation of Elysia
+	<Card title="Cheat sheet" href="/integrations/cheat-sheet">
+	    A quick overview of Elysia
+	</Card>
+    <Card title="Structure" href="/essential/structure">
+        Understand how to structure your code
     </Card>
-    <Card title="Validation" href="/validation/overview">
+    <Card title="Validation" href="/essential/validation">
         Enforce data type and create a unified type
     </Card>
-    <Card title="Life Cycle" href="/life-cycle/overview">
+    <Card title="Life Cycle" href="/essential/life-cycle">
         Intercept events and customize behaviors
     </Card>
-    <Card title="Patterns" href="/patterns/group">
-        Common patterns and best practices
+    <Card title="Plugin and Scope" href="/essential/plugin">
+        Understand how to separate Elysia, and handle scope
     </Card>
     <Card title="Eden" href="/eden/overview">
         End-to-end type safety client for Elysia
-    </Card>
-    <Card title="Cheat sheet" href="/integrations/cheat-sheet">
-        A quick overview of Elysia
     </Card>
 </Deck>
 

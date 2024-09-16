@@ -1,6 +1,6 @@
 <template>
     <article id="people-tweets" class="fern-gap">
-        <h2 class="text-center text-4xl font-semibold text-gray-700 leading-[3rem]">
+        <h2 class="sm:text-center text-4xl font-semibold text-gray-700 dark:text-gray-300 leading-[3rem]">
             Powered by
             <span class="text-gradient from-rose-400 to-orange-400">love</span
             ><br />from the

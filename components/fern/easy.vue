@@ -4,7 +4,7 @@
             <header class="flex flex-col flex-1 text-xl gap-6">
                 <div class="flex flex-col gap-3 mb-2">
                     <h3 class="text-2xl font-medium text-700">Our Princicle</h3>
-                    <h2 class="text-6xl text-gray-700 font-medium">
+                    <h2 class="text-6xl text-gray-700 dark:text-gray-300 font-medium leading-[4.25rem]">
                         Design for Human
                     </h2>
                 </div>
@@ -157,12 +157,10 @@
         @apply flex flex-col md:flex-row justify-between items-center gap-8 w-full mb-6;
 
         & > .showcase {
-            @apply flex flex-col flex-1 rounded-2xl overflow-hidden border;
+            @apply flex flex-col flex-1 max-w-full sm:max-w-[30rem] rounded-2xl overflow-hidden border dark:border-gray-700 bg-white dark:bg-gray-800;
 
-            max-width: 30rem;
             box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
 
-            background-color: rgba(255, 255, 255, 1);
             background-image: radial-gradient(
                     closest-side at center,
                     rgba(255, 255, 255, 1) 70%,
@@ -209,6 +207,56 @@
                     transparent 50%
                 );
 
+            html.dark & {
+            	box-shadow: 0 16px 40px rgba(0, 123, 255, 0.15);
+
+                background-image: radial-gradient(
+                        closest-side at center,
+                        theme(colors.gray.800) 70%,
+                        transparent 150%
+                    ),
+                    radial-gradient(
+                        closest-side at center,
+                        theme(colors.gray.800) 90%,
+                        transparent 150%
+                    ),
+                    radial-gradient(
+                        at 9% 67%,
+                        hsla(223, 100%, 65%, 0.14) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 22% 0%,
+                        hsla(210, 100%, 69%, 0.29) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 97% 49%,
+                        hsla(240, 100%, 87%, 0.35) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 100% 75%,
+                        hsla(280, 100%, 75%, 0.26) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 75% 100%,
+                        hsla(22, 100%, 77%, 0.19) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 40% 100%,
+                        hsla(240, 100%, 70%, 0.15) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 72% 0%,
+                        hsla(343, 100%, 76%, 0.17) 0px,
+                        transparent 50%
+                    );
+            }
+
             & > div {
                 @apply !bg-transparent;
 
@@ -229,7 +277,7 @@
                 @apply flex items-center gap-1.5 text-xl mb-2;
 
                 & > svg {
-                	@apply transform scale-90;
+                    @apply transform scale-90;
                 }
             }
         }

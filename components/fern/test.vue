@@ -4,7 +4,7 @@
             <header class="flex flex-col w-full lg:w-5/12 text-xl gap-6">
                 <div class="flex flex-col gap-3">
                     <h2
-                        class="text-6xl text-gray-700 font-medium leading-[4.5rem]"
+                        class="text-6xl text-gray-700 font-medium leading-[4.5rem] dark:text-gray-400"
                     >
                         Test with
                         <span
@@ -12,10 +12,10 @@
                             >confidence</span
                         >
                     </h2>
-                    <h3 class="flex items-center text-2xl">
+                    <h3 class="sm:flex items-center text-2xl">
                         Type safe with
                         <span
-                            class="text-gradient font-semibold from-violet-500 to-sky-400 ml-2 mr-1"
+                            class="text-gradient font-semibold from-violet-500 to-sky-400 ml-1 sm:ml-2 mr-1"
                         >
                             auto-completion
                         </span>
@@ -82,11 +82,9 @@
         @apply flex flex-col lg:flex-row justify-between items-center gap-8 w-full mb-6;
 
         & > .showcase {
-            @apply flex flex-col w-full lg:w-7/12 rounded-2xl overflow-hidden border;
+            @apply flex flex-col w-full lg:w-7/12 rounded-2xl overflow-hidden border dark:border-gray-700 bg-white dark:bg-gray-800;
 
             box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
-
-            background-color: hsla(197, 100%, 80%, 0);
             background-image: radial-gradient(
                     closest-side at center,
                     rgba(255, 255, 255, 0.8) 70%,
@@ -127,6 +125,50 @@
                     hsla(343, 100%, 76%, 0.17) 0px,
                     transparent 50%
                 );
+
+            html.dark & {
+                box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
+                background-image: radial-gradient(
+                        closest-side at center,
+                        theme(colors.gray.800) 0%,
+                        transparent 120%
+                    ),
+                    radial-gradient(
+                        at 29% 66%,
+                        hsla(223, 100%, 65%, 0.14) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 47% 51%,
+                        hsla(210, 100%, 69%, 0.29) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 34% 34%,
+                        hsla(240, 100%, 87%, 0.35) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 74% 32%,
+                        hsla(280, 100%, 75%, 0.26) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 57% 66%,
+                        hsla(22, 100%, 77%, 0.19) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 42% 84%,
+                        hsla(240, 100%, 70%, 0.15) 0px,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        at 59% 10%,
+                        hsla(343, 100%, 76%, 0.17) 0px,
+                        transparent 50%
+                    );
+            }
 
             & > div {
                 @apply !bg-transparent;

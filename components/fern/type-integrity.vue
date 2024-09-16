@@ -1,22 +1,19 @@
 <template>
     <article id="type-integrity">
         <div
-            class="relative z-10 flex justify-between items-end w-full mb-7"
+            class="relative z-10 flex justify-between items-end w-full mb-7 fern-gap"
         >
             <h1
-                class="flex flex-col flex-1 text-4xl text-center text-gray-600 font-medium leading-[4rem]"
+                class="flex flex-col flex-1 text-3xl sm:text-4xl sm:text-center text-gray-600 dark:text-gray-400 font-medium leading-[3rem] sm:leading-[4rem]"
             >
             	The Next Level of
                 <span
-                    class="leading-[5rem] text-7xl font-semibold text-gradient from-cyan-400 to-indigo-400 -translate-y-1"
+                    class="leading-[5rem] sm:leading-[5.5rem] text-6xl sm:text-7xl font-semibold text-gradient from-cyan-400 to-indigo-400 -translate-y-1"
                 >
                     Type Safety
                 </span>
             </h1>
         </div>
-        <!-- <div class="grid">
-            <div class="fog" />
-        </div> -->
         <section class="showcase">
             <div class="window">
                 <div class="control">
@@ -94,7 +91,7 @@ const form = ref(1)
         background-size: cover;
 
         & > .window {
-            @apply lg:max-w-3xl w-full mx-auto !bg-white/80 border-2 rounded-xl overflow-auto backdrop-blur-lg shadow-xl;
+            @apply lg:max-w-3xl w-full mx-auto !bg-white/80 dark:!bg-gray-800/80 border-2 dark:border-gray-700 rounded-xl overflow-auto backdrop-blur-lg shadow-xl;
 
             & > .control {
                 @apply flex gap-2 pt-3 px-3;
@@ -131,65 +128,19 @@ const form = ref(1)
         }
     }
 
-    & > .grid {
-        @apply absolute top-0 left-0 w-full h-full pointer-events-none transform scale-125 translate-y-14;
-
-        background-color: hsla(205, 100%, 80%, 0);
-        background-image: radial-gradient(
-                at 18% 31%,
-                hsla(75, 99%, 72%, 1) 0px,
-                transparent 50%
-            ),
-            radial-gradient(
-                at 63% 41%,
-                hsla(168, 73%, 62%, 1) 0px,
-                transparent 50%
-            ),
-            radial-gradient(
-                at 78% 28%,
-                hsla(240, 86%, 74%, 0.28) 0px,
-                transparent 50%
-            ),
-            radial-gradient(
-                at 86% 68%,
-                hsla(189, 73%, 76%, 1) 0px,
-                transparent 50%
-            ),
-            radial-gradient(
-                at 39% 44%,
-                hsla(114, 61%, 63%, 1) 0px,
-                transparent 50%
-            ),
-            radial-gradient(
-                at 15% 83%,
-                hsla(151, 99%, 75%, 1) 0px,
-                transparent 50%
-            ),
-            radial-gradient(
-                at 48% 64%,
-                hsla(180, 67%, 65%, 1) 0px,
-                transparent 50%
-            );
-
-        & > .fog {
-            @apply w-full h-full;
-            background-image: radial-gradient(
-                closest-side at center,
-                transparent 0%,
-                rgba(255, 255, 255, 1) 90%
-            );
-        }
-    }
-
     & > .selector {
         @apply absolute z-10 flex justify-center items-center w-full md:min-h-12 -translate-y-16 md:-translate-y-10;
 
         & > form {
-            @apply grid grid-cols-2 md:grid-cols-4 items-center justify-center gap-1 h-full px-1 py-1 mx-auto bg-white/75 backdrop-blur-lg rounded-3xl border;
+            @apply grid grid-cols-2 md:grid-cols-4 items-center justify-center gap-1 h-full px-1 py-1 mx-auto bg-white/75 dark:bg-gray-800/75 backdrop-blur-lg rounded-3xl border dark:border-gray-700 dark:border-t-gray-600 dark:border-l-gray-600;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.075);
 
+            html.dark & {
+            	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, .5);
+            }
+
             & > div {
-                @apply flex justify-center items-center min-h-10 h-full px-4 font-medium text-gray-500 rounded-full hover:bg-gray-400/15 has-[:checked]:bg-gray-400/20 transition-colors ease-out duration-200 cursor-pointer;
+                @apply flex justify-center items-center min-h-10 h-full px-4 font-medium text-gray-500 dark:text-gray-300 rounded-full hover:bg-gray-400/15 has-[:checked]:bg-gray-400/20 has-[:checked]:dark:bg-white/15 transition-colors ease-out duration-200 cursor-pointer;
 
                 & > input[type='radio'] {
                     @apply appearance-none;

@@ -10,6 +10,7 @@ import Beyond from './beyond.vue'
 import Test from './test.vue'
 import Tweets from './tweets.vue'
 import Sponsors from './sponsor.vue'
+import Future from './future.vue'
 import BuiltWithLove from './built-with-love.vue'
 
 import '../tailwind.css'
@@ -30,7 +31,7 @@ import '../tailwind.css'
     <div id="landing" class="dark:bg-gray-900/60">
         <Hero />
         <article
-            class="flex flex-col gap-4 text-gray-500/75 leading-normal text-lg"
+            class="flex flex-col gap-4 text-gray-500/80 dark:text-gray-400/90 leading-normal text-lg"
         >
             <Note />
             <Easy>
@@ -68,6 +69,7 @@ import '../tailwind.css'
             <Tweets />
             <Sponsors />
             <Features />
+            <Future />
             <BuiltWithLove />
         </article>
     </div>
