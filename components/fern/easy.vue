@@ -214,13 +214,8 @@
 
                 background-image: radial-gradient(
                         closest-side at center,
-                        theme(colors.gray.800) 70%,
-                        transparent 150%
-                    ),
-                    radial-gradient(
-                        closest-side at center,
-                        theme(colors.gray.800) 90%,
-                        transparent 150%
+                        theme(colors.gray.800) 35%,
+                        transparent 140%
                     ),
                     radial-gradient(
                         at 9% 67%,
