@@ -22,6 +22,41 @@ However, there are several concern from trying to adapt an MVC pattern [(Model-V
 
 This page is a guide to on how to follows Elysia structure best practice combined with MVC pattern but can be adapted to any coding pattern you like.
 
+## Method Chaining
+Elysia code should always use **method chaining**.
+
+As Elysia type system is complex, every methods in Elysia returns a new type reference.
+
+**This is important** to ensure type integrity and inference.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('build', 1)
+    // Store is strictly typed // [!code ++]
+    .get('/', ({ store: { build } }) => build)
+    .listen(3000)
+```
+
+In the code above **state** returns a new **ElysiaInstance** type, adding a `build` type.
+
+Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+
+app.state('build', 1)
+
+app.get('/', ({ store: { build } }) => build)
+
+app.listen(3000)
+```
+
+We recommend to **always use method chaining** to provide an accurate type inference.
+
 ## Controller
 1 Elysia instance = 1 controller.
 
