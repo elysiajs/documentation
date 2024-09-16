@@ -51,7 +51,10 @@ To manually create a new Elysia app, install Elysia as a package:
 
 ```typescript
 bun add elysia
+bun add -d @types/bun
 ```
+
+This will install Elysia and Bun type definitions.
 
 Open your `package.json` file and add the following scripts:
 ```json
@@ -85,7 +88,7 @@ Here's the recommended file structure for Elysia if you don't strictly prefer a 
 - **src** - Any file that associate with development of Elysia server.
     - **index.ts** - Entry point for your Elysia server, ideal place for setting global plugin
     - **setup.ts** - Composed of various plugins to be used as a Service Locator
-    - **controllers** - Instances which encapsulate multiple endpoints 
+    - **controllers** - Instances which encapsulate multiple endpoints
     - **libs** - Utility functions
     - **models** - Data Type Objects (DTOs) for Elysia instance
     - **types** - Shared TypeScript type if needed

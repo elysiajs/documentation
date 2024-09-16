@@ -23,7 +23,7 @@
             style="aspect-ratio: 1.5 / 1"
         />
         <h2
-            class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-br from-sky-300 to-violet-400 mb-6"
+            class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-violet-400 mb-6"
         >
             Ergonomic Framework for Humans
             <span
@@ -100,7 +100,7 @@
             class="flex flex-col sm:flex-row items-start sm:items-center w-full md:w-auto gap-4 mt-10 mb-12"
         >
             <a
-                class="text-white font-semibold text-lg bg-pink-400 px-6 py-2.5 rounded-full"
+                class="text-white font-semibold text-lg bg-pink-400 dark:bg-pink-500 px-6 py-2.5 rounded-full"
                 id="hero-get-started"
                 href="/at-glance"
             >
