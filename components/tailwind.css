@@ -5,3 +5,16 @@
 .link {
     text-decoration: none !important;
 }
+
+.text-gradient {
+	@apply bg-gradient-to-br inline-block text-transparent bg-clip-text;
+}
+
+.code-showcase > div {
+	@apply w-full;
+
+	& > .vp-code > code {
+		font-size: 1.175rem !important;
+		line-height: 1.875rem !important;
+	}
+}

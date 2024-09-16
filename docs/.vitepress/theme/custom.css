@@ -100,31 +100,31 @@ button.copy::after {
     background-image: url(/assets/essential.svg);
 }
 
-#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
+/* #VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/validation.svg);
 }
 
 #VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/lifecycle.svg);
-}
+} */
 
-#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/pattern.svg);
 }
 
-#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/eden.svg);
 }
 
-#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/plugin.svg);
 }
 
-#VPSidebarNav > .group:nth-child(9) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/integration.svg);
 }
 
-.dark #VPSidebarNav > .group:nth-child(-n + 9):not(:first-child) > .VPSidebarItem > .item > .text::before {
+.dark #VPSidebarNav > .group:nth-child(-n + 7):not(:first-child) > .VPSidebarItem > .item > .text::before {
     filter: invert(1);
 }
 
@@ -305,3 +305,7 @@ button.copy::after {
         transform: translateY(-100px);
     }
 } */
+
+.fern-gap {
+	@apply px-4 lg:px-0;
+}

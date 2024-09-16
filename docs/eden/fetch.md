@@ -22,7 +22,7 @@ With Eden Fetch can interact with Elysia server in a type-safe manner using Fetc
 ---
 
 First export your existing Elysia server type:
-```typescript twoslash
+```typescript
 // server.ts
 import { Elysia, t } from 'elysia'
 
@@ -41,25 +41,7 @@ export type App = typeof app
 ```
 
 Then import the server type, and consume the Elysia API on client:
-```typescript twoslash
-// @filename: server.ts
-import { Elysia, t } from 'elysia'
-
-const app = new Elysia()
-    .get('/hi', () => 'Hi Elysia')
-    .get('/id/:id', ({ params: { id } }) => id)
-    .post('/mirror', ({ body }) => body, {
-        body: t.Object({
-            id: t.Number(),
-            name: t.String()
-        })
-    })
-    .listen(3000)
-
-export type App = typeof app
-// @filename: client.ts
-// ---cut---
-// client.ts
+```typescript
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
 
@@ -87,26 +69,7 @@ const nendoroid = await fetch('/mirror', {
 
 ## Error Handling
 You can handle errors the same way as Eden Treaty:
-```typescript twoslash
-// @filename: server.ts
-import { Elysia, t } from 'elysia'
-
-const app = new Elysia()
-    .get('/hi', () => 'Hi Elysia')
-    .get('/id/:id', ({ params: { id } }) => id)
-    .post('/mirror', ({ body }) => body, {
-        body: t.Object({
-            id: t.Number(),
-            name: t.String()
-        })
-    })
-    .listen(3000)
-
-export type App = typeof app
-
-// @filename: client.ts
-// ---cut---
-// client.ts
+```typescript
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
 

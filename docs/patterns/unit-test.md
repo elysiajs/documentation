@@ -24,7 +24,7 @@ Bun includes a built-in [test runner](https://bun.sh/docs/cli/test) that offers 
 
 Create **test/index.test.ts** in the root of project directory with the following:
 
-```typescript twoslash
+```typescript
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'

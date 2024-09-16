@@ -123,6 +123,10 @@ export default defineConfig({
                         link: '/quick-start'
                     },
                     {
+                        text: 'Tutorial',
+                        link: '/tutorial'
+                    },
+                    {
                         text: 'Table of Content',
                         link: '/table-of-content'
                     }
@@ -133,116 +137,28 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'Route',
-                        link: '/essential/route'
+                        text: 'Structure',
+                        link: '/essential/structure'
                     },
                     {
-                        text: 'Path',
-                        link: '/essential/path'
+                        text: 'Route',
+                        link: '/essential/route'
                     },
                     {
                         text: 'Handler',
                         link: '/essential/handler'
                     },
                     {
-                        text: 'Context',
-                        link: '/essential/context'
-                    },
-                    {
                         text: 'Life Cycle',
                         link: '/essential/life-cycle'
                     },
                     {
-                        text: 'Schema',
-                        link: '/essential/schema'
+                        text: 'Validation',
+                        link: '/essential/validation'
                     },
                     {
                         text: 'Plugin',
                         link: '/essential/plugin'
-                    },
-                    {
-                        text: 'Scope',
-                        link: '/essential/scope'
-                    },
-                    {
-                        text: "What's next",
-                        link: '/essential/what-next'
-                    }
-                ]
-            },
-            {
-                text: 'Validation',
-                collapsed: true,
-                items: [
-                    {
-                        text: 'Overview',
-                        link: '/validation/overview'
-                    },
-                    {
-                        text: 'Schema Type',
-                        link: '/validation/schema-type'
-                    },
-                    {
-                        text: 'Primitive Type',
-                        link: '/validation/primitive-type'
-                    },
-                    {
-                        text: 'Elysia Type',
-                        link: '/validation/elysia-type'
-                    },
-                    {
-                        text: 'Error Provider',
-                        link: '/validation/error-provider'
-                    },
-                    {
-                        text: 'Reference Model',
-                        link: '/validation/reference-model'
-                    }
-                ]
-            },
-            {
-                text: 'Life Cycle',
-                collapsed: true,
-                items: [
-                    {
-                        text: 'Overview',
-                        link: '/life-cycle/overview'
-                    },
-                    {
-                        text: 'On Request',
-                        link: '/life-cycle/request'
-                    },
-                    {
-                        text: 'Parse',
-                        link: '/life-cycle/parse'
-                    },
-                    {
-                        text: 'Transform',
-                        link: '/life-cycle/transform'
-                    },
-                    {
-                        text: 'Before Handle',
-                        link: '/life-cycle/before-handle'
-                    },
-                    {
-                        text: 'After Handle',
-                        link: '/life-cycle/after-handle'
-                    },
-                    {
-                        text: 'Map Response',
-                        link: '/life-cycle/map-response'
-                    },
-                    {
-                        text: 'On Error',
-                        link: '/life-cycle/on-error'
-                    },
-                    {
-                        text: 'After Response',
-                        link: '/life-cycle/after-response'
-                    },
-                    {
-                        text: 'Trace',
-                        link: '/life-cycle/trace'
                     }
                 ]
             },
@@ -251,24 +167,24 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'Group',
-                        link: '/patterns/group'
+                        text: 'Configuration',
+                        link: '/patterns/configuration'
                     },
+					{
+						text: 'Deployment',
+						link: '/patterns/deployment'
+					},
                     {
                         text: 'Cookie',
                         link: '/patterns/cookie'
                     },
                     {
-                        text: 'Cookie Signature',
-                        link: '/patterns/cookie-signature'
+                        text: 'OpenAPI',
+                        link: '/patterns/openapi'
                     },
                     {
                         text: 'Web Socket',
                         link: '/patterns/websocket'
-                    },
-                    {
-                        text: 'Documentation',
-                        link: '/patterns/documentation'
                     },
                     {
                         text: 'Unit Test',
@@ -279,20 +195,8 @@ export default defineConfig({
                         link: '/patterns/mount'
                     },
                     {
-                        text: 'Lazy Loading Module',
-                        link: '/patterns/lazy-loading-module'
-                    },
-                    {
-                        text: 'Macro',
-                        link: '/patterns/macro'
-                    },
-                    {
-                        text: 'MVC model',
-                        link: '/patterns/mvc'
-                    },
-                    {
-                        text: 'Stream',
-                        link: '/patterns/stream'
+                        text: 'Trace',
+                        link: '/patterns/trace'
                     }
                 ]
             },
@@ -415,10 +319,6 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'Docker',
-                        link: '/integrations/docker'
-                    },
-                    {
                         text: 'Nextjs',
                         link: '/integrations/nextjs'
                     },
@@ -437,14 +337,18 @@ export default defineConfig({
                     {
                         text: 'Drizzle',
                         link: '/integrations/drizzle'
+                    },
+                    {
+                        text: 'Cheat Sheet',
+                        link: '/integrations/cheat-sheet'
                     }
-                    // {
-                    //     text: 'Cheat Sheet',
-                    //     link: '/integrations/cheat-sheet'
-                    // }
                 ]
             }
         ],
+        outline: {
+            level: [2, 3],
+            label: 'Outline'
+        },
         socialLinks: [
             { icon: 'github', link: 'https://github.com/elysiajs/elysia' },
             { icon: 'twitter', link: 'https://twitter.com/elysiajs' },

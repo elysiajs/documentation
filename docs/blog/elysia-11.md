@@ -68,7 +68,7 @@ That's why we introduce **first party support** for OpenTelemetry on Elysia
 
 To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry'
 
@@ -103,14 +103,7 @@ By applying OpenTelemetry, Elysia will then:
 You can export telemetry data to Jaeger, Zipkin, New Relic, Axiom or any other OpenTelemetry compatible backend.
 
 Here's an example of exporting telemetry to [Axiom](https://axiom.co)
-```typescript twoslash
-const Bun = {
-	env: {
-		AXIOM_TOKEN: '',
-		AXIOM_DATASET: ''
-	}
-}
-// ---cut---
+```typescript
 import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry'
 
@@ -143,15 +136,7 @@ You can use OpenTelemetry SDK normally, and the span is run under Elysia's reque
 
 However, we also provide a `getTracer`, and `record` utility to collect span from any part of your application.
 
-```typescript twoslash
-const db = {
-	query(query: string) {
-		return new Promise<unknown>((resolve) => {
-			resolve('')
-		})
-	}
-}
-// ---cut---
+```typescript
 import { Elysia } from 'elysia'
 import { record } from '@elysiajs/opentelemetry'
 
@@ -202,7 +187,7 @@ It's entirely rewritten to not only be faster, but also reliable, and accurate d
 Trace v2 use a callback listener instead of Promise to ensure that callback is finished before moving on to the next lifecycle event.
 
 Here's an example usage of Trace v2:
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -271,7 +256,7 @@ Previously Elysia is using an exact data type without coercion unless explicitly
 
 For example, to parse a query parameter as a number, you need to explicitly cast it as `t.Numeric` instead of `t.Number`.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -285,7 +270,7 @@ const app = new Elysia()
 However, in Elysia 1.1, we introduce data type coercion, which will automatically coerce data into the correct data type if possible.
 
 Allowing us to simply set `t.Number` instead of `t.Numeric` to parse a query parameter as a number.
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -304,7 +289,7 @@ This is done by swapping schema with possible coercion counterpart during compil
 ## Guard as
 Previously, `guard` will only apply to the current instance only.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
@@ -324,7 +309,7 @@ Using this code, `onBeforeHandle` will only be called when accessing `/plugin` b
 
 In Elysia 1.1, we add `as` property to `guard` allowing us to apply guard as `scoped` or `global` as same as adding event listener.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin1 = new Elysia()
@@ -530,7 +515,7 @@ This is handled in both type-level and runtime, providing us with a better type-
 ## Optional Path Parameter
 Elysia now support optional path parameter by adding `?` to the end of path parameter.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -546,7 +531,7 @@ By default, accessing the optional path parameter will return `undefined` if it'
 
 You can provide a default value by either using JavaScript default value or schema default value.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -572,7 +557,7 @@ However, there's a limitation:
 
 Now, Elysia support response streaming out of the box by using a generator function.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -589,7 +574,7 @@ Using generator function, we can now infers return type from the generator funct
 
 Eden will now infer the response type from the generator function as `AsyncGenerator`
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 

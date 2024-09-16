@@ -14,9 +14,11 @@ head:
       content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysiajs/opentelemetry".
 ---
 
+# OpenTelemetry
+
 To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry'
 
@@ -53,14 +55,7 @@ You may export telemetry data to Jaeger, Zipkin, New Relic, Axiom or any other O
 ![axiom showing collected trace from OpenTelemetry](/blog/elysia-11/axiom.webp)
 
 Here's an example of exporting telemetry to [Axiom](https://axiom.co)
-```typescript twoslash
-const Bun = {
-	env: {
-		AXIOM_TOKEN: '',
-		AXIOM_DATASET: ''
-	}
-}
-// ---cut---
+```typescript
 import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry'
 
@@ -92,15 +87,7 @@ You may use OpenTelemetry SDK normally, and the span is run under Elysia's reque
 
 However, we also provide a `getTracer`, and `record` utility to collect span from any part of your application.
 
-```typescript twoslash
-const db = {
-	query(query: string) {
-		return new Promise<unknown>((resolve) => {
-			resolve('')
-		})
-	}
-}
-// ---cut---
+```typescript
 import { Elysia } from 'elysia'
 import { record } from '@elysiajs/opentelemetry'
 

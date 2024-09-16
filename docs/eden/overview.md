@@ -15,11 +15,11 @@ head:
 ---
 
 # End-to-End Type Safety
-Imagine you have a toy train set. 
+Imagine you have a toy train set.
 
-Each piece of the train track has to fit perfectly with the next one, like puzzle pieces. 
+Each piece of the train track has to fit perfectly with the next one, like puzzle pieces.
 
-End-to-end type safety is like making sure all the pieces of the track match up correctly so the train doesn't fall off or get stuck. 
+End-to-end type safety is like making sure all the pieces of the track match up correctly so the train doesn't fall off or get stuck.
 
 For a framework to have end-to-end type safety means you can connect client and server in a type-safe manner.
 
@@ -112,24 +112,7 @@ const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).post({
 
 ## Eden Fetch
 A fetch-like alternative to Eden Treaty for developers that prefers fetch syntax.
-```typescript twoslash
-// @filename: server.ts
-import { Elysia, t } from 'elysia'
-
-const app = new Elysia()
-    .get('/', 'hi')
-    .post('/name/:name', ({ body }) => body, {
-        body: t.Object({
-            branch: t.String(),
-            type: t.String()
-        })
-    })
-    .listen(3000)
-
-export type App = typeof app
-
-// @filename: index.ts
-// ---cut---
+```typescript
 import { edenFetch } from '@elysiajs/eden'
 import type { App } from './server'
 

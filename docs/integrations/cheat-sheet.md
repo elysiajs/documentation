@@ -20,7 +20,7 @@ Here are a quick overview for a common Elysia patterns
 ## Hello World
 A simple hello world
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -33,7 +33,7 @@ Define route using custom HTTP methods/verbs
 
 See [Route](/essential/route.html#custom-method)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -49,7 +49,7 @@ Using dynamic path parameter
 
 See [Path](/essential/path.html)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -63,7 +63,7 @@ Elysia convert JSON to response automatically
 
 See [Handler](/essential/handler.html)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -80,7 +80,7 @@ A file can be return in as formdata response
 
 The response must 1-level deep object
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -98,7 +98,7 @@ Set a custom header and a status code
 
 See [Handler](/essential/handler.html)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -115,7 +115,7 @@ Define a prefix once for sub routes
 
 See [Group](/patterns/group.html)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -134,7 +134,7 @@ Enforce a data type of a route
 
 See [Schema](/essential/schema.html)
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -152,7 +152,7 @@ Intercept an Elysia event in order
 
 See [Lifecycle](/essential/life-cycle.html)
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -199,15 +199,15 @@ Add custom variable to route context
 
 See [Context](/essential/context.html)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
     .state('version', 1)
     .decorate('getDate', () => Date.now())
-    .get('/version', ({ 
-        getDate, 
-        store: { version } 
+    .get('/version', ({
+        getDate,
+        store: { version }
     }) => `${version} ${getDate()}`)
     .listen(3000)
 ```
@@ -217,7 +217,7 @@ Redirect a response
 
 See [Handler](/essential/handler.html#redirect)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -233,7 +233,7 @@ Create a separate instance
 
 See [Plugin](/essential/plugin)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
@@ -251,7 +251,7 @@ Create a realtime connection using Web Socket
 
 See [Web Socket](/patterns/websocket)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -268,7 +268,7 @@ Create a interactive documentation using Scalar (or optionally Swagger)
 
 See [Documentation](/patterns/documentation)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -284,7 +284,7 @@ Write a unit test of your Elysia app
 
 See [Unit Test](/patterns/unit-test)
 
-```typescript twoslash
+```typescript
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
@@ -307,7 +307,7 @@ Create a custom logic for parsing body
 
 See [Parse](/life-cycle/parse.html)
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()

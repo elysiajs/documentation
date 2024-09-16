@@ -22,9 +22,9 @@ Once the fetch method is called, Eden Treaty return a promise containing an obje
 - status `number` - HTTP status code
 - headers `FetchRequestInit['headers']` - response headers
 
-Once returned, you must provide error handling to ensure that the response data value is unwrapped, otherwise the value will be nullable. Elysia provides a `error()` helper function to handle the error, and Eden will provide type narrowing for the error value. 
+Once returned, you must provide error handling to ensure that the response data value is unwrapped, otherwise the value will be nullable. Elysia provides a `error()` helper function to handle the error, and Eden will provide type narrowing for the error value.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -51,7 +51,7 @@ const submit = async (name: string) => {
     // type: string | null
     console.log(data)
 
-    if(error)
+    if (error)
         switch(error.status) {
             case 400:
                 // Error type will be narrow down
@@ -95,4 +95,5 @@ if (error) throw error
 
 for await (const chunk of data)
 	console.log(chunk)
+               // ^?
 ```

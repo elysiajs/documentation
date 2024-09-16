@@ -29,7 +29,7 @@ const demo2 = new Elysia()
 const demo3 = new Elysia()
     .get('/get', () => 'hello')
     .post('/post', () => 'hi')
-    .route('M-SEARCH', '/m-search', () => 'connect') 
+    .route('M-SEARCH', '/m-search', () => 'connect')
 
 const demo4 = new Elysia()
     .get('/', () => 'hi')
@@ -38,20 +38,72 @@ const demo4 = new Elysia()
 const demo5 = new Elysia()
     .get('/', () => 'hello')
     .get('/hi', ({ error }) => error(404, 'Route not found :('))
+
+const demo6 = new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/id/123', '123')
+    .get('/id/anything', 'anything')
+    .get('/id', ({ error }) => error(404))
+    .get('/id/anything/test', ({ error }) => error(404))
+
+const demo7 = new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/id/123', '123')
+    .get('/id/anything', 'anything')
+    .get('/id', ({ error }) => error(404))
+    .get('/id/:id/:name', ({ params: { id, name } }) => id + ' ' + name)
+
+const demo8 = new Elysia()
+	.get('/id', () => `id: undefined`)
+    .get('/id/:id', ({ params: { id } }) => `id: ${id}`)
+
+const demo9 = new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/id/123', '123')
+    .get('/id/anything', 'anything')
+    .get('/id', ({ error }) => error(404))
+    .get('/id/:id/:name', ({ params: { id, name } }) => id + '/' + name)
+
+const demo10 = new Elysia()
+    .get('/id/1', () => 'static path')
+    .get('/id/:id', () => 'dynamic path')
+    .get('/id/*', () => 'wildcard path')
+
+const demo11 = new Elysia()
+    .post('/user/sign-in', () => 'Sign in')
+    .post('/user/sign-up', () => 'Sign up')
+    .post('/user/profile', () => 'Profile')
+
+const demo12 = new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', () => 'Sign in')
+            .post('/sign-up', () => 'Sign up')
+            .post('/profile', () => 'Profile')
+    )
+
+const users = new Elysia({ prefix: '/user' })
+    .post('/sign-in', () => 'Sign in')
+    .post('/sign-up', () => 'Sign up')
+    .post('/profile', () => 'Profile')
+
+const demo13 = new Elysia()
+    .get('/', () => 'hello world')
+    .use(users)
 </script>
 
-# Route
+# Routing
 
 Web servers use the request's **path and HTTP method** to look up the correct resource, refers as **"routing"**.
 
 We can define a route by calling a **method named after HTTP verbs**, passing a path and a function to execute when matched.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'hello')
-    .get('/hi', () => 'hi')
+    .get('/', 'hello')
+    .get('/hi', 'hi')
     .listen(3000)
 ```
 
@@ -65,9 +117,291 @@ By default, web browsers will send a GET method when visiting a page.
 Using an interactive browser above, hover on a blue highlight area to see difference result between each path
 :::
 
+## Path type
+
+Path in Elysia can be grouped into 3 types:
+
+-   **static paths** - static string to locate the resource
+-   **dynamic paths** - segment can be any value
+-   **wildcards** - path until a specific point can be anything
+
+You can use all of the path types together to compose a behavior for your web server.
+
+The priorities are as follows:
+
+1. static paths
+2. dynamic paths
+3. wildcards
+
+If the path is resolved as the static wild dynamic path is presented, Elysia will resolve the static path rather than the dynamic path
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/1', 'static path')
+    .get('/id/:id', 'dynamic path')
+    .get('/id/*', 'wildcard path')
+    .listen(3000)
+```
+
+<Playground
+  :elysia="demo10"
+    :alias="{
+    '/id/:id': '/id/2',
+    '/id/*': '/id/2/a'
+  }"
+  :mock="{
+    '/id/*': {
+      GET: 'wildcard path'
+    }
+  }"
+/>
+
+Here the server will respond as follows:
+
+| Path    | Response      |
+| ------- | ------------- |
+| /id/1   | static path   |
+| /id/2   | dynamic path  |
+| /id/2/a | wildcard path |
+
+## Static Path
+
+A path or pathname is an identifier to locate resources of a server.
+
+```bash
+http://localhost:/path/page
+```
+
+Elysia uses the path and method to look up the correct resource.
+
+<div class="bg-white rounded-lg">
+    <img src="/essential/url-object.svg" alt="URL Representation" />
+</div>
+
+A path starts after the origin. Prefix with **/** and ends before search query **(?)**
+
+We can categorize the URL and path as follows:
+
+| URL                             | Path         |
+| ------------------------------- | ------------ |
+| http://site.com/                | /            |
+| http://site.com/hello           | /hello       |
+| http://site.com/hello/world     | /hello/world |
+| http://site.com/hello?name=salt | /hello       |
+| http://site.com/hello#title     | /hello       |
+
+::: tip
+If the path is not specified, the browser and web server will treat the path as '/' as a default value.
+:::
+
+Elysia will look up each request for [route](/essential/route) and response using [handler](/essential/handler) function.
+
+## Dynamic path
+
+URLs can be both static and dynamic.
+
+Static paths are hardcoded strings that can be used to locate resources of the server, while dynamic paths match some part and captures the value to extract extra information.
+
+For instance, we can extract the user ID from the pathname. For example:
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+                      // ^?
+    .listen(3000)
+```
+
+<br>
+
+Here dynamic path is created with `/id/:id` which tells Elysia to match any path up until `/id`. What comes after that is then stored as **params** object.
+
+<Playground
+  :elysia="demo6"
+  :alias="{
+    '/id/:id': '/id/1'
+  }"
+  :mock="{
+    '/id/:id': {
+      GET: '1'
+    }
+  }"
+/>
+
+When requested, the server should return the response as follows:
+
+| Path                   | Response  |
+| ---------------------- | --------- |
+| /id/1                  | 1         |
+| /id/123                | 123       |
+| /id/anything           | anything  |
+| /id/anything?name=salt | anything  |
+| /id                    | Not Found |
+| /id/anything/rest      | Not Found |
+
+Dynamic paths are great to include things like IDs, which then can be used later.
+
+We refer to the named variable path as **path parameter** or **params** for short.
+
+## Segment
+
+URL segments are each path that is composed into a full path.
+
+Segments are separated by `/`.
+![Representation of URL segments](/essential/url-segment.webp)
+
+Path parameters in Elysia are represented by prefixing a segment with ':' followed by a name.
+![Representation of path parameter](/essential/path-parameter.webp)
+
+Path parameters allow Elysia to capture a specific segment of a URL.
+
+The named path parameter will then be stored in `Context.params`.
+
+| Route     | Path   | Params  |
+| --------- | ------ | ------- |
+| /id/:id   | /id/1  | id=1    |
+| /id/:id   | /id/hi | id=hi   |
+| /id/:name | /id/hi | name=hi |
+
+## Multiple path parameters
+
+You can have as many path parameters as you like, which will then be stored into a `params` object.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/id/:id/:name', ({ params: { id, name } }) => id + ' ' + name)
+                             // ^?
+    .listen(3000)
+```
+
+<br>
+<br>
+
+<Playground
+  :elysia="demo7"
+  :alias="{
+    '/id/:id': '/id/1',
+    '/id/:id/:name': '/id/anything/rest'
+  }"
+  :mock="{
+    '/id/:id': {
+      GET: '1'
+    },
+    '/id/:id/:name': {
+      GET: 'anything rest'
+    }
+  }"
+/>
+
+The server will respond as follows:
+
+| Path                   | Response      |
+| ---------------------- | ------------- |
+| /id/1                  | 1             |
+| /id/123                | 123           |
+| /id/anything           | anything      |
+| /id/anything?name=salt | anything      |
+| /id                    | Not Found     |
+| /id/anything/rest      | anything rest |
+
+## Optional path parameters
+Sometime we might want a static and dynamic path to resolve the same handler.
+
+We can make a path parameter optional by adding a question mark `?` after the parameter name.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/:id?', ({ params: { id } }) => `id ${id}`)
+                          // ^?
+    .listen(3000)
+```
+
+<br>
+
+<Playground
+  :elysia="demo3"
+  :alias="{
+    '/id/:id': '/id/1'
+  }"
+  :mock="{
+    '/id/:id': {
+      GET: 'id 1'
+    },
+  }"
+/>
+
+The server will respond as follows:
+
+| Path                   | Response      |
+| ---------------------- | ------------- |
+| /id                    | id undefined  |
+| /id/1                  | id 1          |
+
+## Wildcards
+
+Dynamic paths allow capturing certain segments of the URL.
+
+However, when you need a value of the path to be more dynamic and want to capture the rest of the URL segment, a wildcard can be used.
+
+Wildcards can capture the value after segment regardless of amount by using "\*".
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/*', ({ params }) => params['*'])
+                    // ^?
+    .listen(3000)
+```
+
+<br>
+
+<Playground
+  :elysia="demo9"
+  :alias="{
+    '/id/:id': '/id/1',
+    '/id/:id/:name': '/id/anything/rest'
+  }"
+  :mock="{
+    '/id/:id': {
+      GET: '1'
+    },
+    '/id/:id/:name': {
+      GET: 'anything/rest'
+    }
+  }"
+/>
+
+In this case the server will respond as follows:
+
+| Path                   | Response      |
+| ---------------------- | ------------- |
+| /id/1                  | 1             |
+| /id/123                | 123           |
+| /id/anything           | anything      |
+| /id/anything?name=salt | anything      |
+| /id                    | Not Found     |
+| /id/anything/rest      | anything/rest |
+
+Wildcards are useful for capturing a path until a specific point.
+
+::: tip
+You can use a wildcard with a path parameter.
+:::
+
 ## HTTP Verb
 
-There are many HTTP methods to use in a different situation, for instance.
+HTTP defines a set of request methods to indicate the desired action to be performed for a given resource
+
+There are several HTTP verbs, but the most common ones are:
 
 ### GET
 
@@ -81,6 +415,10 @@ Submits a payload to the specified resource, often causing state change or side 
 
 Replaces all current representations of the target resource using the request's payload.
 
+### Patch
+
+Applies partial modifications to a resource.
+
 ### DELETE
 
 Deletes the specified resource.
@@ -89,12 +427,12 @@ Deletes the specified resource.
 
 To handle each of the different verbs, Elysia has a built-in API for several HTTP verbs by default, similar to `Elysia.get`
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
+    .get('/', 'hello')
+    .post('/hi', 'hi')
     .listen(3000)
 ```
 
@@ -108,69 +446,21 @@ Elysia HTTP methods accepts the following parameters:
 
 You can read more about the HTTP methods on [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
 
-## Method Chaining
-Rule of thumb, **ALWAYS** use method chaining in Elysia.
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-// ❌ don't
-const app1 = new Elysia()
-
-app1.get('/', () => 'hello')
-
-app1.post('/', () => 'world')
-
-// ✅ do
-const app = new Elysia()
-    .get('/', () => 'hello')
-    .post('/', () => 'world')
-```
-
-Elysia is using method chaining to synchronize type safety for later use.
-
-Without method chaining, Elysia can't ensure your type integrity which will have of usage in later chapters.
-
-## Handle
-
-Most developers use REST clients like Postman, Insomnia or Hoppscotch to test their API.
-
-However, Elysia can be programmatically test using `Elysia.handle`.
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-const app = new Elysia()
-    .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
-    .listen(3000)
-
-app.handle(new Request('http://localhost/')).then(console.log)
-```
-
-**Elysia.handle** is a function to process an actual request sent to the server.
-
-::: tip
-Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
-
-But also useful for simulating or creating unit tests.
-:::
-
 ## Custom Method
 
 We can accept custom HTTP Methods with `Elysia.route`.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-    .get('/get', () => 'hello')
-    .post('/post', () => 'hi')
-    .route('M-SEARCH', '/m-search', () => 'connect') // [!code ++]
+    .get('/get', 'hello')
+    .post('/post', 'hi')
+    .route('M-SEARCH', '/m-search', 'connect') // [!code ++]
     .listen(3000)
 ```
 
-<Playground :elysia="demo3" />
+<Playground :elysia="demo8" />
 
 **Elysia.route** accepts the following:
 
@@ -196,11 +486,11 @@ It's recommended to use the UPPERCASE convention for defining a custom HTTP Verb
 
 Elysia provides an `Elysia.all` for handling any HTTP method for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .all('/', () => 'hi')
+    .all('/', 'hi')
     .listen(3000)
 ```
 
@@ -213,6 +503,31 @@ Any HTTP method that matches the path, will be handled as follows:
 | / | POST | hi |
 | / | DELETE | hi |
 
+## Handle
+
+Most developers use REST clients like Postman, Insomnia or Hoppscotch to test their API.
+
+However, Elysia can be programmatically test using `Elysia.handle`.
+
+```typescript
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hello')
+    .post('/hi', 'hi')
+    .listen(3000)
+
+app.handle(new Request('http://localhost/')).then(console.log)
+```
+
+**Elysia.handle** is a function to process an actual request sent to the server.
+
+::: tip
+Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
+
+But also useful for simulating or creating unit tests.
+:::
+
 ## 404
 
 If no path matches the defined routes, Elysia will pass the request to [error](/life-cycle/on-error) life cycle before returning a **"NOT_FOUND"** with an HTTP status of 404.
@@ -223,7 +538,7 @@ We can handle a custom 404 error by returning a value from 'error` life cycle li
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', () => 'hi')
+    .get('/', 'hi')
     .onError(({ code }) => {
         if (code === 'NOT_FOUND')
             return 'Route not found :('
@@ -248,3 +563,85 @@ HTTP Status is used to indicate the type of response. By default if everything i
 
 If the server fails to find any route to handle, like in this case, then the server shall return a '404 NOT FOUND' status code.
 :::
+
+## Group
+
+When creating a web server, you would often have multiple routes sharing the same prefix:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .post('/user/sign-in', 'Sign in')
+    .post('/user/sign-up', 'Sign up')
+    .post('/user/profile', 'Profile')
+    .listen(3000)
+```
+
+<Playground :elysia="demo11" />
+
+This can be improved with `Elysia.group`, allowing us to apply prefixes to multiple routes at the same time by grouping them together:
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .post('/sign-up', 'Sign up')
+            .post('/profile', 'Profile')
+    )
+    .listen(3000)
+```
+
+<Playground :elysia="demo12" />
+
+This code behaves the same as our first example and should be structured as follows:
+
+| Path          | Result  |
+| ------------- | ------- |
+| /user/sign-in | Sign in |
+| /user/sign-up | Sign up |
+| /user/profile | Profile |
+
+`.group()` can also accept an optional guard parameter to reduce boilerplate of using groups and guards together:
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group(
+        '/user',
+        {
+            body: t.Literal('Rikuhachima Aru')
+        },
+        (app) => app
+            .post('/sign-in', 'Sign in')
+            .post('/sign-up', 'Sign up')
+            .post('/profile', 'Profile')
+    )
+    .listen(3000)
+```
+
+You may find more information about grouped guards in [scope](/essential/scope.html).
+
+### Prefix
+
+We can separate a group into a separate plugin instance to reduce nesting by providing a **prefix** to the constructor.
+
+```typescript
+import { Elysia } from 'elysia'
+
+const users = new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .post('/sign-up', 'Sign up')
+    .post('/profile', 'Profile')
+
+new Elysia()
+    .use(users)
+    .get('/', 'hello world')
+    .listen(3000)
+```
+
+<Playground :elysia="demo13" />
