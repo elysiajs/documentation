@@ -11,8 +11,8 @@
                     </h2>
                 </div>
                 <p class="max-w-md leading-normal">
-                    Our goal is to designed to make an ergonomic, sensible and
-                    easy framework that even beginners can use easily
+                    Our goal is to designed an ergonomic, sensible and
+                    productive framework that even beginners can use easily
                 </p>
                 <p class="max-w-md leading-normal">
                     Design to avoid unnecessary complexity, and type complexity
