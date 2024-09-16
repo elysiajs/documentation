@@ -23,7 +23,7 @@
             style="aspect-ratio: 1.5 / 1"
         />
         <h2
-            class="relative text-5xl md:text-6xl md:leading-tight font-semibold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-br from-sky-300 to-violet-400 mb-6"
+            class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-br from-sky-300 to-violet-400 mb-6"
         >
             Ergonomic Framework for Humans
             <span

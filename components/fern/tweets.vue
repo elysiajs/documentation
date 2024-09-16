@@ -13,28 +13,28 @@
                 <Tweet
                     id="AqueelMiq"
                     user="Aqueel"
-                    image="/tweets/aqueel.jpg"
+                    image="/tweets/aqueel.webp"
                     content="Jetfuel on bun at X! @shlomiatar who built the framework has an eye for picking the right tools for the job."
                     href="https://x.com/AqueelMiq/status/1822380943279296832"
                 />
                 <Tweet
                     id="shlomiatar"
                     user="Shlomi Atar"
-                    image="/tweets/shlomi.jpg"
+                    image="/tweets/shlomi.webp"
                     content="also a shoutout to @saltyAom and the phenomenal Elysia js that is powering our server driven UI. Incredible work."
                     href="https://x.com/shlomiatar/status/1822381556142362734"
                 />
                 <Tweet
                     id="htmx_org"
                     user="htmx.org"
-                    image="/tweets/htmx.jpg"
+                    image="/tweets/htmx.webp"
                     content="htmx works great w/ @bunjavascript, @elysiaJS and @tursodatabase btw"
                     href="https://x.com/htmx_org/status/1792949584769224897"
                 />
                 <Tweet
                     id="MarcLaventure"
                     user="Marc Laventure"
-                    image="/tweets/marc.jpg"
+                    image="/tweets/marc.webp"
                     content="both engineering+monetary contributions are paramount for OSS
 
 we proudly sponsor dozens of projects: @elysiaJS @LitestarAPI @honojs @daveshanley @kevin_jahns @MarijnJH & help maintain repos+contribute to OSS at blistering cadence.
@@ -47,28 +47,28 @@ it's @scalar's ethos to be a catalyst for OSS"
                 <Tweet
                     id="jarredsumner"
                     user="Jarred Sumner"
-                    image="/tweets/jarred.jpg"
+                    image="/tweets/jarred.webp"
                     content="You can use Express with Bun, but often we see people using Elysia, Hono, or Bun.serve() directly."
                     href="https://x.com/jarredsumner/status/1781132294692233609"
                 />
                 <Tweet
                     id="runyasak"
                     user="Runyasak Ch. 💚"
-                    image="/tweets/runyasak.jpg"
+                    image="/tweets/runyasak.webp"
                     content="Was introduced to @elysiaJS today and it looks pretty solid. end-to-end type safety/guard/swapper are killer features of the modern web! (and it's fast)"
                     href="https://x.com/runyasak/status/1797618641648968117"
                 />
                 <Tweet
                     id="hd_nvim"
                     user="Herrington Darkholme"
-                    image="/tweets/herrington.jpg"
+                    image="/tweets/herrington.webp"
                     content="Just in time for Bun 1.0 - Lucia 2.5 now supports @elysiajs out of the box!! You can also use Bun.serve() directly as well. This release also comes with 2 new OAuth providers, Strava and AWS Cognito!"
                     href="https://x.com/hd_nvim/status/1735182378036027650"
                 />
                 <Tweet
                     id="scalar"
                     user="scalar.com"
-                    image="/tweets/scalar.jpg"
+                    image="/tweets/scalar.webp"
                     content="so excited to be part of the amazing @elysiaJS community!"
                     href="https://x.com/scalar/status/1744024831014920403"
                 />
@@ -77,7 +77,7 @@ it's @scalar's ethos to be a catalyst for OSS"
                 <Tweet
                     id="josedonato__"
                     user="José Donato 🦋"
-                    image="/tweets/josedonato.jpg"
+                    image="/tweets/josedonato.webp"
                     content="handling tables with ~350k rows like it's nothing.
 
 Working on allowing @ag_grid server side row model when connecting a custom backend to @openbb_finance Terminal Pro.
@@ -88,14 +88,14 @@ Backend in @elysiaJS + @bunjsproject."
                 <Tweet
                     id="pilcrow"
                     user="pilcrowonpaper"
-                    image="/tweets/pilcrow.jpg"
+                    image="/tweets/pilcrow.webp"
                     content="Just in time for Bun 1.0 - Lucia 2.5 now supports @elysiajs out of the box!! You can also use Bun.serve() directly as well. This release also comes with 2 new OAuth providers, Strava and AWS Cognito!"
                     href="https://x.com/pilcrowonpaper/status/1699766618665181308"
                 />
                 <Tweet
                     id="MikroORM"
                     user="MikroORM"
-                    image="/tweets/mikroorm.jpg"
+                    image="/tweets/mikroorm.webp"
                     content="I've been playing a bit with @bunjavascript and @elysiaJS, need to do a few more tweaks before the release, but next version should work more natively with bun when it comes to TS support detection, e.g. the CLI works without ts-node installed."
                     href="https://x.com/MikroORM/status/1821993062114967711"
                 />
