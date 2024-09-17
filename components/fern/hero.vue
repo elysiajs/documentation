@@ -109,7 +109,7 @@
             <div class="relative flex flex-1 gap-3 text-pink-500">
                 <button
                     @click="handleCopy"
-                    class="text-pink-500 font-mono font-medium text-lg bg-pink-200/25 dark:bg-pink-500/20 px-6 py-2.5 rounded-full"
+                    class="text-pink-500 font-mono w-80 font-medium text-lg bg-pink-200/25 dark:bg-pink-500/20 py-2.5 rounded-full"
                 >
                     {{ buttonText }}
                 </button>
