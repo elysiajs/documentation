@@ -107,44 +107,12 @@
                 Get Started
             </a>
             <div class="relative flex flex-1 gap-3 text-pink-500">
-                <code
+                <button
+                    @click="handleCopy"
                     class="text-pink-500 font-mono font-medium text-lg bg-pink-200/25 dark:bg-pink-500/20 px-6 py-2.5 rounded-full"
                 >
-                    bun create elysia app
-                </code>
-                <button
-                	id="hero-copy"
-                    class="hidden sm:inline-flex p-3 rounded-2xl active:rounded-full hover:bg-pink-200/25 focus:bg-pink-200/25 active:bg-pink-200/50 hover:dark:bg-pink-500/20 focus:dark:bg-pink-500/20 active:dark:bg-pink-500/20 transition-all"
-                    @click="copied = true"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-copy"
-                    >
-                        <rect
-                            x="9"
-                            y="9"
-                            width="13"
-                            height="13"
-                            rx="2"
-                            ry="2"
-                        />
-                        <path
-                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-                        />
-                    </svg>
+                    {{ buttonText }}
                 </button>
-                <p v-if="copied" className="absolute -bottom-8 right-0">
-                    Copied
-                </p>
             </div>
         </section>
         <p class="flex justify-center items-center gap-2 text-gray-400">
@@ -169,21 +137,29 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
-
-import Ray from './ray.vue'
+import { ref, watch } from 'vue'
 
 const copied = ref(false)
+const buttonText = ref('$ bun create elysia app')
+
 watch(copied, (value) => {
-    // [INFO] navigator.clipboard available only in secure contexts.
     if (value && window.isSecureContext) {
         navigator.clipboard.writeText('bun create elysia app')
 
+        // Reset copied state and button text after 2 seconds
         setTimeout(() => {
             copied.value = false
+            buttonText.value = '$ bun create elysia app'
         }, 2000)
     }
 })
+
+const handleCopy = () => {
+    if (!copied.value) {
+        copied.value = true
+        buttonText.value = 'Copied to Clipboard!'
+    }
+}
 </script>
 
 <style>
@@ -209,8 +185,9 @@ watch(copied, (value) => {
     );
 }
 
-#hero-get-started, #hero-copy {
-	@apply transform hover:scale-110 focus:scale-110;
-	transition: transform .35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+#hero-get-started,
+#hero-copy {
+    @apply transform hover:scale-110 focus:scale-110;
+    transition: transform 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 </style>
