@@ -55,7 +55,11 @@ it's @scalar's ethos to be a catalyst for OSS"
                     id="runyasak"
                     user="Runyasak Ch. 💚"
                     image="/tweets/runyasak.webp"
-                    content="Was introduced to @elysiaJS today and it looks pretty solid. end-to-end type safety/guard/swapper are killer features of the modern web! (and it's fast)"
+                    content="Started using @elysiaJS to create a Discord Bot and found the type system beautifully easy. DX is fantastic and coding is fun!
+
+Use @DrizzleORM with PostgreSQL. So much easier than I've used before.
+
+ElysiaJS has proved to me that great performance and DX can live together. 😎"
                     href="https://x.com/runyasak/status/1797618641648968117"
                 />
                 <Tweet

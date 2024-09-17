@@ -3,7 +3,7 @@
         <div class="body">
             <header class="flex flex-col flex-1 text-xl gap-6">
                 <div class="flex flex-col gap-3 mb-2">
-                    <h3 class="text-2xl font-medium text-700">Our Princicle</h3>
+                    <h3 class="text-2xl font-medium text-700">Our Principle</h3>
                     <h2
                         class="text-6xl font-semibold text-gradient from-sky-500 to-violet-500 leading-[4.25rem]"
                     >
