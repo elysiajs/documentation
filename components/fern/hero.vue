@@ -87,7 +87,7 @@
             </span>
         </h2>
         <h3
-            class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left md:text-center w-full max-w-[40rem]"
+            class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left md:text-center w-full max-w-[40.5rem]"
         >
             TypeScript with
             <span
