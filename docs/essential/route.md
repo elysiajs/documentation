@@ -540,8 +540,9 @@ import { Elysia } from 'elysia'
 new Elysia()
     .get('/', 'hi')
     .onError(({ code }) => {
-        if (code === 'NOT_FOUND')
+        if (code === 'NOT_FOUND') {
             return 'Route not found :('
+        }
     })
     .listen(3000)
 ```
