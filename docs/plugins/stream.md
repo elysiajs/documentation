@@ -17,7 +17,7 @@ head:
 # Stream Plugin
 
 ::: warning
-This plugin is in maintenance mode and will not receive new features. We recommend using the [Generator Stream instead](/patterns/stream)
+This plugin is in maintenance mode and will not receive new features. We recommend using the [Generator Stream instead](/essential/handler#stream)
 :::
 
 This plugin adds support for streaming response or sending Server-Sent Event back to the client.
