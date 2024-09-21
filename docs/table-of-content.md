@@ -36,7 +36,7 @@ There's no correct way to learn Elysia, but we recommended **completing the esse
         Intercept events and customize behaviors
     </Card>
     <Card title="Plugin and Scope" href="/essential/plugin">
-        Understand how to separate Elysia, and handle scope
+        Understand how to separate Elysia, and scope
     </Card>
     <Card title="Eden" href="/eden/overview">
         End-to-end type safety client for Elysia

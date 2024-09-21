@@ -29,32 +29,32 @@ Elysia's Life Cycle event can be illustrated as the following.
 Below are the request life cycle available in Elysia:
 
 <Deck>
-    <Card title="Request" href="request">
+    <Card title="Request" href="#request">
         Notify new event is received
     </Card>
-    <Card title="Parse" href="parse">
+    <Card title="Parse" href="#parse">
         Parse body into <b>Context.body</b>
     </Card>
-    <Card title="Transform" href="transform">
+    <Card title="Transform" href="#transform">
         Modify <b>Context</b> before validation
     </Card>
-    <Card title="Before Handle" href="before-handle">
+    <Card title="Before Handle" href="#before-handle">
         Custom validation before route handler
     </Card>
-    <Card title="After Handle" href="after-handle">
+    <Card title="After Handle" href="#after-handle">
         Transform returned value into a new value
     </Card>
-    <Card title="Map Response" href="map-response">
+    <Card title="Map Response" href="#map-response">
         Map returned value into a response
     </Card>
-    <Card title="On Error" href="on-error">
+    <Card title="On Error" href="#on-error">
         Capture error when thrown
     </Card>
-    <Card title="On Response" href="on-response">
+    <Card title="On Response" href="#on-response">
         Executed after response sent to the client
     </Card>
-    <Card title="Trace" href="trace">
         Audit and capture timespan of each event
+    <Card title="Trace" href="/patterns/trace">
     </Card>
 </Deck>
 
