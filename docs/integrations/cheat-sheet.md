@@ -266,7 +266,7 @@ new Elysia()
 ## OpenAPI documentation
 Create interactive documentation using Scalar (or optionally Swagger)
 
-See [Documentation](/patterns/documentation)
+See [Documentation](/patterns/openapi)
 
 ```typescript
 import { Elysia } from 'elysia'
