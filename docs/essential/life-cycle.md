@@ -53,8 +53,8 @@ Below are the request life cycle available in Elysia:
     <Card title="On Response" href="#on-response">
         Executed after response sent to the client
     </Card>
-        Audit and capture timespan of each event
     <Card title="Trace" href="/patterns/trace">
+        Audit and capture timespan of each event
     </Card>
 </Deck>
 
