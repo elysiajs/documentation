@@ -59,7 +59,7 @@ new Elysia()
 ```
 
 ## Return JSON
-Elysia convert JSON to response automatically
+Elysia converts response to JSON automatically
 
 See [Handler](/essential/handler.html)
 
@@ -78,7 +78,7 @@ new Elysia()
 ## Return a file
 A file can be return in as formdata response
 
-The response must 1-level deep object
+The response must be a 1-level deep object
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -264,7 +264,7 @@ new Elysia()
 ```
 
 ## OpenAPI documentation
-Create a interactive documentation using Scalar (or optionally Swagger)
+Create interactive documentation using Scalar (or optionally Swagger)
 
 See [Documentation](/patterns/documentation)
 
@@ -303,7 +303,7 @@ describe('Elysia', () => {
 ```
 
 ## Custom body parser
-Create a custom logic for parsing body
+Create custom logic for parsing body
 
 See [Parse](/life-cycle/parse.html)
 
