@@ -204,7 +204,7 @@ CMD ["./server"]
 EXPOSE 3000
 ```
 
-## Railyway
+## Railway
 [Railway](https://railway.app) is one of the popular deployment platform.
 
 Railway assign **random port** to expose for each deployment that can be access via `PORT` environment variable.
