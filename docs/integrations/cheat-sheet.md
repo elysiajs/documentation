@@ -197,7 +197,7 @@ new Elysia()
 ## Customize context
 Add custom variable to route context
 
-See [Context](/essential/context.html)
+See [Context](/essential/handler.html#context)
 
 ```typescript
 import { Elysia } from 'elysia'
