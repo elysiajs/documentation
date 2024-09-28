@@ -177,7 +177,7 @@ new Elysia()
 ## Guard
 Enforce a data type of sub routes
 
-See [Scope](/essential/scope.html#guard)
+See [Scope](/essential/validation.html#guard)
 
 ```typescript twoslash
 // @errors: 2345
