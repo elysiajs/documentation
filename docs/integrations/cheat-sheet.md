@@ -132,7 +132,7 @@ new Elysia()
 ## Schema
 Enforce a data type of a route
 
-See [Schema](/essential/schema.html)
+See [Validation](/essential/validation)
 
 ```typescript
 import { Elysia, t } from 'elysia'
