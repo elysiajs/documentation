@@ -58,12 +58,13 @@
                     </h3>
                 </div>
                 <p class="lg:max-w-md leading-normal">
-                    Elysia provide a type-safe layer for interact and test your
-                    server from routes to parameters.
+                    Elysia provides a type-safe layer for interacting with and
+                    testing your server, covering everything from routes to
+                    parameters.
                 </p>
                 <p class="lg:max-w-md leading-normal">
-                    With auto-completion, you can easily write tests for server
-                    without any hassle.
+                    Auto-completion simplifies server testing, making it quick
+                    and effortless.
                 </p>
                 <!-- <slot name="test-script" /> -->
             </header>
