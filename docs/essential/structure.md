@@ -41,7 +41,7 @@ new Elysia()
 
 In the code above **state** returns a new **ElysiaInstance** type, adding a `build` type.
 
-## ❌ Don't: Use without method chaining
+### ❌ Don't: Use without method chaining
 Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
 
 ```typescript twoslash
