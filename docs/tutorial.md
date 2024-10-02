@@ -151,7 +151,7 @@ We can see the result by clicking the black **Send** button.
 
 ## Decorate
 
-However, for more complex data we may want to use class for comlex data as it's allow us to define custom methods and properties.
+However, for more complex data we may want to use class for complex data as it's allow us to define custom methods and properties.
 
 Now, let's create a singleton class to store our notes.
 
