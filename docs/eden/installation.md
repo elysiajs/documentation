@@ -146,3 +146,6 @@ app.listen(3000)
 ```
 
 We recommend to **always use method chaining** to provide an accurate type inference.
+
+### Bun
+If using bun, ensure that you have installed `@types/bun`.
