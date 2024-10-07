@@ -66,7 +66,7 @@ Path prefix to register public files
 
 List of files to ignore from serving as static files
 
-### staticLimits
+### staticLimit
 @default `1024`
 
 By default, the static plugin will register paths to the Router with a static name, if the limits are exceeded, paths will be lazily added to the Router to reduce memory usage.
