@@ -78,7 +78,7 @@ To register the TypeScript type, please append the following to **tsconfig.json*
 }
 ```
 
-That's it, now you can JSX as your template engine:
+That's it, now you can use JSX as your template engine:
 ```tsx
 import { Elysia } from 'elysia'
 import { html, Html } from '@elysiajs/html' // [!code ++]
