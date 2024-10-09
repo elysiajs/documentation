@@ -105,7 +105,7 @@ new Elysia()
     .get('/', ({ set, error }) => {
         set.headers['x-powered-by'] = 'Elysia'
 
-        return error(418, "I'm teapod")
+        return error(418, "I'm a teapot")
     })
     .listen(3000)
 ```
