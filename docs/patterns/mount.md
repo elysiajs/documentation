@@ -54,7 +54,7 @@ This allows you to execute all the aforementioned code in a single server enviro
 If the framework also supports a **.mount** function, you can deeply nest a framework that supports it.
 ```ts
 import { Elysia } from 'elysia'
-import Hono from 'hono'
+import { Hono } from 'hono'
 
 const elysia = new Elysia()
     .get('/Hello from Elysia inside Hono inside Elysia')
