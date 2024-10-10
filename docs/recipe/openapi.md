@@ -52,7 +52,10 @@ new Elysia()
         body: t.Object(
             {
                 username: t.String(),
-                password: t.String()
+                password: t.String({
+                	minLength: 8,
+                	description: 'User password (at least 8 characters)' // [!code ++]
+                })
             },
             { // [!code ++]
                 description: 'Expected an username and password' // [!code ++]

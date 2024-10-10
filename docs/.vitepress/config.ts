@@ -170,17 +170,9 @@ export default defineConfig({
                         text: 'Configuration',
                         link: '/patterns/configuration'
                     },
-					{
-						text: 'Deployment',
-						link: '/patterns/deployment'
-					},
                     {
                         text: 'Cookie',
                         link: '/patterns/cookie'
-                    },
-                    {
-                        text: 'OpenAPI',
-                        link: '/patterns/openapi'
                     },
                     {
                         text: 'Web Socket',
@@ -198,6 +190,28 @@ export default defineConfig({
                         text: 'Trace',
                         link: '/patterns/trace'
                     }
+                ]
+            },
+            {
+                text: 'Recipe',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'OpenAPI',
+                        link: '/recipe/openapi'
+                    },
+                    {
+                        text: 'Opentelemetry',
+                        link: '/recipe/opentelemetry'
+                    },
+                    {
+                        text: 'Drizzle',
+                        link: '/recipe/drizzle'
+                    },
+                    {
+                        text: 'React Email',
+                        link: '/recipe/react-email'
+                    },
                 ]
             },
             {
@@ -333,14 +347,6 @@ export default defineConfig({
                     {
                         text: 'SvelteKit',
                         link: '/integrations/sveltekit'
-                    },
-                    {
-                        text: 'Drizzle',
-                        link: '/integrations/drizzle'
-                    },
-                    {
-                        text: 'Cheat Sheet',
-                        link: '/integrations/cheat-sheet'
                     }
                 ]
             }

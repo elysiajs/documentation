@@ -60,7 +60,7 @@ For example, if you place Elysia server in **app/api/[...slugs]+api.ts**, you ne
 // app/api/[...slugs]+api.ts
 import { Elysia, t } from 'elysia'
 
-const app = new Elysia({ prefix: '/api' }) // ![code ++]
+const app = new Elysia({ prefix: '/api' })
     .get('/', () => 'hi')
     .post('/', ({ body }) => body, {
         body: t.Object({

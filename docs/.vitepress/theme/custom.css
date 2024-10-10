@@ -113,18 +113,22 @@ button.copy::after {
 }
 
 #VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/eden.svg);
+    background-image: url(/assets/book.svg);
 }
 
 #VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/plugin.svg);
+    background-image: url(/assets/eden.svg);
 }
 
 #VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+    background-image: url(/assets/plugin.svg);
+}
+
+#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/integration.svg);
 }
 
-.dark #VPSidebarNav > .group:nth-child(-n + 7):not(:first-child) > .VPSidebarItem > .item > .text::before {
+.dark #VPSidebarNav > .group:nth-child(-n + 8):not(:first-child) > .VPSidebarItem > .item > .text::before {
     filter: invert(1);
 }
 
