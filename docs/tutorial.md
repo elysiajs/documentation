@@ -1333,7 +1333,7 @@ export const user = new Elysia({ prefix: '/user' })
     // ---cut---
     .get(
         '/profile',
-        ({ cookie: { token }, store: { user, session }, error }) => {
+        ({ cookie: { token }, store: { session }, error }) => {
             const username = session[token.value]
 
             if (!username) // [!code --]
