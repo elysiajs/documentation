@@ -46,7 +46,7 @@
         <p
             class="sm:text-center text-gradient from-pink-400 to-fuchsia-400 font-semibold text-base"
         >
-            Thanks you for making Elysia possible
+            Thank you for making Elysia possible
         </p>
         <ul id="sponsors-fern" v-if="sponsors.length > 0" class="my-4">
             <li v-for="sponsor in sponsors" :key="sponsor.sponsorEntity.login">
