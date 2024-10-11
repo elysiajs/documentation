@@ -24,7 +24,7 @@ We expected it to take around 15-20 minutes if you follow along.
 
 ## Setup
 
-Elysia is built on [Bun](https://bun.sh), an alterantive runtime to Node.js.
+Elysia is built on [Bun](https://bun.sh), an alternative runtime to Node.js.
 
 Install Bun if you haven't already.
 
@@ -762,7 +762,7 @@ This allow us to log the request before it is processed, and we can see the requ
 
 By default, **lifecycle hook is encapsulated**. Hook is applied to routes in the same instance, and is not applied to other plugins (routes that not defined in the same plugin).
 
-This means `onTransform` log will not be called on other instance, unless we explcity defined as `scoped` or `global`.
+This means `onTransform` log will not be called on other instance, unless we explicitly defined as `scoped` or `global`.
 
 ## Authentication
 
@@ -857,7 +857,7 @@ Now there are a lot to unwrap here:
 	- 4.4 We append `secret` to cookie to add hash attacker from tampering with the cookie
 
 ::: tip
-As we are using an in-memory store, the data are wipe out every reload or everytime we edit the code.
+As we are using an in-memory store, the data are wipe out every reload or every time we edit the code.
 
 We will fix that in the later part of the tutorial.
 :::
@@ -1080,7 +1080,7 @@ export const user = new Elysia({ prefix: '/user' })
     ) // [!code ++]
     .get( // [!code ++]
         '/profile', // [!code ++]
-        ({ cookie: { token }, store: { user, session }, error }) => { // [!code ++]
+        ({ cookie: { token }, store: { session }, error }) => { // [!code ++]
             const username = session[token.value] // [!code ++]
  // [!code ++]
             if (!username) // [!code ++]
@@ -1200,7 +1200,7 @@ export const userService = new Elysia({ name: 'user/service' })
         optionalSession: t.Optional(model.session)
     }))
     .macro(({ onBeforeHandle }) => ({ // [!code ++]
-        isSignIn(enabled: true) { // [!code ++]
+        isSignIn(enabled: boolean) { // [!code ++]
             if (!enabled) return // [!code ++]
 
             onBeforeHandle( // [!code ++]
@@ -1254,7 +1254,7 @@ export const userService = new Elysia({ name: 'user/service' })
         optionalSession: t.Optional(model.session)
     }))
     .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
             onBeforeHandle(
@@ -1432,7 +1432,7 @@ In this instance, we define a new property `username` by using `resolve`, allowi
 We don't define a name in this `getUserId` instance because we want `guard` and `resolve` to reapply into multiple instance.
 
 ::: tip
-Same as macro, resolve plays well if the logic for getting the property is complex and might not worth for a small operation like this. But since in the real-world we are going to need database-connection, caching, and queing might make it fits the narrative.
+Same as macro, resolve plays well if the logic for getting the property is complex and might not worth for a small operation like this. But since in the real-world we are going to need database-connection, caching, and queuing might make it fits the narrative.
 :::
 
 ## Scope
@@ -1665,7 +1665,7 @@ export const user = new Elysia({ prefix: '/user' })
     }))
 ```
 
-Both acheive the same effect, the only difference is single or multiple cast.
+Both achieve the same effect, the only difference is single or multiple cast.
 
 ::: tip
 Encapsulation happens in both runtime, and type-level. This allows us to catch the error ahead of time.
