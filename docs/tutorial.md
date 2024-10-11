@@ -1821,11 +1821,6 @@ import { user } from './user' // [!code ++]
 
 const app = new Elysia()
     .use(swagger())
-    .onError(({ error, code }) => {
-        if (code === 'NOT_FOUND') return
-
-        console.error(error)
-    })
     .use(user) // [!code ++]
     .use(note)
     .listen(3000)
