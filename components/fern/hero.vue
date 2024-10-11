@@ -89,11 +89,11 @@
         <h3
             class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left md:text-center w-full max-w-2xl"
         >
-            TypeScript with
+            A TypeScript framework with
             <span
                 class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"
                 >End-to-End Type Safety</span
-            >, type integrity, and exceptional developer experience.
+            >, type integrity, and exceptional developer experience.<br />
             Supercharged by Bun.
         </h3>
         <section
@@ -113,7 +113,7 @@
                     bun create elysia app
                 </code>
                 <button
-                	id="hero-copy"
+                    id="hero-copy"
                     class="hidden sm:inline-flex p-3 rounded-2xl active:rounded-full hover:bg-pink-200/25 focus:bg-pink-200/25 active:bg-pink-200/50 hover:dark:bg-pink-500/20 focus:dark:bg-pink-500/20 active:dark:bg-pink-500/20 transition-all"
                     @click="copied = true"
                 >
@@ -169,7 +169,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import Ray from './ray.vue'
 
@@ -209,8 +209,9 @@ watch(copied, (value) => {
     );
 }
 
-#hero-get-started, #hero-copy {
-	@apply transform hover:scale-110 focus:scale-110;
-	transition: transform .35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+#hero-get-started,
+#hero-copy {
+    @apply transform hover:scale-110 focus:scale-110;
+    transition: transform 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 </style>
