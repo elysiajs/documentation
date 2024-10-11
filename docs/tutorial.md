@@ -2802,7 +2802,7 @@ export const userService = new Elysia({ name: 'user/service' })
         optionalSession: t.Optional(model.session)
     }))
     .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
             onBeforeHandle(
@@ -2938,7 +2938,7 @@ export const userService = new Elysia({ name: 'user/service' })
         optionalSession: t.Optional(model.session)
     }))
     .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
             onBeforeHandle(
