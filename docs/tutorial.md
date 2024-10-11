@@ -1071,7 +1071,7 @@ export const user = new Elysia({ prefix: '/user' })
  // [!code ++]
             return { // [!code ++]
                 success: true, // [!code ++]
-                messaage: 'Signed out' // [!code ++]
+                message: 'Signed out' // [!code ++]
             } // [!code ++]
         }, // [!code ++]
         { // [!code ++]
@@ -1761,7 +1761,7 @@ export const user = new Elysia({ prefix: '/user' })
 
             return {
                 success: true,
-                messaage: 'Signed out'
+                message: 'Signed out'
             }
         },
         {
@@ -2652,7 +2652,7 @@ export const user = new Elysia({ prefix: '/user' })
 
             return {
                 success: true,
-                messaage: 'Signed out'
+                message: 'Signed out'
             }
         },
         {
@@ -2901,7 +2901,7 @@ export const user = new Elysia({ prefix: '/user' })
 
             return {
                 success: true,
-                messaage: 'Signed out'
+                message: 'Signed out'
             }
         },
         {
