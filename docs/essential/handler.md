@@ -377,7 +377,7 @@ new Elysia()
 
 ## Handle
 
-As Elysia is built on top of Web Syandard Request, we can programmatically test it using `Elysia.handle`.
+As Elysia is built on top of Web Standard Request, we can programmatically test it using `Elysia.handle`.
 
 ```typescript
 import { Elysia } from 'elysia'
