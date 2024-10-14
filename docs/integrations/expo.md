@@ -7,18 +7,18 @@ head:
 
     - - meta
       - name: 'description'
-        content: With Expo App Router, you can run Elysia on Expo route. Elysia will work normally as expected thank to WinterCG compliance.
+        content: With Expo App Router, you can run Elysia on Expo route. Elysia will work normally as expected thanks to WinterCG compliance.
 
     - - meta
       - property: 'og:description'
-        content: With Expo App Router, you can run Elysia on Expo route. Elysia will work normally as expected thank to WinterCG compliance.
+        content: With Expo App Router, you can run Elysia on Expo route. Elysia will work normally as expected thanks to WinterCG compliance.
 ---
 
 # Integration with Expo
 
 Starting from Expo SDK 50, and App Router v3, Expo allows us to create API route directly in an Expo app.
 
-1. Create an Expo app if not exists with:
+1. Create an Expo app if it doesn't exist with:
 ```typescript
 bun create expo-app --template tabs
 ```
@@ -47,7 +47,7 @@ Elysia will work normally as expected because of WinterCG compliance, however, s
 
 You can treat the Elysia server as if normal Expo API route.
 
-With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
+With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action.
 
 Please refer to [API route](https://docs.expo.dev/router/reference/api-routes/) for more information.
 
@@ -72,7 +72,7 @@ export const GET = app.handle
 export const POST = app.handle
 ```
 
-This will ensure that Elysia routing will works properly in any location you place in.
+This will ensure that Elysia routing will work properly in any location you place in.
 
 ## Deployment
 You can either directly use API route using Elysia and deploy as normal Elysia app normally if need or using [experimental Expo server runtime](https://docs.expo.dev/router/reference/api-routes/#deployment).
@@ -80,7 +80,7 @@ You can either directly use API route using Elysia and deploy as normal Elysia a
 If you are using Expo server runtime, you may use `expo export` command to create optimized build for your expo app, this will include an Expo function which is using Elysia at **dist/server/_expo/functions/[...slugs\]+api.js**
 
 ::: tip
-Please note that Expo Function are treated as Edge function instead of normal server, so running the Edge function directly will not allocate any port.
+Please note that Expo Functions are treated as Edge functions instead of normal server, so running the Edge function directly will not allocate any port.
 :::
 
 You may use the Expo function adapter provided by Expo to deploy your Edge Function.
