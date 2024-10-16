@@ -207,7 +207,7 @@ It's recommend to use `error` inside main handler as it has better inference:
 
 - allows TypeScript to check if a return value is correctly type to response schema
 - autocompletion for type narrowing base on status code
-- type narrowing for error handling using End-to-end type safety ([Eden](/overview/eden))
+- type narrowing for error handling using End-to-end type safety ([Eden](/eden/overview))
 
 ### set.status
 Set a default status code if not provided.
