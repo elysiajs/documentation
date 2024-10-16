@@ -75,7 +75,7 @@ Tradeoff memory with performance.
 ### alwaysStatic
 @default `false`
 
-If set to true, static files will path will be registered to Router skipping the `staticLimits`.
+If set to true, static files path will be registered to Router skipping the `staticLimits`.
 
 ### headers
 @default `{}`
