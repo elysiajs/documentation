@@ -146,3 +146,26 @@ app.listen(3000)
 ```
 
 We recommend to **always use method chaining** to provide an accurate type inference.
+
+### Path aliases
+
+Eden depends on Elysia type inferences to generate the client. As of right now, Elysia type inference doesn't work with path aliases.
+We recomend using relative imports
+```typescript twoslash
+import { Elysia } from 'elysia'
+import authRoutes from "./routes/auth"
+
+const app = new Elysia()
+  .use(authRoutes)
+  app.listen(3000)
+```
+instead of path aliases
+```typescript twoslash
+import { Elysia } from 'elysia'
+import authRoutes from "@/src/routes/auth"
+
+const app = new Elysia()
+  .use(authRoutes)
+  app.listen(3000)
+```
+for the moment.
