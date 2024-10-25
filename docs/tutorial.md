@@ -3121,13 +3121,13 @@ And- that's it 🎉
 
 We have created a simple API using Elysia, we have learned how to create a simple API, how to handle errors, and how to observe our server using OpenTelemetry.
 
-You could to take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
+You could to take a step further by trying to connect to a real database, connect to a real frontend, or implement real-time communication with WebSockets.
 
-This Tutorial cover most of the concept we need to know to create Elysia server, however there are some several useful concepts you might want to know.
+This tutorial covers most of the concepts we need to know to create an Elysia server, however there are several useful concepts you might want to know.
 
 ### If you are stuck
 
-Feels free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further question.
+Feel free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further questions.
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
@@ -3141,4 +3141,4 @@ Feels free to ask our community on GitHub Discussions, Discord, and Twitter, if 
     </Card>
 </Deck>
 
-We wish you happy on your journey with Elysia ❤️
+We wish you happiness on your journey with Elysia ❤️
