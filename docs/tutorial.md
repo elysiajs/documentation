@@ -1432,11 +1432,11 @@ In this instance, we define a new property `username` by using `resolve`, allowi
 We don't define a name in this `getUserId` instance because we want `guard` and `resolve` to reapply into multiple instance.
 
 ::: tip
-Same as macro, resolve plays well if the logic for getting the property is complex and might not worth for a small operation like this. But since in the real-world we are going to need database-connection, caching, and queuing might make it fits the narrative.
+Same as macro, resolve plays well if the logic for getting the property is complex and might not worth for a small operation like this. But since in the real-world we are going to need database-connection, caching, and queuing might make it fit the narrative.
 :::
 
 ## Scope
-Now if we try to apply the use the `getUserId`, we might notice that the property `username` and `guard` isn't applied.
+Now if we try to apply the `getUserId`, we might notice that the property `username` and `guard` isn't applied.
 ```ts twoslash [user.ts]
 // @errors: 2339
 import { Elysia, t } from 'elysia'
