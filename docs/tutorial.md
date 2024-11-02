@@ -242,7 +242,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-We import **t** from Elysia to and define a schema for the path parameter.
+We import **t** from Elysia to define a schema for the path parameter.
 
 Now, if we try to access **http://localhost:3000/note/abc**, we should see an error message.
 
@@ -849,8 +849,8 @@ Now there are a lot to unwrap here:
 2. In the instance, we define an in-memory store `user` and `session`
 	- 2.1 `user` will hold key-value of `username` and `password`
 	- 2.2 `session` will hold a key-value of `session` and `username`
-3. In `/sign-in` we insert a username and hashed password with argon2id
-4. In `/sign-up` we does the following:
+3. In `/sign-up` we insert a username and hashed password with argon2id
+4. In `/sign-in` we does the following:
 	- 4.1 We check if user exists and verify the password
 	- 4.2 If the password matches, then we generate a new session into `session`
 	- 4.3 We set cookie `token` with the value of session
