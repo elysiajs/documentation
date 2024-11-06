@@ -122,6 +122,7 @@
                     >
                     to stream a response
                 </p>
+                <p>All we need to do is return</p>
             </article>
             <article>
                 <h4>
