@@ -41,16 +41,15 @@
                 <h4 class="text-blue-400">Dynamic type safety</h4>
                 <p>Built from type to runtime</p>
                 <p>
-                    Elysia learn from your codebase, adapt, enforce with your
-                    type
+                    Elysia learns from your codebase, adapts, and enforces your
+                    types
                 </p>
             </section>
             <section>
                 <h3>Productive in a reach</h3>
                 <h4 class="text-teal-400">The best experience of today</h4>
                 <p>
-                    Ergonomically designed for human, putting DX at the
-                    priority. No technical non-sense
+                    Ergonomically designed for humans, prioritizing DX. No technical nonsense
                 </p>
             </section>
         </div>

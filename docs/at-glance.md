@@ -34,7 +34,7 @@ const demo2 = new Elysia()
 # At glance
 Elysia is an ergonomic web framework for building backend servers with Bun.
 
-Designed with simplicity and type safety in mind with familiar API with extensive support for TypeScript, optimized for Bun.
+Designed with simplicity and type-safety in mind, Elysia has a familiar API with extensive support for TypeScript, optimized for Bun.
 
 Here's a simple hello world in Elysia.
 
@@ -70,16 +70,16 @@ Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello E
 ::: tip
 Hover over the code snippet to see the type definition.
 
-In the mock browser, click on path highlight in blue to change path to preview a response and
+In the mock browser, click on the path highlighted in blue to change paths and preview the response.
 
-Elysia can run on browser and the results you see are actually ran using Elysia.
+Elysia can run in the browser, and the results you see are actually run using Elysia.
 :::
 
 ## Performance
 
 Building on Bun and extensive optimization like Static Code Analysis allows Elysia to generate optimized code on the fly.
 
-Elysia can outperform most of the web frameworks available today<a href="#ref-1"><sup>[1]</sup></a>, and even match the performance of Golang and Rust framework<a href="#ref-2"><sup>[2]</sup></a>.
+Elysia can outperform most of the web frameworks available today<a href="#ref-1"><sup>[1]</sup></a>, and even match the performance of Golang and Rust frameworks<a href="#ref-2"><sup>[2]</sup></a>.
 
 | Framework     | Runtime | Average     | Plain Text | Dynamic Parameters | JSON Body  |
 | ------------- | ------- | ----------- | ---------- | ------------------ | ---------- |
@@ -99,7 +99,7 @@ Elysia can outperform most of the web frameworks available today<a href="#ref-1"
 
 Elysia is designed to help you write less TypeScript.
 
-Elysia's Type System is fine-tuned to infer your code into type automatically without needing to write explicit TypeScript while providing type-safety for both runtime and compile time to provide you with the most ergonomic developer experience.
+Elysia's Type System is fine-tuned to infer your code into types automatically, without needing to write explicit TypeScript, while providing type-safety at both runtime and compile time to provide you with the most ergonomic developer experience.
 
 Take a look at this example:
 
@@ -114,7 +114,7 @@ new Elysia()
 
 <br>
 
-The above code create a path parameter "id", the value that replaces `:id` will be passed to `params.id` both in runtime and type without manual type declaration.
+The above code creates a path parameter "id". The value that replaces `:id` will be passed to `params.id` both at runtime and in types without manual type declaration.
 
 <Playground
     :elysia="demo2"
@@ -128,13 +128,13 @@ The above code create a path parameter "id", the value that replaces `:id` will 
     }"
 />
 
-Elysia's goal is to help you write less TypeScript and focus more on Business logic. Let the complex types be handled by the framework.
+Elysia's goal is to help you write less TypeScript and focus more on business logic. Let the complex types be handled by the framework.
 
 TypeScript is not needed to use Elysia, but it's recommended to use Elysia with TypeScript.
 
 ## Type Integrity
 
-To take a step further, Elysia provide **Elysia.t**, a schema builder to validate type and value in both runtime and compile-time to create a single source of truth for your data-type.
+To take a step further, Elysia provides **Elysia.t**, a schema builder to validate types and values at both runtime and compile-time to create a single source of truth for your data-type.
 
 Let's modify the previous code to accept only a numeric value instead of a string.
 
@@ -151,19 +151,19 @@ new Elysia()
     .listen(3000)
 ```
 
-This code ensures that our path parameter **id**, will always be a numeric string and then transforms it into a number automatically in both runtime and compile-time (type-level).
+This code ensures that our path parameter **id** will always be a numeric string and then transforms it into a number automatically at both runtime and compile-time (type-level).
 
 ::: tip
 Hover over "id" in the above code snippet to see a type definition.
 :::
 
-With Elysia schema builder, we can ensure type safety like a strong-typed language with a single source of truth.
+With Elysia's schema builder, we can ensure type safety like a strongly-typed language with a single source of truth.
 
 ## Standard
 
 Elysia adopts many standards by default, like OpenAPI, and WinterCG compliance, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
 
-For instance, as Elysia adopts OpenAPI by default, generating a documentation with Swagger is as easy as adding a one-liner:
+For instance, because Elysia adopts OpenAPI by default, generating documentation with Swagger is as easy as adding a one-liner:
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -234,17 +234,17 @@ const { data } = await app.user({ id: 617 }).get()
 console.log(data)
 ```
 
-With Eden, you can use the existing Elysia types to query Elysia server **without code generation** and synchronize types for both frontend and backend automatically.
+With Eden, you can use the existing Elysia types to query an Elysia server **without code generation** and synchronize types for both frontend and backend automatically.
 
 Elysia is not only about helping you create a confident backend but for all that is beautiful in this world.
 
 ## Platform Agnostic
 
-Elysia was designed but was **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy the Elysia server on Cloudflare Worker, Vercel Edge Function, and most other runtimes that support Web Standard Request.
+Elysia was designed for Bun, but is  **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy Elysia servers on Cloudflare Workers, Vercel Edge Functions, and most other runtimes that support Web Standard Requests.
 
 ## Our Community
 
-If you have questions or get stuck about Elysia, feel free to ask our community on GitHub Discussions, Discord, and Twitter.
+If you have questions or get stuck regarding Elysia, feel free to ask our community on GitHub Discussions, Discord, and Twitter.
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
@@ -260,6 +260,6 @@ If you have questions or get stuck about Elysia, feel free to ask our community 
 
 ---
 
-<small id="ref-1">1. Measure in requests/second. The benchmark for parsing query, path parameter and set response header on Debian 11, Intel i7-13700K tested on Bun 0.7.2 on 6 Aug 2023. See the benchmark condition [here](https://github.com/SaltyAom/bun-http-framework-benchmark/tree/c7e26fe3f1bfee7ffbd721dbade10ad72a0a14ab#results).</small>
+<small id="ref-1">1. Measured in requests/second. The benchmark for parsing query, path parameter and set response header on Debian 11, Intel i7-13700K tested on Bun 0.7.2 on 6 Aug 2023. See the benchmark condition [here](https://github.com/SaltyAom/bun-http-framework-benchmark/tree/c7e26fe3f1bfee7ffbd721dbade10ad72a0a14ab#results).</small>
 
 <small id="ref-2">2. Based on [TechEmpower Benchmark round 22](https://www.techempower.com/benchmarks/#section=data-r22&hw=ph&test=composite).</small>

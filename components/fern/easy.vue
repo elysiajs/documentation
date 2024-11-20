@@ -7,7 +7,7 @@
                     <h2
                         class="text-6xl font-semibold text-gradient from-sky-500 to-violet-500 leading-[4.25rem]"
                     >
-                        Design for Human
+                        Design for Humans
                     </h2>
                 </div>
                 <p class="max-w-md leading-normal">
@@ -54,10 +54,10 @@
                         ></polyline>
                         <line x1="12" y1="22.08" x2="12" y2="12"></line>
                     </svg>
-                    Just Return
+                    Just return
                 </h4>
-                <p>A string, number or complex JSON</p>
-                <p>All we need to do is just return</p>
+                <p>A string, number, or complex JSON</p>
+                <p>All we need to do is return</p>
             </article>
             <article>
                 <h4>
@@ -84,10 +84,10 @@
                         <circle cx="8.5" cy="8.5" r="1.5"></circle>
                         <polyline points="21 15 16 10 5 21"></polyline>
                     </svg>
-                    File built-in
+                    File support built-in
                 </h4>
                 <p>To send a file or image, just return</p>
-                <p>Nothing more or nothing less</p>
+                <p>Nothing more or less</p>
             </article>
             <article>
                 <h4>
@@ -120,9 +120,9 @@
                     <span class="font-mono text-violet-500 font-bold"
                         >yield</span
                     >
-                    to stream response
+                    to stream a response
                 </p>
-                <p>All we need to do is just return</p>
+                <p>All we need to do is return</p>
             </article>
             <article>
                 <h4>
@@ -142,7 +142,7 @@
                             points="22 12 18 12 15 21 9 3 6 12 2 12"
                         ></polyline>
                     </svg>
-                    Data in realtime
+                    Data in real-time
                 </h4>
                 <p>With µWebSocket built-in</p>
                 <p>Send live data in just 3 lines</p>
