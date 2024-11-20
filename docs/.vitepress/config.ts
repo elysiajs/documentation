@@ -2,6 +2,8 @@ import { defineConfig } from 'vitepress'
 
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 
+import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
+
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
 
@@ -16,7 +18,11 @@ export default defineConfig({
             light: 'github-light',
             dark: 'github-dark'
         },
-        codeTransformers: [transformerTwoslash()]
+        codeTransformers: [transformerTwoslash({
+            typesCache: createFileSystemTypesCache({
+                dir: 'docs/.vitepress/cache/twoslash'
+            })
+        })]
     },
     // ![INFO] uncomment for support hot reload on WSL - https://github.com/vitejs/vite/issues/1153#issuecomment-785467271
     vite: {
