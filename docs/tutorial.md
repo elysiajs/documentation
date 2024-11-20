@@ -537,55 +537,52 @@ class Note {
 // ---cut---
 export const note = new Elysia({ prefix: '/note' }) // [!code ++]
     .decorate('note', new Note())
-    .group('/note', (app) =>
-        app // [!code ++]
-            .get('/', ({ note }) => note.data) // [!code ++]
-            .put('/', ({ note, body: { data } }) => note.add(data), {
-                body: t.Object({
-                    data: t.String()
-                })
+    .get('/', ({ note }) => note.data) // [!code ++]
+    .put('/', ({ note, body: { data } }) => note.add(data), {
+        body: t.Object({
+            data: t.String()
+        })
+    })
+    .get(
+        '/:index',
+        ({ note, params: { index }, error }) => {
+            return note.data[index] ?? error(404, 'Not Found :(')
+        },
+        {
+            params: t.Object({
+                index: t.Number()
             })
-            .get(
-                '/:index',
-                ({ note, params: { index }, error }) => {
-                    return note.data[index] ?? error(404, 'Not Found :(')
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    })
-                }
-            )
-            .delete(
-                '/:index',
-                ({ note, params: { index }, error }) => {
-                    if (index in note.data) return note.remove(index)
+        }
+    )
+    .delete(
+        '/:index',
+        ({ note, params: { index }, error }) => {
+            if (index in note.data) return note.remove(index)
 
-                    return error(422)
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    })
-                }
-            )
-            .patch(
-                '/:index',
-                ({ note, params: { index }, body: { data }, error }) => {
-                    if (index in note.data) return note.update(index, data)
+            return error(422)
+        },
+        {
+            params: t.Object({
+                index: t.Number()
+            })
+        }
+    )
+    .patch(
+        '/:index',
+        ({ note, params: { index }, body: { data }, error }) => {
+            if (index in note.data) return note.update(index, data)
 
-                    return error(422)
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    }),
-                    body: t.Object({
-                        data: t.String()
-                    })
-                }
-            )
-    ) // [!code ++]
+            return error(422)
+        },
+        {
+            params: t.Object({
+                index: t.Number()
+            }),
+            body: t.Object({
+                data: t.String()
+            })
+        }
+    )
 ```
 
 :::

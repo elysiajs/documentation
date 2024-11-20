@@ -19,6 +19,9 @@ Start by installing Eden on your frontend:
 ```bash
 bun add @elysiajs/eden
 bun add -d elysia
+
+# If you use Bun specific feature, eg. `Bun.file`
+bun add -d @types/bun
 ```
 
 ::: tip
@@ -145,4 +148,94 @@ app.get('/', ({ store: { build } }) => build)
 app.listen(3000)
 ```
 
-We recommend to **always use method chaining** to provide an accurate type inference.
+### Type Definitions
+Sometimes, if you are using a Bun specific feature like `Bun.file` or similar API, you may need to install Bun type definitions to the client as well.
+
+```bash
+bun add -d @types/bun
+```
+
+### Path alias (monorepo)
+If you are using path alias in your monorepo, make sure that frontend are able to resolve the path as same as backend.
+
+For example, if you have the following path alias for your backend in **tsconfig.json**:
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@/*": ["./src/*"]
+	}
+  }
+}
+```
+
+And your backend code is like this:
+```typescript
+import { Elysia } from 'elysia'
+import { a, b } from '@/controllers'
+
+const app = new Elysia()
+	.use(a)
+	.use(b)
+	.listen(3000)
+
+export type app = typeof app
+```
+
+You **must** make sure that your frontend code is able to resolve the same path alias otherwise type inference will be resolved as any.
+
+```typescript
+import { treaty } from '@elysiajs/eden'
+import type { app } from '@/index'
+
+const client = treaty<app>('localhost:3000')
+
+// This should be able to resolve the same module both frontend and backend, and not `any`
+import { a, b } from '@/controllers'
+```
+
+To fix this, you must make sure that path alias is resolved to the same file in both frontend and backend.
+
+So you must change the path alias in **tsconfig.json** to:
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@/*": ["../apps/backend/src/*"]
+	}
+  }
+}
+```
+
+If configured correctly, you should be able to resolve the same module in both frontend and backend.
+```typescript
+// This should be able to resolve the same module both frontend and backend, and not `any`
+import { a, b } from '@/controllers'
+```
+
+#### Scope
+We recommended to use add a **scope** prefix for each modules in your monorepo to avoid any confusion and conflict that may happen.
+
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@frontend/*": ["./apps/frontend/src/*"],
+	  "@backend/*": ["./apps/backend/src/*"]
+	}
+  }
+}
+```
+
+Then you can import the module like this:
+```typescript
+// Should work in both frontend and backend and not return `any`
+import { a, b } from '@backend/controllers'
+```
+
+We recommended creating a **single tsconfig.json** that define a `baseUrl` as the root of your repo, provide a path according to the module location, and create a **tsconfig.json** for each module that inherits the root **tsconfig.json** which has the path alias.
+
+You may find a working example of in this [path alias example repo](https://github.com/SaltyAom/elysia-monorepo-path-alias).

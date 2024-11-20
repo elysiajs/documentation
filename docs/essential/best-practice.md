@@ -1,9 +1,9 @@
 ---
-title: Structure - ElysiaJS
+title: Best Practice - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Structure - ElysiaJS
+        content: Best Practice - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -14,9 +14,7 @@ head:
         content: Elysia is pattern agnostic framework, we the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handling with types. This page is a guide to use Elysia with MVC pattern.
 ---
 
-#### This page has been moved to [best practice](/essential/best-practice)
-
-# Structure
+# Best Practice
 
 Elysia is a pattern-agnostic framework, leaving the decision of which coding patterns to use up to you and your team.
 
@@ -43,7 +41,7 @@ new Elysia()
 
 In the code above **state** returns a new **ElysiaInstance** type, adding a `build` type.
 
-### ❌ Don't: Use without method chaining
+### ❌ Don't: Use Elysia without method chaining
 Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
 
 ```typescript twoslash
@@ -100,6 +98,35 @@ new Elysia()
         Service.doStuff(stuff)
     })
 ```
+
+### Testing
+You can test your controller using `handle` to directly call a function (and it's lifecycle)
+
+```typescript
+import { Elysia } from 'elysia'
+import { Service } from './service'
+
+import { describe, it, should } from 'bun:test'
+
+const app = new Elysia()
+    .get('/', ({ stuff }) => {
+        Service.doStuff(stuff)
+
+        return 'ok'
+    })
+
+describe('Controller', () => {
+	it('should work', async () => {
+		const response = await app
+			.handle(new Request('http://localhost/'))
+			.then((x) => x.text())
+
+		expect(response).toBe('ok')
+	})
+})
+```
+
+You may find more information about testing in [Unit Test](/patterns/unit-test.html).
 
 ## Service
 Service is a set of utility/helper functions decoupled as a business logic to use in a module/controller, in our case, an Elysia instance.
@@ -326,6 +353,8 @@ export const AuthModel = {
 		password: t.String()
 	})
 }
+
+const models = AuthModel.models
 ```
 
 ### Model Injection
@@ -345,6 +374,8 @@ const AuthModel = new Elysia()
         'auth.sign': customBody
     })
 
+const models = AuthModel.models
+
 const UserController = new Elysia({ prefix: '/auth' })
     .use(AuthModel)
     .post('/sign-in', async ({ body, cookie: { session } }) => {
@@ -362,8 +393,26 @@ This approach provide several benefits:
 3. Show up as "models" in OpenAPI compliance client, eg. Swagger.
 4. Improve TypeScript inference speed as model type will be cached during registration.
 
----
+## Reuse a plugin
 
-As mentioned, Elysia is a pattern-agnostic framework, and we only provide a recommendation guide for handling Elysia with the MVC pattern.
+It's ok to reuse plugins multiple time to provide type inference.
 
-It’s entirely up to you and your team whether to follow this recommendation based on your preferences and agreement.
+Elysia handle plugin deduplication automatically by default, and the performance is negligible.
+
+To create a unique plugin, you may provide a **name** or optional **seed** to an Elysia instance.
+
+```typescript
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia({ name: 'my-plugin' })
+	.decorate("type", "plugin")
+
+const app = new Elysia()
+    .use(plugin)
+    .use(plugin)
+    .use(plugin)
+    .use(plugin)
+    .listen(3000)
+```
+
+This allows Elysia to improve performance by reusing the registered plugins instead of processing the plugin over and over again.
