@@ -82,6 +82,11 @@ If set to true, static files will path will be registered to Router skipping the
 
 Set response headers of files
 
+### indexHTML
+@default `false`
+
+If set to true, the `index.html` file from the static directory will be served for any request that is matching neither a route nor any existing static file.
+
 ## Pattern
 Below you can find the common patterns to use the plugin.
 
