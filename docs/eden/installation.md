@@ -110,6 +110,33 @@ Eden depends Elysia class to import Elysia instance and infers type correctly.
 
 Make sure that both client and server have a matching Elysia version.
 
+You can check it with [`npm why`](https://docs.npmjs.com/cli/v10/commands/npm-explain) command:
+
+```bash
+npm why elysia
+```
+
+And output should contain only one elysia version on top-level:
+
+```tree
+elysia@1.1.12
+node_modules/elysia
+  elysia@"1.1.25" from the root project
+  peer elysia@">= 1.1.0" from @elysiajs/html@1.1.0
+  node_modules/@elysiajs/html
+    dev @elysiajs/html@"1.1.1" from the root project
+  peer elysia@">= 1.1.0" from @elysiajs/opentelemetry@1.1.2
+  node_modules/@elysiajs/opentelemetry
+    dev @elysiajs/opentelemetry@"1.1.7" from the root project
+  peer elysia@">= 1.1.0" from @elysiajs/swagger@1.1.0
+  node_modules/@elysiajs/swagger
+    dev @elysiajs/swagger@"1.1.6" from the root project
+  peer elysia@">= 1.1.0" from @elysiajs/eden@1.1.2
+  node_modules/@elysiajs/eden
+    dev @elysiajs/eden@"1.1.3" from the root project
+```
+
+
 ### TypeScript version
 Elysia uses newer features and syntax of TypeScript to infer types in a the most performant way. Features like Const Generic and Template Literal are heavily used.
 
