@@ -16,7 +16,7 @@ head:
 
 # Parameters
 
-We need to send a payload to server eventaully.
+We need to send a payload to server eventually.
 
 To handle this, Eden Treaty's methods accept 2 parameters to send data to server.
 
