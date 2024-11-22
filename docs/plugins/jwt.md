@@ -126,7 +126,7 @@ The audience claim identifies the recipients that the JWT is intended for.
 
 Each principal intended to process the JWT MUST identify itself with a value in the audience claim as per [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.3)
 
-### jtit
+### jti
 JWT ID claim provides a unique identifier for the JWT as per [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.7)
 
 ### nbf
