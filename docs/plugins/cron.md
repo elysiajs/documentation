@@ -123,14 +123,14 @@ import { Elysia } from 'elysia'
 import { cron } from '@elysiajs/cron'
 
 const app = new Elysia()
-    use(
+    .use(
         cron({
             name: 'heartbeat',
             pattern: '*/1 * * * * *',
             run() {
                 console.log("Heartbeat")
             }
-        }
+        })
     )
     .get('/stop', ({ store: { cron: { heartbeat } } }) => {
         heartbeat.stop()
@@ -155,7 +155,7 @@ const app = new Elysia()
             run() {
                 console.log("Heartbeat")
             }
-        }
+        })
     )
     .get('/stop', ({ store: { cron: { heartbeat } } }) => {
         heartbeat.stop()
