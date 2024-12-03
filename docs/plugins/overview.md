@@ -104,9 +104,12 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Logger](https://github.com/chneau/elysia-logger) - Elysia plugin for logging HTTP requests and responses inspired by [hono/logger](https://hono.dev/docs/middleware/builtin/logger)
 -   [Elysia CQRS](https://github.com/jassix/elysia-cqrs) - Elysia plugin for CQRS pattern
 -   [Nice Logger](https://github.com/tanishqmanuja/nice-logger) - Not the nicest, but a pretty nice and sweet logger for Elysia.
+-   [Logify for Elysia.js](https://github.com/0xrasla/logify) - A beautiful, fast, and type-safe logging middleware for Elysia.js applications.
 
 ## Complementaray projects:
+
 -   [prismabox](https://github.com/m1212e/prismabox) - Generator for typebox schemes based on your database models, works well with elysia
+
 ---
 
 If you have a plugin written for Elysia, feel free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇
