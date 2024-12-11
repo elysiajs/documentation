@@ -117,7 +117,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-Elysia accept both value and function as a response.
+Elysia accepts both value and function as a response.
 
 However, we can use function to access `Context` (route and instance information).
 
@@ -168,7 +168,7 @@ We can see the result by clicking the black **Send** button.
 
 ## Decorate
 
-However, for more complex data we may want to use class for complex data as it's allow us to define custom methods and properties.
+However, for more complex data we may want to use class for complex data as it allows us to define custom methods and properties.
 
 Now, let's create a singleton class to store our notes.
 
@@ -187,7 +187,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-`decorate` allow us to inject a singleton class into the Elysia instance, allowing us to access it in the route handler.
+`decorate` allows us to inject a singleton class into the Elysia instance, allowing us to access it in the route handler.
 
 Open **http://localhost:3000/note**, we should see **["Moonhalo"]** on the screen.
 
@@ -223,11 +223,11 @@ Let's ignore the error for now.
 
 Open **http://localhost:3000/note/0**, we should see **Moonhalo** on the screen.
 
-Path parameter allow us to retrieve a specific part from the URL. In our case, we retrieve a **"0"** from **/note/0** put into a variable named **index**.
+The path parameter allows us to retrieve a specific part from the URL. In our case, we retrieve a **"0"** from **/note/0** put into a variable named **index**.
 
 ## Validation
 
-The error above is a warning that path parameter can be any string, while an array index should be a number.
+The error above is a warning that the path parameter can be any string, while an array index should be a number.
 
 For example, **/note/0** is valid, but **/note/zero** is not.
 
@@ -263,15 +263,15 @@ We import **t** from Elysia to define a schema for the path parameter.
 
 Now, if we try to access **http://localhost:3000/note/abc**, we should see an error message.
 
-This code resolve the error we have seen earlier because of **TypeScript warning**.
+This code resolves the error we saw earlier because of a **TypeScript warning**.
 
-Elysia schema does not only enforce validation at runtime, but it also infers a TypeScript type for auto-completion, checking errors ahead of time, and Scalar documentation.
+Elysia schema doesn't only enforce validation on the runtime, but it also infers a TypeScript type for auto-completion and checking error ahead of time, and a Scalar documentation.
 
-Most frameworks only provide only one of these features or provided them separately requiring us to update each one separately, but Elysia provides all of them as a **Single Source of Truth**.
+Most frameworks provide only one of these features or provide them separately requiring us to update each one separately, but Elysia provides all of them as a **Single Source of Truth**.
 
 ### Validation type
 
-Elysia provide validation for the following properties:
+Elysia provides validation for the following properties:
 
 -   params - path parameter
 -   query - URL querystring
@@ -280,7 +280,7 @@ Elysia provide validation for the following properties:
 -   cookie - cookie
 -   response - response body
 
-All of them sharing the same syntax as the example above.
+All of them share the same syntax as the example above.
 
 ## Status code
 
@@ -437,7 +437,7 @@ const app = new Elysia()
 
 :::
 
-Open **http://localhost:3000/note/1** and you should see **oh no :\(** as same as before.
+Open **http://localhost:3000/note/1** and you should see **oh no :\(** again like before.
 
 We have just created a **note** plugin, by declaring a new Elysia instance.
 
@@ -520,11 +520,11 @@ export const note = new Elysia()
     ) // [!code ++]
 ```
 
-Now let's open **http://localhost:3000/swagger** and try playing around with CRUD operation.
+Now let's open **http://localhost:3000/swagger** and try playing around with CRUD operations.
 
 ## Group
 
-If we look closely, all of the routes in **note** plugin all share a **/note** prefix.
+If we look closely, all of the routes in the **note** plugin share a **/note** prefix.
 
 We can simplify this by declaring **prefix**
 
@@ -691,15 +691,15 @@ export const note = new Elysia({ prefix: '/note' })
 
 :::
 
-Validation will applied to all routes **after guard** is called and tie to the plugin.
+Validation will be applied to all routes **after guard** is called and tied to the plugin.
 
 ## Lifecycle
 
 Now in real-world usage, we may want to do something like logging before the request is processed.
 
-Instead of inline `console.log` for each route, we may apply **lifecycle** that intercept request before/after it is processed.
+Instead of inline `console.log` for each route, we may apply a **lifecycle** that intercepts the request before/after it is processed.
 
-There are several lifecycle that we can use, but in this case we will be using `onTransform`.
+There are several lifecycles that we can use, but in this case we will be using `onTransform`.
 
 ::: code-group
 
@@ -768,19 +768,19 @@ export const note = new Elysia({ prefix: '/note' })
 
 :::
 
-`onTransform` is called after **routing but before validation**, so we can do something like logging the request that is defined without **404 Not found** route.
+`onTransform` is called after **routing but before validation**, so we can do something like logging the request that is defined without triggering the **404 Not found** route.
 
-This allow us to log the request before it is processed, and we can see the request body and path parameters.
+This allows us to log the request before it is processed, and we can see the request body and path parameters.
 
 ### Scope
 
-By default, **lifecycle hook is encapsulated**. Hook is applied to routes in the same instance, and is not applied to other plugins (routes that not defined in the same plugin).
+By default, the **lifecycle hook is encapsulated**. Hook is applied to routes in the same instance, and is not applied to other plugins (routes that are not defined in the same plugin).
 
-This means `onTransform` log will not be called on other instance, unless we explicitly defined as `scoped` or `global`.
+This means the log function, in the `onTransform` hook, will not be called on other instances, unless we explicitly defined it as `scoped` or `global`.
 
 ## Authentication
 
-Now we may want to add authorization to our routes, so only owner of the note can update or delete the note.
+Now we may want to add restrictions to our routes, so only the owner of the note can update or delete it.
 
 Let's create a `user.ts` file that will handle the user authentication:
 
@@ -858,28 +858,28 @@ export const user = new Elysia({ prefix: '/user' })// [!code ++]
     )// [!code ++]
 ```
 
-Now there are a lot to unwrap here:
+Now there are a lot of things to unwrap here:
 1. We create a new instance with 2 routes for sign up and sign in.
 2. In the instance, we define an in-memory store `user` and `session`
 	- 2.1 `user` will hold key-value of `username` and `password`
 	- 2.2 `session` will hold a key-value of `session` and `username`
-3. In `/sign-up` we insert a username and hashed password with argon2id
-4. In `/sign-in` we does the following:
+3. In `/sign-in` we insert a username and hashed password with argon2id
+4. In `/sign-up` we do the following:
 	- 4.1 We check if user exists and verify the password
 	- 4.2 If the password matches, then we generate a new session into `session`
 	- 4.3 We set cookie `token` with the value of session
-	- 4.4 We append `secret` to cookie to add hash attacker from tampering with the cookie
+	- 4.4 We append `secret` to cookie to add hash and block an attacker from tampering with the cookie
 
 ::: tip
-As we are using an in-memory store, the data are wipe out every reload or every time we edit the code.
+As we are using an in-memory store, the data are wiped out every reload or every time we edit the code.
 
 We will fix that in the later part of the tutorial.
 :::
 
-Now if we want to check if user is signed in, we could check for value of `token` cookie and check with the `session store.
+Now if we want to check if a user is signed in, we could check for value of `token` cookie and check with the `session` store.
 
 ## Reference Model
-However, we can recognize that both `/sign-in` and `/sign-up` both share same `body` model.
+However, we can recognize that both `/sign-in` and `/sign-up` both share the same `body` model.
 
 Instead of copy-pasting the model all over the place, we could use a **reference model** to reuse the model by specifying a name.
 
@@ -990,17 +990,17 @@ new Elysia()
     })) // [!code ++]
 ```
 
-`Elysia.model` could accepts multiple overload:
+`Elysia.model` could accept multiple overloads:
 1. Providing an object, the register all key-value as models
 2. Providing a function, then access all previous models then return new models
 
-By providing a function, we could do a remap/reference or filter out model we don't want to use.
+By providing a function, we could do a remap/reference or filter out models we don't want to use.
 
 However in our case we want to reference a model and create a new model from it. Notice that we create a new `optionalSession` model by referencing a `model.session` and wrap `t.Optional` over it.
 
 The rest parameter `...rest` is also important as we want to keep all the model while adding a new one.
 
-Finally, we could add the `/profile` and `/sign-out` route as follows:
+Finally, we could add the `/profile` and `/sign-out` routes as follows:
 ```typescript twoslash [user.ts]
 import { Elysia, t } from 'elysia'
 
@@ -1114,7 +1114,7 @@ export const user = new Elysia({ prefix: '/user' })
     ) // [!code ++]
 ```
 
-As we are going to apply `authorization` in the `note`, we are going to need to repeat 2 things:
+As we are going to apply `authorization` in the `note`, we are going to need to repeat two things:
 
 1. Checking if user exists
 2. Getting user id (in our case 'username')
@@ -1123,7 +1123,7 @@ For **1.** instead of using guard, we could use a **macro**.
 
 ## Plugin deduplication
 
-As we are going to reuse this hook in multiple modules (user, and note), let's extract the service (utility) part out and apply to both modules.
+As we are going to reuse this hook in multiple modules (user, and note), let's extract the service (utility) part out and apply it to both modules.
 ```ts twoslash [user.ts]
 import { Elysia, t } from 'elysia'
 
@@ -1177,16 +1177,16 @@ export const user = new Elysia({ prefix: '/user' })
     })) // [!code --]
 ```
 
-The `name` property here is very important, as it's a unique identifier for the plugin to prevent duplicate instance (like a singleton).
+The `name` property here is very important, as it's a unique identifier for the plugin to prevent duplicate instances (like a singleton).
 
-If we were to define the instance without the plugin, hook/lifecycle and routes and going to be register every time the plugin is used.
+If we were to define the instance without the plugin, hook/lifecycle and routes are going to be registered every time the plugin is used.
 
-Our intention is to apply this plugin (service) to multiple modules to provide utility function, this make deduplication very important as life-cycle shouldn't be register twice.
+Our intention is to apply this plugin (service) to multiple modules to provide utility function, this make deduplication very important as life-cycle shouldn't be registered twice.
 
 ## Macro
 Macro allows us to define a custom hook with custom life-cycle management.
 
-To define a macro, we could use `.macro` as the follows:
+To define a macro, we could use `.macro` as follows:
 ```ts twoslash [user.ts]
 import { Elysia, t } from 'elysia'
 
@@ -1238,9 +1238,9 @@ export const userService = new Elysia({ name: 'user/service' })
     })) // [!code ++]
 ```
 
-We have just create a new macro name `isSignIn` that accept `boolean` value, if it was true, then we add a `onBeforeHandle` event that execute **after validation but before the main handler**, allowing us to extract authentication logic here.
+We have just created a new macro name `isSignIn` that accepts a `boolean` value, if it is true, then we add an `onBeforeHandle` event that executes **after validation but before the main handler**, allowing us to extract authentication logic here.
 
-To use the macro, simply specified `isSignIn: true` as follows:
+To use the macro, simply specify `isSignIn: true` as follows:
 ```ts twoslash [user.ts]
 import { Elysia, t } from 'elysia'
 
@@ -1371,15 +1371,15 @@ export const user = new Elysia({ prefix: '/user' })
 As we specified `isSignIn`, we can extract the imperative checking part, and reuse the same logic on multiple routes without copy-pasting the same code all over again.
 
 ::: tip
-This may seems like a small code change to trade for a larger boilerplate, but as the server grow complex, the user-checking could also grows to be a very complex mechanism as well.
+This may seem like a small code change to trade for a larger boilerplate, but as the server grows more complex, the user-checking could also grow to be a very complex mechanism.
 :::
 
 ## Resolve
-Our last objective is to get the username (id) from token, we could use `resolve` to define a new property into context same as `store` but only execute per request.
+Our last objective is to get the username (id) from the token. We could use `resolve` to define a new property into the same context as `store` but only execute it per request.
 
-Unlike `decorate` and `store`, resolve is defined at `beforeHandle` stage or the value will be available **after validation**.
+Unlike `decorate` and `store`, resolve is defined at the `beforeHandle` stage or the value will be available **after validation**.
 
-This ensure that the property like `cookie: 'session'` is exists before creating a new property.
+This ensures that the property like `cookie: 'session'` exists before creating a new property.
 
 ```ts twoslash [user.ts]
 import { Elysia, t } from 'elysia'
@@ -1443,14 +1443,14 @@ export const getUserId = new Elysia() // [!code ++]
 
 In this instance, we define a new property `username` by using `resolve`, allowing us to reduce the getting `username` logic into a property instead.
 
-We don't define a name in this `getUserId` instance because we want `guard` and `resolve` to reapply into multiple instance.
+We don't define a name in this `getUserId` instance because we want `guard` and `resolve` to reapply into multiple instances.
 
 ::: tip
-Same as macro, resolve plays well if the logic for getting the property is complex and might not worth for a small operation like this. But since in the real-world we are going to need database-connection, caching, and queuing might make it fit the narrative.
+Same as macro, `resolve` plays well if the logic for getting the property is complex and might not be worth it for a small operation like this. But since in the real-world we are going to need database-connection, caching, and queuing it might make it fit the narrative.
 :::
 
 ## Scope
-Now if we try to apply the `getUserId`, we might notice that the property `username` and `guard` isn't applied.
+Now if we try to apply the use of the `getUserId`, we might notice that the property `username` and `guard` isn't applied.
 ```ts twoslash [user.ts]
 // @errors: 2339
 import { Elysia, t } from 'elysia'
@@ -1520,15 +1520,15 @@ export const user = new Elysia({ prefix: '/user' })
     }))
 ```
 
-This is because Elysia **encapsulate lifecycle** by default as mention [lifecycle](#lifecycle)
+This is because the Elysia **encapsulate lifecycle** does this by default as mentioned in [lifecycle](#lifecycle)
 
 This is intentional by design, as we don't want each module to have a side-effect to other modules. Having a side-effect can be very difficult to debug especially in a large codebase with multiple (Elysia) dependencies.
 
-If we want lifecycle to applied to the parent, we can explicitly annotate that it could be applied to the parent by using either:
-1. scoped - only apply to parent at 1-level above only and not above
-2. global - apply to all parent
+If we want lifecycle to be applied to the parent, we can explicitly annotate that it could be applied to the parent by using either:
+1. scoped - only apply to parent at 1-level above and not any further
+2. global - apply to all parent levels
 
-In our case, we want to use **scoped** as it will apply to the controller that use the service only.
+In our case, we want to use **scoped** as it will apply to the controller that uses the service only.
 
 To do this, we need to annotate that life-cycle as `scoped`:
 ```typescript twoslash [user.ts]
@@ -1604,7 +1604,7 @@ export const user = new Elysia({ prefix: '/user' })
     }))
 ```
 
-Alternatively, if we have multiple `scoped` define, we could use `as` to cast multiple life-cycle instead.
+Alternatively, if we have multiple `scoped` defined, we could use `as` to cast multiple life-cycles instead.
 
 ```ts twoslash [user.ts]
 import { Elysia, t } from 'elysia'
@@ -1679,7 +1679,7 @@ export const user = new Elysia({ prefix: '/user' })
     }))
 ```
 
-Both achieve the same effect, the only difference is single or multiple cast.
+Both achieve the same effect, the only difference is single or multiple cast instances.
 
 ::: tip
 Encapsulation happens in both runtime, and type-level. This allows us to catch the error ahead of time.
@@ -1843,7 +1843,7 @@ const app = new Elysia()
 :::
 
 ## Authorization
-First, let's modify the `Note` to store the user who created the note.
+First, let's modify the `Note` class to store the user who created the note.
 
 But instead of defining the `Memo` type, we can define a memo schema and infer the type from it, allowing us to sync runtime and type-level.
 
@@ -2123,9 +2123,9 @@ We have just implemented authorization by reusing the service we created earlier
 
 ## Error handling
 
-One of the most important aspect of API is to make sure nothing goes wrong, and if it does, we need to handle it properly.
+One of the most important aspects of an API is to make sure nothing goes wrong, and if it does, we need to handle it properly.
 
-We use use `onError` lifecycle to catch any error that is thrown in the server.
+We use use the `onError` lifecycle to catch any error that is thrown in the server.
 
 ::: code-group
 
@@ -2247,12 +2247,12 @@ const app = new Elysia()
 We have just added an error listener that will catch any error that is thrown in the server, excluding **404 Not Found** and log it to the console.
 
 ::: tip
-Notice that `onError` is at before `use(note)`. This is important as Elysia apply method from top-to-bottom. The listener have to be applied before route.
+Notice that `onError` is used before `use(note)`. This is important as Elysia applies the method from top-to-bottom. The listener has to be applied before the route.
 
 And as `onError` is applied on the root instance, it doesn't need to define a scope as it will apply to all children instances.
 :::
 
-Returning a truthy value will override a default error response, so we can return a custom error response while inherits the status code.
+Returning a truthy value will override a default error response, so we can return a custom error response which inherits the status code.
 
 ::: code-group
 
@@ -2373,13 +2373,13 @@ const app = new Elysia()
 
 Now we have a working API, a final touch is to make sure everything is working after we deployed our server.
 
-Elysia support OpenTelemetry by default with `@elysiajs/opentelemetry` plugin.
+Elysia supports OpenTelemetry by default with the `@elysiajs/opentelemetry` plugin.
 
 ```bash
 bun add @elysiajs/opentelemetry
 ```
 
-Make sure to have a OpenTelemetry collector running otherwise we will be using Jaeger using docker.
+Make sure to have an OpenTelemetry collector running otherwise we will be using Jaeger using docker.
 
 ```bash
 docker run --name jaeger \
@@ -2398,7 +2398,7 @@ docker run --name jaeger \
   jaegertracing/all-in-one:latest
 ```
 
-Now let's apply OpenTelemetry plugin to our server.
+Now let's apply the OpenTelemetry plugin to our server.
 ::: code-group
 
 ```typescript twoslash [index.ts]
@@ -2520,17 +2520,17 @@ const app = new Elysia()
 
 Now try out some more requests and open http://localhost:16686 to see traces.
 
-Select service **Elysia** and click on **Find Traces**, we should able to see list of requests that we have made.
+Select service **Elysia** and click on **Find Traces**, we should be able to see a list of requests that we have made.
 
 ![Jaeger showing list of requests](/tutorial/jaeger-list.webp)
 
-Click on any of the request to see how long each lifecycle hook takes to process the request.
+Click on any of the requests to see how long each lifecycle hook takes to process the request.
 ![Jaeger showing request span](/tutorial/jaeger-span.webp)
 
-Click on the root parent span to see the request details, this will show you the request and response payload, and error if have any.
+Click on the root parent span to see the request details, this will show you the request and response payload, and errors if have any.
 ![Jaeger showing request detail](/tutorial/jaeger-detail.webp)
 
-Elysia support OpenTelemetry out of the box, it automatically integrate with other JavaScript library that support OpenTelemetry like Prisma, GraphQL Yoga, Effect, etc.
+Elysia supports OpenTelemetry out of the box, it automatically integrates with other JavaScript libraries that support OpenTelemetry like Prisma, GraphQL Yoga, Effect, etc.
 
 You can also use other OpenTelemetry plugins to send traces to other services like Zipkin, Prometheus, etc.
 
@@ -3115,18 +3115,18 @@ Now we can run the binary using `./server` and it will start the server on port 
 ./server
 ```
 
-Open your browser and navigate to `http://localhost:3000/swagger`, you should see the same result as using dev command.
+Open your browser and navigate to `http://localhost:3000/swagger`, you should see the same result as using the dev command.
 
-By minifying the binary not only that we made our server small and portable, but it also significantly reduce memory usage.
+By minifying the binary not only have we made our server small and portable, we also significantly reduced the memory usage of it.
 
 ::: tip
-Bun does have `--minify` flag that will minify the binary, however it include `--minify-identifiers`, and as we are using OpenTelemetry, it's going to rename function name and make tracing harder than it should.
+Bun does have the `--minify` flag that will minify the binary, however it includes `--minify-identifiers`, and as we are using OpenTelemetry, it's going to rename function names and make tracing harder than it should.
 :::
 
 ::: warning
-Exercise: Try run development server and production server, and compare the memory usage.
+Exercise: Try to run the development server and production server, and compare the memory usage.
 
-Development server will use a process name 'bun', while production server will use the name 'server'.
+The development server will use a process named 'bun', while the production server will use the name 'server'.
 :::
 
 ## Wrapping up
@@ -3135,24 +3135,24 @@ And- that's it 🎉
 
 We have created a simple API using Elysia, we have learned how to create a simple API, how to handle errors, and how to observe our server using OpenTelemetry.
 
-You could take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
+You could to take a step further by trying to connect to a real database, connect to a real frontend or implement real-time communication with WebSocket.
 
-This tutorial covers most of the concepts we need to know to create an Elysia server; however, there are several other useful concepts you might want to know.
+This tutorial covered most of the concepts we need to know to create an Elysia server, however there are other several useful concepts you might want to know.
 
 ### If you are stuck
 
-Feel free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further question.
+If you have any further questions, feel free to ask our community on GitHub Discussions, Discord, and Twitter.
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
         Official ElysiaJS discord community server
     </Card>
     <Card title="Twitter" href="https://twitter.com/elysiajs">
-        Track update and status of Elysia
+        Track updates and status of Elysia
     </Card>
     <Card title="GitHub" href="https://github.com/elysiajs">
         Source code and development
     </Card>
 </Deck>
 
-We wish you happiness on your journey with Elysia ❤️
+We wish you well on your journey with Elysia ❤️
