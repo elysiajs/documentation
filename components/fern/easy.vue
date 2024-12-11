@@ -11,15 +11,15 @@
                     </h2>
                 </div>
                 <p class="max-w-md leading-normal">
-                    Our goal is to designed an ergonomic, sensible and
+                    Our goal is to design an ergonomic, sensible, and
                     productive framework that even beginners can use easily
                 </p>
                 <p class="max-w-md leading-normal">
-                    Design to avoid unnecessary complexity, and type complexity
+                    Designed to avoid unnecessary complexity and type complexity
                     for you to focus on building
                 </p>
                 <p class="leading-normal">
-                    A framework that feel
+                    A framework that feels
                     <span
                         class="text-gradient from-violet-500 to-sky-500 font-semibold"
                         >just like JavaScript</span

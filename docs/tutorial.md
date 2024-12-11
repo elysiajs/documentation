@@ -22,9 +22,26 @@ There's no database or other "production ready" features. This tutorial is going
 
 We expected it to take around 15-20 minutes if you follow along.
 
+---
+
+### Not a fan of tutorial?
+If you prefers to a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
+
+<script setup>
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
+</script>
+
+<Deck>
+    <Card title="Key Concept (5 minutes)" href="/key-concept">
+    	The core concept of Elysia and how to use it.
+    </Card>
+</Deck>
+
+
 ## Setup
 
-Elysia is built on [Bun](https://bun.sh), an alterantive runtime to Node.js.
+Elysia is built on [Bun](https://bun.sh), an alternative runtime to Node.js.
 
 Install Bun if you haven't already.
 
@@ -248,7 +265,7 @@ Now, if we try to access **http://localhost:3000/note/abc**, we should see an er
 
 This code resolve the error we have seen earlier because of **TypeScript warning**.
 
-Elysia schema doesn't not only enforce validation on the runtime, but it also infers a TypeScript type for auto-completion and checking error ahead of time, and a Scalar documentation.
+Elysia schema does not only enforce validation at runtime, but it also infers a TypeScript type for auto-completion, checking errors ahead of time, and Scalar documentation.
 
 Most frameworks only provide only one of these features or provided them separately requiring us to update each one separately, but Elysia provides all of them as a **Single Source of Truth**.
 
@@ -537,55 +554,52 @@ class Note {
 // ---cut---
 export const note = new Elysia({ prefix: '/note' }) // [!code ++]
     .decorate('note', new Note())
-    .group('/note', (app) =>
-        app // [!code ++]
-            .get('/', ({ note }) => note.data) // [!code ++]
-            .put('/', ({ note, body: { data } }) => note.add(data), {
-                body: t.Object({
-                    data: t.String()
-                })
+    .get('/', ({ note }) => note.data) // [!code ++]
+    .put('/', ({ note, body: { data } }) => note.add(data), {
+        body: t.Object({
+            data: t.String()
+        })
+    })
+    .get(
+        '/:index',
+        ({ note, params: { index }, error }) => {
+            return note.data[index] ?? error(404, 'Not Found :(')
+        },
+        {
+            params: t.Object({
+                index: t.Number()
             })
-            .get(
-                '/:index',
-                ({ note, params: { index }, error }) => {
-                    return note.data[index] ?? error(404, 'Not Found :(')
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    })
-                }
-            )
-            .delete(
-                '/:index',
-                ({ note, params: { index }, error }) => {
-                    if (index in note.data) return note.remove(index)
+        }
+    )
+    .delete(
+        '/:index',
+        ({ note, params: { index }, error }) => {
+            if (index in note.data) return note.remove(index)
 
-                    return error(422)
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    })
-                }
-            )
-            .patch(
-                '/:index',
-                ({ note, params: { index }, body: { data }, error }) => {
-                    if (index in note.data) return note.update(index, data)
+            return error(422)
+        },
+        {
+            params: t.Object({
+                index: t.Number()
+            })
+        }
+    )
+    .patch(
+        '/:index',
+        ({ note, params: { index }, body: { data }, error }) => {
+            if (index in note.data) return note.update(index, data)
 
-                    return error(422)
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    }),
-                    body: t.Object({
-                        data: t.String()
-                    })
-                }
-            )
-    ) // [!code ++]
+            return error(422)
+        },
+        {
+            params: t.Object({
+                index: t.Number()
+            }),
+            body: t.Object({
+                data: t.String()
+            })
+        }
+    )
 ```
 
 :::
@@ -762,7 +776,7 @@ This allow us to log the request before it is processed, and we can see the requ
 
 By default, **lifecycle hook is encapsulated**. Hook is applied to routes in the same instance, and is not applied to other plugins (routes that not defined in the same plugin).
 
-This means `onTransform` log will not be called on other instance, unless we explcity defined as `scoped` or `global`.
+This means `onTransform` log will not be called on other instance, unless we explicitly defined as `scoped` or `global`.
 
 ## Authentication
 
@@ -849,15 +863,15 @@ Now there are a lot to unwrap here:
 2. In the instance, we define an in-memory store `user` and `session`
 	- 2.1 `user` will hold key-value of `username` and `password`
 	- 2.2 `session` will hold a key-value of `session` and `username`
-3. In `/sign-in` we insert a username and hashed password with argon2id
-4. In `/sign-up` we does the following:
+3. In `/sign-up` we insert a username and hashed password with argon2id
+4. In `/sign-in` we does the following:
 	- 4.1 We check if user exists and verify the password
 	- 4.2 If the password matches, then we generate a new session into `session`
 	- 4.3 We set cookie `token` with the value of session
 	- 4.4 We append `secret` to cookie to add hash attacker from tampering with the cookie
 
 ::: tip
-As we are using an in-memory store, the data are wipe out every reload or everytime we edit the code.
+As we are using an in-memory store, the data are wipe out every reload or every time we edit the code.
 
 We will fix that in the later part of the tutorial.
 :::
@@ -1080,7 +1094,7 @@ export const user = new Elysia({ prefix: '/user' })
     ) // [!code ++]
     .get( // [!code ++]
         '/profile', // [!code ++]
-        ({ cookie: { token }, store: { user, session }, error }) => { // [!code ++]
+        ({ cookie: { token }, store: { session }, error }) => { // [!code ++]
             const username = session[token.value] // [!code ++]
  // [!code ++]
             if (!username) // [!code ++]
@@ -1200,7 +1214,7 @@ export const userService = new Elysia({ name: 'user/service' })
         optionalSession: t.Optional(model.session)
     }))
     .macro(({ onBeforeHandle }) => ({ // [!code ++]
-        isSignIn(enabled: true) { // [!code ++]
+        isSignIn(enabled: boolean) { // [!code ++]
             if (!enabled) return // [!code ++]
 
             onBeforeHandle( // [!code ++]
@@ -1254,7 +1268,7 @@ export const userService = new Elysia({ name: 'user/service' })
         optionalSession: t.Optional(model.session)
     }))
     .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
             onBeforeHandle(
@@ -1333,7 +1347,7 @@ export const user = new Elysia({ prefix: '/user' })
     // ---cut---
     .get(
         '/profile',
-        ({ cookie: { token }, store: { user, session }, error }) => {
+        ({ cookie: { token }, store: { session }, error }) => {
             const username = session[token.value]
 
             if (!username) // [!code --]
@@ -1432,7 +1446,7 @@ In this instance, we define a new property `username` by using `resolve`, allowi
 We don't define a name in this `getUserId` instance because we want `guard` and `resolve` to reapply into multiple instance.
 
 ::: tip
-Same as macro, resolve plays well if the logic for getting the property is complex and might not worth for a small operation like this. But since in the real-world we are going to need database-connection, caching, and queing might make it fits the narrative.
+Same as macro, resolve plays well if the logic for getting the property is complex and might not worth for a small operation like this. But since in the real-world we are going to need database-connection, caching, and queuing might make it fits the narrative.
 :::
 
 ## Scope
@@ -1665,7 +1679,7 @@ export const user = new Elysia({ prefix: '/user' })
     }))
 ```
 
-Both acheive the same effect, the only difference is single or multiple cast.
+Both achieve the same effect, the only difference is single or multiple cast.
 
 ::: tip
 Encapsulation happens in both runtime, and type-level. This allows us to catch the error ahead of time.
@@ -1821,11 +1835,6 @@ import { user } from './user' // [!code ++]
 
 const app = new Elysia()
     .use(swagger())
-    .onError(({ error, code }) => {
-        if (code === 'NOT_FOUND') return
-
-        console.error(error)
-    })
     .use(user) // [!code ++]
     .use(note)
     .listen(3000)
@@ -2807,7 +2816,7 @@ export const userService = new Elysia({ name: 'user/service' })
         optionalSession: t.Optional(model.session)
     }))
     .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
             onBeforeHandle(
@@ -2943,7 +2952,7 @@ export const userService = new Elysia({ name: 'user/service' })
         optionalSession: t.Optional(model.session)
     }))
     .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
             onBeforeHandle(
@@ -3126,13 +3135,13 @@ And- that's it 🎉
 
 We have created a simple API using Elysia, we have learned how to create a simple API, how to handle errors, and how to observe our server using OpenTelemetry.
 
-You could to take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
+You could take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
 
-This Tutorial cover most of the concept we need to know to create Elysia server, however there are some several useful concepts you might want to know.
+This tutorial covers most of the concepts we need to know to create an Elysia server; however, there are several other useful concepts you might want to know.
 
 ### If you are stuck
 
-Feels free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further question.
+Feel free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further question.
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
@@ -3146,4 +3155,4 @@ Feels free to ask our community on GitHub Discussions, Discord, and Twitter, if 
     </Card>
 </Deck>
 
-We wish you happy on your journey with Elysia ❤️
+We wish you happiness on your journey with Elysia ❤️

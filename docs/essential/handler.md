@@ -207,7 +207,7 @@ It's recommend to use `error` inside main handler as it has better inference:
 
 - allows TypeScript to check if a return value is correctly type to response schema
 - autocompletion for type narrowing base on status code
-- type narrowing for error handling using End-to-end type safety ([Eden](/overview/eden))
+- type narrowing for error handling using End-to-end type safety ([Eden](/eden/overview))
 
 ### set.status
 Set a default status code if not provided.
@@ -305,14 +305,14 @@ new Elysia()
 ```
 
 ### Request IP
-We can get request IP by using `server.ip` method
+We can get request IP by using `server.requestIP` method
 
 ```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
 	.get('/ip', ({ server, request }) => {
-		return server?.ip(request)
+		return server?.requestIP(request)
 	})
 	.listen(3000)
 ```
@@ -377,7 +377,7 @@ new Elysia()
 
 ## Handle
 
-As Elysia is built on top of Web Syandard Request, we can programmatically test it using `Elysia.handle`.
+As Elysia is built on top of Web Standard Request, we can programmatically test it using `Elysia.handle`.
 
 ```typescript
 import { Elysia } from 'elysia'

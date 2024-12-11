@@ -113,7 +113,7 @@ new Elysia()
 ## Group
 Define a prefix once for sub routes
 
-See [Group](/patterns/group.html)
+See [Group](/essential/route.html#group)
 
 ```typescript
 import { Elysia } from 'elysia'
