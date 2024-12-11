@@ -415,7 +415,7 @@ Submits a payload to the specified resource, often causing state change or side 
 
 Replaces all current representations of the target resource using the request's payload.
 
-### Patch
+### PATCH
 
 Applies partial modifications to a resource.
 
