@@ -132,6 +132,10 @@ export default defineConfig({
 						link: '/tutorial'
 					},
 					{
+						text: 'Key Concept',
+						link: '/key-concept'
+					},
+					{
 						text: 'Table of Content',
 						link: '/table-of-content'
 					}
