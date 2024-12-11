@@ -22,6 +22,23 @@ There's no database or other "production ready" features. This tutorial is going
 
 We expected it to take around 15-20 minutes if you follow along.
 
+---
+
+### Not a fan of tutorial?
+If you prefers to a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
+
+<script setup>
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
+</script>
+
+<Deck>
+    <Card title="Key Concept (5 minutes)" href="/key-concept">
+    	The core concept of Elysia and how to use it.
+    </Card>
+</Deck>
+
+
 ## Setup
 
 Elysia is built on [Bun](https://bun.sh), an alternative runtime to Node.js.
@@ -537,55 +554,52 @@ class Note {
 // ---cut---
 export const note = new Elysia({ prefix: '/note' }) // [!code ++]
     .decorate('note', new Note())
-    .group('/note', (app) =>
-        app // [!code ++]
-            .get('/', ({ note }) => note.data) // [!code ++]
-            .put('/', ({ note, body: { data } }) => note.add(data), {
-                body: t.Object({
-                    data: t.String()
-                })
+    .get('/', ({ note }) => note.data) // [!code ++]
+    .put('/', ({ note, body: { data } }) => note.add(data), {
+        body: t.Object({
+            data: t.String()
+        })
+    })
+    .get(
+        '/:index',
+        ({ note, params: { index }, error }) => {
+            return note.data[index] ?? error(404, 'Not Found :(')
+        },
+        {
+            params: t.Object({
+                index: t.Number()
             })
-            .get(
-                '/:index',
-                ({ note, params: { index }, error }) => {
-                    return note.data[index] ?? error(404, 'Not Found :(')
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    })
-                }
-            )
-            .delete(
-                '/:index',
-                ({ note, params: { index }, error }) => {
-                    if (index in note.data) return note.remove(index)
+        }
+    )
+    .delete(
+        '/:index',
+        ({ note, params: { index }, error }) => {
+            if (index in note.data) return note.remove(index)
 
-                    return error(422)
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    })
-                }
-            )
-            .patch(
-                '/:index',
-                ({ note, params: { index }, body: { data }, error }) => {
-                    if (index in note.data) return note.update(index, data)
+            return error(422)
+        },
+        {
+            params: t.Object({
+                index: t.Number()
+            })
+        }
+    )
+    .patch(
+        '/:index',
+        ({ note, params: { index }, body: { data }, error }) => {
+            if (index in note.data) return note.update(index, data)
 
-                    return error(422)
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    }),
-                    body: t.Object({
-                        data: t.String()
-                    })
-                }
-            )
-    ) // [!code ++]
+            return error(422)
+        },
+        {
+            params: t.Object({
+                index: t.Number()
+            }),
+            body: t.Object({
+                data: t.String()
+            })
+        }
+    )
 ```
 
 :::

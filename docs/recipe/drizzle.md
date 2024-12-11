@@ -98,7 +98,7 @@ export const user = pgTable(
     }
 )
 
-export const Table = {
+export const table = {
 	user
 } as const
 
@@ -146,7 +146,7 @@ To prevent this, we need to **explicitly define a type between `drizzle-typebox`
 import { t } from 'elysia'
 import { createSelectSchema } from 'drizzle-typebox'
 
-import { Table } from './database/schema'
+import { table } from './database/schema'
 
 const _createUser = createInsertSchema(table.user, {
 	email: t.String({ format: 'email' })
