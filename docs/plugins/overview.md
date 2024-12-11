@@ -104,6 +104,8 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Logger](https://github.com/chneau/elysia-logger) - Elysia plugin for logging HTTP requests and responses inspired by [hono/logger](https://hono.dev/docs/middleware/builtin/logger)
 -   [Elysia CQRS](https://github.com/jassix/elysia-cqrs) - Elysia plugin for CQRS pattern
 -   [Nice Logger](https://github.com/tanishqmanuja/nice-logger) - Not the nicest, but a pretty nice and sweet logger for Elysia.
+-   [Elysia XSS](https://www.npmjs.com/package/elysia-xss) - A plugin for Elysia.js that provides XSS (Cross-Site Scripting) protection by sanitizing request body data.
+-   [Elysiajs Helmet](https://www.npmjs.com/package/elysiajs-helmet) - A comprehensive security middleware for Elysia.js applications that helps secure your apps by setting various HTTP headers.
 -   [Logify for Elysia.js](https://github.com/0xrasla/logify) - A beautiful, fast, and type-safe logging middleware for Elysia.js applications.
 
 ## Complementaray projects:
