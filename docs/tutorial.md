@@ -248,7 +248,7 @@ Now, if we try to access **http://localhost:3000/note/abc**, we should see an er
 
 This code resolve the error we have seen earlier because of **TypeScript warning**.
 
-Elysia schema doesn't not only enforce validation on the runtime, but it also infers a TypeScript type for auto-completion and checking error ahead of time, and a Scalar documentation.
+Elysia schema does not only enforce validation at runtime, but it also infers a TypeScript type for auto-completion, checking errors ahead of time, and Scalar documentation.
 
 Most frameworks only provide only one of these features or provided them separately requiring us to update each one separately, but Elysia provides all of them as a **Single Source of Truth**.
 
@@ -3118,13 +3118,13 @@ And- that's it 🎉
 
 We have created a simple API using Elysia, we have learned how to create a simple API, how to handle errors, and how to observe our server using OpenTelemetry.
 
-You could to take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
+You could take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
 
-This Tutorial cover most of the concept we need to know to create Elysia server, however there are some several useful concepts you might want to know.
+This tutorial covers most of the concepts we need to know to create an Elysia server; however, there are several other useful concepts you might want to know.
 
 ### If you are stuck
 
-Feels free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further question.
+Feel free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further question.
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
@@ -3138,4 +3138,4 @@ Feels free to ask our community on GitHub Discussions, Discord, and Twitter, if 
     </Card>
 </Deck>
 
-We wish you happy on your journey with Elysia ❤️
+We wish you happiness on your journey with Elysia ❤️
