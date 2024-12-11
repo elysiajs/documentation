@@ -108,8 +108,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysiajs Helmet](https://www.npmjs.com/package/elysiajs-helmet) - A comprehensive security middleware for Elysia.js applications that helps secure your apps by setting various HTTP headers.
 -   [Logify for Elysia.js](https://github.com/0xrasla/logify) - A beautiful, fast, and type-safe logging middleware for Elysia.js applications.
 
-## Complementaray projects:
-
+## Complementary projects:
 -   [prismabox](https://github.com/m1212e/prismabox) - Generator for typebox schemes based on your database models, works well with elysia
 
 ---
