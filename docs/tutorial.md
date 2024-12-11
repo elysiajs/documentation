@@ -259,7 +259,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-We import **t** from Elysia to and define a schema for the path parameter.
+We import **t** from Elysia to define a schema for the path parameter.
 
 Now, if we try to access **http://localhost:3000/note/abc**, we should see an error message.
 
