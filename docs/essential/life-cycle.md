@@ -50,7 +50,7 @@ Below are the request life cycle available in Elysia:
     <Card title="On Error" href="#on-error">
         Capture error when thrown
     </Card>
-    <Card title="On Response" href="#on-response">
+    <Card title="After Response" href="#after-response">
         Executed after response sent to the client
     </Card>
     <Card title="Trace" href="/patterns/trace">
