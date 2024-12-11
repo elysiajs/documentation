@@ -83,13 +83,21 @@ If you are using TypeScript, make sure to create, and update `tsconfig.json` to 
 }
 ```
 
-## Structure
-Here's the recommended file structure for Elysia if you don't strictly prefer a specific convention:
-- **src** - Any file that associate with development of Elysia server.
-    - **index.ts** - Entry point for your Elysia server, ideal place for setting global plugin
-    - **setup.ts** - Composed of various plugins to be used as a Service Locator
-    - **controllers** - Instances which encapsulate multiple endpoints
-    - **libs** - Utility functions
-    - **models** - Data Type Objects (DTOs) for Elysia instance
-    - **types** - Shared TypeScript type if needed
-- **test** - Test file for Elysia server
+## Next Steps
+We recommend checking out the either one of the following:
+
+<script setup>
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
+</script>
+
+<Deck>
+    <Card title="Key Concept (5 minutes)" href="/key-concept">
+    	The core concept of Elysia and how to use it.
+    </Card>
+    <Card title="Tutorial (15 minutes)" href="/tutorial">
+    	A step-by-step guide walkthrough Elysia's features.
+    </Card>
+</Deck>
+
+If you have any questions, feel free to ask in our [Discord](https://discord.gg/elysia) community.

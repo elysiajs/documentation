@@ -132,6 +132,10 @@ export default defineConfig({
 						link: '/tutorial'
 					},
 					{
+						text: 'Key Concept',
+						link: '/key-concept'
+					},
+					{
 						text: 'Table of Content',
 						link: '/table-of-content'
 					}
@@ -216,6 +220,10 @@ export default defineConfig({
 					{
 						text: 'React Email',
 						link: '/recipe/react-email'
+					},
+					{
+						text: 'Better Auth',
+						link: '/recipe/better-auth'
 					}
 				]
 			},
