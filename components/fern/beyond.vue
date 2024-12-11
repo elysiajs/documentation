@@ -139,7 +139,7 @@
                 </h2>
                 <p>
                     Like tRPC, Elysia provides type-safety from the backend to
-                    the frontend without code generation. Interaction between
+                    the frontend without code generation. The interaction between
                     frontend and backend is type-checked at compile time.
                 </p>
             </header>

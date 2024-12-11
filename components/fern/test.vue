@@ -9,7 +9,7 @@
                         Test with
                         <span
                             class="text-gradient font-semibold from-violet-500 to-sky-400"
-                            >confidence</span
+                            >Confidence</span
                         >
                     </h2>
                     <h3 class="sm:flex items-center text-2xl">
@@ -58,11 +58,11 @@
                     </h3>
                 </div>
                 <p class="lg:max-w-md leading-normal">
-                    Elysia provide a type-safe layer for interact and test your
-                    server from routes to parameters.
+                    Elysia provides a type-safe layer to interact with and test your
+                    server, from routes to parameters.
                 </p>
                 <p class="lg:max-w-md leading-normal">
-                    With auto-completion, you can easily write tests for server
+                    With auto-completion, you can easily write tests for the server
                     without any hassle.
                 </p>
                 <!-- <slot name="test-script" /> -->

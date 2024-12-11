@@ -53,7 +53,7 @@
                 </li>
             </ol>
             <p class="text-sm mt-3 text-gray-400">
-                Measure in requests/second. Result from
+                Measured in requests/second. Result from
                 <a
                     href="https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22"
                     target="_blank"

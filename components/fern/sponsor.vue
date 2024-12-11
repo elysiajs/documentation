@@ -10,11 +10,10 @@
         >
             Elysia is
             <span class="text-gray-700 dark:text-gray-200 font-medium"
-                >not own by an organization</span
-            >
-            but is driven by the community.
+                >not owned by an organization</span
+            >, but is driven by the community.
             <br />
-            Elysia development is only possible thanks to your support
+            Elysia development is only possible thanks to your support.
         </p>
         <div class="flex sm:justify-center my-8">
             <a
