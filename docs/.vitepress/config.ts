@@ -220,6 +220,10 @@ export default defineConfig({
 					{
 						text: 'React Email',
 						link: '/recipe/react-email'
+					},
+					{
+						text: 'Better Auth',
+						link: '/recipe/better-auth'
 					}
 				]
 			},
