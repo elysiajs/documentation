@@ -22,6 +22,23 @@ There's no database or other "production ready" features. This tutorial is going
 
 We expected it to take around 15-20 minutes if you follow along.
 
+---
+
+### Not a fan of tutorial?
+If you prefers to a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
+
+<script setup>
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
+</script>
+
+<Deck>
+    <Card title="Key Concept (5 minutes)" href="/key-concept">
+    	The core concept of Elysia and how to use it.
+    </Card>
+</Deck>
+
+
 ## Setup
 
 Elysia is built on [Bun](https://bun.sh), an alternative runtime to Node.js.
@@ -248,7 +265,7 @@ Now, if we try to access **http://localhost:3000/note/abc**, we should see an er
 
 This code resolve the error we have seen earlier because of **TypeScript warning**.
 
-Elysia schema doesn't not only enforce validation on the runtime, but it also infers a TypeScript type for auto-completion and checking error ahead of time, and a Scalar documentation.
+Elysia schema does not only enforce validation at runtime, but it also infers a TypeScript type for auto-completion, checking errors ahead of time, and Scalar documentation.
 
 Most frameworks only provide only one of these features or provided them separately requiring us to update each one separately, but Elysia provides all of them as a **Single Source of Truth**.
 
@@ -537,55 +554,52 @@ class Note {
 // ---cut---
 export const note = new Elysia({ prefix: '/note' }) // [!code ++]
     .decorate('note', new Note())
-    .group('/note', (app) =>
-        app // [!code ++]
-            .get('/', ({ note }) => note.data) // [!code ++]
-            .put('/', ({ note, body: { data } }) => note.add(data), {
-                body: t.Object({
-                    data: t.String()
-                })
+    .get('/', ({ note }) => note.data) // [!code ++]
+    .put('/', ({ note, body: { data } }) => note.add(data), {
+        body: t.Object({
+            data: t.String()
+        })
+    })
+    .get(
+        '/:index',
+        ({ note, params: { index }, error }) => {
+            return note.data[index] ?? error(404, 'Not Found :(')
+        },
+        {
+            params: t.Object({
+                index: t.Number()
             })
-            .get(
-                '/:index',
-                ({ note, params: { index }, error }) => {
-                    return note.data[index] ?? error(404, 'Not Found :(')
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    })
-                }
-            )
-            .delete(
-                '/:index',
-                ({ note, params: { index }, error }) => {
-                    if (index in note.data) return note.remove(index)
+        }
+    )
+    .delete(
+        '/:index',
+        ({ note, params: { index }, error }) => {
+            if (index in note.data) return note.remove(index)
 
-                    return error(422)
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    })
-                }
-            )
-            .patch(
-                '/:index',
-                ({ note, params: { index }, body: { data }, error }) => {
-                    if (index in note.data) return note.update(index, data)
+            return error(422)
+        },
+        {
+            params: t.Object({
+                index: t.Number()
+            })
+        }
+    )
+    .patch(
+        '/:index',
+        ({ note, params: { index }, body: { data }, error }) => {
+            if (index in note.data) return note.update(index, data)
 
-                    return error(422)
-                },
-                {
-                    params: t.Object({
-                        index: t.Number()
-                    }),
-                    body: t.Object({
-                        data: t.String()
-                    })
-                }
-            )
-    ) // [!code ++]
+            return error(422)
+        },
+        {
+            params: t.Object({
+                index: t.Number()
+            }),
+            body: t.Object({
+                data: t.String()
+            })
+        }
+    )
 ```
 
 :::
@@ -849,8 +863,8 @@ Now there are a lot to unwrap here:
 2. In the instance, we define an in-memory store `user` and `session`
 	- 2.1 `user` will hold key-value of `username` and `password`
 	- 2.2 `session` will hold a key-value of `session` and `username`
-3. In `/sign-in` we insert a username and hashed password with argon2id
-4. In `/sign-up` we does the following:
+3. In `/sign-up` we insert a username and hashed password with argon2id
+4. In `/sign-in` we does the following:
 	- 4.1 We check if user exists and verify the password
 	- 4.2 If the password matches, then we generate a new session into `session`
 	- 4.3 We set cookie `token` with the value of session
@@ -3121,13 +3135,13 @@ And- that's it 🎉
 
 We have created a simple API using Elysia, we have learned how to create a simple API, how to handle errors, and how to observe our server using OpenTelemetry.
 
-You could to take a step further by trying to connect to a real database, connect to a real frontend, or implement real-time communication with WebSockets.
+You could take a step further by trying to connect to a real database, connect to a real frontend or implement a real-time communication with WebSocket.
 
-This tutorial covers most of the concepts we need to know to create an Elysia server, however there are several useful concepts you might want to know.
+This tutorial covers most of the concepts we need to know to create an Elysia server; however, there are several other useful concepts you might want to know.
 
 ### If you are stuck
 
-Feel free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further questions.
+Feel free to ask our community on GitHub Discussions, Discord, and Twitter, if you have any further question.
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
