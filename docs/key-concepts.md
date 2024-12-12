@@ -1,9 +1,9 @@
 ---
-title: Key Concept - ElysiaJS
+title: Key Concepts - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Key Concept - ElysiaJS
+        content: Key Concepts - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -14,7 +14,7 @@ head:
         content: Although Elysia is a simple library, it has some key concepts that you need to understand to use it effectively. This page will guide you through the key concepts of ElysiaJS.
 ---
 
-# Key Concept
+# Key Concepts
 
 ### We __highly recommended__ you to read this page before start using Elysia.
 
