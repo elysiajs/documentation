@@ -28,7 +28,7 @@ Every Elysia instance is a component.
 
 A component is a plugin that could plug in to other instances.
 
-A comonent could be a router, a store, a service, or anything else.
+A component could be a router, a store, a service, or anything else.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
