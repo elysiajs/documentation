@@ -112,7 +112,7 @@ If you are using TypeScript, make sure to create, and update `tsconfig.json` to 
 We recommend checking out the either one of the following:
 
 <Deck>
-    <Card title="Key Concept (5 minutes)" href="/key-concept">
+    <Card title="Key Concepts (5 minutes)" href="/key-concepts">
     	The core concept of Elysia and how to use it.
     </Card>
     <Card title="Tutorial (15 minutes)" href="/tutorial">

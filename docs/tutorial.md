@@ -25,7 +25,7 @@ We expected it to take around 15-20 minutes if you follow along.
 ---
 
 ### Not a fan of tutorial?
-If you prefers to a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
+If you prefers to a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concepts](/key-concepts) page to get a good understanding of how Elysia works.
 
 <script setup>
 import Card from '../components/nearl/card.vue'
@@ -33,7 +33,7 @@ import Deck from '../components/nearl/card-deck.vue'
 </script>
 
 <Deck>
-    <Card title="Key Concept (5 minutes)" href="/key-concept">
+    <Card title="Key Concepts (5 minutes)" href="/key-concepts">
     	The core concept of Elysia and how to use it.
     </Card>
 </Deck>
