@@ -57,7 +57,7 @@ import { Elysia } from 'elysia'
 import { Hono } from 'hono'
 
 const elysia = new Elysia()
-    .get('/Hello from Elysia inside Hono inside Elysia')
+    .get('/', () => 'Hello from Elysia inside Hono inside Elysia')
 
 const hono = new Hono()
     .get('/', (c) => c.text('Hello from Hono!'))
