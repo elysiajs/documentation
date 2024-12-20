@@ -530,7 +530,7 @@ But also useful for simulating or creating unit tests.
 
 ## 404
 
-If no path matches the defined routes, Elysia will pass the request to [error](/life-cycle/on-error) life cycle before returning a **"NOT_FOUND"** with an HTTP status of 404.
+If no path matches the defined routes, Elysia will pass the request to [error](/essential/life-cycle.html#on-error) life cycle before returning a **"NOT_FOUND"** with an HTTP status of 404.
 
 We can handle a custom 404 error by returning a value from 'error` life cycle like this:
 
@@ -557,7 +557,7 @@ When navigating to your web server, you should see the result as follows:
 | /    | POST   | Route not found :\( |
 | /hi  | GET    | Route not found :\( |
 
-You can learn more about life cycle and error handling in [Life Cycle Events](/essential/life-cycle#events) and [Error Handling](/life-cycle/on-error).
+You can learn more about life cycle and error handling in [Life Cycle Events](/essential/life-cycle#events) and [Error Handling](/essential/life-cycle.html#on-error).
 
 ::: tip
 HTTP Status is used to indicate the type of response. By default if everything is correct, the server will return a '200 OK' status code (If a route matches and there is no error, Elysia will return 200 as default)
@@ -625,7 +625,7 @@ new Elysia()
     .listen(3000)
 ```
 
-You may find more information about grouped guards in [scope](/essential/scope.html).
+You may find more information about grouped guards in [scope](/essential/plugin.html#scope).
 
 ### Prefix
 

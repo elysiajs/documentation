@@ -240,12 +240,12 @@ class AuthService {
 }
 ```
 
-However we recommend to avoid this if possible, and use [Elysia as a service](✅-do-use-elysia-instance-as-a-service) instead.
+However we recommend to avoid this if possible, and use [Elysia as a service](#✅-do-use-elysia-as-a-controller) instead.
 
 You may find more about [InferContext](/essential/handler#infercontext) in [Essential: Handler](/essential/handler).
 
 ## Model
-Model or [DTO (Data Transfer Object)](https://en.wikipedia.org/wiki/Data_transfer_object) is handle by [Elysia.t (Validation)](/validation/overview.html#data-validation).
+Model or [DTO (Data Transfer Object)](https://en.wikipedia.org/wiki/Data_transfer_object) is handle by [Elysia.t (Validation)](/essential/validation.html#elysia-type).
 
 Elysia has a validation system built-in which can infers type from your code and validate it at runtime.
 
@@ -358,7 +358,7 @@ const models = AuthModel.models
 ```
 
 ### Model Injection
-Though this is optional, if you are strictly following MVC pattern, you may want to inject like a service into a controller. We recommended using [Elysia reference model](/validation/reference-model.html#reference-model)
+Though this is optional, if you are strictly following MVC pattern, you may want to inject like a service into a controller. We recommended using [Elysia reference model](/essential/validation#reference-model)
 
 Using Elysia's model reference
 ```typescript twoslash
@@ -389,7 +389,7 @@ const UserController = new Elysia({ prefix: '/auth' })
 
 This approach provide several benefits:
 1. Allow us to name a model and provide auto-completion.
-2. Modify schema for later usage, or perform [remapping](/patterns/remapping.html#remapping).
+2. Modify schema for later usage, or perform a [remap](/essential/handler.html#remap).
 3. Show up as "models" in OpenAPI compliance client, eg. Swagger.
 4. Improve TypeScript inference speed as model type will be cached during registration.
 
