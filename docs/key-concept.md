@@ -169,7 +169,7 @@ const server = new Elysia()
 
 This will prevent the `ip` property from being call multiple time by applying deduplication using an unique name.
 
-Once name is provided, the instance will be come a **singleton**. Allowing Elysia to apply plugin deduplication.
+Once `name` is provided, the instance will become a **singleton**. Allowing Elysia to apply plugin deduplication.
 
 Allowing us to reuse the same instance multiple time without performance penalty.
 
@@ -196,7 +196,7 @@ const app = new Elysia()
 	})
 ```
 
-If possible, **always use a inline function** to provide an accurate type inference.
+If possible, **always use an inline function** to provide an accurate type inference.
 
 If you need to apply a separate function, eg. MVC's controller pattern. It's recommended to destructure properties from inline function to prevent unnecessary type inference.
 

@@ -607,7 +607,7 @@ const main = new Elysia()
 
 Sometimes we want to reapply plugin to parent instance as well but as it's limited by `scoped` mechanism, it's limited to 1 parent only.
 
-To apply to the parent instance, we need to **"lift the scope up** to the parent instance, and `as` is the perfect method to do so.
+To apply to the parent instance, we need to **lift the scope up** to the parent instance, and `as` is the perfect method to do so.
 
 Which means if you have `local` scope, and want to apply it to the parent instance, you can use `as('plugin')` to lift it up.
 ```typescript twoslash
@@ -636,7 +636,7 @@ const parent = new Elysia()
 
 ### Descendant
 
-By default plugin will only **apply hook to itself and descendants** only.
+By default plugin will **apply hook to itself and descendants** only.
 
 If the hook is registered in a plugin, instances that inherit the plugin will **NOT** inherit hooks and schema.
 

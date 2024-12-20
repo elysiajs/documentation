@@ -549,7 +549,7 @@ new Elysia()
 
 This code tells Elysia to validate an incoming HTTP body, make sure that the body is String, and if it is String, then allow it to flow through the request pipeline and handler.
 
-If the shape doesn't match, then it will throw an error, into [Error Life Cycle](/essential/life-cycle.html#events).
+If the shape doesn't match, then it will throw an error, into [Error Life Cycle](/essential/life-cycle.html#on-error).
 
 ![Elysia Life Cycle](/assets/lifecycle.webp)
 
@@ -808,10 +808,6 @@ y: 200
 </table>
 
 See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) For more explanation for each attribute.
-
----
-
-<br>
 
 ## Honorable Mention
 
@@ -1154,7 +1150,7 @@ For additional information, you can find the full source code of the type system
 There are 2 ways to provide a custom error message when the validation fails:
 
 1. inline `error` property
-2. Using [onError](/life-cycle/on-error) event
+2. Using [onError](/essential/life-cycle.html#on-error) event
 
 ### Error Property
 
@@ -1399,7 +1395,7 @@ Expected value to be an object
 
 ### onError
 
-We can customize the behavior of validation based on [onError](/life-cycle/on-error) event by narrowing down the error code call "**VALIDATION**".
+We can customize the behavior of validation based on [onError](/essential/life-cycle.html#on-error) event by narrowing down the error code call "**VALIDATION**".
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'

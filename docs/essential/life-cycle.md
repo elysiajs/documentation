@@ -427,7 +427,7 @@ The response should be listed as follows:
 
 ### Guard
 
-When we need to apply the same before handle to multiple routes, we can use [guard](#guard) to apply the same before handle to multiple routes.
+When we need to apply the same before handle to multiple routes, we can use `guard` to apply the same before handle to multiple routes.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -459,11 +459,11 @@ new Elysia()
 
 ## Resolve
 
-A "safe" version of [derive](/life-cycle/before-handle#derive).
+A "safe" version of [derive](#derive).
 
 Designed to append new value to context after validation process storing in the same stack as **beforeHandle**.
 
-Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from the Authorization plugin.
+Resolve syntax is identical to [derive](#derive), below is an example of retrieving a bearer header from the Authorization plugin.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -764,7 +764,7 @@ Properties of `error` code is based on the properties of `error`, the said prope
 
 ### Local Error
 
-Same as others life-cycle, we provide an error into an [scope](/essential/scope) using guard:
+Same as others life-cycle, we provide an error into an [scope](/essential/plugin.html#scope) using guard:
 
 ```typescript
 import { Elysia } from 'elysia'

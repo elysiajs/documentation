@@ -551,7 +551,7 @@ new Elysia()
 <Playground :elysia="demo2" />
 
 ::: tip
-Beware that we cannot use state value before assign.
+Beware that we cannot use a state value before assign.
 
 Elysia registers state values into the store automatically without explicit type or additional TypeScript generic needed.
 :::
@@ -589,9 +589,9 @@ new Elysia()
 - Make sure to assign a value before using it in a handler.
 
 ## Derive
-Retrieve values from existing properties in **Context** and assign an new properties.
+Retrieve values from existing properties in **Context** and assign new properties.
 
-Derive assigns when request happens **at transform lifecycle** allowing us to "derive" <small>create a new property from existing property</small>.
+Derive assigns when request happens **at transform lifecycle** allowing us to "derive" <small>(create new properties from existing properties)</small>.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -648,7 +648,7 @@ new Elysia()
 - When you need to access request properties like **headers**, **query**, **body** with validation
 
 ### Key takeaway
-- **resolve is called at beforehandle, or after validation** happens. Elysia can safely confirm the type of request property resulting in as **typed**.
+- **resolve is called at beforeHandle, or after validation** happens. Elysia can safely confirm the type of request property resulting in as **typed**.
 
 ### Error from resolve/derive
 As resolve and derive is based on **transform** and **beforeHandle** lifecycle, we can return an error from resolve and derive. If error is returned from **derive**, Elysia will return early exit and return the error as response.
@@ -925,7 +925,7 @@ const app = new Elysia()
 
 The field can accept anything ranging from string to function, allowing us to create a custom life cycle event.
 
-macro will be executed in order from top-to-bottom according to definition in hook, ensure that the stack should be handle in correct order.
+**macro** will be executed in order from top-to-bottom according to definition in hook, ensure that the stack should be handle in correct order.
 
 ### Parameters
 

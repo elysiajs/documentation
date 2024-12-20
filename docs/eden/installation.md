@@ -118,7 +118,7 @@ npm why elysia
 
 And output should contain only one elysia version on top-level:
 
-```tree
+```
 elysia@1.1.12
 node_modules/elysia
   elysia@"1.1.25" from the root project
