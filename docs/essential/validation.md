@@ -809,10 +809,6 @@ y: 200
 
 See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) For more explanation for each attribute.
 
----
-
-<br>
-
 ## Honorable Mention
 
 The following are common patterns that are often found useful when creating a schema.
