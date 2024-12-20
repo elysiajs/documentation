@@ -1948,7 +1948,7 @@ export const note = new Elysia({ prefix: '/note' })
     )
 ```
 
-Now let's import, and apply `userService`, `getUserId` to apply authorization to the **note** controller.
+Now let's import, and use `userService`, `getUserId` to apply authorization to the **note** controller.
 
 ```typescript twoslash [note.ts]
 // @errors: 2392 2300 2403 2345 2698
@@ -2379,7 +2379,7 @@ Elysia supports OpenTelemetry by default with the `@elysiajs/opentelemetry` plug
 bun add @elysiajs/opentelemetry
 ```
 
-Make sure to have an OpenTelemetry collector running otherwise we will be using Jaeger using docker.
+Make sure to have an OpenTelemetry collector running otherwise we will be using Jaeger from docker.
 
 ```bash
 docker run --name jaeger \

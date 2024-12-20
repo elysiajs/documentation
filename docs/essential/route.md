@@ -532,7 +532,7 @@ But also useful for simulating or creating unit tests.
 
 If no path matches the defined routes, Elysia will pass the request to [error](/essential/life-cycle.html#on-error) life cycle before returning a **"NOT_FOUND"** with an HTTP status of 404.
 
-We can handle a custom 404 error by returning a value from 'error` life cycle like this:
+We can handle a custom 404 error by returning a value from `error` life cycle like this:
 
 ```typescript twoslash
 import { Elysia } from 'elysia'

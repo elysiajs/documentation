@@ -427,7 +427,7 @@ The response should be listed as follows:
 
 ### Guard
 
-When we need to apply the same before handle to multiple routes, we can use [guard](#guard) to apply the same before handle to multiple routes.
+When we need to apply the same before handle to multiple routes, we can use `guard` to apply the same before handle to multiple routes.
 
 ```typescript
 import { Elysia } from 'elysia'
