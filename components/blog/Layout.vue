@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 
 import '../tailwind.css'
 
