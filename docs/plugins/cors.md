@@ -146,4 +146,4 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-This will allow requests from top-level domains with `saltyaom.com'
+This will allow requests from top-level domains with `saltyaom.com`

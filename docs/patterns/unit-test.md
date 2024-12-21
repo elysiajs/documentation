@@ -57,7 +57,7 @@ The request must provide URL as the following:
 | http://localhost/user | ✅    |
 | /user                 | ❌    |
 
-We can also use other testing libraries like Jest or testing library to create Elysia unit tests.
+We can also use other testing libraries like Jest to create Elysia unit tests.
 
 ## Eden Treaty test
 

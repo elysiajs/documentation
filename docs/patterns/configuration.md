@@ -67,7 +67,7 @@ See [TLS Options](#tls-options) for available configuration.
 Below is a config accepted by Elysia:
 
 ### prefix
-@default ``
+@default `""`
 
 Path prefix of the instance
 
@@ -218,12 +218,12 @@ If set, the HTTP server will listen on a unix socket instead of a port.
 ### hostname
 @default `0.0.0.0`
 
-What hostname should the server listen on
+Set the hostname which the server listens on
 
 ### maxRequestBodySize
 @default `1024 * 1024 * 128` (128MB)
 
-What is the maximum size of a request body? (in bytes)
+Set the maximum size of a request body (in bytes)
 
 ### reusePort
 @default `true`
@@ -276,9 +276,9 @@ Multiple keys using different algorithms can be provided either as an array of u
 
 The object form can only occur in an array.
 
-object.passphrase is optional. Encrypted keys will be decrypted with
+**object.passphrase** is optional. Encrypted keys will be decrypted with
 
-object.passphrase if provided, or options.passphrase if it is not.
+**object.passphrase** if provided, or **options.passphrase** if it is not.
 
 ### ca
 Optionally override the trusted CA certificates. Default is to trust the well-known CAs curated by Mozilla.

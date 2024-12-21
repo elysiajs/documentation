@@ -150,7 +150,7 @@ new Elysia()
 ```
 
 ## Cookie Signature
-With an introduction of Cookie Schema, and `t.Cookie` type. We are able to create a unified type for handling sign/verify cookie signature automatically.
+With an introduction of Cookie Schema, and `t.Cookie` type, we can create a unified type for handling sign/verify cookie signature automatically.
 
 Cookie signature is a cryptographic hash appended to a cookie's value, generated using a secret key and the content of the cookie to enhance security by adding a signature to the cookie.
 
@@ -304,11 +304,11 @@ This is an attribute that has not yet been fully standardized and may change in 
 
 ### sameSite
 Specifies the boolean or string to be the value for the [SameSite Set-Cookie attribute](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-09#section-5.4.7).
-true will set the SameSite attribute to Strict for strict same-site enforcement.
-false will not set the SameSite attribute.
-'lax' will set the SameSite attribute to Lax for lax same-site enforcement.
-'none' will set the SameSite attribute to None for an explicit cross-site cookie.
-'strict' will set the SameSite attribute to Strict for strict same-site enforcement.
+`true` will set the SameSite attribute to Strict for strict same-site enforcement.
+`false` will not set the SameSite attribute.
+`'lax'` will set the SameSite attribute to Lax for lax same-site enforcement.
+`'none'` will set the SameSite attribute to None for an explicit cross-site cookie.
+`'strict'` will set the SameSite attribute to Strict for strict same-site enforcement.
 More information about the different enforcement levels can be found in [the specification](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-09#section-5.4.7).
 
 ::: tip

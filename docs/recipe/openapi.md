@@ -17,7 +17,7 @@ head:
 # OpenAPI
 Elysia has first-class support and follows OpenAPI schema by default.
 
-Elysia can automatically generate an API documentation page and by providing a Swagger plugin.
+Elysia can automatically generate an API documentation page by providing a Swagger plugin.
 
 To generate the Swagger page, install the plugin:
 ```bash
@@ -95,10 +95,10 @@ Additional external documentation for this operation.
 A unique string used to identify the operation. The id MUST be unique among all operations described in the API. The operationId value is case-sensitive.
 
 ### deprecated
-Declares this operation to be deprecated. Consumers SHOULD refrain from usage of the declared operation. Default value is false.
+Declares this operation to be deprecated. Consumers SHOULD refrain from usage of the declared operation. Default value is `false`.
 
 ### security
-A declaration of which security mechanisms can be used for this operation. The list of values includes alternative security requirement objects that can be used. Only one of the security requirement objects need to be satisfied to authorize a request. To make security optional, an empty security requirement ({}) can be included in the array.
+A declaration of which security mechanisms can be used for this operation. The list of values includes alternative security requirement objects that can be used. Only one of the security requirement objects need to be satisfied to authorize a request. To make security optional, an empty security requirement (`{}`) can be included in the array.
 
 ## Hide
 You can hide the route from the Swagger page by setting `detail.hide` to `true`
