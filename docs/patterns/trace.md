@@ -109,7 +109,7 @@ const app = new Elysia()
 Randomly generated unique id for each request
 
 ### context - `Context`
-Elysia's [Context](/essential/context), eg. `set`, `store`, `query, `params`
+Elysia's [Context](/essential/handler.html#context), eg. `set`, `store`, `query`, `params`
 
 ### set - `Context.set`
 Shortcut for `context.set`, to set a headers or status of the context

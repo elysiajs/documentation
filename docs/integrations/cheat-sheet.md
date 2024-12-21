@@ -47,7 +47,7 @@ new Elysia()
 ## Path Parameter
 Using dynamic path parameter
 
-See [Path](/essential/path.html)
+See [Path](/essential/route.html#path-type)
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -177,7 +177,7 @@ new Elysia()
 ## Guard
 Enforce a data type of sub routes
 
-See [Scope](/essential/scope.html#guard)
+See [Scope](/essential/plugin.html#scope)
 
 ```typescript twoslash
 // @errors: 2345
@@ -197,7 +197,7 @@ new Elysia()
 ## Customize context
 Add custom variable to route context
 
-See [Context](/essential/context.html)
+See [Context](/essential/handler.html#context)
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -266,7 +266,7 @@ new Elysia()
 ## OpenAPI documentation
 Create interactive documentation using Scalar (or optionally Swagger)
 
-See [Documentation](/patterns/openapi)
+See [swagger](/plugins/swagger.html)
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -305,7 +305,7 @@ describe('Elysia', () => {
 ## Custom body parser
 Create custom logic for parsing body
 
-See [Parse](/life-cycle/parse.html)
+See [Parse](/essential/life-cycle.html#parse)
 
 ```typescript
 import { Elysia } from 'elysia'

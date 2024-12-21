@@ -70,8 +70,8 @@ This patterns is recommended for performing unit tests, or creating a type-safe 
 - [fetch](#fetch) - add default parameters to fetch intialization (RequestInit)
 - [headers](#headers) - define default headers
 - [fetcher](#fetcher) - custom fetch function eg. Axios, unfetch
-- [onRequest](#on-request) - Intercept and modify fetch request before firing
-- [onResponse](#on-response) - Intercept and modify fetch's response
+- [onRequest](#onrequest) - Intercept and modify fetch request before firing
+- [onResponse](#onresponse) - Intercept and modify fetch's response
 
 ## Fetch
 Default parameters append to 2nd parameters of fetch extends type of **Fetch.RequestInit**.
@@ -287,4 +287,4 @@ treaty<App>('localhost:3000', {
     ]
 })
 ```
-Unlike [headers](#headers) and [onRequest](#on-request), Eden Treaty will loop through functions until a returned value is found or error thrown, the returned value will be use as a new response.
+Unlike [headers](#headers) and [onRequest](#onrequest), Eden Treaty will loop through functions until a returned value is found or error thrown, the returned value will be use as a new response.

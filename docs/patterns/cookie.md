@@ -48,7 +48,7 @@ To use Cookie attribute, you can either use one of the following:
 1. Setting the property directly
 2. Using `set` or `add` to update cookie property.
 
-See [cookie attribute config](/patterns/cookie-signature#config) for more information.
+See [cookie attribute config](/patterns/cookie.html#config) for more information.
 
 ### Assign Property
 You can get/set the property of a cookie like any normal object, the reactivity model synchronizes the cookie value automatically.
