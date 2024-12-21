@@ -61,14 +61,14 @@ export const auth = betterAuth({
       account,
     },
   }),
+  emailAndPassword: {  
+    enabled: true // If you want to use email and password auth
+  },
   socialProviders: {
     /*
     * We're using Google and Github as our social provider, 
     * make sure you have set your environment variables
     */
-    emailAndPassword: {  
-        enabled: true // If you want to use email and password auth
-    },
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
