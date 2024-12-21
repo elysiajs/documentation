@@ -20,7 +20,7 @@ Drizzle ORM is a headless TypeScript ORM with a focus on type safety and develop
 We may convert Drizzle schema to Elysia validation models using `drizzle-typebox`
 
 ### Drizzle Typebox
-[Elysia.t](/validation/overview) is a fork of TypeBox, allowing us to use any TypeBox type in Elysia directly.
+[Elysia.t](/essential/validation.html#elysia-type) is a fork of TypeBox, allowing us to use any TypeBox type in Elysia directly.
 
 We can convert Drizzle schema into TypeBox schema using ["drizzle-typebox"](https://npmjs.org/package/drizzle-typebox), and use it directly on Elysia's schema validation.
 
@@ -377,4 +377,4 @@ The `spread` utility function will skip a refined schema, so you can use it as i
 
 ---
 
-For more information, please refer to the [Drizzle ORM](https://orm.drizzle-orm) and [Drizzle TypeBox](https://orm.drizzle.team/docs/typebox) documentation.
+For more information, please refer to the [Drizzle ORM](https://orm.drizzle.team) and [Drizzle TypeBox](https://orm.drizzle.team/docs/typebox) documentation.

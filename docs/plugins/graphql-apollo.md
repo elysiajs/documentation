@@ -87,11 +87,11 @@ This plugin extends Apollo's [ServerRegistration](https://www.apollographql.com/
 
 Below are the extended parameters for configuring Apollo Server with Elysia.
 ### path
-@default "/graphql"
+@default `"/graphql"`
 
 Path to expose Apollo Server.
 
 ### enablePlayground
-@default "process.env.ENV !== 'production'
+@default `process.env.ENV !== 'production'`
 
 Determine whether should Apollo should provide Apollo Playground.

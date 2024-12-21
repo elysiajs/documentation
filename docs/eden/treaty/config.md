@@ -70,8 +70,8 @@ This patterns is recommended for performing unit tests, or creating a type-safe 
 - [fetch](#fetch) - add default parameters to fetch intialization (RequestInit)
 - [headers](#headers) - define default headers
 - [fetcher](#fetcher) - custom fetch function eg. Axios, unfetch
-- [onRequest](#on-request) - Intercept and modify fetch request before firing
-- [onResponse](#on-response) - Intercept and modify fetch's response
+- [onRequest](#onrequest) - Intercept and modify fetch request before firing
+- [onResponse](#onresponse) - Intercept and modify fetch's response
 
 ## Fetch
 Default parameters append to 2nd parameters of fetch extends type of **Fetch.RequestInit**.
@@ -151,7 +151,7 @@ headers function accepts 2 parameters:
 - options `RequestInit`: Parameters that passed through 2nd parameter of fetch
 
 ### Array
-You may define a headers function as an array if multiple condition is need.
+You may define a headers function as an array if multiple conditions are need.
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -166,7 +166,7 @@ treaty<App>('localhost:3000', {
 })
 ```
 
-Eden Treaty will **run all functions** and even if the value is already returns.
+Eden Treaty will **run all functions** even if the value is already returned.
 
 ## Headers Priority
 Eden Treaty will prioritize the order headers if duplicated as follows:
@@ -240,7 +240,7 @@ If value is returned, Eden Treaty will perform a **shallow merge** for returned 
 - options `RequestInit`: Parameters that passed through 2nd parameter of fetch
 
 ### Array
-You may define an onRequest function as an array if multiple condition is need.
+You may define an onRequest function as an array if multiples conditions are need.
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -257,7 +257,7 @@ treaty<App>('localhost:3000', {
 })
 ```
 
-Eden Treaty will **run all functions** and even if the value is already returns.
+Eden Treaty will **run all functions** even if the value is already returned.
 
 ## onResponse
 Intercept and modify fetch's response or return a new value.
@@ -272,10 +272,10 @@ treaty<App>('localhost:3000', {
 ```
 
 **onRequest** accepts 1 parameter:
-- response `Response` - Web Standard Response normally return from `fetch`
+- response `Response` - Web Standard Response normally returned from `fetch`
 
 ### Array
-You may define an onResponse function as an array if multiple condition is need.
+You may define an onResponse function as an array if multiple conditions are need.
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -287,4 +287,4 @@ treaty<App>('localhost:3000', {
     ]
 })
 ```
-Unlike [headers](#headers) and [onRequest](#on-request), Eden Treaty will loop through functions until a returned value is found or error thrown, the returned value will be use as a new response.
+Unlike [headers](#headers) and [onRequest](#onrequest), Eden Treaty will loop through functions until a returned value is found or error thrown, the returned value will be use as a new response.

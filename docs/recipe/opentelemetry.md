@@ -109,7 +109,7 @@ Elysia OpenTelemetry will group lifecycle and read the **function name** of each
 
 It's a good time to **name your function**.
 
-If your hook handler is an arrow function, you may refactor it to named function to understand the trace better otherwise, your trace span will be named as `anonymous`.
+If your hook handler is an arrow function, you may refactor it to named function to understand the trace better, otherwise your trace span will be named as `anonymous`.
 
 ```typescript
 const bad = new Elysia()

@@ -252,7 +252,7 @@ chat.subscribe((message) => {
 chat.send('hello from client')
 ```
 
-We can use [schema](/essential/schema) to enforce type-safety on WebSockets, just like a normal route.
+We can use [schema](/integrations/cheat-sheet#schema) to enforce type-safety on WebSockets, just like a normal route.
 
 ---
 

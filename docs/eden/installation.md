@@ -243,7 +243,7 @@ import { a, b } from '@/controllers'
 ```
 
 #### Scope
-We recommended to use add a **scope** prefix for each modules in your monorepo to avoid any confusion and conflict that may happen.
+We recommended to add a **scope** prefix for each modules in your monorepo to avoid any confusion and conflict that may happen.
 
 ```json
 {

@@ -68,7 +68,7 @@ const app = new Elysia()
 WebSocket schema can validate the following:
 
 -   **message** - An incoming message.
--   **query** - query string or URL parameters.
+-   **query** - Query string or URL parameters.
 -   **params** - Path parameters.
 -   **header** - Request's headers.
 -   **cookie** - Request's cookie
@@ -152,8 +152,8 @@ Type:
 .ws(endpoint: path, options: Partial<WebSocketHandler<Context>>): this
 ```
 
-endpoint: A path to exposed as websocket handler
-options: Customize WebSocket handler behavior
+* **endpoint** - A path to exposed as websocket handler
+* **options** - Customize WebSocket handler behavior
 
 ## WebSocketHandler
 

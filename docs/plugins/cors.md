@@ -128,7 +128,6 @@ Response with **OPTIONS** request with 3 HTTP request headers:
 
 This config indicates if the server should respond to preflight requests.
 
----
 ## Pattern
 Below you can find the common patterns to use the plugin.
 
@@ -146,4 +145,4 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-This will allow requests from top-level domains with `saltyaom.com'
+This will allow requests from top-level domains with `saltyaom.com`
