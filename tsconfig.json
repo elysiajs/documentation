@@ -10,5 +10,9 @@
     "allowJs": true,
     "strict": true,
     "jsx": "preserve"
-  }
+  },
+  "exclude": [
+    "postcss.config.js",
+    "tailwind.config.js"
+  ]
 }
