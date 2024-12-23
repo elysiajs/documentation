@@ -105,11 +105,11 @@ new Elysia()
 Handler maybe a literal value, and can be inlined.
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, file } from 'elysia'
 
 new Elysia()
     .get('/', 'Hello Elysia')
-    .get('/video', Bun.file('kyuukurarin.mp4'))
+    .get('/video', file('kyuukurarin.mp4'))
     .listen(3000)
 ```
 
@@ -353,12 +353,12 @@ Using a primitive value or `Response` has near identical performance (+- 0.1%), 
 We may return a `FormData` by using returning `form` utility directly from the handler.
 
 ```typescript
-import { Elysia, form } from 'elysia'
+import { Elysia, form, file } from 'elysia'
 
 new Elysia()
 	.get('/', () => form({
 		name: 'Tea Party',
-		images: [Bun.file('nagi.web'), Bun.file('mika.webp')]
+		images: [file('nagi.web'), file('mika.webp')]
 	}))
 	.listen(3000)
 ```
@@ -366,13 +366,13 @@ new Elysia()
 This pattern is useful if even need to return a file or multipart form data.
 
 ### Return a single file
-Or alternatively, you can return a single file by returning `Bun.file` directly without `form`.
+Or alternatively, you can return a single file by returning `file` directly without `form`.
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, file } from 'elysia'
 
 new Elysia()
-	.get('/', () => Bun.file('nagi.web'))
+	.get('/', file('nagi.web'))
 	.listen(3000)
 ```
 

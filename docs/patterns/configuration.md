@@ -47,13 +47,13 @@ By default the maximum request body size is 128MB (1024 * 1024 * 128).
 We can enable TLS (known as successor of SSL) by passing in a value for key and cert; both are required to enable TLS.
 
 ```ts
-import { Elysia } from 'elysia'
+import { Elysia, file } from 'elysia'
 
 new Elysia({
 	serve: {
 		tls: {
-			cert: Bun.file('cert.pem'),
-			key: Bun.file('key.pem')
+			cert: file('cert.pem'),
+			key: file('key.pem')
 		}
 	}
 })

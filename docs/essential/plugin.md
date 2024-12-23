@@ -692,14 +692,14 @@ The deferred module is an async plugin that can be registered after the server i
 
 ```typescript
 // plugin.ts
-import { Elysia } from 'elysia'
+import { Elysia, file } from 'elysia'
 import { loadAllFiles } from './files'
 
 export const loadStatic = async (app: Elysia) => {
     const files = await loadAllFiles()
 
-    files.forEach((file) => app
-        .get(file, () => Bun.file(file))
+    files.forEach((asset) => app
+        .get(asset, file(file))
     )
 
     return app

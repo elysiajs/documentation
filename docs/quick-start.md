@@ -209,9 +209,9 @@ This will install Elysia, TypeScript, and `tsx`.
 Create a new file `src/index.ts` and add the following code:
 
 ```typescript
-import { Elysia } from 'elysia'
+import { node } from '@elysiajs/node'
 
-const app = new Elysia()
+const app = new Elysia({ adapter: node() })
 	.get('/', () => 'Hello Elysia')
 	.listen(3000)
 
@@ -287,8 +287,9 @@ Create a new file `src/index.ts` and add the following code:
 
 ```typescript
 import { Elysia } from 'elysia'
+import { node } from '@elysiajs/node'
 
-const app = new Elysia()
+const app = new Elysia({ adapter: node() })
 	.get('/', () => 'Hello Elysia')
 	.listen(3000)
 

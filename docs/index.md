@@ -126,11 +126,11 @@ new Elysia()
 <template v-slot:easy>
 
 ```typescript
-import { Elysia } from 'elysia'
+import { Elysia, file } from 'elysia'
 
 new Elysia()
 	.get('/', 'Hello World')
-	.get('/image', Bun.file('mika.webp'))
+	.get('/image', file('mika.webp'))
 	.get('/stream', function* () {
 		yield 'Hello'
 		yield 'World'

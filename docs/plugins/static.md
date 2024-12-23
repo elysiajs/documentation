@@ -93,8 +93,10 @@ Below you can find the common patterns to use the plugin.
 - [Single File](#single-file)
 
 ## Single file
-Suppose you want to return just a single file, you can use `Bun.file` instead of using the static plugin
+Suppose you want to return just a single file, you can use `file` instead of using the static plugin
 ```typescript
+import { Elysia, file } from 'elysia'
+
 new Elysia()
-    .get('/file', () => Bun.file('public/takodachi.png'))
+    .get('/file', () => file('public/takodachi.png'))
 ```
