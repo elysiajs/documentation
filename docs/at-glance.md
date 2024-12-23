@@ -173,7 +173,7 @@ new Elysia()
     .use(swagger())
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
-            id: t.Numeric()
+            id: t.Number()
         })
     })
     .listen(3000)
@@ -195,7 +195,7 @@ const app = new Elysia()
     .use(swagger())
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
-            id: t.Numeric()
+            id: t.Number()
         })
     })
     .listen(3000)
@@ -212,7 +212,7 @@ import { Elysia, t } from 'elysia'
 const app = new Elysia()
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
-            id: t.Numeric()
+            id: t.Number()
         })
     })
     .listen(3000)
