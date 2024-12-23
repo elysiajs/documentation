@@ -3,6 +3,9 @@ import { defineConfig } from 'vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
 
+import nodeResolve from '@rollup/plugin-node-resolve'
+import path from 'path'
+
 const description =
 	'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
 
@@ -23,8 +26,14 @@ export default defineConfig({
 			})
 		]
 	},
+
 	// ![INFO] uncomment for support hot reload on WSL - https://github.com/vitejs/vite/issues/1153#issuecomment-785467271
 	vite: {
+		resolve: {
+			alias: {
+				'fs': path.resolve(__dirname, './polyfill/fs.js')
+			}
+		},
 		server: {
 			watch: {
 				usePolling: true
