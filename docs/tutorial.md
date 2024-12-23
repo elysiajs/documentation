@@ -905,12 +905,9 @@ export const user = new Elysia({ prefix: '/user' })
 	     	{ // [!code ++]
 		     	secrets: 'seia' // [!code ++]
 	     	} // [!code ++]
-	    ) // [!code ++]
+	    ), // [!code ++]
+      	optionalSession: t.Optional(t.Ref('session')) // [!code ++]
     }) // [!code ++]
-    .model((model) => ({ // [!code ++]
-    	...model, // [!code ++]
-     	optionalSession: t.Optional(model.session) // [!code ++]
-    })) // [!code ++]
     .put(
         '/sign-up',
         async ({ body: { username, password }, store, error }) => {
@@ -965,40 +962,9 @@ export const user = new Elysia({ prefix: '/user' })
 
 After adding a model/models, we can reuse them by referencing their name in the schema instead of providing a literal type while providing the same functionality and type safety.
 
-We may also notice that, there's a **remap model** performing in this line:
-```ts
-import { Elysia } from 'elysia'
-
-new Elysia()
-	.model({
-    	signIn: t.Object({
-    		username: t.String({ minLength: 1 }),
-    		password: t.String({ minLength: 8 })
-    	}),
-     	session: t.Cookie(
-      		{
-        		token: t.Number()
-        	},
-         	{
-          		secrets: 'seia'
-          	}
-	   	)
-    })
-    .model((model) => ({ // [!code ++]
-    	...model, // [!code ++]
-     	optionalSession: t.Optional(model.session) // [!code ++]
-    })) // [!code ++]
-```
-
 `Elysia.model` could accept multiple overloads:
 1. Providing an object, the register all key-value as models
 2. Providing a function, then access all previous models then return new models
-
-By providing a function, we could do a remap/reference or filter out models we don't want to use.
-
-However in our case we want to reference a model and create a new model from it. Notice that we create a new `optionalSession` model by referencing a `model.session` and wrap `t.Optional` over it.
-
-The rest parameter `...rest` is also important as we want to keep all the model while adding a new one.
 
 Finally, we could add the `/profile` and `/sign-out` routes as follows:
 ```typescript twoslash [user.ts]
@@ -1021,12 +987,9 @@ export const user = new Elysia({ prefix: '/user' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .put(
         '/sign-up',
         async ({ body: { username, password }, store, error }) => {
@@ -1144,12 +1107,9 @@ export const userService = new Elysia({ name: 'user/service' }) // [!code ++]
             { // [!code ++]
                 secrets: 'seia' // [!code ++]
             } // [!code ++]
-        ) // [!code ++]
+        ), // [!code ++]
+        optionalSession: t.Optional(t.Ref('session')) // [!code ++]
     }) // [!code ++]
-    .model((model) => ({ // [!code ++]
-        ...model, // [!code ++]
-        optionalSession: t.Optional(model.session) // [!code ++]
-    })) // [!code ++]
 
 export const user = new Elysia({ prefix: '/user' })
 	.use(userService) // [!code ++]
@@ -1169,12 +1129,9 @@ export const user = new Elysia({ prefix: '/user' })
             { // [!code --]
                 secrets: 'seia' // [!code --]
             } // [!code --]
-        ) // [!code --]
+        ), // [!code --]
+  		optionalSession: t.Optional(t.Ref('session')) // [!code --]
     }) // [!code --]
-    .model((model) => ({ // [!code --]
-        ...model, // [!code --]
-        optionalSession: t.Optional(model.session) // [!code --]
-    })) // [!code --]
 ```
 
 The `name` property here is very important, as it's a unique identifier for the plugin to prevent duplicate instances (like a singleton).
@@ -1207,12 +1164,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({ // [!code ++]
         isSignIn(enabled: boolean) { // [!code ++]
             if (!enabled) return // [!code ++]
@@ -1261,12 +1215,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: boolean) {
             if (!enabled) return
@@ -1401,12 +1352,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -1472,12 +1420,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -1551,12 +1496,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -1626,12 +1568,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -1711,12 +1650,9 @@ export const user = new Elysia({ prefix: '/user' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .put(
         '/sign-up',
         async ({ body: { username, password }, store, error }) => {
@@ -1972,12 +1908,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -2172,12 +2105,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -2299,12 +2229,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -2444,12 +2371,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -2560,12 +2484,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: true) {
             if (!enabled) return
@@ -2809,12 +2730,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: boolean) {
             if (!enabled) return
@@ -2945,12 +2863,9 @@ export const userService = new Elysia({ name: 'user/service' })
             {
                 secrets: 'seia'
             }
-        )
+        ),
+        optionalSession: t.Optional(t.Ref('session'))
     })
-    .model((model) => ({
-        ...model,
-        optionalSession: t.Optional(model.session)
-    }))
     .macro(({ onBeforeHandle }) => ({
         isSignIn(enabled: boolean) {
             if (!enabled) return
