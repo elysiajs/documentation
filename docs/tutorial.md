@@ -1087,7 +1087,11 @@ For **1.** instead of using guard, we could use a **macro**.
 ## Plugin deduplication
 
 As we are going to reuse this hook in multiple modules (user, and note), let's extract the service (utility) part out and apply it to both modules.
+// @errors: 2538
+// @filename: user.ts
+import { Elysia, t } from 'elysia'
 ```ts twoslash [user.ts]
+// @errors: 2538
 import { Elysia, t } from 'elysia'
 
 export const userService = new Elysia({ name: 'user/service' }) // [!code ++]
@@ -1145,6 +1149,7 @@ Macro allows us to define a custom hook with custom life-cycle management.
 
 To define a macro, we could use `.macro` as follows:
 ```ts twoslash [user.ts]
+// @errors: 2538
 import { Elysia, t } from 'elysia'
 
 export const userService = new Elysia({ name: 'user/service' })
@@ -1167,12 +1172,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({ // [!code ++]
+    .macro({
         isSignIn(enabled: boolean) { // [!code ++]
             if (!enabled) return // [!code ++]
 
-            onBeforeHandle( // [!code ++]
-                ({ error, cookie: { token }, store: { session } }) => { // [!code ++]
+			return {
+	            beforeHandle({ error, cookie: { token }, store: { session } }) { // [!code ++]
                     if (!token.value) // [!code ++]
                         return error(401, { // [!code ++]
                             success: false, // [!code ++]
@@ -1187,15 +1192,19 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized' // [!code ++]
                         }) // [!code ++]
                 } // [!code ++]
-            ) // [!code ++]
+			} // [!code ++]
         } // [!code ++]
-    })) // [!code ++]
+    }) // [!code ++]
 ```
 
 We have just created a new macro name `isSignIn` that accepts a `boolean` value, if it is true, then we add an `onBeforeHandle` event that executes **after validation but before the main handler**, allowing us to extract authentication logic here.
 
 To use the macro, simply specify `isSignIn: true` as follows:
+// @errors: 2538
+// @filename: user.ts
+import { Elysia, t } from 'elysia'
 ```ts twoslash [user.ts]
+// @errors: 2538
 import { Elysia, t } from 'elysia'
 
 export const userService = new Elysia({ name: 'user/service' })
@@ -1218,12 +1227,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
+    .macro({
         isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1238,9 +1247,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 
 export const user = new Elysia({ prefix: '/user' })
     .use(userService)
@@ -1332,7 +1341,11 @@ Unlike `decorate` and `store`, resolve is defined at the `beforeHandle` stage or
 
 This ensures that the property like `cookie: 'session'` exists before creating a new property.
 
+// @errors: 2538
+// @filename: user.ts
+import { Elysia, t } from 'elysia'
 ```ts twoslash [user.ts]
+// @errors: 2538
 import { Elysia, t } from 'elysia'
 
 export const userService = new Elysia({ name: 'user/service' })
@@ -1355,12 +1368,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1375,9 +1388,10 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
+
 // ---cut---
 export const getUserId = new Elysia() // [!code ++]
     .use(userService) // [!code ++]
@@ -1423,12 +1437,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1443,9 +1457,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 // ---cut---
 export const getUserId = new Elysia()
     .use(userService)
@@ -1477,6 +1491,7 @@ In our case, we want to use **scoped** as it will apply to the controller that u
 
 To do this, we need to annotate that life-cycle as `scoped`:
 ```typescript twoslash [user.ts]
+// @errors: 2538
 import { Elysia, t } from 'elysia'
 
 export const userService = new Elysia({ name: 'user/service' })
@@ -1499,12 +1514,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1519,9 +1534,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 // ---cut---
 export const getUserId = new Elysia()
     .use(userService)
@@ -1548,7 +1563,11 @@ export const user = new Elysia({ prefix: '/user' })
 
 Alternatively, if we have multiple `scoped` defined, we could use `as` to cast multiple life-cycles instead.
 
+// @errors: 2538
+// @filename: user.ts
+import { Elysia, t } from 'elysia'
 ```ts twoslash [user.ts]
+// @errors: 2538
 import { Elysia, t } from 'elysia'
 
 export const userService = new Elysia({ name: 'user/service' })
@@ -1571,12 +1590,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1591,9 +1610,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 // ---cut---
 export const getUserId = new Elysia()
     .use(userService)
@@ -1630,6 +1649,7 @@ But first, don't forget to import the `user` in the `index.ts` file:
 ::: code-group
 
 ```typescript twoslash [index.ts]
+// @errors: 2538
 // @filename: user.ts
 import { Elysia, t } from 'elysia'
 
@@ -1887,7 +1907,7 @@ export const note = new Elysia({ prefix: '/note' })
 Now let's import, and use `userService`, `getUserId` to apply authorization to the **note** controller.
 
 ```typescript twoslash [note.ts]
-// @errors: 2392 2300 2403 2345 2698
+// @errors: 2392 2300 2403 2345 2698, 2538
 // @filename: user.ts
 import { Elysia, t } from 'elysia'
 
@@ -1911,12 +1931,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1931,9 +1951,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 
 export const getUserId = new Elysia()
     .use(userService)
@@ -2085,6 +2105,7 @@ export const note = new Elysia()
         }
     )
 
+// @errors: 2538
 // @filename: user.ts
 import { Elysia, t } from 'elysia'
 
@@ -2108,12 +2129,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2128,9 +2149,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 
 export const getUserId = new Elysia()
     .use(userService)
@@ -2187,6 +2208,7 @@ Returning a truthy value will override a default error response, so we can retur
 ::: code-group
 
 ```typescript twoslash [index.ts]
+// @errors: 2538
 // @filename: note.ts
 import { Elysia, t } from 'elysia'
 
@@ -2232,12 +2254,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2252,9 +2274,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 
 export const getUserId = new Elysia()
     .use(userService)
@@ -2329,6 +2351,7 @@ Now let's apply the OpenTelemetry plugin to our server.
 ::: code-group
 
 ```typescript twoslash [index.ts]
+// @errors: 2538
 // @filename: note.ts
 import { Elysia, t } from 'elysia'
 
@@ -2374,12 +2397,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2394,9 +2417,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 
 export const getUserId = new Elysia()
     .use(userService)
@@ -2464,6 +2487,7 @@ If you are following along, you should have a codebase that looks like this:
 ::: code-group
 
 ```typescript twoslash [index.ts]
+// @errors: 2538
 // @filename: user.ts
 import { Elysia, t } from 'elysia'
 
@@ -2487,12 +2511,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
-        isSignIn(enabled: true) {
+    .macro({
+        isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2507,9 +2531,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 
 export const getUserId = new Elysia()
     .use(userService)
@@ -2711,6 +2735,7 @@ const app = new Elysia()
 ```
 
 ```typescript twoslash [user.ts]
+// @errors: 2538
 import { Elysia, t } from 'elysia'
 
 export const userService = new Elysia({ name: 'user/service' })
@@ -2733,12 +2758,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
+    .macro({
         isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2753,9 +2778,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 
 export const getUserId = new Elysia()
     .use(userService)
@@ -2843,6 +2868,7 @@ export const user = new Elysia({ prefix: '/user' })
 ```
 
 ```typescript twoslash [note.ts]
+// @errors: 2538
 // @filename: user.ts
 import { Elysia, t } from 'elysia'
 
@@ -2866,12 +2892,12 @@ export const userService = new Elysia({ name: 'user/service' })
         ),
         optionalSession: t.Optional(t.Ref('session'))
     })
-    .macro(({ onBeforeHandle }) => ({
+    .macro({
         isSignIn(enabled: boolean) {
             if (!enabled) return
 
-            onBeforeHandle(
-                ({ error, cookie: { token }, store: { session } }) => {
+            return {
+            	beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2886,9 +2912,9 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized'
                         })
                 }
-            )
+            }
         }
-    }))
+    })
 
 export const getUserId = new Elysia()
     .use(userService)
