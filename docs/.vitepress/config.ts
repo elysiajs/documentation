@@ -146,10 +146,6 @@ export default defineConfig({
 				collapsed: true,
 				items: [
 					{
-						text: 'Best Practice',
-						link: '/essential/best-practice'
-					},
-					{
 						text: 'Route',
 						link: '/essential/route'
 					},
@@ -168,6 +164,10 @@ export default defineConfig({
 					{
 						text: 'Plugin',
 						link: '/essential/plugin'
+					},
+					{
+						text: 'Best Practice',
+						link: '/essential/best-practice'
 					}
 				]
 			},
@@ -175,6 +175,10 @@ export default defineConfig({
 				text: 'Patterns',
 				collapsed: true,
 				items: [
+					{
+						text: 'Macro',
+						link: '/patterns/macro'
+					},
 					{
 						text: 'Configuration',
 						link: '/patterns/configuration'

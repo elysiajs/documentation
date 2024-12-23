@@ -250,7 +250,7 @@ The returned value will be assigned to Context.body. If not, Elysia will continu
 
 All of the context is based on normal context and can be used like normal context in route handler.
 
-### Explicit Body
+### Parser
 
 By default, Elysia will try to determine body parsing function ahead of time and pick the most suitable function to speed up the process.
 
@@ -280,7 +280,7 @@ Here's a criteria that Elysia uses to pick up type of body parser
 
 This allows Elysia to optimize body parser ahead of time, and reduce overhead in compile time.
 
-### Explicit Content Type
+### Explicit Parser
 However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`
 
 ```typescript
@@ -289,7 +289,7 @@ import { Elysia } from 'elysia'
 new Elysia()
     .post('/', ({ body }) => body, {
         // Short form of application/json
-        type: 'json',
+        parse: 'json'
     })
 ```
 
@@ -310,6 +310,23 @@ type ContentType = |
     | 'application/json'
     | 'multipart/form-data'
     | 'application/x-www-form-urlencoded'
+```
+
+### Custom Parser
+
+You can provide register a custom parser with `parser`:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.parser('custom', ({ request, contentType }) => {
+		if(contentType === "application/elysia")
+			return request.text()
+	})
+	.post('/', ({ body }) => body, {
+        parse: ['custom', 'json']
+    })
 ```
 
 ## Transform

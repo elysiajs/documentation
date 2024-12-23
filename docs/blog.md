@@ -24,6 +24,11 @@ head:
 
 <Blogs
   :blogs="[
+      {
+        title: 'Elysia 1.2 - You and Me',
+        href: '/blog/elysia-12',
+        detail: 'Introducing Adapter for universal runtime suppport, Object macro with resolve, Parser with custom name, WebSocket with lifecycle, TypeBox 0.34 with recursive type, and Eden validation inference.'
+      },
 	  {
 	    title: 'Elysia 1.1 - Grown-up\'s Paradise',
 	    href: '/blog/elysia-11',

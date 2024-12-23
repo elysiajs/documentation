@@ -34,32 +34,11 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
     window.localStorage.setItem('theme-switch', Date.now().toString())
 
-    const clipPath = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${Math.hypot(
-            Math.max(x, innerWidth - x),
-            Math.max(y, innerHeight - y)
-        )}px at ${x}px ${y}px)`
-    ]
-
-    // @ts-expect-error
     if (document.startViewTransition !== undefined)
-        // @ts-expect-error
         await document.startViewTransition(async () => {
             darkTheme.value = !darkTheme.value
             await nextTick()
         }).ready
-
-    // document.documentElement.animate(
-    //     { clipPath: isDark.value ? clipPath.reverse() : clipPath },
-    //     {
-    //         duration: 300,
-    //         easing: 'ease-in',
-    //         pseudoElement: `::view-transition-${
-    //             isDark.value ? 'old' : 'new'
-    //         }(root)`
-    //     }
-    // )
 })
 </script>
 

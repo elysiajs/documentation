@@ -313,3 +313,7 @@ button.copy::after {
 .fern-gap {
 	@apply px-4 lg:px-0;
 }
+
+.vp-doc h2 {
+	@apply !mb-2.5;
+}
