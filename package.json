@@ -14,7 +14,7 @@
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.22",
     "dayjs": "^1.11.13",
-    "elysia": "1.2.1",
+    "elysia": "1.2.2",
     "postcss": "^8.4.49",
     "postcss-nesting": "^13.0.1",
     "postcss-preset-env": "^10.1.2",
