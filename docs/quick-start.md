@@ -185,17 +185,17 @@ To create a new Elysia app with TypeScript, we recommended install Elysia with `
 
 ::: code-group
 
-```typescript [pnpm]
+```bash [pnpm]
 pnpm add elysia && \
 pnpm add -d tsx @types/node typescript
 ```
 
-```typescript [npm]
+```bash [npm]
 npm install elysia && \
 npm install --save-dev tsx @types/node typescript
 ```
 
-```typescript [yarn]
+```bash [yarn]
 yarn add elysia && \
 yarn add -d tsx @types/node typescript
 ```
@@ -208,7 +208,7 @@ This will install Elysia, TypeScript, and `tsx`.
 
 Create a new file `src/index.ts` and add the following code:
 
-```javascript
+```typescript
 import { Elysia } from 'elysia'
 import { node } from '@elysiajs/node'
 
@@ -225,11 +225,10 @@ Open your `package.json` file and add the following scripts:
 
 ```json
 {
-	"type", "module",
    	"scripts": {
   		"dev": "tsx watch src/index.ts",
     	"build": "tsc src/index.ts --outDir dist",
-  		"start": "NODE_ENV=production node dist/index.js",
+  		"start": "NODE_ENV=production node dist/index.js"
    	}
 }
 ```
@@ -267,15 +266,15 @@ To create a new Elysia app with JavaScript, starts by installing Elysia:
 
 ::: code-group
 
-```typescript [pnpm]
+```bash [pnpm]
 pnpm add elysia
 ```
 
-```typescript [npm]
+```bash [npm]
 npm install elysia
 ```
 
-```typescript [yarn]
+```bash [yarn]
 yarn add elysia
 ```
 
@@ -287,7 +286,7 @@ This will install Elysia, TypeScript, and `tsx`.
 
 Create a new file `src/index.ts` and add the following code:
 
-```typescript
+```javascript
 import { Elysia } from 'elysia'
 import { node } from '@elysiajs/node'
 
@@ -304,9 +303,10 @@ Open your `package.json` file and add the following scripts:
 
 ```json
 {
+	"type", "module",
    	"scripts": {
   		"dev": "node src/index.ts",
-  		"start": "NODE_ENV=production node src/index.js",
+  		"start": "NODE_ENV=production node src/index.js"
    	}
 }
 ```
@@ -314,7 +314,6 @@ Open your `package.json` file and add the following scripts:
 These scripts refer to the different stages of developing an application:
 
 - **dev** - Start Elysia in development mode with auto-reload on code change.
-- **build** - Build the application for production usage.
 - **start** - Start an Elysia production server.
 
 Make sure to create `tsconfig.json`
