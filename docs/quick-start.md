@@ -208,7 +208,8 @@ This will install Elysia, TypeScript, and `tsx`.
 
 Create a new file `src/index.ts` and add the following code:
 
-```typescript
+```javascript
+import { Elysia } from 'elysia'
 import { node } from '@elysiajs/node'
 
 const app = new Elysia({ adapter: node() })
@@ -224,6 +225,7 @@ Open your `package.json` file and add the following scripts:
 
 ```json
 {
+	"type", "module",
    	"scripts": {
   		"dev": "tsx watch src/index.ts",
     	"build": "tsc src/index.ts --outDir dist",
