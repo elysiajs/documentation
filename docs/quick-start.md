@@ -186,12 +186,12 @@ To create a new Elysia app with TypeScript, we recommended install Elysia with `
 ::: code-group
 
 ```bash [pnpm]
-pnpm add elysia && \
+pnpm add elysia @elysiajs/node && \
 pnpm add -d tsx @types/node typescript
 ```
 
 ```bash [npm]
-npm install elysia && \
+npm install elysia @elysiajs/node && \
 npm install --save-dev tsx @types/node typescript
 ```
 
@@ -267,15 +267,15 @@ To create a new Elysia app with JavaScript, starts by installing Elysia:
 ::: code-group
 
 ```bash [pnpm]
-pnpm add elysia
+pnpm add elysia @elysiajs/node
 ```
 
 ```bash [npm]
-npm install elysia
+npm install elysia @elysiajs/node
 ```
 
 ```bash [yarn]
-yarn add elysia
+yarn add elysia @elysiajs/node
 ```
 
 :::
