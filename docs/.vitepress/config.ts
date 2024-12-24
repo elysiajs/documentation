@@ -28,19 +28,6 @@ export default defineConfig({
 
     // ![INFO] uncomment for support hot reload on WSL - https://github.com/vitejs/vite/issues/1153#issuecomment-785467271
     vite: {
-        esbuild: {
-            supported: {
-                'top-level-await': true //browsers can handle top-level-await features
-            }
-        },
-        // resolve: {
-        //     alias: {
-        //         'elysia/universal/fs': path.resolve(
-        //             __dirname,
-        //             './polyfill/fs.js'
-        //         )
-        //     }
-        // },
         server: {
             watch: {
                 usePolling: true
