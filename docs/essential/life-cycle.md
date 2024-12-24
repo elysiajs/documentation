@@ -790,7 +790,7 @@ new Elysia()
     .get('/', () => 'Hello', {
         beforeHandle({ set, request: { headers }, error }) {
             if (!isSignIn(headers))
-                return error(401)
+                throw error(401)
         },
         error({ error }) {
             return 'Handled'
