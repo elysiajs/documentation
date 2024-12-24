@@ -214,11 +214,11 @@ import { node } from '@elysiajs/node'
 
 const app = new Elysia({ adapter: node() })
 	.get('/', () => 'Hello Elysia')
-	.listen(3000)
-
-console.log(
-	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-)
+	.listen(3000, ({ hostname, port }) => {
+		console.log(
+			`🦊 Elysia is running at ${hostname}:${port}`
+		)
+	})
 ```
 
 Open your `package.json` file and add the following scripts:
@@ -292,11 +292,11 @@ import { node } from '@elysiajs/node'
 
 const app = new Elysia({ adapter: node() })
 	.get('/', () => 'Hello Elysia')
-	.listen(3000)
-
-console.log(
-	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-)
+	.listen(3000, ({ hostname, port }) => {
+		console.log(
+			`🦊 Elysia is running at ${hostname}:${port}`
+		)
+	})
 ```
 
 Open your `package.json` file and add the following scripts:
