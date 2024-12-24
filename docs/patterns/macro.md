@@ -30,6 +30,8 @@ Macro allows us to define a custom field to the hook.
 
 <template v-slot:macro1>
 
+Macro v1 use functional callback with event listener function.
+
 **Elysia.macro** allows us to compose custom heavy logic into a simple configuration available in hook, and **guard** with full type safety.
 
 ```typescript twoslash
@@ -163,7 +165,7 @@ const plugin = new Elysia({ name: 'plugin' })
 
 <template v-slot:macro2>
 
-Macro allows us to define a custom field to the hook.
+Macro v2 use an object syntax with return lifecycle like inline hook.
 
 **Elysia.macro** allows us to compose custom heavy logic into a simple configuration available in hook, and **guard** with full type safety.
 

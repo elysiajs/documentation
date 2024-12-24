@@ -1,5 +1,5 @@
 <template>
-	<section class="flex flex-col">
+	<section>
 		<nav class="flex gap-1 my-2 text-sm border-b border-slate-200">
 			<button
 				v-for="(name, index) in names"
