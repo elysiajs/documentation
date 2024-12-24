@@ -14,7 +14,7 @@ head:
       content: Macro allows us to define a custom field to the hook.
 ---
 
-## Macro
+# Macro
 
 <script setup>
 import Tab from '../../components/fern/tab.vue'
@@ -29,7 +29,6 @@ Macro allows us to define a custom field to the hook.
 >
 
 <template v-slot:macro1>
-
 
 **Elysia.macro** allows us to compose custom heavy logic into a simple configuration available in hook, and **guard** with full type safety.
 
