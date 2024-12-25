@@ -358,7 +358,7 @@ new Elysia()
 ```
 
 ## Derive
-Designed to append new value to context directly before validation process storing in the same stack as **transform**.
+Append new value to context directly **before validation**. It's stored in the same stack as **transform**.
 
 Unlike **state** and **decorate** that assigned value before the server started. **derive** assigns a property when each request happens. Allowing us to extract a piece of information into a property instead.
 
@@ -476,9 +476,7 @@ new Elysia()
 
 ## Resolve
 
-A "safe" version of [derive](#derive).
-
-Designed to append new value to context after validation process storing in the same stack as **beforeHandle**.
+Append new value to context **after validation**. It's stored in the same stack as **beforeHandle**.
 
 Resolve syntax is identical to [derive](#derive), below is an example of retrieving a bearer header from the Authorization plugin.
 

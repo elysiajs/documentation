@@ -285,6 +285,19 @@ There should be minor required changes to your codebase to adapt to upgrade to E
 
 However, these are all the changes that you need to be aware of.
 
+### parse
+`type` is now merged with `parse` to allow control over order of custom and built-in parser.
+
+```ts
+import { Elysia, form, file } from 'elysia'
+
+new Elysia()
+	.post('/', ({ body }) => body, {
+		type: 'json' // [!code --]
+		parse: 'json' // [!code ++]
+	})
+```
+
 ### formdata
 Starting from 1.2, you now have to explicitly return `form` if the response is a formdata instead of automatically detect if file is present in 1-level deep object.
 
@@ -298,16 +311,26 @@ new Elysia()
 	}))
 ```
 
-### parse
-`type` is now merged with `parse` to allow control over order of custom and built-in parser.
+### WebSocket
+WebSocket method now return thier respective value instead of returning `WebSocket`.
+
+Thus removing the ability to do method chaining.
+
+This is to make WebSocket match the same API with Bun's WebSocket API for better compatibility and migration.
 
 ```ts
-import { Elysia, form, file } from 'elysia'
+import { Elysia } from 'elysia'
 
 new Elysia()
-	.post('/', ({ body }) => body, {
-		type: 'json' // [!code --]
-		parse: 'json' // [!code ++]
+	.ws('/', {
+		message(ws) {
+			ws // [!code --]
+				.send('hello') // [!code --]
+				.send('world') // [!code --]
+
+			ws.send('hello') // [!code ++]
+			ws.send('world') // [!code ++]
+		}
 	})
 ```
 
