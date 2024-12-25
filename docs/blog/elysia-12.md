@@ -46,7 +46,7 @@ Elysia 1.2 focus on commitment to expand universal runtime support and developer
 - [Parser](#parser)
 - [WebSocket](#websocket)
 - [Typebox 0.34](#typebox)
-- [Type Inference](#type-inference)
+- [Reduced Memory usage](#reduced-memory-usage)
 
 ## Adapter
 One of the most requested features is to support more runtimes.
@@ -233,6 +233,19 @@ new Elysia()
 	})
 ```
 
+## Reduced Memory usage
+We have refactor Sucrose's generated code for a swappable code generation process.
+
+By refactoring for a better code duplication, router optimization, and unnecessary code removal.
+
+This allows Elysia to reuse code from several parts and reduce large portion of memory usage.
+
+For our project, by simply upgrading to Elysia 1.2, we seen up to 2x memory reduction from 1.1.
+
+![Memory comparison between 1.1 and 1.2](/blog/elysia-12/memory.webp)
+
+This memory optimization is scaled with the number of routes and the complexity of the route. So you may see reduced memory usage exponentially.
+
 ## Notable update
 Below are some of the notable improvement that are made in Elysia 1.2.
 
@@ -258,13 +271,6 @@ if(error)
 			console.error(error)
 	}
 ```
-
-### Sucrose
-To deliver runtime adapter, Sucrose has to be updated to support swappable code generation.
-
-This allows Elysia to decouple and refactor most of the code generation process to be more modular.
-
-We have refactored code generation to be more optimized and faster including removing unnecessary space, tab and new line to reduce memory usage.
 
 ### Router
 We have updated route registration deduplication to be more optimized.
