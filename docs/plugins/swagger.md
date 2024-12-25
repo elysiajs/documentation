@@ -53,7 +53,7 @@ UI Provider for documentation. Default to Scalar.
 
 Configuration for customizing Scalar.
 
-Please refer to the [Scalar config](https://github.com/scalar/scalar?tab=readme-ov-file#configuration)
+Please refer to the [Scalar config](https://github.com/scalar/scalar/blob/main/documentation/configuration.md)
 
 ### swagger
 
