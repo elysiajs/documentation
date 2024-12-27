@@ -1,5 +1,6 @@
 ---
 title: Eden Treaty Legacy - ElysiaJS
+search: false
 head:
   - - meta
     - property: 'og:title'
@@ -69,7 +70,7 @@ const { data: nendoroid, error } = app.mirror.post({
 ```
 
 ::: tip
-Eden Treaty is fully type-safe with auto-completion support. 
+Eden Treaty is fully type-safe with auto-completion support.
 :::
 
 ## Anatomy

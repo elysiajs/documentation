@@ -17,6 +17,22 @@ head:
 <script setup>
 import Card from '../../components/nearl/card.vue'
 import Deck from '../../components/nearl/card-deck.vue'
+import Playground from '../../components/nearl/playground.vue'
+
+import { Elysia } from 'elysia'
+
+const demo = new Elysia()
+	.onError(({ code }) => {
+		if (code === 418) return 'caught'
+	})
+	.get('/return', ({ error }) => {
+		// This will NOT be caught by onError
+		return error(418)
+	})
+	.get('/throw', ({ error }) => {
+		// This will NOT be caught by onError
+		throw error(418)
+	})
 </script>
 
 # Lifecycle
@@ -47,8 +63,8 @@ Below are the request life cycle available in Elysia:
     <Card title="Map Response" href="#map-response">
         Map returned value into a response
     </Card>
-    <Card title="On Error" href="#on-error">
-        Capture error when thrown
+    <Card title="On Error (Error Handling)" href="#on-error-error-handling">
+   		Handle error thrown in life-cycle
     </Card>
     <Card title="After Response" href="#after-response">
         Executed after response sent to the client
@@ -59,6 +75,7 @@ Below are the request life cycle available in Elysia:
 </Deck>
 
 ## Why
+
 Imagine we want to return some HTML.
 
 We need to set **"Content-Type"** headers as **"text/html"** for the browser to render HTML.
@@ -182,24 +199,27 @@ Console should log the following:
 ```
 
 ## Request
+
 The first life-cycle event to get executed for every new request is recieved.
 
 As `onRequest` is designed to provide only the most crucial context to reduce overhead, it is recommended to use in the following scenario:
+
 - Caching
 - Rate Limiter / IP/Region Lock
 - Analytic
 - Provide custom header, eg. CORS
 
 #### Example
+
 Below is a pseudo code to enforce rate-limit on a certain IP address.
+
 ```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
     .use(rateLimiter)
     .onRequest(({ rateLimiter, ip, set, error }) => {
-        if(rateLimiter.check(ip))
-            return error(420, 'Enhance your calm')
+        if (rateLimiter.check(ip)) return error(420, 'Enhance your calm')
     })
     .get('/', () => 'hi')
     .listen(3000)
@@ -208,8 +228,10 @@ new Elysia()
 If a value is returned from `onRequest`, it will be used as the response and the rest of the life-cycle will be skipped.
 
 ### Pre Context
+
 Context's onRequest is typed as `PreContext`, a minimal representation of `Context` with the attribute on the following:
 request: `Request`
+
 - set: `Set`
 - store
 - decorators
@@ -217,11 +239,13 @@ request: `Request`
 Context doesn't provide `derived` value because derive is based on `onTransform` event.
 
 ## Parse
+
 Parse is an equivalent of **body parser** in Express.
 
 A function to parse body, the return value will be append to `Context.body`, if not, Elysia will continue iterating through additional parser functions assigned by `onParse` until either body is assigned or all parsers have been executed.
 
 By default, Elysia will parse the body with content-type of:
+
 - `text/plain`
 - `application/json`
 - `multipart/form-data`
@@ -230,22 +254,23 @@ By default, Elysia will parse the body with content-type of:
 It's recommended to use the `onParse` event to provide a custom body parser that Elysia doesn't provide.
 
 #### Example
+
 Below is an example code to retrieve value based on custom headers.
 
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia()
-    .onParse(({ request, contentType }) => {
-        if (contentType === 'application/custom-type')
-            return request.text()
-    })
+new Elysia().onParse(({ request, contentType }) => {
+    if (contentType === 'application/custom-type') return request.text()
+})
 ```
 
 The returned value will be assigned to Context.body. If not, Elysia will continue iterating through additional parser functions from **onParse** stack until either body is assigned or all parsers have been executed.
 
 ### Context
+
 `onParse` Context is extends from `Context` with additional properties of the following:
+
 - contentType: Content-Type header of the request
 
 All of the context is based on normal context and can be used like normal context in route handler.
@@ -257,16 +282,16 @@ By default, Elysia will try to determine body parsing function ahead of time and
 Elysia is able to determine that body function by reading `body`.
 
 Take a look at this example:
+
 ```typescript
 import { Elysia, t } from 'elysia'
 
-new Elysia()
-    .post('/', ({ body }) => body, {
-        body: t.Object({
-            username: t.String(),
-            password: t.String()
-        })
+new Elysia().post('/', ({ body }) => body, {
+    body: t.Object({
+        username: t.String(),
+        password: t.String()
     })
+})
 ```
 
 Elysia read the body schema and found that, the type is entirely an object, so it's likely that the body will be JSON. Elysia then picks the JSON body parser function ahead of time and tries to parse the body.
@@ -281,21 +306,22 @@ Here's a criteria that Elysia uses to pick up type of body parser
 This allows Elysia to optimize body parser ahead of time, and reduce overhead in compile time.
 
 ### Explicit Parser
+
 However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`
 
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia()
-    .post('/', ({ body }) => body, {
-        // Short form of application/json
-        parse: 'json'
-    })
+new Elysia().post('/', ({ body }) => body, {
+    // Short form of application/json
+    parse: 'json'
+})
 ```
 
 Allowing us to control Elysia behavior for picking body parser function to fit our needs in a complex scenario.
 
 `type` may be one of the following:
+
 ```typescript
 type ContentType = |
     // Shorthand for 'text/plain'
@@ -320,23 +346,25 @@ You can provide register a custom parser with `parser`:
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.parser('custom', ({ request, contentType }) => {
-		if(contentType === "application/elysia")
-			return request.text()
-	})
-	.post('/', ({ body }) => body, {
+    .parser('custom', ({ request, contentType }) => {
+        if (contentType === 'application/elysia') return request.text()
+    })
+    .post('/', ({ body }) => body, {
         parse: ['custom', 'json']
     })
 ```
 
 ## Transform
+
 Executed just before **Validation** process, designed to mutate context to conform with the validation or appending new value.
 
 It's recommended to use transform for the following:
+
 - Mutate existing context to conform with validation.
 - `derive` is based on `onTransform` with support for providing type.
 
 #### Example
+
 Below is an example of using transform to mutate params to be numeric values.
 
 ```typescript
@@ -350,14 +378,14 @@ new Elysia()
         transform({ params }) {
             const id = +params.id
 
-            if(!Number.isNaN(id))
-                params.id = id
+            if (!Number.isNaN(id)) params.id = id
         }
     })
     .listen(3000)
 ```
 
 ## Derive
+
 Append new value to context directly **before validation**. It's stored in the same stack as **transform**.
 
 Unlike **state** and **decorate** that assigned value before the server started. **derive** assigns a property when each request happens. Allowing us to extract a piece of information into a property instead.
@@ -381,6 +409,7 @@ Because **derive** is assigned once a new request starts, **derive** can access 
 Unlike **state**, and **decorate**. Properties which assigned by **derive** is unique and not shared with another request.
 
 ### Queue
+
 `derive` and `transform` is stored in the same queue.
 
 ```typescript
@@ -414,8 +443,8 @@ If a value is returned, the route handler will be skipped.
 
 It's recommended to use Before Handle in the following situations:
 
--   Restricted access check: authorization, user sign-in
--   Custom request requirement over data structure
+- Restricted access check: authorization, user sign-in
+- Custom request requirement over data structure
 
 #### Example
 
@@ -428,8 +457,7 @@ import { validateSession } from './user'
 new Elysia()
     .get('/', () => 'hi', {
         beforeHandle({ set, cookie: { session }, error }) {
-            if (!validateSession(session.value))
-                return error(401)
+            if (!validateSession(session.value)) return error(401)
         }
     })
     .listen(3000)
@@ -448,19 +476,13 @@ When we need to apply the same before handle to multiple routes, we can use `gua
 
 ```typescript
 import { Elysia } from 'elysia'
-import {
-    signUp,
-    signIn,
-    validateSession,
-    isUserExists
-} from './user'
+import { signUp, signIn, validateSession, isUserExists } from './user'
 
 new Elysia()
     .guard(
         {
             beforeHandle({ set, cookie: { session }, error }) {
-                if (!validateSession(session.value))
-                    return error(401)
+                if (!validateSession(session.value)) return error(401)
             }
         },
         (app) =>
@@ -560,8 +582,8 @@ Execute after the main handler, for mapping a returned value of **before handle*
 
 It's recommended to use After Handle in the following situations:
 
--   Transform requests into a new value, eg. Compression, Event Stream
--   Add custom headers based on the response value, eg. **Content-Type**
+- Transform requests into a new value, eg. Compression, Event Stream
+- Add custom headers based on the response value, eg. **Content-Type**
 
 #### Example
 
@@ -626,8 +648,8 @@ Executed just after **"afterHandle"**, designed to provide custom response mappi
 
 It's recommended to use transform for the following:
 
--   Compression
--   Map value into a Web Standard Response
+- Compression
+- Map value into a Web Standard Response
 
 #### Example
 
@@ -644,20 +666,17 @@ new Elysia()
 
         const text = isJson
             ? JSON.stringify(response)
-            : response?.toString() ?? ''
+            : (response?.toString() ?? '')
 
         set.headers['Content-Encoding'] = 'gzip'
 
-        return new Response(
-            Bun.gzipSync(encoder.encode(text)),
-            {
-                headers: {
-                    'Content-Type': `${
-                        isJson ? 'application/json' : 'text/plain'
-                    }; charset=utf-8`
-                }
+        return new Response(Bun.gzipSync(encoder.encode(text)), {
+            headers: {
+                'Content-Type': `${
+                    isJson ? 'application/json' : 'text/plain'
+                }; charset=utf-8`
             }
-        )
+        })
     })
     .get('/text', () => 'mapResponse')
     .get('/json', () => ({ map: 'response' }))
@@ -668,15 +687,15 @@ Like **parse** and **beforeHandle**, after a value is returned, the next iterati
 
 Elysia will handle the merging process of **set.headers** from **mapResponse** automatically. We don't need to worry about appending **set.headers** to Response manually.
 
-## On Error
+## On Error (Error Handling)
 
-**On Error** is the only life-cycle event that is not always executed on each request, but only when an error is thrown in any other life-cycle at least once.
+Designed for error-handling. It will be executed when an error is thrown in any life-cycle.
 
-Designed to capture and resolve an unexpected error, its recommended to use on Error in the following situation:
+Its recommended to use on Error in the following situation:
 
--   To provide custom error message
--   Fail safe or an error handler or retrying a request
--   Logging and analytic
+- To provide custom error message
+- Fail safe or an error handler or retrying a request
+- Logging and analytic
 
 #### Example
 
@@ -703,6 +722,7 @@ It's important that `onError` must be called before the handler we want to apply
 :::
 
 ### Custom 404 message
+
 For example, returning custom 404 messages:
 
 ```typescript
@@ -710,8 +730,7 @@ import { Elysia, NotFoundError } from 'elysia'
 
 new Elysia()
     .onError(({ code, error, set }) => {
-        if (code === 'NOT_FOUND')
-            return error(404, 'Not Found :(')
+        if (code === 'NOT_FOUND') return error(404, 'Not Found :(')
     })
     .post('/', () => {
         throw new NotFoundError()
@@ -723,24 +742,57 @@ new Elysia()
 
 `onError` Context is extends from `Context` with additional properties of the following:
 
--   error: Error object thrown
--   code: Error Code
+- **error**: A value that was thrown
+- **code**: *Error Code*
 
 ### Error Code
 
 Elysia error code consists of:
 
--   NOT_FOUND
--   INTERNAL_SERVER_ERROR
--   VALIDATION
--   PARSE
--   UNKNOWN
+- **NOT_FOUND**
+- **INTERNAL_SERVER_ERROR**
+- **VALIDATION**
+- **PARSE**
+- **UNKNOWN**
+- **number** (based on HTTP Status)
 
-By default, the thrown error code is `unknown`.
+By default, the thrown error code is `UNKNOWN`.
 
 ::: tip
 If no error response is returned, the error will be returned using `error.name`.
 :::
+
+### To Throw or To Return
+
+`Elysia.error` is a shorthand for returning an error with a specific HTTP status code.
+
+It could either be **return** or **throw** based on your specific needs.
+
+- If an `error` is **throw**, it will be caught by `onError` middleware.
+- If an `error` is **return**, it will be **NOT** caught by `onError` middleware.
+
+See the following code:
+
+```typescript
+import { Elysia, file } from 'elysia'
+
+new Elysia()
+    .onError(({ code, error, path }) => {
+        if (code === 418) return 'caught'
+    })
+    .get('/throw', ({ error }) => {
+        // This will NOT be caught by onError
+        throw error(418)
+    })
+    .get('/return', () => {
+        // This will NOT be caught by onError
+        return error(418)
+    })
+```
+
+<Playground
+    :elysia="demo"
+/>
 
 ### Custom Error
 
@@ -787,8 +839,7 @@ import { Elysia } from 'elysia'
 new Elysia()
     .get('/', () => 'Hello', {
         beforeHandle({ set, request: { headers }, error }) {
-            if (!isSignIn(headers))
-                throw error(401)
+            if (!isSignIn(headers)) throw error(401)
         },
         error({ error }) {
             return 'Handled'
@@ -798,23 +849,26 @@ new Elysia()
 ```
 
 ## After Response
+
 Executed after the response sent to the client.
 
 It's recommended to use **After Response** in the following situations:
+
 - Clean up response
 - Logging and analytics
 
 #### Example
+
 Below is an example of using the response handle to check for user sign-in.
 
 ```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.onAfterResponse(() => {
-		console.log('Response', performance.now())
-	})
-	.listen(3000)
+    .onAfterResponse(() => {
+        console.log('Response', performance.now())
+    })
+    .listen(3000)
 ```
 
 Console should log as the following:
@@ -823,4 +877,34 @@ Console should log as the following:
 Response 0.0000
 Response 0.0001
 Response 0.0002
+```
+
+### Response
+
+Similar to [Map Response](#map-resonse), `afterResponse` also accept a `response` value.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.onAfterResponse(({ response }) => {
+		console.log(response)
+	})
+	.get('/', () => 'Hello')
+	.listen(3000)
+```
+
+`response` from `onAfterResponse`, is not a Web-Standard's `Response` but is a value that is returned from the handler.
+
+To get a headers, and status returned from the handler, we can access `set` from the context.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.onAfterResponse(({ set }) => {
+		console.log(set.status, set.headers)
+	})
+	.get('/', () => 'Hello')
+	.listen(3000)
 ```

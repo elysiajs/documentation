@@ -255,6 +255,34 @@ The field can accept anything ranging from string to function, allowing us to cr
 
 **macro** will be executed in order from top-to-bottom according to definition in hook, ensure that the stack should be handle in correct order.
 
+## Resolve
+
+You add a property to the context by returning an object with a [**resolve**](/essential/life-cycle.html#resolve) function.
+
+```ts twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.macro({
+		user: (enabled: true) => ({
+			resolve: () => ({
+				user: 'Pardofelis'
+			})
+		})
+	})
+	.get('/', ({ user }) => user, {
+                          // ^?
+		user: true
+	})
+```
+
+In the example above, we add a new property **user** to the context by returning an object with a **resolve** function.
+
+Here's an example that macro resolve could be useful:
+- perform authentication and add user to the context
+- run an additional database query and add data to the context
+- add a new property to the context
+
 </template>
 
 </Tab>
