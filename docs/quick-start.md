@@ -147,7 +147,7 @@ If you are using TypeScript, make sure to create, and update `tsconfig.json` to 
 
 Node.js is a JavaScript runtime for server-side applications, the most popular runtime for JavaScript which Elysia supports.
 
-You can install Bun with the command below:
+You can install Node.js with the command below:
 
 ::: code-group
 
@@ -259,7 +259,7 @@ Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `t
 <template v-slot:js>
 
 ::: warning
-Using Elysia with TypeScript will miss out on some features auto-completion, advanced type checking and end-to-end type safety which is the core feature of Elysia.
+If you use Elysia without TypeScript you may miss out on some features like auto-completion, advanced type checking and end-to-end type safety, which are the core features of Elysia.
 :::
 
 To create a new Elysia app with JavaScript, starts by installing Elysia:
