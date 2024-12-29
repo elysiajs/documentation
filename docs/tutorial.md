@@ -425,12 +425,12 @@ const app = new Elysia()
         '/note/:index', // [!code --]
         ({ note, params: { index }, error }) => { // [!code --]
             return note.data[index] ?? error(404, 'oh no :(') // [!code --]
-        },
+        }, // [!code --]
         { // [!code --]
             params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }) // [!code --]
-        }
+        } // [!code --]
     ) // [!code --]
     .listen(3000)
 ```
