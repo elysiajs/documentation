@@ -25,13 +25,13 @@ const demo = new Elysia()
 	.onError(({ code }) => {
 		if (code === 418) return 'caught'
 	})
+    .get('/throw', ({ error }) => {
+		// This will be caught by onError
+		throw error(418)
+	})
 	.get('/return', ({ error }) => {
 		// This will NOT be caught by onError
 		return error(418)
-	})
-	.get('/throw', ({ error }) => {
-		// This will NOT be caught by onError
-		throw error(418)
 	})
 </script>
 
@@ -781,7 +781,7 @@ new Elysia()
         if (code === 418) return 'caught'
     })
     .get('/throw', ({ error }) => {
-        // This will NOT be caught by onError
+        // This will be caught by onError
         throw error(418)
     })
     .get('/return', () => {
