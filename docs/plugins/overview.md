@@ -108,6 +108,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia XSS](https://www.npmjs.com/package/elysia-xss) - A plugin for Elysia.js that provides XSS (Cross-Site Scripting) protection by sanitizing request body data.
 -   [Elysiajs Helmet](https://www.npmjs.com/package/elysiajs-helmet) - A comprehensive security middleware for Elysia.js applications that helps secure your apps by setting various HTTP headers.
 -   [Logify for Elysia.js](https://github.com/0xrasla/logify) - A beautiful, fast, and type-safe logging middleware for Elysia.js applications.
+-   [Decorators for Elysia.js](https://github.com/Ateeb-Khan-97/better-elysia) - Seamlessly develop and integrate APIs, Websocket and Streaming APIs with this small library.
 
 ## Complementary projects:
 -   [prismabox](https://github.com/m1212e/prismabox) - Generator for typebox schemes based on your database models, works well with elysia
