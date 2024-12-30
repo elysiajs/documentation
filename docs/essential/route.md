@@ -27,9 +27,8 @@ const demo2 = new Elysia()
     .post('/hi', () => 'hi')
 
 const demo3 = new Elysia()
-    .get('/get', () => 'hello')
-    .post('/post', () => 'hi')
-    .route('M-SEARCH', '/m-search', () => 'connect')
+	  .get('/id', () => `id: undefined`)
+    .get('/id/:id', ({ params: { id } }) => `id: ${id}`)
 
 const demo4 = new Elysia()
     .get('/', () => 'hi')
@@ -54,8 +53,9 @@ const demo7 = new Elysia()
     .get('/id/:id/:name', ({ params: { id, name } }) => id + ' ' + name)
 
 const demo8 = new Elysia()
-	.get('/id', () => `id: undefined`)
-    .get('/id/:id', ({ params: { id } }) => `id: ${id}`)
+    .get('/get', () => 'hello')
+    .post('/post', () => 'hi')
+    .route('M-SEARCH', '/m-search', () => 'connect')
 
 const demo9 = new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
