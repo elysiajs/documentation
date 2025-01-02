@@ -309,7 +309,7 @@ import { spreads } from './utils'
 export const db = {
 	insert: spreads({
 		user: table.user,
-	}, 'insert')),
+	}, 'insert'),
 	select: spreads({
 		user: table.user,
 	}, 'select')
