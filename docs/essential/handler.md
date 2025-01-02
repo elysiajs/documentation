@@ -632,7 +632,7 @@ new Elysia()
 	.guard({
 		headers: t.Object({
 			bearer: t.String({
-				pattern: '/^Bearer .+$/'
+				pattern: '^Bearer .+$'
 			})
 		})
 	})
