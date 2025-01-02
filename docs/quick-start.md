@@ -242,7 +242,7 @@ These scripts refer to the different stages of developing an application:
 Make sure to create `tsconfig.json`
 
 ```bash
-npx tsc init
+npx tsc --init
 ```
 
 Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `true`:
@@ -319,7 +319,7 @@ These scripts refer to the different stages of developing an application:
 Make sure to create `tsconfig.json`
 
 ```bash
-npx tsc init
+npx tsc --init
 ```
 
 Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `true`:
