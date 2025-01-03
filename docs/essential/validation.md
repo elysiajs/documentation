@@ -560,6 +560,7 @@ TypeBox provides a basic primitive type with the same behavior as same as TypeSc
 The following table lists the most common basic type:
 
 <table class="md-table">
+<tbody>
 <tr>
 <td>TypeBox</td>
 <td>TypeScript</td>
@@ -689,7 +690,7 @@ t.Literal(42)
 
 </td>
 </tr>
-
+</tbody>
 </table>
 
 Elysia extends all types from TypeBox allowing you to reference most of the API from TypeBox to use in Elysia.
@@ -701,6 +702,7 @@ See [TypeBox's Type](https://github.com/sinclairzx81/typebox#json-types) for add
 TypeBox can accept an argument for more comprehensive behavior based on JSON Schema 7 specification.
 
 <table class="md-table">
+<tbody>
 <tr>
 <td>TypeBox</td>
 <td>TypeScript</td>
@@ -804,7 +806,7 @@ y: 200
 
 </td>
 </tr>
-
+</tbody>
 </table>
 
 See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) For more explanation for each attribute.
@@ -818,6 +820,7 @@ The following are common patterns that are often found useful when creating a sc
 Allow multiple types via union.
 
 <table class="md-table">
+<tbody>
 <tr>
 <td>TypeBox</td>
 <td>TypeScript</td>
@@ -852,7 +855,7 @@ Hello
 
 </td>
 </tr>
-
+</tbody>
 </table>
 
 ### Optional
@@ -860,6 +863,7 @@ Hello
 Provided in a property of `t.Object`, allowing the field to be undefined or optional.
 
 <table class="md-table">
+<tbody>
 <tr>
 <td>TypeBox</td>
 <td>TypeScript</td>
@@ -898,7 +902,7 @@ t.Object({
 
 </td>
 </tr>
-
+</tbody>
 </table>
 
 ### Partial
@@ -906,6 +910,7 @@ t.Object({
 Allowing all of the fields in `t.Object` to be optional.
 
 <table class="md-table">
+<tbody>
 <tr>
 <td>TypeBox</td>
 <td>TypeScript</td>
@@ -946,7 +951,7 @@ t.Partial(
 
 </td>
 </tr>
-
+</tbody>
 </table>
 
 ## Custom Error
@@ -954,6 +959,7 @@ t.Partial(
 TypeBox offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
 
 <table class="md-table">
+<tbody>
 <tr>
 <td>TypeBox</td>
 <td>Error</td>
@@ -999,7 +1005,7 @@ Invalid object UwU
 
 </td>
 </tr>
-
+</tbody>
 </table>
 
 ## Elysia Type
@@ -1173,6 +1179,7 @@ new Elysia()
 The following is an example of usage of the error property on various types:
 
 <table class="md-table">
+<tbody>
 <tr>
 <td>TypeBox</td>
 <td>Error</td>
@@ -1262,7 +1269,7 @@ Expected x to be a number
 
 </td>
 </tr>
-
+</tbody>
 </table>
 
 ### Error message as function
@@ -1296,6 +1303,7 @@ Please be cautious that the error function will only be called if the field is i
 Please consider the following table:
 
 <table class="md-table">
+<tbody>
 <tr>
 <td>Code</td>
 <td>Body</td>
@@ -1387,7 +1395,7 @@ t.Object(
 Expected value to be an object
 </td>
 </tr>
-
+</tbody>
 </table>
 
 ### onError
