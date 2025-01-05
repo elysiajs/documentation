@@ -221,14 +221,12 @@ import { Elysia } from 'elysia'
 
 export const auth = new Elysia()
     .macro({
-        isAuth(isAuth: boolean) {
-           	return {
-          		resolve() {
-         			return {
-            			user: 'saltyaom'
-            		}
+    	isAuth: {
+      		resolve() {
+     			return {
+         			user: 'saltyaom'
           		}
-           	}
+      		}
         },
         role(role: 'admin' | 'user') {
         	return {}
@@ -282,6 +280,38 @@ Here's an example that macro resolve could be useful:
 - perform authentication and add user to the context
 - run an additional database query and add data to the context
 - add a new property to the context
+
+## Property shorthand
+Starting from Elysia 1.2.10, each property in the macro object can be a function or an object.
+
+If the property is an object, it will be translated to a function that accept a boolean parameter, and will be executed if the parameter is true.
+```typescript
+import { Elysia } from 'elysia'
+
+export const auth = new Elysia()
+    .macro({
+    	// This property shorthand
+    	isAuth: {
+      		resolve() {
+     			return {
+         			user: 'saltyaom'
+          		}
+      		}
+        },
+        // is equivalent to
+        isAuth(enabled: boolean) {
+        	if(!enabled) return
+
+        	return {
+				resolve() {
+					return {
+						user
+					}
+				}
+         	}
+        }
+    })
+```
 
 </template>
 
