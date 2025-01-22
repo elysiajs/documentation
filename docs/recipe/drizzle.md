@@ -113,7 +113,7 @@ We may convert the `user` table into TypeBox models by using `drizzle-typebox`:
 ::: code-group
 
 ```ts [src/index.ts]
-import { createSelectSchema } from 'drizzle-typebox'
+import { createInsertSchema } from 'drizzle-typebox'
 import { Table } from './database/schema'
 
 const _createUser = createInsertSchema(table.user, {
@@ -144,7 +144,7 @@ If we nested a type from drizzle-typebox into Elysia schema, it will cause an in
 To prevent this, we need to **explicitly define a type between `drizzle-typebox` and `Elysia`** schema:
 ```ts
 import { t } from 'elysia'
-import { createSelectSchema } from 'drizzle-typebox'
+import { createInsertSchema } from 'drizzle-typebox'
 
 import { table } from './database/schema'
 
