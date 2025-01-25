@@ -30,7 +30,7 @@ Macro allows us to define a custom field to the hook.
 
 <template v-slot:macro1>
 
-Macro v1 use functional callback with event listener function.
+Macro v1 uses functional callback with event listener function.
 
 **Elysia.macro** allows us to compose custom heavy logic into a simple configuration available in hook, and **guard** with full type safety.
 
@@ -53,7 +53,7 @@ const app = new Elysia()
     })
 ```
 
-Accessing the path should log **"Elysia"** as the results.
+Accessing the path should log **"Elysia"** as the result.
 
 ### API
 
@@ -251,7 +251,7 @@ Macro v2 can also register a new property to the context, allowing us to access 
 
 The field can accept anything ranging from string to function, allowing us to create a custom life cycle event.
 
-**macro** will be executed in order from top-to-bottom according to definition in hook, ensure that the stack should be handle in correct order.
+**macro** will be executed in order from top-to-bottom according to definition in hook, ensure that the stack is handled in the correct order.
 
 ## Resolve
 
