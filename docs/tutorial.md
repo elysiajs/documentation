@@ -60,7 +60,7 @@ powershell -c "irm bun.sh/install.ps1 | iex"
 ### Create a new project
 
 ```bash
-# Create a new product
+# Create a new project
 bun create elysia hi-elysia
 
 # cd into the project
