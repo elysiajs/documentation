@@ -103,7 +103,7 @@ app.
 // Call [GET] at '/'
 const { data } = await app.index.get()
 
-// Call [POST] at '/nendoroid/:id'
+// Call [PUT] at '/nendoroid/:id'
 const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
     name: 'Skadi',
     from: 'Arknights'
