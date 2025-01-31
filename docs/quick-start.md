@@ -416,4 +416,4 @@ We recommend checking out the either one of the following:
     </Card>
 </Deck>
 
-If you have any questions, feel free to ask in our [Discord](https://discord.gg/elysia) community.
+If you have any questions, feel free to ask in our [Discord](https://discord.gg/eaFJ2KDJck) community.
