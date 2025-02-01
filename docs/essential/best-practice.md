@@ -338,7 +338,7 @@ const customBody = t.Object({
 	password: t.String()
 })
 
-type customBody = typeof customBody.static
+type CustomBody = typeof customBody.static
 ```
 
 ### Group
