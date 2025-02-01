@@ -23,7 +23,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue'
 
 import Ray from '../../components/midori/ray.vue'
 
