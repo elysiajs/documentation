@@ -27,6 +27,7 @@
     "@elysiajs/html": "1.2.0",
     "@elysiajs/opentelemetry": "1.2.0",
     "@elysiajs/swagger": "1.2.0",
+    "@nolebase/vitepress-plugin-git-changelog": "^2.12.1",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@types/bun": "^1.1.14",
     "@types/node": "^22.10.2",

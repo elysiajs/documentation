@@ -4,6 +4,7 @@ layout: page
 sidebar: false
 editLink: false
 search: false
+authors: []
 head:
     - - meta
       - property: 'og:title'

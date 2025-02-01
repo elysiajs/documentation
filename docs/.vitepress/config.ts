@@ -3,6 +3,11 @@ import { defineConfig } from 'vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
 
+// import {
+//     GitChangelog,
+//     GitChangelogMarkdownSection
+// } from '@nolebase/vitepress-plugin-git-changelog/vite'
+
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
 
@@ -30,7 +35,14 @@ export default defineConfig({
             watch: {
                 usePolling: true
             }
-        }
+        },
+        plugins: [
+            // GitChangelog({
+            //     // Fill in your repository URL here
+            //     repoURL: () => 'https://github.com/elysiajs/documentation'
+            // }),
+            // GitChangelogMarkdownSection()
+        ]
     },
     head: [
         [

@@ -317,3 +317,10 @@ button.copy::after {
 .vp-doc h2 {
 	@apply !mb-2.5;
 }
+
+#contributors,
+#changelog,
+.vp-nolebase-git-changelog,
+.vp-nolebase-git-changelog-history {
+	@apply max-w-2xl w-full mx-auto my-4;
+}
