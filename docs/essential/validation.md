@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Schema are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
+        content: Schemas are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation is based on Sinclair's TypeBox, a TypeScript library for data validation.
 
     - - meta
       - property: 'og:description'
-        content: Schema are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation are based on Sinclair's TypeBox, a TypeScript library for data validation.
+        content: Schemas are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation is based on Sinclair's TypeBox, a TypeScript library for data validation.
 ---
 
 <script setup>
@@ -47,9 +47,9 @@ const demo2 = new Elysia()
 
 # Validation
 
-The point of creating an API server is to take an input and process it.
+The purpose of creating an API server is to take an input and process it.
 
-JavaScript allow any data to be any type. Elysia provide a tool to validate data out of to box to ensure that the data is in the correct format.
+JavaScript allows any data to be any type. Elysia provides a tool to validate data out of the box to ensure that the data is in the correct format.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -65,14 +65,14 @@ new Elysia()
 
 ### TypeBox
 
-**Elysia.t**, a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provide type-safety on both runtime, compile-time, and OpenAPI schema for generating OpenAPI/Swagger documentation.
+**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and for OpenAPI schemas, enabling the generation of OpenAPI/Swagger documentation.
 
-TypeBox is a very fast, lightweight, and type-safe runtime validation library for TypeScript. Elysia extends and customize the default behavior of TypeBox to match for server-side validation.
+TypeBox is a very fast, lightweight, and type-safe runtime validation library for TypeScript. Elysia extends and customizes the default behavior of TypeBox to match server-side validation requirements.
 
-We believe that an integration like this should take care of the framework by default instead of relying on the user end to set up a custom type on every project.
+We believe that an integration like this should be handled by the framework by default, rather than relying on the user to set up a custom type for every project.
 
 ## Schema type
-Elysia supports declarative schema with the following types:
+Elysia supports declarative schemas with the following types:
 
 <Deck>
     <Card title="Body" href="#body">
@@ -116,7 +116,7 @@ new Elysia()
 
 <Playground :elysia="demo1" />
 
-The response should as follows:
+The response should be as follows:
 | URL | Query | Params |
 | --- | --------- | ------------ |
 | /id/a | ❌ | ❌ |
@@ -125,7 +125,7 @@ The response should as follows:
 | /id/a?name=Elysia | ✅ | ❌ |
 | /id/a?alias=Elysia | ❌ | ❌ |
 
-When schema is provided, the type will be inferred from the schema automatically, and generate an OpenAPI type for Swagger documentation generation, leaving out the redundant task of providing type manually.
+When a schema is provided, the type will be inferred from the schema automatically and an OpenAPI type will be generated for Swagger documentation, eliminating the redundant task of providing the type manually.
 
 ## Body
 An incoming [HTTP Message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages) is the data sent to the server. It can be in the form of JSON, form-data, or any other format.
@@ -155,18 +155,18 @@ The validation should be as follows:
 | \{ alias: 'Elysia' \} | ❌ |
 | `undefined` | ❌ |
 
-Elysia disabled body-parser for **GET** and **HEAD** message by default, following the specs of HTTP/1.1 [RFC2616](https://www.rfc-editor.org/rfc/rfc2616#section-4.3)
+Elysia disables body-parser for **GET** and **HEAD** messages by default, following the specs of HTTP/1.1 [RFC2616](https://www.rfc-editor.org/rfc/rfc2616#section-4.3)
 
 > If the request method does not include defined semantics for an entity-body, then the message-body SHOULD be ignored when handling the request.
 
-Most browsers disable the attachment of the body by default for **GET** and **HEAD** method.
+Most browsers disable the attachment of the body by default for **GET** and **HEAD** methods.
 
 ### Specs
 Validate an incoming [HTTP Message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages) (or body).
 
-These messages are additional messages for the webserver to process.
+These messages are additional messages for the web server to process.
 
-The body is provided as same as `body` in `fetch` API. The content type should be set accordingly to the defined body.
+The body is provided in the same way as the `body` in `fetch` API. The content type should be set accordingly to the defined body.
 
 ```typescript
 fetch('https://elysiajs.com', {
@@ -199,7 +199,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-By providing a file type, Elysia will automatically assume that content-type is `multipart/form-data`.
+By providing a file type, Elysia will automatically assume that the content-type is `multipart/form-data`.
 
 ## Query
 Query is the data sent through the URL. It can be in the form of `?key=value`.
@@ -234,7 +234,7 @@ The validation should be as follows:
 
 ### Specs
 
-A query string is a part of the URL that starts with **?** and can contain one or more query parameters, which are key-value pairs used to convey additional information to the server, usually for customized behavior like filter or search.
+A query string is a part of the URL that starts with **?** and can contain one or more query parameters, which are key-value pairs used to convey additional information to the server, usually for customized behavior like filtering or searching.
 
 ![URL Object](/essential/url-object.svg)
 
@@ -249,7 +249,7 @@ When specifying query parameters, it's crucial to understand that all query para
 ## Params
 Params or path parameters are the data sent through the URL path.
 
-It can be in the form of `/key`.
+They can be in the form of `/key`.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -278,16 +278,16 @@ The validation should be as follows:
 | /id/a | ❌ |
 
 ### Specs
-Path parameter <small>(not to confused with querystring or query parameter)</small>.
+Path parameter <small>(not to be confused with query string or query parameter)</small>.
 
-**This field is usually not needed as Elysia can infer types from path parameters automatically**, unless a need for specific value pattern is need, for example numeric value or template literal pattern.
+**This field is usually not needed as Elysia can infer types from path parameters automatically**, unless there is a need for a specific value pattern, such as a numeric value or template literal pattern.
 
 ```typescript
 fetch('https://elysiajs.com/id/1')
 ```
 
 ### Params type inference
-If params schema is not provided, Elysia will automatically infer type as string automatically.
+If a params schema is not provided, Elysia will automatically infer the type as a string.
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
 
@@ -297,7 +297,7 @@ new Elysia()
 ```
 
 ## Headers
-Header is the data sent through the request's header.
+Headers are the data sent through the request's header.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -315,16 +315,16 @@ new Elysia()
 	})
 ```
 
-Unlike other types, headers has `additionalProperties` set to `true` by default.
+Unlike other types, headers have `additionalProperties` set to `true` by default.
 
 This means that headers can have any key-value pair, but the value must match the schema.
 
 ### Specs
 HTTP headers let the client and the server pass additional information with an HTTP request or response, usually treated as metadata.
 
-This field is usually used to enforce some specific header field, for example, `Authorization`.
+This field is usually used to enforce some specific header fields, for example, `Authorization`.
 
-Headers are provided as same as `body` in `fetch` API.
+Headers are provided in the same way as the `body` in `fetch` API.
 
 ```typescript
 fetch('https://elysiajs.com/', {
@@ -335,9 +335,9 @@ fetch('https://elysiajs.com/', {
 ```
 
 ::: tip
-Elysia will parse headers as a lower-case key only.
+Elysia will parse headers as lower-case keys only.
 
-Please make sure that you are using a lower-case field name when using header validation.
+Please make sure that you are using lower-case field names when using header validation.
 :::
 
 ## Cookie
@@ -358,19 +358,19 @@ new Elysia()
 	})
 ```
 
-Cookie must be provided in the form of `t.Cookie` or `t.Object`.
+Cookies must be provided in the form of `t.Cookie` or `t.Object`.
 
-Same as `headers`, header has `additionalProperties` set to `true` by default.
+Same as `headers`, cookies have `additionalProperties` set to `true` by default.
 
 ### Specs
 
-An HTTP cookie is a small piece of data that a server sends to the client, it's data that is sent with every visit to the same web server to let the server remember client information.
+An HTTP cookie is a small piece of data that a server sends to the client. It's data that is sent with every visit to the same web server to let the server remember client information.
 
-In simpler terms, a stringified state that sent with every request.
+In simpler terms, it's a stringified state that is sent with every request.
 
-This field is usually used to enforce some specific cookie field.
+This field is usually used to enforce some specific cookie fields.
 
-A cookie is a special header field that Fetch API doesn't accept a custom value but is managed by the browser. To send a cookie, you must use a `credentials` field instead:
+A cookie is a special header field that the Fetch API doesn't accept a custom value for but is managed by the browser. To send a cookie, you must use a `credentials` field instead:
 
 ```typescript
 fetch('https://elysiajs.com/', {
@@ -379,7 +379,7 @@ fetch('https://elysiajs.com/', {
 ```
 
 ### t.Cookie
-`t.Cookie` is a special type that is equivalent to `t.Object` but allow to set cookie specific options.
+`t.Cookie` is a special type that is equivalent to `t.Object` but allows to set cookie-specific options.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -419,7 +419,7 @@ new Elysia()
 ```
 
 ### Response per status
-Response can be set per status code.
+Responses can be set per status code.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -447,7 +447,7 @@ new Elysia()
 ```
 
 ## Optional
-To make a field optional, we may use `t.Optional`.
+To make a field optional, use `t.Optional`.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -467,11 +467,11 @@ new Elysia()
 	})
 ```
 
-This is an Elysia specific feature, allowing us to make a field optional.
+This is an Elysia-specific feature, allowing us to make a field optional.
 
 ## Guard
 
-Guard can be used to apply schema to multiple handlers.
+Guard can be used to apply a schema to multiple handlers.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -512,12 +512,12 @@ The response should be listed as follows:
 | /query        | error    |
 | /query?name=a | a        |
 
-If multiple global schemas are defined for same property, the latest one will have the preference. If both local and global schemas are defined, the local one will have the preference.
+If multiple global schemas are defined for the same property, the latest one will take precedence. If both local and global schemas are defined, the local one will take precedence.
 
 ## Normalize
-You can use the Elysia constructor to set the behavior for unknown fields on outgoing and incoming bodies via the `normalize` option. By default, elysia will raise an error in case a request or response contains fields which are not explicitly allowed in the schema of the respective handler.
+You can use the Elysia constructor to set the behavior for unknown fields on outgoing and incoming bodies via the `normalize` option. By default, Elysia will raise an error if a request or response contains fields that are not explicitly allowed in the schema of the respective handler.
 
-You can change this by setting `normalize` to true when constructing your elysia instance.
+You can change this by setting `normalize` to true when constructing your Elysia instance.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -529,13 +529,13 @@ new Elysia({
 
 ## Primitive Type
 
-TypeBox API is designed around and similar to TypeScript type.
+The TypeBox API is designed around and is similar to TypeScript types.
 
-There are a lot of familiar names and behaviors that intersect with TypeScript counter-parts like: **String**, **Number**, **Boolean**, and **Object** as well as more advanced features like **Intersect**, **KeyOf**, **Tuple** for versatility.
+There are many familiar names and behaviors that intersect with TypeScript counterparts, such as **String**, **Number**, **Boolean**, and **Object**, as well as more advanced features like **Intersect**, **KeyOf**, and **Tuple** for versatility.
 
-If you are familiar with TypeScript, creating a TypeBox schema has the same behavior as writing a TypeScript type except it provides an actual type validation in runtime.
+If you are familiar with TypeScript, creating a TypeBox schema behaves the same as writing a TypeScript type, except it provides actual type validation at runtime.
 
-To create your first schema, import `Elysia.t` from Elysia and start with the most basic type:
+To create your first schema, import **Elysia.t** from Elysia and start with the most basic type:
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -547,17 +547,17 @@ new Elysia()
 	.listen(3000)
 ```
 
-This code tells Elysia to validate an incoming HTTP body, make sure that the body is String, and if it is String, then allow it to flow through the request pipeline and handler.
+This code tells Elysia to validate an incoming HTTP body, ensuring that the body is a string. If it is a string, it will be allowed to flow through the request pipeline and handler.
 
-If the shape doesn't match, then it will throw an error, into [Error Life Cycle](/essential/life-cycle.html#on-error).
+If the shape doesn't match, it will throw an error into the [Error Life Cycle](/essential/life-cycle.html#on-error).
 
 ![Elysia Life Cycle](/assets/lifecycle.webp)
 
 ### Basic Type
 
-TypeBox provides a basic primitive type with the same behavior as same as TypeScript type.
+TypeBox provides basic primitive types with the same behavior as TypeScript types.
 
-The following table lists the most common basic type:
+The following table lists the most common basic types:
 
 <table class="md-table">
 <tbody>
@@ -693,13 +693,13 @@ t.Literal(42)
 </tbody>
 </table>
 
-Elysia extends all types from TypeBox allowing you to reference most of the API from TypeBox to use in Elysia.
+Elysia extends all types from TypeBox, allowing you to reference most of the API from TypeBox for use in Elysia.
 
-See [TypeBox's Type](https://github.com/sinclairzx81/typebox#json-types) for additional types that are supported by TypeBox.
+See [TypeBox's Type](https://github.com/sinclairzx81/typebox#json-types) for additional types supported by TypeBox.
 
 ### Attribute
 
-TypeBox can accept an argument for more comprehensive behavior based on JSON Schema 7 specification.
+TypeBox can accept arguments for more comprehensive behavior based on the JSON Schema 7 specification.
 
 <table class="md-table">
 <tbody>
@@ -809,15 +809,15 @@ y: 200
 </tbody>
 </table>
 
-See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) For more explanation for each attribute.
+See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) for more explanation of each attribute.
 
-## Honorable Mention
+## Honorable Mentions
 
-The following are common patterns that are often found useful when creating a schema.
+The following are common patterns often found useful when creating a schema.
 
 ### Union
 
-Allow multiple types via union.
+Allows a field in `t.Object` to have multiple types.
 
 <table class="md-table">
 <tbody>
@@ -860,7 +860,7 @@ Hello
 
 ### Optional
 
-Provided in a property of `t.Object`, allowing the field to be undefined or optional.
+Allows a field in `t.Object` to be undefined or optional.
 
 <table class="md-table">
 <tbody>
@@ -907,7 +907,7 @@ t.Object({
 
 ### Partial
 
-Allowing all of the fields in `t.Object` to be optional.
+Allows all fields in `t.Object` to be optional.
 
 <table class="md-table">
 <tbody>
@@ -1010,9 +1010,9 @@ Invalid object UwU
 
 ## Elysia Type
 
-`Elysia.t` is based on TypeBox with pre-configuration for usage on the server while providing additional types commonly found on server-side validation.
+`Elysia.t` is based on TypeBox with pre-configuration for server usage, providing additional types commonly found in server-side validation.
 
-You can find all of the source code of Elysia type in `elysia/type-system`.
+You can find all the source code for Elysia types in `elysia/type-system`.
 
 The following are types provided by Elysia:
 
@@ -1045,29 +1045,29 @@ Numeric accepts a numeric string or number and then transforms the value into a 
 t.Numeric()
 ```
 
-This is useful when an incoming value is a numeric string for example path parameter or query string.
+This is useful when an incoming value is a numeric string, for example, a path parameter or query string.
 
-Numeric accepts the same attribute as [Numeric Instance](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-num)
+Numeric accepts the same attributes as [Numeric Instance](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-num)
 
 ::: tip
-This is not need as Elysia type already transform Number to Numeric automatically
+This is not need as Elysia type already transforms Number to Numeric automatically
 :::
 
 ### File
 
-A singular file. Often useful for **file upload** validation.
+A singular file, often useful for **file upload** validation.
 
 ```typescript
 t.File()
 ```
 
-File extends attribute of base schema, with additional property as follows:
+File extends the attributes of the base schema, with additional properties as follows:
 
 #### type
 
-A format of the file like image, video, audio.
+Specifies the format of the file, such as image, video, or audio.
 
-If an array is provided, will attempt to validate if any of the format is valid.
+If an array is provided, it will attempt to validate if any of the formats are valid.
 
 ```typescript
 type?: MaybeArray<string>
@@ -1077,7 +1077,7 @@ type?: MaybeArray<string>
 
 Minimum size of the file.
 
-Accept number in byte or suffix of file unit:
+Accepts a number in bytes or a suffix of file units:
 
 ```typescript
 minSize?: number | `${number}${'k' | 'm'}`
@@ -1087,7 +1087,7 @@ minSize?: number | `${number}${'k' | 'm'}`
 
 Maximum size of the file.
 
-Accept number in byte or suffix of file unit:
+Accepts a number in bytes or a suffix of file units:
 
 ```typescript
 maxSize?: number | `${number}${'k' | 'm'}`
@@ -1107,11 +1107,11 @@ Extends from [File](#file), but adds support for an array of files in a single f
 t.Files()
 ```
 
-File extends attributes of base schema, array, and File.
+Files extends the attributes of the base schema, array, and File.
 
 ### Cookie
 
-Object-like representation of a Cookie Jar extended from Object type.
+Object-like representation of a Cookie Jar extended from the Object type.
 
 ```typescript
 t.Cookie({
@@ -1119,23 +1119,23 @@ t.Cookie({
 })
 ```
 
-Cookie extends attributes of [Object](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-obj) and [Cookie](https://github.com/jshttp/cookie#options-1) with additional properties follows:
+Cookie extends the attributes of [Object](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-obj) and [Cookie](https://github.com/jshttp/cookie#options-1) with additional properties as follows:
 
 #### secrets
 
 The secret key for signing cookies.
 
-Accepts a string or an array of string
+Accepts a string or an array of strings.
 
 ```typescript
 secrets?: string | string[]
 ```
 
-If an array is provided, [Key Rotation](https://crypto.stackexchange.com/questions/41796/whats-the-purpose-of-key-rotation) will be used, the newly signed value will use the first secret as the key.
+If an array is provided, [Key Rotation](https://crypto.stackexchange.com/questions/41796/whats-the-purpose-of-key-rotation) will be used. The newly signed value will use the first secret as the key.
 
 ### Nullable
 
-Allow the value to be null but not undefined.
+Allows the value to be null but not undefined.
 
 ```typescript
 t.Nullable(t.String())
@@ -1143,7 +1143,7 @@ t.Nullable(t.String())
 
 ### MaybeEmpty
 
-Allow the value to be null and undefined.
+Allows the value to be null and undefined.
 
 ```typescript
 t.MaybeEmpty(t.String())
@@ -1153,14 +1153,14 @@ For additional information, you can find the full source code of the type system
 
 ## Error Provider
 
-There are 2 ways to provide a custom error message when the validation fails:
+There are two ways to provide a custom error message when the validation fails:
 
-1. inline `error` property
+1. Inline `error` property
 2. Using [onError](/essential/life-cycle.html#on-error) event
 
 ### Error Property
 
-Elysia's offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
+Elysia offers an additional **error** property, allowing us to return a custom error message if the field is invalid.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -1176,7 +1176,7 @@ new Elysia()
     .listen(3000)
 ```
 
-The following is an example of usage of the error property on various types:
+The following is an example of using the error property on various types:
 
 <table class="md-table">
 <tbody>
@@ -1273,9 +1273,9 @@ Expected x to be a number
 </table>
 
 ### Error message as function
-Over a string, Elysia type's error can also accepts a function to programatically return custom error for each property.
+In addition to a string, Elysia type's error can also accept a function to programmatically return a custom error for each property.
 
-The error function accepts same argument as same as `ValidationError`
+The error function accepts the same arguments as `ValidationError`
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -1294,11 +1294,11 @@ new Elysia()
 ```
 
 ::: tip
-Hover over the `error` to see the type
+Hover over the `error` to see the type.
 :::
 
-### Error is called per field
-Please be cautious that the error function will only be called if the field is invalid.
+### Error is Called Per Field
+Please note that the error function will only be called if the field is invalid.
 
 Please consider the following table:
 
@@ -1400,7 +1400,7 @@ Expected value to be an object
 
 ### onError
 
-We can customize the behavior of validation based on [onError](/essential/life-cycle.html#on-error) event by narrowing down the error code call "**VALIDATION**".
+We can customize the behavior of validation based on the [onError](/essential/life-cycle.html#on-error) event by narrowing down the error code to "**VALIDATION**".
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -1413,9 +1413,9 @@ new Elysia()
 	.listen(3000)
 ```
 
-Narrowed down error type, will be typed as `ValidationError` imported from 'elysia/error'.
+The narrowed-down error type will be typed as `ValidationError` imported from 'elysia/error'.
 
-**ValidationError** exposed a property name **validator** typed as [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck), allowing us to interact with TypeBox functionality out of the box.
+**ValidationError** exposes a property named **validator**, typed as [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck), allowing us to interact with TypeBox functionality out of the box.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -1428,7 +1428,7 @@ new Elysia()
     .listen(3000)
 ```
 
-### Error list
+### Error List
 
 **ValidationError** provides a method `ValidatorError.all`, allowing us to list all of the error causes.
 
@@ -1451,7 +1451,7 @@ new Elysia()
 						(x) => x.summary && x.path === '/name'
 					)
 
-                    // If has a validation error, then log it
+                    // If there is a validation error, then log it
                     if(name)
     					console.log(name)
 			}
@@ -1463,9 +1463,9 @@ new Elysia()
 For more information about TypeBox's validator, see [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck).
 
 ## Reference Model
-Sometimes you might find yourself declaring duplicated models, or re-using the same model multiple times.
+Sometimes you might find yourself declaring duplicate models or re-using the same model multiple times.
 
-With reference model, we can name our model and reuse them by referencing with name.
+With a reference model, we can name our model and reuse it by referencing the name.
 
 Let's start with a simple scenario.
 
@@ -1487,7 +1487,7 @@ const app = new Elysia()
     })
 ```
 
-We can refactor the code by extracting the model as a variable, and reference them.
+We can refactor the code by extracting the model as a variable and referencing it.
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
 
@@ -1504,9 +1504,9 @@ const app = new Elysia()
     })
 ```
 
-This method of separating the concerns is an effective approach but we might find ourselves reusing multiple models with different controllers as the app gets more complex.
+This method of separating concerns is an effective approach, but we might find ourselves reusing multiple models with different controllers as the app gets more complex.
 
-We can resolve that by creating a "reference model"  allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
+We can resolve that by creating a "reference model," allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -1525,7 +1525,7 @@ const app = new Elysia()
     })
 ```
 
-When we want to access the model's group, we can separate a `model` into a plugin which when registered will provide a set of models instead of multiple import.
+When we want to access the model's group, we can separate a model into a plugin, which when registered will provide a set of models instead of multiple imports.
 
 ```typescript
 // auth.model.ts
@@ -1568,10 +1568,10 @@ const app = new Elysia()
     })
 ```
 
-This not only allows us to separate the concerns but also allows us to reuse the model in multiple places while reporting the model into Swagger documentation.
+This approach not only allows us to separate concerns but also enables us to reuse the model in multiple places while integrating the model into Swagger documentation.
 
 ### Multiple Models
-`model` accepts an object with the key as a model name and value as the model definition, multiple models are supported by default.
+`model` accepts an object with the key as a model name and the value as the model definition. Multiple models are supported by default.
 
 ```typescript
 // auth.model.ts
@@ -1588,9 +1588,9 @@ export const authModel = new Elysia()
 ```
 
 ### Naming Convention
-Duplicated model names will cause Elysia to throw an error. To prevent declaring duplicate model names, we can use the following naming convention.
+Duplicate model names will cause Elysia to throw an error. To prevent declaring duplicate model names, we can use the following naming convention.
 
-Let's say that we have all models stored at `models/<name>.ts`, and declare the prefix of the model as a namespace.
+Let's say that we have all models stored at `models/<name>.ts` and declare the prefix of the model as a namespace.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -1614,6 +1614,6 @@ export const userModels = new Elysia()
     })
 ```
 
-This can prevent naming duplication at some level, but in the end, it's best to let the naming convention decision up to your team's agreement is the best option.
+This can prevent naming duplication to some extent, but ultimately, it's best to let your team decide on the naming convention.
 
-Elysia provides an opinionated option for you to decide to prevent decision fatigue.
+Elysia provides an opinionated option to help prevent decision fatigue.
