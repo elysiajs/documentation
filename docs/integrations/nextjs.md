@@ -53,7 +53,7 @@ Because our Elysia server is not in the root directory of the app router, you ne
 For example, if you place Elysia server in **app/user/[[...slugs]]/route.ts**, you need to annotate prefix as **/user** to Elysia server.
 
 ```typescript
-// app/api/[[...slugs]]/route.ts
+// app/user/[[...slugs]]/route.ts
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia({ prefix: '/user' }) // [!code ++]
