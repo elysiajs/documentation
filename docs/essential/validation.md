@@ -1506,7 +1506,7 @@ const app = new Elysia()
 
 This method of separating concerns is an effective approach, but we might find ourselves reusing multiple models with different controllers as the app gets more complex.
 
-We can resolve that by creating a "reference model," allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
+We can resolve that by creating a "reference model", allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -1525,7 +1525,7 @@ const app = new Elysia()
     })
 ```
 
-When we want to access the model's group, we can separate a model into a plugin, which when registered will provide a set of models instead of multiple imports.
+When we want to access the model's group, we can separate a `model` into a plugin, which when registered will provide a set of models instead of multiple imports.
 
 ```typescript
 // auth.model.ts
