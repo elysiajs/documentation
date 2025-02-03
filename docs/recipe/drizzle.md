@@ -114,7 +114,7 @@ We may convert the `user` table into TypeBox models by using `drizzle-typebox`:
 
 ```ts [src/index.ts]
 import { createInsertSchema } from 'drizzle-typebox'
-import { Table } from './database/schema'
+import { table } from './database/schema'
 
 const _createUser = createInsertSchema(table.user, {
 	// Replace email with Elysia's email type
