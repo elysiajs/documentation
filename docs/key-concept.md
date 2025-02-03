@@ -173,7 +173,7 @@ Once `name` is provided, the instance will become a **singleton**. Allowing Elys
 
 Allowing us to reuse the same instance multiple time without performance penalty.
 
-This force you to think about the dependency of each instance, allowing for easily applying migration or refactoring.
+This forces you to think about the dependency of each instance, allowing for easily applying migration or refactoring.
 
 Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
 
