@@ -20,7 +20,7 @@ Start by installing Eden on your frontend:
 bun add @elysiajs/eden
 bun add -d elysia
 
-# If you use Bun specific feature, eg. `Bun.file`
+# `@types/bun` must be installed even if you aren't using bun in the client
 bun add -d @types/bun
 ```
 
