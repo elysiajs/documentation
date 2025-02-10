@@ -329,7 +329,7 @@ export const AuthModel = {
 ```
 
 ### Model Injection
-Though this is optional, if you are strictly following MVC pattern, you may want to inject like a service into a controller. We recommended using [Elysia reference model](/validation/reference-model.html#reference-model)
+Though this is optional, if you are strictly following MVC pattern, you may want to inject like a service into a controller. We recommended using [Elysia reference model](/essential/validation.html#reference-model)
 
 Using Elysia's model reference
 ```typescript twoslash
