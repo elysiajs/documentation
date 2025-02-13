@@ -520,6 +520,8 @@ export const note = new Elysia()
     ) // [!code ++]
 ```
 
+:::
+
 Now let's open **http://localhost:3000/swagger** and try playing around with CRUD operations.
 
 ## Group
