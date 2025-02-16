@@ -141,10 +141,6 @@ button.copy::after {
 	background-size: contain;
 }
 
-.VPNavBarTitle > a > span {
-	@apply tracking-wider;
-}
-
 .VPNavBarTitle.has-sidebar .title {
 	border: 0;
 }
