@@ -33,6 +33,7 @@
     "@types/react": "^19.0.8",
     "cheerio": "1.0.0",
     "markdown-it": "^14.1.0",
+    "postcss-import": "^16.1.0",
     "react": "^19.0.0",
     "typescript": "^5.7.3",
     "view-transitions-api-types": "^0.1.1",
