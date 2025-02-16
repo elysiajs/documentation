@@ -240,7 +240,7 @@ Elysia is not only about helping you create a confident backend but for all that
 
 ## Platform Agnostic
 
-Elysia was designed for Bun, but is  **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy Elysia servers on Cloudflare Workers, Vercel Edge Functions, and most other runtimes that support Web Standard Requests.
+Elysia was designed for Bun, but is  **not limited to Bun**. Being [WinterTC compliant](https://wintertc.org/) allows you to deploy Elysia servers on Cloudflare Workers, Vercel Edge Functions, and most other runtimes that support Web Standard Requests.
 
 ## Our Community
 
