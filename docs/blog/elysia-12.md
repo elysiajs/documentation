@@ -193,7 +193,6 @@ new Elysia()
 			return 'nagisa'
 	})
 	.post('/', ({ body }) => body, {
-		type: 'json',
 		parse: ['custom', 'json']
 	})
 ```
