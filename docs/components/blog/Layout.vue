@@ -30,8 +30,6 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted } from 'vue'
 
-import '../tailwind.css'
-
 const authors = {
     saltyaom: {
         src: 'aris.webp',
@@ -69,6 +67,8 @@ onUnmounted(() => {
 </script>
 
 <style>
+@reference "../../tailwind.css";
+
 .blog.aside {
     position: fixed !important;
     z-index: 10;

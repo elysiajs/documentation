@@ -26,10 +26,10 @@ head:
 ---
 
 <script setup>
-    import Blog from '../../components/blog/Layout.vue'
+    import Blog from '../components/blog/Layout.vue'
 </script>
 
-<Blog 
+<Blog
     title="Elysia 0.2 - The Blessing"
     src="/blog/elysia-02/blessing.webp"
     alt="blue to purple aurora in the night sky above of snow mountain"
@@ -116,7 +116,7 @@ This allows you to write better documentation and fully editable Swagger as you 
 ## Union Type
 The previous version of Elysia sometime has a problem with distinct Union types, as Elysia tries to catch the response to create a full type reference for Eden.
 
-Results in invalidation of possible types, 
+Results in invalidation of possible types,
 
 ## Union Response
 Made possible by Union Type, now returning multiple response status for `schema` now available using `schema.response[statusCode]`
@@ -152,14 +152,14 @@ Elysia will try to validate all schema in `response` allowing one of the types t
 Return types are also supported report in Swagger's response.
 
 ## Faster Type Inference
-As Elysia 0.1 explore the possibility of using type inference for improving better Developer Experience, we found that sometimes it takes a long time to update type inference because of heavy type inference and in-efficient custom generic. 
+As Elysia 0.1 explore the possibility of using type inference for improving better Developer Experience, we found that sometimes it takes a long time to update type inference because of heavy type inference and in-efficient custom generic.
 
 With Elysia 0.2 now optimized for faster type-inference, preventing duplication of heavy type unwrap, results in better performance for updating type and inference.
 
 ## Ecosystem
 With Elysia 0.2 enabling async plugin and deferred module many new plugins that isn't possible before became reality.
 
-Like: 
+Like:
 - Elysia Static plugin with the non-blocking capability
 - Eden with union-type inference for multiple responses
 - New Elysia Apollo Plugin for Elysia

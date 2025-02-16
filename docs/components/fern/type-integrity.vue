@@ -81,6 +81,8 @@ const form = ref(1)
 </script>
 
 <style>
+@reference "../../tailwind.css";
+
 #type-integrity {
     @apply relative max-w-5xl w-full mx-auto mt-8 mb-12;
 

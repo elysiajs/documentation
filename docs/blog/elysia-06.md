@@ -26,7 +26,7 @@ head:
 ---
 
 <script setup>
-    import Blog from '../../components/blog/Layout.vue'
+    import Blog from '../components/blog/Layout.vue'
 </script>
 
 <Blog
@@ -371,7 +371,7 @@ We incredibly thankful for your overwhelming continous support for Elysia, and w
 > We are maverick
 >
 > We won't give in, until we win this game
-> 
+>
 > Though I don't know what tomorrow holds
 >
 > I'll make a bet any play my cards to win this game

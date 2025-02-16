@@ -15,8 +15,8 @@ head:
 ---
 
 <script setup>
-import Playground from '../../components/nearl/playground.vue'
-import Tab from '../../components/fern/tab.vue'
+import Playground from '../components/nearl/playground.vue'
+import Tab from '../components/fern/tab.vue'
 import { Elysia } from 'elysia'
 
 const handler1 = new Elysia()

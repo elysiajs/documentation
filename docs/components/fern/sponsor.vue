@@ -124,6 +124,8 @@ const sponsors: Sponsor[] = data
 </script>
 
 <style>
+@reference "../../tailwind.css";
+
 #sponsors-fern {
     @apply grid gap-0.5 grid-cols-3;
 

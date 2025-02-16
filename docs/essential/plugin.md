@@ -15,7 +15,7 @@ head:
 ---
 
 <script setup>
-import Playground from '../../components/nearl/playground.vue'
+import Playground from '../components/nearl/playground.vue'
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()

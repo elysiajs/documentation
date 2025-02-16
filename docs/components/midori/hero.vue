@@ -23,7 +23,7 @@
             style="aspect-ratio: 1.5 / 1"
         />
         <h2
-            class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-violet-400 mb-6"
+            class="relative text-5xl md:text-6xl md:leading-tight font-bold md:text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-indigo-400 mb-6"
         >
             Ergonomic Framework for Humans
             <span
@@ -87,34 +87,32 @@
             </span>
         </h2>
         <h3
-            class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left md:text-center w-full max-w-2xl"
+            class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left md:text-center w-full max-w-[49rem]"
         >
             TypeScript with
             <span
                 class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"
                 >End-to-End Type Safety</span
-            >, type integrity, and exceptional developer experience.
+            >, unified type system and outstanding developer experience.
             Supercharged by Bun.
         </h3>
         <section
             class="flex flex-col sm:flex-row items-start sm:items-center w-full md:w-auto gap-4 mt-10 mb-12"
         >
             <a
-                class="text-white font-semibold text-lg bg-pink-400 dark:bg-pink-500 px-6 py-2.5 rounded-full"
-                id="hero-get-started"
+                class="text-white font-medium text-lg bg-blue-500 px-6 py-2.5 rounded-full"
                 href="/at-glance"
             >
                 Get Started
             </a>
-            <div class="relative flex flex-1 gap-3 text-pink-500">
+            <div class="relative flex flex-1 gap-3 text-blue-500">
                 <code
-                    class="text-pink-500 font-mono font-medium text-lg bg-pink-200/25 dark:bg-pink-500/20 px-6 py-2.5 rounded-full"
+                    class="text-blue-500 font-mono font-medium text-lg bg-blue-200/25 dark:bg-blue-500/20 px-6 py-2.5 rounded-full"
                 >
                     bun create elysia app
                 </code>
                 <button
-                	id="hero-copy"
-                    class="hidden sm:inline-flex p-3 rounded-2xl active:rounded-full hover:bg-pink-200/25 focus:bg-pink-200/25 active:bg-pink-200/50 hover:dark:bg-pink-500/20 focus:dark:bg-pink-500/20 active:dark:bg-pink-500/20 transition-all"
+                    class="hidden sm:inline-flex p-3 rounded-2xl active:rounded-full hover:bg-blue-200/25 focus:bg-blue-200/25 active:bg-blue-200/50 hover:dark:bg-blue-500/20 focus:dark:bg-blue-500/20 active:dark:bg-blue-500/20 transition-all"
                     @click="copied = true"
                 >
                     <svg
@@ -169,7 +167,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import Ray from './ray.vue'
 
@@ -185,32 +183,3 @@ watch(copied, (value) => {
     }
 })
 </script>
-
-<style>
-.gradient {
-    width: 1100px;
-    height: 1100px;
-}
-
-.gradient {
-    background: radial-gradient(
-        ellipse at center,
-        #d7e0ff 0%,
-        #eaecff 35%,
-        transparent 70%
-    );
-}
-
-.dark .gradient {
-    background: radial-gradient(
-        ellipse at center,
-        #797ee199 0%,
-        transparent 70%
-    );
-}
-
-#hero-get-started, #hero-copy {
-	@apply transform hover:scale-110 focus:scale-110;
-	transition: transform .35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
-}
-</style>

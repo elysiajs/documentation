@@ -164,6 +164,8 @@ function move(event: MouseEvent) {
 </script>
 
 <style>
+@reference "../../tailwind.css";
+
 #beyond {
     @apply flex flex-col md:flex-row justify-between items-start w-full max-w-5xl mx-auto my-8 gap-8 sm:gap-2;
 
@@ -283,12 +285,12 @@ function move(event: MouseEvent) {
         html.dark & {
             background-image: radial-gradient(
                     closest-side at center,
-                    theme(colors.gray.800) 70%,
+                    var(--color-gray-800) 70%,
                     transparent 150%
                 ),
                 radial-gradient(
                     closest-side at center,
-                    theme(colors.gray.800) 90%,
+                    var(--color-gray-800) 90%,
                     transparent 150%
                 ),
                 radial-gradient(

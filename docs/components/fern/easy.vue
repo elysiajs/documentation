@@ -152,6 +152,8 @@
 </template>
 
 <style>
+@reference "../../tailwind.css";
+
 #made-for-human {
     @apply flex flex-col max-w-5xl w-full mx-auto gap-8 my-16;
 
@@ -214,7 +216,7 @@
 
                 background-image: radial-gradient(
                         closest-side at center,
-                        theme(colors.gray.800) 35%,
+                        var(--color-gray-800) 35%,
                         transparent 140%
                     ),
                     radial-gradient(

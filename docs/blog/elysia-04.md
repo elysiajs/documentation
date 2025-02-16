@@ -26,7 +26,7 @@ head:
 ---
 
 <script setup>
-    import Blog from '../../components/blog/Layout.vue'
+    import Blog from '../components/blog/Layout.vue'
 </script>
 
 <Blog
@@ -65,7 +65,7 @@ This brings a lot of improvement and new features, for example, a `Not` type and
 
 But the one benefit for Elysia would be, `Error.First()` which allows us to get the first error of type instead of using Iterator, this reduces overhead in creating a new Error to send back to the client.
 
-There are some changes to **TypeBox** and **Elysia.t** that normally wouldn't have much effect on your end, but you can see what's a new feature in [TypeBox release here.](https://github.com/sinclairzx81/typebox/blob/master/changelog/0.26.0.md) 
+There are some changes to **TypeBox** and **Elysia.t** that normally wouldn't have much effect on your end, but you can see what's a new feature in [TypeBox release here.](https://github.com/sinclairzx81/typebox/blob/master/changelog/0.26.0.md)
 
 ## Validate response per status
 Previously, Elysia's response validate multiple status responses using union type.
@@ -92,7 +92,7 @@ Elysia Fn is a great addition to Elysia, with Eden, it breaks the boundary betwe
 
 But with the primitive type support, Elysia Fn depends on "superjson" which is around 38% of Elysia's dependency size.
 
-In this release, to use Elysia Fn, you're required to explicitly install `@elysiajs/fn` to use Elysia Fn. This approach is like installing an additional feature same as `cargo add --feature`. 
+In this release, to use Elysia Fn, you're required to explicitly install `@elysiajs/fn` to use Elysia Fn. This approach is like installing an additional feature same as `cargo add --feature`.
 
 This makes Elysia lighter for servers that don't use Elysia Fn, Following our philosophy, **To ensure that you have what you actually need**
 

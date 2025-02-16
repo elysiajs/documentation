@@ -15,9 +15,9 @@ head:
 ---
 
 <script setup>
-import Card from '../components/nearl/card.vue'
-import Deck from '../components/nearl/card-deck.vue'
-import Tab from '../components/fern/tab.vue'
+import Card from './components/nearl/card.vue'
+import Deck from './components/nearl/card-deck.vue'
+import Tab from './components/fern/tab.vue'
 </script>
 
 # Quick Start

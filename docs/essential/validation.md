@@ -17,9 +17,9 @@ head:
 <script setup>
 import { Elysia, t, ValidationError } from 'elysia'
 
-import Playground from '../../components/nearl/playground.vue'
-import Card from '../../components/nearl/card.vue'
-import Deck from '../../components/nearl/card-deck.vue'
+import Playground from '../components/nearl/playground.vue'
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
 
 const demo1 = new Elysia()
     .get('/none', () => 'hi')
