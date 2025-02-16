@@ -147,12 +147,13 @@ const sponsors: Sponsor[] = data
 }
 
 #become-sponsor {
-    transition: transform 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    transition: all 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 
-@screen sm {
+/* equivalent to md screen */
+@media (min-width: 40rem) {
     #sponsors-fern {
-        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)) !important;
     }
 }
 </style>
