@@ -147,6 +147,28 @@ new Elysia()
     .listen(3000)
 ```
 
+## File upload
+See [Validation#file](/essential/validation#file)
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.post('/body', ({ body }) => body, {
+                    // ^?
+
+
+
+
+
+		body: t.Object({
+			file: t.File({ format: 'image/*' }),
+			multipleFiles: t.Files()
+		})
+	})
+	.listen(3000)
+```
+
 ## Lifecycle Hook
 Intercept an Elysia event in order
 
@@ -194,7 +216,7 @@ new Elysia()
     .listen(3000)
 ```
 
-## Customize context
+## Custom context
 Add custom variable to route context
 
 See [Context](/essential/handler.html#context)
