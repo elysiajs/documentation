@@ -71,9 +71,9 @@ To register the TypeScript type, please append the following to **tsconfig.json*
 // tsconfig.json
 {
     "compilerOptions": {
-        "jsx": "react",
-        "jsxFactory": "Html.createElement",
-        "jsxFragmentFactory": "Html.Fragment"
+      "jsx": "react-jsx",
+      "jsxImportSource": "@kitajs/html",
+      "plugins": [{ "name": "@kitajs/ts-html-plugin" }]
     }
 }
 ```
