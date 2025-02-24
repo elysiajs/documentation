@@ -52,11 +52,70 @@ powershell -c "irm bun.sh/install.ps1 | iex"
 
 <Tab
 	id="quickstart"
-	:names="['Auto Installation', 'Manual Installation']"
-	:tabs="['auto', 'manual']"
+	:names="['Auto Installation', 'Auto installation (minimal)', 'Manual Installation']"
+	:tabs="['auto', 'auto-minimal', 'manual']"
 >
 
 <template v-slot:auto>
+
+We recommend starting a new Elysia server using `bun create elysiajs`, which sets up everything automatically.
+
+```bash
+bun create elysiajs app
+```
+
+And there you can set up your project directly from the CLI! It helps to relieve the pain of starting a project and prepares it for your needs.
+
+#### Supported environment
+
+-   Linters
+-   -   [Biome](https://biomejs.dev/)
+-   -   [ESLint](https://eslint.org/) with [@antfu/eslint-config](https://eslint-config.antfu.me/rules)
+-   ORM/Query builders
+-   -   [Prisma](https://www.prisma.io/)
+-   -   [Drizzle](https://orm.drizzle.team/)
+-   Plugins
+-   -   [CORS](https://elysiajs.com/plugins/cors.html)
+-   -   [Swagger](https://elysiajs.com/plugins/swagger.html)
+-   -   [JWT](https://elysiajs.com/plugins/jwt.html)
+-   -   [Autoload](https://github.com/kravetsone/elysia-autoload)
+-   -   [Oauth 2.0](https://github.com/kravetsone/elysia-oauth2)
+-   -   [HTML/JSX](https://elysiajs.com/plugins/html.html)
+-   -   [Logger](https://github.com/bogeychan/elysia-logger)
+-   -   [Static](https://elysiajs.com/plugins/static.html)
+-   -   [Bearer](https://elysiajs.com/plugins/bearer.html)
+-   -   [Server Timing](https://elysiajs.com/plugins/server-timing.html)
+-   Others
+-   -   [Dockerfile](https://www.docker.com/) + [docker-compose.yml](https://docs.docker.com/compose/)
+-   -   [Jobify](https://github.com/kravetsone/jobify) ([Bullmq](https://docs.bullmq.io/) wrapper)
+-   -   [Posthog](https://posthog.com/docs/libraries/node)
+-   -   [Verrou](https://github.com/kravetsone/verrou) (Locks)
+-   -   [Env-var](https://github.com/wobsoriano/env-var) (Environment variables)
+-   -   [.vscode](https://code.visualstudio.com/) (VSCode settings)
+-   -   [Husky](https://typicode.github.io/husky/) (Git hooks)
+-   And more soon...
+
+Once done, you should see the folder name `app` in your directory.
+
+```bash
+cd app
+```
+
+Start a development server by:
+
+```bash
+bun dev
+```
+
+::: tip
+You can choose to create a `docker-compose.yml` file and run an postgres container and start developing in an instant!
+:::
+
+
+
+</template>
+
+<template v-slot:auto-minimal>
 
 We recommend starting a new Elysia server using `bun create elysia`, which sets up everything automatically.
 
