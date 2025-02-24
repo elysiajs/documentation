@@ -95,6 +95,26 @@ And there you can set up your project directly from the CLI! It helps to relieve
 -   -   [Husky](https://typicode.github.io/husky/) (Git hooks)
 -   And more soon...
 
+```bash
+$ bun create elysiajs test
+
+√ Select linters/formatters: · Biome
+√ Select ORM/Query Builder: · Drizzle
+√ Select DataBase for Drizzle: · PostgreSQL
+√ Select driver for PostgreSQL: · Postgres.JS
+√ Select Elysia plugins: (Space to select, Enter to continue) · CORS, Swagger, JWT, Autoload, Oauth 2.0, Logger, HTML/JSX, Static, Bearer, Server Timing
+√ Select others tools: (Space to select, Enter to continue) · Posthog, Jobify
+√ Create an empty Git repository? · no / yes
+√ Do you want to use Locks to prevent race conditions? · no / yes
+√ Create Dockerfile + docker.compose.yml? · no / yes
+√ Create .vscode folder with VSCode extensions recommendations and settings? · no / yes
+✔ Template generation is complete!
+✔ git init
+✔ bun install
+✔ bunx @biomejs/biome init
+✔ bun lint:fix
+```
+
 Once done, you should see the folder name `app` in your directory.
 
 ```bash
