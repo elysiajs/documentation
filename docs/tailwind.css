@@ -242,7 +242,7 @@ button.copy::after {
 
 	/* nested accordian */
 	.level-1.collapsible {
-		@apply min-h-9;
+		@apply min-h-8;
 		transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
 
 		&.collapsed {
