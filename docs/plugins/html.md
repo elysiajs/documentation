@@ -26,15 +26,17 @@ bun add @elysiajs/html
 
 Then use it:
 
-```tsx
+```tsx twoslash
+import React from 'react'
+// ---cut---
 import { Elysia } from 'elysia'
 import { html, Html } from '@elysiajs/html'
 
 new Elysia()
-    .use(html())
-    .get(
-        '/html',
-        () => `
+	.use(html())
+	.get(
+		'/html',
+		() => `
             <html lang='en'>
                 <head>
                     <title>Hello World</title>
@@ -43,62 +45,69 @@ new Elysia()
                     <h1>Hello World</h1>
                 </body>
             </html>`
-    )
-    .get('/jsx', () => (
-        <html lang='en'>
-            <head>
-                <title>Hello World</title>
-            </head>
-            <body>
-                <h1>Hello World</h1>
-            </body>
-        </html>
-    ))
-    .listen(3000)
+	)
+	.get('/jsx', () => (
+		<html lang="en">
+			<head>
+				<title>Hello World</title>
+			</head>
+			<body>
+				<h1>Hello World</h1>
+			</body>
+		</html>
+	))
+	.listen(3000)
 ```
 
 This plugin will automatically add `Content-Type: text/html; charset=utf8` header to the response, add `<!doctype html>`, and convert it into a Response object.
 
 ## JSX
+
 Elysia HTML is based on [@kitajs/html](https://github.com/kitajs/html) allowing us to define JSX to string in compile time to achieve high performance.
 
 Name your file that needs to use JSX to end with affix **"x"**:
+
 - .js -> .jsx
 - .ts -> .tsx
 
 To register the TypeScript type, please append the following to **tsconfig.json**:
+
 ```jsonc
 // tsconfig.json
 {
-    "compilerOptions": {
-        "jsx": "react",
-        "jsxFactory": "Html.createElement",
-        "jsxFragmentFactory": "Html.Fragment"
-    }
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "Html.createElement",
+		"jsxFragmentFactory": "Html.Fragment"
+	}
 }
 ```
 
 That's it, now you can use JSX as your template engine:
-```tsx
+
+```tsx twoslash
+import React from 'react'
+// ---cut---
 import { Elysia } from 'elysia'
 import { html, Html } from '@elysiajs/html' // [!code ++]
 
 new Elysia()
-    .use(html()) // [!code ++]
-    .get('/', () => (
-        <html lang="en">
-            <head>
-                <title>Hello World</title>
-            </head>
-            <body>
-                <h1>Hello World</h1>
-            </body>
-        </html>
-    ))
-    .listen(3000)
+	.use(html()) // [!code ++]
+	.get('/', () => (
+		<html lang="en">
+			<head>
+				<title>Hello World</title>
+			</head>
+			<body>
+				<h1>Hello World</h1>
+			</body>
+		</html>
+	))
+	.listen(3000)
 ```
 
 If the error `Cannot find name 'Html'. Did you mean 'html'?` occurs, this import must be added to the JSX template:
+
 ```tsx
 import { Html } from '@elysiajs/html'
 ```
@@ -106,47 +115,55 @@ import { Html } from '@elysiajs/html'
 It is important that it is written in uppercase.
 
 ## XSS
+
 Elysia HTML is based use of the Kita HTML plugin to detect possible XSS attacks in compile time.
 
 You can use a dedicated `safe` attribute to sanitize user value to prevent XSS vulnerability.
+
 ```tsx
 import { Elysia, t } from 'elysia'
 import { html, Html } from '@elysiajs/html'
 
 new Elysia()
-    .use(html())
-    .post('/', ({ body }) => (
-        <html lang="en">
-            <head>
-                <title>Hello World</title>
-            </head>
-            <body>
-                <h1 safe>{body}</h1>
-            </body>
-        </html>
-    ), {
-        body: t.String()
-    })
-    .listen(3000)
+	.use(html())
+	.post(
+		'/',
+		({ body }) => (
+			<html lang="en">
+				<head>
+					<title>Hello World</title>
+				</head>
+				<body>
+					<h1 safe>{body}</h1>
+				</body>
+			</html>
+		),
+		{
+			body: t.String()
+		}
+	)
+	.listen(3000)
 ```
 
 However, when are building a large-scale app, it's best to have a type reminder to detect possible XSS vulnerabilities in your codebase.
 
 To add a type-safe reminder, please install:
+
 ```sh
 bun add @kitajs/ts-html-plugin
 ```
 
 Then appends the following **tsconfig.json**
+
 ```jsonc
 // tsconfig.json
 {
-    "compilerOptions": {
-        "jsx": "react",
-        "jsxFactory": "Html.createElement",
-        "jsxFragmentFactory": "Html.Fragment",
-        "plugins": [{ "name": "@kitajs/ts-html-plugin" }]
-    }
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "Html.createElement",
+		"jsxFragmentFactory": "Html.Fragment",
+		"plugins": [{ "name": "@kitajs/ts-html-plugin" }]
+	}
 }
 ```
 
@@ -154,22 +171,22 @@ Then appends the following **tsconfig.json**
 
 ### contentType
 
--   Type: `string`
--   Default: `'text/html; charset=utf8'`
+- Type: `string`
+- Default: `'text/html; charset=utf8'`
 
 The content-type of the response.
 
 ### autoDetect
 
--   Type: `boolean`
--   Default: `true`
+- Type: `boolean`
+- Default: `true`
 
 Whether to automatically detect HTML content and set the content-type.
 
 ### autoDoctype
 
--   Type: `boolean | 'full'`
--   Default: `true`
+- Type: `boolean | 'full'`
+- Default: `true`
 
 Whether to automatically add `<!doctype html>` to a response starting with `<html>`, if not found.
 
@@ -185,8 +202,8 @@ app.get('/', ({ html }) => html('<html></html>'))
 
 ### isHtml
 
--   Type: `(value: string) => boolean`
--   Default: `isHtml` (exported function)
+- Type: `(value: string) => boolean`
+- Default: `isHtml` (exported function)
 
 The function is used to detect if a string is a html or not. Default implementation if length is greater than 7, starts with `<` and ends with `>`.
 

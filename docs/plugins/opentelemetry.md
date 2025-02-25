@@ -18,7 +18,7 @@ head:
 
 To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry'
 

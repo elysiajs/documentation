@@ -116,7 +116,10 @@ export default defineConfig({
 	],
 	themeConfig: {
 		search: {
-			provider: 'local'
+			provider: 'local',
+			options: {
+				detailedView: true
+			}
 		},
 		logo: '/assets/elysia.svg',
 		nav: [

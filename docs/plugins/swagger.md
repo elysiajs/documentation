@@ -26,7 +26,7 @@ bun add @elysiajs/swagger
 
 Then use it:
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -91,7 +91,7 @@ Below you can find the common patterns to use the plugin.
 
 You can change the swagger endpoint by setting [path](#path) in the plugin config.
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -106,7 +106,7 @@ new Elysia()
 
 ## Customize Swagger info
 
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 

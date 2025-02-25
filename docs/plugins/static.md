@@ -23,7 +23,7 @@ bun add @elysiajs/static
 ```
 
 Then use it:
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysiajs/static'
 
@@ -94,9 +94,9 @@ Below you can find the common patterns to use the plugin.
 
 ## Single file
 Suppose you want to return just a single file, you can use `file` instead of using the static plugin
-```typescript
+```typescript twoslash
 import { Elysia, file } from 'elysia'
 
 new Elysia()
-    .get('/file', () => file('public/takodachi.png'))
+    .get('/file', file('public/takodachi.png'))
 ```
