@@ -208,7 +208,7 @@ button.copy::after {
 }
 
 #VPSidebarNav > .group {
-	@apply border-t-0;
+	@apply border-t-0 min-h-11;
 
 	& > .VPSidebarItem {
 		@apply pb-1;
