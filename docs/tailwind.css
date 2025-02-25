@@ -207,6 +207,64 @@ button.copy::after {
 	filter: invert(1);
 }
 
+/* auto-height */
+.VPSidebarItem {
+	@apply relative;
+
+	&.collapsible {
+		@apply relative grid w-full pl-0 border-0 motion-reduce:transition-none;
+		grid-template-rows: 1fr;
+		transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+
+		&.collapsed {
+			@apply motion-reduce:transition-none;
+
+			grid-template-rows: 0fr;
+			transition: grid-template-rows 0.325s cubic-bezier(0.5, 0, 0.75, 0);
+
+			& > .items {
+				@apply block;
+			}
+		}
+
+		& > .item {
+			@apply absolute;
+		}
+
+		& > .items {
+			@apply overflow-hidden pt-9;
+
+			& > .VPSidebarItem {
+				@apply cursor-pointer;
+			}
+		}
+	}
+
+	/* nested accordian */
+	.level-1.collapsible {
+		@apply min-h-9;
+		transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+
+		&.collapsed {
+			@apply motion-reduce:transition-none;
+
+			transition: grid-template-rows 0.325s cubic-bezier(0.5, 0, 0.75, 0) !important;
+		}
+
+		& > .item {
+			@apply pl-4;
+		}
+
+		& > .items {
+			@apply pt-8;
+
+			& > .VPSidebarItem {
+				@apply cursor-pointer;
+			}
+		}
+	}
+}
+
 #VPSidebarNav > .group {
 	@apply border-t-0 min-h-11;
 
@@ -215,36 +273,6 @@ button.copy::after {
 
 		& > .item > .text {
 			@apply flex items-center text-base py-1.5;
-		}
-
-		/* auto-height */
-		&.collapsible {
-			@apply relative grid w-full pl-0 border-0 motion-reduce:transition-none;
-			grid-template-rows: 1fr;
-			transition: grid-template-rows 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-
-			& > .item {
-				@apply absolute;
-			}
-
-			& > .items {
-				@apply overflow-hidden pt-9;
-
-				& > .VPSidebarItem {
-					@apply cursor-pointer;
-				}
-			}
-
-			&.collapsed {
-				@apply motion-reduce:transition-none;
-
-				grid-template-rows: 0fr;
-				transition: grid-template-rows 0.35s cubic-bezier(0.5, 0, 0.75, 0);
-
-				& > .items {
-					@apply block;
-				}
-			}
 		}
 
 		& > .items {
