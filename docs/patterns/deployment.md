@@ -18,7 +18,7 @@ head:
 This page is a guide on how to deploy Elysia to production.
 
 ## Compile to binary
-We recommended running a build command before deploying to produciton as it could potentially reduce memory usage and file size significantly.
+We recommended running a build command before deploying to production as it could potentially reduce memory usage and file size significantly.
 
 We recommended compile Elysia into a single binary using the command as follows:
 ```bash
