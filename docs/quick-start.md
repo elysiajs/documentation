@@ -192,7 +192,7 @@ bun add -d tsx @types/node typescript
 
 ```bash [pnpm]
 pnpm add elysia @elysiajs/node && \
-pnpm add -d tsx @types/node typescript
+pnpm add -D tsx @types/node typescript
 ```
 
 ```bash [npm]
@@ -201,8 +201,8 @@ npm install --save-dev tsx @types/node typescript
 ```
 
 ```bash [yarn]
-yarn add elysia && \
-yarn add -d tsx @types/node typescript
+yarn add elysia @elysiajs/node && \
+yarn add -D tsx @types/node typescript
 ```
 
 :::
