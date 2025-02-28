@@ -201,7 +201,7 @@ npm install --save-dev tsx @types/node typescript
 ```
 
 ```bash [yarn]
-yarn add elysia && \
+yarn add elysia @elysiajs/node && \
 yarn add -D tsx @types/node typescript
 ```
 
