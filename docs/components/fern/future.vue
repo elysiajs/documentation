@@ -31,6 +31,6 @@
 #future-get-started,
 #future-tutorial {
     @apply transform hover:scale-110 focus:scale-110;
-    transition: transform 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    transition: all 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 </style>

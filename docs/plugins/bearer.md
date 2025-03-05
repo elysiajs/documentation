@@ -23,21 +23,20 @@ bun add @elysiajs/bearer
 ```
 
 Then use it:
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 import { bearer } from '@elysiajs/bearer'
 
 const app = new Elysia()
     .use(bearer())
     .get('/sign', ({ bearer }) => bearer, {
-        beforeHandle({ bearer, set }) {
+        beforeHandle({ bearer, set, error }) {
             if (!bearer) {
-                set.status = 400
                 set.headers[
                     'WWW-Authenticate'
                 ] = `Bearer realm='sign', error="invalid_request"`
 
-                return 'Unauthorized'
+                return error(400, 'Unauthorized')
             }
         }
     })

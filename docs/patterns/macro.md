@@ -17,7 +17,7 @@ head:
 # Macro
 
 <script setup>
-import Tab from '../../components/fern/tab.vue'
+import Tab from '../components/fern/tab.vue'
 </script>
 
 Macro allows us to define a custom field to the hook.

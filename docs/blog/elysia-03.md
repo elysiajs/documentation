@@ -26,7 +26,7 @@ head:
 ---
 
 <script setup>
-    import Blog from '../../components/blog/Layout.vue'
+    import Blog from '../components/blog/Layout.vue'
 </script>
 
 <Blog
@@ -55,7 +55,7 @@ For rapid development, Elysia Fn allows you to "expose" backend code to call fro
 You can use Elysia Fn with Eden for full-type safety via Eden Fn.
 
 ### Permission
-You can limit allow or deny scopes of the function, check for authorization header and other headers' fields, validate parameters, or limit keys access programmatically. 
+You can limit allow or deny scopes of the function, check for authorization header and other headers' fields, validate parameters, or limit keys access programmatically.
 
 Keys checking supports type-safety and auto-completion of all possible functions, so you're not missing out on some function or accidentally typing down the wrong name.
 ![Narrowed Key](/blog/elysia-03/narrowed-key.webp)
@@ -78,14 +78,14 @@ Over 6.5-9x faster for type checking, and uncountable type's LoC reduction.
 
 Elysia 0.3, over 80% of Elysia, and Eden types have been rewritten to focus on performance, type-inference, and fast auto-completion.
 
-Testing for over 350 routes with complex types, Elysia uses only 0.22 
+Testing for over 350 routes with complex types, Elysia uses only 0.22
 seconds to generate a type declaration to use with Eden.
 
 As the Elysia route now compile directly to literal object instead of Typebox reference, Elysia type declaration is much smaller than it used to be on 0.2 and is easier to be consumed by Eden. And by much smaller, it means 50-99% smaller.
 
 Not only Elysia integration with TypeScript is significantly faster, but Elysia is better at understanding TypeScript and your code better.
 
-For example, with 0.3, Elysia will be less strict with plugin registration, allowing you to register the plugin without full type-completion of Elysia Instance. 
+For example, with 0.3, Elysia will be less strict with plugin registration, allowing you to register the plugin without full type-completion of Elysia Instance.
 Inlining `use` function now infers the parent type, and the nested guard can reference types of models from the parent more accurately.
 
 Type Declaration is now also can be built, and exported.

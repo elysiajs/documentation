@@ -67,6 +67,8 @@
 </template>
 
 <style scoped>
+@reference "../../tailwind.css";
+
 #benchmark {
     @apply relative flex flex-col md:flex-row items-center gap-12 md:gap-24 max-w-5xl w-full my-4 py-12 px-6 mx-auto;
 }
@@ -83,7 +85,7 @@
 	    background-image: radial-gradient(
 	        closest-side at center,
 	        transparent 0%,
-	        theme(colors.gray.900) 100%
+	        var(--color-gray-900) 100%
 	    );
     }
 }

@@ -23,7 +23,10 @@ bun add @elysiajs/jwt
 ```
 
 Then use it:
-```typescript
+
+::: code-group
+
+```typescript [cookie]
 import { Elysia } from 'elysia'
 import { jwt } from '@elysiajs/jwt'
 
@@ -34,28 +37,55 @@ const app = new Elysia()
             secret: 'Fischl von Luftschloss Narfidort'
         })
     )
-    .get('/sign/:name', async ({ jwt, cookie: { auth }, params }) => {
+    .get('/sign/:name', async ({ jwt, params: { name }, cookie: { auth } }) => {
+    	const value = await jwt.sign(name)
+
         auth.set({
-            value: await jwt.sign(params),
+            value,
             httpOnly: true,
             maxAge: 7 * 86400,
             path: '/profile',
         })
 
-        return `Sign in as ${auth.value}`
+        return `Sign in as ${value}`
     })
-    .get('/profile', async ({ jwt, set, cookie: { auth } }) => {
+    .get('/profile', async ({ jwt, error, cookie: { auth } }) => {
         const profile = await jwt.verify(auth.value)
 
-        if (!profile) {
-            set.status = 401
-            return 'Unauthorized'
-        }
+        if (!profile)
+            return error(401, 'Unauthorized')
 
         return `Hello ${profile.name}`
     })
     .listen(3000)
 ```
+
+```typescript [headers]
+import { Elysia } from 'elysia'
+import { jwt } from '@elysiajs/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: 'Fischl von Luftschloss Narfidort'
+        })
+    )
+    .get('/sign/:name', ({ jwt, params: { name } }) => {
+    	return jwt.sign(name)
+    })
+    .get('/profile', async ({ jwt, error, headers: { authorization } }) => {
+        const profile = await jwt.verify(authorization)
+
+        if (!profile)
+            return error(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+:::
 
 ## Config
 This plugin extends config from [jose](https://github.com/panva/jose).
@@ -136,15 +166,15 @@ The "not before" claim identifies the time before which the JWT must not be acce
 The expiration time claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing as per [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.4)
 
 ### iat
-The "issued at" claim identifies the time at which the JWT was issued.  
+The "issued at" claim identifies the time at which the JWT was issued.
 
 This claim can be used to determine the age of the JWT as per [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.6)
- 
+
 ### b64
 This JWS Extension Header Parameter modifies the JWS Payload representation and the JWS Signing input computation as per [RFC7797](https://www.rfc-editor.org/rfc/rfc7797).
 
 ### kid
-A hint indicating which key was used to secure the JWS. 
+A hint indicating which key was used to secure the JWS.
 
 This parameter allows originators to explicitly signal a change of key to recipients as per [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.4)
 

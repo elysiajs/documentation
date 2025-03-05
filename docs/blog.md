@@ -20,7 +20,7 @@ head:
 ---
 
 <script setup>
-    import Blogs from '../components/blog/Landing.vue'
+    import Blogs from './components/blog/Landing.vue'
 </script>
 
 <Blogs

@@ -12,8 +12,6 @@ import Tweets from './tweets.vue'
 import Sponsors from './sponsor.vue'
 import Future from './future.vue'
 import BuiltWithLove from './built-with-love.vue'
-
-import '../tailwind.css'
 </script>
 
 <template>
@@ -76,6 +74,8 @@ import '../tailwind.css'
 </template>
 
 <style>
+@reference "../../tailwind.css";
+
 #landing div[class*='language-'] > pre > code {
     display: block;
     width: -moz-fit-content;

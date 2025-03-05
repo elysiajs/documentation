@@ -17,7 +17,7 @@ head:
 ---
 
 <script setup>
-    import Fern from '../components/fern/fern.vue'
+    import Fern from './components/fern/fern.vue'
 </script>
 
 <Fern>

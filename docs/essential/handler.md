@@ -15,8 +15,8 @@ head:
 ---
 
 <script setup>
-import Playground from '../../components/nearl/playground.vue'
-import Tab from '../../components/fern/tab.vue'
+import Playground from '../components/nearl/playground.vue'
+import Tab from '../components/fern/tab.vue'
 import { Elysia } from 'elysia'
 
 const handler1 = new Elysia()
@@ -464,7 +464,7 @@ While streaming a response, it's common that request may be cancelled before the
 Elysia will automatically stop the generator function when the request is cancelled.
 
 ### Eden
-[Eden](/eden/overview) will will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+[Eden](/eden/overview) will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'

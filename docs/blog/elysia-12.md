@@ -26,7 +26,7 @@ head:
 ---
 
 <script setup>
-    import Blog from '../../components/blog/Layout.vue'
+    import Blog from '../components/blog/Layout.vue'
 </script>
 
 <Blog
@@ -193,7 +193,6 @@ new Elysia()
 			return 'nagisa'
 	})
 	.post('/', ({ body }) => body, {
-		type: 'json',
 		parse: ['custom', 'json']
 	})
 ```

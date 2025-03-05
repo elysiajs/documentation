@@ -26,7 +26,7 @@ head:
 ---
 
 <script setup>
-    import Blog from '../../components/blog/Layout.vue'
+    import Blog from '../components/blog/Layout.vue'
 </script>
 
 <Blog
@@ -118,7 +118,7 @@ TypeBox is a core library that powered Elysia's strict type system known as **El
 
 In this update, we update TypeBox from 0.26 to 0.28 to make even more fine-grained Type System near strictly typed language.
 
-We update Typebox to improve Elysia typing system to match new TypeBox feature with newer version of TypeScript like **Constant Generic** 
+We update Typebox to improve Elysia typing system to match new TypeBox feature with newer version of TypeScript like **Constant Generic**
 
 ```ts
 new Elysia()
@@ -203,7 +203,7 @@ app.get('/id/:id', ({ params: { id } }) => id, {
 
 We found that this step is redundant, and full of boiler-plate, we want to tap into this problem and solve it in a declarative way.
 
-Thanks to Static Code Analysis, Numeric type allow you to defined a numeric string and parse it to number automatically. 
+Thanks to Static Code Analysis, Numeric type allow you to defined a numeric string and parse it to number automatically.
 
 Once validated, a numeric type will be parsed as number automatically both on runtime and type level to fits our need.
 
@@ -358,7 +358,7 @@ app.group('/v1', (app) =>
 app.group(
     '/v1', {
         body: t.Literal('Rikuhachima Aru')
-    }, 
+    },
     app => app.get('/student', () => 'Rikuhachima Aru')
 )
 

@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import DefaultTheme from 'vitepress/theme'
-import { nextTick, provide, ref } from 'vue'
-
 import { useData } from 'vitepress'
-import useDark from '../../../components/midori/use-dark'
-import Ray from '../../../components/midori/ray.vue'
-// import Header from './header.vue'
+import DefaultTheme from 'vitepress/theme'
+import { nextTick, provide } from 'vue'
+
+import useDark from '../../components/midori/use-dark'
+import Ray from '../../components/midori/ray.vue'
 
 const isDark = useDark()
 const { isDark: darkTheme } = useData()
@@ -137,9 +136,5 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
 .VPSwitchAppearance .check {
     transform: none !important;
-}
-
-html.dark {
-    @apply bg-slate-900;
 }
 </style>

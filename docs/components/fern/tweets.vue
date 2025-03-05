@@ -113,6 +113,8 @@ import Tweet from './tweet.vue'
 </script>
 
 <style>
+@reference "../../tailwind.css";
+
 #people-tweets {
     @apply flex flex-col max-w-5xl w-full my-8 mx-auto;
 }

@@ -12,7 +12,6 @@ import Community from './community.vue'
 import QuickStart from './quickstart.vue'
 import Sponsor from './sponsor.vue'
 
-import '../tailwind.css'
 import './midori.css'
 
 import BuiltWithLove from './built-with-love.vue'
@@ -83,6 +82,8 @@ import BuiltWithLove from './built-with-love.vue'
 </template>
 
 <style>
+@reference "../../tailwind.css";
+
 #landing div[class*='language-'] > pre > code {
     display: block;
     width: -moz-fit-content;

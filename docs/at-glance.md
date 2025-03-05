@@ -15,9 +15,9 @@ head:
 ---
 
 <script setup>
-import Card from '../components/nearl/card.vue'
-import Deck from '../components/nearl/card-deck.vue'
-import Playground from '../components/nearl/playground.vue'
+import Card from './components/nearl/card.vue'
+import Deck from './components/nearl/card-deck.vue'
+import Playground from './components/nearl/playground.vue'
 
 import { Elysia } from 'elysia'
 

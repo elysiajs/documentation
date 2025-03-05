@@ -17,9 +17,9 @@ head:
 <script setup>
 import { Elysia, t, ValidationError } from 'elysia'
 
-import Playground from '../../components/nearl/playground.vue'
-import Card from '../../components/nearl/card.vue'
-import Deck from '../../components/nearl/card-deck.vue'
+import Playground from '../components/nearl/playground.vue'
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
 
 const demo1 = new Elysia()
     .get('/none', () => 'hi')
@@ -43,6 +43,25 @@ const demo2 = new Elysia()
             }
         )
     })
+
+const demo3 = new Elysia()
+ 	.guard({
+        query: t.Object({
+            name: t.Number()
+        })
+    })
+    .get('/query?id=1', ({ query: { id } }) => id)
+    .get('/query?id=salt', ({ query: { id } }) => id)
+
+const demo4 = new Elysia()
+ 	.guard({
+        query: t.Object({
+            name: t.Array(t.String()),
+            squad: t.String()
+        })
+    })
+    .get('/query?name=rapi,anis,neon&squad=counter', ({ query: { id } }) => id)
+    .get('/query?name=rapi&name=anis&name=neon&squad=counter', ({ query: { id } }) => id)
 </script>
 
 # Validation
@@ -192,7 +211,7 @@ new Elysia()
 
 
 		body: t.Object({
-			file: t.File(),
+			file: t.File({ format: 'image/*' }),
 			multipleFiles: t.Files()
 		})
 	})
@@ -245,6 +264,105 @@ fetch('https://elysiajs.com/?name=Elysia')
 ```
 
 When specifying query parameters, it's crucial to understand that all query parameter values must be represented as strings. This is due to how they are encoded and appended to the URL.
+
+### Coercion
+Elysia will coerce `query` to schema automatically.
+
+```ts twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.get('/', ({ query }) => query, {
+               // ^?
+
+
+
+
+		query: t.Object({ // [!code ++]
+			name: t.Number() // [!code ++]
+		}) // [!code ++]
+	})
+	.listen(3000)
+```
+
+<Playground
+    :elysia="demo3"
+    :mock="{
+        '/query?id=1': {
+            GET: '1'
+        },
+        '/query?id=salt': {
+        	GET: 'string cannot be assigned to number'
+        }
+    }"
+/>
+
+### Array
+By default, Elysia treat query parameters as a single string even if specified multiple time.
+
+To use array, we need to explicitly declare it as an array.
+
+```ts twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.get('/', ({ query }) => query, {
+               // ^?
+
+
+
+
+		query: t.Object({
+			name: t.Array(t.String()) // [!code ++]
+		})
+	})
+	.listen(3000)
+```
+
+<Playground
+    :elysia="demo4"
+    :mock="{
+        '/query?name=rapi,anis,neon&squad=counter': {
+            GET: JSON.stringify({
+                name: ['rapi', 'anis', 'neon'],
+                squad: 'counter'
+            }, null, 4)
+        },
+        '/query?name=rapi&name=anis&name=neon&squad=counter': {
+        	GET: JSON.stringify({
+                name: ['rapi', 'anis', 'neon'],
+                squad: 'counter'
+            }, null, 4)
+        }
+    }"
+/>
+
+Once Elysia detect that a property is assignable to array, Elysia will coerce it to an array of the specified type.
+
+By default, Elysia format query array with the following format:
+
+#### nuqs
+This format is used by [nuqs](https://nuqs.47ng.com).
+
+By using **,** as a delimiter, a property will be treated as array.
+
+```
+http://localhost?name=rapi,anis,neon&squad=counter
+{
+	name: ['rapi', 'anis', 'neon'],
+	squad: 'counter'
+}
+```
+
+#### HTML form format
+If a key is assigned multiple time, the key will be treated as an array.
+
+This is similar to HTML form format when an input with the same name is specified multiple times.
+
+```
+http://localhost?name=rapi&name=anis&name=neon&squad=counter
+// name: ['rapi', 'anis', 'neon']
+```
 
 ## Params
 Params or path parameters are the data sent through the URL path.
@@ -1017,8 +1135,8 @@ You can find all the source code for Elysia types in `elysia/type-system`.
 The following are types provided by Elysia:
 
 <Deck>
-    <Card title="Numeric" href="#numeric">
-        Accepts a numeric string or number and then transforms the value into a number
+	<Card title="UnoinEnum" href="#unionenum">
+		`UnionEnum` allows the value to be one of the specified values.
     </Card>
     <Card title="File" href="#file">
         A singular file. Often useful for <strong>file upload</strong> validation
@@ -1035,23 +1153,20 @@ The following are types provided by Elysia:
     <Card title="Maybe Empty" href="#maybeempty">
         Accepts empty string or null value
     </Card>
+    <Card title="Numeric" href="#numeric-legacy">
+        Accepts a numeric string or number and then transforms the value into a number
+    </Card>
 </Deck>
 
-### Numeric (legacy)
+### UnionEnum
 
-Numeric accepts a numeric string or number and then transforms the value into a number.
+`UnionEnum` allows the value to be one of the specified values.
 
 ```typescript
-t.Numeric()
+t.UnionEnum(['rapi', 'anis', 1, true, false])
 ```
 
-This is useful when an incoming value is a numeric string, for example, a path parameter or query string.
-
-Numeric accepts the same attributes as [Numeric Instance](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-num)
-
-::: tip
-This is not need as Elysia type already transforms Number to Numeric automatically
-:::
+By default, these value will not automatically
 
 ### File
 
@@ -1150,6 +1265,21 @@ t.MaybeEmpty(t.String())
 ```
 
 For additional information, you can find the full source code of the type system in [`elysia/type-system`](https://github.com/elysiajs/elysia/blob/main/src/type-system.ts).
+
+### Numeric (legacy)
+::: warning
+This is not need as Elysia type already transforms Number to Numeric automatically since 1.0
+:::
+
+Numeric accepts a numeric string or number and then transforms the value into a number.
+
+```typescript
+t.Numeric()
+```
+
+This is useful when an incoming value is a numeric string, for example, a path parameter or query string.
+
+Numeric accepts the same attributes as [Numeric Instance](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-num)
 
 ## Error Provider
 
@@ -1413,7 +1543,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-The narrowed-down error type will be typed as `ValidationError` imported from 'elysia/error'.
+The narrowed-down error type will be typed as `ValidationError` imported from **elysia/error**.
 
 **ValidationError** exposes a property named **validator**, typed as [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck), allowing us to interact with TypeBox functionality out of the box.
 

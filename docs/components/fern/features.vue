@@ -61,6 +61,8 @@
 </template>
 
 <style>
+@reference "../../tailwind.css";
+
 #features {
     @apply relative max-w-5xl w-full mx-auto mt-4 mb-12;
 
@@ -142,7 +144,7 @@
                 html.dark & {
                     background-image: radial-gradient(
                             closest-side at center,
-                            theme(colors.gray.800) 70%,
+                            var(--color-gray-800) 70%,
                             transparent 150%
                         ),
                         radial-gradient(
@@ -234,7 +236,7 @@
                 html.dark & {
                     background-image: radial-gradient(
                             closest-side at center,
-                            theme(colors.gray.800) 70%,
+                            var(--color-gray-800) 70%,
                             transparent 150%
                         ),
                         radial-gradient(
@@ -326,7 +328,7 @@
                 html.dark & {
                     background-image: radial-gradient(
                             closest-side at center,
-                            theme(colors.gray.800) 50%,
+                            var(--color-gray-800) 50%,
                             transparent 120%
                         ),
                         radial-gradient(

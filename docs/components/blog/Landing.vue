@@ -24,9 +24,7 @@
 
 <script lang="ts" setup>
 
-import Ray from '../../components/midori/ray.vue'
-
-import '../tailwind.css'
+import Ray from '../midori/ray.vue'
 
 const props = defineProps<{
     blogs: {

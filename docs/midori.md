@@ -17,7 +17,7 @@ head:
 ---
 
 <script setup>
-    import Landing from '../components/midori/index.vue'
+    import Landing from './components/midori/index.vue'
 </script>
 
 <Landing>

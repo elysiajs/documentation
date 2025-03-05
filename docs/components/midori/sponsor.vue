@@ -101,6 +101,8 @@ const sponsors: Sponsor[] = data
 </script>
 
 <style>
+@reference "../../tailwind.css";
+
 #sponsors {
     @apply grid gap-2 grid-cols-3;
 }
