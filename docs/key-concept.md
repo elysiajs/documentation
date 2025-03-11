@@ -16,11 +16,11 @@ head:
 
 # Key Concept
 
-### We __highly recommended__ you to read this page before start using Elysia.
+### We __highly recommend__ you to read this page before starting to use Elysia.
 
 Although Elysia is a simple library, it has some key concepts that you need to understand to use it effectively.
 
-This page covers most important concepts of Elysia that you should to know.
+This page covers most important concepts of Elysia that you should know.
 
 ## Everything is a component
 
@@ -46,7 +46,7 @@ const app = new Elysia()
 	.listen(3000)
 ```
 
-This force you to break down your application into small pieces, making it to add or remove features easily.
+This forces you to break down your application into small pieces, making it easy for you to add or remove features.
 
 Learn more about this in [plugin](/essential/plugin.html).
 
@@ -69,9 +69,9 @@ const server = new Elysia()
 	.listen(3000)
 ```
 
-In this example, the `ip` property is only share in it's own instance but not in the `server` instance.
+In this example, the `ip` property is only shared in its own instance but not in the `server` instance.
 
-To share the lifecycle, in our case, an `ip` property with `server` instance, we need to **explicitly says it** could be shared.
+To share the lifecycle, in our case, an `ip` property with `server` instance, we need to **explicitly say** that it could be shared.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -93,7 +93,7 @@ const server = new Elysia()
 
 In this example, `ip` property is shared between `ip` and `server` instance because we define it as `global`.
 
-This force you to think about the scope of each property preventing you from accidentally sharing the property between instances.
+This forces you to think about the scope of each property, preventing you from accidentally sharing the property between instances.
 
 Learn more about this in [scope](/essential/plugin.html#scope).
 
@@ -115,7 +115,7 @@ new Elysia()
     .listen(3000)
 ```
 
-In the code above **state** returns a new **ElysiaInstance** type, adding a `build` type.
+In the code above, **state** returns a new **ElysiaInstance** type, adding a typed `build` property.
 
 ### ❌ Don't: Use Elysia without method chaining
 Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
@@ -136,11 +136,11 @@ app.listen(3000)
 We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
 
 ## Dependency
-By default, each instance will be re-execute everytime it's applied to another instance.
+By default, each instance will be re-executed every time it's applied to another instance.
 
-This can cause a duplication of the same method being applied multiple times but some methods should be called once like **lifecycle** or **routes**.
+This can cause a duplication of the same method being applied multiple times, whereas some methods, like **lifecycle** or **routes**, should only be called once.
 
-To prevent lifecycle methods from being duplicated, we can add **an unique identifier** to the instance.
+To prevent lifecycle methods from being duplicated, we can add **a unique identifier** to the instance.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -167,13 +167,13 @@ const server = new Elysia()
 	.use(router2)
 ```
 
-This will prevent the `ip` property from being call multiple time by applying deduplication using an unique name.
+This will prevent the `ip` property from being called multiple times by applying deduplication using a unique name.
 
-Once `name` is provided, the instance will become a **singleton**. Allowing Elysia to apply plugin deduplication.
+Once `name` is provided, the instance will become a **singleton**, allowing Elysia to apply plugin deduplication.
 
-Allowing us to reuse the same instance multiple time without performance penalty.
+This allows us to reuse the same instance multiple times without the performance penalty.
 
-This forces you to think about the dependency of each instance, allowing for easily applying migration or refactoring.
+This forces you to think about the dependencies of each instance, allowing for easily applied migrations or refactoring.
 
 Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
 
@@ -198,7 +198,7 @@ const app = new Elysia()
 
 If possible, **always use an inline function** to provide an accurate type inference.
 
-If you need to apply a separate function, eg. MVC's controller pattern. It's recommended to destructure properties from inline function to prevent unnecessary type inference.
+If you need to apply a separate function, eg. MVC's controller pattern, it's recommended to destructure properties from inline function to prevent unnecessary type inference.
 
 ```ts twoslash
 import { Elysia, t } from 'elysia'
