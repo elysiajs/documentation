@@ -1135,7 +1135,7 @@ You can find all the source code for Elysia types in `elysia/type-system`.
 The following are types provided by Elysia:
 
 <Deck>
-	<Card title="UnoinEnum" href="#unionenum">
+	<Card title="UnionEnum" href="#unionenum">
 		`UnionEnum` allows the value to be one of the specified values.
     </Card>
     <Card title="File" href="#file">
