@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
 
+import llmstxt from 'vitepress-plugin-llms'
 import tailwindcss from '@tailwindcss/vite'
 
 // import {
@@ -41,6 +42,17 @@ export default defineConfig({
 			}
 		},
 		plugins: [
+			llmstxt({
+				customTemplateVariables: {
+					description: 'Ergonomic Framework for Humans',
+					details: 'Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it\'s tRPC, Swagger or WebSocket.'
+				},
+				ignoreFiles: [
+					"blog/*",
+					"index.md",
+					"table-of-content.md"
+				]
+			}),
 			tailwindcss() as any
 			// GitChangelog({
 			//     // Fill in your repository URL here
