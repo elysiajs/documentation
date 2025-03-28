@@ -1,9 +1,9 @@
 ---
-title: Schema - ElysiaJS
+title: Validation - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Schema - ElysiaJS
+        content: Validation - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -146,6 +146,51 @@ The response should be as follows:
 
 When a schema is provided, the type will be inferred from the schema automatically and an OpenAPI type will be generated for Swagger documentation, eliminating the redundant task of providing the type manually.
 
+## Guard
+
+Guard can be used to apply a schema to multiple handlers.
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/none', ({ query }) => 'hi')
+                   // ^?
+
+    .guard({ // [!code ++]
+        query: t.Object({ // [!code ++]
+            name: t.String() // [!code ++]
+        }) // [!code ++]
+    }) // [!code ++]
+    .get('/query', ({ query }) => query)
+                    // ^?
+    .listen(3000)
+```
+
+<br>
+
+This code ensures that the query must have **name** with a string value for every handler after it. The response should be listed as follows:
+
+<Playground
+    :elysia="demo1"
+    :mock="{
+        '/query': {
+            GET: 'Elysia'
+        }
+    }"
+/>
+
+The response should be listed as follows:
+
+| Path          | Response |
+| ------------- | -------- |
+| /none         | hi       |
+| /none?name=a  | hi       |
+| /query        | error    |
+| /query?name=a | a        |
+
+If multiple global schemas are defined for the same property, the latest one will take precedence. If both local and global schemas are defined, the local one will take precedence.
+
 ## Body
 An incoming [HTTP Message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages) is the data sent to the server. It can be in the form of JSON, form-data, or any other format.
 
@@ -180,7 +225,7 @@ Elysia disables body-parser for **GET** and **HEAD** messages by default, follow
 
 Most browsers disable the attachment of the body by default for **GET** and **HEAD** methods.
 
-### Specs
+#### Specs
 Validate an incoming [HTTP Message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages) (or body).
 
 These messages are additional messages for the web server to process.
@@ -251,7 +296,7 @@ The validation should be as follows:
 | /?name=ElysiaJS&alias=Elysia | ✅ |
 | / | ❌ |
 
-### Specs
+#### Specs
 
 A query string is a part of the URL that starts with **?** and can contain one or more query parameters, which are key-value pairs used to convey additional information to the server, usually for customized behavior like filtering or searching.
 
@@ -266,7 +311,9 @@ fetch('https://elysiajs.com/?name=Elysia')
 When specifying query parameters, it's crucial to understand that all query parameter values must be represented as strings. This is due to how they are encoded and appended to the URL.
 
 ### Coercion
-Elysia will coerce `query` to schema automatically.
+Elysia will coerce applicable schema on `query` to respective type automatically.
+
+See [Elysia behavior](/patterns/type#elysia-behavior) for more information.
 
 ```ts twoslash
 import { Elysia, t } from 'elysia'
@@ -395,7 +442,7 @@ The validation should be as follows:
 | /id/1 | ✅ |
 | /id/a | ❌ |
 
-### Specs
+#### Specs
 Path parameter <small>(not to be confused with query string or query parameter)</small>.
 
 **This field is usually not needed as Elysia can infer types from path parameters automatically**, unless there is a need for a specific value pattern, such as a numeric value or template literal pattern.
@@ -437,7 +484,7 @@ Unlike other types, headers have `additionalProperties` set to `true` by default
 
 This means that headers can have any key-value pair, but the value must match the schema.
 
-### Specs
+#### Specs
 HTTP headers let the client and the server pass additional information with an HTTP request or response, usually treated as metadata.
 
 This field is usually used to enforce some specific header fields, for example, `Authorization`.
@@ -480,7 +527,7 @@ Cookies must be provided in the form of `t.Cookie` or `t.Object`.
 
 Same as `headers`, cookies have `additionalProperties` set to `true` by default.
 
-### Specs
+#### Specs
 
 An HTTP cookie is a small piece of data that a server sends to the client. It's data that is sent with every visit to the same web server to let the server remember client information.
 
@@ -564,722 +611,7 @@ new Elysia()
 	})
 ```
 
-## Optional
-To make a field optional, use `t.Optional`.
-
-```typescript twoslash
-import { Elysia, t } from 'elysia'
-
-new Elysia()
-	.get('/optional', ({ query }) => query, {
-                       // ^?
-
-
-
-
-		query: t.Optional(
-			t.Object({
-				name: t.String()
-			})
-		)
-	})
-```
-
 This is an Elysia-specific feature, allowing us to make a field optional.
-
-## Guard
-
-Guard can be used to apply a schema to multiple handlers.
-
-```typescript twoslash
-import { Elysia, t } from 'elysia'
-
-new Elysia()
-    .get('/none', ({ query }) => 'hi')
-                   // ^?
-
-    .guard({ // [!code ++]
-        query: t.Object({ // [!code ++]
-            name: t.String() // [!code ++]
-        }) // [!code ++]
-    }) // [!code ++]
-    .get('/query', ({ query }) => query)
-                    // ^?
-    .listen(3000)
-```
-
-<br>
-
-This code ensures that the query must have **name** with a string value for every handler after it. The response should be listed as follows:
-
-<Playground
-    :elysia="demo1"
-    :mock="{
-        '/query': {
-            GET: 'Elysia'
-        }
-    }"
-/>
-
-The response should be listed as follows:
-
-| Path          | Response |
-| ------------- | -------- |
-| /none         | hi       |
-| /none?name=a  | hi       |
-| /query        | error    |
-| /query?name=a | a        |
-
-If multiple global schemas are defined for the same property, the latest one will take precedence. If both local and global schemas are defined, the local one will take precedence.
-
-## Normalize
-You can use the Elysia constructor to set the behavior for unknown fields on outgoing and incoming bodies via the `normalize` option. By default, Elysia will raise an error if a request or response contains fields that are not explicitly allowed in the schema of the respective handler.
-
-You can change this by setting `normalize` to true when constructing your Elysia instance.
-
-```ts
-import { Elysia, t } from 'elysia'
-
-new Elysia({
-    normalize: true
-})
-```
-
-## Primitive Type
-
-The TypeBox API is designed around and is similar to TypeScript types.
-
-There are many familiar names and behaviors that intersect with TypeScript counterparts, such as **String**, **Number**, **Boolean**, and **Object**, as well as more advanced features like **Intersect**, **KeyOf**, and **Tuple** for versatility.
-
-If you are familiar with TypeScript, creating a TypeBox schema behaves the same as writing a TypeScript type, except it provides actual type validation at runtime.
-
-To create your first schema, import **Elysia.t** from Elysia and start with the most basic type:
-
-```typescript twoslash
-import { Elysia, t } from 'elysia'
-
-new Elysia()
-	.post('/', ({ body }) => `Hello ${body}`, {
-		body: t.String()
-	})
-	.listen(3000)
-```
-
-This code tells Elysia to validate an incoming HTTP body, ensuring that the body is a string. If it is a string, it will be allowed to flow through the request pipeline and handler.
-
-If the shape doesn't match, it will throw an error into the [Error Life Cycle](/essential/life-cycle.html#on-error).
-
-![Elysia Life Cycle](/assets/lifecycle.webp)
-
-### Basic Type
-
-TypeBox provides basic primitive types with the same behavior as TypeScript types.
-
-The following table lists the most common basic types:
-
-<table class="md-table">
-<tbody>
-<tr>
-<td>TypeBox</td>
-<td>TypeScript</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.String()
-```
-
-</td>
-<td>
-
-```typescript
-string
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Number()
-```
-
-</td>
-<td>
-
-```typescript
-number
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Boolean()
-```
-
-</td>
-<td>
-
-```typescript
-boolean
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Array(
-    t.Number()
-)
-```
-
-</td>
-<td>
-
-```typescript
-number[]
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Object({
-    x: t.Number()
-})
-```
-
-</td>
-<td>
-
-```typescript
-{
-    x: number
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Null()
-```
-
-</td>
-<td>
-
-```typescript
-null
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Literal(42)
-```
-
-</td>
-<td>
-
-```typescript
-42
-```
-
-</td>
-</tr>
-</tbody>
-</table>
-
-Elysia extends all types from TypeBox, allowing you to reference most of the API from TypeBox for use in Elysia.
-
-See [TypeBox's Type](https://github.com/sinclairzx81/typebox#json-types) for additional types supported by TypeBox.
-
-### Attribute
-
-TypeBox can accept arguments for more comprehensive behavior based on the JSON Schema 7 specification.
-
-<table class="md-table">
-<tbody>
-<tr>
-<td>TypeBox</td>
-<td>TypeScript</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.String({
-    format: 'email'
-})
-```
-
-</td>
-<td>
-
-```typescript
-saltyaom@elysiajs.com
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Number({
-    minimum: 10,
-    maximum: 100
-})
-```
-
-</td>
-<td>
-
-```typescript
-10
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Array(
-    t.Number(),
-    {
-        /**
-         * Minimum number of items
-         */
-        minItems: 1,
-        /**
-         * Maximum number of items
-         */
-        maxItems: 5
-    }
-)
-```
-
-</td>
-<td>
-
-```typescript
-[1, 2, 3, 4, 5]
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Object(
-    {
-        x: t.Number()
-    },
-    {
-        /**
-         * @default false
-         * Accept additional properties
-         * that not specified in schema
-         * but still match the type
-         */
-        additionalProperties: true
-    }
-)
-```
-
-</td>
-<td>
-
-```typescript
-x: 100
-y: 200
-```
-
-</td>
-</tr>
-</tbody>
-</table>
-
-See [JSON Schema 7 specification](https://json-schema.org/draft/2020-12/json-schema-validation) for more explanation of each attribute.
-
-## Honorable Mentions
-
-The following are common patterns often found useful when creating a schema.
-
-### Union
-
-Allows a field in `t.Object` to have multiple types.
-
-<table class="md-table">
-<tbody>
-<tr>
-<td>TypeBox</td>
-<td>TypeScript</td>
-<td>Value</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Union([
-    t.String(),
-    t.Number()
-])
-```
-
-</td>
-<td>
-
-```typescript
-string | number
-```
-
-</td>
-
-<td>
-
-```
-Hello
-123
-```
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### Optional
-
-Allows a field in `t.Object` to be undefined or optional.
-
-<table class="md-table">
-<tbody>
-<tr>
-<td>TypeBox</td>
-<td>TypeScript</td>
-<td>Value</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Object({
-    x: t.Number(),
-    y: t.Optional(t.Number())
-})
-```
-
-</td>
-<td>
-
-```typescript
-{
-    x: number,
-    y?: number
-}
-```
-
-</td>
-
-<td>
-
-```typescript
-{
-    x: 123
-}
-```
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### Partial
-
-Allows all fields in `t.Object` to be optional.
-
-<table class="md-table">
-<tbody>
-<tr>
-<td>TypeBox</td>
-<td>TypeScript</td>
-<td>Value</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Partial(
-    t.Object({
-        x: t.Number(),
-        y: t.Number()
-    })
-)
-```
-
-</td>
-<td>
-
-```typescript
-{
-    x?: number,
-    y?: number
-}
-```
-
-</td>
-
-<td>
-
-```typescript
-{
-    y: 123
-}
-```
-
-</td>
-</tr>
-</tbody>
-</table>
-
-## Custom Error
-
-TypeBox offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
-
-<table class="md-table">
-<tbody>
-<tr>
-<td>TypeBox</td>
-<td>Error</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.String({
-    format: 'email',
-    error: 'Invalid email :('
-})
-```
-
-</td>
-<td>
-
-```
-Invalid Email :(
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```typescript
-t.Object({
-    x: t.Number()
-}, {
-    error: 'Invalid object UwU'
-})
-```
-
-</td>
-<td>
-
-```
-Invalid object UwU
-```
-
-</td>
-</tr>
-</tbody>
-</table>
-
-## Elysia Type
-
-`Elysia.t` is based on TypeBox with pre-configuration for server usage, providing additional types commonly found in server-side validation.
-
-You can find all the source code for Elysia types in `elysia/type-system`.
-
-The following are types provided by Elysia:
-
-<Deck>
-	<Card title="UnoinEnum" href="#unionenum">
-		`UnionEnum` allows the value to be one of the specified values.
-    </Card>
-    <Card title="File" href="#file">
-        A singular file. Often useful for <strong>file upload</strong> validation
-    </Card>
-    <Card title="Files" href="#files">
-        Extends from <a href="#file">File</a>, but adds support for an array of files in a single field
-    </Card>
-    <Card title="Cookie" href="#cookie">
-        Object-like representation of a Cookie Jar extended from Object type
-    </Card>
-    <Card title="Nullable" href="#nullable">
-    Allow the value to be null but not undefined
-    </Card>
-    <Card title="Maybe Empty" href="#maybeempty">
-        Accepts empty string or null value
-    </Card>
-    <Card title="Numeric" href="#numeric-legacy">
-        Accepts a numeric string or number and then transforms the value into a number
-    </Card>
-</Deck>
-
-### UnionEnum
-
-`UnionEnum` allows the value to be one of the specified values.
-
-```typescript
-t.UnionEnum(['rapi', 'anis', 1, true, false])
-```
-
-By default, these value will not automatically
-
-### File
-
-A singular file, often useful for **file upload** validation.
-
-```typescript
-t.File()
-```
-
-File extends the attributes of the base schema, with additional properties as follows:
-
-#### type
-
-Specifies the format of the file, such as image, video, or audio.
-
-If an array is provided, it will attempt to validate if any of the formats are valid.
-
-```typescript
-type?: MaybeArray<string>
-```
-
-#### minSize
-
-Minimum size of the file.
-
-Accepts a number in bytes or a suffix of file units:
-
-```typescript
-minSize?: number | `${number}${'k' | 'm'}`
-```
-
-#### maxSize
-
-Maximum size of the file.
-
-Accepts a number in bytes or a suffix of file units:
-
-```typescript
-maxSize?: number | `${number}${'k' | 'm'}`
-```
-
-#### File Unit Suffix:
-
-The following are the specifications of the file unit:
-m: MegaByte (1048576 byte)
-k: KiloByte (1024 byte)
-
-### Files
-
-Extends from [File](#file), but adds support for an array of files in a single field.
-
-```typescript
-t.Files()
-```
-
-Files extends the attributes of the base schema, array, and File.
-
-### Cookie
-
-Object-like representation of a Cookie Jar extended from the Object type.
-
-```typescript
-t.Cookie({
-    name: t.String()
-})
-```
-
-Cookie extends the attributes of [Object](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-obj) and [Cookie](https://github.com/jshttp/cookie#options-1) with additional properties as follows:
-
-#### secrets
-
-The secret key for signing cookies.
-
-Accepts a string or an array of strings.
-
-```typescript
-secrets?: string | string[]
-```
-
-If an array is provided, [Key Rotation](https://crypto.stackexchange.com/questions/41796/whats-the-purpose-of-key-rotation) will be used. The newly signed value will use the first secret as the key.
-
-### Nullable
-
-Allows the value to be null but not undefined.
-
-```typescript
-t.Nullable(t.String())
-```
-
-### MaybeEmpty
-
-Allows the value to be null and undefined.
-
-```typescript
-t.MaybeEmpty(t.String())
-```
-
-For additional information, you can find the full source code of the type system in [`elysia/type-system`](https://github.com/elysiajs/elysia/blob/main/src/type-system.ts).
-
-### Numeric (legacy)
-::: warning
-This is not need as Elysia type already transforms Number to Numeric automatically since 1.0
-:::
-
-Numeric accepts a numeric string or number and then transforms the value into a number.
-
-```typescript
-t.Numeric()
-```
-
-This is useful when an incoming value is a numeric string, for example, a path parameter or query string.
-
-Numeric accepts the same attributes as [Numeric Instance](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-num)
 
 ## Error Provider
 
@@ -1395,6 +727,60 @@ t.Object({
 
 ```
 Expected x to be a number
+```
+
+</td>
+</tr>
+</tbody>
+</table>
+
+## Custom Error
+
+TypeBox offers an additional "**error**" property, allowing us to return a custom error message if the field is invalid.
+
+<table class="md-table">
+<tbody>
+<tr>
+<td>TypeBox</td>
+<td>Error</td>
+</tr>
+
+<tr>
+<td>
+
+```typescript
+t.String({
+    format: 'email',
+    error: 'Invalid email :('
+})
+```
+
+</td>
+<td>
+
+```
+Invalid Email :(
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```typescript
+t.Object({
+    x: t.Number()
+}, {
+    error: 'Invalid object UwU'
+})
+```
+
+</td>
+<td>
+
+```
+Invalid object UwU
 ```
 
 </td>
