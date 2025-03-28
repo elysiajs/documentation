@@ -6,6 +6,8 @@ import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs
 import llmstxt from 'vitepress-plugin-llms'
 import tailwindcss from '@tailwindcss/vite'
 
+import llmstxt from 'vitepress-plugin-llms'
+
 // import {
 //     GitChangelog,
 //     GitChangelogMarkdownSection
@@ -42,7 +44,8 @@ export default defineConfig({
 			}
 		},
 		plugins: [
-			llmstxt({
+			tailwindcss() as any,
+      llmstxt({
 				customTemplateVariables: {
 					description: 'Ergonomic Framework for Humans',
 					details: 'Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it\'s tRPC, Swagger or WebSocket.'
@@ -52,7 +55,6 @@ export default defineConfig({
 					"table-of-content.md"
 				]
 			}),
-			tailwindcss() as any
 			// GitChangelog({
 			//     // Fill in your repository URL here
 			//     repoURL: () => 'https://github.com/elysiajs/documentation'
@@ -208,12 +210,16 @@ export default defineConfig({
 				collapsed: true,
 				items: [
 					{
-						text: 'Macro',
-						link: '/patterns/macro'
-					},
-					{
 						text: 'Configuration',
 						link: '/patterns/configuration'
+					},
+					{
+						text: 'Type',
+						link: '/patterns/type'
+					},
+					{
+						text: 'Macro',
+						link: '/patterns/macro'
 					},
 					{
 						text: 'Cookie',
@@ -242,6 +248,14 @@ export default defineConfig({
 				collapsed: true,
 				items: [
 					{
+						text: 'Better Auth',
+						link: '/recipe/better-auth'
+					},
+					{
+						text: 'Drizzle',
+						link: '/recipe/drizzle'
+					},
+					{
 						text: 'OpenAPI',
 						link: '/recipe/openapi'
 					},
@@ -250,16 +264,8 @@ export default defineConfig({
 						link: '/recipe/opentelemetry'
 					},
 					{
-						text: 'Drizzle',
-						link: '/recipe/drizzle'
-					},
-					{
 						text: 'React Email',
 						link: '/recipe/react-email'
-					},
-					{
-						text: 'Better Auth',
-						link: '/recipe/better-auth'
 					}
 				]
 			},
