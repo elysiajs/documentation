@@ -48,7 +48,6 @@ export default defineConfig({
 					details: 'Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it\'s tRPC, Swagger or WebSocket.'
 				},
 				ignoreFiles: [
-					"blog/*",
 					"index.md",
 					"table-of-content.md"
 				]
