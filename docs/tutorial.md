@@ -1087,9 +1087,7 @@ For **1.** instead of using guard, we could use a **macro**.
 ## Plugin deduplication
 
 As we are going to reuse this hook in multiple modules (user, and note), let's extract the service (utility) part out and apply it to both modules.
-// @errors: 2538
-// @filename: user.ts
-import { Elysia, t } from 'elysia'
+
 ```ts twoslash [user.ts]
 // @errors: 2538
 import { Elysia, t } from 'elysia'
@@ -1200,9 +1198,7 @@ export const userService = new Elysia({ name: 'user/service' })
 We have just created a new macro name `isSignIn` that accepts a `boolean` value, if it is true, then we add an `onBeforeHandle` event that executes **after validation but before the main handler**, allowing us to extract authentication logic here.
 
 To use the macro, simply specify `isSignIn: true` as follows:
-// @errors: 2538
-// @filename: user.ts
-import { Elysia, t } from 'elysia'
+
 ```ts twoslash [user.ts]
 // @errors: 2538
 import { Elysia, t } from 'elysia'
@@ -1341,9 +1337,6 @@ Unlike `decorate` and `store`, resolve is defined at the `beforeHandle` stage or
 
 This ensures that the property like `cookie: 'session'` exists before creating a new property.
 
-// @errors: 2538
-// @filename: user.ts
-import { Elysia, t } from 'elysia'
 ```ts twoslash [user.ts]
 // @errors: 2538
 import { Elysia, t } from 'elysia'
@@ -1563,9 +1556,6 @@ export const user = new Elysia({ prefix: '/user' })
 
 Alternatively, if we have multiple `scoped` defined, we could use `as` to cast multiple life-cycles instead.
 
-// @errors: 2538
-// @filename: user.ts
-import { Elysia, t } from 'elysia'
 ```ts twoslash [user.ts]
 // @errors: 2538
 import { Elysia, t } from 'elysia'
