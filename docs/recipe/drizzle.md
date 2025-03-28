@@ -60,10 +60,10 @@ We recommend pinning the version of `@sinclair/typebox` to the **minimum version
 grep "@sinclair/typebox" node_modules/elysia/package.json
 ```
 
-We may use `override` field in `package.json` to pin the version of `@sinclair/typebox`:
+We may use `overrides` field in `package.json` to pin the version of `@sinclair/typebox`:
 ```json
 {
-  "override": {
+  "overrides": {
   	"@sinclair/typebox": "0.32.4"
   }
 }
