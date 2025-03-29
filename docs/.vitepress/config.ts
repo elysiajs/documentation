@@ -3,9 +3,7 @@ import { defineConfig } from 'vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
 
-import llmstxt from 'vitepress-plugin-llms'
 import tailwindcss from '@tailwindcss/vite'
-
 import llmstxt from 'vitepress-plugin-llms'
 
 // import {
