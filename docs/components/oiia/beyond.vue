@@ -17,21 +17,21 @@
                 <p
                     class="absolute z-10 top-2 right-2 text-xs border dark:border-gray-600 px-2 py-1 rounded-full bg-gray-50/40 dark:bg-gray-700/40 backdrop-blur-sm pointer-events-none"
                 >
-                    POST /character/:id/chat
+                    POST /oiia/spin
                 </p>
                 <p
                     class="absolute z-10 bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-blue-500 text-white font-semibold backdrop-blur-sm pointer-events-none"
                 >
-                    Playback
+                    OIIA OIIA
                 </p>
                 <div style="width: 4rem" class="bg-teal-400 text-teal-400">
-                    <span>Request</span>
+                    <span>OIIA</span>
                 </div>
                 <div
                     style="width: 4rem; margin-left: 4rem"
                     class="bg-teal-400 text-teal-400"
                 >
-                    <span>Validation</span>
+                    <span>Spin</span>
                 </div>
                 <div
                     style="width: 2rem; margin-left: 6rem"
@@ -45,7 +45,7 @@
                     style="width: 5rem; margin-left: 10rem"
                     class="bg-sky-400 text-sky-400"
                 >
-                    <span>Transaction</span>
+                    <span>OIIA</span>
                 </div>
                 <div
                     style="width: 3rem; margin-left: 12rem"
@@ -55,7 +55,7 @@
                     style="width: 5rem; margin-left: 15rem"
                     class="bg-blue-400 text-blue-400"
                 >
-                    <span>Upload</span>
+                    <span>Spin</span>
                 </div>
                 <div
                     style="width: 3rem; margin-left: 17rem"
@@ -65,7 +65,7 @@
                     style="width: 4rem; margin-left: 20rem"
                     class="bg-indigo-400 text-indigo-400"
                 >
-                    <span>Sync</span>
+                    <span>OIIA</span>
                 </div>
                 <div
                     style="width: 4rem; margin-left: 24rem"
@@ -98,15 +98,15 @@
                             d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
                         />
                     </svg>
-                    For DevOps
+                    For Cats
                 </h5>
                 <h2 class="text-gradient from-sky-400 to-violet-400">
-                    OpenTelemetry
+                    OpenOiia
                 </h2>
                 <p>
                     Elysia has 1st party support for OpenTelemetry.
-                    Instrumentation is built-in, so you can easily monitor your
-                    services on regardless of the platform.
+                    Oiia is built-in, so you can easily spin your
+                    cats on regardless of the platform.
                 </p>
             </header>
         </article>
@@ -132,15 +132,15 @@
                             d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
                         />
                     </svg>
-                    For Frontend
+                    For Cats
                 </h5>
                 <h2 class="text-gradient from-purple-400 to-rose-400">
-                    End-to-end Type Safety
+                    End-to-end OIIA Spinning
                 </h2>
                 <p>
-                    Like tRPC, Elysia provides type-safety from the backend to
-                    the frontend without code generation. The interaction between
-                    frontend and backend is both type-checked on compile and runtime.
+                    Elysia provides type-safety from the oiia to
+                    the spinning without code generation. The interaction between
+                    oiia and spinning is type-checked even in compile time.
                 </p>
             </header>
         </article>
