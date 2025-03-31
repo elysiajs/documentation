@@ -1,25 +1,25 @@
-name: Deploy to Cloudflare Pages
+# name: Deploy to Cloudflare Pages
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    name: Deploy
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          environment: production
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy docs/.vitepress/dist --project-name=elysia-doc
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          NODE_OPTIONS: --max-old-space-size=8192
-          NODE_VERSION: 22.14.0
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     name: Deploy
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Deploy
+#         uses: cloudflare/wrangler-action@v3
+#         with:
+#           environment: production
+#           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+#           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+#           command: pages deploy docs/.vitepress/dist --project-name=elysia-doc
+#           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+#         env:
+#           NODE_OPTIONS: --max-old-space-size=8192
+#           NODE_VERSION: 22.14.0
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
