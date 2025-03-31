@@ -147,7 +147,7 @@
 			</div>
 		</section>
 
-		<p class="flex justify-center items-center gap-1 text-gray-400 mb-1">
+		<p class="text-gray-400 text-center mb-1 mx-auto">
 			Happy April Fool,
 			<a href="/fern" class="text-pink-400">
 				go back to the normal page here
