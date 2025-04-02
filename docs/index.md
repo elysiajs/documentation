@@ -17,47 +17,8 @@ head:
 ---
 
 <script setup>
-    import Fern from './components/oiia/fern.vue'
+    import Fern from './components/fern/fern.vue'
 </script>
-
-<div id="oiia-herta" class="z-50 fixed bottom-0 right-0 w-36 h-36 bg-transparent opacity-0" aria-hidden="true" />
-
-<img id="oiia" src="/oiia/oiia-static.webp" class="fixed bottom-0 right-6 h-24 z-50" />
-
-<img id="herta" src="/oiia/herta.webp" class="z-50 fixed bottom-28 right-6 h-60 opacity-0 rounded-2xl shadow-2xl" />
-
-<style>
-	#oiia {
-		animation: oiia-in 30s cubic-bezier(0.7, 0, 0.84, 0);
-		transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-	}
-
-	#herta {
-		transform: scale(0.5) translateX(6rem) translateY(9rem);
-		transition: all 0.3s cubic-bezier(0.7, 0, 0.84, 0);
-		pointer-events: none;
-	}
-
-	#oiia:hover,
-	#oiia-herta:hover ~ #oiia {
-		opacity: 1 !important;
-	}
-
-	#herta:hover,
-	#oiia:hover ~ #herta,
-	#oiia-herta:hover ~ #herta {
-		@apply opacity-100 scale-100;
-		transform: scale(1) translateX(0) translateY(0);
-		transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-		pointer-events: auto;
-	}
-
-	@keyframes oiia-in {
-		from {
-			opacity: .025;
-		}
-	}
-</style>
 
 <Fern>
 
@@ -168,15 +129,15 @@ new Elysia()
 import { Elysia, file } from 'elysia'
 
 new Elysia()
-	.get('/', 'LIMBUS COMPANY!!')
-	.get('/said', file('don-quixote.gif'))
+	.get('/', 'Hello World')
+	.get('/image', file('mika.webp'))
 	.get('/stream', function* () {
-		while(true)
-			yield 'LIMBUS COMPANY!!'
+		yield 'Hello'
+		yield 'World'
 	})
 	.ws('/realtime', {
 		message(ws, message) {
-			ws.send('This is truly ideal')
+			ws.send('got:' + message)
 		}
 	})
 	.listen(3000)
@@ -192,8 +153,8 @@ import swagger from '@elysiajs/swagger'
 
 new Elysia()
 	.use(swagger())
-	.use(I_am_a_teapot_418)
-	.use(nagisa)
+	.use(character)
+	.use(auth)
 	.listen(3000)
 ```
 
@@ -249,12 +210,12 @@ import { Elysia, t } from 'elysia'
 
 export const app = new Elysia()
     .put(
-        '/cats',
+        '/user',
         ({ body, error }) => {
         	if(body.username === 'mika')
 				return error(400, {
 					success: false,
-					message: 'Cat is already oiia'
+					message: 'Username already taken'
 				} as const)
 
             return {
@@ -278,14 +239,14 @@ import { test, expect } from 'bun:test'
 
 const server = treaty(app)
 
-test('should handle spinning oiia', async () => {
-	const { error } = await server.cats.put({
-	    username: 'oiia',
+test('should handle duplicated user', async () => {
+	const { error } = await server.user.put({
+	    username: 'mika',
 	})
 
 	expect(error?.value).toEqual({
 		success: false,
-		message: 'Cat is already oiia'
+		message: 'Username already taken'
 	})
 })
 ```
