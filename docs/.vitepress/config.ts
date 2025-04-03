@@ -124,7 +124,7 @@ export default defineConfig({
 				detailedView: true
 			}
 		},
-		logo: '/oiia/oiia-static.webp',
+		logo: '/assets/elysia.svg',
 		nav: [
 			{
 				text: 'Cheat Sheet',
