@@ -104,6 +104,8 @@ pre.vp-code > code,
 		transparent 100%
 	);
 	--vp-nav-logo-height: 28px;
+
+	--twoslash-border-color: var(--color-slate-200);
 }
 
 .dark {
@@ -127,6 +129,8 @@ pre.vp-code > code,
 		var(--vp-c-brand-dark) 30%,
 		transparent 100%
 	);
+
+	--twoslash-border-color: var(--color-slate-800);
 }
 
 html,
@@ -481,11 +485,19 @@ button.copy::after {
 .vp-nolebase-git-changelog-history {
 	@apply mt-0;
 }
-
+/*
 .vp-nolebase-git-changelog-history-list {
 	@apply bg-slate-50 dark:bg-slate-800;
 }
 
 .v-popper--theme-twoslash .v-popper__inner {
-	@apply border-slate-200 dark:border-slate-800
+	@apply border-slate-200 dark:border-slate-800;
+}
+
+.v-popper--theme-twoslash .v-popper__arrow-outer {
+	@apply border-slate-200 dark:border-slate-800;
+} */
+
+.VPSwitchAppearance {
+	@apply dark:!border-slate-700;
 }

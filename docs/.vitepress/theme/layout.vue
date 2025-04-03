@@ -43,6 +43,7 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
 <template>
     <link rel="preload" as="image" href="/assets/elysia_v.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="/assets/elysia.svg" fetchpriority="high">
     <link rel="preload" as="image" href="/assets/shigure-ui.webp" fetchpriority="low">
     <DefaultTheme.Layout>
         <template #doc-top>
