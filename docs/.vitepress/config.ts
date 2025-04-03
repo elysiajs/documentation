@@ -289,32 +289,6 @@ export default defineConfig({
 				]
 			},
 			{
-				text: 'Recipe',
-				collapsed: true,
-				items: [
-					{
-						text: 'Better Auth',
-						link: '/recipe/better-auth'
-					},
-					{
-						text: 'Drizzle',
-						link: '/recipe/drizzle'
-					},
-					{
-						text: 'OpenAPI',
-						link: '/recipe/openapi'
-					},
-					{
-						text: 'Opentelemetry',
-						link: '/recipe/opentelemetry'
-					},
-					{
-						text: 'React Email',
-						link: '/recipe/react-email'
-					}
-				]
-			},
-			{
 				text: 'Eden',
 				collapsed: true,
 				items: [
@@ -433,21 +407,41 @@ export default defineConfig({
 				collapsed: true,
 				items: [
 					{
-						text: 'Nextjs',
-						link: '/integrations/nextjs'
+						text: 'Astro',
+						link: '/integrations/astro'
+					},
+					{
+						text: 'Better Auth',
+						link: '/recipe/better-auth'
+					},
+					{
+						text: 'Drizzle',
+						link: '/recipe/drizzle'
 					},
 					{
 						text: 'Expo',
 						link: '/integrations/expo'
 					},
 					{
-						text: 'Astro',
-						link: '/integrations/astro'
+						text: 'Nextjs',
+						link: '/integrations/nextjs'
+					},
+					{
+						text: 'OpenAPI',
+						link: '/recipe/openapi'
+					},
+					{
+						text: 'Opentelemetry',
+						link: '/recipe/opentelemetry'
+					},
+					{
+						text: 'React Email',
+						link: '/recipe/react-email'
 					},
 					{
 						text: 'SvelteKit',
 						link: '/integrations/sveltekit'
-					}
+					},
 				]
 			}
 		],

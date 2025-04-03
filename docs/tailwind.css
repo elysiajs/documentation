@@ -184,19 +184,15 @@ button.copy::after {
 }
 
 #VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
-	background-image: url(/assets/book.svg);
-}
-
-#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
 	background-image: url(/assets/eden.svg);
 }
 
-#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
 	background-image: url(/assets/plugin.svg);
 }
 
-#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
-	background-image: url(/assets/integration.svg);
+#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+	background-image: url(/assets/book.svg);
 }
 
 .dark
@@ -453,7 +449,7 @@ button.copy::after {
 }
 
 .vp-doc h2 {
-	@apply !mb-2.5;
+	@apply text-black dark:text-white !mb-2.5;
 }
 
 #contributors,
@@ -464,7 +460,7 @@ button.copy::after {
 }
 
 .vp-nolebase-git-changelog-contributors-list {
-	@apply gap-2 mb-8;
+	@apply gap-2 mb-4;
 
 	& > a,
 	& > div {
@@ -477,6 +473,19 @@ button.copy::after {
 	}
 }
 
+#changelog {
+	@apply h-0 p-0 m-0 border-0;
+	font-size: 0;
+}
+
+.vp-nolebase-git-changelog-history {
+	@apply mt-0;
+}
+
 .vp-nolebase-git-changelog-history-list {
 	@apply bg-slate-50 dark:bg-slate-800;
+}
+
+.v-popper--theme-twoslash .v-popper__inner {
+	@apply border-slate-200 dark:border-slate-800
 }
