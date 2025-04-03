@@ -27,7 +27,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy docs/.vitepress/dist --project-name=elysia-doc --branch=production
+          command: pages deploy docs/.vitepress/dist --project-name=elysia-doc --branch=main
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           packageManager: bun
         env:
