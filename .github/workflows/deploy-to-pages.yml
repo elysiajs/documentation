@@ -19,6 +19,7 @@ jobs:
         env:
           NODE_ENV: production
           GITHUB_TOKEN: ${{ secrets.SALTYAOM_GITHUB_TOKEN }}
+          NODE_OPTIONS: --max-old-space-size=8192
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:

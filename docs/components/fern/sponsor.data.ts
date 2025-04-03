@@ -20,14 +20,16 @@ export { data }
 export default defineLoader({
 	async load(): Promise<Sponsor[]> {
 		try {
+			if(!process.env.GITHUB_TOKEN)
+				throw new Error('GITHUB_TOKEN is not set')
+
 			const result = await fetch('https://api.github.com/graphql', {
 				method: 'POST',
 				headers: {
-					'content-type': 'application/json',
-					Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+					Authorization: `bearer ${process.env.GITHUB_TOKEN}`
 				},
 				body: JSON.stringify({
-					query: `{
+					query: `query {
 	                  user(login: "saltyaom") {
 	                    sponsorshipsAsMaintainer(
 	                        first: 100

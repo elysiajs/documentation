@@ -44,9 +44,39 @@ export default defineConfig({
 		},
 		plugins: [
 			tailwindcss() as any,
-			llmstxt(),
+			process.env.NODE_ENV === 'production' ? llmstxt() : [],
 			GitChangelog({
-				repoURL: () => 'https://github.com/elysiajs/documentation'
+				repoURL: () => 'https://github.com/elysiajs/documentation',
+				mapAuthors: [
+					{
+						mapByEmailAliases: ['saltyaom@gmail.com'],
+						avatar: '/blog/authors/aris.webp',
+						links: [
+							{
+								type: 'GitHub',
+								link: 'https://github.com/SaltyAom'
+							}
+						]
+					},
+					{
+						mapByNameAliases: ['bogeychan'],
+						links: [
+							{
+								type: 'GitHub',
+								link: 'http://github.com/bogeychan'
+							}
+						]
+					},
+					{
+						mapByNameAliases: ['Fecony'],
+						links: [
+							{
+								type: 'GitHub',
+								link: 'https://github.com/fecony'
+							}
+						]
+					}
+				]
 			}),
 			GitChangelogMarkdownSection()
 		]
