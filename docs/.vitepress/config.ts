@@ -103,7 +103,7 @@ export default defineConfig({
 		ssr: {
 			noExternal: [
 				'@nolebase/vitepress-plugin-inline-link-preview',
-				'@unlazy/vue/components'
+				'@unlazy/vue'
 			]
 		}
 	},
