@@ -81,6 +81,7 @@ pre.vp-code > code,
 
 :root {
 	--vp-c-brand-1: #f06292;
+	--vp-c-brand-2: #f06292;
 	--vp-c-brand-light: #ff94c2;
 	--vp-c-brand-dark: #ba2d65;
 	--vp-c-border: var(--color-gray-100);
@@ -460,4 +461,22 @@ button.copy::after {
 .vp-nolebase-git-changelog,
 .vp-nolebase-git-changelog-history {
 	@apply max-w-2xl w-full mx-auto my-4;
+}
+
+.vp-nolebase-git-changelog-contributors-list {
+	@apply gap-2 mb-8;
+
+	& > a,
+	& > div {
+		font-size: 0;
+		gap: 0;
+
+		& > img {
+			@apply w-10 h-10;
+		}
+	}
+}
+
+.vp-nolebase-git-changelog-history-list {
+	@apply bg-slate-50 dark:bg-slate-800;
 }

@@ -7,10 +7,13 @@ import tailwindcss from '@tailwindcss/vite'
 
 import llmstxt from 'vitepress-plugin-llms'
 
+import { UnlazyImages } from '@nolebase/markdown-it-unlazy-img'
 import {
 	GitChangelog,
 	GitChangelogMarkdownSection
 } from '@nolebase/vitepress-plugin-git-changelog/vite'
+import { InlineLinkPreviewElementTransform } from '@nolebase/vitepress-plugin-inline-link-preview/markdown-it'
+import { ThumbnailHashImages } from '@nolebase/vitepress-plugin-thumbnail-hash/vite'
 
 const description =
 	'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -32,7 +35,20 @@ export default defineConfig({
 					dir: './docs/.vitepress/cache/twoslash'
 				})
 			})
-		]
+		],
+		config: (md) => {
+			md.use(InlineLinkPreviewElementTransform)
+			md.use(UnlazyImages(), {
+				imgElementTag: 'NolebaseUnlazyImg'
+			})
+		}
+	},
+	vue: {
+		template: {
+			transformAssetUrls: {
+				NolebaseUnlazyImg: ['src']
+			}
+		}
 	},
 
 	// ![INFO] uncomment for support hot reload on WSL - https://github.com/vitejs/vite/issues/1153#issuecomment-785467271
@@ -78,8 +94,18 @@ export default defineConfig({
 					}
 				]
 			}),
-			GitChangelogMarkdownSection()
-		]
+			GitChangelogMarkdownSection(),
+			ThumbnailHashImages()
+		],
+		optimizeDeps: {
+			exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client']
+		},
+		ssr: {
+			noExternal: [
+				'@nolebase/vitepress-plugin-inline-link-preview',
+				'@unlazy/vue/components'
+			]
+		}
 	},
 	head: [
 		[

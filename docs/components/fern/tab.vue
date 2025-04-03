@@ -7,8 +7,8 @@
 				@click="activeTab = index"
 				class="px-5 py-2.5 border-b border-solid rounded-t-lg font-medium transition-colors ease-out duration-150 translate-y-[1px]"
 				:class="{
-					'text-pink-400 bg-pink-50 dark:bg-pink-200 border-pink-300': index === activeTab,
-					'text-gray-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 border-transparent border-b-slate-200 dark:border-b-slate-600 hover:bg-pink-50/75 dark:hover:bg-pink-200/60 dark:focus:bg-pink-200/60 hover:text-pink-400/80 dark:hover:text-pink-600 dark:focus:text-pink-600 focus:bg-pink-50/75 hover:border-pink-300/75 focus:text-pink-400/80 focus:border-pink-400/80 dark:focus:text-pink-400/80 dark:focus:border-pink-400/80': index !== activeTab
+					'text-pink-400 bg-pink-50 dark:bg-pink-500/25 border-pink-300': index === activeTab,
+					'text-gray-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 border-transparent border-b-slate-200 dark:border-b-slate-600 hover:bg-pink-50 dark:hover:bg-pink-500/25 dark:focus:bg-pink-500/25 hover:text-pink-400/80 dark:hover:text-pink-60 focus:bg-pink-50/75 hover:border-pink-300/75 focus:text-pink-400/80 focus:border-pink-400/80 dark:focus:text-pink-400/80 dark:focus:border-pink-400/80': index !== activeTab
 				}"
 			>
 				{{ name }}
