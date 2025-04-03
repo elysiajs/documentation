@@ -31,7 +31,7 @@ jobs:
         env:
           NODE_OPTIONS: --max-old-space-size=8192
           NODE_VERSION: 22.14.0
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SALTYAOM_GITHUB_TOKEN }}
       - name: Deploy
         env:
           DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
