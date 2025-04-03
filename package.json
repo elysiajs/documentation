@@ -36,6 +36,7 @@
     "@elysiajs/server-timing": "^1.2.1",
     "@elysiajs/static": "^1.2.0",
     "@elysiajs/swagger": "^1.2.0",
+    "@nolebase/vitepress-plugin-git-changelog": "^2.15.1",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@tailwindcss/postcss": "^4.0.6",
     "@types/bun": "^1.2.2",

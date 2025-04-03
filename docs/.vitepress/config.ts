@@ -7,10 +7,10 @@ import tailwindcss from '@tailwindcss/vite'
 
 import llmstxt from 'vitepress-plugin-llms'
 
-// import {
-//     GitChangelog,
-//     GitChangelogMarkdownSection
-// } from '@nolebase/vitepress-plugin-git-changelog/vite'
+import {
+	GitChangelog,
+	GitChangelogMarkdownSection
+} from '@nolebase/vitepress-plugin-git-changelog/vite'
 
 const description =
 	'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -43,13 +43,12 @@ export default defineConfig({
 			}
 		},
 		plugins: [
-			tailwindcss() as any,
-			llmstxt()
-			// GitChangelog({
-			//     // Fill in your repository URL here
-			//     repoURL: () => 'https://github.com/elysiajs/documentation'
-			// }),
-			// GitChangelogMarkdownSection()
+			tailwindcss(),
+			llmstxt(),
+			GitChangelog({
+				repoURL: () => 'https://github.com/elysiajs/documentation'
+			}),
+			GitChangelogMarkdownSection()
 		]
 	},
 	head: [
