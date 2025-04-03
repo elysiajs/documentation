@@ -15,6 +15,10 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192
+          NODE_VERSION: 22.14.0
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: bun run build
       - name: Deploy
         uses: cloudflare/wrangler-action@v3

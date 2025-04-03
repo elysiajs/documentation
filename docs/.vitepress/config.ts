@@ -43,7 +43,7 @@ export default defineConfig({
 			}
 		},
 		plugins: [
-			tailwindcss(),
+			tailwindcss() as any,
 			llmstxt(),
 			GitChangelog({
 				repoURL: () => 'https://github.com/elysiajs/documentation'
