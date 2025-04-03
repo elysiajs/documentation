@@ -485,18 +485,10 @@ button.copy::after {
 .vp-nolebase-git-changelog-history {
 	@apply mt-0;
 }
-/*
+
 .vp-nolebase-git-changelog-history-list {
 	@apply bg-slate-50 dark:bg-slate-800;
 }
-
-.v-popper--theme-twoslash .v-popper__inner {
-	@apply border-slate-200 dark:border-slate-800;
-}
-
-.v-popper--theme-twoslash .v-popper__arrow-outer {
-	@apply border-slate-200 dark:border-slate-800;
-} */
 
 .VPSwitchAppearance {
 	@apply dark:!border-slate-700;
