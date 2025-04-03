@@ -11,6 +11,9 @@ jobs:
     name: Deploy
     steps:
       - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
