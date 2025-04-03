@@ -7,7 +7,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 import llmstxt from 'vitepress-plugin-llms'
 
-import { UnlazyImages } from '@nolebase/markdown-it-unlazy-img'
+// import { UnlazyImages } from '@nolebase/markdown-it-unlazy-img'
 import {
 	GitChangelog,
 	GitChangelogMarkdownSection
@@ -38,9 +38,9 @@ export default defineConfig({
 		],
 		config: (md) => {
 			md.use(InlineLinkPreviewElementTransform)
-			md.use(UnlazyImages(), {
-				imgElementTag: 'NolebaseUnlazyImg'
-			})
+			// md.use(UnlazyImages(), {
+			// 	imgElementTag: 'NolebaseUnlazyImg'
+			// })
 		}
 	},
 	// vue: {
