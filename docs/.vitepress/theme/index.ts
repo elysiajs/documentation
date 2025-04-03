@@ -50,7 +50,6 @@ export default {
 				emitMetadata: '0',
 				inputPosition: 'bottom',
 				lang: 'en',
-				loading: 'lazy',
 				crossorigin: 'anonymous',
 				lightTheme: 'light',
 				darkTheme: 'transparent_dark'
