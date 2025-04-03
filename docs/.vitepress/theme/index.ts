@@ -15,8 +15,8 @@ import '@nolebase/vitepress-plugin-git-changelog/client/style.css'
 import { NolebaseInlineLinkPreviewPlugin } from '@nolebase/vitepress-plugin-inline-link-preview/client'
 import '@nolebase/vitepress-plugin-inline-link-preview/client/style.css'
 
-import { NolebaseUnlazyImg } from '@nolebase/vitepress-plugin-thumbnail-hash/client'
-import '@nolebase/vitepress-plugin-thumbnail-hash/client/style.css'
+// import { NolebaseUnlazyImg } from '@nolebase/vitepress-plugin-thumbnail-hash/client'
+// import '@nolebase/vitepress-plugin-thumbnail-hash/client/style.css'
 
 import giscusTalk from 'vitepress-plugin-comment-with-giscus'
 
@@ -30,7 +30,7 @@ export default {
 		app.use(TwoslashFloatingVue)
 		app.use(NolebaseGitChangelogPlugin)
 		app.use(NolebaseInlineLinkPreviewPlugin)
-		app.component('NolebaseUnlazyImg', NolebaseUnlazyImg)
+		// app.component('NolebaseUnlazyImg', NolebaseUnlazyImg)
 	},
 	setup() {
 		// Get frontmatter and route

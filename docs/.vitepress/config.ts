@@ -13,7 +13,7 @@ import {
 	GitChangelogMarkdownSection
 } from '@nolebase/vitepress-plugin-git-changelog/vite'
 import { InlineLinkPreviewElementTransform } from '@nolebase/vitepress-plugin-inline-link-preview/markdown-it'
-import { ThumbnailHashImages } from '@nolebase/vitepress-plugin-thumbnail-hash/vite'
+// import { ThumbnailHashImages } from '@nolebase/vitepress-plugin-thumbnail-hash/vite'
 
 const description =
 	'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -43,13 +43,13 @@ export default defineConfig({
 			})
 		}
 	},
-	vue: {
-		template: {
-			transformAssetUrls: {
-				NolebaseUnlazyImg: ['src']
-			}
-		}
-	},
+	// vue: {
+	// 	template: {
+	// 		transformAssetUrls: {
+	// 			NolebaseUnlazyImg: ['src']
+	// 		}
+	// 	}
+	// },
 
 	// ![INFO] uncomment for support hot reload on WSL - https://github.com/vitejs/vite/issues/1153#issuecomment-785467271
 	vite: {
@@ -95,7 +95,7 @@ export default defineConfig({
 				]
 			}),
 			GitChangelogMarkdownSection(),
-			ThumbnailHashImages()
+			// ThumbnailHashImages()
 		],
 		optimizeDeps: {
 			exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client']
@@ -412,11 +412,11 @@ export default defineConfig({
 					},
 					{
 						text: 'Better Auth',
-						link: '/recipe/better-auth'
+						link: '/integrations/better-auth'
 					},
 					{
 						text: 'Drizzle',
-						link: '/recipe/drizzle'
+						link: '/integrations/drizzle'
 					},
 					{
 						text: 'Expo',
@@ -428,15 +428,15 @@ export default defineConfig({
 					},
 					{
 						text: 'OpenAPI',
-						link: '/recipe/openapi'
+						link: '/integrations/openapi'
 					},
 					{
 						text: 'Opentelemetry',
-						link: '/recipe/opentelemetry'
+						link: '/integrations/opentelemetry'
 					},
 					{
 						text: 'React Email',
-						link: '/recipe/react-email'
+						link: '/integrations/react-email'
 					},
 					{
 						text: 'SvelteKit',
