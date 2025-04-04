@@ -470,11 +470,11 @@ const app = new Elysia()
 -   **hook**: Additional metadata
 
 When navigating to each method, you should see the results as the following:
-| Path | Method | Result |
-| - | --- | --- |
-| / | GET | hello |
-| / | POST | hi |
-| / | M-SEARCH | connect |
+| Path      | Method   | Result  |
+| --------- | -------- | ------- |
+| /get      | GET      | hello   |
+| /post     | POST     | hi      |
+| /m-search | M-SEARCH | connect |
 
 ::: tip
 Based on [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231#section-4.1), HTTP Verb is case-sensitive.
