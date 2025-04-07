@@ -140,7 +140,7 @@
                 <p>
                     Like tRPC, Elysia provides type-safety from the backend to
                     the frontend without code generation. The interaction between
-                    frontend and backend is type-checked at compile time.
+                    frontend and backend is both type-checked on compile and runtime.
                 </p>
             </header>
         </article>

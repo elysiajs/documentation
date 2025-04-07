@@ -81,6 +81,7 @@ pre.vp-code > code,
 
 :root {
 	--vp-c-brand-1: #f06292;
+	--vp-c-brand-2: #f06292;
 	--vp-c-brand-light: #ff94c2;
 	--vp-c-brand-dark: #ba2d65;
 	--vp-c-border: var(--color-gray-100);
@@ -103,6 +104,8 @@ pre.vp-code > code,
 		transparent 100%
 	);
 	--vp-nav-logo-height: 28px;
+
+	--twoslash-border-color: var(--color-slate-200);
 }
 
 .dark {
@@ -126,6 +129,8 @@ pre.vp-code > code,
 		var(--vp-c-brand-dark) 30%,
 		transparent 100%
 	);
+
+	--twoslash-border-color: var(--color-slate-800);
 }
 
 html,
@@ -183,19 +188,15 @@ button.copy::after {
 }
 
 #VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
-	background-image: url(/assets/book.svg);
-}
-
-#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
 	background-image: url(/assets/eden.svg);
 }
 
-#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
 	background-image: url(/assets/plugin.svg);
 }
 
-#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
-	background-image: url(/assets/integration.svg);
+#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+	background-image: url(/assets/book.svg);
 }
 
 .dark
@@ -452,7 +453,7 @@ button.copy::after {
 }
 
 .vp-doc h2 {
-	@apply !mb-2.5;
+	@apply text-black dark:text-white !mb-2.5;
 }
 
 #contributors,
@@ -460,4 +461,35 @@ button.copy::after {
 .vp-nolebase-git-changelog,
 .vp-nolebase-git-changelog-history {
 	@apply max-w-2xl w-full mx-auto my-4;
+}
+
+.vp-nolebase-git-changelog-contributors-list {
+	@apply gap-2 mb-4;
+
+	& > a,
+	& > div {
+		font-size: 0;
+		gap: 0;
+
+		& > img {
+			@apply w-10 h-10;
+		}
+	}
+}
+
+#changelog {
+	@apply h-0 p-0 m-0 border-0;
+	font-size: 0;
+}
+
+.vp-nolebase-git-changelog-history {
+	@apply mt-0;
+}
+
+.vp-nolebase-git-changelog-history-list {
+	@apply bg-slate-50 dark:bg-slate-800;
+}
+
+.VPSwitchAppearance {
+	@apply dark:!border-slate-700;
 }
