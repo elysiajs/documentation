@@ -431,7 +431,7 @@ export default defineConfig({
 						link: '/integrations/openapi'
 					},
 					{
-						text: 'Opentelemetry',
+						text: 'OpenTelemetry',
 						link: '/integrations/opentelemetry'
 					},
 					{
