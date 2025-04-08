@@ -91,16 +91,12 @@ To achieve this in Bun, we can
 Let's create a new file in `src/instrumentation.ts`
 
 ```ts [src/instrumentation.ts]
-import { Elysia } from 'elysia'
-
 import { opentelemetry } from '@elysiajs/opentelemetry'
 import { PgInstrumentation } from '@opentelemetry/instrumentation-pg'
 
-export const instrumentation = new Elysia().use(
-	opentelemetry({
-		instrumentations: [new PgInstrumentation()]
-	})
-)
+export const instrumentation = opentelemetry({
+	instrumentations: [new PgInstrumentation()]
+})
 ```
 
 Then we can apply this `instrumentaiton` plugin into our main instance in `src/index.ts`
