@@ -65,11 +65,6 @@ export default defineConfig({
 					"Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket.",
 				ignoreFiles: ['index.md', 'table-of-content.md']
 			}) : [],
-			// GitChangelog({
-			//     // Fill in your repository URL here
-			//     repoURL: () => 'https://github.com/elysiajs/documentation'
-			// }),
-			// GitChangelogMarkdownSection()
 			GitChangelog({
 				repoURL: () => 'https://github.com/elysiajs/documentation',
 				mapAuthors: [
