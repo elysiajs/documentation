@@ -55,9 +55,9 @@
     },
   },
   "overrides": {
+    "vue": "^3.5.13",
     "vite": "^6.2.5",
     "vitepress": "^1.6.3",
-    "vue": "^3.5.13",
   },
   "packages": {
     "@algolia/autocomplete-core": ["@algolia/autocomplete-core@1.17.7", "", { "dependencies": { "@algolia/autocomplete-plugin-algolia-insights": "1.17.7", "@algolia/autocomplete-shared": "1.17.7" } }, "sha512-BjiPOW6ks90UKl7TwMv7oNQMnzU+t/wk9mgIDi6b1tXpUek7MW0lbNOUHpvam9pe3lVCf4xPFT+lK7s+e+fs7Q=="],
