@@ -1,7 +1,7 @@
-import { useData, useRoute } from 'vitepress'
-import type { EnhanceAppContext, Theme } from 'vitepress'
+import { toRefs } from 'vue'
+import { useData, useRoute, type EnhanceAppContext, type Theme } from 'vitepress'
 
-import DefaultTheme from 'vitepress/theme'
+import DefaultTheme from 'vitepress/theme-without-fonts'
 
 // @ts-ignore
 import Layout from './layout.vue'
@@ -9,28 +9,23 @@ import Layout from './layout.vue'
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
 import '@shikijs/vitepress-twoslash/style.css'
 
-import { NolebaseGitChangelogPlugin } from '@nolebase/vitepress-plugin-git-changelog/client'
-import '@nolebase/vitepress-plugin-git-changelog/client/style.css'
-
 import { NolebaseInlineLinkPreviewPlugin } from '@nolebase/vitepress-plugin-inline-link-preview/client'
 import '@nolebase/vitepress-plugin-inline-link-preview/client/style.css'
 
-// import { NolebaseUnlazyImg } from '@nolebase/vitepress-plugin-thumbnail-hash/client'
-// import '@nolebase/vitepress-plugin-thumbnail-hash/client/style.css'
+// import { NolebaseGitChangelogPlugin } from '@nolebase/vitepress-plugin-git-changelog/client'
+// import '@nolebase/vitepress-plugin-git-changelog/client/style.css'
 
 import giscusTalk from 'vitepress-plugin-comment-with-giscus'
 
 import '../../tailwind.css'
-import { toRefs } from 'vue'
 
 export default {
 	extends: DefaultTheme,
 	Layout,
 	enhanceApp({ app }: EnhanceAppContext) {
 		app.use(TwoslashFloatingVue)
-		app.use(NolebaseGitChangelogPlugin)
 		app.use(NolebaseInlineLinkPreviewPlugin)
-		// app.component('NolebaseUnlazyImg', NolebaseUnlazyImg)
+		// app.use(NolebaseGitChangelogPlugin)
 	},
 	setup() {
 		// Get frontmatter and route
