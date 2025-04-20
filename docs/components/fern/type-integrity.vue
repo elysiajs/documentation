@@ -111,17 +111,17 @@ watch(form, (index) => {
 
 					&:nth-child(1) {
 						background-color: rgba(237, 106, 94);
-						border: 1px solid rgba(195, 75, 70);
+						border: 0.5px solid rgba(195, 75, 70);
 					}
 
 					&:nth-child(2) {
 						background-color: rgba(245, 191, 79);
-						border: 1px solid rgba(203, 156, 78);
+						border: 0.5px solid rgba(203, 156, 78);
 					}
 
 					&:nth-child(3) {
 						background-color: rgba(101, 192, 93);
-						border: 1px solid rgba(82, 162, 74);
+						border: 0.5px solid rgba(82, 162, 74);
 					}
 				}
 			}

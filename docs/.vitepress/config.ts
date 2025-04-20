@@ -5,14 +5,13 @@ import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs
 
 import tailwindcss from '@tailwindcss/vite'
 import llmstxt from 'vitepress-plugin-llms'
+import { analyzer } from 'vite-bundle-analyzer'
 
-// import { UnlazyImages } from '@nolebase/markdown-it-unlazy-img'
-import {
-	GitChangelog,
-	GitChangelogMarkdownSection
-} from '@nolebase/vitepress-plugin-git-changelog/vite'
+// import {
+// 	GitChangelog,
+// 	GitChangelogMarkdownSection
+// } from '@nolebase/vitepress-plugin-git-changelog/vite'
 import { InlineLinkPreviewElementTransform } from '@nolebase/vitepress-plugin-inline-link-preview/markdown-it'
-// import { ThumbnailHashImages } from '@nolebase/vitepress-plugin-thumbnail-hash/vite'
 
 const description =
 	'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -29,6 +28,7 @@ export default defineConfig({
 			dark: 'github-dark'
 		},
 		codeTransformers: [
+			// @ts-ignore
 			transformerTwoslash({
 				typesCache: createFileSystemTypesCache({
 					dir: './docs/.vitepress/cache/twoslash'
@@ -99,7 +99,7 @@ export default defineConfig({
 				]
 			}),
 			GitChangelogMarkdownSection(),
-			// ThumbnailHashImages()
+			process.env.ANALYZE === 'true' ? analyzer() : []
 		],
 		optimizeDeps: {
 			exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client']
@@ -107,7 +107,8 @@ export default defineConfig({
 		ssr: {
 			noExternal: [
 				'@nolebase/vitepress-plugin-inline-link-preview',
-				'@unlazy/vue'
+				'@unlazy/vue',
+				'@nolebase/ui'
 			]
 		}
 	},
@@ -445,7 +446,7 @@ export default defineConfig({
 					{
 						text: 'SvelteKit',
 						link: '/integrations/sveltekit'
-					},
+					}
 				]
 			}
 		],

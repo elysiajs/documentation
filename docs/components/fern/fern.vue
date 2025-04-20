@@ -15,17 +15,6 @@ import BuiltWithLove from './built-with-love.vue'
 </script>
 
 <template>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin="anonymous"
-    />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Borel&display=swap"
-        rel="stylesheet"
-    />
-
     <div id="landing" class="dark:bg-gray-900/60">
         <Hero />
         <article
