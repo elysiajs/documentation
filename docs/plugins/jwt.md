@@ -38,7 +38,7 @@ const app = new Elysia()
         })
     )
     .get('/sign/:name', async ({ jwt, params: { name }, cookie: { auth } }) => {
-    	const value = await jwt.sign(name)
+    	const value = await jwt.sign({ name })
 
         auth.set({
             value,
@@ -72,7 +72,7 @@ const app = new Elysia()
         })
     )
     .get('/sign/:name', ({ jwt, params: { name } }) => {
-    	return jwt.sign(name)
+    	return jwt.sign({ name })
     })
     .get('/profile', async ({ jwt, error, headers: { authorization } }) => {
         const profile = await jwt.verify(authorization)
