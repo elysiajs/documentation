@@ -61,6 +61,13 @@ new Elysia({
 	aot: true
 })
 ```
+Disable Ahead of Time compilation
+
+#### Options - @default `false`
+
+- `true` - Precompile every route before starting the server
+
+- `false` - Disable JIT entirely. Faster startup time without cost of performance
 
 ## detail
 
@@ -78,14 +85,6 @@ new Elysia({
 	}
 })
 ```
-
-Disable Ahead of Time compilation
-
-#### Options - @default `false`
-
-- `true` - Precompile every route before starting the server
-
-- `false` - Disable JIT entirely. Faster startup time without cost of performance
 
 ## name
 
