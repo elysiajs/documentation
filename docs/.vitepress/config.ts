@@ -260,6 +260,10 @@ export default defineConfig({
 						link: '/patterns/configuration'
 					},
 					{
+						text: "Deploy to Production",
+						link: "/patterns/deploy",
+					},
+					{
 						text: 'Type',
 						link: '/patterns/type'
 					},

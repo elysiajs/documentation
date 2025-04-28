@@ -212,6 +212,14 @@ button.copy::after {
 .VPSidebarItem {
 	@apply relative;
 
+	.is-link:hover {
+		background-color: #f0629215 !important;
+	}
+
+	.is-link.has-active {
+		background-color: #f0629220 !important;
+	}
+
 	&.collapsible {
 		@apply relative grid w-full pl-0 border-0 motion-reduce:transition-none;
 		grid-template-rows: 1fr;
@@ -221,7 +229,7 @@ button.copy::after {
 			@apply motion-reduce:transition-none;
 
 			grid-template-rows: 0fr;
-			transition: grid-template-rows 0.325s cubic-bezier(0.5, 0, 0.75, 0);
+			transition: grid-template-rows 0.35s cubic-bezier(0.76, 0, 0.24, 1);
 
 			& > .items {
 				@apply block;

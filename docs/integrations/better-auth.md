@@ -1,176 +1,201 @@
 ---
 title: Better Auth - ElysiaJS
 head:
-  - - meta
-    - property: 'og:title'
-      content: Better Auth - ElysiaJS
+    - - meta
+      - property: 'og:title'
+        content: Better Auth - ElysiaJS
 
-  - - meta
-    - name: 'description'
-      content: We may use @better-auth/cli to generate auth schema and migrate our database as well.
+    - - meta
+      - name: 'description'
+        content: We may use @better-auth/cli to generate auth schema and migrate our database as well.
 
-  - - meta
-    - name: 'og:description'
-      content: We may use @better-auth/cli to generate auth schema and migrate our database as well.
+    - - meta
+      - name: 'og:description'
+        content: We may use @better-auth/cli to generate auth schema and migrate our database as well.
 ---
 
 # Better Auth
-Better Auth is framework-agnostic authentication (and authorization) framework for TypeScript. It provides a comprehensive set of features out of the box and includes a plugin ecosystem that simplifies adding advanced functionalities.
 
-Better Auth has a cli tool to generate auth schema and migrate our database as well. It currently has 3 database adapters:
+Better Auth is framework-agnostic authentication (and authorization) framework for TypeScript.
 
-- [Prisma](https://www.prisma.io/)
-- [Drizzle](https://orm.drizzle.team/)
-- [Mongoose](https://mongoosejs.com/)
+It provides a comprehensive set of features out of the box and includes a plugin ecosystem that simplifies adding advanced functionalities.
 
-## Better Auth CLI
-Better Auth has a cli tool to generate auth schema with the following core tables in our database: `user`, `session`, `account`, and `verification`. More information about the core schema can be found in [Better Auth Core Schema](https://www.better-auth.com/docs/concepts/database#core-schema).
+We recommended going through [Better Auth basic setup](https://www.better-auth.com/docs/installation) before going through this page.
 
-To read more on configuring your database, please refer to [Better Auth Database](https://www.better-auth.com/docs/concepts/database).
+## Handler
 
-To read more on how to use the cli, please refer to [Better Auth CLI](https://www.better-auth.com/docs/concepts/cli).
+After setting up Better Auth instance, we can mount to Elysia via [mount](/patterns/mount.html).
 
-## Installation
-To install Better Auth, run the following command:
-
-```bash
-bun add better-auth
-```
-
-Make sure to set your environment variables for better auth secret `BETTER_AUTH_SECRET=` and other enviroment variables such as Github and Google client id and secret.
-
-In your project inside the `src` folder, create a `libs/auth` or `utils/auth` folder, and create a `auth.ts` file inside it and copy the following code:
-
-## Better Auth Instance
+We need to mount the handler to Elysia endpoint.
 
 ```ts
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import db from "../../database";
-import { account, session, user, verification } from "../../database/schema";
-export const auth = betterAuth({
-  database: drizzleAdapter(db, { // We're using Drizzle as our database
-    provider: "pg",
-    /*
-    * Map your schema into a better-auth schema
-    */
-    schema: {
-      user,
-      session,
-      verification,
-      account,
-    },
-  }),
-  emailAndPassword: {  
-    enabled: true // If you want to use email and password auth
-  },
-  socialProviders: {
-    /*
-    * We're using Google and Github as our social provider, 
-    * make sure you have set your environment variables
-    */
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    },
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    },
-  },
-});
+import { Elysia } from 'elysia'
+import { auth } from './auth'
 
-```
-
-Now just run to generate an auth schema with the necessary tables.
-``` bash
-bunx @better-auth/cli generate --config ./src/libs/auth/auth.ts
-``` 
-Additionally you can use the `--output` option to specify the output directory for the generated files. We can then use the drizzle migrate command to migrate our database `drizzle-kit migrate`.
-
-## Better Auth View
-
-We need to setup a view to handle contexts for better auth. Create a file inside `src/utils/auth-view.ts` or `src/libs/auth/auth-view.ts` and copy the following code:
-
-```ts
-import { Context } from "elysia";
-import { auth } from "./auth";
-
-const betterAuthView = (context: Context) => {
-    const BETTER_AUTH_ACCEPT_METHODS = ["POST", "GET"]
-    if(BETTER_AUTH_ACCEPT_METHODS.includes(context.request.method)) {
-      console.log(context.request)
-      return auth.handler(context.request);
-    }
-    else {
-      context.error(405)
-    }
-  }
-
-export default betterAuthView;
-```
-
-## Better Auth Middleware
-
-We can setup a simple middleware to handle better auth. Create a file inside `src/middlewares/auth-middleware.ts` and copy the following code:
-
-```ts
-import { Session, User } from "better-auth/types";
-import { auth } from "../../utils/auth/auth";
-import { Context } from "elysia";
- 
-export const userMiddleware = async (c: Context) => {
-  const session = await auth.api.getSession({ headers: c.request.headers });
- 
-  if (!session) {
-    c.set.status = 401;
-    return { success: 'error', message: "Unauthorized Access: Token is missing" };
-  }
- 
-  return {
-    user: session.user,
-    session: session.session
-  }
-}
-
-export const userInfo = (user: User | null, session: Session | null) => {
-  return {
-    user: user,
-    session: session
-  }
-}
-```
-
-## Attaching Better Auth Into Our Elysia App
-
-Inside our index.ts file, we can attach the auth view so that it listens to our auth routes and add the following code:
-
-```ts
-const app = new Elysia()
-.use(cors()).use(swagger()).all("/api/auth/*", betterAuthView);
-
-app.listen(process.env.BACKEND_PORT || 8000);
+const app = new Elysia().mount(auth.handler).listen(3000)
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
 ```
 
-Our Auth Should now be working as expected! We can then just access our auth routes from our frontend as such:
+Then we can access Better Auth with `http://localhost:3000/api/auth`.
+
+### Custom endpoint
+
+We recommended setting a prefix path for when using [mount](/patterns/mount.html).
 
 ```ts
-import { createAuthClient } from "better-auth/client"
-export const authClient = createAuthClient({
-    baseURL: process.env.BETTER_AUTH_URL! 
-})
+import { Elysia } from 'elysia'
+import { auth } from './auth'
 
-export const signinGoogle = async () => {
-  const data = await authClient.signIn.social({
-    provider: "google",
-  });
-  
-  return data;
-};
+const app = new Elysia().mount('/auth', auth.handler).listen(3000) // ![code ++]
+
+console.log(
+	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
 ```
 
-For a detailed client side guide do check out [Better Auth Frontend](https://www.better-auth.com/docs/concepts/client)
+Then we can access Better Auth with `http://localhost:3000/auth/api/auth`.
+
+But the URL looks redundant, we can customize the `/api/auth` prefix to something else in Better Auth instance.
+
+```ts
+import { betterAuth } from 'better-auth'
+import { openAPI } from 'better-auth/plugins'
+import { passkey } from 'better-auth/plugins/passkey'
+
+import { Pool } from 'pg'
+
+export const auth = betterAuth({
+	basePath: '/api' // [!code ++]
+})
+```
+
+Then we can access Better Auth with `http://localhost:3000/auth/api`.
+
+Unfortunately, we can't set `basePath` of a Better Auth instance to be empty or `/`.
+
+
+## Swagger / OpenAPI
+
+Better Auth support `openapi` with `better-auth/plugins`.
+
+However if we are using [@elysiajs/swagger](/plugins/swagger), you might want to extract the documentation from Better Auth instance.
+
+We may do that with the following code:
+
+```ts
+import { openAPI } from 'better-auth/plugins'
+
+let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>
+const getSchema = async () => (_schema ??= auth.api.generateOpenAPISchema())
+
+export const OpenAPI = {
+	getPaths: (prefix = '/auth/api') =>
+		getSchema().then(({ paths }) => {
+			const reference: typeof paths = Object.create(null)
+
+			for (const path of Object.keys(paths)) {
+				const key = prefix + path
+				reference[key] = paths[path]
+
+				for (const method of Object.keys(paths[path])) {
+					const operation = (reference[key] as any)[method]
+
+					operation.tags = ['Better Auth']
+				}
+			}
+
+			return reference
+		}) as Promise<any>,
+	components: getSchema().then(({ components }) => components) as Promise<any>
+} as const
+```
+
+Then in our Elysia instance that use `@elysiajs/swagger`.
+
+```ts
+import { Elysia } from 'elysia'
+import { swagger } from '@elysiajs/swagger'
+
+import { OpenAPI } from './auth'
+
+const app = new Elysia().use(
+	swagger({
+		documentation: {
+			components: await OpenAPI.components,
+			paths: await OpenAPI.getPaths()
+		}
+	})
+)
+```
+
+## CORS
+
+To configure cors, you can use the `cors` plugin from `@elysiajs/cors`.
+
+```ts
+import { Elysia } from 'elysia'
+import { cors } from '@elysiajs/cors'
+
+import { auth } from './auth'
+
+const app = new Elysia()
+	.use(
+		cors({
+			origin: 'http://localhost:3001',
+			methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+			credentials: true,
+			allowedHeaders: ['Content-Type', 'Authorization']
+		})
+	)
+	.mount(auth.handler)
+	.listen(3000)
+
+console.log(
+	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+
+## Macro
+
+You can use [macro](https://elysiajs.com/patterns/macro.html#macro) with [resolve](https://elysiajs.com/essential/handler.html#resolve) to provide session and user information before pass to view.
+
+```ts
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+
+// user middleware (compute user and session and pass to routes)
+const betterAuth = new Elysia({ name: 'better-auth' })
+	.mount(auth.handler)
+	.macro({
+		auth: {
+			async resolve({ error, request: { headers } }) {
+				const session = await auth.api.getSession({
+					headers
+				})
+
+				if (!session) return error(401)
+
+				return {
+					user: session.user,
+					session: session.session
+				}
+			}
+		}
+	})
+
+const app = new Elysia()
+	.use(betterAuth)
+	.get('/user', ({ user }) => user, {
+		auth: true
+	})
+	.listen(3000)
+
+console.log(
+	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+
+This will allow you to access the `user` and `session` object in all of your routes.

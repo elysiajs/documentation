@@ -16,6 +16,10 @@ head:
 
 # OpenTelemetry
 
+::: tip
+This page is a **config reference** for **OpenTelemetry**, if you're looking to setup and integrate with OpenTelemetry, we recommended taking a look at [Integrate with OpenTelemetry](/integrations/opentelemetry) instead.
+:::
+
 To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
 
 ```typescript twoslash

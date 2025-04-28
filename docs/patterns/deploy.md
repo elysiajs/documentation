@@ -1,9 +1,9 @@
 ---
-title: Production Deployment - ElysiaJS
+title: Deploy to Production - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Production Deployment - ElysiaJS
+      content: Deploy to Production - ElysiaJS
 
   - - meta
     - name: 'description'
@@ -145,6 +145,43 @@ CMD ["./server"]
 
 EXPOSE 3000
 ```
+
+### OpenTelemetry
+If you are using [OpenTelemetry](/integrations/opentelemetry) to deploys production server.
+
+As OpenTelemetry rely on monkey-patching `node_modules/<library>`. It's required that make instrumentations works properly, we need to specify that libraries to be instrument is an external module to exclude it from being bundled.
+
+For example, if you are using `@opentelemetry/instrumentation-pg` to instrument `pg` library. We need to exclude `pg` from being bundled and make sure that it is importing `node_modules/pg`.
+
+To make this works, we may specified `pg` as an external module with `--external pg`
+```bash
+bun build --compile --external pg --outfile server src/index.ts
+```
+
+This tells bun to not `pg` bundled into the final output file, and will be imported from the `node_modules` directory at runtime. So on a production server, you must also keeps the `node_modules` directory.
+
+It's recommended to specify packages that should be available in a production server as `dependencies` in `package.json` and use `bun install --production` to install only production dependencies.
+
+```json
+{
+	"dependencies": {
+		"pg": "^8.15.6"
+	},
+	"devDependencies": {
+		"@elysiajs/opentelemetry": "^1.2.0",
+		"@opentelemetry/instrumentation-pg": "^0.52.0",
+		"@types/pg": "^8.11.14",
+		"elysia": "^1.2.25"
+	}
+}
+```
+
+Then after running a build command, on a production server
+```bash
+bun install --production
+```
+
+If the node_modules directory still includes development dependencies, you may remove the node_modules directory and reinstall production dependencies again.
 
 ### Monorepo
 If you are using Elysia with Monorepo, you may need to include dependent `packages`.
