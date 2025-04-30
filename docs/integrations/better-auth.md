@@ -68,14 +68,11 @@ import { passkey } from 'better-auth/plugins/passkey'
 import { Pool } from 'pg'
 
 export const auth = betterAuth({
-	basePath: '/api' // [!code ++]
+	basePath: '/' // [!code ++]
 })
 ```
 
-Then we can access Better Auth with `http://localhost:3000/auth/api`.
-
-Unfortunately, we can't set `basePath` of a Better Auth instance to be empty or `/`.
-
+Then we can access Better Auth with `http://localhost:3000/auth`.
 
 ## Swagger / OpenAPI
 
