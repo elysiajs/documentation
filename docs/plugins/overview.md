@@ -114,6 +114,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Decorators for Elysia.js](https://github.com/Ateeb-Khan-97/better-elysia) - seamlessly develop and integrate APIs, Websocket and Streaming APIs with this small library.
 -   [Elysia Protobuf](https://github.com/ilyhalight/elysia-protobuf) - support protobuf for Elysia.
 -   [Elysia Prometheus](https://github.com/m1handr/elysia-prometheus) - Elysia plugin for exposing HTTP metrics for Prometheus.
+-   [Elysia Remote DTS](https://github.com/rayriffy/elysia-remote-dts) - A plugin that provide .d.ts types remotely for Eden Treaty to consume.
 
 ## Complementary projects:
 -   [prismabox](https://github.com/m1212e/prismabox) - Generator for typebox schemes based on your database models, works well with elysia
