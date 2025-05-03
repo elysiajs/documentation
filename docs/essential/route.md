@@ -186,11 +186,11 @@ We can categorize the URL and path as follows:
 
 | URL                             | Path         |
 | ------------------------------- | ------------ |
-| http://site.com/                | /            |
-| http://site.com/hello           | /hello       |
-| http://site.com/hello/world     | /hello/world |
-| http://site.com/hello?name=salt | /hello       |
-| http://site.com/hello#title     | /hello       |
+| http://example.com/                | /            |
+| http://example.com/hello           | /hello       |
+| http://example.com/hello/world     | /hello/world |
+| http://example.com/hello?name=salt | /hello       |
+| http://example.com/hello#title     | /hello       |
 
 ::: tip
 If the path is not specified, the browser and web server will treat the path as '/' as a default value.
