@@ -334,8 +334,7 @@ Adding `as` to guard is useful, because it allow us to apply multiple hooks resp
 
 However, it also allows us to apply `schema` to ensure type safety for all the routes at once.
 
-```typescript twoslash
-// @errors: 2304 2345
+```typescript
 import { Elysia, t } from 'elysia'
 
 const plugin = new Elysia()
@@ -363,8 +362,7 @@ To apply to the parent instance, we need to **"lift the scope up** to the parent
 
 We can achieve this by casting it `**as('plugin')**.
 
-```typescript twoslash
-// @errors: 2304 2345
+```typescript
 import { Elysia, t } from 'elysia'
 
 const plugin = new Elysia()
@@ -391,8 +389,7 @@ The `as` cast will lift all an instance's scope up.
 How it work is that, it read all hooks and schema scope, and lift it up to the parent instance.
 
 Which means if you have `local` scope, and want to apply it to the parent instance, you can use `as('plugin')` to lift it up.
-```typescript twoslash
-// @errors: 2304 2345
+```typescript
 import { Elysia, t } from 'elysia'
 
 const plugin = new Elysia()
@@ -421,8 +418,7 @@ This will cast **guard's response** and **onBeforeHandle** as `scoped` thus lift
 - `plugin` cast event to **scoped**
 - `global` cast event to **global**
 
-```typescript twoslash
-// @errors: 2304 2345
+```typescript
 import { Elysia, t } from 'elysia'
 
 const plugin = new Elysia()
@@ -475,8 +471,7 @@ In Elysia 1.0, Elysia will prefers either one of the schema from the scope, and 
 
 However, on Elysia 1.1, Elysia will try to reconcile response schema from all scope from each status code and merge them together.
 
-```typescript twoslash
-// @errors: 2304 2345
+```typescript
 import { Elysia, t } from 'elysia'
 
 const plugin = new Elysia()
