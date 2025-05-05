@@ -88,7 +88,7 @@ Eden Treaty turns an Elysia server into a tree-like file system that can be acce
 
 | Path         | Treaty       |
 | ------------ | ------------ |
-| /            | .index       |
+| /            |              |
 | /hi          | .hi          |
 | /deep/nested | .deep.nested |
 
@@ -96,7 +96,7 @@ Combined with the HTTP method, we can interact with the Elysia server.
 
 | Path         | Method | Treaty              |
 | ------------ | ------ | ------------------- |
-| /            | GET    | .index.get()        |
+| /            | GET    | .get()              |
 | /hi          | GET    | .hi.get()           |
 | /deep/nested | GET    | .deep.nested.get()  |
 | /deep/nested | POST   | .deep.nested.post() |

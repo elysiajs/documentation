@@ -101,7 +101,7 @@ app.
 
 
 // Call [GET] at '/'
-const { data } = await app.index.get()
+const { data } = await app.get()
 
 // Call [PUT] at '/nendoroid/:id'
 const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({

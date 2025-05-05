@@ -76,7 +76,7 @@ import type { App } from './server' // [!code ++]
 const client = treaty<App>('localhost:3000') // [!code ++]
 
 // response: Hi Elysia
-const { data: index } = await client.index.get()
+const { data: index } = await client.get()
 
 // response: 1895
 const { data: id } = await client.id({ id: 1895 }).get()

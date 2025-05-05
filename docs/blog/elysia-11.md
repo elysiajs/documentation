@@ -218,8 +218,7 @@ Elysia 1.1 now normalize data before it's being processed.
 To ensure that data is consistent and safe, Elysia will try to coerce data into an exact data shape defined in schema, removing additional fields, and normalizing data into a consistent format.
 
 For example if you have a schema like this:
-```typescript twoslash
-// @errors: 2353
+```typescript
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
