@@ -609,7 +609,7 @@ Sometimes we want to reapply plugin to parent instance as well but as it's limit
 
 To apply to the parent instance, we need to **lift the scope up** to the parent instance, and `as` is the perfect method to do so.
 
-Which means if you have `local` scope, and want to apply it to the parent instance, you can use `as('plugin')` to lift it up.
+Which means if you have `local` scope, and want to apply it to the parent instance, you can use `as('scoped')` to lift it up.
 ```typescript twoslash
 // @errors: 2304 2345
 import { Elysia, t } from 'elysia'
