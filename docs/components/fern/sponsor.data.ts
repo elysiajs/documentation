@@ -1,35 +1,35 @@
 import { defineLoader } from 'vitepress'
 
 export interface Sponsor {
-	sponsorEntity: {
-		login: string
-		name: string
-		avatarUrl: string
-	}
-	createdAt: string
-	tier: {
-		isOneTime: boolean
-		isCustomAmount: boolean
-		monthlyPriceInDollars: number
-	}
+    sponsorEntity: {
+        login: string
+        name: string
+        avatarUrl: string
+    }
+    createdAt: string
+    tier: {
+        isOneTime: boolean
+        isCustomAmount: boolean
+        monthlyPriceInDollars: number
+    }
 }
 
 declare const data: Sponsor[]
 export { data }
 
 export default defineLoader({
-	async load(): Promise<Sponsor[]> {
-		try {
-			if(!process.env.GITHUB_TOKEN)
-				throw new Error('GITHUB_TOKEN is not set')
+    async load(): Promise<Sponsor[]> {
+        try {
+            if (!process.env.GITHUB_TOKEN)
+                throw new Error('GITHUB_TOKEN is not set')
 
-			const result = await fetch('https://api.github.com/graphql', {
-				method: 'POST',
-				headers: {
-					Authorization: `bearer ${process.env.GITHUB_TOKEN}`
-				},
-				body: JSON.stringify({
-					query: `query {
+            const result = await fetch('https://api.github.com/graphql', {
+                method: 'POST',
+                headers: {
+                    Authorization: `bearer ${process.env.GITHUB_TOKEN}`
+                },
+                body: JSON.stringify({
+                    query: `query {
 	                  user(login: "saltyaom") {
 	                    sponsorshipsAsMaintainer(
 	                        first: 100
@@ -58,26 +58,26 @@ export default defineLoader({
 	                    }
 	                  }
 	                }`
-				})
-			}).then((x) => x.json())
+                })
+            }).then((x) => x.json())
 
-			const data: Sponsor[] =
-				result.data?.user?.sponsorshipsAsMaintainer?.nodes || []
+            const data: Sponsor[] =
+                result.data?.user?.sponsorshipsAsMaintainer?.nodes || []
 
-			return data
-				.filter((x) => !x.tier.isOneTime)
-				.sort(
-					(a, b) =>
-						b?.tier?.monthlyPriceInDollars -
-							a?.tier?.monthlyPriceInDollars ||
-						new Date(a?.createdAt).getTime() -
-							new Date(b?.createdAt).getTime()
-				)
-		} catch (error) {
-			console.warn('Fetch sponsors error')
-			console.warn(error)
+            return data
+                .filter((x) => !x.tier.isOneTime)
+                .sort(
+                    (a, b) =>
+                        b?.tier?.monthlyPriceInDollars -
+                            a?.tier?.monthlyPriceInDollars ||
+                        new Date(a?.createdAt).getTime() -
+                            new Date(b?.createdAt).getTime()
+                )
+        } catch (error) {
+            console.warn('Fetch sponsors error')
+            console.warn(error)
 
-			return []
-		}
-	}
+            return []
+        }
+    }
 })

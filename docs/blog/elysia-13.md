@@ -34,7 +34,7 @@ head:
     src="/blog/elysia-13/elysia-13.webp"
     alt="pink-violet tint mesh gradient background with word 'Elysia 1.3' and the word 'Scientific Witchery' below the title"
     author="saltyaom"
-    date="6 May 2025"
+    date="5 May 2025"
     shadow
 >
 
@@ -52,7 +52,6 @@ Elysia 1.3 feature with near 0 overhead, refinement, fixing technical debt and r
 - [Performance Improvement](#performance-improvement)
 - [Validation DX Improvement](#validaiton-dx-improvement)
 - [Rename error to status](#rename-error-to-status)
-- Validation: file-type, sanitize, no-validate, Form
 
 ## Exact Mirror
 We introduced [normalize](/patterns/configuration.html#normalize) in Elysia 1.1 to ensure that data match our desired shape, and it works nicely.
@@ -351,7 +350,7 @@ To migrate, simply remove `.index` from your codebase. This should be a simple c
 ## Notable changes
 Here's are some notable changes from changelog.
 
-### Improvement:
+### Improvement
 - `encodeSchema` now stable and enabled by default
 - optimize types
 - reduce redundant type check when using Encode
@@ -372,13 +371,18 @@ Here's are some notable changes from changelog.
 - refactor `parseQuery` and `parseQueryFromURL`
 - add `config` options to `mount`
 - recompile automatically after async modules is mounted
+- support macro on when hook has function
+- support resolve macro on ws
+- [#1146](https://github.com/elysiajs/elysia/pull/1146) add support to return web API's File from handler
+- [#1165](https://github.com/elysiajs/elysia/pull/1165) skip non-numeric status codes in response schema validation
+- [#1177](https://github.com/elysiajs/elysia/issues/1177) cookie does not sign when an error is thrown
 
-### Bug fix:
+### Bug fix
 - `Response` returned from `onError` is using octet stream
 - unintentional memory allocation when using `mergeObjectArray`
 - handle empty space on Date query
 
-### Change:
+### Change
 - only provide `c.request` to mapResponse when `maybeStream` is true
 - use plain object for `routeTree` instead of `Map`
 - remove `compressHistoryHook` and `decompressHistoryHook`
@@ -386,7 +390,7 @@ Here's are some notable changes from changelog.
 - use non const value for `decorate` unless explicitly specified
 - `Elysia.mount` now set `detail.hide = true` by default
 
-### Breaking Change:
+### Breaking Change
 - remove `as('plugin')` in favor of `as('scoped')`
 - remove root `index` for Eden Treaty
 - remove `websocket` from `ElysiaAdapter`
@@ -394,7 +398,7 @@ Here's are some notable changes from changelog.
 
 ## Afterword
 
-Hi? It has been a while hasn't it?
+Hi? It has been a while.
 
 Life can be confusing isn't it?
 
@@ -412,22 +416,22 @@ But I don't think I would be a good role model for others.
 
 Sometimes, things just got exaggeratedly.
 
-I'm no perfect human, nor I have a right to teach others.
+I may appears I'm genius who can create anything but I'm not. I just try my best.
 
-I try my best to be good, but I also acts like a fool sometimes.
+I hang out playing video games with friends, listening to weird songs, and watching movies. I also meet my friends at cosplay conventions even.
 
-Even if I don't have things to be a role model for, I want to let you know that I'm grateful.
+Just like a normal person.
 
-Still my lonely and boring life, please don't beautify it too much.
+All these time I just hug tightly to *your* arm.
 
-> There's no undo and there's no repeat
->
-> Can't go back to how we used to be
->
-> There's no restart but only proceed
->
-> Take up from where we've left off and see
+**I'm just like you, nothing special.**
 
-<small>I wish, for all the happniess to those who are kind.</small>
+I try my best but I also acts like a fool from time to time.
+
+Even if I don't have anything I think should be a role model for, I want you to let me say that I'm grateful.
+
+My boring, and slightly lonely life, please don't beautify it too much.
+
+<small>*~ I'm glad you're evil too.*</small>
 
 </Blog>
