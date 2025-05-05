@@ -87,7 +87,7 @@ Unfortunately, Bun require machine that has an `AVX2` hardware support.
 There's no workaround as far as we know.
 
 ## Compile to JavaScript
-If you are unable to compile to binary or you are deploying on a Window server.
+If you are unable to compile to binary or you are deploying on a Windows server.
 
 You may bundle your server to a JavaScript file instead.
 
