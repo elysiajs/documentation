@@ -91,9 +91,9 @@ And here's the same code on Elysia 1.3
 ![Elysia with normalization turns on resulting in 77k req/sec](/blog/elysia-13/normalize-1.3.webp)
 > Elysia with normalization turns on
 
-We measured up to ~1.5x throughput when using for **a single** schema with normalization.
+We measured up to ~1.5x throughput when for **a single** schema with normalization.
 
-This means if you use more than a single schema, you should even more performance improvement.
+This means if you use more than one schema, you should even more performance improvement.
 
 When comparing to the same code **without schema**, we see < 2% performance difference.
 
@@ -120,7 +120,7 @@ new Elysia({
 You can try the benchmark out yourself by visiting [Exact Mirror on GitHub](https://github.com/elysiajs/exact-mirror).
 
 ## System Router
-We have never have performance problem with router in Elysia.
+We never have performance problem with router in Elysia.
 
 It has excellent performance, and hyper-optimized as much as we possibly can.
 
