@@ -1629,7 +1629,7 @@ export const getUserId = new Elysia()
     	   	username: session[token.value]
     	})
     )
-    .as('plugin') // [!code ++]
+    .as('scoped') // [!code ++]
 
 export const user = new Elysia({ prefix: '/user' })
 	.use(getUserId)
@@ -1968,7 +1968,7 @@ export const getUserId = new Elysia()
     	   	username: session[token.value]
     	})
     )
-    .as('plugin')
+    .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
 	.use(getUserId)
@@ -2166,7 +2166,7 @@ export const getUserId = new Elysia()
     	   	username: session[token.value]
     	})
     )
-    .as('plugin')
+    .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
 	.use(getUserId)
@@ -2291,7 +2291,7 @@ export const getUserId = new Elysia()
     	   	username: session[token.value]
     	})
     )
-    .as('plugin')
+    .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
 	.use(getUserId)
@@ -2434,7 +2434,7 @@ export const getUserId = new Elysia()
     	   	username: session[token.value]
     	})
     )
-    .as('plugin')
+    .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
 	.use(getUserId)
@@ -2546,7 +2546,7 @@ export const getUserId = new Elysia()
     .resolve(({ store: { session }, cookie: { token } }) => ({
         username: session[token.value]
     }))
-    .as('plugin')
+    .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
     .use(userService)
@@ -2793,7 +2793,7 @@ export const getUserId = new Elysia()
     .resolve(({ store: { session }, cookie: { token } }) => ({
         username: session[token.value]
     }))
-    .as('plugin')
+    .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
     .use(userService)
@@ -2927,7 +2927,7 @@ export const getUserId = new Elysia()
     .resolve(({ store: { session }, cookie: { token } }) => ({
         username: session[token.value]
     }))
-    .as('plugin')
+    .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
     .use(getUserId)

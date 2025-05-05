@@ -597,7 +597,7 @@ const plugin = new Elysia()
         return { hi: 'ok' }
     })
     .get('/child', ({ hi }) => hi)
-    .as('plugin') // [!code ++]
+    .as('scoped') // [!code ++]
 
 const main = new Elysia()
     .use(plugin)
@@ -621,12 +621,12 @@ const plugin = new Elysia()
 	.onBeforeHandle(() => { console.log('called') })
 	.get('/ok', () => 'ok')
 	.get('/not-ok', () => 1)
-	.as('plugin') // [!code ++]
+	.as('scoped') // [!code ++]
 
 const instance = new Elysia()
 	.use(plugin)
 	.get('/no-ok-parent', () => 2)
-	.as('plugin') // [!code ++]
+	.as('scoped') // [!code ++]
 
 const parent = new Elysia()
 	.use(instance)
@@ -663,7 +663,7 @@ const plugin = new Elysia()
         return 'hi'
     })
     .get('/child', 'child')
-    .as('plugin')
+    .as('scoped')
 
 const main = new Elysia()
     .use(plugin)
