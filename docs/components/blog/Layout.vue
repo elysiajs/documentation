@@ -3,7 +3,7 @@
         <h1 class="!text-3xl !md:text-4xl font-medium">
             {{ props.title }}
         </h1>
-        <aside class="flex gap-3 items-center mt-4">
+        <aside class="flex gap-2 items-center mt-3">
             <img
                 class="w-9 h-9 rounded-full"
                 :src="profile"
@@ -20,7 +20,12 @@
                 </p>
             </div>
         </aside>
-        <img :src="props.src" :alt="props.alt" class="w-full mt-6 mb-2" :class="props.shadow ? 'shadow-xl' : 'border'" />
+        <img
+            :src="props.src"
+            :alt="props.alt"
+            class="w-full mt-5 mb-2"
+            :class="props.shadow ? 'shadow-xl shadow-black/7.5' : 'border'"
+        />
         <main id="blog-content">
             <slot />
         </main>
@@ -88,26 +93,26 @@ onUnmounted(() => {
     @apply text-lg mt-0;
 }
 
-#blog>img {
-    @apply rounded-lg;
+#blog > img {
+    @apply rounded-2xl;
 }
 
-#blog>h1 {
+#blog > h1 {
     @apply !text-3xl md:!text-4xl font-semibold;
 }
 
-#blog>h2 {
+#blog > h2 {
     @apply !text-2xl md:!text-3xl font-semibold;
 }
 
-#blog>h3 {
+#blog > h3 {
     @apply !text-xl md:!text-2xl font-semibold;
 }
 
-#blog-content>video,
-#blog-content>*>video,
-#blog-content>img,
-#blog-content>*>img {
+#blog-content > video,
+#blog-content > * > video,
+#blog-content > img,
+#blog-content > * > img {
     @apply rounded-xl my-4;
     /* box-shadow: 0 8px 25px rgba(0,0,0,.1) */
 }
@@ -118,7 +123,7 @@ onUnmounted(() => {
 }
 
 @media (min-width: 768px) {
-    #blog>h1 {
+    #blog > h1 {
         line-height: 3.25rem !important;
     }
 }

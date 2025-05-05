@@ -86,6 +86,23 @@ new Elysia({
 })
 ```
 
+## encodeSchema
+
+Handle custom `t.Transform` schema with custom `Encode` before returning the response to client.
+
+This allows us to create custom encode function for your data before sending response to the client.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia({ encodeSchema: true })
+```
+
+#### Options - @default `true`
+
+- `true` - Run `Encode` before sending the response to client
+- `false` - Skip `Encode` entirely
+
 ## name
 
 Define a name of an instance which is used for debugging and [Plugin Deduplication](/essential/plugin.html#plugin-deduplication)
@@ -149,7 +166,9 @@ When unknown properties that is not specified in schema is found on either input
 
 Options - @default `true`
 
-- `true`: Elysia will coerce fields into a specified schema.
+- `true`: Elysia will coerce fields into a specified schema using [exact mirror](/blog/elysia-13.html#exact-mirror)
+
+- `typebox`: Elysia will coerce fields into a specified schema using [TypeBox's Value.Clean](https://github.com/sinclairzx81/typebox)
 
 - `false`: Elysia will raise an error if a request or response contains fields that are not explicitly allowed in the schema of the respective handler.
 
@@ -195,6 +214,20 @@ When prefix is defined, all routes will be prefixed with the given value.
 import { Elysia, t } from 'elysia'
 
 new Elysia({ prefix: '/v1' }).get('/name', 'elysia') // Path is /v1/name
+```
+
+## santize
+
+A function or an array of function that calls and intercepts on every `t.String` while validation.
+
+Allowing us to read and transform a string into a new value.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia({
+	santize: (value) => Bun.escapeHTML(value)
+})
 ```
 
 ## seed
@@ -435,6 +468,12 @@ new Elysia({
 })
 ```
 
+### systemRouter
+
+Use runtime/framework provided router if possible.
+
+On Bun, Elysia will use [Bun.serve.routes](https://bun.sh/docs/api/http#routing) and fallback to Elysia's own router.
+
 ## websocket
 
 Override websocket configuration
@@ -457,25 +496,8 @@ new Elysia({
 
 ---
 
-<br />
+<!-- <br />
 
 # Experimental
 
-Try out an experimental feature which might be available in the future version of Elysia.
-
-## experimental.encodeSchema
-
-Handle custom `t.Transform` schema with custom `Encode` before returning the response to client.
-
-This allows us to create custom encode function for your data before sending response to the client.
-
-```ts twoslash
-import { Elysia, t } from 'elysia'
-
-new Elysia({ experimental: { encodeSchema: true } })
-```
-
-#### Options - @default `false`
-
-- `true` - Run `Encode` before sending the response to client
-- `false` - Skip `Encode` entirely
+Try out an experimental feature which might be available in the future version of Elysia. -->

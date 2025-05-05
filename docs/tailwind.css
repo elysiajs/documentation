@@ -3,6 +3,7 @@
 @import 'tailwindcss/utilities.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant interact (&:hover, &:focus);
 
 * {
 	border-color: var(--color-gray-200);

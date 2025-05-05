@@ -191,6 +191,35 @@ The response should be listed as follows:
 
 If multiple global schemas are defined for the same property, the latest one will take precedence. If both local and global schemas are defined, the local one will take precedence.
 
+### Guard Schema Type
+Guard supports 2 types to define a validation.
+
+### **override (default)**
+
+Override schema if schema if schema is collide with each others.
+
+![Elysia run with default override guard showing schema gets override](/blog/elysia-13/schema-override.webp)
+
+### **standalone**
+
+
+Separate collided schema, and runs both independently resulting in both being validated.
+
+![Elysia run with standalone merging multiple guard together](/blog/elysia-13/schema-standalone.webp)
+
+To define schema type of guard with `schema`:
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.guard({
+		schema: 'standalone', // [!code ++]
+		response: t.Object({
+			title: t.String()
+		})
+	})
+```
+
 ## Body
 An incoming [HTTP Message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages) is the data sent to the server. It can be in the form of JSON, form-data, or any other format.
 

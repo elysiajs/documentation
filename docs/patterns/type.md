@@ -489,6 +489,9 @@ The following are types provided by Elysia:
     <Card title="Maybe Empty" href="#maybeempty">
         Accepts empty string or null value
     </Card>
+    <Card title="Form" href="#form">
+    	Validate type for FormData as a return value
+    </Card>
     <Card title="Numeric" href="#numeric-legacy">
         Accepts a numeric string or number and then transforms the value into a number
     </Card>
@@ -601,6 +604,16 @@ t.MaybeEmpty(t.String())
 ```
 
 For additional information, you can find the full source code of the type system in [`elysia/type-system`](https://github.com/elysiajs/elysia/blob/main/src/type-system.ts).
+
+### Form
+
+A syntax sugar our `t.Object` with support for verifying return value of [form](/essential/handler.html#formdata) (FormData).
+
+```typescript
+t.FormData({
+	someValue: t.File()
+})
+```
 
 ### Numeric (legacy)
 ::: warning
