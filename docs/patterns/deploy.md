@@ -55,7 +55,7 @@ This is great as the deployment server doesn't need to install an extra runtime 
 ### Why not --minify
 Bun does have `--minify` flag that will minify the binary.
 
-However if we are using [OpenTelemetry](/plugin/opentelemetry), it's going to reduce a function name to a single character.
+However if we are using [OpenTelemetry](/plugins/opentelemetry), it's going to reduce a function name to a single character.
 
 This make tracing harder than it should as OpenTelemetry rely on a function name.
 
