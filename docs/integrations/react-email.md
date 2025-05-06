@@ -127,7 +127,7 @@ const transporter = nodemailer.createTransport({ // [!code ++]
 }) // [!code ++]
 
 new Elysia()
-	.get('/otp', ({ body }) => {
+	.get('/otp', async ({ body }) => {
 		// Random between 100,000 and 999,999
   		const otp = ~~(Math.random() * (900_000 - 1)) + 100_000
 
