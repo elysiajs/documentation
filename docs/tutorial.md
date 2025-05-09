@@ -25,6 +25,7 @@ We expected it to take around 15-20 minutes if you follow along.
 ---
 
 ### Not a fan of tutorial?
+
 If you prefers to a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
 
 <script setup>
@@ -37,7 +38,6 @@ import Deck from './components/nearl/card-deck.vue'
     	The core concept of Elysia and how to use it.
     </Card>
 </Deck>
-
 
 ## Setup
 
@@ -83,9 +83,11 @@ Open your browser and go to **http://localhost:3000**, you should see **Hello El
 Elysia use Bun with `--watch` flag to automatically reload the server when you make changes.
 
 ## Route
+
 To add a new route, we specify an HTTP method, a pathname, and a value.
 
 Let's start by opening the `src/index.ts` file as follows:
+
 ```typescript [index.ts]
 import { Elysia } from 'elysia'
 
@@ -861,16 +863,17 @@ export const user = new Elysia({ prefix: '/user' })// [!code ++]
 ```
 
 Now there are a lot of things to unwrap here:
+
 1. We create a new instance with 2 routes for sign up and sign in.
 2. In the instance, we define an in-memory store `user` and `session`
-	- 2.1 `user` will hold key-value of `username` and `password`
-	- 2.2 `session` will hold a key-value of `session` and `username`
+    - 2.1 `user` will hold key-value of `username` and `password`
+    - 2.2 `session` will hold a key-value of `session` and `username`
 3. In `/sign-up` we insert a username and hashed password with argon2id
 4. In `/sign-in` we do the following:
-	- 4.1 We check if user exists and verify the password
-	- 4.2 If the password matches, then we generate a new session into `session`
-	- 4.3 We set cookie `token` with the value of session
-	- 4.4 We append `secret` to cookie to add hash and block an attacker from tampering with the cookie
+    - 4.1 We check if user exists and verify the password
+    - 4.2 If the password matches, then we generate a new session into `session`
+    - 4.3 We set cookie `token` with the value of session
+    - 4.4 We append `secret` to cookie to add hash and block an attacker from tampering with the cookie
 
 ::: tip
 As we are using an in-memory store, the data are wiped out every reload or every time we edit the code.
@@ -881,6 +884,7 @@ We will fix that in the later part of the tutorial.
 Now if we want to check if a user is signed in, we could check for value of `token` cookie and check with the `session` store.
 
 ## Reference Model
+
 However, we can recognize that both `/sign-in` and `/sign-up` both share the same `body` model.
 
 Instead of copy-pasting the model all over the place, we could use a **reference model** to reuse the model by specifying a name.
@@ -926,7 +930,7 @@ export const user = new Elysia({ prefix: '/user' })
             }
         },
         {
-           	body: 'signIn' // [!code ++]
+            body: 'signIn' // [!code ++]
         }
     )
     .post(
@@ -956,8 +960,8 @@ export const user = new Elysia({ prefix: '/user' })
             }
         },
         {
-           	body: 'signIn', // [!code ++]
-           	cookie: 'session', // [!code ++]
+            body: 'signIn', // [!code ++]
+            cookie: 'session' // [!code ++]
         }
     )
 ```
@@ -965,10 +969,12 @@ export const user = new Elysia({ prefix: '/user' })
 After adding a model/models, we can reuse them by referencing their name in the schema instead of providing a literal type while providing the same functionality and type safety.
 
 `Elysia.model` could accept multiple overloads:
+
 1. Providing an object, the register all key-value as models
 2. Providing a function, then access all previous models then return new models
 
 Finally, we could add the `/profile` and `/sign-out` routes as follows:
+
 ```typescript twoslash [user.ts]
 import { Elysia, t } from 'elysia'
 
@@ -1089,10 +1095,9 @@ For **1.** instead of using guard, we could use a **macro**.
 ## Plugin deduplication
 
 As we are going to reuse this hook in multiple modules (user, and note), let's extract the service (utility) part out and apply it to both modules.
-// @errors: 2538
-// @filename: user.ts
-import { Elysia, t } from 'elysia'
+
 ```ts twoslash [user.ts]
+// @filename: user.ts
 // @errors: 2538
 import { Elysia, t } from 'elysia'
 
@@ -1136,7 +1141,7 @@ export const user = new Elysia({ prefix: '/user' })
                 secrets: 'seia' // [!code --]
             } // [!code --]
         ), // [!code --]
-  		optionalSession: t.Optional(t.Ref('session')) // [!code --]
+        optionalSession: t.Optional(t.Ref('session')) // [!code --]
     }) // [!code --]
 ```
 
@@ -1147,9 +1152,11 @@ If we were to define the instance without the plugin, hook/lifecycle and routes 
 Our intention is to apply this plugin (service) to multiple modules to provide utility function, this make deduplication very important as life-cycle shouldn't be registered twice.
 
 ## Macro
+
 Macro allows us to define a custom hook with custom life-cycle management.
 
 To define a macro, we could use `.macro` as follows:
+
 ```ts twoslash [user.ts]
 // @errors: 2538
 import { Elysia, t } from 'elysia'
@@ -1194,7 +1201,7 @@ export const userService = new Elysia({ name: 'user/service' })
                             message: 'Unauthorized' // [!code ++]
                         }) // [!code ++]
                 } // [!code ++]
-			} // [!code ++]
+            } // [!code ++]
         } // [!code ++]
     }) // [!code ++]
 ```
@@ -1202,10 +1209,9 @@ export const userService = new Elysia({ name: 'user/service' })
 We have just created a new macro name `isSignIn` that accepts a `boolean` value, if it is true, then we add an `onBeforeHandle` event that executes **after validation but before the main handler**, allowing us to extract authentication logic here.
 
 To use the macro, simply specify `isSignIn: true` as follows:
-// @errors: 2538
-// @filename: user.ts
-import { Elysia, t } from 'elysia'
+
 ```ts twoslash [user.ts]
+// @filename: user.ts
 // @errors: 2538
 import { Elysia, t } from 'elysia'
 
@@ -1234,7 +1240,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1337,16 +1343,15 @@ This may seem like a small code change to trade for a larger boilerplate, but as
 :::
 
 ## Resolve
+
 Our last objective is to get the username (id) from the token. We could use `resolve` to define a new property into the same context as `store` but only execute it per request.
 
 Unlike `decorate` and `store`, resolve is defined at the `beforeHandle` stage or the value will be available **after validation**.
 
 This ensures that the property like `cookie: 'session'` exists before creating a new property.
 
-// @errors: 2538
-// @filename: user.ts
-import { Elysia, t } from 'elysia'
 ```ts twoslash [user.ts]
+// @filename: user.ts
 // @errors: 2538
 import { Elysia, t } from 'elysia'
 
@@ -1375,7 +1380,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1414,7 +1419,9 @@ Same as macro, `resolve` plays well if the logic for getting the property is com
 :::
 
 ## Scope
+
 Now if we try to apply the use of the `getUserId`, we might notice that the property `username` and `guard` isn't applied.
+
 ```ts twoslash [user.ts]
 // @errors: 2339
 import { Elysia, t } from 'elysia'
@@ -1444,7 +1451,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1466,7 +1473,7 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-       	isSignIn: true,
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(({ store: { session }, cookie: { token } }) => ({
@@ -1474,8 +1481,8 @@ export const getUserId = new Elysia()
     }))
 
 export const user = new Elysia({ prefix: '/user' })
-	.use(getUserId)
-	.get('/profile', ({ username }) => ({
+    .use(getUserId)
+    .get('/profile', ({ username }) => ({
         success: true,
         username
     }))
@@ -1486,12 +1493,14 @@ This is because the Elysia **encapsulate lifecycle** does this by default as men
 This is intentional by design, as we don't want each module to have a side-effect to other modules. Having a side-effect can be very difficult to debug especially in a large codebase with multiple (Elysia) dependencies.
 
 If we want lifecycle to be applied to the parent, we can explicitly annotate that it could be applied to the parent by using either:
+
 1. scoped - only apply to parent at 1-level above and not any further
 2. global - apply to all parent levels
 
 In our case, we want to use **scoped** as it will apply to the controller that uses the service only.
 
 To do this, we need to annotate that life-cycle as `scoped`:
+
 ```typescript twoslash [user.ts]
 // @errors: 2538
 import { Elysia, t } from 'elysia'
@@ -1521,7 +1530,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1543,8 +1552,8 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	as: 'scoped', // [!code ++]
-    	isSignIn: true,
+        as: 'scoped', // [!code ++]
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(
@@ -1565,10 +1574,8 @@ export const user = new Elysia({ prefix: '/user' })
 
 Alternatively, if we have multiple `scoped` defined, we could use `as` to cast multiple life-cycles instead.
 
-// @errors: 2538
-// @filename: user.ts
-import { Elysia, t } from 'elysia'
 ```ts twoslash [user.ts]
+// @filename: user.ts
 // @errors: 2538
 import { Elysia, t } from 'elysia'
 
@@ -1597,7 +1604,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1619,8 +1626,8 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	as: 'scoped', // [!code --]
-    	isSignIn: true,
+        as: 'scoped', // [!code --]
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(
@@ -1632,8 +1639,8 @@ export const getUserId = new Elysia()
     .as('scoped') // [!code ++]
 
 export const user = new Elysia({ prefix: '/user' })
-	.use(getUserId)
-	.get('/profile', ({ username }) => ({
+    .use(getUserId)
+    .get('/profile', ({ username }) => ({
         success: true,
         username
     }))
@@ -1801,6 +1808,7 @@ const app = new Elysia()
 :::
 
 ## Authorization
+
 First, let's modify the `Note` class to store the user who created the note.
 
 But instead of defining the `Memo` type, we can define a memo schema and infer the type from it, allowing us to sync runtime and type-level.
@@ -1938,7 +1946,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -1960,7 +1968,7 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	isSignIn: true,
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(
@@ -1971,8 +1979,8 @@ export const getUserId = new Elysia()
     .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
-	.use(getUserId)
-	.get('/profile', ({ username }) => ({
+    .use(getUserId)
+    .get('/profile', ({ username }) => ({
         success: true,
         username
     }))
@@ -1983,8 +1991,8 @@ import { Elysia, t } from 'elysia'
 import { getUserId, userService } from './user' // [!code ++]
 
 const memo = t.Object({
-	data: t.String(),
-	author: t.String()
+    data: t.String(),
+    author: t.String()
 })
 
 type Memo = typeof memo.static
@@ -2015,7 +2023,7 @@ class Note {
 }
 
 export const note = new Elysia({ prefix: '/note' })
-	.use(userService) // [!code ++]
+    .use(userService) // [!code ++]
     .decorate('note', new Note())
     .model({
         memo: t.Omit(memo, ['author'])
@@ -2136,7 +2144,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2158,7 +2166,7 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	isSignIn: true,
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(
@@ -2169,8 +2177,8 @@ export const getUserId = new Elysia()
     .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
-	.use(getUserId)
-	.get('/profile', ({ username }) => ({
+    .use(getUserId)
+    .get('/profile', ({ username }) => ({
         success: true,
         username
     }))
@@ -2261,7 +2269,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2283,7 +2291,7 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	isSignIn: true,
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(
@@ -2294,8 +2302,8 @@ export const getUserId = new Elysia()
     .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
-	.use(getUserId)
-	.get('/profile', ({ username }) => ({
+    .use(getUserId)
+    .get('/profile', ({ username }) => ({
         success: true,
         username
     }))
@@ -2404,7 +2412,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2426,7 +2434,7 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	isSignIn: true,
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(
@@ -2437,8 +2445,8 @@ export const getUserId = new Elysia()
     .as('scoped')
 
 export const user = new Elysia({ prefix: '/user' })
-	.use(getUserId)
-	.get('/profile', ({ username }) => ({
+    .use(getUserId)
+    .get('/profile', ({ username }) => ({
         success: true,
         username
     }))
@@ -2484,6 +2492,7 @@ Elysia supports OpenTelemetry out of the box, it automatically integrates with o
 You can also use other OpenTelemetry plugins to send traces to other services like Zipkin, Prometheus, etc.
 
 ## Codebase recap
+
 If you are following along, you should have a codebase that looks like this:
 
 ::: code-group
@@ -2518,7 +2527,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2540,7 +2549,7 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	isSignIn: true,
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(({ store: { session }, cookie: { token } }) => ({
@@ -2765,7 +2774,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2787,7 +2796,7 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	isSignIn: true,
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(({ store: { session }, cookie: { token } }) => ({
@@ -2899,7 +2908,7 @@ export const userService = new Elysia({ name: 'user/service' })
             if (!enabled) return
 
             return {
-            	beforeHandle({ error, cookie: { token }, store: { session } }) {
+                beforeHandle({ error, cookie: { token }, store: { session } }) {
                     if (!token.value)
                         return error(401, {
                             success: false,
@@ -2921,7 +2930,7 @@ export const userService = new Elysia({ name: 'user/service' })
 export const getUserId = new Elysia()
     .use(userService)
     .guard({
-    	isSignIn: true,
+        isSignIn: true,
         cookie: 'session'
     })
     .resolve(({ store: { session }, cookie: { token } }) => ({
@@ -3034,7 +3043,9 @@ export const note = new Elysia({ prefix: '/note' })
 :::
 
 ## Build for production
+
 Finally we can bundle our server into a binary for production using `bun build`:
+
 ```bash
 bun build \
 	--compile \
@@ -3046,6 +3057,7 @@ bun build \
 ```
 
 This command is a bit long, so let's break it down:
+
 1. `--compile` - Compile TypeScript to binary
 2. `--minify-whitespace` - Remove unnecessary whitespace
 3. `--minify-syntax` - Minify JavaScript syntax to reduce file size
@@ -3054,6 +3066,7 @@ This command is a bit long, so let's break it down:
 6. `./src/index.ts` - The entry file of our server (codebase)
 
 Now we can run the binary using `./server` and it will start the server on port 3000 same as using `bun dev`.
+
 ```bash
 ./server
 ```
