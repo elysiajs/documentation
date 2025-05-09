@@ -4,7 +4,6 @@ import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
 
 import tailwindcss from '@tailwindcss/vite'
-
 import llmstxt from 'vitepress-plugin-llms'
 import { analyzer } from 'vite-bundle-analyzer'
 
@@ -60,7 +59,12 @@ export default defineConfig({
 		},
 		plugins: [
 			tailwindcss() as any,
-			process.env.NODE_ENV === 'production' ? llmstxt() : [],
+			process.env.NODE_ENV === 'production' ? llmstxt({
+				description: 'Ergonomic Framework for Humans',
+				details:
+					"Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket.",
+				ignoreFiles: ['index.md', 'table-of-content.md']
+			}) : [],
 			process.env.ANALYZE === 'true' ? analyzer() : [],
 			// GitChangelog({
 			// 	repoURL: () => 'https://github.com/elysiajs/documentation',
