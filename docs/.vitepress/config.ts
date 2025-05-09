@@ -59,47 +59,47 @@ export default defineConfig({
 		},
 		plugins: [
 			tailwindcss() as any,
+			process.env.ANALYZE === 'true' ? analyzer() : [],
 			process.env.NODE_ENV === 'production' ? llmstxt({
 				description: 'Ergonomic Framework for Humans',
 				details:
 					"Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket.",
 				ignoreFiles: ['index.md', 'table-of-content.md']
 			}) : [],
-			GitChangelog({
-				repoURL: () => 'https://github.com/elysiajs/documentation',
-				mapAuthors: [
-					{
-						mapByEmailAliases: ['saltyaom@gmail.com'],
-						avatar: '/blog/authors/aris.webp',
-						links: [
-							{
-								type: 'GitHub',
-								link: 'https://github.com/SaltyAom'
-							}
-						]
-					},
-					{
-						mapByNameAliases: ['bogeychan'],
-						links: [
-							{
-								type: 'GitHub',
-								link: 'http://github.com/bogeychan'
-							}
-						]
-					},
-					{
-						mapByNameAliases: ['Fecony'],
-						links: [
-							{
-								type: 'GitHub',
-								link: 'https://github.com/fecony'
-							}
-						]
-					}
-				]
-			}),
-			GitChangelogMarkdownSection(),
-			process.env.ANALYZE === 'true' ? analyzer() : []
+			// GitChangelog({
+			// 	repoURL: () => 'https://github.com/elysiajs/documentation',
+			// 	mapAuthors: [
+			// 		{
+			// 			mapByEmailAliases: ['saltyaom@gmail.com'],
+			// 			avatar: '/blog/authors/aris.webp',
+			// 			links: [
+			// 				{
+			// 					type: 'GitHub',
+			// 					link: 'https://github.com/SaltyAom'
+			// 				}
+			// 			]
+			// 		},
+			// 		{
+			// 			mapByNameAliases: ['bogeychan'],
+			// 			links: [
+			// 				{
+			// 					type: 'GitHub',
+			// 					link: 'http://github.com/bogeychan'
+			// 				}
+			// 			]
+			// 		},
+			// 		{
+			// 			mapByNameAliases: ['Fecony'],
+			// 			links: [
+			// 				{
+			// 					type: 'GitHub',
+			// 					link: 'https://github.com/fecony'
+			// 				}
+			// 			]
+			// 		}
+			// 	]
+			// }),
+			// GitChangelogMarkdownSection(),
 		],
 		optimizeDeps: {
 			exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client']
