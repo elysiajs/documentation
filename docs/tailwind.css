@@ -344,6 +344,8 @@ button.copy::after {
 }
 
 .VPNav {
+	z-index: 41 !important;
+
 	&:hover {
 		z-index: 50 !important;
 

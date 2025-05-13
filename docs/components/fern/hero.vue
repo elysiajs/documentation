@@ -212,7 +212,7 @@
         >
             <img
                 src="/assets/elysia_chan.webp"
-                class="object-cover z-40 select-none pointer-events-none"
+                class="object-cover z-[40] select-none pointer-events-none"
                 style="object-position: 50% 7.5%"
             />
         </div>
