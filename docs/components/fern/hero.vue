@@ -48,7 +48,7 @@
                 for
                 <button
                     type="button"
-                    class="appearance-none rounded-lg interact:bg-violet-500/7.5 px-0.5 transition-colors duration-100"
+                    class="appearance-none rounded-lg interact:bg-violet-500/7.5 px-0.5 transition-colors duration-100 text-left"
                     @click="toggleKawaii"
                 >
                     {{ kawaii ? 'Humans & Fox Girls' : 'Humans' }}
