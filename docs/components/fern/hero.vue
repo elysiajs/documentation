@@ -17,12 +17,13 @@
         style="min-height: calc(100vh - 64px)"
     >
         <div
-            class="flex flex-col justify-center items-center transition-all"
+            class="flex flex-col justify-center transition-all"
             :class="
                 kawaii
-                    ? 'flex flex-col justify-center items-start my-auto lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl lg:pl-16'
-                    : 'flex flex-col justify-center items-center'
+                    ? 'items-start my-auto lg:max-w-5xl xl:max-w-5xl 2xl:max-w-6xl lg:pl-10 lg:pb-6 lg:pr-6'
+                    : 'items-center'
             "
+            :style="kawaii ? 'zoom: 1.08' : ''"
         >
             <!-- <h1
 	            class="text-3xl leading-relaxed font-semibold text-center text-transparent mr-auto md:mx-auto bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"
@@ -121,7 +122,7 @@
                 </span>
             </h2>
             <h3
-                class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left w-full max-w-2xl transition-all"
+                class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left w-full max-w-2xl"
                 :class="kawaii ? '' : 'md:text-center'"
             >
                 TypeScript with
