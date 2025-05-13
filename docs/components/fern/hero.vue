@@ -211,7 +211,7 @@
         >
             <img
                 src="/assets/elysia_chan.webp"
-                class="object-cover z-20 select-none pointer-events-none"
+                class="object-cover z-50 select-none pointer-events-none"
                 style="object-position: 50% 7.5%"
             />
         </div>
@@ -231,11 +231,17 @@ const toggleKawaii = () => {
 }
 
 onMounted(() => {
-    if (
-        window.location.search.includes('kawaii=true') ||
-        window.location.search.includes('uwu=true')
-    )
+    const search = window.location.search
+
+    if (search.includes('kawaii=true') || search.includes('uwu=true')) {
+        localStorage.setItem('kawaii', 'true')
         return (kawaii.value = true)
+    }
+
+    if (search.includes('kawaii=false') || search.includes('uwu=false')) {
+        localStorage.setItem('kawaii', 'false')
+        return (kawaii.value = false)
+    }
 
     if (localStorage.getItem('kawaii') === 'true') return (kawaii.value = true)
 })
