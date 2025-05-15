@@ -88,7 +88,35 @@ new Elysia()
 
 TypeBox is a very fast, lightweight, and type-safe runtime validation library for TypeScript. Elysia extends and customizes the default behavior of TypeBox to match server-side validation requirements.
 
-We believe that an integration like this should be handled by the framework by default, rather than relying on the user to set up a custom type for every project.
+We believe that validation should be handled by the framework natively, rather than relying on the user to set up a custom type for every project.
+
+### TypeScript
+We can get a type definitions of every Elysia/TypeBox's type by accessing `static` property as follows:
+
+```ts twoslash
+import { t } from 'elysia'
+
+const MyType = t.Object({
+	hello: t.Literal('Elysia')
+})
+
+type MyType = typeof MyType.static
+//    ^?
+````
+
+<br>
+<br>
+<br>
+
+This allows Elysia to infer and provide type automatically, reducing the need to declare duplicate schema
+
+A single Elysia/TypeBox schema can be used for:
+- Runtime validation
+- Data coercion
+- TypeScript type
+- OpenAPI schema
+
+This allows us to make a schema as a **single source of truth**.
 
 ## Schema type
 Elysia supports declarative schemas with the following types:
@@ -619,9 +647,9 @@ Responses can be set per status code.
 import { Elysia, t } from 'elysia'
 
 new Elysia()
-	.get('/response', ({ error }) => {
+	.get('/response', ({ status }) => {
 		if (Math.random() > 0.5)
-			return error(400, {
+			return status(400, {
 				error: 'Something went wrong'
 			})
 

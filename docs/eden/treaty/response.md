@@ -29,9 +29,9 @@ import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
-    .post('/user', ({ body: { name }, error }) => {
+    .post('/user', ({ body: { name }, status }) => {
         if(name === 'Otto')
-            return error(400, 'Bad Request')
+            return status(400, 'Bad Request')
 
         return name
     }, {

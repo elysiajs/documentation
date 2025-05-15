@@ -49,11 +49,11 @@ const app = new Elysia()
 
         return `Sign in as ${value}`
     })
-    .get('/profile', async ({ jwt, error, cookie: { auth } }) => {
+    .get('/profile', async ({ jwt, status, cookie: { auth } }) => {
         const profile = await jwt.verify(auth.value)
 
         if (!profile)
-            return error(401, 'Unauthorized')
+            return status(401, 'Unauthorized')
 
         return `Hello ${profile.name}`
     })
@@ -78,7 +78,7 @@ const app = new Elysia()
         const profile = await jwt.verify(authorization)
 
         if (!profile)
-            return error(401, 'Unauthorized')
+            return status(401, 'Unauthorized')
 
         return `Hello ${profile.name}`
     })

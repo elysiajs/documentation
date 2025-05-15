@@ -149,9 +149,9 @@ class AuthService {
 	constructor() {}
 
 	// ❌ Don't do this
-	isSignIn({ cookie: { session } }: Context) {
+	isSignIn({ status, cookie: { session } }: Context) {
 		if (session.value)
-			return error(401)
+			return status(401)
 	}
 }
 ```
@@ -175,8 +175,8 @@ const AuthService = new Elysia({ name: 'Service.Auth' })
     .macro(({ onBeforeHandle }) => ({
      	// This is declaring a service method
         isSignIn(value: boolean) {
-            onBeforeHandle(({ Auth, error }) => {
-                if (!Auth?.user || !Auth.user) return error(401)
+            onBeforeHandle(({ Auth, status }) => {
+                if (!Auth?.user || !Auth.user) return status(401)
             })
         }
     }))
@@ -206,9 +206,9 @@ class AuthService {
 	constructor() {}
 
 	// ✅ Do
-	isSignIn({ cookie: { session } }: InferContext<typeof setup>) {
+	isSignIn({ status, cookie: { session } }: InferContext<typeof setup>) {
 		if (session.value)
-			return error(401)
+			return status(401)
 	}
 }
 ```

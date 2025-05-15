@@ -102,10 +102,10 @@ See [Handler](/essential/handler.html)
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ set, error }) => {
+    .get('/', ({ set, status }) => {
         set.headers['x-powered-by'] = 'Elysia'
 
-        return error(418, "I'm a teapot")
+        return status(418, "I'm a teapot")
     })
     .listen(3000)
 ```

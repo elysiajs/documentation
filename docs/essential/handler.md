@@ -165,10 +165,10 @@ new Elysia()
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.get('/', ({ set, error }) => {
+	.get('/', ({ set, status }) => {
 		set.headers = { 'X-Teapot': 'true' }
 
-		return error(418, 'I am a teapot')
+		return status(418, 'I am a teapot')
 	})
 	.listen(3000)
 ```
@@ -176,7 +176,7 @@ new Elysia()
 ### status
 We can return a custom status code by using either:
 
-- **error** function (recommended)
+- **status** function (recommended)
 - **set.status** (legacy)
 
 ```typescript
@@ -191,14 +191,14 @@ new Elysia()
 	.listen(3000)
 ```
 
-### set.error
+### status
 A dedicated `error` function for returning status code with response.
 
 ```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ error }) => error(418, "Kirifuji Nagisa"))
+    .get('/', ({ status }) => status(418, "Kirifuji Nagisa"))
     .listen(3000)
 ```
 
@@ -658,10 +658,10 @@ As resolve and derive is based on **transform** and **beforeHandle** lifecycle, 
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .derive(({ headers, error }) => {
+    .derive(({ headers, status }) => {
         const auth = headers['authorization']
 
-        if(!auth) return error(400)
+        if(!auth) return status(400)
 
         return {
             bearer: auth?.startsWith('Bearer ') ? auth.slice(7) : null

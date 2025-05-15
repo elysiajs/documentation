@@ -29,9 +29,9 @@ const demo = new Elysia()
 		// This will be caught by onError
 		throw error(418)
 	})
-	.get('/return', ({ error }) => {
+	.get('/return', ({ status }) => {
 		// This will NOT be caught by onError
-		return error(418)
+		return status(418)
 	})
 </script>
 
@@ -218,8 +218,8 @@ import { Elysia } from 'elysia'
 
 new Elysia()
     .use(rateLimiter)
-    .onRequest(({ rateLimiter, ip, set, error }) => {
-        if (rateLimiter.check(ip)) return error(420, 'Enhance your calm')
+    .onRequest(({ rateLimiter, ip, set, status }) => {
+        if (rateLimiter.check(ip)) return status(420, 'Enhance your calm')
     })
     .get('/', () => 'hi')
     .listen(3000)
@@ -456,8 +456,8 @@ import { validateSession } from './user'
 
 new Elysia()
     .get('/', () => 'hi', {
-        beforeHandle({ set, cookie: { session }, error }) {
-            if (!validateSession(session.value)) return error(401)
+        beforeHandle({ set, cookie: { session }, status }) {
+            if (!validateSession(session.value)) return status(401)
         }
     })
     .listen(3000)
@@ -481,8 +481,8 @@ import { signUp, signIn, validateSession, isUserExists } from './user'
 new Elysia()
     .guard(
         {
-            beforeHandle({ set, cookie: { session }, error }) {
-                if (!validateSession(session.value)) return error(401)
+            beforeHandle({ set, cookie: { session }, status }) {
+                if (!validateSession(session.value)) return status(401)
             }
         },
         (app) =>
@@ -729,8 +729,8 @@ For example, returning custom 404 messages:
 import { Elysia, NotFoundError } from 'elysia'
 
 new Elysia()
-    .onError(({ code, error, set }) => {
-        if (code === 'NOT_FOUND') return error(404, 'Not Found :(')
+    .onError(({ code, status, set }) => {
+        if (code === 'NOT_FOUND') return status(404, 'Not Found :(')
     })
     .post('/', () => {
         throw new NotFoundError()
@@ -780,13 +780,13 @@ new Elysia()
     .onError(({ code, error, path }) => {
         if (code === 418) return 'caught'
     })
-    .get('/throw', ({ error }) => {
+    .get('/throw', ({ status }) => {
         // This will be caught by onError
-        throw error(418)
+        throw status(418)
     })
-    .get('/return', () => {
+    .get('/return', ({ status }) => {
         // This will NOT be caught by onError
-        return error(418)
+        return status(418)
     })
 ```
 
