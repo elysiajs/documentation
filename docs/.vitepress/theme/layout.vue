@@ -171,7 +171,11 @@ router.onAfterRouteChange = () => {
 }
 
 .medium-zoom-overlay {
-    backdrop-filter: blur(1rem);
+    backdrop-filter: blur(2.5rem) brightness(1.1);
+}
+
+html.dark .medium-zoom-overlay {
+    backdrop-filter: blur(2.5rem) brightness(0.85);
 }
 
 .medium-zoom-overlay,

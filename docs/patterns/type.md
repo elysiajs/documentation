@@ -59,7 +59,7 @@ This code tells Elysia to validate an incoming HTTP body, ensuring that the body
 
 If the shape doesn't match, it will throw an error into the [Error Life Cycle](/essential/life-cycle.html#on-error).
 
-![Elysia Life Cycle](/assets/lifecycle.webp)
+![Elysia Life Cycle](/assets/lifecycle-chart.svg)
 
 ### Basic Type
 

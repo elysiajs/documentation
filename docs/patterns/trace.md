@@ -48,7 +48,7 @@ const app = new Elysia()
 
 Please refer to [Life Cycle Events](/essential/life-cycle#events) for more information:
 
-![Elysia Life Cycle](/assets/lifecycle.webp)
+![Elysia Life Cycle](/assets/lifecycle-chart.svg)
 
 ## Children
 Every events except `handle` have a children, which is an array of events that are executed inside for each life-cycle event.

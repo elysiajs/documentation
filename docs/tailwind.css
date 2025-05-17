@@ -509,7 +509,6 @@ button.copy::after {
 	@apply dark:!border-slate-700;
 }
 
-
 .VPLink.link.pager-link {
 	@apply dark:bg-slate-800 dark:border-transparent;
 }
