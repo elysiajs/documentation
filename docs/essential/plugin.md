@@ -300,16 +300,16 @@ So we have to provide the plugin reference for Elysia to find the service to add
 // @errors: 2339
 import { Elysia } from 'elysia'
 
-// setup.ts
 const setup = new Elysia({ name: 'setup' })
     .decorate('a', 'a')
 
-// index.ts
+// Without 'setup', type will be missing
 const error = new Elysia()
     .get('/', ({ a }) => a)
 
 const main = new Elysia()
-    .use(setup)
+	// With `setup`, type will be inferred
+    .use(setup) // [!code ++]
     .get('/', ({ a }) => a)
     //           ^?
 ```
