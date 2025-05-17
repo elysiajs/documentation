@@ -273,9 +273,9 @@ If the provided value is class, Elysia will then try to use the `.toString` meth
 :::
 
 ### Service Locator
-When you apply multiple state and decorators plugin to an instance, the instance will gain type safety.
+When you apply a plugin with state/decorators to an instance, the instance will gain type safety.
 
-However, you may notice that when you are trying to use the decorated value in another instance without decorator, the type is missing.
+But if you don't apply the plugin to another instance, it will not be able to infer the type.
 
 ```typescript twoslash
 // @errors: 2339
@@ -290,13 +290,11 @@ const main = new Elysia()
     .use(child)
 ```
 
-This is a TypeScript limitation; Elysia can only refer to the current instance.
-
 Elysia introduces the **Service Locator** pattern to counteract this.
 
-To put it simply, Elysia will lookup the plugin checksum and get the value or register a new one. Infer the type from the plugin.
+Elysia will lookup the plugin checksum and get the value or register a new one. Infer the type from the plugin.
 
-Simply put, we need to provide the plugin reference for Elysia to find the service.
+So we have to provide the plugin reference for Elysia to find the service to add type safety.
 
 ```typescript twoslash
 // @errors: 2339

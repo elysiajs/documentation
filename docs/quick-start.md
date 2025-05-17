@@ -386,12 +386,15 @@ We have a few recommendations:
 	<Card title="Astro" href="/integrations/astro">
 		Elysia as Astro API routes.
 	</Card>
+	<Card title="Nuxt" href="/integrations/nuxt">
+   		Elysia as Nuxt API routes.
+    </Card>
 	<Card title="SvelteKit" href="/integrations/sveltekit">
 		Elysia as SvelteKit API routes.
 	</Card>
 </Deck>
 
-### Not in the list?
+### Not on the list?
 If you are using a custom runtime, you may access `app.fetch` to handle the request and response manually.
 
 ```typescript

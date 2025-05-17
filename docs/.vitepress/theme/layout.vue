@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useData } from 'vitepress'
+import { nextTick, provide, onMounted } from 'vue'
+import { useData, useRouter } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
-import { nextTick, provide } from 'vue'
+
+import mediumZoom from 'medium-zoom'
 
 import useDark from '../../components/midori/use-dark'
 import Ray from '../../components/midori/ray.vue'
@@ -39,12 +41,42 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
             await nextTick()
         }).ready
 })
+
+const setupMediumZoom = () => {
+    mediumZoom('[data-zoomable]', {
+        background: 'transparent'
+    })
+}
+
+onMounted(setupMediumZoom)
+
+const router = useRouter()
+
+router.onAfterRouteChange = () => {
+    setupMediumZoom()
+}
 </script>
 
 <template>
-    <link rel="preload" as="image" href="/assets/elysia_v.webp" fetchpriority="high">
-    <link rel="preload" as="image" href="/assets/elysia.svg" fetchpriority="high">
-    <link rel="preload" as="image" href="/assets/shigure-ui-smol.gif" fetchpriority="low">
+    <link
+        rel="preload"
+        as="image"
+        href="/assets/elysia_v.webp"
+        fetchpriority="high"
+    />
+    <link
+        rel="preload"
+        as="image"
+        href="/assets/elysia.svg"
+        fetchpriority="high"
+    />
+    <link
+        rel="preload"
+        as="image"
+        href="/assets/shigure-ui-smol.gif"
+        fetchpriority="low"
+    />
+    <meta name="theme-color" :content="isDark ? '#0f172a' : '#ffffff'" />
     <DefaultTheme.Layout>
         <template #doc-top>
             <Ray
@@ -91,8 +123,7 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 }
 
 ::view-transition-new(root) {
-    mask: url('/assets/shigure-ui-smol.gif')
-        center / 0 no-repeat;
+    mask: url('/assets/shigure-ui-smol.gif') center / 0 no-repeat;
     animation: var(--switch-name) var(--switch-duration);
 }
 
@@ -137,5 +168,14 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
 .VPSwitchAppearance .check {
     transform: none !important;
+}
+
+.medium-zoom-overlay {
+    backdrop-filter: blur(1rem);
+}
+
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
+    z-index: 999;
 }
 </style>

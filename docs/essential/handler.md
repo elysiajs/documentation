@@ -191,8 +191,8 @@ new Elysia()
 	.listen(3000)
 ```
 
-### status
-A dedicated `error` function for returning status code with response.
+### status function
+A dedicated `status` function for returning status code with response.
 
 ```typescript
 import { Elysia } from 'elysia'

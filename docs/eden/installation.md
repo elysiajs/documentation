@@ -19,9 +19,6 @@ Start by installing Eden on your frontend:
 ```bash
 bun add @elysiajs/eden
 bun add -d elysia
-
-# `@types/bun` must be installed even if you aren't using bun in the client
-bun add -d @types/bun
 ```
 
 ::: tip
@@ -176,7 +173,7 @@ app.listen(3000)
 ```
 
 ### Type Definitions
-Sometimes, if you are using a Bun specific feature like `Bun.file` or similar API, you may need to install Bun type definitions to the client as well.
+If you are using a Bun specific feature like `Bun.file` or similar API and return it from a handler, you may need to install Bun type definitions to the client as well.
 
 ```bash
 bun add -d @types/bun
@@ -184,6 +181,10 @@ bun add -d @types/bun
 
 ### Path alias (monorepo)
 If you are using path alias in your monorepo, make sure that frontend are able to resolve the path as same as backend.
+
+::: tip
+Setting up path alias in monorepo is a bit tricky, you can fork our example template: [Kozeki Template](https://github.com/SaltyAom/kozeki-template) and modify it to your needs.
+:::
 
 For example, if you have the following path alias for your backend in **tsconfig.json**:
 ```json
@@ -265,4 +266,4 @@ import { a, b } from '@backend/controllers'
 
 We recommended creating a **single tsconfig.json** that define a `baseUrl` as the root of your repo, provide a path according to the module location, and create a **tsconfig.json** for each module that inherits the root **tsconfig.json** which has the path alias.
 
-You may find a working example of in this [path alias example repo](https://github.com/SaltyAom/elysia-monorepo-path-alias).
+You may find a working example of in this [path alias example repo](https://github.com/SaltyAom/elysia-monorepo-path-alias) or [Kozeki Template](https://github.com/SaltyAom/kozeki-template)

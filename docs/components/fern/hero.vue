@@ -150,7 +150,8 @@
                     </code>
                     <button
                         id="hero-copy"
-                        class="hidden sm:inline-flex p-3 rounded-2xl active:rounded-full hover:bg-pink-200/25 focus:bg-pink-200/25 active:bg-pink-200/50 hover:dark:bg-pink-500/20 focus:dark:bg-pink-500/20 active:dark:bg-pink-500/20 transition-all"
+                        class="hidden sm:inline-flex p-3 rounded-xl active:rounded-4xl interact:bg-pink-200/25 active:bg-pink-200/50 interact:dark:bg-pink-500/20 active:dark:bg-pink-500/20 transition-all"
+                        :class="{ '!rounded-4xl': copied }"
                         @click="copied = true"
                     >
                         <svg
@@ -206,13 +207,13 @@
             </p>
         </div>
         <div
-            class="overflow-hidden flex-1 transition-all"
+            class="overflow-hidden flex-1 transition-all select-none pointer-events-none"
             :class="kawaii ? 'lg:flex max-w-4xl' : 'hidden'"
             style="max-height: calc(100vh - 64px)"
         >
             <img
                 src="/assets/elysia_chan.webp"
-                class="object-cover z-[40] select-none pointer-events-none"
+                class="object-cover z-[41] select-none pointer-events-none"
                 style="object-position: 50% 7.5%"
             />
         </div>
@@ -287,7 +288,7 @@ watch(copied, (value) => {
 
 #hero-get-started,
 #hero-copy {
-    @apply transform hover:scale-110 focus:scale-110;
+    @apply transform interact:scale-110;
     transition:
         all 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6),
         color 0.35s ease-out;

@@ -16,11 +16,13 @@ head:
 
 # Key Concept
 
-### We __highly recommend__ you to read this page before starting to use Elysia.
-
 Although Elysia is a simple library, it has some key concepts that you need to understand to use it effectively.
 
 This page covers most important concepts of Elysia that you should know.
+
+::: tip
+We __highly recommend__ you to read this page before learn more about Elysia.
+:::
 
 ## Everything is a component
 
@@ -177,6 +179,48 @@ This forces you to think about the dependencies of each instance, allowing for e
 
 Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
 
+### Service Locator
+When you apply a plugin with state/decorators to an instance, the instance will gain type safety.
+
+But if you don't apply the plugin to another instance, it will not be able to infer the type.
+
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    // ❌ 'a' is missing
+    .get('/', ({ a }) => a)
+
+const main = new Elysia()
+    .decorate('a', 'a')
+    .use(child)
+```
+
+Elysia introduces the **Service Locator** pattern to counteract this.
+
+We simply provide the plugin reference for Elysia to find the service to add type safety.
+
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+// setup.ts
+const setup = new Elysia({ name: 'setup' })
+    .decorate('a', 'a')
+
+// index.ts
+const error = new Elysia()
+    .get('/', ({ a }) => a)
+
+const main = new Elysia()
+    .use(setup)
+    .get('/', ({ a }) => a)
+    //           ^?
+```
+
+As mentioned in [dependencies](#dependencies), we can use the `name` property to deduplicate the instance so it will not have any performance penalty or lifecycle duplication.
+
 ## Type Inference
 Elysia has a complex type system that allows you to infer types from the instance.
 
@@ -216,5 +260,33 @@ const app = new Elysia()
 		})
 	})
 ```
+
+### TypeScript
+We can get a type definitions of every Elysia/TypeBox's type by accessing `static` property as follows:
+
+```ts twoslash
+import { t } from 'elysia'
+
+const MyType = t.Object({
+	hello: t.Literal('Elysia')
+})
+
+type MyType = typeof MyType.static
+//    ^?
+````
+
+<br>
+<br>
+<br>
+
+This allows Elysia to infer and provide type automatically, reducing the need to declare duplicate schema
+
+A single Elysia/TypeBox schema can be used for:
+- Runtime validation
+- Data coercion
+- TypeScript type
+- OpenAPI schema
+
+This allows us to make a schema as a **single source of truth**.
 
 Learn more about this in [Best practice: MVC Controller](/essential/best-practice.html#controller).

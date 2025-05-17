@@ -80,6 +80,10 @@ pre.vp-code > code,
 	text-decoration: none !important;
 }
 
+.vp-doc > div > p > img {
+	@apply rounded-lg;
+}
+
 :root {
 	--vp-c-brand-1: #f06292;
 	--vp-c-brand-2: #f06292;
@@ -344,7 +348,7 @@ button.copy::after {
 }
 
 .VPNav {
-	z-index: 41 !important;
+	z-index: 40 !important;
 
 	&:hover {
 		z-index: 50 !important;
@@ -503,4 +507,9 @@ button.copy::after {
 
 .VPSwitchAppearance {
 	@apply dark:!border-slate-700;
+}
+
+
+.VPLink.link.pager-link {
+	@apply dark:bg-slate-800 dark:border-transparent;
 }
