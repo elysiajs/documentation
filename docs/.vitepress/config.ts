@@ -141,14 +141,14 @@ export default defineConfig({
 			'meta',
 			{
 				property: 'og:image:width',
-				content: '1920'
+				content: '2560'
 			}
 		],
 		[
 			'meta',
 			{
 				property: 'og:image:height',
-				content: '1080'
+				content: '1440'
 			}
 		],
 		[
