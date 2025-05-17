@@ -52,6 +52,44 @@ This forces you to break down your application into small pieces, making it easy
 
 Learn more about this in [plugin](/essential/plugin.html).
 
+## Method Chaining
+Elysia code should always use **method chaining**.
+
+As Elysia type system is complex, every methods in Elysia returns a new type reference.
+
+**This is important** to ensure type integrity and inference.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('build', 1)
+    // Store is strictly typed // [!code ++]
+    .get('/', ({ store: { build } }) => build)
+                        // ^?
+    .listen(3000)
+```
+
+In the code above, **state** returns a new **ElysiaInstance** type, adding a typed `build` property.
+
+### Don't use Elysia without method chaining
+Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
+
+```typescript twoslash
+// @errors: 2339
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+
+app.state('build', 1)
+
+app.get('/', ({ store: { build } }) => build)
+
+app.listen(3000)
+```
+
+We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
+
 ## Scope
 By default, event/life-cycle in each instance is isolated from each other.
 
@@ -99,44 +137,6 @@ This forces you to think about the scope of each property, preventing you from a
 
 Learn more about this in [scope](/essential/plugin.html#scope).
 
-## Method Chaining
-Elysia code should always use **method chaining**.
-
-As Elysia type system is complex, every methods in Elysia returns a new type reference.
-
-**This is important** to ensure type integrity and inference.
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .state('build', 1)
-    // Store is strictly typed // [!code ++]
-    .get('/', ({ store: { build } }) => build)
-                        // ^?
-    .listen(3000)
-```
-
-In the code above, **state** returns a new **ElysiaInstance** type, adding a typed `build` property.
-
-### ❌ Don't: Use Elysia without method chaining
-Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const app = new Elysia()
-
-app.state('build', 1)
-
-app.get('/', ({ store: { build } }) => build)
-
-app.listen(3000)
-```
-
-We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
-
 ## Dependency
 By default, each instance will be re-executed every time it's applied to another instance.
 
@@ -147,7 +147,7 @@ To prevent lifecycle methods from being duplicated, we can add **a unique identi
 ```ts twoslash
 import { Elysia } from 'elysia'
 
-const ip = new Elysia({ name: 'ip' })
+const ip = new Elysia({ name: 'ip' }) // [!code ++]
 	.derive(
 		{ as: 'global' },
 		({ server, request }) => ({
@@ -171,11 +171,7 @@ const server = new Elysia()
 
 This will prevent the `ip` property from being called multiple times by applying deduplication using a unique name.
 
-Once `name` is provided, the instance will become a **singleton**, allowing Elysia to apply plugin deduplication.
-
-This allows us to reuse the same instance multiple times without the performance penalty.
-
-This forces you to think about the dependencies of each instance, allowing for easily applied migrations or refactoring.
+This allows us to reuse the same instance multiple times without the performance penalty. Forcing you to think about the dependencies of each instance.
 
 Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
 
