@@ -136,7 +136,7 @@ TypeScript is not needed to use Elysia, but it's recommended to use Elysia with 
 
 To take a step further, Elysia provides **Elysia.t**, a schema builder to validate types and values at both runtime and compile-time to create a single source of truth for your data-type.
 
-Let's modify the previous code to accept only a numeric value instead of a string.
+Let's modify the previous code to accept only a number value instead of a string.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -145,13 +145,13 @@ new Elysia()
     .get('/user/:id', ({ params: { id } }) => id, {
                                 // ^?
         params: t.Object({
-            id: t.Numeric()
+            id: t.Number()
         })
     })
     .listen(3000)
 ```
 
-This code ensures that our path parameter **id** will always be a numeric string and then transforms it into a number automatically at both runtime and compile-time (type-level).
+This code ensures that our path parameter **id** will always be a number on both runtime and compile-time (type-level).
 
 ::: tip
 Hover over "id" in the above code snippet to see a type definition.
