@@ -171,22 +171,20 @@ See [scope](/essential/plugin#scope) to find out why
 
 The order of Elysia's life-cycle code is very important.
 
-Elysia's life-cycle event is stored as a queue, aka first-in first-out. So Elysia will **always** respect the order of code from top-to-bottom followed by the order of life-cycle events.
+Because event will only apply to routes **after** it is registered.
+
+If you put the onError before plugin, plugin will not inherit the onError event.
 
 ```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .onBeforeHandle(() => {
+ 	.onBeforeHandle(() => {
         console.log('1')
     })
-    .onAfterHandle(() => {
-        console.log('3')
-    })
-    .get('/', () => 'hi', {
-        beforeHandle() {
-            console.log('2')
-        }
+	.get('/', () => 'hi')
+    .onBeforeHandle(() => {
+        console.log('2')
     })
     .listen(3000)
 ```
@@ -195,9 +193,31 @@ Console should log the following:
 
 ```bash
 1
-2
-3
 ```
+
+Notice that it doesn't log **3**, because the event is registered after the route so it is not applied to the route.
+
+This also applies to the plugin.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.onBeforeHandle(() => {
+		console.log('1')
+	})
+	.use(someRouter)
+	.onBeforeHandle(() => {
+		console.log('2')
+	})
+	.listen(3000)
+```
+
+In the code above, only **1** will be logged, because the event is registered after the plugin.
+
+This is because each events will be inline into a route handler to create a true encapsulation scope and static code analysis.
+
+The only exception is `onRequest` which is executed before the route handler so it couldn't be inlined and tied to the routing process instead.
 
 ## Request
 
@@ -769,8 +789,8 @@ If no error response is returned, the error will be returned using `error.name`.
 
 It could either be **return** or **throw** based on your specific needs.
 
-- If an `error` is **throw**, it will be caught by `onError` middleware.
-- If an `error` is **return**, it will be **NOT** caught by `onError` middleware.
+- If an `status` is **throw**, it will be caught by `onError` middleware.
+- If an `status` is **return**, it will be **NOT** caught by `onError` middleware.
 
 See the following code:
 
@@ -827,8 +847,6 @@ new Elysia()
         throw new MyError('Hello Error')
     })
 ```
-
-Properties of `error` code is based on the properties of `error`, the said properties will be used to classify the error code.
 
 ### Local Error
 

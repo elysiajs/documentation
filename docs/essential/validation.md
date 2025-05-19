@@ -674,7 +674,7 @@ This is an Elysia-specific feature, allowing us to make a field optional.
 
 There are two ways to provide a custom error message when the validation fails:
 
-1. Inline `error` property
+1. Inline `status` property
 2. Using [onError](/essential/life-cycle.html#on-error) event
 
 ### Error Property

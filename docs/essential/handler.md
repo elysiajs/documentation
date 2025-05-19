@@ -204,7 +204,7 @@ new Elysia()
 
 <Playground :elysia="handler2" />
 
-It's recommend to use `error` inside main handler as it has better inference:
+It's recommend to use `status` inside main handler as it has better inference:
 
 - allows TypeScript to check if a return value is correctly type to response schema
 - autocompletion for type narrowing base on status code
@@ -228,7 +228,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Unlike `error` function, `set.status` cannot infer the return value type, therefore it can't check if the return value is correctly type to response schema.
+Unlike `status` function, `set.status` cannot infer the return value type, therefore it can't check if the return value is correctly type to response schema.
 
 ::: tip
 HTTP Status indicates the type of response. If the route handler is executed successfully without error, Elysia will return the status code 200.

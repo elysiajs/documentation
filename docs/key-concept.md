@@ -217,6 +217,38 @@ const main = new Elysia()
 
 As mentioned in [dependencies](#dependencies), we can use the `name` property to deduplicate the instance so it will not have any performance penalty or lifecycle duplication.
 
+## Order of code
+
+The order of Elysia's life-cycle code is very important.
+
+Because event will only apply to routes **after** it is registered.
+
+If you put the onError before plugin, plugin will not inherit the onError event.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+ 	.onBeforeHandle(() => {
+        console.log('1')
+    })
+	.get('/', () => 'hi')
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+Console should log the following:
+
+```bash
+1
+```
+
+Notice that it doesn't log **3**, because the event is registered after the route so it is not applied to the route.
+
+Learn more about this in [order of code](/essential/life-cycle.html#order-of-code).
+
 ## Type Inference
 Elysia has a complex type system that allows you to infer types from the instance.
 
