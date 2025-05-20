@@ -1389,7 +1389,9 @@ console.log('ok')
 
 </Compare>
 
-Using the same purpose code for each framework, Elysia has a better type inference performance than Hono and measure by 1.7x faster.
+While both offers end-to-end type safety, Elysia offers a more type-safe error handling based on status code while Hono doesn't.
+
+Using the same purpose code for each framework to measure type inference speed, Elysia is 2.3x faster than Hono for type checking.
 
 ![Elysia eden type inference performance](/migrate/elysia-type-infer.webp)
 > Elysia take 536ms to infer both Elysia, and Eden (click to enlarge)
