@@ -1062,10 +1062,8 @@ Hono require additional effort to describe the specification, while Elysia seaml
 
 ```ts [Hono]
 import { Hono } from 'hono'
-import { describeRoute } from 'hono-openapi'
+import { describeRoute, openAPISpecs } from 'hono-openapi'
 import { resolver, validator as zodValidator } from 'hono-openapi/zod'
-
-import { openAPISpecs } from 'hono-openapi'
 import { swaggerUI } from '@hono/swagger-ui'
 
 import { z } from '@hono/zod-openapi'

@@ -30,7 +30,6 @@
 		"vitepress-plugin-lightbox": "^1.0.2"
 	},
 	"devDependencies": {
-		"@hono/swagger-ui": "^0.5.1",
 		"@hono/zod-validator": "^0.5.0",
 		"@nolebase/markdown-it-unlazy-img": "^2.16.0",
 		"@nolebase/vitepress-plugin-git-changelog": "^2.16.0",
@@ -46,7 +45,6 @@
 		"express": "^5.1.0",
 		"fastify": "^5.3.3",
 		"hono": "^4.7.10",
-		"hono-openapi": "^0.4.8",
 		"markdown-it": "^14.1.0",
 		"postcss": "^8.5.3",
 		"postcss-nesting": "^13.0.1",
