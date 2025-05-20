@@ -310,6 +310,40 @@ button.copy::after {
 				}
 
 				&.collapsible {
+					background-color: transparent !important;
+
+					& > .item {
+						@apply rounded-lg;
+
+						& > .indicator {
+							@apply translate-x-4;
+						}
+
+						&:hover,
+						&:focus {
+							background-color: var(--vp-c-brand-nav-active);
+
+							& > .indicator {
+								background-color: var(--vp-c-brand);
+							}
+						}
+					}
+
+					&.is-active > .item {
+						@apply pr-2;
+						background-color: var(--vp-c-brand-nav-active);
+						border-color: var(--vp-c-brand-nav-active) !important;
+
+						& > .indicator {
+							@apply translate-x-4;
+							background-color: var(--vp-c-brand);
+						}
+
+						& > div > .caret-icon {
+							color: var(--vp-c-brand);
+						}
+					}
+
 					& > .items {
 						@apply grid border-0 pl-0;
 
@@ -511,4 +545,14 @@ button.copy::after {
 
 .VPLink.link.pager-link {
 	@apply dark:bg-slate-800 dark:border-transparent;
+}
+
+.VPDoc {
+	& > .container > .content {
+		z-index: 26;
+	}
+}
+
+.v-popper__popper {
+	z-index: 27;
 }

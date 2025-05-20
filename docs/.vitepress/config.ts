@@ -205,6 +205,7 @@ export default defineConfig({
 		sidebar: [
 			{
 				text: 'Getting Started',
+				collapsed: true,
 				items: [
 					{
 						text: 'At Glance',
@@ -216,7 +217,22 @@ export default defineConfig({
 					},
 					{
 						text: 'Tutorial',
-						link: '/tutorial'
+						link: '/tutorial',
+						collapsed: true,
+						items: [
+							{
+								text: 'From Express',
+								link: '/migrate/from-express'
+							},
+							{
+								text: 'From Fastify',
+								link: '/migrate/from-fastify'
+							},
+							{
+								text: 'From Hono',
+								link: '/migrate/from-hono'
+							}
+						]
 					},
 					{
 						text: 'Key Concept',
@@ -267,28 +283,16 @@ export default defineConfig({
 						link: '/patterns/configuration'
 					},
 					{
-						text: "Deploy to Production",
-						link: "/patterns/deploy",
-					},
-					{
-						text: 'Type',
-						link: '/patterns/type'
-					},
-					{
-						text: 'Macro',
-						link: '/patterns/macro'
-					},
-					{
 						text: 'Cookie',
 						link: '/patterns/cookie'
 					},
 					{
-						text: 'Web Socket',
-						link: '/patterns/websocket'
+						text: "Deploy to Production",
+						link: "/patterns/deploy",
 					},
 					{
-						text: 'Unit Test',
-						link: '/patterns/unit-test'
+						text: 'Macro',
+						link: '/patterns/macro'
 					},
 					{
 						text: 'Mount',
@@ -297,6 +301,18 @@ export default defineConfig({
 					{
 						text: 'Trace',
 						link: '/patterns/trace'
+					},
+					{
+						text: 'Type',
+						link: '/patterns/type'
+					},
+					{
+						text: 'Unit Test',
+						link: '/patterns/unit-test'
+					},
+					{
+						text: 'Web Socket',
+						link: '/patterns/websocket'
 					}
 				]
 			},

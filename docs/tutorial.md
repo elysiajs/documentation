@@ -24,6 +24,22 @@ We expected it to take around 15-20 minutes if you follow along.
 
 ---
 
+### From other framework?
+
+If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences.
+
+<Deck>
+	<Card title="From Express" href="/migrate/from-express">
+  		A guide to migrate from Express to Elysia
+	</Card>
+    <Card title="From Fastify" href="/migrate/from-fastify">
+  		A guide to migrate from Fastify to Elysia
+    </Card>
+    <Card title="From Hono" href="/migrate/from-hono">
+  		A guide to migrate from Hono to Elysia
+    </Card>
+</Deck>
+
 ### Not a fan of tutorial?
 
 If you prefers to a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
@@ -42,6 +58,16 @@ import Deck from './components/nearl/card-deck.vue'
 ### llms.txt
 
 Alternatively, you can download <a href="/llms.txt" download>llms.txt</a> or <a href="/llms-full.txt" download>llms-full.txt</a> and feeds it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience.
+
+<Deck>
+    <Card title="llms.txt" href="/llms.txt" download>
+   		Download summarized Elysia doc in Markdown format with reference for prompting LLMs
+    </Card>
+    <Card title="llms-full.txt" href="/llms-full.txt" download>
+  		Download full Elysia doc in Markdown format in a single file for prompting LLMs
+    </Card>
+</Deck>
+
 
 ## Setup
 
