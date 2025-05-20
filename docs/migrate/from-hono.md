@@ -36,7 +36,7 @@ This guide is for Hono users who want to see a differences from Elysia including
 
 **Elysia** is an ergonomic web framework. Designed to be ergonomic and developer-friendly with a focus on **sounds type safety** and performance.
 
-Both frameworks are built on top of Web Standard API, and has a similar syntax. But Hono offers more compatability with multiple runtimes.
+Both frameworks are built on top of Web Standard API, and has slight similar syntax. Hono offers more compatability with multiple runtimes while Elysia focus on specific set of runtimes.
 
 ## Performance
 Elysia has significant performance improvements over Hono thanks to static code analysis.
