@@ -19,7 +19,7 @@
 @reference "../../tailwind.css";
 
 .code-compare {
-	@apply z-40 grid grid-cols-1 xl:grid-cols-2 gap-2.5 bg-white dark:bg-slate-800 rounded-xl;
+	@apply z-40 grid grid-cols-1 lg:grid-cols-2 gap-2.5 bg-white dark:bg-slate-800 rounded-xl;
 	grid-auto-rows: 1fr;
 
 	& > article {
