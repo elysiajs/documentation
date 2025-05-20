@@ -549,10 +549,10 @@ button.copy::after {
 
 .VPDoc {
 	& > .container > .content {
-		z-index: 26;
+		@apply xl:z-[26];
 	}
 }
 
 .v-popper__popper {
-	z-index: 27;
+	@apply xl:z-[27];
 }
