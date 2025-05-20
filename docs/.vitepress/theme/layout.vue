@@ -9,7 +9,7 @@ import useDark from '../../components/midori/use-dark'
 import Ray from '../../components/midori/ray.vue'
 
 const isDark = useDark()
-const { isDark: darkTheme } = useData()
+const { isDark: darkTheme, frontmatter } = useData()
 
 const enableTransitions = () =>
     'startViewTransition' in document &&
@@ -42,18 +42,28 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         }).ready
 })
 
-const setupMediumZoom = () => {
+const onNewPage = () => {
     mediumZoom('[data-zoomable]', {
         background: 'transparent'
     })
+
+    if (document.querySelector('.vp-doc > div:has(.code-compare)')) {
+    	document.getElementById("VPContent")?.classList.add('-wide')
+      	document.querySelector('.VPDoc > .container')?.classList.add('-wide')
+      	document.querySelector('.vp-doc > div')?.classList.add('-wide')
+    } else {
+    	document.getElementById("VPContent")?.classList.remove('-wide')
+	  	document.querySelector('.VPDoc > .container')?.classList.remove('-wide')
+	  	document.querySelector('.vp-doc > div')?.classList.remove('-wide')
+	}
 }
 
-onMounted(setupMediumZoom)
+onMounted(onNewPage)
 
 const router = useRouter()
 
 router.onAfterRouteChange = () => {
-    setupMediumZoom()
+    onNewPage()
 }
 </script>
 
@@ -78,15 +88,13 @@ router.onAfterRouteChange = () => {
     />
     <meta name="theme-color" :content="isDark ? '#0f172a' : '#ffffff'" />
     <DefaultTheme.Layout>
-        <template #doc-top>
+        <template #doc-top">
             <Ray
                 class="h-[220px] top-0 left-0 opacity-25 dark:opacity-[.55] pointer-events-none"
                 static
             />
+            <h1>Hi</h1>
         </template>
-        <!-- <template #nav-bar-title-after>
-            <Header />
-        </template> -->
     </DefaultTheme.Layout>
 </template>
 
