@@ -17,7 +17,7 @@
                     </div>
                 </li>
                 <li>
-                    <h6>Fastify</h6>
+                    <h6>Hono</h6>
                     <div style="width: 40.03%" />
                     <p>740,451</p>
                 </li>
