@@ -394,7 +394,7 @@ button.copy::after {
     @apply !bg-transparent !border-0;
 
     & > .container {
-        @apply relative flex bg-transparent mx-auto px-4 md:px-2 lg:px-0 py-0 mt-4;
+        @apply relative flex bg-transparent mx-auto px-4 md:px-2 lg:px-0 py-0 mt-2;
         max-width: 688px;
 
         & > .menu {
