@@ -39,7 +39,7 @@ export default defineNuxtConfig({
 
 ```typescript [api.ts]
 export default () => new Elysia() // [!code ++]
-  .get('/hello', () => ({ message: 'Hello world!' }) // [!code ++]
+  .get('/hello', () => ({ message: 'Hello world!' })) // [!code ++]
 ```
 
 4. Use Eden Treaty in your Nuxt app:
