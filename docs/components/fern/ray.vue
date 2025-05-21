@@ -5,7 +5,7 @@
 		:class="className"
 	>
 		<div
-			class="jumbo absolute opacity-60"
+			class="ray absolute opacity-60"
 			:class="{
 				// '-safari': isSafari,
 				'-animate': animated,
@@ -16,7 +16,7 @@
 </template>
 
 <style scoped>
-@keyframes jumbo {
+@keyframes ray {
 	from {
 		background-position:
 			50% 50%,
@@ -30,7 +30,7 @@
 	}
 }
 
-.jumbo {
+.ray {
 	--stripes: repeating-linear-gradient(
 		100deg,
 		#fff 0%,
@@ -77,7 +77,7 @@
 	pointer-events: none;
 }
 
-.jumbo::after {
+.ray::after {
 	content: '';
 	position: absolute;
 	inset: 0;
@@ -87,11 +87,11 @@
 	mix-blend-mode: difference;
 }
 
-.-animate.jumbo::after {
-	animation: jumbo 90s linear infinite;
+.-animate.ray::after {
+	animation: ray 90s linear infinite;
 }
 
-.-static.jumbo::after {
+.-static.ray::after {
 	animation: unset !important;
 }
 
@@ -99,12 +99,12 @@
     animation: unset !important;
 } */
 
-.dark .jumbo {
+.dark .ray {
 	background-image: var(--stripesDark), var(--rainbow);
 	filter: opacity(50%) saturate(200%);
 }
 
-.dark .jumbo::after {
+.dark .ray::after {
 	background-image: var(--stripesDark), var(--rainbow);
 }
 </style>

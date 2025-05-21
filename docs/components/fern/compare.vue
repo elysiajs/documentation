@@ -19,7 +19,7 @@
 @reference "../../tailwind.css";
 
 .code-compare {
-	@apply z-40 grid grid-cols-1 lg:grid-cols-2 gap-2.5 bg-white dark:bg-slate-800 rounded-xl;
+	@apply z-40 grid grid-cols-1 lg:grid-cols-2 gap-2.5 bg-white dark:bg-slate-800 rounded-xl w-full;
 	grid-auto-rows: 1fr;
 
 	& > article {
@@ -34,6 +34,10 @@
 				& > div {
 					@apply m-0;
 					height: calc(100% - 50px);
+
+					@media (max-width: theme(--breakpoint-sm)) {
+						margin: 0 -24px;
+					}
 
 					& > pre {
 						@apply h-full overflow-y-hidden;

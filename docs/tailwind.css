@@ -6,11 +6,7 @@
 @custom-variant interact (&:hover, &:focus);
 
 * {
-    border-color: var(--color-gray-200);
-}
-
-.dark * {
-    border-color: var(--color-gray-800);
+    @apply border-gray-200 dark:border-gray-800;
 }
 
 .link {
@@ -88,9 +84,10 @@ pre.vp-code > code,
     --vp-c-brand-1: #f06292;
     --vp-c-brand-2: #f06292;
     --vp-c-brand-light: #ff94c2;
+    --vp-c-bg-alt: theme(--color-slate-100);
     --vp-c-brand-dark: #ba2d65;
-    --vp-c-border: var(--color-gray-100);
-    --twoslash-border-color: var(--color-gray-100);
+    --vp-c-border: theme(--color-slate-100);
+    --twoslash-border-color: theme(--color-slate-100);
     --vp-code-block-bg: #f6f8fa;
     --vp-code-copy-code-bg: #dedede;
     --vp-code-copy-code-hover-bg: #dedede;
@@ -110,20 +107,21 @@ pre.vp-code > code,
     );
     --vp-nav-logo-height: 28px;
 
-    --twoslash-border-color: var(--color-slate-200);
+    --twoslash-border-color: theme(--color-slate-200);
+    --vp-c-bg-elv: theme(--color-slate-100);
 }
 
 .dark {
-    --vp-c-bg: #0f172a;
-    --vp-c-border: var(--color-gray-100);
-    --twoslash-border-color: var(--color-gray-100);
-    --vp-c-bg-alt: #111827;
-    --vp-c-bg-soft: #1e293b;
-    --vp-c-divider: #334155;
-    --vp-code-block-bg: #1e293b;
+    --vp-c-bg: theme(--color-slate-900);
+    --vp-c-border: theme(--color-slate-100);
+    --twoslash-border-color: theme(--color-slate-100);
+    --vp-c-bg-alt: theme(--color-slate-800);
+    --vp-c-bg-soft: theme(--color-slate-800);
+    --vp-c-divider: theme(--color-slate-700);
+    --vp-code-block-bg: theme(--color-slate-800);
     --vp-c-bg-alpha-with-backdrop: #1f2937bf;
-    --vp-code-copy-code-bg: #273345;
-    --vp-code-copy-code-hover-bg: #273345;
+    --vp-code-copy-code-bg: theme(--color-slate-800);
+    --vp-code-copy-code-hover-bg: theme(--color-slate-800);
     --vp-c-text-dark-2: #8a8a8a;
     --vp-c-text-dark-3: #8a8a8a;
     --vp-custom-block-tip-bg: #064e3b;
@@ -136,6 +134,8 @@ pre.vp-code > code,
     );
 
     --twoslash-border-color: var(--color-slate-800);
+    --vp-c-bg-elv: theme(--color-slate-800);
+    --vp-c-neutral-inverse: theme(--color-slate-800);
 }
 
 html,
@@ -312,6 +312,15 @@ button.copy::after {
                 &.collapsible {
                     background-color: transparent !important;
 
+                    &:not(.is-active) {
+                        & > .item:has(.link):hover,
+                        & > .item:has(.link):focus {
+                            & > .caret {
+                                @apply -translate-x-2;
+                            }
+                        }
+                    }
+
                     & > .item {
                         @apply rounded-lg;
 
@@ -319,12 +328,25 @@ button.copy::after {
                             @apply translate-x-4;
                         }
 
-                        &:hover,
-                        &:focus {
+                        & > .caret {
+                            @apply transition-transform ease-in duration-150;
+
+                            &:hover,
+                            &:focus {
+                                color: var(--vp-c-brand);
+                            }
+                        }
+
+                        &:has(.link):hover,
+                        &:has(.link):focus {
                             background-color: var(--vp-c-brand-nav-active);
 
                             & > .indicator {
                                 background-color: var(--vp-c-brand);
+                            }
+
+                            & > .link > h3 {
+                                color: var(--vp-c-brand) !important;
                             }
                         }
                     }
@@ -334,7 +356,7 @@ button.copy::after {
                         background-color: var(--vp-c-brand-nav-active);
                         border-color: var(--vp-c-brand-nav-active) !important;
 
-                        & > .indicator {
+                        &. > .indicator {
                             @apply translate-x-4;
                             background-color: var(--vp-c-brand);
                         }
@@ -357,6 +379,10 @@ button.copy::after {
                                 background-color: transparent;
                             }
                         }
+
+                        & > .VPSidebarItem {
+                            @apply min-h-8;
+                        }
                     }
                 }
             }
@@ -364,14 +390,87 @@ button.copy::after {
     }
 }
 
-/* .VPLocalNav {
-    background-color: rgba(255, 255, 255, .7) !important;
-    backdrop-filter: blur(12px);
+.VPLocalNav {
+    @apply !bg-transparent !border-0;
 
     & > .container {
-        background-color: transparent;
+        @apply relative flex bg-transparent mx-auto px-4 md:px-2 lg:px-0 py-0 mt-4;
+        max-width: 688px;
+
+        & > .menu {
+            @apply p-0;
+        }
+
+        & > .menu,
+        & > .VPLocalNavOutlineDropdown > button {
+            @apply !bg-white/80 dark:!bg-slate-800/80 px-2 py-0.75 rounded-xl border border-slate-700/10 dark:border-slate-300/10 backdrop-blur-md;
+        }
+
+        & > .VPLocalNavOutlineDropdown {
+            @apply p-0 ml-auto;
+
+            & > .items {
+                @apply top-10 right-4 md:right-0 w-full max-w-[calc(100%-32px)] sm:max-w-sm !bg-white/75 dark:!bg-slate-900/75 p-1 rounded-xl border border-slate-700/10 dark:border-slate-300/10 backdrop-blur-md;
+                left: unset;
+                box-shadow: unset;
+                transition-duration: 0.5s;
+                transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+
+                & > .header {
+                    @apply h-9 mb-2 bg-transparent;
+                }
+
+                & > .outline {
+                    @apply p-0 outline-0 bg-transparent;
+
+                    & > .nested {
+                        @apply px-0;
+
+                        & > li {
+                            & > a {
+                                @apply px-4;
+                            }
+
+                            & > a {
+                                &:hover,
+                                &:focus {
+                                    @apply rounded-lg;
+                                    background-color: var(
+                                        --vp-c-brand-nav-active
+                                    );
+                                    color: var(--vp-c-brand);
+                                }
+                            }
+
+                            & > ul {
+                            	@apply pl-4 pr-0;
+
+                                & > li {
+                                	@apply border-l;
+
+                                    & > a {
+                                        @apply px-4;
+                                    }
+
+                                    & > a {
+                                        &:hover,
+                                        &:focus {
+                                            @apply rounded-lg;
+                                            background-color: var(
+                                                --vp-c-brand-nav-active
+                                            );
+                                            color: var(--vp-c-brand);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-} */
+}
 
 .mockup-browser-toolbar > .input::before {
     width: 12px;
@@ -382,26 +481,40 @@ button.copy::after {
 }
 
 .VPNav {
-    z-index: 40 !important;
-
-    &:hover {
-        z-index: 50 !important;
-
+    &:hover,
+    &:focus-within {
+        /* Landing */
         & > .VPNavBar {
-            & > .wrapper > .container > .content > .content-body {
-                @apply bg-transparent;
-            }
+            @apply !bg-white/60 dark:!bg-slate-900/60 backdrop-blur-lg;
+        }
+    }
+
+    @media (min-width: theme(--breakpoint-xl)) {
+        z-index: 50 !important;
+    }
+
+    @media (max-width: theme(--breakpoint-xl)) {
+        z-index: 40 !important;
+    }
+
+    & > .VPNavBar {
+        @apply !bg-transparent backdrop-blur-lg;
+
+        /* Doc layout */
+        & > .wrapper > .container > .content > .content-body {
+            @apply bg-transparent;
+        }
+
+        & > .divider {
+            @apply hidden;
         }
     }
 }
 
 .VPNavBar {
     @apply border-0 bg-white/60 dark:bg-slate-900/60 transition-colors;
-    backdrop-filter: blur(12px);
 
     & > .container {
-        /* background-color: rgba(255, 255, 255, .6) !important; */
-
         & > .content,
         & > .title {
             background: color-mix(in srgb, var(--vp-c-bg) 80%, transparent);
@@ -547,28 +660,32 @@ button.copy::after {
     @apply dark:bg-slate-800 dark:border-transparent;
 }
 
+.VPDoc {
+    @apply !pt-4 xl:!pt-8;
+}
+
 .VPDoc > .container.-wide {
     & > .content {
-    	@apply lg:px-0;
+        @apply lg:px-0;
 
         & > .content-container {
             max-width: 100%;
 
             & > *:not(.main) {
-            	@apply mx-auto;
-             	max-width: 668px;
+                @apply mx-auto;
+                max-width: 668px;
             }
         }
     }
 }
 
 .vp-doc > .-wide {
-	& > *:not(.code-compare) {
-		@apply mx-auto;
-		max-width: 688px;
-	}
+    & > *:not(.code-compare) {
+        @apply mx-auto;
+        max-width: 688px;
+    }
 }
 
 #VPContent.-wide {
-	--vp-layout-max-width: 1500px;
+    --vp-layout-max-width: 1500px;
 }
