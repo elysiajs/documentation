@@ -49,9 +49,10 @@
             </a>
         </motion.div>
         <section v-if="goldSponsors.length">
-            <header class="mt-4 text-center" v-bind="flyIn(0.4)">
+            <header class="mt-4 text-center" v-bind="flyIn(0.3)">
                 <motion.h4
                     class="text-4xl text-center font-semibold text-gradient from-sky-500 to-violet-500"
+                    v-bind="flyIn(0.4)"
                 >
                     Gold Sponsors <span class="text-pink-400 ml-0.5">💖</span>
                 </motion.h4>
@@ -247,7 +248,7 @@ import { data, type Sponsor } from './sponsor.data'
 const scope = ref(null)
 const isInView = useInView(scope, {
     once: true,
-    margin: '0px 0px -50% 0px',
+    margin: '0px 0px -40% 0px'
 })
 const flyIn = useFlyIn(isInView)
 
