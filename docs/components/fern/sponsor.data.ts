@@ -1,5 +1,10 @@
 import { defineLoader } from 'vitepress'
 
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
+
 export interface Sponsor {
     sponsorEntity: {
         login: string
@@ -12,6 +17,7 @@ export interface Sponsor {
         isCustomAmount: boolean
         monthlyPriceInDollars: number
     }
+    duration: string
 }
 
 declare const data: Sponsor[]
@@ -73,6 +79,12 @@ export default defineLoader({
                         new Date(a?.createdAt).getTime() -
                             new Date(b?.createdAt).getTime()
                 )
+                .map((sponsor) => ({
+                    ...sponsor,
+                    duration: dayjs()
+                        .from(dayjs(sponsor.createdAt))
+                        .replace('in', 'for')
+                }))
         } catch (error) {
             console.warn('Fetch sponsors error')
             console.warn(error)

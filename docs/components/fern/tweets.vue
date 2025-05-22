@@ -1,15 +1,23 @@
 <template>
-    <article id="people-tweets" class="fern-gap">
-        <h2 class="sm:text-center text-4xl font-semibold text-gray-700 dark:text-gray-300 leading-[3rem]">
+    <article id="people-tweets" class="fern-gap" ref="scope">
+        <motion.h2
+            class="sm:text-center text-4xl font-semibold text-gray-700 dark:text-gray-300 leading-[3rem]"
+            v-bind="flyIn()"
+        >
             Powered by
-            <span class="text-gradient from-rose-400 to-orange-400">love</span
-            ><br />from the
-            <span class="text-gradient from-rose-400 to-amber-400"
-                >community</span
-            >
-        </h2>
+            <span class="text-gradient from-rose-400 to-orange-400">
+                love
+            </span>
+            <br />from the
+            <span class="text-gradient from-rose-400 to-amber-400">
+                community
+            </span>
+        </motion.h2>
         <section class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-12 pb-8">
-            <div class="flex flex-col gap-3 lg:mt-12">
+            <motion.div
+                class="flex flex-col gap-3 lg:mt-12"
+                v-bind="flyIn(0.1)"
+            >
                 <Tweet
                     id="AqueelMiq"
                     user="Aqueel"
@@ -42,8 +50,8 @@ we proudly sponsor dozens of projects: @elysiaJS @LitestarAPI @honojs @daveshanl
 it's @scalar's ethos to be a catalyst for OSS"
                     href="https://x.com/MarcLaventure/status/1773751085792174246"
                 />
-            </div>
-            <div class="flex flex-col gap-3">
+            </motion.div>
+            <motion.div class="flex flex-col gap-3" v-bind="flyIn(0.1)">
                 <Tweet
                     id="jarredsumner"
                     user="Jarred Sumner"
@@ -76,8 +84,8 @@ ElysiaJS has proved to me that great performance and DX can live together. 😎"
                     content="so excited to be part of the amazing @elysiaJS community!"
                     href="https://x.com/scalar/status/1744024831014920403"
                 />
-            </div>
-            <div class="flex flex-col gap-3 lg:mt-6">
+            </motion.div>
+            <motion.div class="flex flex-col gap-3 lg:mt-6" v-bind="flyIn(0.3)">
                 <Tweet
                     id="josedonato__"
                     user="José Donato 🦋"
@@ -103,13 +111,25 @@ Backend in @elysiaJS + @bunjsproject."
                     content="I've been playing a bit with @bunjavascript and @elysiaJS, need to do a few more tweaks before the release, but next version should work more natively with bun when it comes to TS support detection, e.g. the CLI works without ts-node installed."
                     href="https://x.com/MikroORM/status/1821993062114967711"
                 />
-            </div>
+            </motion.div>
         </section>
     </article>
 </template>
 
 <script setup lang="ts">
 import Tweet from './tweet.vue'
+
+import { ref } from 'vue'
+import { useInView, motion } from 'motion-v'
+import { useFlyIn } from './animate'
+
+const scope = ref(null)
+const isInView = useInView(scope, {
+    once: true,
+    margin: '-300px',
+    amount: 'some'
+})
+const flyIn = useFlyIn(isInView)
 </script>
 
 <style>

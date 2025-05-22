@@ -1,7 +1,7 @@
 <template>
-    <section id="beyond" class="fern-gap">
+    <section id="beyond" class="fern-gap" ref="scope">
         <article id="opentelemetry">
-            <section @mousemove="move">
+            <motion.section @mousemove="move" v-bind="flyIn()">
                 <div
                     class="pointer"
                     style="width: 1.5px; height: 100%; top: 0%"
@@ -79,9 +79,9 @@
                     style="width: 1rem; margin-left: 27rem"
                     class="bg-purple-400"
                 />
-            </section>
+            </motion.section>
             <header>
-                <h5>
+                <motion.h5 v-bind="flyIn(0.1)">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -99,23 +99,23 @@
                         />
                     </svg>
                     For DevOps
-                </h5>
-                <h2 class="text-gradient from-sky-400 to-violet-400">
+                </motion.h5>
+                <motion.h2 class="text-gradient from-sky-400 to-violet-400" v-bind="flyIn(0.2)">
                     OpenTelemetry
-                </h2>
-                <p>
+                </motion.h2>
+                <motion.p v-bind="flyIn(0.3)">
                     Elysia has 1st party support for OpenTelemetry.
                     Instrumentation is built-in, so you can easily monitor your
                     services on regardless of the platform.
-                </p>
+                </motion.p>
             </header>
         </article>
         <article id="e2e-type-safety">
-            <section>
+            <motion.section v-bind="flyIn(0.2)">
                 <slot />
-            </section>
+            </motion.section>
             <header>
-                <h5>
+                <motion.h5 v-bind="flyIn(0.3)">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -133,15 +133,15 @@
                         />
                     </svg>
                     For Frontend
-                </h5>
-                <h2 class="text-gradient from-purple-400 to-rose-400">
+                </motion.h5>
+                <motion.h2 class="text-gradient from-purple-400 to-rose-400"  v-bind="flyIn(0.4)">
                     End-to-end Type Safety
-                </h2>
-                <p>
+                </motion.h2>
+                <motion.p  v-bind="flyIn(0.5)">
                     Like tRPC, Elysia provides type-safety from the backend to
                     the frontend without code generation. The interaction between
                     frontend and backend is both type-checked on compile and runtime.
-                </p>
+                </motion.p>
             </header>
         </article>
     </section>
@@ -149,6 +149,16 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useInView, motion } from 'motion-v'
+import { useFlyIn } from './animate'
+
+const scope = ref(null)
+const isInView = useInView(scope, {
+    once: true,
+    margin: '100px',
+    amount: 'all'
+})
+const flyIn = useFlyIn(isInView)
 
 const left = ref(47.5)
 

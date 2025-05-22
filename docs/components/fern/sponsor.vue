@@ -1,21 +1,28 @@
 <template>
-    <section class="flex flex-col w-full max-w-5xl mx-auto mt-4 fern-gap">
-        <h2
-            class="text-5xl lg:text-6xl !leading-[4rem] sm:text-center font-bold text-gray-400 mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-rose-400 to-fuchsia-400"
+    <section
+        class="flex flex-col w-full max-w-5xl mx-auto mt-4 fern-gap"
+        ref="scope"
+    >
+        <motion.h2
+            class="text-5xl lg:text-6xl !leading-[4rem] sm:text-center font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-rose-400 to-fuchsia-400"
+            v-bind="flyIn()"
         >
             Made possible by you
-        </h2>
+        </motion.h2>
         <p
-            class="text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto dark:text-gray-400 dark:font-medium"
+            class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto dark:text-gray-400 dark:font-medium"
         >
-            Elysia is
-            <span class="text-gray-700 dark:text-gray-200 font-medium"
-                >not owned by an organization</span
-            >, but is driven by the community.
-            <br />
-            Elysia development is only possible thanks to your support.
+            <motion.span class="inline-block" v-bind="flyIn(0.1)">
+                Elysia is
+                <span class="text-gray-700 dark:text-gray-200 font-medium">
+                    not owned by an organization </span
+                >, but is driven by the community.
+            </motion.span>
+            <motion.span class="inline-block" v-bind="flyIn(0.2)">
+                Elysia development is only possible thanks to your support.
+            </motion.span>
         </p>
-        <div class="flex sm:justify-center my-8">
+        <motion.div class="flex sm:justify-center my-8" v-bind="flyIn(0.3)">
             <a
                 id="become-sponsor"
                 class="inline-flex items-center text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform transform hover:scale-110 focus:scale-110"
@@ -40,16 +47,16 @@
                     />
                 </svg>
             </a>
-        </div>
+        </motion.div>
         <section v-if="goldSponsors.length">
-            <header class="mt-4 text-center">
-                <h4
+            <header class="mt-4 text-center" v-bind="flyIn(0.4)">
+                <motion.h4
                     class="text-4xl text-center font-semibold text-gradient from-sky-500 to-violet-500"
                 >
                     Gold Sponsors <span class="text-pink-400 ml-0.5">💖</span>
-                </h4>
+                </motion.h4>
             </header>
-            <ul id="sponsors-fern-gold" class="my-4">
+            <motion.ul id="sponsors-fern-gold" class="my-4" v-bind="flyIn(0.5)">
                 <li
                     v-for="sponsor in goldSponsors"
                     :key="sponsor.sponsorEntity.login"
@@ -85,22 +92,24 @@
                         </section>
                     </a>
                 </li>
-            </ul>
+            </motion.ul>
         </section>
 
         <section v-if="silverSponsors.length">
             <header class="mt-4 text-center">
-                <h4
+                <motion.h4
                     class="text-3xl text-center font-semibold text-gradient from-violet-500 to-sky-400"
+                    v-bind="flyIn(0.5)"
                 >
                     Silver Sponsors <span class="text-pink-400 ml-0.5">💞</span>
-                </h4>
+                </motion.h4>
             </header>
 
-            <ul
+            <motion.ul
                 id="sponsors-fern-silver"
                 v-if="sponsors.length > 0"
                 class="my-4"
+                v-bind="flyIn(0.6)"
             >
                 <li
                     v-for="sponsor in silverSponsors"
@@ -137,22 +146,25 @@
                         </section>
                     </a>
                 </li>
-            </ul>
+            </motion.ul>
         </section>
 
         <section v-if="individualSponsors.length">
             <header class="mt-6 text-center">
-                <h4
+                <motion.h4
                     class="text-2xl text-center font-semibold text-gradient from-rose-400 to-pink-400"
+                    v-bind="flyIn(0.7)"
                 >
-                    Individual Sponsors <span class="text-pink-400 ml-0.5">💕</span>
-                </h4>
+                    Individual Sponsors
+                    <span class="text-pink-400 ml-0.5">💕</span>
+                </motion.h4>
             </header>
 
-            <ul
+            <motion.ul
                 id="sponsors-fern"
                 v-if="individualSponsors.length > 0"
                 class="my-4"
+                v-bind="flyIn(0.8)"
             >
                 <li
                     v-for="sponsor in individualSponsors"
@@ -179,11 +191,7 @@
                             }}
                         </p>
                         <p>
-                            {{
-                                dayjs()
-                                    .from(dayjs(sponsor.createdAt))
-                                    .replace('in', 'for')
-                            }}
+                            {{ sponsor.duration }}
                         </p>
                     </a>
                 </li>
@@ -217,24 +225,32 @@
                         </p>
                     </a>
                 </li>
-            </ul>
+            </motion.ul>
         </section>
 
-        <p
+        <motion.p
             class="sm:text-center text-gradient from-pink-400 to-fuchsia-400 font-semibold text-base"
+            v-bind="flyIn(0.9)"
         >
             Thank you for making Elysia possible
-        </p>
+        </motion.p>
     </section>
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
-dayjs.extend(relativeTime)
+import { ref } from 'vue'
+import { useInView, motion } from 'motion-v'
+import { useFlyIn } from './animate'
 
 import { data, type Sponsor } from './sponsor.data'
+
+const scope = ref(null)
+const isInView = useInView(scope, {
+    once: true,
+    margin: '100px',
+    amount: 'all'
+})
+const flyIn = useFlyIn(isInView)
 
 const sponsors: Sponsor[] = data
 

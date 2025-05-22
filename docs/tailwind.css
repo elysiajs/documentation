@@ -394,7 +394,7 @@ button.copy::after {
     @apply !bg-transparent !border-0;
 
     & > .container {
-        @apply relative flex bg-transparent mx-auto px-4 md:px-2 lg:px-0 py-0 mt-2;
+        @apply relative flex bg-transparent mx-auto px-4 sm:px-6 md:px-0 lg:px-0 py-0 mt-2;
         max-width: 688px;
 
         & > .menu {
@@ -688,4 +688,12 @@ button.copy::after {
 
 #VPContent.-wide {
     --vp-layout-max-width: 1500px;
+}
+
+.VPSidebar {
+	@apply !pb-6;
+}
+
+#VPSidebarNav {
+	@apply flex flex-col min-h-full;
 }

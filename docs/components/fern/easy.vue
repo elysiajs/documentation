@@ -1,38 +1,58 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useInView, motion } from 'motion-v'
+import { useFlyIn } from './animate'
+
+const scope = ref(null)
+const isInView = useInView(scope, {
+    once: true,
+    margin: '100px',
+    amount: 'all'
+})
+const flyIn = useFlyIn(isInView)
+</script>
+
 <template>
-    <article id="made-for-human" class="fern-gap">
+    <article id="made-for-human" class="fern-gap" ref="scope">
         <div class="body">
             <header class="flex flex-col flex-1 text-xl gap-6">
                 <div class="flex flex-col gap-3 mb-2">
-                    <h3 class="text-2xl font-medium text-700">Our Principle</h3>
-                    <h2
+                    <motion.h3
+                        class="text-2xl font-medium text-700"
+                        v-bind="flyIn()"
+                    >
+                        Our Principle
+                    </motion.h3>
+                    <motion.h2
                         class="text-6xl font-semibold text-gradient from-sky-500 to-violet-500 leading-[4.25rem]"
+                        v-bind="flyIn(0.1)"
                     >
                         Design for Humans
-                    </h2>
+                    </motion.h2>
                 </div>
-                <p class="max-w-md leading-normal">
-                    Our goal is to design an ergonomic, sensible, and
-                    productive framework that even beginners can use easily
-                </p>
-                <p class="max-w-md leading-normal">
+                <motion.p class="max-w-md leading-normal" v-bind="flyIn(0.2)">
+                    Our goal is to design an ergonomic, sensible, and productive
+                    framework that even beginners can use easily
+                </motion.p>
+                <motion.p class="max-w-md leading-normal" v-bind="flyIn(0.3)">
                     Designed to avoid unnecessary complexity and type complexity
                     for you to focus on building
-                </p>
-                <p class="leading-normal">
+                </motion.p>
+                <motion.p class="leading-normal" v-bind="flyIn(0.4)">
                     A framework that feels
                     <span
                         class="text-gradient from-violet-500 to-sky-500 font-semibold"
                         >just like JavaScript</span
                     >
-                </p>
+                </motion.p>
             </header>
-            <section class="showcase">
+            <motion.section class="showcase" v-bind="flyIn(0.5)">
                 <slot />
-            </section>
+            </motion.section>
         </div>
 
         <footer class="summary">
-            <article>
+            <motion.article v-bind="flyIn(0.6)">
                 <h4>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -58,8 +78,8 @@
                 </h4>
                 <p>A string, number, or complex JSON</p>
                 <p>All we need to do is return</p>
-            </article>
-            <article>
+            </motion.article>
+            <motion.article v-bind="flyIn(0.7)">
                 <h4>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -88,8 +108,8 @@
                 </h4>
                 <p>To send a file or image, just return</p>
                 <p>Nothing more or less</p>
-            </article>
-            <article>
+            </motion.article>
+            <motion.article v-bind="flyIn(0.8)">
                 <h4>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -123,8 +143,8 @@
                     to stream a response
                 </p>
                 <p>All we need to do is return</p>
-            </article>
-            <article>
+            </motion.article>
+            <motion.article v-bind="flyIn(0.9)">
                 <h4>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +166,7 @@
                 </h4>
                 <p>With µWebSocket built-in</p>
                 <p>Send live data in just 3 lines</p>
-            </article>
+            </motion.article>
         </footer>
     </article>
 </template>
