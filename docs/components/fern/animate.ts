@@ -1,11 +1,11 @@
-import { computed, type ComputedRef } from 'vue'
+import { computed, type Ref } from 'vue'
 import { cubicBezier } from 'motion-v'
 
 const easeOutExpo = cubicBezier(0.16, 1, 0.3, 1)
 
-export function useFlyIn(isInView: ComputedRef<boolean>) {
-    return computed(() => (delay: number) => ({
-        initial: { translateY: '1.5rem', opacity: 0 },
+export function useFlyIn(isInView: Ref<boolean>) {
+    return computed(() => (delay = 0) => ({
+        initial: { translateY: '1.75rem', opacity: 0 },
         animate: isInView.value ? 'inView' : 'initial',
         variants: {
             inView: {
@@ -21,8 +21,8 @@ export function useFlyIn(isInView: ComputedRef<boolean>) {
     }))
 }
 
-export function useFadeIn(isInView: ComputedRef<boolean>) {
-    return computed(() => (delay: number) => ({
+export function useFadeIn(isInView: Ref<boolean>) {
+    return computed(() => (delay = 0) => ({
         initial: { opacity: 0 },
         animate: isInView.value ? 'inView' : 'initial',
         variants: {
@@ -38,8 +38,8 @@ export function useFadeIn(isInView: ComputedRef<boolean>) {
     }))
 }
 
-export function useExpandWidth(isInView: ComputedRef<boolean>) {
-    return computed(() => (width:number, delay: number) => ({
+export function useExpandWidth(isInView: Ref<boolean>) {
+    return computed(() => (width: number, delay = 0) => ({
         initial: { width: 0, opacity: 0 },
         animate: isInView.value ? 'inView' : 'initial',
         variants: {

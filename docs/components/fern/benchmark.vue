@@ -6,7 +6,7 @@ import { useFlyIn, useFadeIn, useExpandWidth } from './animate'
 const scope = ref(null)
 const isInView = useInView(scope, {
     once: true,
-    margin: '0px 0px -40% 0px'
+    margin: '0px 0px -35% 0px'
 })
 const flyIn = useFlyIn(isInView)
 const fadeIn = useFadeIn(isInView)
@@ -47,15 +47,16 @@ const expand = useExpandWidth(isInView)
                     <motion.h6 v-bind="flyIn(0.3)">
                         <span
                             class="!text-xl !font-semibold !text-transparent !ml-0 text-gradient from-violet-500 to-sky-500"
-                            >Elysia</span
                         >
-                        <span>Bun</span>
+                            Elysia
+                        </span>
+                        <span> Bun</span>
                     </motion.h6>
                     <motion.div
                         v-bind="expand(72, 0.4)"
                         class="bg-gradient-to-r from-violet-500 to-fuchsia-400 !text-white"
                     >
-                        <span> 2,454,631 reqs/s </span>
+                        <span>2,454,631 reqs/s</span>
                     </motion.div>
                 </li>
                 <li>

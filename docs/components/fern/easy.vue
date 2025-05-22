@@ -6,7 +6,7 @@ import { useFlyIn } from './animate'
 const scope = ref(null)
 const isInView = useInView(scope, {
     once: true,
-    margin: '0px 0px -40% 0px'
+    margin: '0px 0px -35% 0px'
 })
 const flyIn = useFlyIn(isInView)
 </script>
@@ -41,11 +41,12 @@ const flyIn = useFlyIn(isInView)
                     A framework that feels
                     <span
                         class="text-gradient from-violet-500 to-sky-500 font-semibold"
-                        >just like JavaScript</span
                     >
+                        just like JavaScript
+                    </span>
                 </motion.p>
             </header>
-            <motion.section class="showcase" v-bind="flyIn(0.5)">
+            <motion.section class="showcase" v-bind="flyIn(0.3)">
                 <slot />
             </motion.section>
         </div>

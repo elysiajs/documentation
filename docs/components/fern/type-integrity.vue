@@ -16,16 +16,29 @@
             </h1>
         </div>
         <motion.section class="showcase" v-bind="flyIn(0.2)">
-            <motion.div class="window" v-bind="flyIn(0.3)">
+            <motion.div
+                layout
+                class="window"
+                v-bind="flyIn(0.3)"
+                :transition="{ duration: 0.5, ease: cubicBezier(0.16, 1, 0.3, 1) }"
+            >
                 <div class="control">
                     <div />
                     <div />
                     <div />
                 </div>
-                <slot v-if="form == 1" name="type-1" />
-                <slot v-else-if="form == 2" name="type-2" />
-                <slot v-else-if="form == 3" name="type-3" />
-                <slot v-else-if="form == 4" name="type-4" />
+                <motion.div class="body" v-if="form === 1" layoutId="code">
+                    <slot name="type-1" />
+                </motion.div>
+                <motion.div class="body" v-else-if="form === 2" layoutId="code">
+                    <slot name="type-2" />
+                </motion.div>
+                <motion.div class="body" v-else-if="form === 3" layoutId="code">
+                    <slot name="type-3" />
+                </motion.div>
+                <motion.div class="body" v-else-if="form === 4" layoutId="code">
+                    <slot name="type-4" />
+                </motion.div>
             </motion.div>
         </motion.section>
         <section class="selector">
@@ -57,13 +70,13 @@
 <script setup lang="ts">
 import { ref, useTemplateRef, watch } from 'vue'
 
-import { useInView, motion } from 'motion-v'
+import { useInView, motion, cubicBezier } from 'motion-v'
 import { useFlyIn } from './animate'
 
 const scope = ref(null)
 const isInView = useInView(scope, {
     once: true,
-    margin: '0px 0px -50% 0px'
+    margin: '0px 0px -35% 0px'
 })
 const flyIn = useFlyIn(isInView)
 
@@ -145,7 +158,7 @@ watch(form, (index) => {
                 }
             }
 
-            & > div {
+            & > .body > div {
                 @apply !bg-transparent;
 
                 & > pre {

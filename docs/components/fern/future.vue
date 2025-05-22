@@ -6,8 +6,7 @@ import { useFlyIn, useFadeIn } from './animate'
 const scope = ref(null)
 const isInView = useInView(scope, {
     once: true,
-    margin: '100px',
-    amount: 'all'
+    margin: '0px 0px -35% 0px'
 })
 const flyIn = useFlyIn(isInView)
 const fadeIn = useFadeIn(isInView)

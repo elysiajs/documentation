@@ -1,5 +1,8 @@
 <template>
-    <section class="flex flex-col w-full max-w-5xl mx-auto mt-4 fern-gap" ref="scope">
+    <section
+        class="flex flex-col w-full max-w-5xl mx-auto mt-4 fern-gap"
+        ref="scope"
+    >
         <motion.h2
             class="text-5xl lg:text-6xl !leading-[4rem] sm:text-center font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-rose-400 to-fuchsia-400"
             v-bind="flyIn()"
@@ -237,7 +240,7 @@ import { data, type Sponsor } from './sponsor.data'
 const scope = ref(null)
 const isInView = useInView(scope, {
     once: true,
-    margin: '0px 0px -40% 0px'
+    margin: '0px 0px -35% 0px'
 })
 const flyIn = useFlyIn(isInView)
 
