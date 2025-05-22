@@ -247,8 +247,7 @@ import { data, type Sponsor } from './sponsor.data'
 const scope = ref(null)
 const isInView = useInView(scope, {
     once: true,
-    margin: '100px',
-    amount: 'all'
+    margin: '0px 0px -50% 0px',
 })
 const flyIn = useFlyIn(isInView)
 

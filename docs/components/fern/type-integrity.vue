@@ -63,8 +63,7 @@ import { useFlyIn } from './animate'
 const scope = ref(null)
 const isInView = useInView(scope, {
     once: true,
-    margin: '-300px',
-    amount: 'some'
+    margin: '0px 0px -50% 0px'
 })
 const flyIn = useFlyIn(isInView)
 
