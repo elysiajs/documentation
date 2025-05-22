@@ -1,5 +1,8 @@
 ---
 title: Tutorial - ElysiaJS
+next:
+  text: 'Key Concept'
+  link: '/key-concept'
 head:
     - - meta
       - property: 'og:title'

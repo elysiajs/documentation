@@ -40,7 +40,7 @@
 @reference "../../tailwind.css";
 
 .result {
-    @apply flex flex-col flex-1 from-sky-300 to-purple-300 bg-gradient-to-r rounded-2xl;
+    @apply flex flex-col flex-1 from-sky-200 to-purple-200 dark:from-sky-900 dark:to-purple-900 bg-gradient-to-br rounded-2xl;
     padding: 1.5px;
 
     & > article {

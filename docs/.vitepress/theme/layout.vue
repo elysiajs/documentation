@@ -6,7 +6,7 @@ import DefaultTheme from 'vitepress/theme-without-fonts'
 import mediumZoom from 'medium-zoom'
 
 import useDark from '../../components/midori/use-dark'
-import Ray from '../../components/midori/ray.vue'
+import Ray from '../../components/fern/ray.vue'
 
 const isDark = useDark()
 const { isDark: darkTheme, frontmatter } = useData()
@@ -88,12 +88,11 @@ router.onAfterRouteChange = () => {
     />
     <meta name="theme-color" :content="isDark ? '#0f172a' : '#ffffff'" />
     <DefaultTheme.Layout>
-        <template #doc-top">
+        <template #doc-top>
             <Ray
                 class="h-[220px] top-0 left-0 opacity-25 dark:opacity-[.55] pointer-events-none"
                 static
             />
-            <h1>Hi</h1>
         </template>
     </DefaultTheme.Layout>
 </template>
