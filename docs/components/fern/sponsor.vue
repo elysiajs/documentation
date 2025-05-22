@@ -1,8 +1,8 @@
 <template>
     <section
         class="flex flex-col w-full max-w-5xl mx-auto mt-4 fern-gap"
-        ref="scope"
     >
+    	<div ref="scope" />
         <motion.h2
             class="text-5xl lg:text-6xl !leading-[4rem] sm:text-center font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-rose-400 to-fuchsia-400"
             v-bind="flyIn()"
