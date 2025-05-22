@@ -102,13 +102,12 @@ router.onAfterRouteChange = () => {
         href="/assets/shigure-ui-smol.gif"
         fetchpriority="low"
     />
-    <link rel="preload"
-    rel="preload"
-    as="image"
-    	href="/assets/elysia-chan-card.webp"
-     fetchpriority="low"
-
-    >
+    <link
+        rel="preload"
+        as="image"
+        href="/assets/elysia-chan-card.webp"
+        fetchpriority="low"
+    />
     <meta name="theme-color" :content="isDark ? '#0f172a' : '#ffffff'" />
     <AnimatePresence>
         <motion.div
