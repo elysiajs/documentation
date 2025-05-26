@@ -195,7 +195,7 @@ Console should log the following:
 1
 ```
 
-Notice that it doesn't log **3**, because the event is registered after the route so it is not applied to the route.
+Notice that it doesn't log **2**, because the event is registered after the route so it is not applied to the route.
 
 This also applies to the plugin.
 
