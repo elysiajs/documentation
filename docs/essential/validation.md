@@ -224,7 +224,7 @@ Guard supports 2 types to define a validation.
 
 ### **override (default)**
 
-Override schema if schema if schema is collide with each others.
+Override schema if schema is collide with each others.
 
 ![Elysia run with default override guard showing schema gets override](/blog/elysia-13/schema-override.webp)
 
