@@ -115,6 +115,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Protobuf](https://github.com/ilyhalight/elysia-protobuf) - support protobuf for Elysia.
 -   [Elysia Prometheus](https://github.com/m1handr/elysia-prometheus) - Elysia plugin for exposing HTTP metrics for Prometheus.
 -   [Elysia Remote DTS](https://github.com/rayriffy/elysia-remote-dts) - A plugin that provide .d.ts types remotely for Eden Treaty to consume.
+-   [Cap Checkpoint plugin for Elysia](https://capjs.js.org/guide/middleware/elysia.html) - Cloudflare-like middleware for Cap, a lightweight, modern open-source CAPTCHA alternative designed using SHA-256 PoW.
 
 ## Complementary projects:
 -   [prismabox](https://github.com/m1212e/prismabox) - Generator for typebox schemes based on your database models, works well with elysia
