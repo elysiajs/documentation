@@ -210,7 +210,7 @@ const app = new Elysia()
 
 <Playground :elysia="demo2" />
 
-Once passed to `Elysia.use`, functional callback behaves as a normal plugin except the property is assigned directly to
+Once passed to `Elysia.use`, functional callback behaves as a normal plugin except the property is assigned directly to the main instance.
 
 ::: tip
 You shall not worry about the performance difference between a functional callback and creating an instance.
