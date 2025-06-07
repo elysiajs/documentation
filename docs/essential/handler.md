@@ -135,7 +135,7 @@ new Elysia()
             // ^ This is a context
 ```
 
-**Context** can be only retrieve in a route handler, consists of:
+**Context** can only be retrieved in a route handler. It consists of:
 
 -   **path** - Pathname of the request
 -   **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
