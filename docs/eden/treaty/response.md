@@ -15,7 +15,7 @@ head:
 ---
 
 # Response
-Once the fetch method is called, Eden Treaty return a promise containing an object with the following properties:
+Once the fetch method is called, Eden Treaty returns a `Promise` containing an object with the following properties:
 - data - returned value of the response (2xx)
 - error - returned value from the response (>= 3xx)
 - response `Response` - Web Standard Response class
@@ -67,12 +67,12 @@ const submit = async (name: string) => {
 }
 ```
 
-By default, Elysia infers `error` and `response` type to TypeScript automatically, and Eden will be providing auto-completion and type narrowing for accurate behavior.
+By default, Elysia infers `error` and `response` types to TypeScript automatically, and Eden will be providing auto-completion and type narrowing for accurate behavior.
 
 ::: tip
-If the server responds with an HTTP status >= 300, then value will be always be null, and `error` will have a returned value instead.
+If the server responds with an HTTP status >= 300, then the value will be always be `null`, and `error` will have a returned value instead.
 
-Otherwise, response will be passed to data.
+Otherwise, response will be passed to `data`.
 :::
 
 ## Stream response
