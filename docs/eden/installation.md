@@ -90,7 +90,7 @@ client.
 ```
 
 ## Gotcha
-Sometimes Eden may not infer type from Elysia correctly, the following are the most common workaround to fix Eden type inference.
+Sometimes, Eden may not infer types from Elysia correctly, the following are the most common workarounds to fix Eden type inference.
 
 ### Type Strict
 Make sure to enable strict mode in **tsconfig.json**
@@ -103,9 +103,9 @@ Make sure to enable strict mode in **tsconfig.json**
 ```
 
 ### Unmatch Elysia version
-Eden depends Elysia class to import Elysia instance and infers type correctly.
+Eden depends on Elysia class to import Elysia instance and infer types correctly.
 
-Make sure that both client and server have a matching Elysia version.
+Make sure that both client and server have the matching Elysia version.
 
 You can check it with [`npm why`](https://docs.npmjs.com/cli/v10/commands/npm-explain) command:
 
@@ -135,12 +135,12 @@ node_modules/elysia
 
 
 ### TypeScript version
-Elysia uses newer features and syntax of TypeScript to infer types in a the most performant way. Features like Const Generic and Template Literal are heavily used.
+Elysia uses newer features and syntax of TypeScript to infer types in the most performant way. Features like Const Generic and Template Literal are heavily used.
 
 Make sure your client has a **minimum TypeScript version if >= 5.0**
 
 ### Method Chaining
-To make Eden works, Elysia must be using **method chaining**
+To make Eden work, Elysia must use **method chaining**
 
 Elysia's type system is complex, methods usually introduce a new type to the instance.
 
@@ -156,9 +156,9 @@ new Elysia()
     .get('/', ({ store: { build } }) => build)
     .listen(3000)
 ```
-Using this, **state** now returns a new **ElysiaInstance** type, introducing **build** into store and replace the current one.
+Using this, **state** now returns a new **ElysiaInstance** type, introducing **build** into store replacing the current one.
 
-Without using method chaining, Elysia doesn't save the new type when introduced, leading to no type inference.
+Without method chaining, Elysia doesn't save the new type when introduced, leading to no type inference.
 ```typescript twoslash
 // @errors: 2339
 import { Elysia } from 'elysia'
@@ -173,14 +173,14 @@ app.listen(3000)
 ```
 
 ### Type Definitions
-If you are using a Bun specific feature like `Bun.file` or similar API and return it from a handler, you may need to install Bun type definitions to the client as well.
+If you are using a Bun specific feature, like `Bun.file` or similar API and return it from a handler, you may need to install Bun type definitions to the client as well.
 
 ```bash
 bun add -d @types/bun
 ```
 
 ### Path alias (monorepo)
-If you are using path alias in your monorepo, make sure that frontend are able to resolve the path as same as backend.
+If you are using path alias in your monorepo, make sure that frontend is able to resolve the path as same as backend.
 
 ::: tip
 Setting up path alias in monorepo is a bit tricky, you can fork our example template: [Kozeki Template](https://github.com/SaltyAom/kozeki-template) and modify it to your needs.
@@ -211,7 +211,7 @@ const app = new Elysia()
 export type app = typeof app
 ```
 
-You **must** make sure that your frontend code is able to resolve the same path alias otherwise type inference will be resolved as any.
+You **must** make sure that your frontend code is able to resolve the same path alias. Otherwise, type inference will be resolved as any.
 
 ```typescript
 import { treaty } from '@elysiajs/eden'
@@ -225,7 +225,7 @@ import { a, b } from '@/controllers'
 
 To fix this, you must make sure that path alias is resolved to the same file in both frontend and backend.
 
-So you must change the path alias in **tsconfig.json** to:
+So, you must change the path alias in **tsconfig.json** to:
 ```json
 {
   "compilerOptions": {
@@ -244,7 +244,7 @@ import { a, b } from '@/controllers'
 ```
 
 #### Scope
-We recommended to add a **scope** prefix for each modules in your monorepo to avoid any confusion and conflict that may happen.
+We recommended adding a **scope** prefix for each module in your monorepo to avoid any confusion and conflict that may happen.
 
 ```json
 {
@@ -258,12 +258,12 @@ We recommended to add a **scope** prefix for each modules in your monorepo to av
 }
 ```
 
-Then you can import the module like this:
+Then, you can import the module like this:
 ```typescript
 // Should work in both frontend and backend and not return `any`
 import { a, b } from '@backend/controllers'
 ```
 
-We recommended creating a **single tsconfig.json** that define a `baseUrl` as the root of your repo, provide a path according to the module location, and create a **tsconfig.json** for each module that inherits the root **tsconfig.json** which has the path alias.
+We recommend creating a **single tsconfig.json** that defines a `baseUrl` as the root of your repo, provide a path according to the module location, and create a **tsconfig.json** for each module that inherits the root **tsconfig.json** which has the path alias.
 
-You may find a working example of in this [path alias example repo](https://github.com/SaltyAom/elysia-monorepo-path-alias) or [Kozeki Template](https://github.com/SaltyAom/kozeki-template)
+You may find a working example of in this [path alias example repo](https://github.com/SaltyAom/elysia-monorepo-path-alias) or [Kozeki Template](https://github.com/SaltyAom/kozeki-template).
