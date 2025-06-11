@@ -117,7 +117,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia Remote DTS](https://github.com/rayriffy/elysia-remote-dts) - A plugin that provide .d.ts types remotely for Eden Treaty to consume.
 -   [Cap Checkpoint plugin for Elysia](https://capjs.js.org/guide/middleware/elysia.html) - Cloudflare-like middleware for Cap, a lightweight, modern open-source CAPTCHA alternative designed using SHA-256 PoW.
 -   [Elysia Background](https://github.com/staciax/elysia-background) - A background task processing plugin for Elysia.js
--   [Elysia External Session](https://github.com/extend-therapy/elysia-external-session) - A sessions package for redis and SQLite that is extensible and uses current Elysia architecture.
+-   [Elysia External Session - TS only GitHub package](https://github.com/extend-therapy/elysia-external-session) - A sessions package for redis and SQLite that is extensible and uses current Elysia architecture.
 
 ## Complementary projects:
 
