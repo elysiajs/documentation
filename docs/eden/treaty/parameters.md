@@ -20,7 +20,7 @@ We need to send a payload to server eventually.
 
 To handle this, Eden Treaty's methods accept 2 parameters to send data to server.
 
-Both parameters is type safe and will be guided by TypeScript automatically:
+Both parameters are type safe and will be guided by TypeScript automatically:
 
 1. body
 2. additional parameters
