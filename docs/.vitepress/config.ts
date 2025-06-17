@@ -522,6 +522,10 @@ export default defineConfig({
                         link: '/integrations/opentelemetry'
                     },
                     {
+                        text: 'Prisma',
+                        link: '/integrations/prisma'
+                    },
+                    {
                         text: 'React Email',
                         link: '/integrations/react-email'
                     },

@@ -1,9 +1,9 @@
 ---
-title: Drizzle - ElysiaJS
+title: Integration with Drizzle - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Drizzle - ElysiaJS
+      content: Integration with Drizzle - ElysiaJS
 
   - - meta
     - name: 'description'
