@@ -22,6 +22,130 @@ However, there are several concern from trying to adapt an MVC pattern [(Model-V
 
 This page is a guide to on how to follows Elysia structure best practice combined with MVC pattern but can be adapted to any coding pattern you like.
 
+## Folder Structure
+
+Elysia is unopinionated about folder structure, leaving you to **decide** how to organize your code yourself.
+
+However, **if you doesn't have a specific structure in mind**, we recommended a feature-based folder structure. Where each feature has its own folder containing controllers, services, models.
+
+```
+| src
+  | modules
+	| auth
+	  | index.ts (Elysia controller)
+	  | service.ts (service)
+	  | model.ts (model)
+	| user
+	  | index.ts (Elysia controller)
+	  | service.ts (service)
+	  | model.ts (model)
+  | utils
+	| a
+	  | index.ts
+	| b
+	  | index.ts
+```
+
+This structure allows you to easily find and manage your code, and keep related code together.
+
+Here's an example code of how to distribute your code into a feature-based folder structure:
+
+::: code-group
+
+```typescript [auth/index.ts]
+// Controller handle HTTP related eg. routing, request validation
+import { Elysia } from 'elysia'
+
+import { Auth } from './service'
+import { AuthModel } from './model'
+
+export const auth = new Elysia({ prefix: '/auth' })
+	.get(
+		'/sign-in',
+		({ body, cookie: { session } }) => {
+			const response = await Auth.signIn(body)
+
+			// Set session cookie
+			session.value = response.token
+
+			return response
+		}, {
+			body: AuthModel.signInBody,
+			response: {
+				200: AuthModel.signInResponse,
+				400: AuthModel.signInInvalid
+			}
+		}
+	)
+```
+
+```typescript [auth/service.ts]
+// Service handle business logic, decoupled from Elysia controller
+import { status } from 'elysia'
+
+import type { AuthModel } from './service'
+
+// If the class doesn't need to store a property,
+// you may use `abstract class` to avoid class allocation
+abstract class Auth {
+	static async signIn({ username, password }: AuthModel.SignIn) {
+		const user = await sql`
+			SELECT password
+			FROM users
+			WHERE username = ${username}
+			LIMIT 1`
+
+		if (await Bun.password.verify(password, user.password))
+			// You can throw an HTTP error directly
+			throw status(
+				400,
+				'Invalid username or password' satisfies AuthModel.SignInInvalid
+			)
+
+		return {
+			username,
+			token: await generateAndSaveTokenToDB(user.id)
+		}
+	}
+}
+```
+
+```typescript [auth/model.ts]
+// Model define the data structure and validation for the request and response
+import { t } from 'elysia'
+
+export namespace AuthModel {
+	// Define a DTO for Elysia validation
+	export const signInBody = t.Object({
+		username: t.String(),
+		password: t.String(),
+	})
+
+	// Define it as TypeScript type
+	export type signInBody = typeof signIn.static
+
+	// Repeat for other models
+	export const signInResponse = t.Object({
+		username: t.String(),
+		token: t.String(),
+	})
+
+	export type signInResponse = typeof signIn.static
+
+	export const signInInvalid = t.Literal('Invalid username or password')
+	export type signInInvalid = typeof signInInvalid.static
+}
+```
+
+:::
+
+Each file has its own responsibility as follows:
+- **Controller**: Handle HTTP routing, request validation, and cookie.
+- **Service**: Handle business logic, decoupled from Elysia controller if possible.
+- **Model**: Define the data structure and validation for the request and response.
+
+Feels free to abstract this structure to your own needs, and use any coding pattern you like.
+
 ## Method Chaining
 Elysia code should always use **method chaining**.
 
@@ -137,8 +261,11 @@ There're 2 types of service in Elysia:
 1. Non-request dependent service
 2. Request dependent service
 
-### ✅ Do: Non-request dependent service
-This kind of service doesn't need to access any property from the request or `Context`, and can be initiated as a static class same as usual MVC service pattern.
+### ✅ Do: Abstract away non-request dependent service
+
+We recommended to abstract a service class/function away from Elysia.
+
+If the service or function doesn't tied to HTTP request or access a `Context`. It's recommended to abstract it as a static class or function.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -162,8 +289,55 @@ new Elysia()
 
 If your service doesn't need to store a property, you may use `abstract class` and `static` instead to avoid allocating class instance.
 
-### Request Dependent Service
-This kind of service may require some property from the request, and should be **initiated as an Elysia instance**.
+### ✅ Do: Request dependent service as Elysia instance
+
+**If the service is a request dependent service** or need to process HTTP request. We recommended to abstract it as Elysia instance to ensure type integrity and inference:
+
+```typescript
+import { Elysia } from 'elysia'
+
+// ✅ Do
+const AuthService = new Elysia({ name: 'Auth.Service' })
+    .macro({
+        isSignIn: {
+            resolve({ cookie, status }) {
+                if (!cookie.session.value) return status(401)
+
+                return {
+                	session: cookie.session.value,
+                }
+            }
+        }
+    })
+
+const UserController = new Elysia()
+    .use(AuthService)
+    .get('/profile', ({ Auth: { user } }) => user, {
+    	isSignIn: true
+    })
+```
+
+::: tip
+Elysia handle [plugin deduplication](/essential/plugin.html#plugin-deduplication) by default so you don't have to worry about performance, as it's going to be Singleton if you specified a **"name"** property.
+:::
+
+### ✅ Do: Decorate only request dependent property
+
+It's recommended to `decorate` only request dependent property, such as `requestIP`, `requestTime`, or `session`.
+
+Overusing decorator may tied your code to Elysia making it harder to test, and reuse.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.decorate('requestIP', ({ request }) => request.headers.get('x-forwarded-for') || request.ip)
+	.decorate('requestTime', () => Date.now())
+	.decorate('session', ({ cookie }) => cookie.session.value)
+	.get('/', ({ requestIP, requestTime, session }) => {
+		return { requestIP, requestTime, session }
+	})
+```
 
 ### ❌ Don't: Pass entire `Context` to a service
 **Context is a highly dynamic type** that can be inferred from Elysia instance.
@@ -184,40 +358,6 @@ class AuthService {
 ```
 
 As Elysia type is complex, and heavily depends on plugin and multiple level of chaining, it can be challenging to manually type as it's highly dynamic.
-
-### ✅ Do: Use Elysia instance as a service
-
-We recommended to use Elysia instance as a service to ensure type integrity and inference:
-```typescript
-import { Elysia } from 'elysia'
-
-// ✅ Do
-const AuthService = new Elysia({ name: 'Service.Auth' })
-    .derive({ as: 'scoped' }, ({ cookie: { session } }) => ({
-    	// This is equivalent to dependency injection
-        Auth: {
-            user: session.value
-        }
-    }))
-    .macro(({ onBeforeHandle }) => ({
-     	// This is declaring a service method
-        isSignIn(value: boolean) {
-            onBeforeHandle(({ Auth, status }) => {
-                if (!Auth?.user || !Auth.user) return status(401)
-            })
-        }
-    }))
-
-const UserController = new Elysia()
-    .use(AuthService)
-    .get('/profile', ({ Auth: { user } }) => user, {
-    	isSignIn: true
-    })
-```
-
-::: tip
-Elysia handle [plugin deduplication](/essential/plugin.html#plugin-deduplication) by default so you don't have to worry about performance, as it's going to be Singleton if you specified a **"name"** property.
-:::
 
 ### ⚠️ Infers Context from Elysia instance
 

@@ -158,9 +158,12 @@ class AuthService {
 
 As Elysia type is complex, and heavily depends on plugin and multiple level of chaining, it can be challenging to manually type as it's highly dynamic.
 
-### ✅ Do: Use Elysia instance as a service
+### ✅ Do: Request dependent service as Elysia instance
 
-We recommended to use Elysia instance as a service to ensure type integrity and inference:
+We recommended to abstract service class away from Elysia.
+
+However, **if the service is a request dependent service** or need to process HTTP request. We recommended to abstract it as Elysia instance to ensure type integrity and inference:
+
 ```typescript
 import { Elysia } from 'elysia'
 
