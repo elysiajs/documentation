@@ -351,12 +351,34 @@ type ContentType = |
     | 'json'
     // Shorthand for 'multipart/form-data'
     | 'formdata'
-    // Shorthand for 'application/x-www-form-urlencoded'\
+    // Shorthand for 'application/x-www-form-urlencoded'
     | 'urlencoded'
+    // Skip body parsing entirely
+    | 'none'
     | 'text/plain'
     | 'application/json'
     | 'multipart/form-data'
     | 'application/x-www-form-urlencoded'
+```
+
+### Skip Body Parsing
+When you need to integrate a third-party library with HTTP handler like `trpc`, `orpc`, and it throw `Body is already used`.
+
+This is because Web Standard Request can be parsed only once.
+
+Both Elysia and the third-party library both has its own body parser, so you can skip body parsing on Elysia side by specifying `parse: 'none'`
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.post(
+		'/',
+		({ request }) => library.handle(request),
+		{
+			parse: 'none'
+		}
+	)
 ```
 
 ### Custom Parser

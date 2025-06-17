@@ -697,3 +697,64 @@ button.copy::after {
 #VPSidebarNav {
 	@apply flex flex-col min-h-full;
 }
+
+.VPLocalSearchBox {
+	& > .backdrop {
+		@apply !bg-black/7.5;
+		animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	& > .shell {
+		@apply md:max-w-2xl !bg-white md:!bg-white/75 dark:!bg-gray-800 md:dark:!bg-gray-800/75 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-gray-600 md:shadow-xl shadow-black/5;
+		animation: search-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+		& > .search-bar {
+			@apply !rounded-xl bg-gray-200/40 dark:bg-gray-500/30 !border-gray-200/85 dark:!border-gray-500/30;
+		}
+
+		& > .results > li > a {
+			@apply !rounded-xl;
+		}
+
+		& > .search-keyboard-shortcuts {
+			& > span > kbd {
+				@apply rounded-lg dark:!bg-gray-700;
+			}
+		}
+	}
+}
+
+@keyframes search-in {
+	from {
+		opacity: 0;
+		transform: translateY(1.25rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.excerpt-wrapper {
+	& > .excerpt-gradient-bottom,
+	& > .excerpt-gradient-top {
+		@apply hidden;
+	}
+
+	& > .excerpt {
+		& > .vp-doc {
+			@apply !bg-transparent;
+		}
+	}
+}

@@ -15,7 +15,7 @@ export function useFlyIn(isInView: Ref<boolean>) {
         },
         transition: {
             ease: easeOutExpo,
-            duration: 2,
+            duration: 1.6,
             delay
         }
     }))
@@ -32,7 +32,7 @@ export function useFadeIn(isInView: Ref<boolean>) {
         },
         transition: {
             ease: easeOutExpo,
-            duration: 2,
+            duration: 1.6,
             delay
         }
     }))
@@ -50,7 +50,7 @@ export function useExpandWidth(isInView: Ref<boolean>) {
         },
         transition: {
             ease: easeOutExpo,
-            duration: 2,
+            duration: 1.6,
             delay
         }
     }))
