@@ -485,12 +485,15 @@ button.copy::after {
     &:focus-within {
         /* Landing */
         & > .VPNavBar {
-            @apply !bg-white/60 dark:!bg-slate-900/60 backdrop-blur-lg;
+            /* @apply !bg-white/60 dark:!bg-slate-900/60; */
         }
     }
 
     @media (min-width: theme(--breakpoint-xl)) {
-        z-index: 50 !important;
+    	/* &:hover,
+     	&:focus-within {
+        	z-index: 50 !important;
+      	} */
     }
 
     @media (max-width: theme(--breakpoint-xl)) {
@@ -498,7 +501,7 @@ button.copy::after {
     }
 
     & > .VPNavBar {
-        @apply !bg-transparent backdrop-blur-lg;
+        @apply !bg-transparent;
 
         /* Doc layout */
         & > .wrapper > .container > .content > .content-body {
@@ -705,7 +708,8 @@ button.copy::after {
 	}
 
 	& > .shell {
-		@apply md:max-w-2xl !bg-white md:!bg-white/75 dark:!bg-gray-800 md:dark:!bg-gray-800/75 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-gray-600 md:shadow-xl shadow-black/5;
+		/* 688px is the max-width of the content (Vitepress default) */
+		@apply md:max-w-[688px] md:translate-x-2 !bg-white md:!bg-white/75 dark:!bg-gray-800 md:dark:!bg-gray-800/75 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-gray-600 md:shadow-xl shadow-black/5;
 		animation: search-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
 		& > .search-bar {
@@ -758,3 +762,68 @@ button.copy::after {
 		}
 	}
 }
+
+.VPNavBarMenuGroup > .menu {
+	@apply top-12 backdrop-blur-xl rounded-2xl;
+	will-change: opacity;
+
+	& > .VPMenu {
+		@apply !bg-white/60 dark:!bg-gray-700/60 p-1 border border-gray-100 rounded-2xl shadow-2xl shadow-black/5;
+
+		& > .items {
+			& > .VPMenuLink > .VPLink {
+				@apply rounded-xl interact:bg-[#f0629215] dark:interact:bg-[#f0629245] duration-0;
+			}
+		}
+	}
+}
+
+.VPNavBarExtra.extra > .menu {
+	@apply top-12 backdrop-blur-xl rounded-2xl;
+	will-change: opacity;
+
+	& > .VPMenu {
+		@apply !bg-white/60 dark:!bg-gray-700/60 border border-gray-100 rounded-2xl shadow-2xl shadow-black/5;
+	}
+}
+
+/* navbar left side group in order */
+.VPNavBarMenu.menu {
+	@apply h-11 rounded-l-3xl;
+
+	& > .VPFlyout.VPNavBarMenuGroup {
+		& > .button {
+			@apply h-11;
+		}
+	}
+
+	& > .VPFlyout.VPNavBarMenuGroup > .button,
+	& > a {
+		@apply backdrop-blur-lg bg-white/80 dark:bg-gray-700/70;
+	}
+
+	/* Skip screen reader content */
+	& > *:nth-child(2),
+	& > *:nth-child(2) > .button {
+		@apply !rounded-l-3xl;
+	}
+}
+
+.VPNavBarAppearance.appearance {
+	@apply h-11 bg-white/80 dark:bg-gray-700/70 backdrop-blur-lg;
+}
+
+.VPSocialLinks.VPNavBarSocialLinks.social-links {
+	@apply h-11 pr-2 bg-white/80 dark:bg-gray-700/70 backdrop-blur-lg;
+}
+
+/* ... mobile */
+.VPFlyout.VPNavBarExtra.extra {
+	@apply h-11 bg-white/80 dark:bg-gray-700/70;
+
+	& > .button {
+		@apply h-10.5 backdrop-blur-lg !rounded-r-3xl;
+	}
+}
+
+/* end navbar leftside group */
