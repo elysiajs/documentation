@@ -116,7 +116,7 @@ Then we can import the generated models in our Elysia application:
 import { Elysia, t } from 'elysia'
 
 import { PrismaClient } from '../generated/prisma' // [!code ++]
-import { UserInputCreate, UserPlain } from '../generated/prismabox/User' // [!code ++]
+import { UserPlain, UserPlainInputCreate } from '../generated/prismabox/User' // [!code ++]
 
 const prisma = new PrismaClient()
 
@@ -128,7 +128,7 @@ const app = new Elysia()
                 data: body
             }),
         {
-            body: UserInputCreate, // [!code ++]
+            body: UserPlainInputCreate, // [!code ++]
             response: UserPlain // [!code ++]
         }
     )
@@ -139,7 +139,7 @@ const app = new Elysia()
                 where: { id }
             })
 
-            if (!user) return status(404, 'Not Found')
+            if (!user) return status(404, 'User not found')
 
             return user
         },

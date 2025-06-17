@@ -410,9 +410,8 @@ button.copy::after {
             @apply p-0 ml-auto;
 
             & > .items {
-                @apply top-10 right-4 md:right-0 w-full max-w-[calc(100%-32px)] sm:max-w-sm !bg-white/75 dark:!bg-slate-900/75 p-1 rounded-xl border border-slate-700/10 dark:border-slate-300/10 backdrop-blur-md;
+                @apply top-10 right-4 md:right-0 max-w-[calc(100%-32px)] sm:max-w-sm !bg-white/75 dark:!bg-slate-900/75 p-1 rounded-2xl border border-slate-700/10 dark:border-slate-300/10 backdrop-blur-md shadow-2xl shadow-black/5;
                 left: unset;
-                box-shadow: unset;
                 transition-duration: 0.5s;
                 transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -434,7 +433,7 @@ button.copy::after {
                             & > a {
                                 &:hover,
                                 &:focus {
-                                    @apply rounded-lg;
+                                    @apply rounded-xl;
                                     background-color: var(
                                         --vp-c-brand-nav-active
                                     );
@@ -695,6 +694,22 @@ button.copy::after {
 
 .VPSidebar {
 	@apply !pb-6;
+
+	/* Vitepress breakpoint */
+	@media (max-width: 959px) {
+		@apply !p-2 !bg-transparent;
+
+		& > .nav {
+			@apply p-4 pt-2 bg-white/85 dark:bg-gray-800/85 border dark:border-gray-700 border-gray-200 rounded-xl backdrop-blur shadow-lg;
+		}
+	}
+}
+
+.VPBackdrop.backdrop {
+	/* Vitepress breakpoint */
+	@media (max-width: theme(--breakpoint-lg)) {
+		@apply !bg-black/5;
+	}
 }
 
 #VPSidebarNav {
