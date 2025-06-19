@@ -244,9 +244,9 @@ EXPOSE 3000
 ## Railway
 [Railway](https://railway.app) is one of the popular deployment platform.
 
-Railway assign **random port** to expose for each deployment that can be access via `PORT` environment variable.
+Railway assigns a **random port** to expose for each deployment, which can be accessed via the `PORT` environment variable.
 
-We need to modify our Elysia server to accept `PORT` environment to comply with Railway port.
+We need to modify our Elysia server to accept the `PORT` environment variable to comply with Railway port.
 
 Instead of a fixed port, we may use `process.env.PORT` and provide a fallback on development instead.
 ```ts
