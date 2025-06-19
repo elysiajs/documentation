@@ -30,7 +30,7 @@ import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
 
 describe('Elysia', () => {
-    it('return a response', async () => {
+    it('returns a response', async () => {
         const app = new Elysia().get('/', () => 'hi')
 
         const response = await app
@@ -74,7 +74,7 @@ const app = new Elysia().get('/hello', 'hi')
 const api = treaty(app)
 
 describe('Elysia', () => {
-    it('return a response', async () => {
+    it('returns a response', async () => {
         const { data, error } = await api.hello.get()
 
         expect(data).toBe('hi')
