@@ -53,7 +53,7 @@ const app = new Elysia().use(trpc(router)).listen(3000)
 
 Accept the tRPC router and register to Elysia's handler.
 
-````ts
+```typescript
 trpc(
 	router: Router,
 	option?: {
@@ -67,4 +67,3 @@ trpc(
 ### endpoint
 
 The path to the exposed TRPC endpoint.
-````
