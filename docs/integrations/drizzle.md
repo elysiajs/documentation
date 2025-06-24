@@ -255,8 +255,6 @@ export const spread = <
     return newSchema as any
 }
 
-const a = spread(table.user, 'insert')
-
 /**
  * Spread a Drizzle Table into a plain object
  *
