@@ -230,7 +230,7 @@ You can test your controller using `handle` to directly call a function (and it'
 import { Elysia } from 'elysia'
 import { Service } from './service'
 
-import { describe, it, should } from 'bun:test'
+import { describe, it, expect } from 'bun:test'
 
 const app = new Elysia()
     .get('/', ({ stuff }) => {
