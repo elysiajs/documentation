@@ -68,7 +68,7 @@ const demo4 = new Elysia()
 
 The purpose of creating an API server is to take an input and process it.
 
-JavaScript allows any data to be any type. Elysia provides a tool to validate data out of the box to ensure that the data is in the correct format.
+JavaScript allows any data to be of any type. Elysia provides a tool to validate data out of the box to ensure that the data is in the correct format.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'

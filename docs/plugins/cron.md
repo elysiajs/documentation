@@ -16,7 +16,7 @@ head:
 
 # Cron Plugin
 
-This plugin adds support for running cronjob in the Elysia server.
+This plugin adds support for running cronjobs in the Elysia server.
 
 Install with:
 

@@ -102,7 +102,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Handler maybe a literal value, and can be inlined.
+A handler may be a literal value, and can be inlined.
 
 ```typescript
 import { Elysia, file } from 'elysia'
@@ -113,19 +113,19 @@ new Elysia()
     .listen(3000)
 ```
 
-Using an inline value always returns the same value which is useful to optimize performance for static resource like file.
+Using an inline value always returns the same value which is useful to optimize performance for static resources like files.
 
 This allows Elysia to compile the response ahead of time to optimize performance.
 
 ::: tip
 Providing an inline value is not a cache.
 
-Static Resource value, headers and status can be mutate dynamically using lifecycle.
+Static resource values, headers and status can be mutated dynamically using lifecycle.
 :::
 
 ## Context
 
-**Context** contains a request information which unique for each request, and is not shared except for `store` <small>(global mutable state)</small>.
+**Context** contains request information which is unique for each request, and is not shared except for `store` <small>(global mutable state)</small>.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -204,10 +204,10 @@ new Elysia()
 
 <Playground :elysia="handler2" />
 
-It's recommend to use `status` inside main handler as it has better inference:
+It's recommended to use `status` inside the main handler as it has better inference:
 
 - allows TypeScript to check if a return value is correctly type to response schema
-- autocompletion for type narrowing base on status code
+- autocompletion for type narrowing based on status code
 - type narrowing for error handling using End-to-end type safety ([Eden](/eden/overview))
 
 ### set.status
@@ -251,7 +251,7 @@ new Elysia()
 ```
 
 ### set.headers
-Allowing us to append or delete a response headers represent as Object.
+Allowing us to append or delete response headers represented as an Object.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'

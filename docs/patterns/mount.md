@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Applying WinterCG interplopable code to run with Elysia or vice-versa.
+      content: Applying WinterCG interoperable code to run with Elysia or vice-versa.
 
   - - meta
     - property: 'og:description'
-      content: Applying WinterCG interplopable code to run with Elysia or vice-versa.
+      content: Applying WinterCG interoperable code to run with Elysia or vice-versa.
 ---
 
 # Mount

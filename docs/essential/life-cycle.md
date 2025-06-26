@@ -1,17 +1,17 @@
 ---
-title: Life Cycle - ElysiaJS
+title: Lifecycle - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Life Cycle - ElysiaJS
+        content: Lifecycle - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Lifecycle event is a concept for each stage of Elysia processing, "Life Cycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+        content: Lifecycle event is a concept for each stage of Elysia processing, "Lifecycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
 
     - - meta
       - property: 'og:description'
-        content: Lifecycle event is a concept for each stage of Elysia processing, "Life Cycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+        content: Lifecycle event is a concept for each stage of Elysia processing, "Lifecycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
 ---
 
 <script setup>
@@ -37,13 +37,13 @@ const demo = new Elysia()
 
 # Lifecycle
 
-Life Cycle allows us to intercept important events at predefined points, allowing us to customize the behavior of our server as needed.
+Lifecycle events allow you to intercept important events at predefined points, allowing you to customize the behavior of your server as needed.
 
-Elysia's Life Cycle event can be illustrated as the following.
+Elysia's lifecycle can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
 > Click on image to enlarge
 
-Below are the request life cycles available in Elysia:
+Below are the request lifecycle events available in Elysia:
 
 <Deck>
     <Card title="Request" href="#request">
@@ -65,7 +65,7 @@ Below are the request life cycles available in Elysia:
         Map returned value into a response
     </Card>
     <Card title="On Error (Error Handling)" href="#on-error-error-handling">
-   		Handle error thrown in life-cycle
+   		Handle errors thrown in the life-cycle
     </Card>
     <Card title="After Response" href="#after-response">
         Executed after response sent to the client
@@ -85,13 +85,13 @@ Explicitly specifying that the response is HTML could be repetitive if there are
 
 This can lead to a lot of duplicated code just to specify the **"text/html"** **"Content-Type"**
 
-But what if after we send a response, we could detect that the response is an HTML string then append the header automatically?
+But what if after we send a response, we could detect that the response is an HTML string and then append the header automatically?
 
-That's when the concept of Life Cycle comes into play.
+That's when the concept of lifecycle comes into play.
 
 ## Hook
 
-We refer to each function that intercepts the life cycle event as **"hook"**, as the function hooks into the lifecycle event.
+We refer to each function that intercepts the lifecycle event as **"hook"**, as the function hooks into the lifecycle event.
 
 Hooks can be categorized into 2 types:
 
@@ -99,12 +99,12 @@ Hooks can be categorized into 2 types:
 2. Interceptor Hook: Execute on every route
 
 ::: tip
-The hook will accept the same Context as a handler, you can imagine adding a route handler but at a specific point.
+The hook will accept the same Context as a handler; you can imagine adding a route handler but at a specific point.
 :::
 
 ## Local Hook
 
-The local hook is executed on a specific route.
+A local hook is executed on a specific route.
 
 To use a local hook, you can inline hook into a route handler:
 
@@ -134,7 +134,7 @@ The response should be listed as follows:
 
 Register hook into every handler **of the current instance** that came after.
 
-To add an interceptor hook, you can use `.on` followed by a life cycle event in camelCase:
+To add an interceptor hook, you can use `.on` followed by a lifecycle event in camelCase:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -159,7 +159,7 @@ The response should be listed as follows:
 | /hi   | text/html; charset=utf8  |
 | /none | text/plain; charset=utf8 |
 
-Events from other plugins are also applied to the route so the order of code is important.
+Events from other plugins are also applied to the route, so the order of code is important.
 
 ::: tip
 The code above will only apply to the current instance, not applying to parent.
@@ -169,11 +169,11 @@ See [scope](/essential/plugin#scope) to find out why
 
 ## Order of code
 
-The order of Elysia's life-cycle code is very important.
+The order of Elysia's lifecycle code is very important.
 
-Because event will only apply to routes **after** it is registered.
+Because an event will only apply to routes **after** it is registered.
 
-If you put the onError before plugin, plugin will not inherit the onError event.
+If you put the `onError` before plugin, plugin will not inherit the `onError` event.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -221,9 +221,9 @@ The only exception is `onRequest` which is executed before the route handler so 
 
 ## Request
 
-The first life-cycle event to get executed for every new request is recieved.
+The first lifecycle event to get executed for every new request is received.
 
-As `onRequest` is designed to provide only the most crucial context to reduce overhead, it is recommended to use in the following scenario:
+As `onRequest` is designed to provide only the most crucial context to reduce overhead, it is recommended to use in the following scenarios:
 
 - Caching
 - Rate Limiter / IP/Region Lock
@@ -232,7 +232,7 @@ As `onRequest` is designed to provide only the most crucial context to reduce ov
 
 #### Example
 
-Below is a pseudo code to enforce rate-limit on a certain IP address.
+Below is a pseudocode to enforce rate-limits on a certain IP address.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -246,11 +246,11 @@ new Elysia()
     .listen(3000)
 ```
 
-If a value is returned from `onRequest`, it will be used as the response and the rest of the life-cycle will be skipped.
+If a value is returned from `onRequest`, it will be used as the response and the rest of the lifecycle will be skipped.
 
 ### Pre Context
 
-Context's onRequest is typed as `PreContext`, a minimal representation of `Context` with the attribute on the following:
+Context's `onRequest` is typed as `PreContext`, a minimal representation of `Context` with the attribute on the following:
 request: `Request`
 
 - set: `Set`
@@ -286,7 +286,7 @@ new Elysia().onParse(({ request, contentType }) => {
 })
 ```
 
-The returned value will be assigned to Context.body. If not, Elysia will continue iterating through additional parser functions from **onParse** stack until either body is assigned or all parsers have been executed.
+The returned value will be assigned to `Context.body`. If not, Elysia will continue iterating through additional parser functions from **onParse** stack until either body is assigned or all parsers have been executed.
 
 ### Context
 
@@ -328,7 +328,7 @@ This allows Elysia to optimize body parser ahead of time, and reduce overhead in
 
 ### Explicit Parser
 
-However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`
+However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -339,7 +339,7 @@ new Elysia().post('/', ({ body }) => body, {
 })
 ```
 
-Allowing us to control Elysia behavior for picking body parser function to fit our needs in a complex scenario.
+This allows us to control Elysia behavior for picking body parser function to fit our needs in a complex scenario.
 
 `type` may be one of the following:
 
@@ -431,7 +431,7 @@ new Elysia()
 
 Append new value to context directly **before validation**. It's stored in the same stack as **transform**.
 
-Unlike **state** and **decorate** that assigned value before the server started. **derive** assigns a property when each request happens. Allowing us to extract a piece of information into a property instead.
+Unlike **state** and **decorate** that assigned value before the server started. **derive** assigns a property when each request happens. This allows us to extract a piece of information into a property instead.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -453,7 +453,7 @@ Unlike **state**, and **decorate**. Properties which assigned by **derive** is u
 
 ### Queue
 
-`derive` and `transform` is stored in the same queue.
+`derive` and `transform` are stored in the same queue.
 
 ```typescript
 import { Elysia } from 'elysia'
