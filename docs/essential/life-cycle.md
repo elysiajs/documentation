@@ -37,13 +37,13 @@ const demo = new Elysia()
 
 # Lifecycle
 
-Life Cycle allows us to intercept an important event at the predefined point allowing us to customize the behavior of our server as needed.
+Life Cycle allows us to intercept important events at predefined points, allowing us to customize the behavior of our server as needed.
 
 Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
 > Click on image to enlarge
 
-Below are the request life cycle available in Elysia:
+Below are the request life cycles available in Elysia:
 
 <Deck>
     <Card title="Request" href="#request">

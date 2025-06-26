@@ -91,7 +91,7 @@ TypeBox is a very fast, lightweight, and type-safe runtime validation library fo
 We believe that validation should be handled by the framework natively, rather than relying on the user to set up a custom type for every project.
 
 ### TypeScript
-We can get a type definitions of every Elysia/TypeBox's type by accessing `static` property as follows:
+We can get type definitions of every Elysia/TypeBox's type by accessing the `static` property as follows:
 
 ```ts twoslash
 import { t } from 'elysia'

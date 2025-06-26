@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: handler is a function that responds to the request for each route. Accepting request information and returning a response to the client. Handler can be registered through Elysia.get / Elysia.post
+        content: A handler is a function that responds to the request for each route. Accepting request information and returning a response to the client. Handler can be registered through Elysia.get / Elysia.post
 
     - - meta
       - property: 'og:description'
-        content: handler is a function that responds to the request for each route. Accepting request information and returning a response to the client. Handler can be registered through Elysia.get / Elysia.post
+        content: A handler is a function that responds to the request for each route. Accepting request information and returning a response to the client. Handler can be registered through Elysia.get / Elysia.post
 ---
 
 <script setup>
@@ -87,11 +87,11 @@ const demo7 = new Elysia()
 
 # Handler
 
-Handler is a function that responds to the request for each route.
+A handler is a function that responds to the request for each route.
 
 Accepting request information and returning a response to the client.
 
-Altenatively, handler is also known as a **Controller** in other frameworks.
+Alternatively, a handler is also known as a **Controller** in other frameworks.
 
 ```typescript
 import { Elysia } from 'elysia'
