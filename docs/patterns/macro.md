@@ -76,7 +76,7 @@ const app = new Elysia()
     })
 ```
 
-**macro** shine when a logic is more complex than accepting a new function, for example creating an authorization layer for each route.
+**macro** shines when a logic is more complex than accepting a new function, for example creating an authorization layer for each route.
 
 ```typescript twoslash
 // @filename: auth.ts

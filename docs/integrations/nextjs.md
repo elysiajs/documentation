@@ -7,16 +7,16 @@ head:
 
     - - meta
       - name: 'description'
-        content: With Nextjs App Router, you can run Elysia on Nextjs route. Elysia will work normally as expected because of WinterCG compliance.
+        content: With Next.js App Router, you can run Elysia on Next.js routes. Elysia will work normally as expected because of WinterCG compliance.
 
     - - meta
       - property: 'og:description'
-        content: With Nextjs App Router, you can run Elysia on Nextjs route. Elysia will work normally as expected because of WinterCG compliance.
+        content: With Next.js App Router, you can run Elysia on Next.js routes. Elysia will work normally as expected because of WinterCG compliance.
 ---
 
-# Integration with Nextjs
+# Integration with Next.js
 
-With Nextjs App Router, we can run Elysia on Nextjs route.
+With Next.js App Router, we can run Elysia on Next.js routes.
 
 1. Create **api/[[...slugs]]/route.ts** inside app router
 2. In **route.ts**, create or import an existing Elysia server
@@ -38,13 +38,13 @@ export const GET = app.handle // [!code ++]
 export const POST = app.handle // [!code ++]
 ```
 
-Elysia will work normally as expected because of WinterCG compliance, however, some plugins like **Elysia Static** may not work if you are running Nextjs on Node.
+Elysia will work normally as expected because of WinterCG compliance, however, some plugins like **Elysia Static** may not work if you are running Next.js on Node.
 
-You can treat the Elysia server as a normal Nextjs API route.
+You can treat the Elysia server as a normal Next.js API route.
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
 
-Please refer to [Nextjs Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
+Please refer to [Next.js Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
 
 ## Prefix
 

@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Trace is an API to measure the performance of your server. Allowing us to interact with the duration span of each life-cycle events and measure the performance of each function to identify performance bottlenecks of the server.
+        content: Trace is an API to measure the performance of your server. It allows you to interact with the duration span of each life-cycle event and measure the performance of each function to identify performance bottlenecks of the server.
 
     - - meta
       - name: 'og:description'
-        content: Trace is an API to measure the performance of your server. Allowing us to interact with the duration span of each life-cycle events and measure the performance of each function to identify performance bottlenecks of the server.
+        content: Trace is an API to measure the performance of your server. It allows you to interact with the duration span of each life-cycle event and measure the performance of each function to identify performance bottlenecks of the server.
 ---
 
 # Trace
@@ -20,7 +20,7 @@ Performance is an important aspect for Elysia.
 
 We don't want to be fast for benchmarking purposes, we want you to have a real fast server in real-world scenario.
 
-There are many factors that can slow down our app - and it's hard to identify them, but **trace** can helps solve that problem by injecting start and stop code to each life-cycle.
+There are many factors that can slow down our app - and it's hard to identify them, but **trace** can help solve that problem by injecting start and stop code to each life-cycle.
 
 Trace allows us to inject code to before and after of each life-cycle event, block and interact with the execution of the function.
 
@@ -29,7 +29,7 @@ Trace use a callback listener to ensure that callback function is finished befor
 
 To use `trace`, you need to call `trace` method on the Elysia instance, and pass a callback function that will be executed for each life-cycle event.
 
-You may listen to each lifecycle by adding `on` prefix follows by life-cycle name, for example `onHandle` to listen to `handle` event.
+You may listen to each lifecycle by adding `on` prefix followed by the lifecycle name, for example `onHandle` to listen to the `handle` event.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -51,7 +51,7 @@ Please refer to [Life Cycle Events](/essential/life-cycle#events) for more infor
 ![Elysia Life Cycle](/assets/lifecycle-chart.svg)
 
 ## Children
-Every events except `handle` have a children, which is an array of events that are executed inside for each life-cycle event.
+Every event except `handle` has children, which is an array of events that are executed inside for each lifecycle event.
 
 You can use `onEvent` to listen to each child event in order
 
