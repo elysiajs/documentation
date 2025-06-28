@@ -56,23 +56,7 @@ Then we can access Better Auth with `http://localhost:3000/api/auth`.
 
 ### Custom endpoint
 
-We recommended setting a prefix path for when using [mount](/patterns/mount.html).
-
-```ts [index.ts]
-import { Elysia } from 'elysia'
-
-const app = new Elysia()
-	.mount('/auth', auth.handler) // [!code ++]
-	.listen(3000)
-
-console.log(
-    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-)
-```
-
-Then we can access Better Auth with `http://localhost:3000/auth/api/auth`.
-
-But the URL looks redundant, we can customize the `/api/auth` prefix to something else in Better Auth instance.
+We can customize the `/api/auth` prefix to something else in Better Auth instance.
 
 ```ts
 import { betterAuth } from 'better-auth'
@@ -82,13 +66,11 @@ import { passkey } from 'better-auth/plugins/passkey'
 import { Pool } from 'pg'
 
 export const auth = betterAuth({
-    basePath: '/api' // [!code ++]
+    basePath: '/auth' // [!code ++]
 })
 ```
 
-Then we can access Better Auth with `http://localhost:3000/auth/api`.
-
-Unfortunately, we can't set `basePath` of a Better Auth instance to be empty or `/`.
+Then we can access Better Auth with `http://localhost:3000/auth`.
 
 ## Swagger / OpenAPI
 
