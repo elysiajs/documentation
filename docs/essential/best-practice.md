@@ -83,7 +83,7 @@ export const auth = new Elysia({ prefix: '/auth' })
 // Service handle business logic, decoupled from Elysia controller
 import { status } from 'elysia'
 
-import type { AuthModel } from './service'
+import type { AuthModel } from './model'
 
 // If the class doesn't need to store a property,
 // you may use `abstract class` to avoid class allocation
