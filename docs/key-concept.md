@@ -21,7 +21,7 @@ Although Elysia is a simple library, it has some key concepts that you need to u
 This page covers most important concepts of Elysia that you should know.
 
 ::: tip
-We __highly recommend__ you to read this page before learn more about Elysia.
+We __highly recommend__ you to read this page before learning more about Elysia.
 :::
 
 ## Everything is a component

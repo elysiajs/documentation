@@ -89,7 +89,7 @@ new Elysia()
 
 ![jaeger showing collected trace automatically](/blog/elysia-11/jaeger.webp)
 
-Elysia OpenTelemetry is will **collect span of any library compatible OpenTelemetry standard**, and will apply parent and child span automatically.
+Elysia OpenTelemetry will **collect span of any library compatible with the OpenTelemetry standard**, and will apply parent and child span automatically.
 
 In the code above, we apply `Prisma` to trace how long each query took.
 

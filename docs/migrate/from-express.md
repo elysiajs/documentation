@@ -13,11 +13,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: This guide is for Express users who want to see a differences from Express including syntax, and how to migrate your application from Express to Elysia by example.
+        content: This guide is for Express users who want to see the differences from Express including syntax, and how to migrate your application from Express to Elysia by example.
 
     - - meta
       - property: 'og:description'
-        content: This guide is for Express users who want to see a differences from Express including syntax, and how to migrate your application from Express to Elysia by example.
+        content: This guide is for Express users who want to see the differences from Express including syntax, and how to migrate your application from Express to Elysia by example.
 ---
 
 <script setup>
@@ -30,11 +30,11 @@ import Benchmark from '../components/fern/benchmark-express.vue'
 
 # From Express to Elysia
 
-This guide is for Express users who want to see a differences from Express including syntax, and how to migrate your application from Express to Elysia by example.
+This guide is for Express users who want to see the differences from Express including syntax, and how to migrate your application from Express to Elysia by example.
 
 **Express** is a popular web framework for Node.js, and widely used for building web applications and APIs. It is known for its simplicity and flexibility.
 
-**Elysia** is an ergonomic web framework for Bun, Node.js, and runtime that support Web Standard API. Designed to be ergonomic and developer-friendly with a focus on **sounds type safety** and performance.
+**Elysia** is an ergonomic web framework for Bun, Node.js, and runtimes that support Web Standard API. Designed to be ergonomic and developer-friendly with a focus on **sound type safety** and performance.
 
 ## Performance
 Elysia has significant performance improvements over Express thanks to native Bun implementation, and static code analysis.
@@ -43,7 +43,7 @@ Elysia has significant performance improvements over Express thanks to native Bu
 
 ## Routing
 
-Express and Elysia has similar routing syntax, using `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
+Express and Elysia have similar routing syntax, using `app.get()` and `app.post()` methods to define routes and similar path parameter syntax.
 
 <Compare>
 

@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all it needs to do a quick start or get started with ElysiaJS.
+        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all you need to do a quick start or get started with ElysiaJS.
 
     - - meta
       - property: 'og:description'
-        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all it needs to do a quick start or get started with ElysiaJS.
+        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all you need to do a quick start or get started with ElysiaJS.
 ---
 
 # Elysia Tutorial
@@ -23,7 +23,7 @@ We will be building a small CRUD note-taking API server.
 
 There's no database or other "production ready" features. This tutorial is going to only focus on Elysia feature and how to use Elysia only.
 
-We expected it to take around 15-20 minutes if you follow along.
+We expect it to take around 15-20 minutes if you follow along.
 
 ---
 
@@ -45,7 +45,7 @@ If you have used other popular frameworks like Express, Fastify, or Hono, you wi
 
 ### Not a fan of tutorial?
 
-If you prefers to a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
+If you prefer a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
 
 <script setup>
 import Card from './components/nearl/card.vue'
@@ -60,7 +60,7 @@ import Deck from './components/nearl/card-deck.vue'
 
 ### llms.txt
 
-Alternatively, you can download <a href="/llms.txt" download>llms.txt</a> or <a href="/llms-full.txt" download>llms-full.txt</a> and feeds it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience.
+Alternatively, you can download <a href="/llms.txt" download>llms.txt</a> or <a href="/llms-full.txt" download>llms-full.txt</a> and feed it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience.
 
 <Deck>
     <Card title="llms.txt" href="/llms.txt" download>

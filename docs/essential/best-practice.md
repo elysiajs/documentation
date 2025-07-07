@@ -7,26 +7,26 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is pattern agnostic framework, we leave the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handling with types. This page is a guide to use Elysia with MVC pattern.
+        content: Elysia is a pattern agnostic framework, we leave the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handle types. This page is a guide to use Elysia with MVC pattern.
 
     - - meta
       - property: 'og:description'
-        content: Elysia is pattern agnostic framework, we the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handling with types. This page is a guide to use Elysia with MVC pattern.
+        content: Elysia is a pattern agnostic framework, we leave the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handle types. This page is a guide to use Elysia with MVC pattern.
 ---
 
 # Best Practice
 
 Elysia is a pattern-agnostic framework, leaving the decision of which coding patterns to use up to you and your team.
 
-However, there are several concern from trying to adapt an MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) with Elysia, and found it's hard to decouple and handle types.
+However, there are several concerns from trying to adapt an MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) with Elysia, and we found it's hard to decouple and handle types.
 
-This page is a guide to on how to follows Elysia structure best practice combined with MVC pattern but can be adapted to any coding pattern you like.
+This page is a guide on how to follow Elysia structure best practices combined with MVC pattern but can be adapted to any coding pattern you like.
 
 ## Folder Structure
 
 Elysia is unopinionated about folder structure, leaving you to **decide** how to organize your code yourself.
 
-However, **if you doesn't have a specific structure in mind**, we recommended a feature-based folder structure. Where each feature has its own folder containing controllers, services, models.
+However, **if you don't have a specific structure in mind**, we recommend a feature-based folder structure. Where each feature has its own folder containing controllers, services, and models.
 
 ```
 | src
