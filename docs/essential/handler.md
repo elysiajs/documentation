@@ -565,7 +565,7 @@ Elysia registers state values into the store automatically without explicit type
 import { Elysia } from 'elysia'
 
 class Logger {
-    log(value: string) {
+    static log(value: string) {
         console.log(value)
     }
 }
