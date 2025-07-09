@@ -20,7 +20,7 @@ With SvelteKit, you can run Elysia on server routes.
 
 1. Create **src/routes/[...slugs]/+server.ts**.
 2. In **+server.ts**, create or import an existing Elysia server
-3. Export the handler with the name of method you want to expose
+3. Export the handler with the name of method you want to expose. You can also use `fallback` to have Elysia handle all methods.
 
 ```typescript
 // src/routes/[...slugs]/+server.ts
@@ -38,6 +38,8 @@ type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
 
 export const GET: RequestHandler = ({ request }) => app.handle(request)
 export const POST: RequestHandler = ({ request }) => app.handle(request)
+// or simply
+export const fallback: RequestHandler = ({ request }) => app.handle(request)
 ```
 
 You can treat the Elysia server as a normal SvelteKit server route.
@@ -65,8 +67,7 @@ const app = new Elysia({ prefix: '/api' }) // [!code ++]
 
 type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
 
-export const GET: RequestHandler = ({ request }) => app.handle(request)
-export const POST: RequestHandler = ({ request }) => app.handle(request)
+export const fallback: RequestHandler = ({ request }) => app.handle(request)
 ```
 
 This will ensure that Elysia routing will work properly in any location you place it.
