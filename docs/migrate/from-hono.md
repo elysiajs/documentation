@@ -501,7 +501,7 @@ While Hono has a `next` function to call the next middleware, Elysia does not ha
 ## Sounds type safety
 Elysia is designed to be sounds type safety.
 
-For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Hono doesn't not.
+For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Hono doesn't.
 
 <Compare>
 
