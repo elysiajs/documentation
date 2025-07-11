@@ -56,7 +56,7 @@ Eden is a RPC-like client to connect Elysia  **end-to-end type safety** using on
 
 Allowing you to sync client and server types effortlessly, weighing less than 2KB.
 
-Eden is consists of 2 modules:
+Eden consists of 2 modules:
 1. Eden Treaty **(recommended)**: an improved version RFC version of Eden Treaty
 2. Eden Fetch: Fetch-like client with type safety.
 
