@@ -45,7 +45,7 @@ head:
 
 Elysia 1.0 is the first stable release after development for 1.8 years.
 
-Since started, we have always waiting for a framework that focuses on developer experience, velocity, and how to make writing code for humans, not a machine.
+Since we started, we have always been waiting for a framework that focuses on developer experience, velocity, and how to make writing code for humans, not a machine.
 
 We battle-test Elysia in various situations, simulate medium and large-scale projects, shipping code to clients and this is the first version that we felt confident enough to ship.
 

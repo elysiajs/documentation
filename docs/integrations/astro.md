@@ -54,12 +54,12 @@ export const POST = handle // [!code ++]
 
 Elysia will work normally as expected because of WinterCG compliance.
 
-We recommended running [Astro on Bun](https://docs.astro.build/en/recipes/bun) as Elysia is designed to be run on Bun
+We recommend running [Astro on Bun](https://docs.astro.build/en/recipes/bun) as Elysia is designed to be run on Bun.
 
 ::: tip
 You can run Elysia server without running Astro on Bun thanks to WinterCG support.
 
-However some plugins like **Elysia Static** may not work if you are running Astro on Node.
+However, some plugins like **Elysia Static** may not work if you are running Astro on Node.
 :::
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden.

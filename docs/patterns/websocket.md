@@ -18,11 +18,11 @@ head:
 
 WebSocket is a realtime protocol for communication between your client and server.
 
-Unlike HTTP where our client repeatedly asking the website for information and waiting for a reply each time, WebSocket sets up a direct line where our client and server can send messages back and forth directly, making the conversation quicker and smoother without having to start over each message.
+Unlike HTTP where our client repeatedly asks the website for information and waits for a reply each time, WebSocket sets up a direct line where our client and server can send messages back and forth directly, making the conversation quicker and smoother without having to start over with each message.
 
 SocketIO is a popular library for WebSocket, but it is not the only one. Elysia uses [uWebSocket](https://github.com/uNetworking/uWebSockets) which Bun uses under the hood with the same API.
 
-To use websocket, simply call `Elysia.ws()`:
+To use WebSocket, simply call `Elysia.ws()`:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -38,7 +38,7 @@ new Elysia()
 
 ## WebSocket message validation:
 
-Same as normal route, WebSockets also accepts a **schema** object to strictly type and validate requests.
+Same as normal routes, WebSockets also accept a **schema** object to strictly type and validate requests.
 
 ```typescript
 import { Elysia, t } from 'elysia'

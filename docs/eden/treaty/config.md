@@ -34,21 +34,21 @@ import type { App } from './server'
 const api = treaty<App>('localhost:3000')
 ```
 
-You may or may not specified a protocol for URL endpoint.
+You may or may not specify a protocol for URL endpoint.
 
-Elysia will appends the endpoints automatically as follows:
+Elysia will append the endpoints automatically as follows:
 1. If protocol is specified, use the URL directly
 2. If the URL is localhost and ENV is not production, use http
 3. Otherwise use https
 
-This also apply to Web Socket as well for determining between **ws://** or **wss://**.
+This also applies to Web Socket as well for determining between **ws://** or **wss://**.
 
 ---
 
 ### Elysia Instance
 If Elysia instance is passed, Eden Treaty will create a `Request` class and pass to `Elysia.handle` directly without creating a network request.
 
-This allows us to interact with Elysia server directly without request overhead, or the need start a server.
+This allows us to interact with Elysia server directly without request overhead, or the need to start a server.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -61,13 +61,13 @@ const app = new Elysia()
 const api = treaty(app)
 ```
 
-If an instance is passed, generic is not needed to be pass as Eden Treaty can infers the type from a parameter directly.
+If an instance is passed, generic is not needed to be passed as Eden Treaty can infer the type from a parameter directly.
 
-This patterns is recommended for performing unit tests, or creating a type-safe reverse proxy server or micro-services.
+This pattern is recommended for performing unit tests, or creating a type-safe reverse proxy server or micro-services.
 
 ## Options
-2nd optional parameters for Eden Treaty to customize fetch behavior, accepting parameters as follows:
-- [fetch](#fetch) - add default parameters to fetch intialization (RequestInit)
+2nd optional parameter for Eden Treaty to customize fetch behavior, accepting parameters as follows:
+- [fetch](#fetch) - add default parameters to fetch initialization (RequestInit)
 - [headers](#headers) - define default headers
 - [fetcher](#fetcher) - custom fetch function eg. Axios, unfetch
 - [onRequest](#onrequest) - Intercept and modify fetch request before firing
@@ -87,7 +87,7 @@ treaty<App>('localhost:3000', {
 })
 ```
 
-All parameters that passed to fetch, will be passed to fetcher, which is an equivalent to:
+All parameters that are passed to fetch will be passed to fetcher, which is equivalent to:
 ```typescript
 fetch('http://localhost:3000', {
     credentials: 'include'
@@ -114,7 +114,7 @@ fetch('localhost:3000', {
 })
 ```
 
-headers may accepts the following as parameters:
+headers may accept the following as parameters:
 - Object
 - Function
 
@@ -130,7 +130,7 @@ treaty<App>('localhost:3000', {
 ```
 
 ### Function
-You may specify a headers as a function to return custom headers based on condition
+You may specify headers as a function to return custom headers based on condition
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -151,7 +151,7 @@ headers function accepts 2 parameters:
 - options `RequestInit`: Parameters that passed through 2nd parameter of fetch
 
 ### Array
-You may define a headers function as an array if multiple conditions are need.
+You may define a headers function as an array if multiple conditions are needed.
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -172,7 +172,7 @@ Eden Treaty will **run all functions** even if the value is already returned.
 Eden Treaty will prioritize the order headers if duplicated as follows:
 1. Inline method - Passed in method function directly
 2. headers - Passed in `config.headers`
-  - If `config.headers` is array, parameters that come after will be prioritize
+  - If `config.headers` is array, parameters that come after will be prioritized
 3. fetch - Passed in `config.fetch.headers`
 
 For example, for the following example:
@@ -190,7 +190,7 @@ api.profile.get({
 })
 ```
 
-This will be results in:
+This will result in:
 ```typescript
 fetch('http://localhost:3000', {
     headers: {
