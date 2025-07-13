@@ -59,7 +59,7 @@ app.get('/', ({ store: { build } }) => build)
 app.listen(3000)
 ```
 
-We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
+We recommend <u>**always using method chaining**</u> to provide an accurate type inference.
 
 ## Controller
 > 1 Elysia instance = 1 controller
@@ -160,9 +160,9 @@ As Elysia type is complex, and heavily depends on plugin and multiple level of c
 
 ### ✅ Do: Request dependent service as Elysia instance
 
-We recommended to abstract service class away from Elysia.
+We recommend abstracting service classes away from Elysia.
 
-However, **if the service is a request dependent service** or need to process HTTP request. We recommended to abstract it as Elysia instance to ensure type integrity and inference:
+However, **if the service is a request dependent service** or needs to process HTTP requests, ee recommend abstracting it as an Elysia instance to ensure type integrity and inference:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -197,7 +197,7 @@ Elysia handle [plugin deduplication](/essential/plugin.html#plugin-deduplication
 
 ### ⚠️ Infers Context from Elysia instance
 
-In case of **absolute necessity**, you may infer the `Context` type from the Elysia instance itself:
+If **absolutely necessary**, you may infer the `Context` type from the Elysia instance itself:
 ```typescript
 import { Elysia, type InferContext } from 'elysia'
 
@@ -216,9 +216,9 @@ class AuthService {
 }
 ```
 
-However we recommend to avoid this if possible, and use [Elysia as a service](✅-do-use-elysia-instance-as-a-service) instead.
+However, we recommend avoiding this if possible, and using [Elysia as a service](✅-do-use-elysia-instance-as-a-service) instead.
 
-You may find more about [InferContext](/essential/handler#infercontext) in [Essential: Handler](/essential/handler).
+You can learn more about [InferContext](/essential/handler#infercontext) in [Essential: Handler](/essential/handler).
 
 ## Model
 Model or [DTO (Data Transfer Object)](https://en.wikipedia.org/wiki/Data_transfer_object) is handle by [Elysia.t (Validation)](/validation/overview.html#data-validation).
