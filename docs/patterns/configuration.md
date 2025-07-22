@@ -340,6 +340,28 @@ new Elysia({
 })
 ```
 
+### Example: Increase timeout
+
+We can increase the idle timeout by setting [`serve.idleTimeout`](#serve-idletimeout) in the `serve` configuration.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	serve: {
+		// Increase idle timeout to 30 seconds
+		idleTimeout: 30
+	}
+})
+```
+
+By default the idle timeout is 10 seconds (on Bun).
+
+---
+
+## serve
+HTTP server configuration.
+
 Elysia extends Bun configuration which supports TLS out of the box, powered by BoringSSL.
 
 See [serve.tls](#serve-tls) for available configuration.
@@ -353,6 +375,11 @@ Set the hostname which the server listens on
 Uniquely identify a server instance with an ID
 
 This string will be used to hot reload the server without interrupting pending requests or websockets. If not provided, a value will be generated. To disable hot reloading, set this value to `null`.
+
+### serve.idleTimeout
+@default `10` (10 seconds)
+
+By default, Bun set idle timeout to 10 seconds, which means that if a request is not completed within 10 seconds, it will be aborted.
 
 ### serve.maxRequestBodySize
 @default `1024 * 1024 * 128` (128MB)
