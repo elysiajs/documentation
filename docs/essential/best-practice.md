@@ -87,8 +87,8 @@ import type { AuthModel } from './model'
 
 // If the class doesn't need to store a property,
 // you may use `abstract class` to avoid class allocation
-abstract class Auth {
-	static async signIn({ username, password }: AuthModel.SignIn) {
+export abstract class Auth {
+	static async signIn({ username, password }: AuthModel.signInBody) {
 		const user = await sql`
 			SELECT password
 			FROM users
@@ -99,7 +99,7 @@ abstract class Auth {
 			// You can throw an HTTP error directly
 			throw status(
 				400,
-				'Invalid username or password' satisfies AuthModel.SignInInvalid
+				'Invalid username or password' satisfies AuthModel.signInInvalid
 			)
 
 		return {
@@ -122,7 +122,7 @@ export namespace AuthModel {
 	})
 
 	// Define it as TypeScript type
-	export type signInBody = typeof signIn.static
+	export type signInBody = typeof signInBody.static
 
 	// Repeat for other models
 	export const signInResponse = t.Object({
@@ -130,7 +130,7 @@ export namespace AuthModel {
 		token: t.String(),
 	})
 
-	export type signInResponse = typeof signIn.static
+	export type signInResponse = typeof signInResponse.static
 
 	export const signInInvalid = t.Literal('Invalid username or password')
 	export type signInInvalid = typeof signInInvalid.static
