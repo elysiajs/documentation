@@ -162,7 +162,7 @@ new Elysia({
 })
 ```
 
-When unknown properties that is not specified in schema is found on either input and output, how should Elysia handle the field?
+When unknown properties that are not specified in schema are found on either input and output, how should Elysia handle the field?
 
 Options - @default `true`
 
@@ -176,7 +176,7 @@ Options - @default `true`
 
 ###### Since 1.0.0
 
-Whether should Elysia should [precompile all routes](/blog/elysia-10.html#improved-startup-time) a head of time before starting the server.
+Whether Elysia should [precompile all routes](/blog/elysia-10.html#improved-startup-time) ahead of time before starting the server.
 
 ```ts twoslash
 import { Elysia } from 'elysia'

@@ -94,7 +94,7 @@ const demo13 = new Elysia()
 
 # Routing
 
-Web servers use the request's **path and HTTP method** to look up the correct resource, refers as **"routing"**.
+Web servers use the request's **path and HTTP method** to look up the correct resource, referred to as **"routing"**.
 
 We can define a route by calling a **method named after HTTP verbs**, passing a path and a function to execute when matched.
 
@@ -114,7 +114,7 @@ By default, web browsers will send a GET method when visiting a page.
 <Playground :elysia="demo1" />
 
 ::: tip
-Using an interactive browser above, hover on a blue highlight area to see difference result between each path
+Using the interactive browser above, hover on the blue highlight area to see different results between each path.
 :::
 
 ## Path type
@@ -202,7 +202,7 @@ Elysia will look up each request for [route](/essential/route) and response usin
 
 URLs can be both static and dynamic.
 
-Static paths are hardcoded strings that can be used to locate resources of the server, while dynamic paths match some part and captures the value to extract extra information.
+Static paths are hardcoded strings that can be used to locate resources on the server, while dynamic paths match some part and capture the value to extract extra information.
 
 For instance, we can extract the user ID from the pathname. For example:
 
@@ -217,7 +217,7 @@ new Elysia()
 
 <br>
 
-Here dynamic path is created with `/id/:id` which tells Elysia to match any path up until `/id`. What comes after that is then stored as **params** object.
+Here, a dynamic path is created with `/id/:id` which tells Elysia to match any path up until `/id`. What comes after that is then stored in the **params** object.
 
 <Playground
   :elysia="demo6"

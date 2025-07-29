@@ -72,7 +72,7 @@ export default function OTPEmail({ otp }: { otp: number }) {
                         This code is valid for 10 minutes
                     </Text>
                     <Text className="text-gray-600 text-xs">
-                        Thank you joining us
+                        Thank you for joining us
                     </Text>
                 </Section>
             </Section>

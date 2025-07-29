@@ -18,9 +18,9 @@ head:
 This page is a guide on how to deploy Elysia to production.
 
 ## Compile to binary
-We recommended running a build command before deploying to production as it could potentially reduce memory usage and file size significantly.
+We recommend running a build command before deploying to production as it could potentially reduce memory usage and file size significantly.
 
-We recommended compile Elysia into a single binary using the command as follows:
+We recommend compiling Elysia into a single binary using the command as follows:
 ```bash
 bun build \
 	--compile \
@@ -33,7 +33,7 @@ bun build \
 
 This will generate a portable binary `server` which we can run to start our server.
 
-Compiling server to binary usually significantly reduce memory usage by 2-3x compared to development environment.
+Compiling server to binary usually significantly reduces memory usage by 2-3x compared to development environment.
 
 This command is a bit long, so let's break it down:
 1. `--compile` - Compile TypeScript to binary
@@ -43,7 +43,7 @@ This command is a bit long, so let's break it down:
 5. `--outfile server` - Output the binary as `server`
 6. `./src/index.ts` - The entry file of our server (codebase)
 
-To start our server, simly run the binary.
+To start our server, simply run the binary.
 ```bash
 ./server
 ```
@@ -57,7 +57,7 @@ Bun does have `--minify` flag that will minify the binary.
 
 However if we are using [OpenTelemetry](/plugins/opentelemetry), it's going to reduce a function name to a single character.
 
-This make tracing harder than it should as OpenTelemetry rely on a function name.
+This makes tracing harder than it should as OpenTelemetry relies on a function name.
 
 However, if you're not using OpenTelemetry, you may opt in for `--minify` instead
 ```bash
@@ -70,7 +70,7 @@ bun build \
 ```
 
 ### Permission
-Some Linux distro might not be able to run the binary, we suggest enable executable permission to a binary if you're on Linux:
+Some Linux distros might not be able to run the binary, we suggest enabling executable permission to a binary if you're on Linux:
 ```bash
 chmod +x ./server
 
@@ -82,7 +82,7 @@ If you're trying to deploy a binary to your server but unable to run with random
 
 It means that the machine you're running on **doesn't support AVX2**.
 
-Unfortunately, Bun require machine that has an `AVX2` hardware support.
+Unfortunately, Bun requires a machine that has `AVX2` hardware support.
 
 There's no workaround as far as we know.
 

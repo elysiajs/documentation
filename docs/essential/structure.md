@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is pattern agnostic framework, we leave the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handling with types. This page is a guide to use Elysia with MVC pattern.
+        content: Elysia is a pattern agnostic framework, we leave the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handle types. This page is a guide to use Elysia with MVC pattern.
 
     - - meta
       - property: 'og:description'
-        content: Elysia is pattern agnostic framework, we the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handling with types. This page is a guide to use Elysia with MVC pattern.
+        content: Elysia is a pattern agnostic framework, we leave the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handle types. This page is a guide to use Elysia with MVC pattern.
 ---
 
 #### This page has been moved to [best practice](/essential/best-practice)
@@ -20,14 +20,14 @@ head:
 
 Elysia is a pattern-agnostic framework, leaving the decision of which coding patterns to use up to you and your team.
 
-However, there are several concern from trying to adapt an MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) with Elysia, and found it's hard to decouple and handle types.
+However, there are several concerns about trying to adapt an MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) with Elysia, and we found it's hard to decouple and handle types.
 
-This page is a guide to on how to follows Elysia structure best practice combined with MVC pattern but can be adapted to any coding pattern you like.
+This page is a guide on how to follow Elysia structure best practices combined with MVC pattern but can be adapted to any coding pattern you like.
 
 ## Method Chaining
 Elysia code should always use **method chaining**.
 
-As Elysia type system is complex, every methods in Elysia returns a new type reference.
+As Elysia's type system is complex, every method in Elysia returns a new type reference.
 
 **This is important** to ensure type integrity and inference.
 
@@ -66,9 +66,9 @@ We recommend <u>**always using method chaining**</u> to provide an accurate type
 
 Elysia does a lot to ensure type integrity, if you pass an entire `Context` type to a controller, these might be the problems:
 
-1. Elysia type is complex and heavily depends on plugin and multiple level of chaining.
-2. Hard to type, Elysia type could change at anytime, especially with decorators, and store
-3. Type casting may lead to a loss of type integrity or an inability to ensure consistency between types and runtime code.
+1. Elysia type is complex and heavily depends on plugin and multiple level of chaining
+2. Hard to type, Elysia type could change at any time, especially with decorators, and store
+3. Type casting may lead to a loss of type integrity or an inability to ensure consistency between types and runtime code
 4. This makes it more challenging for [Sucrose](/blog/elysia-10#sucrose) *(Elysia's "kind of" compiler)* to statically analyze your code
 
 ### ❌ Don't: Create a separate controller
@@ -87,10 +87,10 @@ new Elysia()
     .get('/', Controller.hi)
 ```
 
-By passing an entire `Controller.method` to Elysia is an equivalent of having 2 controllers passing data back and forth. It's against the design of framework and MVC pattern itself.
+Passing an entire `Controller.method` to Elysia is equivalent to having 2 controllers passing data back and forth. It's against the design of the framework and MVC pattern itself.
 
 ### ✅ Do: Use Elysia as a controller
-Instead treat an Elysia instance as a controller itself instead.
+Instead, treat an Elysia instance as a controller itself.
 ```typescript
 import { Elysia } from 'elysia'
 import { Service } from './service'
