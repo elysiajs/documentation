@@ -524,7 +524,7 @@ import { Elysia } from 'elysia'
 
 const app = new Elysia()
 	// Global middleware
-	.onRequest('/user', ({ method, path }) => {
+	.onRequest(({ method, path }) => {
 		console.log(`${method} ${path}`)
 	})
 	// Route-specific middleware
