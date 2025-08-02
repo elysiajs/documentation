@@ -415,6 +415,27 @@ const app = new Elysia()
 
 This this example, we may stream a response by using `yield` keyword.
 
+## Server Sent Events (SSE)
+Elysia supports [Server Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) by providing a `sse` utility function.
+
+```typescript twoslash
+import { Elysia, sse } from 'elysia'
+
+new Elysia()
+	.get('/sse', function* () {
+		yield sse('hello world')
+		yield sse({
+			event: 'message',
+			data: {
+				message: 'This is a message',
+				timestamp: new Date().toISOString()
+			},
+		})
+	})
+```
+
+When a value is wrapped in `sse`, Elysia will automatically set the response headers to `text/event-stream` and format the data as an SSE event.
+
 ### Set headers
 Elysia will defers returning response headers until the first chunk is yielded.
 
