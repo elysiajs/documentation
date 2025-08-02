@@ -32,10 +32,7 @@
 		"@elysiajs/static": "^1.3.0",
 		"@elysiajs/swagger": "^1.3.1",
 		"@hono/zod-validator": "^0.7.2",
-		"@nolebase/markdown-it-unlazy-img": "^2.18.1",
-		"@nolebase/vitepress-plugin-git-changelog": "^2.18.1",
 		"@nolebase/vitepress-plugin-inline-link-preview": "^2.18.1",
-		"@nolebase/vitepress-plugin-thumbnail-hash": "^2.18.1",
 		"@rollup/plugin-node-resolve": "^16.0.1",
 		"@shikijs/vitepress-twoslash": "^3.9.1",
 		"@tailwindcss/postcss": "^4.1.11",
@@ -47,7 +44,7 @@
 		"fastify": "^5.4.0",
 		"hono": "^4.8.12",
 		"markdown-it": "^14.1.0",
-		"oxc-minify": "^0.79.1",
+		"oxc-minify": "^0.78.0",
 		"postcss": "^8.5.6",
 		"postcss-nesting": "^13.0.2",
 		"postcss-preset-env": "^10.2.4",
@@ -64,6 +61,7 @@
 		"vue": "^3.5.18"
 	},
 	"overrides": {
+		"oxc-minify": "0.78.0",
 		"vite": "npm:rolldown-vite@latest",
 		"vitepress": "^2.0.0-alpha.9",
 		"vue": "^3.5.18"
