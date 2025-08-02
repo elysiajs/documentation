@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import Ray from '../midori/ray.vue'
+import Ray from '../fern/ray.vue'
 
 const props = defineProps<{
     blogs: {

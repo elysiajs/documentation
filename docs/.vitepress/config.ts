@@ -36,15 +36,6 @@ export default defineConfig({
             md.use(lightbox, {})
         }
     },
-    // vue: {
-    // 	template: {
-    // 		transformAssetUrls: {
-    // 			NolebaseUnlazyImg: ['src']
-    // 		}
-    // 	}
-    // },
-
-    // ![INFO] uncomment for support hot reload on WSL - https://github.com/vitejs/vite/issues/1153#issuecomment-785467271
     vite: {
         server: {
             watch: {
@@ -55,7 +46,7 @@ export default defineConfig({
             enableNativePlugin: true
         },
         plugins: [
-            tailwindcss() as any,
+            tailwindcss(),
             process.env.NODE_ENV === 'production'
                 ? llmstxt({
                       description: 'Ergonomic Framework for Humans',
@@ -69,8 +60,8 @@ export default defineConfig({
                       ],
                       domain: 'https://elysiajs.com'
                   })
-                : [],
-            process.env.ANALYZE === 'true' ? analyzer() : []
+                : undefined,
+            process.env.ANALYZE === 'true' ? analyzer() : undefined
         ],
         optimizeDeps: {
             exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client']
@@ -78,7 +69,6 @@ export default defineConfig({
         ssr: {
             noExternal: [
                 '@nolebase/vitepress-plugin-inline-link-preview',
-                '@unlazy/vue',
                 '@nolebase/ui'
             ]
         }

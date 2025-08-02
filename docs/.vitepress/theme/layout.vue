@@ -5,7 +5,7 @@ import DefaultTheme from 'vitepress/theme-without-fonts'
 
 import mediumZoom from 'medium-zoom'
 
-import useDark from '../../components/midori/use-dark'
+import useDark from './use-dark'
 import Ray from '../../components/fern/ray.vue'
 
 import { motion, cubicBezier, AnimatePresence } from 'motion-v'

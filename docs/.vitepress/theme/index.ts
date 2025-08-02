@@ -8,7 +8,6 @@ import {
 
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
-// @ts-ignore
 import Layout from './layout.vue'
 
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
@@ -23,8 +22,6 @@ export default {
     Layout,
     enhanceApp({ app }: EnhanceAppContext) {
         app.use(TwoslashFloatingVue)
-        // app.use(NolebaseInlineLinkPreviewPlugin)
-        // app.use(NolebaseGitChangelogPlugin)
     },
     setup() {
         // Get frontmatter and route
