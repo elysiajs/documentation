@@ -62,21 +62,20 @@ export default defineConfig({
         },
         plugins: [
             tailwindcss() as any,
-            // process.env.NODE_ENV === 'production'
-            //     ? llmstxt({
-            //           description: 'Ergonomic Framework for Humans',
-            //           details:
-            //               "Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket.",
-            //           ignoreFiles: [
-            //               'index.md',
-            //               'table-of-content.md',
-            //               'blog/*',
-            //               'public/*'
-            //           ],
-            //           domain: 'https://elysiajs.com',
-            //           generateLLMsFullTxt: false
-            //       })
-            //     : [],
+            process.env.NODE_ENV === 'production'
+                ? llmstxt({
+                      description: 'Ergonomic Framework for Humans',
+                      details:
+                          "Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket.",
+                      ignoreFiles: [
+                          'index.md',
+                          'table-of-content.md',
+                          'blog/*',
+                          'public/*'
+                      ],
+                      domain: 'https://elysiajs.com'
+                  })
+                : [],
             process.env.ANALYZE === 'true' ? analyzer() : []
             // GitChangelog({
             // 	repoURL: () => 'https://github.com/elysiajs/documentation',
