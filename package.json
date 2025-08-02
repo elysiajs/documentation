@@ -41,6 +41,7 @@
 		"@shikijs/vitepress-twoslash": "^3.6.0",
 		"@tailwindcss/postcss": "^4.1.10",
 		"@types/bun": "^1.2.16",
+		"@types/express": "^5.0.3",
 		"@types/node": "^24.0.3",
 		"@types/react": "^19.1.8",
 		"cheerio": "1.1.0",
