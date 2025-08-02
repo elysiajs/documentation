@@ -13,7 +13,7 @@ import { analyzer } from 'vite-bundle-analyzer'
 // 	GitChangelog,
 // 	GitChangelogMarkdownSection
 // } from '@nolebase/vitepress-plugin-git-changelog/vite'
-import { InlineLinkPreviewElementTransform } from '@nolebase/vitepress-plugin-inline-link-preview/markdown-it'
+// import { InlineLinkPreviewElementTransform } from '@nolebase/vitepress-plugin-inline-link-preview/markdown-it'
 
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -38,8 +38,8 @@ export default defineConfig({
             })
         ],
         config: (md) => {
-            md.use(InlineLinkPreviewElementTransform)
             md.use(lightbox, {})
+            // md.use(InlineLinkPreviewElementTransform)
             // md.use(UnlazyImages(), {
             // 	imgElementTag: 'NolebaseUnlazyImg'
             // })
@@ -60,6 +60,16 @@ export default defineConfig({
                 usePolling: true
             }
         },
+        // build: {
+        //     rollupOptions: {
+        //         output: {
+        //             manualChunks: {
+        //                 elysia: ['elysia'],
+        //                 vue: ['vue']
+        //             }
+        //         }
+        //     }
+        // },
         plugins: [
             tailwindcss() as any,
             process.env.NODE_ENV === 'production'

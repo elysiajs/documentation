@@ -9,8 +9,8 @@ import Layout from './layout.vue'
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
 import '@shikijs/vitepress-twoslash/style.css'
 
-import { NolebaseInlineLinkPreviewPlugin } from '@nolebase/vitepress-plugin-inline-link-preview/client'
-import '@nolebase/vitepress-plugin-inline-link-preview/client/style.css'
+// import { NolebaseInlineLinkPreviewPlugin } from '@nolebase/vitepress-plugin-inline-link-preview/client'
+// import '@nolebase/vitepress-plugin-inline-link-preview/client/style.css'
 
 // import { NolebaseGitChangelogPlugin } from '@nolebase/vitepress-plugin-git-changelog/client'
 // import '@nolebase/vitepress-plugin-git-changelog/client/style.css'
@@ -24,7 +24,7 @@ export default {
 	Layout,
 	enhanceApp({ app }: EnhanceAppContext) {
 		app.use(TwoslashFloatingVue)
-		app.use(NolebaseInlineLinkPreviewPlugin)
+		// app.use(NolebaseInlineLinkPreviewPlugin)
 		// app.use(NolebaseGitChangelogPlugin)
 	},
 	setup() {
