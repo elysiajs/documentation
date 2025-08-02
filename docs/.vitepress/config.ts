@@ -9,12 +9,6 @@ import tailwindcss from '@tailwindcss/vite'
 import llmstxt from 'vitepress-plugin-llms'
 import { analyzer } from 'vite-bundle-analyzer'
 
-// import {
-// 	GitChangelog,
-// 	GitChangelogMarkdownSection
-// } from '@nolebase/vitepress-plugin-git-changelog/vite'
-// import { InlineLinkPreviewElementTransform } from '@nolebase/vitepress-plugin-inline-link-preview/markdown-it'
-
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
 
@@ -40,10 +34,6 @@ export default defineConfig({
         ],
         config: (md) => {
             md.use(lightbox, {})
-            // md.use(InlineLinkPreviewElementTransform)
-            // md.use(UnlazyImages(), {
-            // 	imgElementTag: 'NolebaseUnlazyImg'
-            // })
         }
     },
     // vue: {
@@ -81,40 +71,6 @@ export default defineConfig({
                   })
                 : [],
             process.env.ANALYZE === 'true' ? analyzer() : []
-            // GitChangelog({
-            // 	repoURL: () => 'https://github.com/elysiajs/documentation',
-            // 	mapAuthors: [
-            // 		{
-            // 			mapByEmailAliases: ['saltyaom@gmail.com'],
-            // 			avatar: '/blog/authors/aris.webp',
-            // 			links: [
-            // 				{
-            // 					type: 'GitHub',
-            // 					link: 'https://github.com/SaltyAom'
-            // 				}
-            // 			]
-            // 		},
-            // 		{
-            // 			mapByNameAliases: ['bogeychan'],
-            // 			links: [
-            // 				{
-            // 					type: 'GitHub',
-            // 					link: 'http://github.com/bogeychan'
-            // 				}
-            // 			]
-            // 		},
-            // 		{
-            // 			mapByNameAliases: ['Fecony'],
-            // 			links: [
-            // 				{
-            // 					type: 'GitHub',
-            // 					link: 'https://github.com/fecony'
-            // 				}
-            // 			]
-            // 		}
-            // 	]
-            // }),
-            // GitChangelogMarkdownSection()
         ],
         optimizeDeps: {
             exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client']
