@@ -29,6 +29,7 @@ export default defineConfig({
             light: 'github-light',
             dark: 'github-dark'
         },
+        languages: ['js', 'ts'],
         codeTransformers: [
             // @ts-ignore
             transformerTwoslash({
@@ -60,16 +61,9 @@ export default defineConfig({
                 usePolling: true
             }
         },
-        // build: {
-        //     rollupOptions: {
-        //         output: {
-        //             manualChunks: {
-        //                 elysia: ['elysia'],
-        //                 vue: ['vue']
-        //             }
-        //         }
-        //     }
-        // },
+        experimental: {
+            enableNativePlugin: true
+        },
         plugins: [
             tailwindcss() as any,
             process.env.NODE_ENV === 'production'

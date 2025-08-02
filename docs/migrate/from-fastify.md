@@ -201,7 +201,7 @@ app.register(subRouter, {
 
 <template v-slot:left-content>
 
-> Fsatify use a function callback to declare a sub router
+> Fastify use a function callback to declare a sub router
 
 </template>
 
