@@ -221,15 +221,17 @@ function utility() {
 
 This works outside of the handler by retriving current span from `AsyncLocalStorage`
 
-## setAttribute
+## setAttributes
 
-`setAttribute` is a utility to set attribute to the current span.
+`setAttributes` is a utility to set attributes to the current span.
 
 ```typescript
-import { setAttribute } from '@elysiajs/opentelemetry'
+import { setAttributes } from '@elysiajs/opentelemetry'
 
 function utility() {
-	setAttribute('custom.attribute', 'value')
+	span.setAttributes({
+		'custom.attribute': 'value'
+	})
 }
 ```
 
