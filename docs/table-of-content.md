@@ -26,7 +26,7 @@ There's no correct way to learn Elysia, but we recommended **completing the esse
 	<Card title="Cheat sheet" href="/integrations/cheat-sheet">
 	    A quick overview of Elysia
 	</Card>
-    <Card title="Structure" href="/essential/structure">
+    <Card title="Best Practice" href="/essential/best-practice">
         Understand how to structure your code
     </Card>
     <Card title="Validation" href="/essential/validation">

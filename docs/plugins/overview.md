@@ -39,7 +39,6 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Static](/plugins/static) - serve static files/folders
 -   [Stream](/plugins/stream) - integrate response streaming and [server-sent events (SSEs)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
 -   [Swagger](/plugins/swagger) - generate [Swagger](https://swagger.io/) documentation
--   [tRPC](/plugins/trpc) - support [tRPC](https://trpc.io/)
 -   [WebSocket](/patterns/websocket) - support [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 
 ## Community plugins:

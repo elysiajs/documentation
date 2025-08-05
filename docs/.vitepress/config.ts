@@ -201,10 +201,6 @@ export default defineConfig({
                     {
                         text: 'Swagger',
                         link: '/plugins/swagger'
-                    },
-                    {
-                        text: 'trpc',
-                        link: '/plugins/trpc'
                     }
                 ]
             },
@@ -434,10 +430,6 @@ export default defineConfig({
                     {
                         text: 'Swagger',
                         link: '/plugins/swagger'
-                    },
-                    {
-                        text: 'trpc',
-                        link: '/plugins/trpc'
                     }
                 ]
             },
