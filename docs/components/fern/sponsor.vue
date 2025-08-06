@@ -289,7 +289,7 @@ const individualSponsors = sponsors.filter(
         @apply flex justify-center items-center gap-3 text-xs text-center py-2;
 
         & > div {
-            @apply min-w-21 min-h-21 bg-gray-100 overflow-hidden rounded-full;
+            @apply min-w-21 min-h-21 overflow-hidden rounded-full;
 
             & > img {
                 @apply w-21 h-21 rounded-full object-cover object-center;
