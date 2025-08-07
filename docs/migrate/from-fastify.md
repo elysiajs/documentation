@@ -13,7 +13,7 @@ head:
 
     - - meta
       - name: 'description'
-        content: This guide is for Fastify users who want to see a differences from Fastify including syntax, and how to migrate your application from Fastify to Elysia by example.
+        content: This guide is for Fastify users who want to see the differences from Fastify including syntax, and how to migrate your application from Fastify to Elysia by example.
 
     - - meta
       - property: 'og:description'
@@ -34,7 +34,7 @@ This guide is for Fastify users who want to see a differences from Fastify inclu
 
 **Fastify** is a fast and low overhead web framework for Node.js, designed to be simple and easy to use. It is built on top of the HTTP module and provides a set of features that make it easy to build web applications.
 
-**Elysia** is an ergonomic web framework for Bun, Node.js, and runtime that support Web Standard API. Designed to be ergonomic and developer-friendly with a focus on **sounds type safety** and performance.
+**Elysia** is an ergonomic web framework for Bun, Node.js, and runtime that supports Web Standard API. Designed to be ergonomic and developer-friendly with a focus on **sound type safety** and performance.
 
 ## Performance
 Elysia has significant performance improvements over Fastify thanks to native Bun implementation, and static code analysis.

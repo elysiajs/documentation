@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Reactive Cookie take a more modern approach like signal to handle cookie with an ergonomic API. There's no 'getCookie', 'setCookie', everything is just a cookie object. When you want to use cookie, you just extract the name and value directly.
+      content: Reactive Cookie takes a more modern approach like signals to handle cookies with an ergonomic API. There's no 'getCookie', 'setCookie', everything is just a cookie object. When you want to use cookies, you just extract the name and value directly.
 
   - - meta
     - property: 'og:description'
-      content: Reactive Cookie take a more modern approach like signal to handle cookie with an ergonomic API. There's no 'getCookie', 'setCookie', everything is just a cookie object. When you want to use cookie, you just extract the name and value directly.
+      content: Reactive Cookie takes a more modern approach like signals to handle cookies with an ergonomic API. There's no 'getCookie', 'setCookie', everything is just a cookie object. When you want to use cookies, you just extract the name and value directly.
 ---
 
 # Cookie
@@ -31,10 +31,10 @@ new Elysia()
     })
 ```
 
-By default, Reactive Cookie can encode/decode type of object automatically allowing us to treat cookie as an object without worrying about the encoding/decoding. **It just works**.
+By default, Reactive Cookie can encode/decode object types automatically allowing us to treat cookies as objects without worrying about the encoding/decoding. **It just works**.
 
 ## Reactivity
-The Elysia cookie is reactive. This means that when you change the cookie value, the cookie will be updated automatically based on approach like signal.
+The Elysia cookie is reactive. This means that when you change the cookie value, the cookie will be updated automatically based on an approach like signals.
 
 A single source of truth for handling cookies is provided by Elysia cookies, which have the ability to automatically set headers and sync cookie values.
 

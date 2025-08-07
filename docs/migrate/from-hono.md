@@ -13,7 +13,7 @@ head:
 
     - - meta
       - name: 'description'
-        content: This guide is for Hono users who want to see a differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
+        content: This guide is for Hono users who want to see the differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
 
     - - meta
       - property: 'og:description'
@@ -34,9 +34,9 @@ This guide is for Hono users who want to see a differences from Elysia including
 
 **Hono** is a fast and lightweight built on Web Standard. It has broad compatibility with multiple runtime like Deno, Bun, Cloudflare Workers, and Node.js.
 
-**Elysia** is an ergonomic web framework. Designed to be ergonomic and developer-friendly with a focus on **sounds type safety** and performance.
+**Elysia** is an ergonomic web framework. Designed to be ergonomic and developer-friendly with a focus on **sound type safety** and performance.
 
-Both frameworks are built on top of Web Standard API, and has slight different syntax. Hono offers more compatability with multiple runtimes while Elysia focus on specific set of runtimes.
+Both frameworks are built on top of Web Standard API, and have slightly different syntax. Hono offers more compatibility with multiple runtimes while Elysia focuses on a specific set of runtimes.
 
 ## Performance
 Elysia has significant performance improvements over Hono thanks to static code analysis.

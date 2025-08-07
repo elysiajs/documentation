@@ -72,7 +72,7 @@ export const GET = app.handle
 export const POST = app.handle
 ```
 
-This will ensure that Elysia routing will work properly in any location you place in.
+This will ensure that Elysia routing will work properly in any location you place it in.
 
 ## Deployment
 You can either directly use API route using Elysia and deploy as normal Elysia app normally if need or using [experimental Expo server runtime](https://docs.expo.dev/router/reference/api-routes/#deployment).

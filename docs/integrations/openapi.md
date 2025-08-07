@@ -33,14 +33,14 @@ const app = new Elysia()
     .use(swagger())
 ```
 
-By default, Elysia use OpenAPI V3 schema and [Scalar UI](http://scalar.com) by default
+By default, Elysia uses OpenAPI V3 schema and [Scalar UI](http://scalar.com)
 
 For Swagger plugin configuration, see the [Swagger plugin page](/plugins/swagger).
 
 ## Route definitions
 We add route information by providing a schema type.
 
-However, sometime defining a type only isn't clear what the route might work. You can use `schema.detail` fields to explictly define what the route is all about.
+However, sometimes defining only a type does not make it clear what the route might do. You can use `schema.detail` fields to explicitly define what the route is all about.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -58,7 +58,7 @@ new Elysia()
                 })
             },
             { // [!code ++]
-                description: 'Expected an username and password' // [!code ++]
+                description: 'Expected a username and password' // [!code ++]
             } // [!code ++]
         ),
         detail: { // [!code ++]
@@ -75,9 +75,9 @@ Detail is then passed to Swagger to put the description to Swagger route.
 ### detail
 `detail` extends the [OpenAPI Operation Object](https://swagger.io/specification#operation-object)
 
-The detail field is an object that can be use to describe information about the route for API documentation.
+The detail field is an object that can be used to describe information about the route for API documentation.
 
-Which may contains the following fields:
+It may contain the following fields:
 
 ### tags
 An array of tags for the operation. Tags can be used for logical grouping of operations by resources or any other qualifier.
@@ -116,7 +116,7 @@ new Elysia()
                 password: t.String()
             },
             {
-                description: 'Expected an username and password'
+                description: 'Expected a username and password'
             }
         ),
         detail: { // [!code ++]

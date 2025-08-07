@@ -20,7 +20,7 @@ Better Auth is framework-agnostic authentication (and authorization) framework f
 
 It provides a comprehensive set of features out of the box and includes a plugin ecosystem that simplifies adding advanced functionalities.
 
-We recommended going through [Better Auth basic setup](https://www.better-auth.com/docs/installation) before going through this page.
+We recommend going through the [Better Auth basic setup](https://www.better-auth.com/docs/installation) before going through this page.
 
 Our basic setup will look like this:
 
@@ -56,7 +56,7 @@ Then we can access Better Auth with `http://localhost:3000/api/auth`.
 
 ### Custom endpoint
 
-We recommended setting a prefix path for when using [mount](/patterns/mount.html).
+We recommend setting a prefix path when using [mount](/patterns/mount.html).
 
 ```ts [index.ts]
 import { Elysia } from 'elysia'

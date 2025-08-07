@@ -68,7 +68,7 @@ const demo4 = new Elysia()
 
 The purpose of creating an API server is to take an input and process it.
 
-JavaScript allows any data to be any type. Elysia provides a tool to validate data out of the box to ensure that the data is in the correct format.
+JavaScript allows any data to be of any type. Elysia provides a tool to validate data out of the box to ensure that the data is in the correct format.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -91,7 +91,7 @@ TypeBox is a very fast, lightweight, and type-safe runtime validation library fo
 We believe that validation should be handled by the framework natively, rather than relying on the user to set up a custom type for every project.
 
 ### TypeScript
-We can get a type definitions of every Elysia/TypeBox's type by accessing `static` property as follows:
+We can get type definitions of every Elysia/TypeBox's type by accessing the `static` property as follows:
 
 ```ts twoslash
 import { t } from 'elysia'
