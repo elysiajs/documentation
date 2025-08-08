@@ -1477,7 +1477,7 @@ export const note = new Elysia({ prefix: '/note' })
             if (index in note.data) return note.update(index, data) // [!code --]
         ({ note, params: { index }, body: { data }, status, username }) => { // [!code ++]
         	if (index in note.data) // [!code ++]
-         		return note.update(index, { data, author: username })) // [!code ++]
+         		return note.update(index, { data, author: username }) // [!code ++]
 
             return status(422)
         },
@@ -1683,7 +1683,7 @@ Now let's apply the OpenTelemetry plugin to our server.
 ::: code-group
 
 ```typescript [index.ts]
-import { Elysia, t } from 'elysia'
+import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry' // [!code ++]
 import { swagger } from '@elysiajs/swagger'
 
