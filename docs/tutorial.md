@@ -639,10 +639,8 @@ export const note = new Elysia({ prefix: '/note' })
             data: t.String()
         })
     })
-    .guard({
-        // [!code ++]
-        params: t.Object({
-            // [!code ++]
+    .guard({ // [!code ++]
+        params: t.Object({ // [!code ++]
             index: t.Number() // [!code ++]
         }) // [!code ++]
     }) // [!code ++]
@@ -651,10 +649,8 @@ export const note = new Elysia({ prefix: '/note' })
         ({ note, params: { index }, status }) => {
             return note.data[index] ?? status(404, 'Not Found :(')
         },
-        {
-            // [!code --]
-            params: t.Object({
-                // [!code --]
+        { // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }) // [!code --]
         } // [!code --]
@@ -666,10 +662,8 @@ export const note = new Elysia({ prefix: '/note' })
 
             return status(422)
         },
-        {
-            // [!code --]
-            params: t.Object({
-                // [!code --]
+        { // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }) // [!code --]
         } // [!code --]
@@ -682,8 +676,7 @@ export const note = new Elysia({ prefix: '/note' })
             return status(422)
         },
         {
-            params: t.Object({
-                // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }), // [!code --]
             body: t.Object({
