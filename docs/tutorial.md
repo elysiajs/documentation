@@ -1107,26 +1107,20 @@ export const userService = new Elysia({ name: 'user/service' }) // [!code ++]
 
 export const user = new Elysia({ prefix: '/user' })
     .use(userService) // [!code ++]
-    .state({
-        // [!code --]
+    .state({ // [!code --]
         user: {} as Record<string, string>, // [!code --]
         session: {} as Record<number, string> // [!code --]
     }) // [!code --]
-    .model({
-        // [!code --]
-        signIn: t.Object({
-            // [!code --]
+    .model({ // [!code --]
+        signIn: t.Object({ // [!code --]
             username: t.String({ minLength: 1 }), // [!code --]
             password: t.String({ minLength: 8 }) // [!code --]
         }), // [!code --]
-        session: t.Cookie(
-            // [!code --]
-            {
-                // [!code --]
+        session: t.Cookie( // [!code --]
+            { // [!code --]
                 token: t.Number() // [!code --]
             }, // [!code --]
-            {
-                // [!code --]
+            { // [!code --]
                 secrets: 'seia' // [!code --]
             } // [!code --]
         ), // [!code --]
@@ -1188,27 +1182,22 @@ export const userService = new Elysia({ name: 'user/service' })
             // [!code ++]
             if (!enabled) return // [!code ++]
 
-            return {
-                beforeHandle({
-                    status,
-                    cookie: { token },
-                    store: { session }
-                }) {
-                    // [!code ++]
-                    if (!token.value)
-                        // [!code ++]
-                        return status(401, {
-                            // [!code ++]
+            return { // [!code ++]
+                beforeHandle({ // [!code ++]
+                    status, // [!code ++]
+                    cookie: { token }, // [!code ++]
+                    store: { session } // [!code ++]
+                }) { // [!code ++]
+                    if (!token.value) // [!code ++]
+                        return status(401, { // [!code ++]
                             success: false, // [!code ++]
                             message: 'Unauthorized' // [!code ++]
                         }) // [!code ++]
 
                     const username = session[token.value as unknown as number] // [!code ++]
 
-                    if (!username)
-                        // [!code ++]
-                        return status(401, {
-                            // [!code ++]
+                    if (!username) // [!code ++]
+                        return status(401, { // [!code ++]
                             success: false, // [!code ++]
                             message: 'Unauthorized' // [!code ++]
                         }) // [!code ++]
@@ -1230,10 +1219,8 @@ export const user = new Elysia({ prefix: '/user' }).use(userService).get(
     ({ cookie: { token }, store: { session }, status }) => {
         const username = session[token.value]
 
-        if (!username)
-            // [!code --]
-            return status(401, {
-                // [!code --]
+        if (!username) // [!code --]
+            return status(401, { // [!code --]
                 success: false, // [!code --]
                 message: 'Unauthorized' // [!code --]
             }) // [!code --]
@@ -1267,12 +1254,10 @@ This ensures that the property like `cookie: 'session'` exists before creating a
 ```ts [user.ts]
 export const getUserId = new Elysia() // [!code ++]
     .use(userService) // [!code ++]
-    .guard({
-        // [!code ++]
+    .guard({ // [!code ++]
         cookie: 'session' // [!code ++]
     }) // [!code ++]
-    .resolve(({ store: { session }, cookie: { token } }) => ({
-        // [!code ++]
+    .resolve(({ store: { session }, cookie: { token } }) => ({ // [!code ++]
         username: session[token.value] // [!code ++]
     })) // [!code ++]
 ```
@@ -1465,8 +1450,8 @@ export const note = new Elysia({ prefix: '/note' })
     	note.add({ data, author: username }),
      	{ // [!code ++]
      		body: 'memo' // [!code ++]
-      	}
-    ) // [!code ++]
+      	} // [!code ++]
+    )
     .guard({
         params: t.Object({
             index: t.Number()
@@ -1500,7 +1485,7 @@ export const note = new Elysia({ prefix: '/note' })
             body: t.Object({ // [!code --]
                 data: t.String() // [!code --]
             }), // [!code --]
-            body: 'memo'
+            body: 'memo' // [!code ++]
         }
     )
 ```
@@ -1622,8 +1607,7 @@ import { user } from './user'
 
 const app = new Elysia()
     .use(swagger())
-    .onError(({ error, code }) => {
-        // [!code ++]
+    .onError(({ error, code }) => { // [!code ++]
         if (code === 'NOT_FOUND') return // [!code ++]
 
         console.error(error) // [!code ++]
@@ -1655,8 +1639,7 @@ import { note } from './note'
 
 const app = new Elysia()
     .use(swagger())
-    .onError(({ error, code }) => {
-        // [!code ++]
+    .onError(({ error, code }) => { // [!code ++]
         if (code === 'NOT_FOUND') return 'Not Found :(' // [!code ++]
 
         console.error(error) // [!code ++]
