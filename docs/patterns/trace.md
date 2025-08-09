@@ -24,6 +24,10 @@ There are many factors that can slow down our app - and it's hard to identify th
 
 Trace allows us to inject code to before and after of each life-cycle event, block and interact with the execution of the function.
 
+::: info
+trace doesn't work with dynamic mode `aot: false`, as it requires the function to be static and known at compile time otherwise it will have a large performance impact.
+:::
+
 ## Trace
 Trace use a callback listener to ensure that callback function is finished before moving on to the next lifecycle event.
 
