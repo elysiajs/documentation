@@ -24,7 +24,7 @@ There are many factors that can slow down our app - and it's hard to identify th
 
 Trace allows us to inject code to before and after of each life-cycle event, block and interact with the execution of the function.
 
-::: info
+::: warning
 trace doesn't work with dynamic mode `aot: false`, as it requires the function to be static and known at compile time otherwise it will have a large performance impact.
 :::
 
