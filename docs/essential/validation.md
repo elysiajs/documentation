@@ -753,7 +753,7 @@ All members must be a string
 t.Object({
     x: t.Number()
 }, {
-    error: 'Invalid object UwU'
+    error: 'Invalid object UnU'
 })
 ```
 
@@ -761,7 +761,7 @@ t.Object({
 <td>
 
 ```
-Invalid object UwU
+Invalid object UnU
 ```
 
 </td>
@@ -829,7 +829,7 @@ Invalid Email :(
 t.Object({
     x: t.Number()
 }, {
-    error: 'Invalid object UwU'
+    error: 'Invalid object UnU'
 })
 ```
 
@@ -837,7 +837,7 @@ t.Object({
 <td>
 
 ```
-Invalid object UwU
+Invalid object UnU
 ```
 
 </td>
