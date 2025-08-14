@@ -55,7 +55,7 @@ Learn more about this in [plugin](/essential/plugin.html).
 ## Method Chaining
 Elysia code should always use **method chaining**.
 
-As Elysia type system is complex, every methods in Elysia returns a new type reference.
+As Elysia type system is complex, every method in Elysia returns a new type reference.
 
 **This is important** to ensure type integrity and inference.
 
