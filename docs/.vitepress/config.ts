@@ -438,6 +438,10 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
+                        text: 'Apitally',
+                        link: '/integrations/apitally'
+                    },
+                    {
                         text: 'Astro',
                         link: '/integrations/astro'
                     },
