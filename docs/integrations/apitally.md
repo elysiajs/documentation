@@ -53,7 +53,7 @@ A more detailed [setup guide for Elysia](https://docs.apitally.io/frameworks/ely
 
 ## Consumers
 
-You can associate requests with consumer identifiers, allowing you get insights into API adoption and filter logs and metrics by consumer.
+You can associate requests with consumer identifiers, allowing you to get insights into API adoption and filter logs and metrics by consumer.
 
 ```typescript
 app.derive(async ({ apitally, jwt, cookie: { auth } }) => {
@@ -68,7 +68,7 @@ app.derive(async ({ apitally, jwt, cookie: { auth } }) => {
 
 ## Logs
 
-Capturing request and applications logs is disabled by default. You can enable it by passing the `requestLogging` option to the plugin and
+Capturing request and application logs is disabled by default. You can enable it by passing the `requestLogging` option to the plugin and
 configure in detail what's included in the logs.
 
 ```typescript
