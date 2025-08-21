@@ -484,7 +484,11 @@ export default defineConfig({
                     {
                         text: 'SvelteKit',
                         link: '/integrations/sveltekit'
-                    }
+                    },
+                    {
+                        text: 'Vercel',
+                        link: '/integrations/vercel'
+                    },
                 ]
             }
         ],

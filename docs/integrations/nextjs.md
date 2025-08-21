@@ -20,22 +20,19 @@ With Next.js App Router, we can run Elysia on Next.js routes.
 
 1. Create **api/[[...slugs]]/route.ts** inside app router
 2. In **route.ts**, create or import an existing Elysia server
-3. Export the handler with the name of method you want to expose
+3. Export the Elysia server as default export
 
 ```typescript
 // app/api/[[...slugs]]/route.ts
 import { Elysia, t } from 'elysia'
 
-const app = new Elysia({ prefix: '/api' })
+export default new Elysia({ prefix: '/api' })
     .get('/', () => 'hello Next')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
-
-export const GET = app.handle // [!code ++]
-export const POST = app.handle // [!code ++]
 ```
 
 Elysia will work normally as expected because of WinterCG compliance, however, some plugins like **Elysia Static** may not work if you are running Next.js on Node.
@@ -56,16 +53,13 @@ For example, if you place Elysia server in **app/user/[[...slugs]]/route.ts**, y
 // app/user/[[...slugs]]/route.ts
 import { Elysia, t } from 'elysia'
 
-const app = new Elysia({ prefix: '/user' }) // [!code ++]
+export default new Elysia({ prefix: '/user' }) // [!code ++]
     .get('/', () => 'hi')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
-
-export const GET = app.handle
-export const POST = app.handle
 ```
 
 This will ensure that Elysia routing will work properly in any location you place it.
