@@ -792,8 +792,6 @@ new Elysia()
 
 Elysia error code consists of:
 
-"UNKNOWN" | "VALIDATION" | "NOT_FOUND" | "PARSE" | "INTERNAL_SERVER_ERROR" | "INVALID_COOKIE_SIGNATURE" | "INVALID_FILE_TYPE"
-
 - **NOT_FOUND**
 - **PARSE**
 - **VALIDATION**
@@ -808,71 +806,6 @@ By default, the thrown error code is `UNKNOWN`.
 ::: tip
 If no error response is returned, the error will be returned using `error.name`.
 :::
-
-### To Throw or To Return
-
-`Elysia.error` is a shorthand for returning an error with a specific HTTP status code.
-
-It could either be **return** or **throw** based on your specific needs.
-
-- If an `status` is **throw**, it will be caught by `onError` middleware.
-- If an `status` is **return**, it will be **NOT** caught by `onError` middleware.
-
-See the following code:
-
-```typescript
-import { Elysia, file } from 'elysia'
-
-new Elysia()
-    .onError(({ code, error, path }) => {
-        if (code === 418) return 'caught'
-    })
-    .get('/throw', ({ status }) => {
-        // This will be caught by onError
-        throw status(418)
-    })
-    .get('/return', ({ status }) => {
-        // This will NOT be caught by onError
-        return status(418)
-    })
-```
-
-<Playground
-    :elysia="demo"
-/>
-
-### Custom Error
-
-Elysia supports custom error both in the type-level and implementation level.
-
-To provide a custom error code, we can use `Elysia.error` to add a custom error code, helping us to easily classify and narrow down the error type for full type safety with auto-complete as the following:
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-class MyError extends Error {
-    constructor(public message: string) {
-        super(message)
-    }
-}
-
-new Elysia()
-    .error({
-        MyError
-    })
-    .onError(({ code, error }) => {
-        switch (code) {
-            // With auto-completion
-            case 'MyError':
-                // With type narrowing
-                // Hover to see error is typed as `CustomError`
-                return error
-        }
-    })
-    .get('/', () => {
-        throw new MyError('Hello Error')
-    })
-```
 
 ### Local Error
 

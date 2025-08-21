@@ -298,6 +298,10 @@ export default defineConfig({
                         link: '/patterns/deploy'
                     },
                     {
+                        text: 'Error Handling',
+                        link: '/patterns/error-handling'
+                    },
+                    {
                         text: 'Macro',
                         link: '/patterns/macro'
                     },
