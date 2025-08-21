@@ -26,7 +26,7 @@ Vercel Function support Web Standard Framework by default, so you can run Elysia
 import { Elysia, t } from 'elysia'
 
 export default new Elysia()
-    .get('/', () => 'hello Next')
+    .get('/', () => 'Hello Vercel Function')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
@@ -50,6 +50,8 @@ export default new Elysia()
 
 This configuration will rewrite all requests to the `/api` route, which is where Elysia server is defined.
 
-No additional configuration is needed for Elysia to work with Vercel Function, as it supports the Web Standard Framework by default. You can use Elysia's features such as routing, middleware, and more without any issues.
+No additional configuration is needed for Elysia to work with Vercel Function, as it supports the Web Standard Framework by default.
+
+You can also use Elysia's built-in features like validation, error handling, [OpenAPI (scalar)](/plugins/swagger.html) and more, just like you would in any other environment.
 
 For additional information, please refer to [Vercel Function documentation](https://vercel.com/docs/functions?framework=other).
