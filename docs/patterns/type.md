@@ -501,7 +501,7 @@ The following are types provided by Elysia:
     <Card title="ObjectString" href="#object-string">
     	Accepts a string that can be parsed into an object
     </Card>
-    <Card title="BooleanString" href="#object-string">
+    <Card title="BooleanString" href="#boolean-string">
     	Accepts a string that can be parsed into an boolean
     </Card>
     <Card title="Numeric" href="#numeric">
