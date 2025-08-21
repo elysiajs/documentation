@@ -14,6 +14,12 @@ head:
         content: Vercel Function support Web Standard Framework by default, so you can run Elysia on Vercel Function without any additional configuration.
 ---
 
+<a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FSaltyAom%2Fvercel-function-elysia-demo">
+	<img src="https://vercel.com/button" alt="Deploy with Vercel"/>
+</a>
+
+<br>
+
 # Integration with Vercel Function
 
 Vercel Function support Web Standard Framework by default, so you can run Elysia on Vercel Function without any additional configuration.
