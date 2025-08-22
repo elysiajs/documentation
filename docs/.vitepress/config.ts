@@ -442,6 +442,10 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
+                        text: 'AI SDK',
+                        link: '/integrations/ai-sdk'
+                    },
+                    {
                         text: 'Astro',
                         link: '/integrations/astro'
                     },
@@ -488,7 +492,7 @@ export default defineConfig({
                     {
                         text: 'Vercel',
                         link: '/integrations/vercel'
-                    },
+                    }
                 ]
             }
         ],
