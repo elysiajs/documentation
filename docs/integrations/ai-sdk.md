@@ -24,7 +24,7 @@ Elysia support continous streaming of a `ReadableStream` and `Response` allowing
 
 ```ts
 import { Elysia } from 'elysia'
-import { ai } from 'ai'
+import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 
 new Elysia().get('/', () => {
@@ -50,7 +50,7 @@ Elysia also supports Server Sent Event for streaming response by simply wrap a `
 
 ```ts
 import { Elysia, sse } from 'elysia' // [!code ++]
-import { ai } from 'ai'
+import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 
 new Elysia().get('/', () => {
