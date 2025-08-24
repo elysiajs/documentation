@@ -7,19 +7,19 @@ head:
 
     - - meta
       - name: 'description'
-        content: Apitally allows you to capture API metrics and logs for your ElysiaJS application.
+        content: Apitally allows you to capture API metrics and logs for your ElysiaJS application with just a few lines of code.
 
     - - meta
       - name: 'og:description'
-        content: Apitally allows you to capture API metrics and logs for your ElysiaJS application.
+        content: Apitally allows you to capture API metrics and logs for your ElysiaJS application with just a few lines of code.
 ---
 
 # Apitally
 
 [Apitally](https://apitally.io/elysia) is a simple API monitoring and analytics tool with an official plugin for Elysia.
 
-It provides real-time insights into API usage, errors, and performance. It also captures request and application logs,
-with.
+It provides real-time insights into API usage, errors, and performance. It also captures request and application logs
+with automatic correlation.
 
 ![Apitally dashboard showing API traffic metrics](/recipe/apitally/traffic-dashboard.webp)
 
