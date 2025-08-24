@@ -30,8 +30,7 @@ import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
     .post('/user', ({ body: { name }, status }) => {
-        if(name === 'Otto')
-            return status(400, 'Bad Request')
+        if(name === 'Otto') return status(400)
 
         return name
     }, {
@@ -76,10 +75,11 @@ Otherwise, response will be passed to `data`.
 :::
 
 ## Stream response
-Eden will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+Eden will interpret a stream response or [Server-Sent Events](/essential/handler.html#server-sent-events-sse) as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
 
+::: code-group
 
-```typescript twoslash
+```typescript twoslash [Stream]
 import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -96,4 +96,96 @@ if (error) throw error
 for await (const chunk of data)
 	console.log(chunk)
                // ^?
+```
+
+```typescript twoslash [Server-Sent Events]
+import { Elysia, sse } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield sse({
+			event: 'message',
+			data: 1
+		})
+		yield sse({
+			event: 'message',
+			data: 2
+		})
+		yield sse({
+			event: 'end'
+		})
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+               // ^?
+
+
+
+
+
+
+
+//
+```
+
+:::
+
+
+## Utility type
+Eden Treaty provides a utility type `Treaty.Data<T>` and `Treaty.Error<T>` to extract the `data` and `error` type from the response.
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+import { treaty, Treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+	.post('/user', ({ body: { name }, status }) => {
+		if(name === 'Otto') return status(400)
+
+		return name
+	}, {
+		body: t.Object({
+			name: t.String()
+		})
+	})
+	.listen(3000)
+
+const api =
+	treaty<typeof app>('localhost:3000')
+
+type UserData = Treaty.Data<typeof api.user.post>
+//     ^?
+
+
+// Alternatively you can also pass a response
+const response = await api.user.post({
+	name: 'Saltyaom'
+})
+
+type UserDataFromResponse = Treaty.Data<typeof response>
+//     ^?
+
+
+
+type UserError = Treaty.Error<typeof api.user.post>
+//     ^?
+
+
+
+
+
+
+
+
+
+
+
+
+//
 ```

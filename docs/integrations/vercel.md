@@ -40,7 +40,7 @@ export default new Elysia()
     })
 ```
 
-4. Create `vercel.json` to rewrite the API route to Elysia server
+4. Create **vercel.json** to rewrite the API route to Elysia server
 
 ```json
 {
