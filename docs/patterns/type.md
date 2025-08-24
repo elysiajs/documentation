@@ -490,9 +490,21 @@ The following are types provided by Elysia:
         Accepts empty string or null value
     </Card>
     <Card title="Form" href="#form">
-    	Validate type for FormData as a return value
+    	Enforce and validate type for FormData body as a return value
     </Card>
-    <Card title="Numeric" href="#numeric-legacy">
+	<Card title="UInt8Array" href="#uint8array">
+		Accepts a buffer that can be parsed into a `Uint8Array`
+	</Card>
+	<Card title="ArrayBuffer" href="#arraybuffer">
+		Accepts a buffer that can be parsed into a `ArrayBuffer`
+	</Card>
+    <Card title="ObjectString" href="#object-string">
+    	Accepts a string that can be parsed into an object
+    </Card>
+    <Card title="BooleanString" href="#boolean-string">
+    	Accepts a string that can be parsed into an boolean
+    </Card>
+    <Card title="Numeric" href="#numeric">
         Accepts a numeric string or number and then transforms the value into a number
     </Card>
 </Deck>
@@ -504,8 +516,6 @@ The following are types provided by Elysia:
 ```typescript
 t.UnionEnum(['rapi', 'anis', 1, true, false])
 ```
-
-By default, these value will not automatically
 
 ### File
 
@@ -615,11 +625,43 @@ t.FormData({
 })
 ```
 
-### Numeric (legacy)
-::: warning
-This is not need as Elysia type already transforms Number to Numeric automatically since 1.0
-:::
+### UInt8Array
+Accepts a buffer that can be parsed into a `Uint8Array`.
 
+```typescript
+t.UInt8Array()
+```
+
+This is useful when you want to accept a buffer that can be parsed into a `Uint8Array`, such as in a binary file upload. It's designed to use for the validation of body with `arrayBuffer` parser to enforce the body type.
+
+### ArrayBuffer
+Accepts a buffer that can be parsed into a `ArrayBuffer`.
+
+```typescript
+t.ArrayBuffer()
+```
+
+This is useful when you want to accept a buffer that can be parsed into a `Uint8Array`, such as in a binary file upload. It's designed to use for the validation of body with `arrayBuffer` parser to enforce the body type.
+
+### ObjectString
+Accepts a string that can be parsed into an object.
+
+```typescript
+t.ObjectString()
+```
+
+This is useful when you want to accept a string that can be parsed into an object but the environment does not allow it explicitly, such as in a query string, header, or FormData body.
+
+### BooleanString
+Accepts a string that can be parsed into a boolean.
+
+Similar to [ObjectString](#objectstring), this is useful when you want to accept a string that can be parsed into a boolean but the environment does not allow it explicitly.
+
+```typescript
+t.BooleanString()
+```
+
+### Numeric
 Numeric accepts a numeric string or number and then transforms the value into a number.
 
 ```typescript
@@ -628,7 +670,7 @@ t.Numeric()
 
 This is useful when an incoming value is a numeric string, for example, a path parameter or query string.
 
-Numeric accepts the same attributes as [Numeric Instance](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-num)
+Numeric accepts the same attributes as [Numeric Instance](https://json-schema.org/draft/2020-12/json-schema-validation#name-validation-keywords-for-num).
 
 ## Elysia behavior
 
@@ -662,7 +704,7 @@ new Elysia()
 ```
 
 ## Number to Numeric
-By default, Elysia will convert a `t.Number` to [t.Numeric](#numeric-legacy) when provided as route schema.
+By default, Elysia will convert a `t.Number` to [t.Numeric](#numeric) when provided as route schema.
 
 Because parsed HTTP headers, query, url parameter is always a string. This means that even if a value is number, it will be treated as string.
 

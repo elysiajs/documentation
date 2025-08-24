@@ -298,6 +298,10 @@ export default defineConfig({
                         link: '/patterns/deploy'
                     },
                     {
+                        text: 'Error Handling',
+                        link: '/patterns/error-handling'
+                    },
+                    {
                         text: 'Macro',
                         link: '/patterns/macro'
                     },
@@ -438,6 +442,10 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
+                        text: 'AI SDK',
+                        link: '/integrations/ai-sdk'
+                    },
+                    {
                         text: 'Apitally',
                         link: '/integrations/apitally'
                     },
@@ -484,6 +492,10 @@ export default defineConfig({
                     {
                         text: 'SvelteKit',
                         link: '/integrations/sveltekit'
+                    },
+                    {
+                        text: 'Vercel',
+                        link: '/integrations/vercel'
                     }
                 ]
             }
