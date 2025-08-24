@@ -446,6 +446,10 @@ export default defineConfig({
                         link: '/integrations/ai-sdk'
                     },
                     {
+                        text: 'Apitally',
+                        link: '/integrations/apitally'
+                    },
+                    {
                         text: 'Astro',
                         link: '/integrations/astro'
                     },
