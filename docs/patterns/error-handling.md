@@ -252,7 +252,7 @@ new Elysia()
 ```
 
 ### Custom Error Response
-You can also provide a custom `toResposne` method in your custom error class to return a custom response when the error is thrown.
+You can also provide a custom `toResponse` method in your custom error class to return a custom response when the error is thrown.
 
 ```typescript
 import { Elysia } from 'elysia'
