@@ -229,7 +229,7 @@ This works outside of the handler by retriving current span from `AsyncLocalStor
 import { setAttributes } from '@elysiajs/opentelemetry'
 
 function utility() {
-	span.setAttributes({
+	setAttributes({
 		'custom.attribute': 'value'
 	})
 }
