@@ -7,18 +7,18 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia has first-class support and follows OpenAPI schema by default. Allowing any Elysia server to generate a Swagger page and serve as documentation automatically by using just 1 line of the Elysia Swagger plugin.
+        content: Elysia has first-class support and follows OpenAPI schema by default. Allowing any Elysia server to generate an API documentation page and serve as documentation automatically by using just 1 line of the Elysia OpenAPI plugin.
 
     - - meta
       - property: 'og:description'
-        content: Elysia has first-class support and follows OpenAPI schema by default. Allowing any Elysia server to generate a Swagger page and serve as documentation automatically by using just 1 line of the Elysia Swagger plugin.
+        content: Elysia has first-class support and follows OpenAPI schema by default. Allowing any Elysia server to generate an API documentation page and serve as documentation automatically by using just 1 line of the Elysia OpenAPI plugin.
 ---
 
 # OpenAPI
 
 Elysia has first-class support and follows OpenAPI schema by default.
 
-Elysia can automatically generate an API documentation page by providing a Swagger plugin.
+Elysia can automatically generate an API documentation page by using an OpenAPI plugin.
 
 To generate the Swagger page, install the plugin:
 
@@ -75,6 +75,35 @@ The detail fields follows an OpenAPI V3 definition with auto-completion and type
 
 Detail is then passed to OpenAPI to put the description to OpenAPI route.
 
+## Response headers
+We can add a response headers by wrapping a schema with `withHeader`:
+
+```typescript
+import { Elysia, t } from 'elysia'
+import { openapi, withHeader } from '@elysiajs/openapi' // [!code ++]
+
+new Elysia()
+	.use(openapi())
+	.get(
+		'/thing',
+		({ body, set }) => {
+			set.headers['x-powered-by'] = 'Elysia'
+
+			return body
+		},
+		{
+		    response: withHeader( // [!code ++]
+				t.Literal('Hi'), // [!code ++]
+				{ // [!code ++]
+					'x-powered-by': t.Literal('Elysia') // [!code ++]
+				} // [!code ++]
+			) // [!code ++]
+		}
+	)
+```
+
+Note that `withHeader` is an annotation only, and does not enforce or validate the actual response headers. You need to set the headers manually.
+
 ### Hide route
 
 You can hide the route from the Swagger page by setting `detail.hide` to `true`
@@ -83,21 +112,27 @@ You can hide the route from the Swagger page by setting `detail.hide` to `true`
 import { Elysia, t } from 'elysia'
 import { openapi } from '@elysiajs/openapi'
 
-new Elysia().use(openapi()).post('/sign-in', ({ body }) => body, {
-    body: t.Object(
-        {
-            username: t.String(),
-            password: t.String()
-        },
-        {
-            description: 'Expected a username and password'
-        }
-    ),
-    detail: {
-        // [!code ++]
-        hide: true // [!code ++]
-    } // [!code ++]
-})
+new Elysia()
+	.use(openapi())
+	.post(
+		'/sign-in',
+		({ body }) => body,
+		{
+		    body: t.Object(
+		        {
+		            username: t.String(),
+		            password: t.String()
+		        },
+		        {
+		            description: 'Expected a username and password'
+		        }
+		    ),
+		    detail: {
+		        // [!code ++]
+		        hide: true // [!code ++]
+		    } // [!code ++]
+		}
+	)
 ```
 
 ## Tags
