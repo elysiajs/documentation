@@ -149,10 +149,10 @@ new Elysia()
 
 ```typescript
 import { Elysia } from 'elysia'
-import swagger from '@elysiajs/swagger'
+import openapi from '@elysiajs/openapi'
 
 new Elysia()
-	.use(swagger())
+	.use(openapi())
 	.use(character)
 	.use(auth)
 	.listen(3000)

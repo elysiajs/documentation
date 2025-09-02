@@ -84,7 +84,7 @@ new Elysia()
 
 ### TypeBox
 
-**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and for OpenAPI schemas, enabling the generation of OpenAPI/Swagger documentation.
+**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and for OpenAPI schemas, enabling the generation of OpenAPI documentation.
 
 TypeBox is a very fast, lightweight, and type-safe runtime validation library for TypeScript. Elysia extends and customizes the default behavior of TypeBox to match server-side validation requirements.
 
@@ -172,7 +172,7 @@ The response should be as follows:
 | /id/a?name=Elysia | ✅ | ❌ |
 | /id/a?alias=Elysia | ❌ | ❌ |
 
-When a schema is provided, the type will be inferred from the schema automatically and an OpenAPI type will be generated for Swagger documentation, eliminating the redundant task of providing the type manually.
+When a schema is provided, the type will be inferred from the schema automatically and an OpenAPI type will be generated for an API documentation, eliminating the redundant task of providing the type manually.
 
 ## Guard
 
@@ -1141,7 +1141,7 @@ const app = new Elysia()
     })
 ```
 
-This approach not only allows us to separate concerns but also enables us to reuse the model in multiple places while integrating the model into Swagger documentation.
+This approach not only allows us to separate concerns but also enables us to reuse the model in multiple places while integrating the model into OpenAPI documentation.
 
 ### Multiple Models
 `model` accepts an object with the key as a model name and the value as the model definition. Multiple models are supported by default.

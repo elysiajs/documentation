@@ -168,32 +168,32 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-## Swagger
+## OpenAPI
 
 Entering a URL to the browser can only interact with the GET method. To interact with other methods, we need a REST Client like Postman or Insomnia.
 
 Luckily, Elysia comes with a **OpenAPI Schema** with [Scalar](https://scalar.com) to interact with our API.
 
 ```bash
-# Install the Swagger plugin
-bun add @elysiajs/swagger
+# Install the OpenAPI plugin
+bun add @elysiajs/openapi
 ```
 
 Then apply the plugin to the Elysia instance.
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 const app = new Elysia()
-    // Apply the swagger plugin
-    .use(swagger()) // [!code ++]
+    // Apply the openapi plugin
+    .use(openapi()) // [!code ++]
     .get('/', ({ path }) => path)
     .post('/hello', 'Do you miss me?')
     .listen(3000)
 ```
 
-Navigate to **http://localhost:3000/swagger**, you should see the documentation like this:
+Navigate to **http://localhost:3000/openapi**, you should see the documentation like this:
 ![Scalar Documentation landing](/tutorial/scalar-landing.webp)
 
 Now we can interact with all the routes we have created.
@@ -211,7 +211,7 @@ Now, let's create a singleton class to store our notes.
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 class Note {
     // [!code ++]
@@ -219,7 +219,7 @@ class Note {
 } // [!code ++]
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .decorate('note', new Note()) // [!code ++]
     .get('/note', ({ note }) => note.data) // [!code ++]
     .listen(3000)
@@ -241,14 +241,14 @@ We can define a path parameter by prefixing it with a colon.
 ```typescript twoslash
 // @errors: 7015
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
 }
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .decorate('note', new Note())
     .get('/note', ({ note }) => note.data)
     .get('/note/:index', ({ note, params: { index } }) => {
@@ -274,14 +274,14 @@ We can enforce and validate type by declaring a schema:
 
 ```typescript
 import { Elysia, t } from 'elysia' // [!code ++]
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
 }
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .decorate('note', new Note())
     .get('/note', ({ note }) => note.data)
     .get(
@@ -333,14 +333,14 @@ We can change the status code by returning an error
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
 }
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .decorate('note', new Note())
     .get('/note', ({ note }) => note.data)
     .get(
@@ -364,14 +364,14 @@ We can also return a custom message by passing a string to the error function.
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
 }
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .decorate('note', new Note())
     .get('/note', ({ note }) => note.data)
     .get(
@@ -426,7 +426,7 @@ Then on the **index.ts**, apply **note** into the main instance:
 
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 import { note } from './note' // [!code ++]
 
@@ -436,7 +436,7 @@ class Note {
 } // [!code --]
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .use(note) // [!code ++]
     .decorate('note', new Note()) // [!code --]
     .get('/note', ({ note }) => note.data) // [!code --]
@@ -559,7 +559,7 @@ export const note = new Elysia()
 
 :::
 
-Now let's open **http://localhost:3000/swagger** and try playing around with CRUD operations.
+Now let's open **http://localhost:3000/openapi** and try playing around with CRUD operations.
 
 ## Group
 
@@ -1444,13 +1444,13 @@ But first, don't forget to import the `user` in the `index.ts` file:
 
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 import { note } from './note'
 import { user } from './user' // [!code ++]
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .use(user) // [!code ++]
     .use(note)
     .listen(3000)
@@ -1675,13 +1675,13 @@ We use use the `onError` lifecycle to catch any error that is thrown in the serv
 
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 import { note } from './note'
 import { user } from './user'
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .onError(({ error, code }) => {
         // [!code ++]
         if (code === 'NOT_FOUND') return // [!code ++]
@@ -1709,12 +1709,12 @@ Returning a truthy value will override a default error response, so we can retur
 
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 import { note } from './note'
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .onError(({ error, code }) => {
         // [!code ++]
         if (code === 'NOT_FOUND') return 'Not Found :(' // [!code ++]
@@ -1762,14 +1762,14 @@ Now let's apply the OpenTelemetry plugin to our server.
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry' // [!code ++]
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 import { note } from './note'
 import { user } from './user'
 
 const app = new Elysia()
     .use(opentelemetry()) // [!code ++]
-    .use(swagger())
+    .use(openapi())
     .onError(({ error, code }) => {
         if (code === 'NOT_FOUND') return 'Not Found :('
 
@@ -2044,7 +2044,7 @@ export const note = new Elysia({ prefix: '/note' })
 // @filename: index.ts
 // ---cut---
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 import { opentelemetry } from '@elysiajs/opentelemetry'
 
 import { note } from './note'
@@ -2052,7 +2052,7 @@ import { user } from './user'
 
 const app = new Elysia()
     .use(opentelemetry())
-    .use(swagger())
+    .use(openapi())
     .onError(({ error, code }) => {
         if (code === 'NOT_FOUND') return 'Not Found :('
 
@@ -2411,7 +2411,7 @@ Now we can run the binary using `./server` and it will start the server on port 
 ./server
 ```
 
-Open your browser and navigate to `http://localhost:3000/swagger`, you should see the same result as using the dev command.
+Open your browser and navigate to `http://localhost:3000/openapi`, you should see the same result as using the dev command.
 
 By minifying the binary not only have we made our server small and portable, we also significantly reduced the memory usage of it.
 

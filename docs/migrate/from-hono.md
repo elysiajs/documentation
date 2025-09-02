@@ -1145,10 +1145,10 @@ export default app
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger' // [!code ++]
+import { openapi } from '@elysiajs/openapi' // [!code ++]
 
 const app = new Elysia()
-	.use(swagger()) // [!code ++]
+	.use(openapi()) // [!code ++]
 	.model({
 		user: t.Object({
 			name: t.String(),

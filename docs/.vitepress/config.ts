@@ -50,8 +50,7 @@ export default defineConfig({
             process.env.NODE_ENV === 'production'
                 ? llmstxt({
                       description: 'Ergonomic Framework for Humans',
-                      details:
-                          "Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket.",
+                      details: 'gger',
                       ignoreFiles: [
                           'index.md',
                           'table-of-content.md',
@@ -183,6 +182,10 @@ export default defineConfig({
                         link: '/plugins/jwt'
                     },
                     {
+                        text: 'OpenAPI',
+                        link: '/plugins/openapi'
+                    },
+                    {
                         text: 'OpenTelemetry',
                         link: '/plugins/opentelemetry'
                     },
@@ -197,10 +200,6 @@ export default defineConfig({
                     {
                         text: 'Stream',
                         link: '/plugins/stream'
-                    },
-                    {
-                        text: 'Swagger',
-                        link: '/plugins/swagger'
                     }
                 ]
             },
@@ -310,6 +309,10 @@ export default defineConfig({
                         link: '/patterns/mount'
                     },
                     {
+                        text: 'OpenAPI',
+                        link: '/patterns/openapi'
+                    },
+                    {
                         text: 'Trace',
                         link: '/patterns/trace'
                     },
@@ -416,6 +419,10 @@ export default defineConfig({
                         link: '/plugins/jwt'
                     },
                     {
+                        text: 'OpenAPI',
+                        link: '/plugins/openapi'
+                    },
+                    {
                         text: 'OpenTelemetry',
                         link: '/plugins/opentelemetry'
                     },
@@ -431,10 +438,6 @@ export default defineConfig({
                         text: 'Stream',
                         link: '/plugins/stream'
                     },
-                    {
-                        text: 'Swagger',
-                        link: '/plugins/swagger'
-                    }
                 ]
             },
             {
@@ -468,10 +471,6 @@ export default defineConfig({
                     {
                         text: 'Nuxt',
                         link: '/integrations/nuxt'
-                    },
-                    {
-                        text: 'OpenAPI',
-                        link: '/integrations/openapi'
                     },
                     {
                         text: 'OpenTelemetry',

@@ -3,7 +3,7 @@ title: Plugin Overview - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Swagger Plugin - ElysiaJS
+        content: Plugin Overview - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -34,11 +34,11 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [GraphQL Yoga](/plugins/graphql-yoga) - run [GraphQL Yoga](https://github.com/dotansimha/graphql-yoga) on Elysia
 -   [HTML](/plugins/html) - handle HTML responses
 -   [JWT](/plugins/jwt) - authenticate with [JWTs](https://jwt.io/)
+-   [OpenAPI](/plugins/openapi) - generate an [OpenAPI](https://swagger.io/specification/) documentation
 -   [OpenTelemetry](/plugins/opentelemetry) - add support for OpenTelemetry
 -   [Server Timing](/plugins/server-timing) - audit performance bottlenecks with the [Server-Timing API](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing)
 -   [Static](/plugins/static) - serve static files/folders
 -   [Stream](/plugins/stream) - integrate response streaming and [server-sent events (SSEs)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
--   [Swagger](/plugins/swagger) - generate [Swagger](https://swagger.io/) documentation
 -   [WebSocket](/patterns/websocket) - support [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 
 ## Community plugins:
@@ -95,7 +95,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - unnoficial [WorkOS' AuthKit](https://www.authkit.com/) authentication
 -   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - simpler error handling
 -   [Elysia env](https://github.com/yolk-oss/elysia-env) - typesafe environment variables with typebox
--   [Elysia Drizzle Schema](https://github.com/Edsol/elysia-drizzle-schema) - helps to use Drizzle ORM schema inside elysia swagger model.
+-   [Elysia Drizzle Schema](https://github.com/Edsol/elysia-drizzle-schema) - helps to use Drizzle ORM schema inside Elysia OpenAPI model.
 -   [Unify-Elysia](https://github.com/qlaffont/unify-elysia) - unify error code for Elysia
 -   [Unify-Elysia-GQL](https://github.com/qlaffont/unify-elysia-gql) - unify error code for Elysia GraphQL Server (Yoga & Apollo)
 -   [Elysia Auth Drizzle](https://github.com/qlaffont/elysia-auth-drizzle) - library who handle authentification with JWT (Header/Cookie/QueryParam).

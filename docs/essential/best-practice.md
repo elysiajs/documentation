@@ -530,7 +530,7 @@ const UserController = new Elysia({ prefix: '/auth' })
 This approach provide several benefits:
 1. Allow us to name a model and provide auto-completion.
 2. Modify schema for later usage, or perform a [remap](/essential/handler.html#remap).
-3. Show up as "models" in OpenAPI compliance client, eg. Swagger.
+3. Show up as "models" in OpenAPI compliance client, eg. OpenAPI.
 4. Improve TypeScript inference speed as model type will be cached during registration.
 
 ## Reuse a plugin

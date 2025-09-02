@@ -90,11 +90,11 @@ Then we can access Better Auth with `http://localhost:3000/auth/api`.
 
 Unfortunately, we can't set `basePath` of a Better Auth instance to be empty or `/`.
 
-## Swagger / OpenAPI
+## OpenAPI
 
 Better Auth support `openapi` with `better-auth/plugins`.
 
-However if we are using [@elysiajs/swagger](/plugins/swagger), you might want to extract the documentation from Better Auth instance.
+However if we are using [@elysiajs/openapi](/plugins/openapi), you might want to extract the documentation from Better Auth instance.
 
 We may do that with the following code:
 
@@ -130,12 +130,12 @@ Then in our Elysia instance that use `@elysiajs/swagger`.
 
 ```ts
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 import { OpenAPI } from './auth'
 
 const app = new Elysia().use(
-    swagger({
+    openapi({
         documentation: {
             components: await OpenAPI.components,
             paths: await OpenAPI.getPaths()

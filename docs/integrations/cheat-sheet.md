@@ -288,17 +288,17 @@ new Elysia()
 ## OpenAPI documentation
 Create interactive documentation using Scalar (or optionally Swagger)
 
-See [swagger](/plugins/swagger.html)
+See [openapi](/plugins/openapi.html)
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .listen(3000)
 
-console.log(`View documentation at "${app.server!.url}swagger" in your browser`);
+console.log(`View documentation at "${app.server!.url}openapi" in your browser`);
 ```
 
 ## Unit Test

@@ -163,14 +163,14 @@ With Elysia's schema builder, we can ensure type safety like a strongly-typed la
 
 Elysia adopts many standards by default, like OpenAPI, and WinterCG compliance, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
 
-For instance, because Elysia adopts OpenAPI by default, generating documentation with Swagger is as easy as adding a one-liner:
+For instance, because Elysia adopts OpenAPI by default, generating API documentation is as easy as adding a one-liner:
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/oepnapi'
 
 new Elysia()
-    .use(swagger())
+    .use(openapi())
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Number()
@@ -179,7 +179,7 @@ new Elysia()
     .listen(3000)
 ```
 
-With the Swagger plugin, you can seamlessly generate a Swagger page without additional code or specific config and share it with your team effortlessly.
+With the OpenAPI plugin, you can seamlessly generate an API documentation page without additional code or specific config and share it with your team effortlessly.
 
 ## End-to-end Type Safety
 
@@ -189,10 +189,10 @@ With Elysia, you can synchronize your types with your frontend team automaticall
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 const app = new Elysia()
-    .use(swagger())
+    .use(openapi())
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Number()
