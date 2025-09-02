@@ -30,9 +30,10 @@ And register the plugin to the server:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysiajs/openapi' // [!code ++]
 
-const app = new Elysia().use(openapi())
+new Elysia()
+	.use(openapi()) // [!code ++]
 ```
 
 By default, Elysia uses OpenAPI V3 schema and [Scalar UI](http://scalar.com)
@@ -49,26 +50,28 @@ However, sometimes defining only a type does not make it clear what the route mi
 import { Elysia, t } from 'elysia'
 import { openapi } from '@elysiajs/openapi'
 
-new Elysia().use(openapi()).post('/sign-in', ({ body }) => body, {
-    body: t.Object(
-        {
-            username: t.String(),
-            password: t.String({
-                minLength: 8,
-                description: 'User password (at least 8 characters)' // [!code ++]
-            })
-        },
-        {
-            // [!code ++]
-            description: 'Expected a username and password' // [!code ++]
-        } // [!code ++]
-    ),
-    detail: {
-        // [!code ++]
-        summary: 'Sign in the user', // [!code ++]
-        tags: ['authentication'] // [!code ++]
-    } // [!code ++]
-})
+new Elysia()
+	.use(openapi())
+	.post(
+		'/sign-in',
+		({ body }) => body, {
+    		body: t.Object(
+      		{
+	            username: t.String(),
+	            password: t.String({
+	                minLength: 8,
+	                description: 'User password (at least 8 characters)' // [!code ++]
+	            })
+	        },
+	        { // [!code ++]
+	            description: 'Expected a username and password' // [!code ++]
+	        } // [!code ++]
+	    ),
+	    detail: { // [!code ++]
+	        summary: 'Sign in the user', // [!code ++]
+	        tags: ['authentication'] // [!code ++]
+	    } // [!code ++]
+	})
 ```
 
 The detail fields follows an OpenAPI V3 definition with auto-completion and type-safety by default.
@@ -127,8 +130,7 @@ new Elysia()
 		            description: 'Expected a username and password'
 		        }
 		    ),
-		    detail: {
-		        // [!code ++]
+		    detail: { // [!code ++]
 		        hide: true // [!code ++]
 		    } // [!code ++]
 		}
@@ -166,7 +168,7 @@ new Elysia()
     .group('/auth', (app) =>
         app.post(
             '/sign-up',
-            async ({ body }) =>
+            ({ body }) =>
                 db.user.create({
                     data: body,
                     select: {
