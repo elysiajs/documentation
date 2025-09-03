@@ -40,6 +40,102 @@ By default, Elysia uses OpenAPI V3 schema and [Scalar UI](http://scalar.com)
 
 For OpenAPI plugin configuration, see the [OpenAPI plugin page](/plugins/openapi).
 
+## OpenAPI from types
+
+By default, Elysia relies on runtime schema to generate OpenAPI documentation.
+
+However, you can also generate OpenAPI documentation from types by using a generator from OpenAPI plugin as follows:
+
+1. Specify the root file of your project (usually `src/index.ts`), and export an instance
+
+2. Import a generator and provide a **file path from project root** to type generator
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+import { fromTypes } from '@elysiajs/openapi/gen' // [!code ++]
+
+export const app = new Elysia() // [!code ++]
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts') // [!code ++]
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', ({ body, status }) => body, {
+        body: t.Object({
+            hello: t.String()
+        })
+    })
+    .listen(3000)
+```
+
+Elysia will attempt to generate OpenAPI documentation by reading the type of an exported instance to generate OpenAPI documentation.
+
+This will co-exists with the runtime schema, and the runtime schema will take precedence over the type definition.
+
+::: warning
+Type generation is still experimental and may not cover all edge cases.
+
+It is recommended to use runtime schema for production applications.
+:::
+
+<details>
+
+<summary>Having issues with type generation?</summary>
+
+### Caveats: Root path
+As it's unreliable to guess to root of the project, it's recommended to provide the path to the project root to allow generator to run correctly, especially when using monorepo.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+import { fromTypes } from '@elysiajs/openapi/gen'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts', {
+            	projectRoot: path.join('..', import.meta.dir) // [!code ++]
+            })
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', ({ body, status }) => body, {
+        body: t.Object({
+            hello: t.String()
+        })
+    })
+    .listen(3000)
+```
+
+### Custom tsconfig.json
+If you have multiple `tsconfig.json` files, it's important that you must specify a correct `tsconfig.json` file to be used for type generation.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+import { fromTypes } from '@elysiajs/openapi/gen'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts', {
+            	// This is reference from root of the project
+            	tsconfigPath: 'tsconfig.dts.json' // [!code ++]
+            })
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', ({ body, status }) => body, {
+        body: t.Object({
+            hello: t.String()
+        })
+    })
+    .listen(3000)
+```
+
+</details>
+
 ## Describing route
 
 We can add route information by providing a schema type.
@@ -324,106 +420,3 @@ export const addressController = new Elysia({
 ```
 
 This will ensures that all endpoints under the `/address` prefix require a valid JWT token for access.
-
-## OpenAPI from types
-
-By default, Elysia relies on runtime schema to generate OpenAPI documentation.
-
-However, you can also generate OpenAPI documentation from TypeScript types by using a generator from OpenAPI plugin as follows:
-
-1. Specify the root file of your project (usually `src/index.ts`), and export an instance
-
-```ts
-import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-
-export const app = new Elysia() // [!code ++]
-    .use(openapi())
-    .get('/', { test: 'hello' as const })
-    .post('/json', ({ body, status }) => body, {
-        body: t.Object({
-            hello: t.String()
-        })
-    })
-    .listen(3000)
-```
-
-2. Import a generator and provide it to `references` in OpenAPI plugin
-```ts
-import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen' // [!code ++]
-
-export const app = new Elysia()
-    .use(
-        openapi({
-            references: fromTypes('src/index.ts') // [!code ++]
-        })
-    )
-    .get('/', { test: 'hello' as const })
-    .post('/json', ({ body, status }) => body, {
-        body: t.Object({
-            hello: t.String()
-        })
-    })
-    .listen(3000)
-```
-
-Elysia will attempt to generate OpenAPI documentation by using a code generation, analyzing exported instance from the specified file into OpenAPI schema.
-
-::: warning
-Please note that this feature is still experimental and may not cover all edge cases.
-
-It is recommended to use runtime schema for production applications.
-:::
-
-### Caveats: Root path
-As it's unreliable to guess to root of the project, it's recommended to provide the path to the project root to allow generator to run correctly, especially when using monorepo.
-
-```ts
-import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
-
-export const app = new Elysia()
-    .use(
-        openapi({
-            references: fromTypes('src/index.ts', {
-            	projectRoot: path.join('..', import.meta.dir) // [!code ++]
-            })
-        })
-    )
-    .get('/', { test: 'hello' as const })
-    .post('/json', ({ body, status }) => body, {
-        body: t.Object({
-            hello: t.String()
-        })
-    })
-    .listen(3000)
-```
-
-### Custom tsconfig.json
-If you have multiple `tsconfig.json` files, it's important that you must specify a correct `tsconfig.json` file to be used for type generation.
-
-```ts
-import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
-
-export const app = new Elysia()
-    .use(
-        openapi({
-            references: fromTypes('src/index.ts', {
-            	// This is reference from root of the project
-            	tsconfigPath: 'tsconfig.dts.json' // [!code ++]
-            })
-        })
-    )
-    .get('/', { test: 'hello' as const })
-    .post('/json', ({ body, status }) => body, {
-        body: t.Object({
-            hello: t.String()
-        })
-    })
-    .listen(3000)
-    ```
