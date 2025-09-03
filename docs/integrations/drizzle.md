@@ -365,7 +365,7 @@ export const db = {
 		user: createInsertSchema(table.user, {
 			email: t.String({ format: 'email' })
 		}),
-	}, 'insert')),
+	}, 'insert'),
 	select: spreads({
 		user: createSelectSchema(table.user, {
 			email: t.String({ format: 'email' })
