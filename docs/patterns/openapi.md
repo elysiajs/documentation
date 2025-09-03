@@ -140,7 +140,7 @@ export const app = new Elysia()
 
 We can add route information by providing a schema type.
 
-However, sometimes defining only a type does not make it clear what the route might do. You can use [deetail](/plugins/openapi#detail) fields to explicitly describe the route.
+However, sometimes defining only a type does not make it clear what the route might do. You can use [detail](/plugins/openapi#detail) fields to explicitly describe the route.
 
 ```typescript
 import { Elysia, t } from 'elysia'
