@@ -167,7 +167,7 @@ For instance, because Elysia adopts OpenAPI by default, generating API documenta
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/oepnapi'
+import { openapi } from '@elysiajs/openapi'
 
 new Elysia()
     .use(openapi())
