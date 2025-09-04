@@ -55,7 +55,7 @@ Today, we are excited to announce the release of **OpenAPI Type Gen** to automat
 
 ## OpenAPI Type Gen
 
-With **1 line** from OpenAPI plugin, you can now generate OpenAPI documentation from your Elysia server with any manual annotation.
+With **1 line** of code, you can now generate OpenAPI documentation from your Elysia server without any manual schema annotation.
 
 ![Elysia Type Gen](/blog/openapi-type-gen/type-gen.webp)
 
