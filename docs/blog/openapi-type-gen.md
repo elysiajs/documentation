@@ -73,6 +73,31 @@ It works with existing Elysia codebase and schema definitions without any breaki
 
 It's also compatible with complex types from modern library like **Drizzle**, Prisma by simply returning the value from your route handler.
 
+## Adopt OpenAPI Type Gen
+To adopt this feature to your codebase, simply:
+
+1. export an Elysia instance
+2. provide file path to type generator
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+import { fromTypes } from '@elysiajs/openapi/gen' // [!code ++]
+
+export const app = new Elysia() // [!code ++]
+	.use(
+		openapi({
+			typeGen: fromTypes('src/index.ts') // [!code ++]
+		})
+	)
+```
+
+Elysia Type Gen will analyze your Elysia instance and generate the OpenAPI documentation automatically on the fly.
+
+The documentation for OpenAPI Type Gen can be found at [Patterns: OpenAPI](/patterns/openapi#openapi-from-types).
+
+---
+
 ### We believe that this feature is truly unique to Elysia
 
 While most web frameworks (not only in JavaScript) require a lot of effort, and manual annotation to create a decent API documentation which is even harder to maintain. Elysia comes with a complete and accurate API documentation out of the box.
@@ -82,6 +107,4 @@ This is only possible thanks to **Elysia's spectacular support for end-to-end ty
 We are excited to see how it will help you to create and maintain high-quality API documentation with minimal effort with Elysia.
 
 You can try it out today by updating `@elysiajs/openapi` to latest or experiment our example setup from [GitHub repository](https://github.com/saltyaom/elysia-typegen-example).
-
-The documentation for OpenAPI Type Gen can be found at [Patterns: OpenAPI](/patterns/openapi#openapi-from-types).
 </Blog>
