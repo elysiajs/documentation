@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types with any manaul annotation.
+        content: Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types without any manual annotation.
 
     - - meta
       - property: 'og:description'
-        content: Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types with any manaul annotation
+        content: Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types without any manual annotation
 
     - - meta
       - property: 'og:image'
@@ -51,7 +51,7 @@ Elysia also offers an interactable documentation with Scalar or Swagger UI all f
 
 But even with these exceptional experience, we want to push it even further.
 
-Today, we are excited to announce the release of **OpenAPI Type Gen** to automatically generates OpenAPI documentation from your Elysia server with any manaul annotation.
+Today, we are excited to announce the release of **OpenAPI Type Gen** to automatically generates OpenAPI documentation from your Elysia server without any manual annotation.
 
 ## OpenAPI Type Gen
 
