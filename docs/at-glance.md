@@ -161,7 +161,7 @@ With Elysia's schema builder, we can ensure type safety like a strongly-typed la
 
 ## Standard
 
-Elysia adopts many standards by default, like OpenAPI, and WinterCG compliance, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
+Elysia adopts many standards by default, like OpenAPI, and WinterTC compliance, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
 
 For instance, because Elysia adopts OpenAPI by default, generating API documentation is as easy as adding a one-liner:
 
@@ -181,6 +181,28 @@ new Elysia()
 
 With the OpenAPI plugin, you can seamlessly generate an API documentation page without additional code or specific config and share it with your team effortlessly.
 
+## OpenAPI from types
+Elysia has an excellent support for OpenAPI with our schema that can use for data validation, type inference and OpenAPI annotation from a single source of truth.
+
+Elysia also support OpenAPI schema generation with **1 line directly from type**, allowing you to have a complete, and accurate API documentation without any manual annotation.
+
+```typescript
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysiajs/oepnapi'
+import { fromTypes } from '@elysiajs/openapi/gen'
+
+export const app = new Elysia()
+    .use(openapi({
+    	references: fromTypes('src/index.ts')
+    }))
+    .get('/user/:id', ({ params: { id } }) => id, {
+        params: t.Object({
+            id: t.Number()
+        })
+    })
+    .listen(3000)
+```
+
 ## End-to-end Type Safety
 
 With Elysia, type safety is not limited to server-side only.
@@ -190,9 +212,12 @@ With Elysia, you can synchronize your types with your frontend team automaticall
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
 import { openapi } from '@elysiajs/openapi'
+import { fromTypes } from '@elysiajs/openapi/gen'
 
-const app = new Elysia()
-    .use(openapi())
+export const app = new Elysia()
+    .use(openapi({
+    	references: fromTypes('src/index.ts')
+    }))
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Number()
@@ -240,7 +265,7 @@ Elysia is not only about helping you create a confident backend but for all that
 
 ## Platform Agnostic
 
-Elysia was designed for Bun, but is  **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy Elysia servers on Cloudflare Workers, Vercel Edge Functions, and most other runtimes that support Web Standard Requests.
+Elysia was designed for Bun, but is  **not limited to Bun**. Being [WinterTC compliant](https://wintertc.org/) allows you to deploy Elysia servers on Cloudflare Workers, Vercel Edge Functions, and most other runtimes that support Web Standard Requests.
 
 ## Our Community
 

@@ -1,5 +1,12 @@
 <template>
     <article id="blog" class="flex flex-col max-w-3xl w-full mx-auto mt-8">
+        <a
+            href="/blog"
+            class="flex items-center gap-2 text-base !text-gray-500 dark:!text-gray-400 !no-underline hover:!text-pink-500 focus:!text-pink-500 mb-2"
+        >
+            <span>←</span>
+            Blog
+        </a>
         <h1 class="!text-3xl !md:text-4xl font-medium">
             {{ props.title }}
         </h1>
@@ -14,7 +21,7 @@
                 <p
                     class="flex flex-row items-center gap-2 !text-xs !m-0 opacity-75"
                 >
-                    <span>{{ props.date }}</span>
+                    <time :datetime="props.date">{{ props.date }}</time>
                     <span>ー</span>
                     <a :href="twitter" target="_blank">@{{ author.twitter }}</a>
                 </p>
@@ -29,6 +36,14 @@
         <main id="blog-content">
             <slot />
         </main>
+
+        <a
+            href="/"
+            class="flex items-center gap-2 text-base !text-gray-500 dark:!text-gray-400 !no-underline hover:!text-pink-500 focus:!text-pink-500 mt-2"
+        >
+            <span>←</span>
+            Elysia: Ergonomic Framework for Humans
+        </a>
     </article>
 </template>
 
@@ -37,7 +52,7 @@ import { onMounted, onUnmounted } from 'vue'
 
 const authors = {
     saltyaom: {
-        src: 'aris.webp',
+        src: 'lilith-happy.webp',
         twitter: 'saltyaom'
     }
 }
