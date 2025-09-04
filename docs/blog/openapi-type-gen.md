@@ -87,7 +87,7 @@ import { fromTypes } from '@elysiajs/openapi/gen' // [!code ++]
 export const app = new Elysia() // [!code ++]
 	.use(
 		openapi({
-			typeGen: fromTypes('src/index.ts') // [!code ++]
+			references: fromTypes('src/index.ts') // [!code ++]
 		})
 	)
 ```
