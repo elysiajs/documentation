@@ -30,7 +30,7 @@ head:
         title: 'Introducing OpenAPI Type Gen for Elysia',
 		href: '/blog/openapi-type-gen',
 		cover: 'cover.webp',
-		detail: 'Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types with any manaul annotation.'
+		detail: 'Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types without any manual annotation.'
       },
       {
         title: 'Elysia 1.3 and Scientific Witchery',
