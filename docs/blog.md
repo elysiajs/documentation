@@ -27,6 +27,12 @@ head:
 <Blogs
   :blogs="[
       {
+        title: 'Introducing OpenAPI Type Gen for Elysia',
+		href: '/blog/openapi-type-gen',
+		cover: 'cover.webp',
+		detail: 'Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types with any manaul annotation.'
+      },
+      {
         title: 'Elysia 1.3 and Scientific Witchery',
         href: '/blog/elysia-13',
         cover: 'elysia-13.webp',
