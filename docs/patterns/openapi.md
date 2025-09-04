@@ -73,12 +73,6 @@ Elysia will attempt to generate OpenAPI documentation by reading the type of an 
 
 This will co-exists with the runtime schema, and the runtime schema will take precedence over the type definition.
 
-::: warning
-Type generation is still experimental and may not cover all edge cases.
-
-It is recommended to use runtime schema for production applications.
-:::
-
 <details>
 
 <summary>Having issues with type generation?</summary>
