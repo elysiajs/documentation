@@ -41,9 +41,7 @@ OpenAPI is an annotation for documenting RESTful APIs.
 
 It provides a standard way to describe the structure and behavior of APIs, making it easier for developers to understand and interact with them.
 
-Most web frameworks today require a lot of efforts, and manual annotation to create an API documentation, which can be tedious and error-prone.
-
-But Elysia has an excellent support for OpenAPI with our schema that can use for data validation, type inference and OpenAPI annotation from a single source of truth.
+While Most web frameworks today require a lot of efforts, and manual annotation to create an API documentation, which can be tedious and error-prone. Elysia has an excellent support for OpenAPI with its own schema that can use for data validation, type inference, and OpenAPI annotation from a single source of truth.
 
 Elysia also offers an interactable documentation with Scalar or Swagger UI all from 1 line of code with an OpenAPI plugin.
 
@@ -51,7 +49,7 @@ Elysia also offers an interactable documentation with Scalar or Swagger UI all f
 
 > Elysia running with Scalar UI from Elysia OpenAPI plugin
 
-But even with the exceptional experience, we are want to push it further.
+But even with these exceptional experience, we want to push it even further.
 
 Today, we are excited to announce the release of **OpenAPI Type Gen** to automatically generates OpenAPI documentation from your Elysia server with any manaul annotation.
 
