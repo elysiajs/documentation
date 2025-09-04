@@ -26,9 +26,8 @@ bun build \
 	--compile \
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun \
 	--outfile server \
-	./src/index.ts
+	src/index.ts
 ```
 
 This will generate a portable binary `server` which we can run to start our server.
@@ -36,12 +35,11 @@ This will generate a portable binary `server` which we can run to start our serv
 Compiling server to binary usually significantly reduces memory usage by 2-3x compared to development environment.
 
 This command is a bit long, so let's break it down:
-1. `--compile` - Compile TypeScript to binary
-2. `--minify-whitespace` - Remove unnecessary whitespace
-3. `--minify-syntax` - Minify JavaScript syntax to reduce file size
-4. `--target bun` - Target the `bun` platform, this can optimize the binary for the target platform
-5. `--outfile server` - Output the binary as `server`
-6. `./src/index.ts` - The entry file of our server (codebase)
+1. **--compile** Compile TypeScript to binary
+2. **--minify-whitespace** Remove unnecessary whitespace
+3. **--minify-syntax** Minify JavaScript syntax to reduce file size
+4. **--outfile server** Output the binary as `server`
+5. **src/index.ts** The entry file of our server (codebase)
 
 To start our server, simply run the binary.
 ```bash
@@ -51,6 +49,31 @@ To start our server, simply run the binary.
 Once binary is compiled, you don't need `Bun` installed on the machine to run the server.
 
 This is great as the deployment server doesn't need to install an extra runtime to run making binary portable.
+
+### Target
+You can also add a `--target` flag to optimize the binary for the target platform.
+
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun-linux-x64 \
+	--outfile server \
+	src/index.ts
+```
+
+Here's a list of available targets:
+| Target                  | Operating System | Architecture | Modern | Baseline | Libc  |
+|--------------------------|------------------|--------------|--------|----------|-------|
+| bun-linux-x64           | Linux            | x64          | ✅      | ✅        | glibc |
+| bun-linux-arm64         | Linux            | arm64        | ✅      | N/A      | glibc |
+| bun-windows-x64         | Windows          | x64          | ✅      | ✅        | -     |
+| bun-windows-arm64       | Windows          | arm64        | ❌      | ❌        | -     |
+| bun-darwin-x64          | macOS            | x64          | ✅      | ✅        | -     |
+| bun-darwin-arm64        | macOS            | arm64        | ✅      | N/A      | -     |
+| bun-linux-x64-musl      | Linux            | x64          | ✅      | ✅        | musl  |
+| bun-linux-arm64-musl    | Linux            | arm64        | ✅      | N/A      | musl  |
 
 ### Why not --minify
 Bun does have `--minify` flag that will minify the binary.
@@ -64,9 +87,8 @@ However, if you're not using OpenTelemetry, you may opt in for `--minify` instea
 bun build \
 	--compile \
 	--minify \
-	--target bun \
 	--outfile server \
-	./src/index.ts
+	src/index.ts
 ```
 
 ### Permission
@@ -93,12 +115,10 @@ You may bundle your server to a JavaScript file instead.
 
 ```bash
 bun build \
-	--compile \ // [!code --]
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun \
 	--outfile ./dist/index.js \
-	./src/index.ts
+	src/index.ts
 ```
 
 This will generate a single portable JavaScript file that you can deploy on your server.
@@ -129,9 +149,8 @@ RUN bun build \
 	--compile \
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun \
 	--outfile server \
-	./src/index.ts
+	src/index.ts
 
 FROM gcr.io/distroless/base
 
@@ -224,9 +243,8 @@ RUN bun build \
 	--compile \
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun \
 	--outfile server \
-	./src/index.ts
+	src/index.ts
 
 FROM gcr.io/distroless/base
 
