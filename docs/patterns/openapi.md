@@ -73,6 +73,28 @@ Elysia will attempt to generate OpenAPI documentation by reading the type of an 
 
 This will co-exists with the runtime schema, and the runtime schema will take precedence over the type definition.
 
+### Production
+In production environment, it's likely that you might compile Elysia to a [single executable with Bun](/patterns/deploy.html) or [bundle into a single JavaScript file](https://elysiajs.com/patterns/deploy.html#compile-to-javascript).
+
+It's recommended that you should pre-generate the declaration file (**.d.ts**) to provide type declaration to the generator.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+import { fromTypes } from '@elysiajs/openapi/gen'
+
+const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes(
+            	process.env.NODE_ENV === 'production' // [!code ++]
+             		? 'dist/index.d.ts' // [!code ++]
+               		: 'src/index.ts' // [!code ++]
+            )
+        })
+    )
+```
+
 <details>
 
 <summary>Having issues with type generation?</summary>
