@@ -307,11 +307,14 @@ const setup = new Elysia({ name: 'setup' })
 const error = new Elysia()
     .get('/', ({ a }) => a)
 
-const main = new Elysia()
-	// With `setup`, type will be inferred
+// With `setup`, type will be inferred
+const child = new Elysia()
     .use(setup) // [!code ++]
     .get('/', ({ a }) => a)
     //           ^?
+
+const main = new Elysia()
+    .use(child)
 ```
 
 <Playground :elysia="demo5" />
