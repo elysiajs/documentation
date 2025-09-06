@@ -216,7 +216,7 @@ import { Elysia, t } from 'elysia'
 new Elysia({ prefix: '/v1' }).get('/name', 'elysia') // Path is /v1/name
 ```
 
-## santize
+## sanitize
 
 A function or an array of function that calls and intercepts on every `t.String` while validation.
 
@@ -226,7 +226,7 @@ Allowing us to read and transform a string into a new value.
 import { Elysia, t } from 'elysia'
 
 new Elysia({
-	santize: (value) => Bun.escapeHTML(value)
+	sanitize: (value) => Bun.escapeHTML(value)
 })
 ```
 
