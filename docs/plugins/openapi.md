@@ -37,7 +37,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Accessing `/openapi` would show you a Scalar UI with the generated endpoint documentation from the Elysia server. You can also access the raw OpenAPI spec at `/swagger/json`.
+Accessing `/openapi` would show you a Scalar UI with the generated endpoint documentation from the Elysia server. You can also access the raw OpenAPI spec at `/openapi/json`.
 
 ::: tip
 This page is the plugin configuration reference.
