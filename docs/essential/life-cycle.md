@@ -732,13 +732,13 @@ Elysia will handle the merging process of **set.headers** from **mapResponse** a
 
 ## On Error (Error Handling)
 
-Designed for error-handling. It will be executed when an error is thrown in any life-cycle.
+Designed for error handling. It will be executed when an error is thrown in any lifecycle.
 
-Its recommended to use on Error in the following situation:
+It's recommended to use on Error in the following situations:
 
-- To provide custom error message
-- Fail safe or an error handler or retrying a request
-- Logging and analytic
+- providing a custom error message
+- fail-safe handling, an error handler, or retrying a request
+- logging and analytics
 
 #### Example
 
