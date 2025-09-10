@@ -208,11 +208,14 @@ const setup = new Elysia({ name: 'setup' })
 const error = new Elysia()
     .get('/', ({ a }) => a)
 
-const main = new Elysia()
-	// With `setup`, type will be inferred
+// With `setup`, type will be inferred
+const child = new Elysia()
     .use(setup) // [!code ++]
     .get('/', ({ a }) => a)
     //           ^?
+
+const main = new Elysia()
+    .use(child)
 ```
 
 As mentioned in [dependencies](#dependencies), we can use the `name` property to deduplicate the instance so it will not have any performance penalty or lifecycle duplication.
