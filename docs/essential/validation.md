@@ -88,7 +88,39 @@ new Elysia()
 
 TypeBox is a very fast, lightweight, and type-safe runtime validation library for TypeScript. Elysia extends and customizes the default behavior of TypeBox to match server-side validation requirements.
 
-We believe that validation should be handled by the framework natively, rather than relying on the user to set up a custom type for every project.
+We believe that validation should at least be handled by the framework natively, rather than relying on the user to set up a custom type for every project.
+
+### Standard Schema
+Elysia also support [Standard Schema](https://github.com/standard-schema/standard-schema), allowing you to use your favorite validation library:
+- Zod
+- Valibot
+- ArkType
+- Effect Schema
+- Yup
+- Joi
+- [and more](https://github.com/standard-schema/standard-schema)
+
+To use Standard Schema, simply import the schema and provide it to the route handler.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
+
+new Elysia()
+	.get('/id/:id', ({ params: { id }, query: { name } }) => id, {
+	//                           ^?
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		query: v.object({
+			name: v.literal('Lilith')
+		})
+	})
+	.listen(3000)
+```
+
+You can use any validator together in the same handler without any issue.
 
 ### TypeScript
 We can get type definitions of every Elysia/TypeBox's type by accessing the `static` property as follows:
@@ -321,6 +353,25 @@ new Elysia()
 ```
 
 By providing a file type, Elysia will automatically assume that the content-type is `multipart/form-data`.
+
+### File (Standard Schema)
+If you're using Standard Schema, it's important that Elysia will not be able to valiate content type automatically similar to `t.File`.
+
+But Elysia export a `fileType` that can be used to validate file type by using magic number.
+
+```typescript twoslash
+import { Elysia, fileType } from 'elysia'
+import { z } from 'zod'
+
+new Elysia()
+	.post('/body', ({ body }) => body, {
+		body: z.object({
+			file: z.file().refine((file) => fileType(file, 'image/jpeg')) // [!code ++]
+		})
+	})
+```
+
+It's very important that you **should use** `fileType` to validate the file type as **most validator doesn't actually validate the file** correctly, like checking the content type the value of it which can lead to security vulnerability.
 
 ## Query
 Query is the data sent through the URL. It can be in the form of `?key=value`.

@@ -21,7 +21,7 @@ import Deck from '../components/nearl/card-deck.vue'
 
 # Type
 
-Here's a common patterns for writing validation types in Elysia.
+Here's a common patterns for writing validation types using `Elysia.t`.
 
 <Deck>
     <Card title="Primitive Type" href="#primitive-type">

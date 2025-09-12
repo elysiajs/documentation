@@ -159,7 +159,39 @@ Hover over "id" in the above code snippet to see a type definition.
 
 With Elysia's schema builder, we can ensure type safety like a strongly-typed language with a single source of truth.
 
-## Standard
+## Standard Schema
+Elysia also support [Standard Schema](https://github.com/standard-schema/standard-schema), allowing you to use your favorite validation library:
+- Zod
+- Valibot
+- ArkType
+- Effect Schema
+- Yup
+- Joi
+- [and more](https://github.com/standard-schema/standard-schema)
+
+To use Standard Schema, simply import the schema and provide it to the route handler.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
+
+new Elysia()
+	.get('/id/:id', ({ params: { id }, query: { name } }) => id, {
+	//                           ^?
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		query: v.object({
+			name: v.literal('Lilith')
+		})
+	})
+	.listen(3000)
+```
+
+Elysia will infer the types from the schema automatically, allowing you to use your favorite validation library while still having type safety.
+
+## OpenAPI
 
 Elysia adopts many standards by default, like OpenAPI, and WinterTC compliance, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
 

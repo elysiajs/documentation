@@ -704,12 +704,12 @@ import { Elysia } from 'elysia'
 const encoder = new TextEncoder()
 
 new Elysia()
-    .mapResponse(({ response, set }) => {
+    .mapResponse(({ responseValue, set }) => {
         const isJson = typeof response === 'object'
 
         const text = isJson
-            ? JSON.stringify(response)
-            : (response?.toString() ?? '')
+            ? JSON.stringify(responseValue)
+            : (responseValue?.toString() ?? '')
 
         set.headers['Content-Encoding'] = 'gzip'
 
@@ -859,14 +859,14 @@ Response 0.0002
 
 ### Response
 
-Similar to [Map Response](#map-resonse), `afterResponse` also accept a `response` value.
+Similar to [Map Response](#map-resonse), `afterResponse` also accept a `responseValue` value.
 
 ```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.onAfterResponse(({ response }) => {
-		console.log(response)
+	.onAfterResponse(({ responseValue }) => {
+		console.log(responseValue)
 	})
 	.get('/', () => 'Hello')
 	.listen(3000)
