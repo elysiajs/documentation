@@ -1,6 +1,6 @@
 {
 	"name": "elysia-docs",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "",
 	"type": "module",
 	"main": "index.js",
@@ -62,7 +62,7 @@
 		"vue": "^3.5.18"
 	},
 	"overrides": {
-		"elsia": "^1.4.1",
+		"elysia": "^1.4.1",
 		"oxc-minify": "0.78.0",
 		"vite": "npm:rolldown-vite@latest",
 		"vitepress": "^2.0.0-alpha.9",
