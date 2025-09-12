@@ -45,6 +45,7 @@ export default new Elysia()
 ```json
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
+	"builds": [{ "src": "api/**/*.ts", "use": "@vercel/node" }],
     "rewrites": [
 		{
 			"source": "/(.*)",
