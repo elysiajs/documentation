@@ -34,7 +34,7 @@ head:
     src="/blog/elysia-14/elysia-14.webp"
     alt="'Elysia 1.4' as title with the word 'Supersymmetry' on the left with ElysiaJS chan on the right."
     author="saltyaom"
-    date="32 Sep 2025"
+    date="13 Sep 2025"
     shadow
 >
 
