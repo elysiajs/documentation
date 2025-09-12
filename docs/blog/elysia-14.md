@@ -43,7 +43,7 @@ Named after the song [Supersymmetry](https://youtu.be/NYyjQjtbteA) by Sta, a Ton
 Elysia 1.4 highlight is on Standard Schema, and **"Type Soundness"**.
 
 - [Standard Schema](#standard-schema)
-- [Macro](#macro-with-schema-extension-and-openapi-detail)
+- [Macro](#macro)
 - [Lifecycle Type Soundness](#lifecycle-type-soundness)
 - [Group standalone schema](#group-standalone-schema)
 
@@ -54,7 +54,7 @@ But one of the most requested feature from our community is to support more vali
 
 As Elysia is deeply tied with TypeBox, it required a lot of effort to add support for each validators individually, and a lot of maintenance to keep up with the changes of each one.
 
-Luckily, there is a new proposal called [Standard Schema](https://standard-schema.dev/) to define a standard way to use a different schema with the same API allowing us to support multiple validators without having to write custom integration for each of them.
+Luckily, there is a new proposal called [Standard Schema](https://github.com/standard-schema/standard-schema) to define a standard way to use a different schema with the same API allowing us to support multiple validators without having to write custom integration for each of them.
 
 Elysia now support Standard Schema, allowing you to use your favorite validators like:
 - Zod
@@ -107,7 +107,7 @@ Allowing you to have a beautiful OpenAPI documentation with your favorite valida
 ![Zod with OpenAPI support](/blog/elysia-14/openapi-zod.webp)
 > Using Zod native OpenAPI schema support with **describe** to add description to the schema
 
-But if your validator does not support JSON Schema, we provide our unique [OpenAPI type gen](/blog/openapi-type-gen.html) to generate OpenAPI scheam directly from TypeScript type from your validator.
+But if your validator does not support JSON Schema, we provide our unique [OpenAPI type gen](/blog/openapi-type-gen.html) to generate OpenAPI schema directly from TypeScript type from your validator.
 
 This means that Elysia support OpenAPI generation for all validators that support Standard Schema even if it doesn't directly support JSON Schema.
 
