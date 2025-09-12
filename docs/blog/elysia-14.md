@@ -45,7 +45,7 @@ Elysia 1.4 highlight is on Standard Schema, and **"Type Soundness"**.
 - [Standard Schema](#standard-schema)
 - [Macro](#macro-with-schema-extension-and-openapi-detail)
 - [Lifecycle Type Soundness](#lifecycle-type-soundness)
-- [Performance Improvement](#performance-improvement)
+- [Group standalone schema](#group-standalone-schema)
 
 ## Standard Schema
 For 3 years, Elysia use TypeBox as the only validator, and it is one of the most loved feature of Elysia due to its performance, and type inference.
@@ -65,7 +65,7 @@ Elysia now support Standard Schema, allowing you to use your favorite validators
 - and more!
 
 You can provide the schema similar to TypeBox, and it will just work out of the box:
-```ts
+```ts twoslash
 import { Elysia, t } from 'elysia'
 import { z } from 'zod'
 import * as v from 'valibot'
@@ -73,9 +73,20 @@ import * as v from 'valibot'
 const app = new Elysia()
   	.get(
    		'/user/:id',
-     	({ params }) => params.id,
+     	({ body, params }) => {
+      		body
+      		// ^?
+
+
+
+
+         	params
+      		// ^?
+
+
+     	},
       	{
-       		params: z.Object({
+       		params: z.object({
          		id: z.coerce.number()
          	}),
          	body: v.object({
@@ -110,7 +121,7 @@ This is truly a unique feature for Elysia, that we are truly proud to offer.
 ### Standalone Validator
 You can also use multiple schema to validate a single input using standalone validator:
 
-```ts
+```ts twoslash
 import { Elysia, t } from 'elysia'
 import { z } from 'zod'
 import * as v from 'valibot'
@@ -118,13 +129,17 @@ import * as v from 'valibot'
 const app = new Elysia()
 	.guard({
 		schema: 'standalone',
-		body: z.Object({
+		body: z.object({
 			id: z.coerce.number()
 		})
 	})
   	.get(
    		'/user/:id',
      	({ body }) => body,
+//          ^?
+
+
+
       	{
          	body: v.object({
 		 		name: v.literal('lilith')
