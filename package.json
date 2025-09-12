@@ -13,7 +13,7 @@
 		"@vueuse/core": "^13.6.0",
 		"clsx": "^2.1.1",
 		"dayjs": "^1.11.13",
-		"elysia": "^1.4.0",
+		"elysia": "^1.4.1",
 		"medium-zoom": "^1.1.0",
 		"motion-v": "^1.6.1",
 		"shiki": "^3.9.2",
@@ -62,7 +62,7 @@
 		"vue": "^3.5.18"
 	},
 	"overrides": {
-		"elsia": "^1.4.0",
+		"elsia": "^1.4.1",
 		"oxc-minify": "0.78.0",
 		"vite": "npm:rolldown-vite@latest",
 		"vitepress": "^2.0.0-alpha.9",

@@ -1041,13 +1041,13 @@ The narrowed-down error type will be typed as `ValidationError` imported from **
 
 **ValidationError** exposes a property named **validator**, typed as [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck), allowing us to interact with TypeBox functionality out of the box.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
     .onError(({ code, error }) => {
         if (code === 'VALIDATION')
-            return error.validator.Errors(error.value).First().message
+            return error.all[0].message
     })
     .listen(3000)
 ```
