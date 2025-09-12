@@ -169,8 +169,6 @@ Elysia also support [Standard Schema](https://github.com/standard-schema/standar
 - Joi
 - [and more](https://github.com/standard-schema/standard-schema)
 
-To use Standard Schema, simply import the schema and provide it to the route handler.
-
 ```typescript twoslash
 import { Elysia } from 'elysia'
 import { z } from 'zod'
@@ -193,7 +191,7 @@ Elysia will infer the types from the schema automatically, allowing you to use y
 
 ## OpenAPI
 
-Elysia adopts many standards by default, like OpenAPI, and WinterTC compliance, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
+Elysia adopts many standards by default, like OpenAPI, and WinterTC compliance, Standard Schema, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
 
 For instance, because Elysia adopts OpenAPI by default, generating API documentation is as easy as adding a one-liner:
 
@@ -202,7 +200,7 @@ import { Elysia, t } from 'elysia'
 import { openapi } from '@elysiajs/openapi'
 
 new Elysia()
-    .use(openapi())
+    .use(openapi()) // [!code ++]
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Number()
@@ -225,7 +223,7 @@ import { fromTypes } from '@elysiajs/openapi/gen'
 
 export const app = new Elysia()
     .use(openapi({
-    	references: fromTypes('src/index.ts')
+    	references: fromTypes('src/index.ts') // [!code ++]
     }))
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({

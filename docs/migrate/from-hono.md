@@ -242,7 +242,7 @@ const app = new Elysia()
 While Hono requires a prefix to separate the subrouter, Elysia doesn't require a prefix to separate the subrouter.
 
 ## Validation
-While Hono supports for **zod**, Elysia focus on deep integration with **TypeBox** to offers seamless integration with OpenAPI, validation, and advanced feature behind the scene.
+While Hono supports for various validator via external package, Elysia has a built-in validation using **TypeBox**, and support for Standard Schema out of the box allowing you to use your favorite library like Zod, Valibot, ArkType, Effect Schema and so on without additional library. Elysia also offers seamless integration with OpenAPI, and type inference behind the scene.
 
 <Compare>
 
@@ -293,7 +293,7 @@ app.patch(
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts twoslash [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -316,12 +316,60 @@ const app = new Elysia()
 	})
 ```
 
+```ts twoslash [Elysia Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: z.object({
+			id: z.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	})
+```
+
+```ts twoslash [Elysia Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: v.object({
+			id: v.number()
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	})
+```
+
 :::
 </template>
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically
+> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
 
 </template>
 

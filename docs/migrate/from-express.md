@@ -231,7 +231,7 @@ const app = new Elysia()
 </Compare>
 
 ## Validation
-Elysia has a built-in support for request validation with sounds type safety out of the box, while Express doesn't offers a built-in validation, and require a manual type declaration based on each validation library.
+Elysia has a built-in support for request validation using TypeBox sounds type safety, and support for Standard Schema out of the box allowing you to use your favorite library like Zod, Valibot, ArkType, Effect Schema and so on. While Express doesn't offers a built-in validation, and require a manual type declaration based on each validation library.
 
 <Compare>
 
@@ -284,7 +284,7 @@ app.patch('/user/:id', (req, res) => {
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts twoslash [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -307,12 +307,60 @@ const app = new Elysia()
 	})
 ```
 
+```ts twoslash [Elysia Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: z.object({
+			id: z.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	})
+```
+
+```ts twoslash [Elysia Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: v.object({
+			id: v.number()
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	})
+```
+
 :::
 </template>
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically
+> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
 
 </template>
 

@@ -297,7 +297,7 @@ app.patch(
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts twoslash [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -320,12 +320,60 @@ const app = new Elysia()
 	})
 ```
 
+```ts twoslash [Elysia Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: z.object({
+			id: z.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	})
+```
+
+```ts twoslash [Elysia Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: v.object({
+			id: v.number()
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	})
+```
+
 :::
 </template>
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically
+> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
 
 </template>
 
@@ -333,7 +381,7 @@ const app = new Elysia()
 
 Alternatively, Fastify can also use **TypeBox** or **Zod** for validation using `@fastify/type-provider-typebox` to infer type automatically.
 
-While Elysia **prefers TypeBox** for validation, Elysia also supports **Zod**, and **Valibot** via [TypeMap](https://github.com/sinclairzx81/typemap).
+While Elysia **prefers TypeBox** for validation, Elysia also support for Standard Schema allowing you to use library like Zod, Valibot, ArkType, Effect Schema and so on out of the box.
 
 ## File upload
 Fastify use a `fastify-multipart` to handle file upload which use `Busboy` under the hood while Elysia use Web Standard API for handling formdata, mimetype valiation using declarative API.
