@@ -14,7 +14,7 @@ head:
 
     - - meta
       - property: 'og:description'
-        content: Supersymmetry
+        content: Support for Standard Validator. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improve type inference performance by 10%.
 
     - - meta
       - property: 'og:image'
