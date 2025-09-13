@@ -109,16 +109,16 @@ However, we use [xsschema](https://xsai.js.org/docs/packages-top/xsschema) inter
 This allows you to have beautiful OpenAPI documentation with your favorite validator.
 
 ![Zod with OpenAPI support](/blog/elysia-14/openapi-zod.webp)
-> Using Zod native OpenAPI schema support with **describe** to add description to the schema
+> Using Zod's native OpenAPI schema support with **describe** to add description to the schema
 
 But if your validator does not support JSON Schema, we provide [OpenAPI type gen](/blog/openapi-type-gen.html) to generate OpenAPI schema directly from TypeScript type from your validator.
 
-This means that Elysia supports OpenAPI generation for all validators that support Standard Schema, even if they don't directly support JSON Schema.
+This means Elysia supports OpenAPI generation for all validators that support Standard Schema, even if they don't directly support JSON Schema.
 
 ![Valibot with OpenAPI support](/blog/elysia-14/openapi-valibot.webp)
 > Valibot doesn't directly support JSON Schema, but we use OpenAPI type gen to handle it
 
-Not only will it generate the correct input type, but OpenAPI type gen will also generate all possible output types, including error responses.
+Not only will it generate correct input type, but OpenAPI type gen will also generate all possible output types, including error responses.
 
 This is truly a unique feature for Elysia, and we are very proud to offer it.
 
@@ -183,7 +183,7 @@ You can now define a schema for your macro, allowing you to add custom validatio
 
 Macro with schema will automatically validate and infer types to ensure type safety, and it can coexist with existing schemas as well.
 
-You can also stack multiple schemas from different macros, or even from Standard Validator, and they will work together seamlessly.
+You can also stack multiple schemas from different macros, or even from Standard Schema, and they will work together seamlessly.
 
 Macro schema also supports type inference for **lifecycle within the same macro** **BUT** only with a named single macro due to a TypeScript limitation.
 
@@ -228,7 +228,7 @@ All of these complex achievements allow us to document all possibilities of what
 
 Not only does this improve the developer experience, but it also improves the reliability of your codebase by ensuring that all possibilities are accounted for in both the API documentation and the client with Eden Treaty.
 
-> Type Soundness covers all lifecycle events and macros, allowing you to have complete documentation of your API. The only exception is an inline lifecycle event due to slowness.
+> Type Soundness covers all lifecycle events and macros, allowing you to have complete documentation of your API. The only exception is inline lifecycle events due to performance.
 
 We also managed to improve type inference performance by ~9-11% and decrease type instantiation by 11.5%, despite the massive increase in type complexity.
 
@@ -250,7 +250,7 @@ This allows you to define a new schema in `group` without having to include the 
 
 ## Notable changes
 
-We closed around 300 issues in 1.3.9, so so there aren’t many bug fixes in 1.4—we’ve addressed most known issues.
+We closed around 300 issues in 1.3.9, so there aren’t many bug fixes in 1.4—we’ve addressed most known issues.
 
 ### Improvements
 
@@ -259,7 +259,7 @@ We closed around 300 issues in 1.3.9, so so there aren’t many bug fixes in 1.4
 
 ### Changes
 
-- ObjectString/ArrayString no longer produces default values by default due to security reasons
+- ObjectString/ArrayString no longer produce default values due to security reasons
 - Cookie now dynamically parses when format is likely JSON
 - export `fileType` for external file type validation for accurate response
 
