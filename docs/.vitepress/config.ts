@@ -26,9 +26,9 @@ export default defineConfig({
         languages: ['js', 'ts'],
         codeTransformers: [
             transformerTwoslash({
-                // typesCache: createFileSystemTypesCache({
-                //     dir: './docs/.vitepress/cache/twoslash'
-                // })
+                typesCache: createFileSystemTypesCache({
+                    dir: './docs/.vitepress/cache/twoslash'
+                })
             })
         ],
         config: (md) => {

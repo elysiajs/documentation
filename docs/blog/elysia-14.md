@@ -71,7 +71,7 @@ import { z } from 'zod'
 import * as v from 'valibot'
 
 const app = new Elysia()
-  	.get(
+  	.post(
    		'/user/:id',
      	({ body, params }) => {
       		body
@@ -133,7 +133,7 @@ const app = new Elysia()
 			id: z.coerce.number()
 		})
 	})
-  	.get(
+  	.post(
    		'/user/:id',
      	({ body }) => body,
 //          ^?
