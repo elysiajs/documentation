@@ -436,3 +436,19 @@ export const addressController = new Elysia({
 ```
 
 This will ensures that all endpoints under the `/address` prefix require a valid JWT token for access.
+
+## Standard Schema with OpenAPI
+Elysia will try to use a native method from each schema to convert to OpenAPI schema.
+
+However, if the schema doesn't provide a native method, you can provide a custom schema to OpenAPI by providing a `mapJsonSchema` as follows:
+
+```typescript
+import { openapi } from '@elysiajs/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+	  	valibot: toJsonSchema
+  	}
+})
+```

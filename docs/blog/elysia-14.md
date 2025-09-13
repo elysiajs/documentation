@@ -100,7 +100,7 @@ You can use multiple validators in a single route, and it will work together sea
 ### OpenAPI
 There is a request to support JSON Schema for OpenAPI generation for Standard Schema but it is not implemented yet.
 
-However, we use [xsschema](https://xsai.js.org/docs/packages-top/xsschema) internally as a workaround to convert Standard Schema to JSON Schema for OpenAPI generation (if the validation library support it).
+However, we provide a custom `mapJsonSchema` to `openapi` allow you to provide a custom function to map schema to Json Schema as a workaround.
 
 Allowing you to have a beautiful OpenAPI documentation with your favorite validator.
 
