@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Support for Standard Validator. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improve type inference performance by 10%.
+        content: Support for Standard Schema. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improves type inference performance by 10%.
 
     - - meta
       - property: 'og:description'
-        content: Support for Standard Validator. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improve type inference performance by 10%.
+        content: Support for Standard Schema. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improves type inference performance by 10%.
 
     - - meta
       - property: 'og:image'
@@ -111,12 +111,12 @@ This allows you to have beautiful OpenAPI documentation with your favorite valid
 ![Zod with OpenAPI support](/blog/elysia-14/openapi-zod.webp)
 > Using Zod native OpenAPI schema support with **describe** to add description to the schema
 
-But if your validator does not support JSON Schema, we provide our unique [OpenAPI type gen](/blog/openapi-type-gen.html) to generate OpenAPI schema directly from TypeScript type from your validator.
+But if your validator does not support JSON Schema, we provide [OpenAPI type gen](/blog/openapi-type-gen.html) to generate OpenAPI schema directly from TypeScript type from your validator.
 
 This means that Elysia supports OpenAPI generation for all validators that support Standard Schema, even if they don't directly support JSON Schema.
 
 ![Valibot with OpenAPI support](/blog/elysia-14/openapi-valibot.webp)
-> Valibot doesn't directly support JSON Schema, but we OpenAPI type gen to handle it
+> Valibot doesn't directly support JSON Schema, but we use OpenAPI type gen to handle it
 
 Not only will it generate the correct input type, but OpenAPI type gen will also generate all possible output types, including error responses.
 
@@ -138,26 +138,27 @@ const app = new Elysia()
 			id: z.coerce.number()
 		})
 	})
-  	.post(
-   		'/user/:id',
-     	({ body }) => body,
+	.post(
+		'/user/:id',
+		({ body }) => body,
 //          ^?
 
 
 
 
-      	{
-         	body: v.object({
-		 		name: v.literal('lilith')
-		 	})
-      	})
+		{
+			body: v.object({
+				name: v.literal('lilith')
+			})
+		}
+	)
 ```
 > This example uses both Zod and Valibot to validate the body, allowing you to use existing schemas in your codebase from different validators together.
 
 This works by using each validator to parse a part of the input, then storing each result as a snapshot that merges together to form a single output, ensuring type integrity.
 
 ![Using multiple validators to validate part of a body](/blog/elysia-14/standard-schema.webp)
-> Using TypeBox, Zod, Valibot, Joi, Yup, ArkType, Effect Schema, TypeMap, and Rescript Schema to validate different parts of the body
+> Using TypeBox, Zod, Valibot, Joi, Yup, ArkType, Effect Schema, TypeMap, and ReScript Schema to validate different parts of the body
 
 We tested 8 validators at the same time, validating each part of the input, and it just works flawlessly.
 
@@ -229,7 +230,7 @@ Not only does this improve the developer experience, but it also improves the re
 
 > Type Soundness covers all lifecycle events and macros, allowing you to have complete documentation of your API. The only exception is an inline lifecycle event due to slowness.
 
-We also managed to improve type inference performance by a factor of ~9-11% and decrease type instantiation by 11.5%, despite the massive increase in type complexity.
+We also managed to improve type inference performance by ~9-11% and decrease type instantiation by 11.5%, despite the massive increase in type complexity.
 
 ![Type inference](/blog/elysia-14/type-inference.webp)
 > Type instantiation is reduced by 11.57% from our internal benchmark
@@ -249,7 +250,7 @@ This allows you to define a new schema in `group` without having to include the 
 
 ## Notable changes
 
-We have closed around 300 issues on 1.3.9, so we don't really have many bug fixes to make for 1.4, as we have solved most of the problems we know.
+We closed around 300 issues in 1.3.9, so so there aren’t many bug fixes in 1.4—we’ve addressed most known issues.
 
 ### Improvements
 
