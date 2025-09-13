@@ -870,7 +870,7 @@ new Elysia()
 
 <Playground :elysia="demo7" />
 
-## TypeScript
+<!--## TypeScript
 Elysia automatically type context base on various of factors like store, decorators, schema.
 
 It's recommended to leave Elysia to type context instead of manually define one.
@@ -924,4 +924,4 @@ const app = new Elysia()
 	.get('/', handler)
 ```
 
-Unlike `InferContext`, `InferHandler` requires a path and schema to define a handler type and can safely ensure type safety of a return type.
+Unlike `InferContext`, `InferHandler` requires a path and schema to define a handler type and can safely ensure type safety of a return type.-->

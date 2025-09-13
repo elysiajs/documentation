@@ -10,7 +10,7 @@
         "@vueuse/core": "^13.6.0",
         "clsx": "^2.1.1",
         "dayjs": "^1.11.13",
-        "elysia": "^1.4.1",
+        "elysia": "1.4.3",
         "medium-zoom": "^1.1.0",
         "motion-v": "^1.6.1",
         "shiki": "^3.9.2",
@@ -19,16 +19,16 @@
         "zod": "^4.1.8",
       },
       "devDependencies": {
-        "@elysiajs/bearer": "1.4.0",
-        "@elysiajs/cors": "1.4.0",
-        "@elysiajs/cron": "1.4.0",
-        "@elysiajs/eden": "1.4.0",
-        "@elysiajs/html": "1.4.0",
-        "@elysiajs/jwt": "1.4.0",
-        "@elysiajs/openapi": "1.4.0",
-        "@elysiajs/opentelemetry": "1.4.0",
-        "@elysiajs/server-timing": "1.4.0",
-        "@elysiajs/static": "1.4.0",
+        "@elysiajs/bearer": "^1.4.1",
+        "@elysiajs/cors": "^1.4.0",
+        "@elysiajs/cron": "^1.4.0",
+        "@elysiajs/eden": "^1.4.0",
+        "@elysiajs/html": "^1.4.0",
+        "@elysiajs/jwt": "^1.4.0",
+        "@elysiajs/openapi": "^1.4.0",
+        "@elysiajs/opentelemetry": "^1.4.0",
+        "@elysiajs/server-timing": "^1.4.0",
+        "@elysiajs/static": "^1.4.0",
         "@hono/zod-validator": "^0.7.2",
         "@nolebase/vitepress-plugin-inline-link-preview": "^2.18.1",
         "@rollup/plugin-node-resolve": "^16.0.1",
@@ -61,7 +61,6 @@
     },
   },
   "overrides": {
-    "elysia": "^1.4.1",
     "oxc-minify": "0.78.0",
     "vite": "npm:rolldown-vite@latest",
     "vitepress": "^2.0.0-alpha.9",
@@ -170,7 +169,7 @@
 
     "@docsearch/js": ["@docsearch/js@4.0.0-beta.5", "", {}, "sha512-FEtkwdblZDrTkd0mYwmfR94Vo/jgkXVIbS6vD2FcKazK/L5RmgNb7KAUDUWW11V/fIcS5XHvHprIxEnoB9gllQ=="],
 
-    "@elysiajs/bearer": ["@elysiajs/bearer@1.4.0", "", { "peerDependencies": { "elysia": ">= 1.4.0" } }, "sha512-L98NkMShRWdIjxuAJC0IwhG2YPjtIzVENbHAJFXkW6XUxnNtQepX2PWyDGsv7uWXsg4TJAtANV8FeZ8jso2+Aw=="],
+    "@elysiajs/bearer": ["@elysiajs/bearer@1.4.1", "", { "peerDependencies": { "elysia": ">= 1.4.0" } }, "sha512-vLLSMEVsLKp/8p/eoAbXZdXKRs1jEQO4OkrfcKM2x8FkiK2aKNcFgLID45bH+6rYbCf8Ihg0NKw59zxMLl43OQ=="],
 
     "@elysiajs/cors": ["@elysiajs/cors@1.4.0", "", { "peerDependencies": { "elysia": ">= 1.4.0" } }, "sha512-pb0SCzBfFbFSYA/U40HHO7R+YrcXBJXOWgL20eSViK33ol1e20ru2/KUaZYo5IMUn63yaTJI/bQERuQ+77ND8g=="],
 
@@ -752,7 +751,7 @@
 
     "elliptic": ["elliptic@6.6.1", "", { "dependencies": { "bn.js": "^4.11.9", "brorand": "^1.1.0", "hash.js": "^1.0.0", "hmac-drbg": "^1.0.1", "inherits": "^2.0.4", "minimalistic-assert": "^1.0.1", "minimalistic-crypto-utils": "^1.0.1" } }, "sha512-RaddvvMatK2LJHqFJ+YA4WysVN5Ita9E35botqIYspQ4TkRAlCicdzKOjlyv/1Za5RyTNn7di//eEV0uTAfe3g=="],
 
-    "elysia": ["elysia@1.4.1", "", { "dependencies": { "cookie": "^1.0.2", "exact-mirror": "0.2.2", "fast-decode-uri-component": "^1.0.1" }, "optionalDependencies": { "@sinclair/typebox": ">= 0.34.0 < 1", "openapi-types": ">= 12.0.0" }, "peerDependencies": { "file-type": ">= 20.0.0", "typescript": ">= 5.0.0" } }, "sha512-Tm/0tR8UtbRpqtWOMeOngJhUsMYZXcUnZBnnxV33uNbFkaAaOPrEd2dshk7KzPi5rktxyVU63LizWh9ZJbZYIQ=="],
+    "elysia": ["elysia@1.4.3", "", { "dependencies": { "cookie": "^1.0.2", "elysia": "1.4.3-beta.0", "exact-mirror": "0.2.2", "fast-decode-uri-component": "^1.0.1" }, "optionalDependencies": { "@sinclair/typebox": ">= 0.34.0 < 1", "openapi-types": ">= 12.0.0" }, "peerDependencies": { "file-type": ">= 20.0.0", "typescript": ">= 5.0.0" } }, "sha512-CzyzRr32wifd2FxmpdCeGjcmAWjqyuE2PIWOoqGnLQr227Sy7/rO20JmIe2dkFGMG3lpNLakHzPft6z7p8+k9A=="],
 
     "emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
 
@@ -1589,6 +1588,8 @@
     "elliptic/bn.js": ["bn.js@4.12.2", "", {}, "sha512-n4DSx829VRTRByMRGdjQ9iqsN0Bh4OolPsFnaZBLcbi8iXcB+kJ9s7EnRt4wILZNV3kPLHkRVfOc/HvhC3ovDw=="],
 
     "elysia/cookie": ["cookie@1.0.2", "", {}, "sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA=="],
+
+    "elysia/elysia": ["elysia@1.4.3-beta.0", "", { "dependencies": { "cookie": "^1.0.2", "exact-mirror": "0.2.2", "fast-decode-uri-component": "^1.0.1" }, "optionalDependencies": { "@sinclair/typebox": ">= 0.34.0 < 1", "openapi-types": ">= 12.0.0" }, "peerDependencies": { "file-type": ">= 20.0.0", "typescript": ">= 5.0.0" } }, "sha512-UzanGZSqoKKcKgg+I4YB+ZOGeJNA7mlA8JPj7klYi0LDVcj/vtXKGRmsp4jEzZO+LjSpFuYTZcwHi4rCnvJj1w=="],
 
     "http-errors/statuses": ["statuses@2.0.1", "", {}, "sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ=="],
 
