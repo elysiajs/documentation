@@ -164,6 +164,28 @@ Here's an example that macro resolve could be useful:
 - run an additional database query and add data to the context
 - add a new property to the context
 
+
+### Macro extension with resolve
+Due to TypeScript limitation, macro that extends other macro cannot infer type into **resolve** function.
+
+We provide a named single macro as a workaround to this limitation.
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+new Elysia()
+	.macro('user', {
+		resolve: () => ({
+			user: 'lilith' as const
+		})
+	})
+	.macro('user2', {
+		user: true,
+		resolve: ({ user }) => {
+		//           ^?
+		}
+	})
+```
+
 ## Schema
 You can define a custom schema for your macro, to make sure that the route using the macro is passing the correct type.
 
@@ -193,6 +215,8 @@ Macro with schema will automatically validate and infer type to ensure type safe
 You can also stack multiple schema from different macro, or even from Standard Validator and it will work together seamlessly.
 
 ### Schema with lifecycle in the same macro
+Similar to [Macro extension with resolve](#macro-extension-with-resolve),
+
 Macro schema also support type inference for **lifecycle within the same macro** **BUT** only with named single macro due to TypeScript limitation.
 
 ```typescript twoslash
