@@ -49,7 +49,7 @@ export default defineLoader({
                     query: `query {
 	                  user(login: "saltyaom", activeOnly: true) {
 	                    sponsorshipsAsMaintainer(
-	                        first: 200
+	                        first: 100
 	                    ) {
 	                      totalRecurringMonthlyPriceInDollars
 	                      nodes {
