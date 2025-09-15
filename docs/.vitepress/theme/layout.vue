@@ -12,6 +12,7 @@ import { motion, cubicBezier, AnimatePresence } from 'motion-v'
 import GlareCard from './glare-card.vue'
 
 import { data } from '../../components/fern/sponsor.data'
+import { sponsorOverride } from '../../components/fern/sponsor.constant'
 
 const isDark = useDark()
 const { isDark: darkTheme, frontmatter } = useData()
@@ -86,12 +87,7 @@ router.onAfterRouteChange = () => {
 
 const sponsors = Object.values(data).filter(
     (x) => x.tier.monthlyPriceInDollars >= 200
-)
-
-const sponsorNameClass = {
-    // logo has padding
-    'San Francisco Compute Company': 'p-0'
-} as const
+) satisfies (typeof data)[keyof typeof data][]
 </script>
 
 <template>
@@ -220,14 +216,20 @@ const sponsorNameClass = {
             </div>
         </template>
         <template #aside-outline-after>
-            <h6 class="text-sm font-medium text-gray-500 mt-6 px-2">Our Sponsors</h6>
+            <h6 class="text-sm font-medium text-gray-500 mt-6 px-2">
+                Our Sponsors
+            </h6>
             <aside class="grid grid-cols-2 w-48">
                 <a
                     :key="sponsor.sponsorEntity.login"
-                    :href="`https://github.com/${sponsor.sponsorEntity.login}`"
-                    :class="sponsorNameClass[sponsor.sponsorEntity.name] ?? 'p-1.75'"
+                    :href="sponsorOverride.href[sponsor.sponsorEntity.login] ?? `https://github.com/${sponsor.sponsorEntity.login}`"
+                    :class="
+                        sponsorOverride.class[sponsor.sponsorEntity.login] ??
+                        'p-2.25'
+                    "
                     target="_blank"
                     rel="noopener noreferrer"
+                    :title="sponsor.sponsorEntity.name"
                     v-for="sponsor in sponsors"
                 >
                     <img

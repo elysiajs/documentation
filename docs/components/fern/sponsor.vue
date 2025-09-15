@@ -10,44 +10,19 @@
             Made possible by you
         </motion.h2>
         <p
-            class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto dark:text-gray-400 dark:font-medium"
+            class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto mb-8 dark:text-gray-400 dark:font-medium"
         >
             <motion.span class="inline-block" v-bind="flyIn(0.1)">
                 Elysia is
                 <span class="text-gray-700 dark:text-gray-200 font-medium">
                     not owned by an organization </span
-                >, but is driven by the community.
+                >, driven by volunteer, and community.
             </motion.span>
-            <motion.span class="inline-block" v-bind="flyIn(0.2)">
-                Elysia development is only possible thanks to your support.
+            <motion.span class="inline-block mt-2" v-bind="flyIn(0.2)">
+                Elysia is possible by these awesome sponsors.
             </motion.span>
         </p>
-        <motion.div class="flex sm:justify-center my-8" v-bind="flyIn(0.3)">
-            <a
-                id="become-sponsor"
-                class="inline-flex items-center text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform transform hover:scale-110 focus:scale-110"
-                href="https://github.com/sponsors/saltyaom"
-                target="_blank"
-            >
-                Become a sponsor
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="transform scale-75 translate-x-1.5"
-                >
-                    <path
-                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    />
-                </svg>
-            </a>
-        </motion.div>
+
         <section v-if="goldSponsors.length">
             <header class="mt-4 text-center" v-bind="flyIn(0.3)">
                 <motion.h4
@@ -63,7 +38,11 @@
                     :key="sponsor.sponsorEntity.login"
                 >
                     <a
-                        :href="`https://github.com/${sponsor.sponsorEntity.login}`"
+                        :href="
+                            // @ts-ignore
+                            sponsorOverride.href[sponsor.sponsorEntity.login] ??
+                            `https://github.com/${sponsor.sponsorEntity.login}`
+                        "
                         target="_blank"
                         class="sponsor"
                     >
@@ -221,12 +200,46 @@
             </motion.ul>
         </section>
 
-        <motion.p
-            class="sm:text-center text-gradient from-pink-400 to-fuchsia-400 font-semibold text-base"
-            v-bind="flyIn(0.9)"
-        >
+        <p class="inline-block text-center mb-4">
             Thank you for making Elysia possible
-        </motion.p>
+        </p>
+
+        <p class="inline-block text-center">
+            We can only develop Elysia full-time thanks to your supports.
+        </p>
+
+        <div class="flex sm:justify-center my-8">
+            <a
+                id="become-sponsor"
+                class="inline-flex items-center text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform transform hover:scale-110 focus:scale-110"
+                href="https://github.com/sponsors/saltyaom"
+                target="_blank"
+            >
+                Become a sponsor
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="transform scale-75 translate-x-1.5"
+                >
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                    />
+                </svg>
+            </a>
+        </div>
+
+        <p
+            class="sm:text-center text-gradient from-pink-400 to-fuchsia-400 font-semibold text-base"
+        >
+            With love from our community
+        </p>
     </section>
 </template>
 
@@ -236,6 +249,7 @@ import { useInView, motion } from 'motion-v'
 import { useFlyIn } from './animate'
 
 import { data, type Sponsor } from './sponsor.data'
+import { sponsorOverride } from './sponsor.constant'
 
 const scope = ref(null)
 const isInView = useInView(scope, {
@@ -286,13 +300,13 @@ const individualSponsors = sponsors.filter(
     @apply grid gap-2 grid-cols-1;
 
     & > li > .sponsor {
-        @apply flex justify-center items-center gap-3 text-xs text-center py-2;
+        @apply flex justify-start items-center gap-3 text-xs text-center py-2;
 
         & > div {
             @apply min-w-21 min-h-21 overflow-hidden rounded-full;
 
             & > img {
-                @apply w-21 h-21 rounded-full object-cover object-center;
+                @apply w-21 h-21 !rounded-sm object-cover object-center;
             }
         }
 
@@ -352,7 +366,7 @@ const individualSponsors = sponsors.filter(
     #sponsors-fern-gold {
         grid-template-columns: repeat(
             auto-fit,
-            minmax(224px, 256px)
+            minmax(224px, 288px)
         ) !important;
         justify-content: center;
     }

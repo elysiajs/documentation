@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Hero from './hero.vue'
 import Note from './note.vue'
+import TrustedBy from './trusted-by.vue'
 import Features from './features.vue'
 import Benchmark from './benchmark.vue'
 import TypeIntegrity from './type-integrity.vue'
@@ -17,10 +18,11 @@ import BuiltWithLove from './built-with-love.vue'
 <template>
     <div id="landing" class="dark:bg-gray-900/60">
         <Hero />
+        <Note />
+        <TrustedBy />
         <article
             class="flex flex-col gap-4 text-gray-500/80 dark:text-gray-400/90 leading-normal text-lg"
         >
-            <Note />
             <Easy>
                 <slot name="easy" />
             </Easy>
