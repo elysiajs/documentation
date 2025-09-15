@@ -47,9 +47,9 @@ export default defineLoader({
                 },
                 body: JSON.stringify({
                     query: `query {
-	                  user(login: "saltyaom") {
+	                  user(login: "saltyaom", activeOnly: true) {
 	                    sponsorshipsAsMaintainer(
-	                        first: 100
+	                        first: 200
 	                    ) {
 	                      totalRecurringMonthlyPriceInDollars
 	                      nodes {

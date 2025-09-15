@@ -15,7 +15,7 @@ import { data } from '../../components/fern/sponsor.data'
 import { sponsorOverride } from '../../components/fern/sponsor.constant'
 
 const isDark = useDark()
-const { isDark: darkTheme, frontmatter } = useData()
+const { isDark: darkTheme } = useData()
 
 const showCard = ref(false)
 
@@ -84,6 +84,8 @@ const router = useRouter()
 router.onAfterRouteChange = () => {
     onNewPage()
 }
+
+console.log(data)
 
 const sponsors = Object.values(data).filter(
     (x) => x.tier.monthlyPriceInDollars >= 200
