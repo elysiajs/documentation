@@ -86,6 +86,20 @@
                 alt="ConnexTicket"
             />
         </a>
+
+        <a
+            href="https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-14405781"
+            target="_blank"
+            title="Decidable uses Elysia to power their Business Intelligence platform, and virtually every new project they start."
+            class="opacity-60 hover:opacity-100 focus:opacity-100 transition-opacity"
+        >
+            <img src="/logo/decidable.webp" class="dark:hidden" alt="Decidable logo" />
+            <img
+                src="/logo/decidable-dark.webp"
+                class="hidden dark:block"
+                alt="Decidable logo"
+            />
+        </a>
     </section>
 </template>
 
