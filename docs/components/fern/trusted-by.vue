@@ -48,7 +48,7 @@
         </a>
 
         <a
-            href="https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13913513"
+            href="https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13924470"
             target="_blank"
             title="Bank for Agriculture and Agricultural Cooperatives Thailand use Elysia for interal website for business unit. Bank Vehicle Data Management, and tracking system."
             class="opacity-60 hover:opacity-100 focus:opacity-100 transition-opacity"
