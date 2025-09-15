@@ -3,7 +3,7 @@
         Trusted by team at
     </h3>
     <section
-        class="flex justify-center gap-3 max-w-5xl **:h-9.5 mx-auto mt-4 mb-12"
+        class="flex flex-wrap justify-center gap-3 max-w-5xl **:h-9.5 mx-auto mt-4 mb-12 px-4"
     >
         <a
             href="https://x.com/shlomiatar/status/1822381556142362734"
