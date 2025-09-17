@@ -1,6 +1,6 @@
 <template>
     <section
-        class="flex flex-col w-full max-w-5xl mx-auto mt-4 fern-gap"
+        class="flex flex-col w-full max-w-6xl mx-auto mt-4 fern-gap"
         ref="scope"
     >
         <motion.h2
@@ -24,15 +24,15 @@
         </p>
 
         <section v-if="goldSponsors.length">
-            <header class="mt-4 text-center" v-bind="flyIn(0.3)">
+            <header class="mt-4 text-center">
                 <motion.h4
-                    class="text-4xl text-center font-semibold text-gradient from-sky-500 to-violet-500"
-                    v-bind="flyIn(0.4)"
+                    class="text-4xl text-center font-semibold text-gradient from-pink-500 to-yellow-500"
+                    v-bind="flyIn(0.3)"
                 >
-                    Gold Sponsors <span class="text-pink-400 ml-0.5">💖</span>
+                    Gold Sponsors <span class="text-pink-400 ml-0.5">💛</span>
                 </motion.h4>
             </header>
-            <motion.ul id="sponsors-fern-gold" class="my-4" v-bind="flyIn(0.5)">
+            <motion.ul id="sponsors-fern-gold" class="my-4" v-bind="flyIn(0.4)">
                 <li
                     v-for="sponsor in goldSponsors"
                     :key="sponsor.sponsorEntity.login"
@@ -77,7 +77,7 @@
                     class="text-3xl text-center font-semibold text-gradient from-violet-500 to-sky-400"
                     v-bind="flyIn(0.5)"
                 >
-                    Silver Sponsors <span class="text-pink-400 ml-0.5">💞</span>
+                    Silver Sponsors <span class="text-pink-400 ml-0.5">🤍</span>
                 </motion.h4>
             </header>
 
@@ -124,19 +124,19 @@
         <section v-if="individualSponsors.length">
             <header class="mt-6 text-center">
                 <motion.h4
-                    class="text-2xl text-center font-semibold text-gradient from-rose-400 to-pink-400"
+                    class="text-2xl text-center font-semibold text-gradient from-purple-400 to-rose-400"
                     v-bind="flyIn(0.7)"
                 >
-                    Individual Sponsors
-                    <span class="text-pink-400 ml-0.5">💕</span>
+                    Generous Sponsors
+                    <span class="text-pink-400 ml-0.5">💞</span>
                 </motion.h4>
             </header>
 
             <motion.ul
                 id="sponsors-fern"
                 v-if="individualSponsors.length > 0"
-                class="my-4"
                 v-bind="flyIn(0.8)"
+                class="my-4"
             >
                 <li
                     v-for="sponsor in individualSponsors"
@@ -200,7 +200,45 @@
             </motion.ul>
         </section>
 
-        <p class="inline-block text-center mb-4">
+        <section v-if="smolSponsors.length">
+            <header class="mt-6 text-center">
+                <h4
+                    class="text-2xl text-center font-medium text-gradient from-rose-400 to-pink-400"
+                >
+                    Individual Sponsors
+                    <span class="text-pink-400 ml-0.5">💕</span>
+                </h4>
+            </header>
+
+            <ul
+                id="sponsors-fern-smol"
+                class="mt-6"
+                v-if="smolSponsors.length > 0"
+            >
+                <li
+                    v-for="sponsor in smolSponsors"
+                    :key="sponsor.sponsorEntity.login"
+                >
+                    <a
+                        :href="`https://github.com/${sponsor.sponsorEntity.login}`"
+                        target="_blank"
+                        class="sponsor"
+                    >
+                        <div>
+                            <img
+                                v-if="sponsor.sponsorEntity.avatarUrl"
+                                :src="sponsor.sponsorEntity.avatarUrl"
+                                alt="Sponsor avatar"
+                                loading="lazy"
+                                :title="sponsor.sponsorEntity.name"
+                            />
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <p class="inline-block text-center mt-12 mb-4">
             Thank you for making Elysia possible
         </p>
 
@@ -269,7 +307,11 @@ const silverSponsors = sponsors.filter(
         sponsor.tier.monthlyPriceInDollars < 200
 )
 const individualSponsors = sponsors.filter(
-    (sponsor) => sponsor.tier.monthlyPriceInDollars < 75
+    (sponsor) => sponsor.tier.monthlyPriceInDollars < 75 && sponsor.tier.monthlyPriceInDollars > 9
+)
+
+const smolSponsors = sponsors.filter(
+    (sponsor) => sponsor.tier.monthlyPriceInDollars <= 9
 )
 </script>
 
@@ -291,7 +333,7 @@ const individualSponsors = sponsors.filter(
         }
 
         & > p {
-            @apply my-0;
+            @apply my-0 line-clamp-3 max-w-full text-ellipsis flex-nowrap;
         }
     }
 }
@@ -340,7 +382,7 @@ const individualSponsors = sponsors.filter(
         }
 
         & > section {
-            @apply flex flex-col;
+            @apply flex flex-col w-full;
 
             & > h6 {
                 @apply text-left text-lg font-medium m-0;
@@ -353,6 +395,26 @@ const individualSponsors = sponsors.filter(
     }
 }
 
+#sponsors-fern-smol {
+    @apply grid justify-center gap-2.5;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(56px, 1fr)
+    ) !important;
+
+    & > li > .sponsor {
+        @apply flex flex-col justify-center items-center text-xs text-center;
+
+        & > div {
+            @apply w-full h-full aspect-square bg-gray-100 overflow-hidden rounded-full;
+
+            & > img {
+                @apply w-full h-full rounded-full object-cover object-center;
+            }
+        }
+    }
+}
+
 #become-sponsor {
     transition: all 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
@@ -360,7 +422,7 @@ const individualSponsors = sponsors.filter(
 /* equivalent to md screen */
 @media (min-width: 40rem) {
     #sponsors-fern {
-        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)) !important;
+        grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)) !important;
     }
 
     #sponsors-fern-gold {
