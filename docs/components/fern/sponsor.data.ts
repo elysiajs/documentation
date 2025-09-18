@@ -34,6 +34,11 @@ export const goldSponsorDetail: Record<
     Sponsor['sponsorEntity']['login']
 > = {}
 
+// Sponsors contact to not be displayed
+// although you will be able to see it here
+// but you won't see the duration, and tier
+const hidden = ['l2D']
+
 export default defineLoader({
     async load(): Promise<Sponsor[]> {
         try {
@@ -82,7 +87,7 @@ export default defineLoader({
                 result.data?.user?.sponsorshipsAsMaintainer?.nodes || []
 
             return data
-                .filter((x) => !x.tier.isOneTime)
+                .filter((x) => !x.tier.isOneTime && !hidden.includes(x.sponsorEntity.login))
                 .sort(
                     (a, b) =>
                         b?.tier?.monthlyPriceInDollars -

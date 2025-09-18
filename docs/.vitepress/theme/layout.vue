@@ -85,8 +85,6 @@ router.onAfterRouteChange = () => {
     onNewPage()
 }
 
-console.log(data)
-
 const sponsors = Object.values(data).filter(
     (x) => x.tier.monthlyPriceInDollars >= 200
 ) satisfies (typeof data)[keyof typeof data][]
