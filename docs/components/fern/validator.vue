@@ -33,7 +33,7 @@ const flyIn = useFlyIn(isInView)
                         class="sm:flex items-center text-2xl"
                         v-bind="flyIn(0.2)"
                     >
-                        with support for
+                        With support for
                         <span
                             class="text-gradient font-semibold from-blue-400 to-pink-400 ml-1 sm:ml-2 mr-1"
                         >
@@ -171,7 +171,7 @@ const flyIn = useFlyIn(isInView)
                 @apply mt-0;
 
                 & > .tabs {
-                    @apply !bg-transparent;
+                    @apply !bg-transparent !translate-x-4 sm:!translate-x-0;
                 }
 
                 & > .blocks > div {
