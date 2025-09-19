@@ -132,11 +132,15 @@ watch(form, (index) => {
     & > .showcase {
         @apply flex flex-col justify-center relative mx-auto w-full h-[38rem] lg:rounded-2xl my-4 px-4 bg-center bg-no-repeat;
 
-        background-image: url(/assets/sequoia-forest.webp);
+        background-image: url(/assets/tahoe-day.webp);
         background-size: cover;
 
+        html.dark & {
+			background-image: url(/assets/tahoe-dusk.webp);
+		}
+
         & > .window {
-            @apply lg:max-w-3xl w-full mx-auto !bg-white/85 dark:!bg-gray-800/85 border-2 border-white/20  dark:border-gray-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
+            @apply lg:max-w-3xl w-full mx-auto !bg-white/75 dark:!bg-gray-800/75 border-2 border-white/20  dark:border-gray-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
 
             & > .control {
                 @apply flex gap-2 pt-3 px-3;
