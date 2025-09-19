@@ -4,11 +4,14 @@
             class="relative z-10 flex justify-between items-end w-full mb-7 fern-gap"
         >
             <h1
-                class="flex flex-col flex-1 text-3xl sm:text-4xl sm:text-center text-gray-600 dark:text-gray-400 font-medium leading-[3rem] sm:leading-[4rem]"
+                class="flex flex-col flex-1 text-2xl sm:text-3xl sm:text-center font-medium leading-[3rem] sm:leading-[4rem]"
             >
-                <motion.span v-bind="flyIn()">The Next Level of</motion.span>
+                <motion.span class="inline-flex justify-center items-center gap-2" v-bind="flyIn()">
+                	<BadgeCheck class="text-cyan-500" />
+                	<span class="inline text-gradient from-cyan-400 to-indigo-400">Best in Class</span>
+                </motion.span>
                 <motion.span
-                    class="leading-[5rem] sm:leading-[5.5rem] text-6xl sm:text-7xl font-semibold text-gradient from-cyan-400 to-indigo-400 -translate-y-1"
+                    class="leading-[5rem] sm:leading-[5.5rem] text-6xl sm:text-7xl font-semibold text-gradient from-cyan-400 to-indigo-400 -translate-y-2"
                     v-bind="flyIn(0.1)"
                 >
                     Type Safety
@@ -69,6 +72,8 @@
 
 <script setup lang="ts">
 import { ref, useTemplateRef, watch } from 'vue'
+
+import { BadgeCheck } from 'lucide-vue-next'
 
 import { useInView, motion, cubicBezier } from 'motion-v'
 import { useFlyIn } from './animate'

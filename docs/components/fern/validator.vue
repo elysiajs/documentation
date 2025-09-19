@@ -12,87 +12,56 @@ const flyIn = useFlyIn(isInView)
 </script>
 
 <template>
-    <article id="test-with-confidence" class="fern-gap" ref="scope">
+    <article id="validator-showcase" class="fern-gap" ref="scope">
         <div class="body">
             <header class="flex flex-col w-full lg:w-5/12 text-xl gap-6">
                 <div class="flex flex-col gap-3">
                     <h2
                         class="text-6xl text-gray-700 font-medium leading-[4.5rem] dark:text-gray-400"
                     >
-                        <motion.span class="mr-2" v-bind="flyIn()">Test with</motion.span>
+                        <motion.span class="mr-2" v-bind="flyIn()"
+                            >Bring your own</motion.span
+                        >
                         <motion.span
-                            class="text-gradient font-semibold from-violet-500 to-sky-400"
+                            class="text-gradient font-semibold from-fuchsia-400 to-sky-400"
                             v-bind="flyIn(0.1)"
                         >
-                            Confidence
+                            Validator
                         </motion.span>
                     </h2>
                     <motion.h3
                         class="sm:flex items-center text-2xl"
                         v-bind="flyIn(0.2)"
                     >
-                        Type safe with
+                        with support for
                         <span
-                            class="text-gradient font-semibold from-violet-500 to-sky-400 ml-1 sm:ml-2 mr-1"
+                            class="text-gradient font-semibold from-blue-400 to-pink-400 ml-1 sm:ml-2 mr-1"
                         >
-                            auto-completion
+                            Standard Schema
                         </span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            className="text-violet-500 hidden sm:inline-block"
-                        >
-                            <path
-                                d="M20 10.0196C14.6358 10.3431 10.3431 14.6358 10.0196 20H9.98042C9.65687 14.6358 5.36425 10.3431 0 10.0196V9.98043C5.36425 9.65688 9.65687 5.36424 9.98042 0H10.0196C10.3431 5.36424 14.6358 9.65688 20 9.98043V10.0196Z"
-                                fill="#38bdf8"
-                            />
-                            <defs>
-                                <radialGradient
-                                    id="paint0_radial_809_11874"
-                                    cx="0"
-                                    cy="0"
-                                    r="1"
-                                    gradientUnits="userSpaceOnUse"
-                                    gradientTransform="translate(-6.13727 9.97493) scale(21.6266 172.607)"
-                                >
-                                    <stop
-                                        offset="0.385135"
-                                        stop-color="#9E72BA"
-                                    />
-                                    <stop
-                                        offset="0.734299"
-                                        stop-color="#D65C67"
-                                    />
-                                    <stop
-                                        offset="0.931035"
-                                        stop-color="#D6635C"
-                                    />
-                                </radialGradient>
-                            </defs>
-                        </svg>
                     </motion.h3>
                 </div>
                 <motion.p
                     class="lg:max-w-md leading-normal"
                     v-bind="flyIn(0.3)"
                 >
-                    Elysia provides a type-safe layer to interact with and test
-                    your server, from routes to parameters.
+                    Elysia offers a robust built-in validation, but you can also
+                    bring your favorite validator, such as
+                    <span class="text-gray-700 font-medium"
+                        >Zod, Valibot, ArkType, Effect Schema</span
+                    >, etc.
                 </motion.p>
                 <motion.p
                     class="lg:max-w-md leading-normal"
                     v-bind="flyIn(0.4)"
                 >
-                    With auto-completion, you can easily write tests for the
-                    server without any hassle.
+                    With seamless support for type inference, and OpenAPI. You
+                    will feels <span class="text-pink-400 font-medium">right at home</span>.
                 </motion.p>
                 <!-- <slot name="test-script" /> -->
             </header>
             <motion.section class="showcase" v-bind="flyIn(0.5)">
-                <slot name="test-code" />
+                <slot name="validator" />
             </motion.section>
         </div>
     </article>
@@ -101,7 +70,7 @@ const flyIn = useFlyIn(isInView)
 <style>
 @reference "../../tailwind.css";
 
-#test-with-confidence {
+#validator-showcase {
     @apply flex flex-col max-w-5xl w-full mx-auto gap-8 my-4;
 
     & > .body {
@@ -111,7 +80,8 @@ const flyIn = useFlyIn(isInView)
             @apply flex flex-col w-full lg:w-7/12 rounded-2xl overflow-hidden border dark:border-gray-700 bg-white dark:bg-gray-800;
 
             box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
-            background-image: radial-gradient(
+            background-image:
+                radial-gradient(
                     closest-side at center,
                     rgba(255, 255, 255, 0.8) 70%,
                     transparent 150%
@@ -154,7 +124,8 @@ const flyIn = useFlyIn(isInView)
 
             html.dark & {
                 box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
-                background-image: radial-gradient(
+                background-image:
+                    radial-gradient(
                         closest-side at center,
                         var(--color-gray-800) 0%,
                         transparent 120%
@@ -196,11 +167,19 @@ const flyIn = useFlyIn(isInView)
                     );
             }
 
-            & > div {
-                @apply !bg-transparent;
+            & > .vp-code-group {
+                @apply mt-0;
 
-                & > pre {
-                    @apply !py-3.5;
+                & > .tabs {
+                    @apply !bg-transparent;
+                }
+
+                & > .blocks > div {
+                    @apply !bg-transparent;
+
+                    & > pre {
+                        @apply !py-3.5;
+                    }
                 }
             }
         }

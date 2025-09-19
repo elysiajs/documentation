@@ -150,16 +150,112 @@ new Elysia()
 
 </template>
 
+<template v-slot:validator>
+
+::: code-group
+
+```ts twoslash [TypeBox]
+import { Elysia, t } from 'elysia'
+
+
+new Elysia()
+	.post('/user', ({ body }) => body, {
+//                                ^?
+
+
+
+
+		body: t.Object({
+			name: t.Literal('SaltyAom'),
+			age: t.Number()
+		})
+	})
+```
+
+```ts twoslash [Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+new Elysia()
+	.post('/user', ({ body }) => body, {
+//                                ^?
+
+
+
+
+		body: z.object({
+			name: z.literal('SaltyAom'),
+			age: z.number()
+		})
+	})
+```
+
+```ts twoslash [Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+new Elysia()
+	.post('/user', ({ body }) => body, {
+//                                ^?
+
+
+
+
+		body: v.object({
+			name: v.literal('SaltyAom'),
+			age: v.number()
+		})
+	})
+```
+
+```ts twoslash [ArkType]
+import { Elysia } from 'elysia'
+import { type } from 'arktype'
+
+new Elysia()
+	.post('/user', ({ body }) => body, {
+//                                ^?
+
+
+
+
+		body: type({
+			name: '"Elysia"',
+			age: 'number'
+		})
+	})
+```
+
+```ts twoslash [Effect]
+import { Elysia } from 'elysia'
+import { Schema } from 'effect'
+
+new Elysia()
+	.post('/user', ({ body }) => body, {
+//                                ^?
+
+
+		body: Schema.standardSchemaV1(
+			Schema.Struct({
+				name: Schema.Literal('Elysia'),
+				age: Schema.Number
+			})
+		)
+	})
+```
+
+:::
+
+</template>
+
 <template v-slot:doc>
 
 ```typescript
-import { Elysia } from 'elysia'
+import Elysia from 'elysia'
 import openapi from '@elysiajs/openapi'
 
 new Elysia()
 	.use(openapi())
-	.use(character)
-	.use(auth)
 	.listen(3000)
 ```
 

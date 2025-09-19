@@ -5,8 +5,8 @@
     />
     <div
         id="splash"
-        class="pointer-events-none absolute top-[-70vh] max-w-full justify-center w-full h-screen opacity-25 block gradient"
-    ></div>
+        class="pointer-events-none absolute top-[-70vh] max-w-full justify-center w-full h-screen opacity-15 block gradient"
+    />
     <header
         class="relative flex w-full pt-6 md:pt-0 mb-16 md:mb-8 px-6 overflow-hidden transition-all"
         :class="
@@ -213,7 +213,7 @@
         >
             <img
                 src="/assets/elysia_chan.webp"
-                class="object-cover z-[41] select-none pointer-events-none"
+                class="object-cover select-none pointer-events-none"
                 style="object-position: 50% 7.5%"
             />
         </div>

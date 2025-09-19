@@ -4,10 +4,10 @@
         ref="scope"
     >
         <motion.h2
-            class="text-5xl lg:text-6xl !leading-[4rem] sm:text-center font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-rose-400 to-fuchsia-400"
+            class="text-5xl lg:text-6xl !leading-14 lg:!leading-16 sm:text-center font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-rose-400 to-fuchsia-400"
             v-bind="flyIn()"
         >
-            Made possible by you
+        	Because of You
         </motion.h2>
         <p
             class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto mb-8 dark:text-gray-400 dark:font-medium"
@@ -249,7 +249,7 @@
         <div class="flex sm:justify-center my-8">
             <a
                 id="become-sponsor"
-                class="inline-flex items-center text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform transform hover:scale-110 focus:scale-110"
+                class="inline-flex items-center mx-auto text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform !ease-out-expo transform hover:scale-110 focus:scale-110"
                 href="https://github.com/sponsors/saltyaom"
                 target="_blank"
             >
@@ -274,7 +274,7 @@
         </div>
 
         <p
-            class="sm:text-center text-gradient from-pink-400 to-fuchsia-400 font-semibold text-base"
+            class="mx-auto sm:text-center text-gradient from-pink-400 to-fuchsia-400 font-semibold text-base"
         >
             With love from our community
         </p>

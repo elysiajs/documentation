@@ -15,7 +15,7 @@ const flyIn = useFlyIn(isInView)
     <article id="made-for-human" class="fern-gap" ref="scope">
         <div class="body">
             <header class="flex flex-col flex-1 text-xl gap-6">
-                <div class="flex flex-col gap-3 mb-2">
+                <div class="flex flex-col gap-3">
                     <motion.h3
                         class="text-2xl font-medium text-700"
                         v-bind="flyIn()"
@@ -23,7 +23,7 @@ const flyIn = useFlyIn(isInView)
                         Our Principle
                     </motion.h3>
                     <motion.h2
-                        class="text-6xl font-semibold text-gradient from-sky-500 to-violet-500 leading-[4.25rem]"
+                        class="text-6xl font-semibold text-gradient from-rose-400 to-pink-300 leading-[4.25rem]"
                         v-bind="flyIn(0.1)"
                     >
                         Design for Humans
@@ -40,7 +40,7 @@ const flyIn = useFlyIn(isInView)
                 <motion.p class="leading-normal" v-bind="flyIn(0.4)">
                     A framework that feels
                     <span
-                        class="text-gradient from-violet-500 to-sky-500 font-semibold"
+                        class="text-gradient from-purple-400 to-rose-400 font-semibold"
                     >
                         just like JavaScript
                     </span>
