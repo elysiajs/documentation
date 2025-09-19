@@ -159,15 +159,12 @@ import { Elysia, t } from 'elysia'
 
 
 new Elysia()
+	// Try hover body  ↓
 	.post('/user', ({ body }) => body, {
-//                                ^?
-
-
-
-
 		body: t.Object({
 			name: t.Literal('SaltyAom'),
-			age: t.Number()
+			age: t.Number(),
+			friends: t.Array(t.String())
 		})
 	})
 ```
@@ -177,15 +174,12 @@ import { Elysia } from 'elysia'
 import { z } from 'zod'
 
 new Elysia()
+	// Try hover body  ↓
 	.post('/user', ({ body }) => body, {
-//                                ^?
-
-
-
-
 		body: z.object({
 			name: z.literal('SaltyAom'),
-			age: z.number()
+			age: z.number(),
+			friends: z.array(z.string())
 		})
 	})
 ```
@@ -195,15 +189,12 @@ import { Elysia } from 'elysia'
 import * as v from 'valibot'
 
 new Elysia()
+	// Try hover body  ↓
 	.post('/user', ({ body }) => body, {
-//                                ^?
-
-
-
-
 		body: v.object({
 			name: v.literal('SaltyAom'),
-			age: v.number()
+			age: v.number(),
+			friends: v.array(v.string())
 		})
 	})
 ```
@@ -213,15 +204,12 @@ import { Elysia } from 'elysia'
 import { type } from 'arktype'
 
 new Elysia()
+	// Try hover body  ↓
 	.post('/user', ({ body }) => body, {
-//                                ^?
-
-
-
-
 		body: type({
 			name: '"Elysia"',
-			age: 'number'
+			age: 'number',
+			friends: 'string[]'
 		})
 	})
 ```
@@ -231,14 +219,13 @@ import { Elysia } from 'elysia'
 import { Schema } from 'effect'
 
 new Elysia()
+	// Try hover body  ↓
 	.post('/user', ({ body }) => body, {
-//                                ^?
-
-
 		body: Schema.standardSchemaV1(
 			Schema.Struct({
 				name: Schema.Literal('Elysia'),
-				age: Schema.Number
+				age: Schema.Number,
+				friends: Schema.Array(Schema.String)
 			})
 		)
 	})
