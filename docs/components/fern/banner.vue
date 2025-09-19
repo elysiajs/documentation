@@ -120,8 +120,6 @@
 </template>
 
 <script setup lang="ts">
-import '../../tailwind.css'
-
 import { Rocket, Shield, Code, Pen, ChevronRight } from 'lucide-vue-next'
 import Ray from './ray.vue'
 
