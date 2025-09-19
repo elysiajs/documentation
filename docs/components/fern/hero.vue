@@ -46,80 +46,81 @@
             >
                 Ergonomic Framework <br v-if="kawaii" />
                 for
-                <button
-                    type="button"
+                <a
+                	href="#"
+                    role="button"
                     class="appearance-none rounded-lg interact:bg-violet-500/7.5 px-0.5 transition-colors duration-100 text-left"
                     @click="toggleKawaii"
                 >
                     {{ kawaii ? 'Humans & Fox Girls' : 'Humans' }}
-                </button>
-                <span
-                    class="absolute w-10 md:w-12 h-10 md:h-12 bottom-0 mb-4 ml-2 md:ml-0 md:mb-10 text-indigo-400 transition-all"
-                    :class="
-                        kawaii
-                            ? 'md:-translate-x-2 md:translate-y-4 md:scale-80'
-                            : ''
-                    "
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 256 256"
+                    <span
+                        class="absolute w-10 md:w-12 h-10 md:h-12 bottom-0 mb-4 ml-2 md:ml-0 md:mb-10 text-indigo-400 transition-all"
+                        :class="
+                            kawaii
+                                ? 'md:-translate-x-2 md:translate-y-4 md:scale-80'
+                                : ''
+                        "
                     >
-                        <rect width="256" height="256" fill="none" />
-                        <path
-                            d="M138.7,175.5l-19.2,52.1a8,8,0,0,1-15,0L85.3,175.5a8.1,8.1,0,0,0-4.8-4.8L28.4,151.5a8,8,0,0,1,0-15l52.1-19.2a8.1,8.1,0,0,0,4.8-4.8l19.2-52.1a8,8,0,0,1,15,0l19.2,52.1a8.1,8.1,0,0,0,4.8,4.8l52.1,19.2a8,8,0,0,1,0,15l-52.1,19.2A8.1,8.1,0,0,0,138.7,175.5Z"
-                            fill="currentcolor"
-                            stroke="currentcolor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="0"
-                        />
-                        <line
-                            x1="176"
-                            y1="16"
-                            x2="176"
-                            y2="64"
-                            fill="none"
-                            stroke="currentcolor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="16"
-                        />
-                        <line
-                            x1="200"
-                            y1="40"
-                            x2="152"
-                            y2="40"
-                            fill="none"
-                            stroke="currentcolor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="16"
-                        />
-                        <line
-                            x1="224"
-                            y1="72"
-                            x2="224"
-                            y2="104"
-                            fill="none"
-                            stroke="currentcolor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="16"
-                        />
-                        <line
-                            x1="240"
-                            y1="88"
-                            x2="208"
-                            y2="88"
-                            fill="none"
-                            stroke="currentcolor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="16"
-                        />
-                    </svg>
-                </span>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 256 256"
+                        >
+                            <rect width="256" height="256" fill="none" />
+                            <path
+                                d="M138.7,175.5l-19.2,52.1a8,8,0,0,1-15,0L85.3,175.5a8.1,8.1,0,0,0-4.8-4.8L28.4,151.5a8,8,0,0,1,0-15l52.1-19.2a8.1,8.1,0,0,0,4.8-4.8l19.2-52.1a8,8,0,0,1,15,0l19.2,52.1a8.1,8.1,0,0,0,4.8,4.8l52.1,19.2a8,8,0,0,1,0,15l-52.1,19.2A8.1,8.1,0,0,0,138.7,175.5Z"
+                                fill="currentcolor"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="0"
+                            />
+                            <line
+                                x1="176"
+                                y1="16"
+                                x2="176"
+                                y2="64"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="16"
+                            />
+                            <line
+                                x1="200"
+                                y1="40"
+                                x2="152"
+                                y2="40"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="16"
+                            />
+                            <line
+                                x1="224"
+                                y1="72"
+                                x2="224"
+                                y2="104"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="16"
+                            />
+                            <line
+                                x1="240"
+                                y1="88"
+                                x2="208"
+                                y2="88"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="16"
+                            />
+                        </svg>
+                    </span>
+                </a>
             </h2>
             <h3
                 class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left w-full max-w-2xl"
@@ -185,8 +186,7 @@
                 </div>
             </section>
             <p
-                class="flex justify-center items-center gap-2 text-gray-400"
-                :class="kawaii ? 'mx-auto lg:mx-0' : ''"
+                class="flex gap-2 text-gray-400 mr-auto sm:mx-auto"
             >
                 See why developers love Elysia
                 <svg

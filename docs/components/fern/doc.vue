@@ -20,7 +20,7 @@ const flyIn = useFlyIn(isInView)
                 class="flex flex-col gap-2 text-2xl mb-2 text-gray-500 dark:text-gray-400 font-medium"
             >
                 <motion.span v-bind="flyIn()"
-                    >Your own documentation</motion.span
+                    >Your API documentation</motion.span
                 >
                 <motion.span
                     v-bind="flyIn(0.1)"
@@ -35,8 +35,7 @@ const flyIn = useFlyIn(isInView)
                 <motion.p v-bind="flyIn(0.2)">It's not magic</motion.p>
                 <motion.p v-bind="flyIn(0.3)">
                     With deep integration with OpenAPI schema<br />
-                    Elysia can generate API documentation for out
-                    of the box
+                    Elysia can generate API documentation out of the box
                 </motion.p>
             </div>
         </header>

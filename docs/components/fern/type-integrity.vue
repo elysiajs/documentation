@@ -11,7 +11,7 @@
                 	<span class="inline text-gradient from-cyan-400 to-indigo-400">Best in Class</span>
                 </motion.span>
                 <motion.span
-                    class="leading-[5rem] sm:leading-[5.5rem] text-6xl sm:text-7xl font-semibold text-gradient from-cyan-400 to-indigo-400 -translate-y-2"
+                    class="leading-[5rem] sm:leading-[5.5rem] text-center text-6xl sm:text-7xl font-semibold text-gradient from-cyan-400 to-indigo-400 -translate-y-2"
                     v-bind="flyIn(0.1)"
                 >
                     Type Safety
@@ -140,7 +140,7 @@ watch(form, (index) => {
 		}
 
         & > .window {
-            @apply lg:max-w-3xl w-full mx-auto !bg-white/75 dark:!bg-gray-800/75 border-2 border-white/20  dark:border-gray-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
+            @apply max-w-3xl w-full mx-auto !bg-white/75 dark:!bg-gray-800/75 border-2 border-white/20  dark:border-gray-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
 
             & > .control {
                 @apply flex gap-2 pt-3 px-3;
