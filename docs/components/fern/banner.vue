@@ -1,17 +1,17 @@
 <template>
     <header
-        class="group relative isolate flex flex-col md:flex-row gap-8 w-full items-center max-w-5xl mx-auto px-4 py-6 md:p-12 md:pr-8 bg-neutral-50 border border-neutral-200 border-x-0 md:border-x md:rounded-[2.5rem] overflow-hidden"
+        class="group relative isolate flex flex-col md:flex-row gap-8 w-full items-center max-w-5xl mx-auto px-4 py-6 md:p-12 md:pr-8 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 border-x-0 md:border-x md:rounded-[2.5rem] overflow-hidden"
         :class="props.class"
     >
     	<Ray class="-top-36 h-full opacity-50 pointer-none" />
         <div
-            class="absolute -top-28 md:top-auto md:translate-y-44 -left-76 sm:-left-66 md:-left-26 aspect-square size-192 bg-neutral-500 opacity-4 border border-neutral-900 rounded-full pointer-none"
+            class="absolute -top-28 md:top-auto md:translate-y-44 -left-76 sm:-left-66 md:-left-26 aspect-square size-192 bg-neutral-500 dark:bg-neutral-400 opacity-4 border border-neutral-900 rounded-full pointer-none"
         />
         <div
-            class="absolute -top-44 md:top-auto md:translate-y-44 -left-76 sm:-left-66 md:-left-26 aspect-square size-216 bg-neutral-500 opacity-4 border border-neutral-900 rounded-full pointer-none"
+            class="absolute -top-44 md:top-auto md:translate-y-44 -left-76 sm:-left-66 md:-left-26 aspect-square size-216 bg-neutral-500 dark:bg-neutral-400 opacity-4 border border-neutral-900 rounded-full pointer-none"
         />
         <div
-            class="absolute -top-60 md:top-auto md:translate-y-44 -left-76 sm:-left-66 md:-left-26 aspect-square size-240 bg-neutral-500 opacity-4 border border-neutral-900 rounded-full pointer-none"
+            class="absolute -top-60 md:top-auto md:translate-y-44 -left-76 sm:-left-66 md:-left-26 aspect-square size-240 bg-neutral-500 dark:bg-neutral-400 opacity-4 border border-neutral-900 rounded-full pointer-none"
         />
         <img
             class="absolute -top-24 md:top-auto md:translate-y-32 -left-76 sm:-left-66 md:-left-26 aspect-square min-w-168 min-h-168 size-168 opacity-6 pointer-none"
@@ -25,8 +25,8 @@
                 alt="Elysia Logo"
             />
             <section class="flex flex-col gap-2.5 pt-4">
-                <h3 class="text-7xl text-black font-semibold">Elysia</h3>
-                <h4 class="text-sm text-neutral-500/70">
+                <h3 class="text-7xl text-black dark:text-white font-semibold">Elysia</h3>
+                <h4 class="text-sm text-neutral-500/70 dark:text-neutral-300/60">
                     Ergonomic Framework for Humans
                 </h4>
             </section>
@@ -36,12 +36,12 @@
         >
             <div class="flex items-center gap-3">
                 <Rocket
-                    class="size-8 md:size-10.5 text-neutral-700"
+                    class="size-8 md:size-10.5 text-neutral-700 dark:text-neutral-300"
                     stroke-width="1"
                 />
                 <div class="flex flex-col">
-                    <h5 class="text-xs text-neutral-500/70">Speed</h5>
-                    <p class="text-black text-base md:text-lg font-medium">
+                    <h5 class="text-xs text-neutral-500/70 dark:text-neutral-300/60">Speed</h5>
+                    <p class="text-black dark:text-neutral-300 text-base md:text-lg font-medium">
                         Top Performance
                     </p>
                 </div>
@@ -49,12 +49,12 @@
 
             <div class="flex items-center gap-3">
                 <Shield
-                    class="size-8 md:size-10.5 text-neutral-700"
+                    class="size-8 md:size-10.5 text-neutral-700 dark:text-neutral-300"
                     stroke-width="1"
                 />
                 <div class="flex flex-col">
-                    <h5 class="text-xs text-neutral-500/70">Type Safety</h5>
-                    <p class="text-black text-base md:text-lg font-medium">
+                    <h5 class="text-xs text-neutral-500/70 dark:text-neutral-300/60">Type Safety</h5>
+                    <p class="text-black dark:text-neutral-300 text-base md:text-lg font-medium">
                         Best in class
                     </p>
                 </div>
@@ -62,14 +62,14 @@
 
             <div class="flex items-center gap-3">
                 <Code
-                    class="size-8 md:size-10.5 text-neutral-700"
+                    class="size-8 md:size-10.5 text-neutral-700 dark:text-neutral-300"
                     stroke-width="1"
                 />
                 <div class="flex flex-col">
-                    <h5 class="text-xs text-neutral-500/70">
+                    <h5 class="text-xs text-neutral-500/70 dark:text-neutral-300/60">
                         Developer Experience
                     </h5>
-                    <p class="text-black text-base md:text-lg font-medium">
+                    <p class="text-black dark:text-neutral-300 text-base md:text-lg font-medium">
                         Exceptional
                     </p>
                 </div>
@@ -77,12 +77,12 @@
 
             <div class="flex items-center gap-3">
                 <Pen
-                    class="size-8 md:size-10.5 text-neutral-700"
+                    class="size-8 md:size-10.5 text-neutral-700 dark:text-neutral-300"
                     stroke-width="1"
                 />
                 <div class="flex flex-col">
-                    <h5 class="text-xs text-neutral-500/70">OpenAPI Support</h5>
-                    <p class="text-black text-base md:text-lg font-medium">
+                    <h5 class="text-xs text-neutral-500/70 dark:text-neutral-300/60">OpenAPI Support</h5>
+                    <p class="text-black dark:text-neutral-300 text-base md:text-lg font-medium">
                         One of a kind
                     </p>
                 </div>
@@ -113,7 +113,7 @@
                         class="size-6 group-hover/button:translate-x-0.75 transition-transform ease-out-expo "
                     />
                 </a>
-                <small class="relative z-20 w-full text-xs font-medium text-center text-neutral-600">Elysia in < 5 mins</small>
+                <small class="relative z-20 w-full text-xs font-medium text-center text-neutral-600 dark:text-neutral-300">Elysia in < 5 mins</small>
             </div>
         </aside>
     </header>
