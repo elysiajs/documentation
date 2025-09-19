@@ -46,9 +46,9 @@ const flyIn = useFlyIn(isInView)
                     v-bind="flyIn(0.3)"
                 >
                     Elysia offers a robust built-in validation, but you can also
-                    bring your favorite validator, such as
+                    bring your favorite validator, lik
                     <span class="text-gray-700 font-medium"
-                        >Zod, Valibot, ArkType, Effect Schema</span
+                        >Zod, Valibot, ArkType, Effect </span
                     >, etc.
                 </motion.p>
                 <motion.p
@@ -56,7 +56,9 @@ const flyIn = useFlyIn(isInView)
                     v-bind="flyIn(0.4)"
                 >
                     With seamless support for type inference, and OpenAPI. You
-                    will feels <span class="text-pink-400 font-medium">right at home</span>.
+                    will feels
+                    <span class="text-pink-400 font-medium">right at home</span
+                    >.
                 </motion.p>
                 <!-- <slot name="test-script" /> -->
             </header>
