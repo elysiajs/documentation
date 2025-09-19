@@ -3,6 +3,7 @@ title: Accelerate your next Prisma server with Elysia
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -97,7 +98,7 @@ bunx prisma init
 
 Once setup, we can see that Prisma will update `.env` file and generate a folder named **prisma** with **schema.prisma** as a file inside.
 
-**schema.prisma** is an database model defined with Prisma's schema language. 
+**schema.prisma** is an database model defined with Prisma's schema language.
 
 Let's update our **schema.prisma** file like this for a demonstration:
 ```ts
@@ -141,7 +142,7 @@ Then we can run `prisma migrate` to sync our database with Prisma schema:
 bunx prisma migrate dev --name init
 ```
 
-Prisma then generate a strongly-typed Prisma Client code based on our schema. 
+Prisma then generate a strongly-typed Prisma Client code based on our schema.
 
 This means we get autocomplete and type checking in our code editor, catching potential errors at compile time rather than runtime.
 
@@ -188,7 +189,7 @@ const db = new PrismaClient()
 
 const app = new Elysia()
     .post(
-        '/sign-up', 
+        '/sign-up',
         async ({ body }) => db.user.create({
             data: body
         }),

@@ -1,9 +1,9 @@
 <template>
     <header
-        class="group relative isolate flex flex-col md:flex-row gap-8 w-full items-center max-w-5xl mx-auto px-4 py-6 md:p-12 md:pr-8 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 border-x-0 md:border-x md:rounded-[2.5rem] overflow-hidden"
+        class="group relative isolate flex flex-col md:flex-row gap-8 w-full items-center max-w-5xl mx-auto px-4 py-6 md:p-12 md:pr-8 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 border-x-0 lg:border-x lg:rounded-[2.5rem] overflow-hidden"
         :class="props.class"
     >
-    	<Ray class="-top-36 h-full opacity-50 pointer-none" />
+    	<Ray v-if="props.ray" class="-top-36 h-full opacity-50 dark:opacity-85 pointer-none" />
         <div
             class="absolute -top-28 md:top-auto md:translate-y-44 -left-76 sm:-left-66 md:-left-26 aspect-square size-192 bg-neutral-500 dark:bg-neutral-400 opacity-4 border border-neutral-900 rounded-full pointer-none"
         />
@@ -90,7 +90,7 @@
         </div>
 
         <aside
-            class="md:absolute z-10 -right-50 group-hover:right-0 ease-out-expo duration-350 transition-all h-full"
+            class="md:absolute z-10 -right-50 group-hover:right-0 ease-out duration-350-expo !transition-all h-full"
         >
             <div id="elysia-banner" class="hidden md:block">
                 <div></div>
@@ -106,11 +106,11 @@
             >
                 <a
                     href="/at-glance"
-                    class="group/button relative z-20 flex items-center gap-1 text-lg text-white font-medium bg-neutral-950 pl-6 pr-4 py-2 rounded-full hover:scale-105 transition-transform ease-out-expo duration-350"
+                    class="group/button relative z-20 flex items-center gap-1 text-lg !text-white font-medium bg-neutral-950 pl-6 pr-4 py-2 rounded-full hover:scale-105 transition-transform ease-out duration-350 !no-underline"
                 >
                     Get Started
                     <ChevronRight
-                        class="size-6 group-hover/button:translate-x-0.75 transition-transform ease-out-expo "
+                        class="size-6 group-hover/button:translate-x-0.75 transition-transform ease-out"
                     />
                 </a>
                 <small class="relative z-20 w-full text-xs font-medium text-center text-neutral-600 dark:text-neutral-300">Elysia in < 5 mins</small>
@@ -120,11 +120,14 @@
 </template>
 
 <script setup lang="ts">
+import '../../tailwind.css'
+
 import { Rocket, Shield, Code, Pen, ChevronRight } from 'lucide-vue-next'
 import Ray from './ray.vue'
 
 const props = defineProps<{
 	class?: string
+	ray?: boolean
 }>()
 </script>
 

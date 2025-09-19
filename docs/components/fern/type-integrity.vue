@@ -130,13 +130,13 @@ watch(form, (index) => {
     @apply relative max-w-5xl w-full mx-auto mt-8 mb-12;
 
     & > .showcase {
-        @apply flex flex-col justify-center relative mx-auto w-full h-[38rem] lg:rounded-xl my-4 px-4 bg-center bg-no-repeat;
+        @apply flex flex-col justify-center relative mx-auto w-full h-[38rem] lg:rounded-2xl my-4 px-4 bg-center bg-no-repeat;
 
-        background-image: url(/assets/sequoia.webp);
+        background-image: url(/assets/sequoia-forest.webp);
         background-size: cover;
 
         & > .window {
-            @apply lg:max-w-3xl w-full mx-auto !bg-white/80 dark:!bg-gray-800/80 border-2 dark:border-gray-700 rounded-xl overflow-auto backdrop-blur-lg shadow-xl;
+            @apply lg:max-w-3xl w-full mx-auto !bg-white/85 dark:!bg-gray-800/85 border-2 border-white/20  dark:border-gray-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
 
             & > .control {
                 @apply flex gap-2 pt-3 px-3;

@@ -4,7 +4,7 @@ layout: page
 sidebar: false
 editLink: false
 search: false
-gitChangelog: false
+comments: false
 authors: []
 head:
     - - meta

@@ -3,6 +3,7 @@ title: Elysia 1.3 and Scientific Witchery
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'

@@ -3,6 +3,7 @@ title: Introducing OpenAPI Type Gen for Elysia
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
