@@ -46,7 +46,7 @@ This page covers most concepts that you should know before getting started.
 ## Encapsulation <Badge type="danger" text="MUST READ" />
 Elysia lifecycle methods are **encapsulated** to its own instance only.
 
-Which means if you create a new instance, it will not share the lifecycle methods with other instances.
+Which means if you create a new instance, it will not share the lifecycle methods with others.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -71,7 +71,7 @@ In this example, the `isSignIn` check will only apply to the `profile` but not t
 
 <br>
 
-**Elysia isolate lifecycle by default** unless you explicitly state otherwise. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
+**Elysia isolate lifecycle by default** unless explicitly stated. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
 
 To **"export"** the lifecycle to other instances, you must add specify the scope.
 
@@ -95,7 +95,7 @@ const app = new Elysia()
 
 <Playground :elysia="demo2" />
 
-Casting lifecycle to **"global"** will export the lifecycle to every instance.
+Casting lifecycle to **"global"** will export lifecycle to **every instance**.
 
 Learn more about this in [scope](/essential/plugin.html#scope).
 

@@ -51,11 +51,12 @@ That's why we built around OpenAPI from the ground up with Elysia.
 
 - We make sure that schema can be used for data validation, type inference, and OpenAPI annotation all from a single source of truth.
 - We offers an effortless documentation with Scalar all from 1 line of code with an OpenAPI plugin.
-- We provide handle a integration with Standard Schema, and turns it into OpenAPI documentation whenever possible.
+- We provide handle a integration with Standard Schema (Zod, Valibot, etc.), and turns it into OpenAPI documentation whenever possible.
+- We have a 1-liner OpenAPI plugin that add a beautiful UI to interact with your API with Scalar.
 
 ![Scalar Preview](/blog/openapi-type-gen/scalar-preview-light.webp)
 
-> Elysia running with Scalar UI from Elysia OpenAPI plugin
+> Elysia running with Scalar UI from Elysia OpenAPI plugin from 1 line
 
 But even an already exceptional experience, we want to push it even further.
 

@@ -447,7 +447,7 @@ new Elysia()
 
 <Playground :elysia="_demo1" />
 
-## Scope (Encapsulation)
+## Scope
 
 By default, lifecycle and schema is encapsulated, and is applied to **its own instance only**.
 
