@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-xl w-full mx-auto mb-8 fern-gap text-gray-400 dark:text-gray-600">
+    <div class="max-w-xl w-full mx-auto mb-8 fern-gap text-gray-400">
         <div class="flex items-center w-full gap-2 mb-6">
             <div class="flex flex-1 w-full h-[1px] bg-gray-300 dark:bg-gray-500" />
             <svg
