@@ -178,7 +178,7 @@ const flyIn = useFlyIn(isInView)
     @apply flex flex-col max-w-5xl w-full mx-auto gap-8 my-16;
 
     & > .body {
-        @apply flex flex-col md:flex-row justify-between items-center gap-8 w-full mb-6;
+        @apply flex flex-col md:flex-row justify-between items-center gap-8 w-full mb-4;
 
         & > .showcase {
             @apply flex flex-col flex-1 max-w-full sm:max-w-[30rem] rounded-2xl overflow-hidden border dark:border-gray-700 bg-white dark:bg-gray-800;

@@ -17,7 +17,7 @@
                     class="inline size-11 ml-4 mr-3"
                 />
                 <span
-                    class="text-5xl font-semibold text-neutral-950"
+                    class="text-5xl font-semibold text-neutral-950 dark:text-white"
                 >
                     Elysia
                 </span>

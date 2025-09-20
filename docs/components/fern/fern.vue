@@ -26,11 +26,6 @@ import BuiltWithLove from './built-with-love.vue'
             <Easy>
                 <slot name="easy" />
             </Easy>
-            <Validator>
-	            <template v-slot:validator>
-	                <slot name="validator" />
-	            </template>
-            </Validator>
             <TypeIntegrity>
                 <template v-slot:type-1>
                     <slot name="type-1" />
@@ -45,6 +40,11 @@ import BuiltWithLove from './built-with-love.vue'
                     <slot name="type-4" />
                 </template>
             </TypeIntegrity>
+            <Validator>
+	            <template v-slot:validator>
+	                <slot name="validator" />
+	            </template>
+            </Validator>
             <Doc>
                 <slot name="doc" />
             </Doc>

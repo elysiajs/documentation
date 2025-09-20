@@ -22,6 +22,7 @@
 		"shiki": "^3.9.2",
 		"tailwindcss": "^4.1.11",
 		"valibot": "^1.1.0",
+		"vue3-carousel": "^0.16.0",
 		"zod": "^4.1.8"
 	},
 	"devDependencies": {

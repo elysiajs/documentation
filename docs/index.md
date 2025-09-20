@@ -237,14 +237,31 @@ new Elysia()
 
 <template v-slot:doc>
 
-```typescript
-import Elysia from 'elysia'
-import openapi from '@elysiajs/openapi'
+::: code-group
+
+```typescript [OpenAPI]
+import { Elysia } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
 
 new Elysia()
 	.use(openapi())
 	.listen(3000)
 ```
+
+```typescript [With Type Gen]
+import { Elysia } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+import { fromTypes } from '@elysiajs/openapi/gen'
+
+export const app = new Elysia()
+	.use(
+		openapi({
+			references: fromTypes('src/index.ts')
+		})
+	)
+```
+
+:::
 
 </template>
 

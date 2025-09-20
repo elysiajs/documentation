@@ -130,7 +130,7 @@ watch(form, (index) => {
     @apply relative max-w-5xl w-full mx-auto mt-8 mb-12;
 
     & > .showcase {
-        @apply flex flex-col justify-center relative mx-auto w-full h-[38rem] lg:rounded-2xl my-4 px-4 bg-center bg-no-repeat;
+        @apply flex flex-col justify-center relative mx-auto w-full h-[38rem] lg:rounded-3xl my-4 px-4 bg-center bg-no-repeat;
 
         background-image: url(/assets/tahoe-day.webp);
         background-size: cover;
