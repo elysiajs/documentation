@@ -99,9 +99,7 @@ Each status code can return multiple value which will be handle by Elysia as a u
 ![Union response](/blog/openapi-type-gen/union.webp)
 > Listing multiple response status code from union type automatically.
 
-This is something profound, and cannot be done by any other framework out there with this level of seamlessness.
-
-Allowing you to document your API more accurately even in a complex scenario, making it easier for developers, and others to understand and use your API.
+This is something profound, and can hardly replicated by any other framework.
 
 ## Adopt OpenAPI Type Gen
 To add OpenAPI Type Gen to your codebase, simply:
@@ -130,7 +128,9 @@ The documentation for OpenAPI Type Gen can be found at [Patterns: OpenAPI](/patt
 
 ### We believe that this feature is truly unique to Elysia
 
-While most web frameworks require a lot of effort, and manual annotation to create an API documentation. Elysia comes with a complete API documentation out of the box.
+While most web frameworks require a lot of effort, and manual annotation to create an API documentation.
+
+Elysia can write an API documentation for you, and there are no any other frameworks that comes close to this experience.
 
 This is only possible thanks to **Elysia's spectacular support for end-to-end type safety**.
 
