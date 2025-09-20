@@ -117,7 +117,7 @@ const _mock3 = {
 
 Plugin is a pattern that decouples functionality into smaller parts. Creating reusable components for our web server.
 
-Defining a plugin is to define a separate instance.
+To create a plugin is to create a separate instance.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -137,21 +137,17 @@ We can use the plugin by passing an instance to **Elysia.use**.
 
 <Playground :elysia="demo1" />
 
-The plugin will inherit all properties of the plugin instance, including **state**, **decorate**, **derive**, **route**, **lifecycle**, etc.
+The plugin will inherit all properties of the plugin instance, including **state**, **decorate**, **derive**, **route**, **lifecycle**, etc but **WILL NOT** inherit the plugin lifecycle as it's isolated by default.
 
-Elysia will also handle the type inference automatically as well, so you can imagine as if you call all of the other instances on the main one.
-
-::: tip
-Notice that the plugin doesn't contain **.listen**, because **.listen** will allocate a port for the usage, and we only want the main instance to allocate the port.
-:::
+Elysia will also handle the type inference automatically as well.
 
 ## Plugin
 
 Every Elysia instance can be a plugin.
 
-We can decouple our logic into a new separate Elysia instance and use it as a plugin.
+We decouple our logic into a separate Elysia instance and reuse it across multiple instances.
 
-First, we define an instance in a difference file:
+To create a plugin, simply define an instance in a separate file:
 ```typescript twoslash
 // plugin.ts
 import { Elysia } from 'elysia'
@@ -163,10 +159,10 @@ export const plugin = new Elysia()
 And then we import the instance into the main file:
 ```typescript
 import { Elysia } from 'elysia'
-import { plugin } from './plugin'
+import { plugin } from './plugin' // [!code ++]
 
 const app = new Elysia()
-    .use(plugin)
+    .use(plugin) // [!code ++]
     .listen(3000)
 ```
 
@@ -191,7 +187,7 @@ const app = new Elysia()
 
 It's recommended to define a new plugin instance instead of using a function callback.
 
-Functional callback allows us to access the existing property of the main instance. For example, checking if specific routes or stores existed.
+Functional callback allows us to access the existing property of the main instance. For example, checking if specific routes or stores existed but harder to handle encapsulation and scope correctly.
 
 To define a functional callback, create a function that accepts Elysia as a parameter.
 
@@ -451,13 +447,11 @@ new Elysia()
 
 <Playground :elysia="_demo1" />
 
-## Scope
+## Scope (Encapsulation)
 
-By default, hook and schema will apply to **current instance only**.
+By default, lifecycle and schema is encapsulated, and is applied to **its own instance only**.
 
 Elysia has an encapsulation scope for to prevent unintentional side effects.
-
-Scope type is to specify the scope of hook whether is should be encapsulated or global.
 
 ```typescript twoslash
 // @errors: 2339
@@ -475,9 +469,9 @@ const main = new Elysia()
     .get('/parent', ({ hi }) => hi)
 ```
 
-From the above code, we can see that `hi` is missing from the parent instance because the scope is local by default if not specified, and will not apply to parent.
+From the above code, we can see that `hi` is missing from the parent instance because the scope is encapsulated by default, and will not apply to parent.
 
-To apply the hook to the parent instance, we can use the `as` to specify scope of the hook.
+To apply the hook to the parent instance, we can use the `as` to specify **encapsulation scope** of the lifecycle.
 
 ```typescript twoslash
 // @errors: 2339
@@ -497,10 +491,11 @@ const main = new Elysia()
 
 ### Scope level
 Elysia has 3 levels of scope as the following:
+
 Scope type are as the following:
-- **local** (default) - apply to only current instance and descendant only
-- **scoped** - apply to parent, current instance and descendants
-- **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
+1. **local** (default) - apply to only current instance and descendant only
+2. **scoped** - apply to parent, current instance and descendants
+3. **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
 
 Let's review what each scope type does by using the following example:
 ```typescript
@@ -532,9 +527,9 @@ By changing the `type` value, the result should be as follows:
 
 | type       | child | current | parent | main |
 | ---------- | ----- | ------- | ------ | ---- |
-| 'local'    | ✅    | ✅       | ❌     | ❌   |
-| 'scoped'    | ✅    | ✅       | ✅     | ❌   |
-| 'global'   | ✅    | ✅       | ✅     | ✅   |
+| local      | ✅    | ✅      | ❌      | ❌   |
+| scoped     | ✅    | ✅      | ✅      | ❌   |
+| global     | ✅    | ✅      | ✅      | ✅   |
 
 ### Scope cast
 To apply hook to parent may use one of the following:

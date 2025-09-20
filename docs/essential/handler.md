@@ -23,7 +23,7 @@ const handler1 = new Elysia()
     .get('/', ({ path }) => path)
 
 const handler2 = new Elysia()
-    .get('/', ({ error }) => error(418, "Kirifuji Nagisa"))
+    .get('/', ({ status }) => status(418, "Kirifuji Nagisa"))
 
 const demo1 = new Elysia()
     .state('version', 1)
@@ -137,19 +137,24 @@ new Elysia()
 
 **Context** can only be retrieved in a route handler. It consists of:
 
+#### Property
 -   **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
 -   **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
 -   **params** - Elysia's path parameters parsed as JavaScript object
 -   **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
--   **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
+-   **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
+-   **store** - A global mutable store for Elysia instance
+
+#### Utility Function
 -   **redirect** - A function to redirect a response
 -   **status** - A function to return custom status code
--   **store** - A global mutable store for Elysia instance
--   **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
 -   **set** - Property to apply to Response:
-    -   **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
     -   **headers** - Response headers
-    -   **redirect** - Response as a path to redirect to
+    -   **status <sub>(legacy, use `status` instead)</sub>** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
+    -   **redirect <sub>(legacy, use `redirect` instead)</sub>** - Response as a path to redirect to
+
+#### Additional Property
+-   **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 -   **server** - Bun server instance
 -   **path** - Pathname of the request
 
@@ -183,7 +188,7 @@ We can return a custom status code by using either:
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.get('/error', ({ error }) => error(418, 'I am a teapot'))
+	.get('/error', ({ status }) => status(418, 'I am a teapot'))
 	.get('/set.status', ({ set }) => {
 		set.status = 418
 		return 'I am a teapot'
@@ -210,7 +215,7 @@ It's recommended to use `status` inside the main handler as it has better infere
 - autocompletion for type narrowing based on status code
 - type narrowing for error handling using End-to-end type safety ([Eden](/eden/overview))
 
-### set.status
+### set.status <Badge type="warning">Legacy</Badge>
 Set a default status code if not provided.
 
 It's recommended to use this in a plugin that only needs to return a specific status code while allowing the user to return a custom value. For example, HTTP 201/206 or 403/405, etc.
@@ -288,67 +293,6 @@ new Elysia()
 
 When using redirect, returned value is not required and will be ignored. As response will be from another resource.
 
-## Server
-Server instance is accessible via `Context.server` to interact with the server.
-
-Server could be nullable as it could be running in a different environment (test).
-
-If server is running (allocating) using Bun, `server` will be available (not null).
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-	.get('/port', ({ server }) => {
-		return server?.port
-	})
-	.listen(3000)
-```
-
-### Request IP
-We can get request IP by using `server.requestIP` method
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-	.get('/ip', ({ server, request }) => {
-		return server?.requestIP(request)
-	})
-	.listen(3000)
-```
-
-## Response
-
-Elysia is built on top of Web Standard Request/Response.
-
-To comply with the Web Standard, a value returned from route handler will be mapped into a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) by Elysia.
-
-Letting you focus on business logic rather than boilerplate code.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    // Equivalent to "new Response('hi')"
-    .get('/', () => 'hi')
-    .listen(3000)
-```
-
-If you prefer an explicit Response class, Elysia also handles that automatically.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .get('/', () => new Response('hi'))
-    .listen(3000)
-```
-
-::: tip
-Using a primitive value or `Response` has near identical performance (+- 0.1%), so pick the one you prefer, regardless of performance.
-:::
-
 ## Formdata
 We may return a `FormData` by using returning `form` utility directly from the handler.
 
@@ -375,29 +319,6 @@ new Elysia()
 	.get('/', file('nagi.web'))
 	.listen(3000)
 ```
-
-## Handle
-
-As Elysia is built on top of Web Standard Request, we can programmatically test it using `Elysia.handle`.
-
-```typescript
-import { Elysia } from 'elysia'
-
-const app = new Elysia()
-    .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
-    .listen(3000)
-
-app.handle(new Request('http://localhost/')).then(console.log)
-```
-
-**Elysia.handle** is a function to process an actual request sent to the server.
-
-::: tip
-Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
-
-But also useful for simulating or creating unit tests.
-:::
 
 ## Stream
 To return a response streaming out of the box by using a generator function with `yield` keyword.
@@ -505,7 +426,89 @@ for await (const chunk of data)
 	console.log(chunk)
 ```
 
-## Extending context
+## Server <Badge type="warning">Bun only</Badge>
+Server instance is a Bun server instance, allowing us to access server information like port number or request IP.
+
+Server will only be available when HTTP server is running with `listen`.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/port', ({ server }) => {
+		return server?.port
+	})
+	.listen(3000)
+```
+
+### Request IP <Badge type="warning">Bun only</Badge>
+We can get request IP by using `server.requestIP` method
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/ip', ({ server, request }) => {
+		return server?.requestIP(request)
+	})
+	.listen(3000)
+```
+
+## Response
+
+Elysia is built on top of Web Standard Request/Response.
+
+When a value returned from handler, it will be mapped into a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) by Elysia.
+
+Letting you focus on business logic rather than boilerplate code.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    // Equivalent to "new Response('hi')"
+    .get('/', () => 'hi')
+    .listen(3000)
+```
+
+If you prefer an explicit Response class, Elysia also handles that automatically.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => new Response('hi'))
+    .listen(3000)
+```
+
+::: tip
+Using a primitive value or `Response` has near identical performance (+- 0.1%), so pick the one you prefer, regardless of performance.
+:::
+
+## Handle
+
+As Elysia is built on top of Web Standard Request, we can programmatically test it using `Elysia.handle`.
+
+```typescript
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'hello')
+    .post('/hi', () => 'hi')
+    .listen(3000)
+
+app.handle(new Request('http://localhost/')).then(console.log)
+```
+
+**Elysia.handle** is a function to process an actual request sent to the server.
+
+::: tip
+Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
+
+But also useful for simulating or creating unit tests.
+:::
+
+## Extending context <Badge type="warning">Advance concept</Badge>
 
 As Elysia only provides essential information, we can customize Context for our specific need for instance:
 - extracting user ID as variable
@@ -790,10 +793,8 @@ const setup = new Elysia({ name: 'setup' })
     })
 
 const app = new Elysia()
-    .use(
-        setup
-            .prefix('decorator', 'setup')
-    )
+    .use(setup)
+    .prefix('decorator', 'setup')
     .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
 
@@ -816,11 +817,12 @@ const setup = new Elysia({ name: 'setup' })
     })
 
 const app = new Elysia()
-    .use(setup.prefix('all', 'setup')) // [!code ++]
+    .use(setup)
+    .prefix('all', 'setup') // [!code ++]
     .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
 
-## Reference and value
+## Reference and value <Badge type="warning">Gotcha</Badge>
 
 To mutate the state, it's recommended to use **reference** to mutate rather than using an actual value.
 

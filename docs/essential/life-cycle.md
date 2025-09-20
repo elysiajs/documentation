@@ -25,9 +25,9 @@ const demo = new Elysia()
 	.onError(({ code }) => {
 		if (code === 418) return 'caught'
 	})
-    .get('/throw', ({ error }) => {
+    .get('/throw', ({ status }) => {
 		// This will be caught by onError
-		throw error(418)
+		throw status(418)
 	})
 	.get('/return', ({ status }) => {
 		// This will NOT be caught by onError
@@ -748,7 +748,7 @@ Elysia catches all the errors thrown in the handler, classifies the error code, 
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .onError(({ code, error }) => {
+    .onError(({ error }) => {
         return new Response(error.toString())
     })
     .get('/', () => {
@@ -819,7 +819,7 @@ new Elysia()
         beforeHandle({ set, request: { headers }, error }) {
             if (!isSignIn(headers)) throw error(401)
         },
-        error({ error }) {
+        error() {
             return 'Handled'
         }
     })
