@@ -20,7 +20,7 @@ import Playground from './components/nearl/playground.vue'
 
 const profile1 = new Elysia()
 	.onBeforeHandle(({ status }) => status(401))
-	.get('/profile', () => 'Hi there!')
+	.get('/profile', ({ status }) => status(401))
 
 const demo1 = new Elysia()
 	.use(profile1)
@@ -29,12 +29,12 @@ const demo1 = new Elysia()
 
 const profile2 = new Elysia()
 	.onBeforeHandle({ as: 'global' }, ({ status }) => status(401))
-	.get('/profile', () => 'Hi there!')
+	.get('/profile', ({ status }) => status(401))
 
 const demo2 = new Elysia()
 	.use(profile2)
 	// This will NOT have sign in check
-	.patch('/rename', () => 'Updated!')
+	.patch('/rename', ({ status }) => status(401))
 </script>
 
 # Key Concept <Badge type="danger" text="MUST READ" />

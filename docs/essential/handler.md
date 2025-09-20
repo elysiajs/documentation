@@ -137,21 +137,21 @@ new Elysia()
 
 **Context** can only be retrieved in a route handler. It consists of:
 
--   **path** - Pathname of the request
 -   **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
 -   **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
 -   **params** - Elysia's path parameters parsed as JavaScript object
 -   **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
 -   **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
 -   **redirect** - A function to redirect a response
+-   **status** - A function to return custom status code
 -   **store** - A global mutable store for Elysia instance
 -   **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
 -   **set** - Property to apply to Response:
     -   **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
     -   **headers** - Response headers
     -   **redirect** - Response as a path to redirect to
--   **error** - A function to return custom status code
 -   **server** - Bun server instance
+-   **path** - Pathname of the request
 
 ## Set
 
