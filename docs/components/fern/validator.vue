@@ -47,7 +47,7 @@ const flyIn = useFlyIn(isInView)
                 >
                     Elysia offers a robust built-in validation, but you can also
                     bring your favorite validator, like
-                    <span class="text-gray-700 font-medium"
+                    <span class="text-gray-700 dark:text-gray-200 font-medium"
                         >Zod, Valibot, ArkType, Effect </span
                     >, and more
                 </motion.p>
