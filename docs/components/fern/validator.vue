@@ -17,7 +17,7 @@ const flyIn = useFlyIn(isInView)
             <header class="flex flex-col w-full lg:w-5/12 text-xl gap-6">
                 <div class="flex flex-col gap-3">
                     <h2
-                        class="text-6xl text-gray-600 font-medium leading-[4.5rem] dark:text-gray-400"
+                        class="text-6xl text-gray-600 dark:text-gray-100 font-medium leading-[4.5rem]"
                     >
                         <motion.span class="mr-2" v-bind="flyIn()"
                             >Bring your own</motion.span
