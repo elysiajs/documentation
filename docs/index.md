@@ -250,13 +250,12 @@ new Elysia()
 
 ```typescript [With Type Gen]
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
 	.use(
 		openapi({
-			references: fromTypes('src/index.ts')
+			references: fromTypes()
 		})
 	)
 ```

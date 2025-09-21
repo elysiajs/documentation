@@ -32,7 +32,7 @@
 		"@elysiajs/eden": "^1.4.0",
 		"@elysiajs/html": "^1.4.0",
 		"@elysiajs/jwt": "^1.4.0",
-		"@elysiajs/openapi": "1.4.2",
+		"@elysiajs/openapi": "1.4.10",
 		"@elysiajs/opentelemetry": "^1.4.0",
 		"@elysiajs/server-timing": "^1.4.0",
 		"@elysiajs/static": "^1.4.0",

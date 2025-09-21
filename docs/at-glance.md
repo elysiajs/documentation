@@ -223,12 +223,11 @@ Elysia also supports OpenAPI schema generation with **1 line directly from types
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/oepnapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
     .use(openapi({
-    	references: fromTypes('src/index.ts') // [!code ++]
+    	references: fromTypes() // [!code ++]
     }))
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
@@ -246,12 +245,11 @@ With Elysia, you can synchronize your types with your frontend team automaticall
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
     .use(openapi({
-    	references: fromTypes('src/index.ts')
+    	references: fromTypes()
     }))
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({

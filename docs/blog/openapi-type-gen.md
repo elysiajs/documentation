@@ -106,17 +106,16 @@ This is something profound, and can hardly replicated by any other framework.
 To add OpenAPI Type Gen to your codebase, simply:
 
 1. export an Elysia instance
-2. provide file path to type generator
+2. provide root Elysia file path (if not provided, Elysia will use `src/index.ts`)
 
 ```ts
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen' // [!code ++]
+import { openapi, fromTypes } from '@elysiajs/openapi' // [!code ++]
 
 export const app = new Elysia() // [!code ++]
 	.use(
 		openapi({
-			references: fromTypes('src/index.ts') // [!code ++]
+			references: fromTypes() // [!code ++]
 		})
 	)
 ```
