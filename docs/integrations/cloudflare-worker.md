@@ -73,7 +73,7 @@ Here are some known limitations of using Elysia on Cloudflare Worker:
 1. `Elysia.file`, and [Static Plugin](/plugins/static) doesn't work [due to the lack of `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis)
 2. [OpenAPI Type Gen](/blog/openapi-type-gen) doesn't work [due to the lack of `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis)
 3. You can't define [**Response** before server start](https://x.com/saltyAom/status/1966602691754553832), or use plugin that does so
-4. You can't inline value
+4. You can't inline a value
 
 ```typescript
 import { Elysia } from 'elysia'
