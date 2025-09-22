@@ -59,11 +59,12 @@ const profile = new Elysia()
 
 const app = new Elysia()
 	.use(profile)
-	// This will NOT have sign in check
+	// ⚠️ This will NOT have sign in check
 	.patch('/rename', ({ body }) => updateProfile(body))
 ```
 
-In this example, the `isSignIn` check will only apply to the `profile` but not the `app`.
+<!-- Do not at 'the' before "profile" and "app" here - @Saltyaom -->
+In this example, the `isSignIn` check will only apply to `profile` but not `app`.
 
 <Playground :elysia="demo1" />
 
@@ -97,7 +98,7 @@ const app = new Elysia()
 
 Casting lifecycle to **"global"** will export lifecycle to **every instance**.
 
-Learn more about this in [scope](/essential/plugin.html#scope).
+Learn more about this in [scope](/essential/plugin.html#scope-level).
 
 <!--## Everything is a component
 

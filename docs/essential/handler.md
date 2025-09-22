@@ -138,47 +138,43 @@ new Elysia()
 **Context** can only be retrieved in a route handler. It consists of:
 
 #### Property
--   **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
--   **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
--   **params** - Elysia's path parameters parsed as JavaScript object
--   **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
--   **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
--   **store** - A global mutable store for Elysia instance
+-   [**body**](/essential/validation.html#body) - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
+-   [**query**](/essential/validation.html#query) - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
+-   [**params**](/essential/validation.html#params) - Elysia's path parameters parsed as JavaScript object
+-   [**headers**](/essential/validation.html#headers) - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
+-   [**cookie**](#cookie) - A global mutable signal store for interacting with Cookie (including get/set)
+-   [**store**](#state) - A global mutable store for Elysia instance
 
 #### Utility Function
--   **redirect** - A function to redirect a response
--   **status** - A function to return custom status code
--   **set** - Property to apply to Response:
-    -   **headers** - Response headers
-    -   **status <sub>(legacy, use `status` instead)</sub>** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
-    -   **redirect <sub>(legacy, use `redirect` instead)</sub>** - Response as a path to redirect to
+-   [**redirect**](#redirect) - A function to redirect a response
+-   [**status**](#status) - A function to return custom status code
+-   [**set**](#set) - Property to apply to Response:
+    -   [**headers**](#set.headers) - Response headers
 
 #### Additional Property
--   **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
--   **server** - Bun server instance
+-   [**request**](#request) - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
+-   [**server**](#server-bun-only) - Bun server instance
 -   **path** - Pathname of the request
 
-## Set
+## status
+A function to return a custom status code with type narrowing.
 
-**set** is a mutable property that form a response accessible via `Context.set`.
-
-- **set.status** - Set custom status code
-- **set.headers** - Append custom headers
-- **set.redirect** - Append redirect
-
-```ts twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.get('/', ({ set, status }) => {
-		set.headers = { 'X-Teapot': 'true' }
-
-		return status(418, 'I am a teapot')
-	})
-	.listen(3000)
+    .get('/', ({ status }) => status(418, "Kirifuji Nagisa"))
+    .listen(3000)
 ```
 
-### status
+<Playground :elysia="handler2" />
+
+It's recommended use **never-throw** approach to return **status** instead of throw as it:
+- allows TypeScript to check if a return value is correctly type to response schema
+- autocompletion for type narrowing based on status code
+- type narrowing for error handling using End-to-end type safety ([Eden](/eden/overview))
+
+<!--### status
 We can return a custom status code by using either:
 
 - **status** function (recommended)
@@ -195,27 +191,75 @@ new Elysia()
 	})
 	.listen(3000)
 ```
+-->
 
-### status function
-A dedicated `status` function for returning status code with response.
+## Set
 
-```typescript
+**set** is a mutable property that form a response accessible via `Context.set`.
+
+```ts twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ status }) => status(418, "Kirifuji Nagisa"))
+	.get('/', ({ set, status }) => {
+		set.headers = { 'X-Teapot': 'true' }
+
+		return status(418, 'I am a teapot')
+	})
+	.listen(3000)
+```
+
+### set.headers
+Allowing us to append or delete response headers represented as an Object.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set }) => {
+        set.headers['x-powered-by'] = 'Elysia'
+
+        return 'a mimir'
+    })
     .listen(3000)
 ```
 
-<Playground :elysia="handler2" />
+::: tip
+Elysia provide an auto-completion for lowercase for case-sensitivity consistency, eg. use `set-cookie` rather than `Set-Cookie`.
+:::
 
-It's recommended to use `status` inside the main handler as it has better inference:
+<details>
 
-- allows TypeScript to check if a return value is correctly type to response schema
-- autocompletion for type narrowing based on status code
-- type narrowing for error handling using End-to-end type safety ([Eden](/eden/overview))
+<summary>
+redirect <Badge type="warning">Legacy</Badge>
+</summary>
 
-### set.status <Badge type="warning">Legacy</Badge>
+Redirect a request to another resource.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ redirect }) => {
+        return redirect('https://youtu.be/whpVWVWBW4U?&t=8')
+    })
+    .get('/custom-status', ({ redirect }) => {
+        // You can also set custom status to redirect
+        return redirect('https://youtu.be/whpVWVWBW4U?&t=8', 302)
+    })
+    .listen(3000)
+```
+
+When using redirect, returned value is not required and will be ignored. As response will be from another resource.
+
+</details>
+
+<details>
+
+<summary>
+	set.status <Badge type="warning">Legacy</Badge>
+</summary>
+
 Set a default status code if not provided.
 
 It's recommended to use this in a plugin that only needs to return a specific status code while allowing the user to return a custom value. For example, HTTP 201/206 or 403/405, etc.
@@ -255,40 +299,43 @@ new Elysia()
     .listen(3000)
 ```
 
-### set.headers
-Allowing us to append or delete response headers represented as an Object.
+</details>
+
+## Cookie
+Elysia provides a mutable signal for interacting with Cookie.
+
+There's no get/set, you can extract the cookie name and retrieve or update its value directly.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ set }) => {
-        set.headers['x-powered-by'] = 'Elysia'
+	.get('/set', ({ cookie: { name } }) => {
+		// Get
+        name.value
 
-        return 'a mimir'
-    })
-    .listen(3000)
+        // Set
+        name.value = "New Value"
+	})
 ```
 
-::: warning
-The names of headers should be lowercase to force case-sensitivity consistency for HTTP headers and auto-completion, eg. use `set-cookie` rather than `Set-Cookie`.
-:::
+See [Patterns: Cookie](/essentials/cookie) for more information.
 
-### redirect
+## Redirect
 Redirect a request to another resource.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ redirect }) => {
-        return redirect('https://youtu.be/whpVWVWBW4U?&t=8')
-    })
-    .get('/custom-status', ({ redirect }) => {
-        // You can also set custom status to redirect
-        return redirect('https://youtu.be/whpVWVWBW4U?&t=8', 302)
-    })
-    .listen(3000)
+	.get('/', ({ redirect }) => {
+		return redirect('https://youtu.be/whpVWVWBW4U?&t=8')
+	})
+	.get('/custom-status', ({ redirect }) => {
+		// You can also set custom status to redirect
+		return redirect('https://youtu.be/whpVWVWBW4U?&t=8', 302)
+	})
+	.listen(3000)
 ```
 
 When using redirect, returned value is not required and will be ignored. As response will be from another resource.
@@ -309,7 +356,7 @@ new Elysia()
 
 This pattern is useful if even need to return a file or multipart form data.
 
-### Return a single file
+### Return a file
 Or alternatively, you can return a single file by returning `file` directly without `form`.
 
 ```typescript
@@ -357,10 +404,9 @@ new Elysia()
 
 When a value is wrapped in `sse`, Elysia will automatically set the response headers to `text/event-stream` and format the data as an SSE event.
 
-### Set headers
-Elysia will defers returning response headers until the first chunk is yielded.
+### Headers in Server-Sent Event
 
-This allows us to set headers before the response is streamed.
+Headers can only be set before the first chunk is yielded.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -378,9 +424,7 @@ const app = new Elysia()
 	})
 ```
 
-Once the first chunk is yielded, Elysia will send the headers and the first chunk in the same response.
-
-Setting headers after the first chunk is yielded will do nothing.
+Once the first chunk is yielded, Elysia will send the headers to the client, therefore mutating headers after the first chunk is yielded will do nothing.
 
 ### Conditional Stream
 If the response is returned without yield, Elysia will automatically convert stream to normal response instead.
@@ -400,10 +444,8 @@ const app = new Elysia()
 
 This allows us to conditionally stream a response or return a normal response if necessary.
 
-### Abort
-While streaming a response, it's common that request may be cancelled before the response is fully streamed.
-
-Elysia will automatically stop the generator function when the request is cancelled.
+### Automatic cancellation
+Before response streaming is completed, if the user cancels the request, Elysia will automatically stop the generator function.
 
 ### Eden
 [Eden](/eden/overview) will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
@@ -425,6 +467,21 @@ if (error) throw error
 for await (const chunk of data)
 	console.log(chunk)
 ```
+
+## Request
+Elysia is built on top of [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) which is shared between multiple runtime like Node, Bun, Deno, Cloudflare Worker, Vercel Edge Function, and more.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/user-agent', ({ request }) => {
+		return request.headers.get('user-agent')
+	})
+	.listen(3000)
+```
+
+Allowing you to access low-level request information if necessary.
 
 ## Server <Badge type="warning">Bun only</Badge>
 Server instance is a Bun server instance, allowing us to access server information like port number or request IP.
@@ -454,7 +511,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-## Response
+<!--## Response
 
 Elysia is built on top of Web Standard Request/Response.
 
@@ -483,9 +540,9 @@ new Elysia()
 
 ::: tip
 Using a primitive value or `Response` has near identical performance (+- 0.1%), so pick the one you prefer, regardless of performance.
-:::
+:::-->
 
-## Handle
+<!--## Handle
 
 As Elysia is built on top of Web Standard Request, we can programmatically test it using `Elysia.handle`.
 
@@ -506,7 +563,7 @@ app.handle(new Request('http://localhost/')).then(console.log)
 Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
 
 But also useful for simulating or creating unit tests.
-:::
+:::-->
 
 ## Extending context <Badge type="warning">Advance concept</Badge>
 
@@ -581,6 +638,56 @@ Beware that we cannot use a state value before assign.
 Elysia registers state values into the store automatically without explicit type or additional TypeScript generic needed.
 :::
 
+### Reference and value <Badge type="warning">Gotcha</Badge>
+
+To mutate the state, it's recommended to use **reference** to mutate rather than using an actual value.
+
+When accessing the property from JavaScript, if we define a primitive value from an object property as a new value, the reference is lost, the value is treated as new separate value instead.
+
+For example:
+
+```typescript
+const store = {
+    counter: 0
+}
+
+store.counter++
+console.log(store.counter) // ✅ 1
+```
+
+We can use **store.counter** to access and mutate the property.
+
+However, if we define a counter as a new value
+
+```typescript
+const store = {
+    counter: 0
+}
+
+let counter = store.counter
+
+counter++
+console.log(store.counter) // ❌ 0
+console.log(counter) // ✅ 1
+```
+
+Once a primitive value is redefined as a new variable, the reference **"link"** will be missing, causing unexpected behavior.
+
+This can apply to `store`, as it's a global mutable object instead.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('counter', 0)
+    // ✅ Using reference, value is shared
+    .get('/', ({ store }) => store.counter++)
+    // ❌ Creating a new variable on primitive value, the link is lost
+    .get('/error', ({ store: { counter } }) => counter)
+```
+
+<Playground :elysia="demo7" />
+
 ## Decorate
 
 **decorate** assigns an additional property to **Context** directly **at call time**.
@@ -614,6 +721,9 @@ new Elysia()
 - Make sure to assign a value before using it in a handler.
 
 ## Derive
+
+###### ⚠️ Derive doesn't handle type integrity, you might want to use [resolve](#resolve) instead.
+
 Retrieve values from existing properties in **Context** and assign new properties.
 
 Derive assigns when request happens **at transform lifecycle** allowing us to "derive" <small>(create new properties from existing properties)</small>.
@@ -645,9 +755,11 @@ Because **derive** is assigned once a new request starts, **derive** can access 
 - **derive is called at transform, or before validation** happens, Elysia cannot safely confirm the type of request property resulting in as **unknown**. If you want to assign a new value from typed request properties, you may want to use [resolve](#resolve) instead.
 
 ## Resolve
-Same as [derive](#derive), resolve allow us to assign a new property to context.
+Similar as [derive](#derive) but ensure type integrity.
 
-Resolve is called at **beforeHandle** lifecycle or **after validation**, allowing us to **derive** request properties safely.
+Resolve allow us to assign a new property to context.
+
+Resolve is called at **beforeHandle** lifecycle or **after validation**, allowing us to **resolve** request properties safely.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -694,7 +806,7 @@ new Elysia()
     .get('/', ({ bearer }) => bearer)
 ```
 
-## Pattern
+## Pattern <Badge type="info">Advance Concept</Badge>
 
 **state**, **decorate** offers a similar APIs pattern for assigning property to Context as the following:
 
@@ -776,7 +888,7 @@ However, it's important to note that Elysia doesn't offer reactivity from this a
 Using remap, Elysia will treat a returned object as a new property, removing any property that is missing from the object.
 :::
 
-## Affix
+## Affix <Badge type="info">Advance Concept</Badge>
 
 To provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
 
@@ -821,56 +933,6 @@ const app = new Elysia()
     .prefix('all', 'setup') // [!code ++]
     .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
-
-## Reference and value <Badge type="warning">Gotcha</Badge>
-
-To mutate the state, it's recommended to use **reference** to mutate rather than using an actual value.
-
-When accessing the property from JavaScript, if we define a primitive value from an object property as a new value, the reference is lost, the value is treated as new separate value instead.
-
-For example:
-
-```typescript
-const store = {
-    counter: 0
-}
-
-store.counter++
-console.log(store.counter) // ✅ 1
-```
-
-We can use **store.counter** to access and mutate the property.
-
-However, if we define a counter as a new value
-
-```typescript
-const store = {
-    counter: 0
-}
-
-let counter = store.counter
-
-counter++
-console.log(store.counter) // ❌ 0
-console.log(counter) // ✅ 1
-```
-
-Once a primitive value is redefined as a new variable, the reference **"link"** will be missing, causing unexpected behavior.
-
-This can apply to `store`, as it's a global mutable object instead.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .state('counter', 0)
-    // ✅ Using reference, value is shared
-    .get('/', ({ store }) => store.counter++)
-    // ❌ Creating a new variable on primitive value, the link is lost
-    .get('/error', ({ store: { counter } }) => counter)
-```
-
-<Playground :elysia="demo7" />
 
 <!--## TypeScript
 Elysia automatically type context base on various of factors like store, decorators, schema.

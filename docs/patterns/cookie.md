@@ -15,7 +15,7 @@ head:
 ---
 
 # Cookie
-To use Cookie, you can extract the cookie property and access its name and value directly.
+Elysia provides a mutable signal for interacting with Cookie.
 
 There's no get/set, you can extract the cookie name and retrieve or update its value directly.
 ```ts
