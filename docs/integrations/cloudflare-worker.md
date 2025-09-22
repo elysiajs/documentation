@@ -1,5 +1,5 @@
 ---
-title: Integration with Drizzle - ElysiaJS
+title: Integration with Cloudflare Worker - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
