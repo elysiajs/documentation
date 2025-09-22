@@ -15,43 +15,44 @@ head:
 ---
 
 # Mount
-WinterCG is a standard for web-interoperable runtimes. Supported by Cloudflare, Deno, Vercel Edge Runtime, Netlify Function, and various others, it allows web servers to run interoperably across runtimes that use Web Standard definitions like `Fetch`, `Request`, and `Response`.
+[WinterTC](https://wintertc.org/) is a standard for building HTTP Server behind Cloudflare, Deno, Vercel, and others.
 
-Elysia is WinterCG compliant. We are optimized to run on Bun but also openly support other runtimes if possible.
+It allows web servers to run interoperably across runtimes by using [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response).
 
-In theory, this allows any framework or code that is WinterCG compliant to be run together, allowing frameworks like Elysia, Hono, Remix, Itty Router to run together in a simple function.
+Elysia is WinterTC compliant. Optimized to run on Bun, but also support other runtimes if possible.
 
-Adhering to this, we implemented the same logic for Elysia by introducing `.mount` method to run with any framework or code that is WinterCG compliant.
+This allows any framework or code that is WinterCG compliant to be run together, allowing frameworks like Elysia, Hono, Remix, Itty Router to run together in a simple function.
 
 ## Mount
 To use **.mount**, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
 ```ts
 import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const hono = new Hono()
+	.get('/', (c) => c.text('Hello from Hono!'))
 
 const app = new Elysia()
     .get('/', () => 'Hello from Elysia')
     .mount('/hono', hono.fetch)
 ```
 
-A **fetch** function is a function that accepts a Web Standard Request and returns a Web Standard Response with the definition of:
-```ts
-// Web Standard Request-like object
-// Web Standard Response
-type fetch = (request: RequestLike) => Response
-```
+Any framework that use `Request`, and `Response` can be interoperable with Elysia like
+- Hono
+- Nitro
+- H3
+- [Nextjs API Route](/integrations/nextjs)
+- [Nuxt API Route](/integrations/nuxt)
+- [SvelteKit API Route](/integrations/sveltekit)
 
-By default, this declaration is used by:
+And these can be use on multiple runtimes like:
 - Bun
 - Deno
 - Vercel Edge Runtime
 - Cloudflare Worker
 - Netlify Edge Function
-- Remix Function Handler
-- etc.
 
-This allows you to execute all the aforementioned code in a single server environment, making it possible to interact seamlessly with Elysia. You can also reuse existing functions within a single deployment, eliminating the need for a reverse proxy to manage multiple servers.
-
-If the framework also supports a **.mount** function, you can deeply nest a framework that supports it.
+If the framework supports a **.mount** function, you can also mount Elysia inside another framework:
 ```ts
 import { Elysia } from 'elysia'
 import { Hono } from 'hono'

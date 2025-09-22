@@ -263,12 +263,12 @@ export default defineConfig({
                         link: '/essential/handler'
                     },
                     {
-                        text: 'Life Cycle',
-                        link: '/essential/life-cycle'
-                    },
-                    {
                         text: 'Validation',
                         link: '/essential/validation'
+                    },
+                    {
+                        text: 'Life Cycle',
+                        link: '/essential/life-cycle'
                     },
                     {
                         text: 'Plugin',

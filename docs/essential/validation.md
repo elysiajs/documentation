@@ -84,11 +84,9 @@ new Elysia()
 
 ### TypeBox
 
-**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and OpenAPI schema generation.
+**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and OpenAPI schema generation from a single source of truth.
 
-Elysia extends and customizes the default behavior of TypeBox to match server-side validation requirements.
-
-We believe that validation should at least be handled by the framework natively, rather than relying on the user to set up a custom type for every project.
+Elysia tailor TypeBox for server-side validation for a seamless experience.
 
 ### Standard Schema
 Elysia also support [Standard Schema](https://github.com/standard-schema/standard-schema), allowing you to use your favorite validation library:

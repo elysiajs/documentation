@@ -87,11 +87,7 @@ const demo7 = new Elysia()
 
 # Handler
 
-A handler is a function that responds to the request for each route.
-
-Accepting request information and returning a response to the client.
-
-Alternatively, a handler is also known as a **Controller** in other frameworks.
+**Handler** - a function that accept an HTTP request, and return a response.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -113,7 +109,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Using an inline value always returns the same value which is useful to optimize performance for static resources like files.
+Using an **inline value** always returns the same value which is useful to optimize performance for static resources like files.
 
 This allows Elysia to compile the response ahead of time to optimize performance.
 

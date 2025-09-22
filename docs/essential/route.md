@@ -94,9 +94,9 @@ const demo13 = new Elysia()
 
 # Routing
 
-Web servers use the request's **path and method** to look up the correct resource, referred to as **"routing"**.
+Web servers use the request's **path and method** to look up the correct resource, known as **"routing"**.
 
-We can define a route by calling a **method named after HTTP verbs**, passing a path and a function to execute when matched.
+We can define a route with **HTTP verb method**, a path and a function to execute when matched.
 
 ```typescript
 import { Elysia } from 'elysia'
