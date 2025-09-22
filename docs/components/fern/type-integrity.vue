@@ -90,10 +90,10 @@ const clipPath = ref('inset(0px 75.233645% 0px 0.623053% round 25px)')
 
 const activeElements = useTemplateRef<HTMLElement[]>('active')
 const labels = [
-    'Type Inference',
-    'Enforce Type',
-    'Return Type',
-    'Made it your own'
+    'Type Safety',
+    'Enforce Input',
+    'Recheck Output',
+    'Meta Programming'
 ]
 
 watch(isInView, () => {

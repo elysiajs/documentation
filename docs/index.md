@@ -119,7 +119,7 @@ const role = new Elysia({ name: 'macro' })
 
 new Elysia()
 	.use(role)
-	.get('/admin/check', 'ok', {
+	.get('/admin/check', () => 'Hello admin!', {
         r
       // ^|
 	})
