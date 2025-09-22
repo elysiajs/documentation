@@ -17,9 +17,9 @@ const flyIn = useFlyIn(isInView)
             <header class="flex flex-col w-full lg:w-5/12 text-xl gap-6">
                 <div class="flex flex-col gap-3">
                     <h2
-                        class="text-6xl text-gray-700 font-medium leading-[4.5rem] dark:text-gray-400"
+                        class="text-6xl text-gray-700 dark:text-gray-200 font-medium leading-[4.5rem]"
                     >
-                        <motion.span v-bind="flyIn()">Test with</motion.span>
+                        <motion.span class="mr-2" v-bind="flyIn()">Test with</motion.span>
                         <motion.span
                             class="text-gradient font-semibold from-violet-500 to-sky-400"
                             v-bind="flyIn(0.1)"

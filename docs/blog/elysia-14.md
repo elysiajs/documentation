@@ -3,6 +3,7 @@ title: Elysia 1.4 - Supersymmetry
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -104,7 +105,7 @@ You can use multiple validators in a single route, and they will work together s
 
 There is a request to support JSON Schema for OpenAPI generation with Standard Schema, but it is not implemented yet.
 
-However, we use [xsschema](https://xsai.js.org/docs/packages-top/xsschema) internally as a workaround to convert Standard Schema to JSON Schema for OpenAPI generation (if the validation library supports it).
+However, we provide a custom `mapJsonSchema` to `openapi` allow you to provide a custom function to map schema to Json Schema as a workaround.
 
 This allows you to have beautiful OpenAPI documentation with your favorite validator.
 

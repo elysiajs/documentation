@@ -27,6 +27,21 @@ We expect it to take around 15-20 minutes if you follow along.
 
 ---
 
+### Not a fan of tutorial?
+
+If you prefer a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
+
+<script setup>
+import Card from './components/nearl/card.vue'
+import Deck from './components/nearl/card-deck.vue'
+</script>
+
+<Deck>
+    <Card title="Key Concept (5 minutes)" href="/key-concept">
+    	The core concept of Elysia and how to use it.
+    </Card>
+</Deck>
+
 ### From other framework?
 
 If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences.
@@ -40,21 +55,6 @@ If you have used other popular frameworks like Express, Fastify, or Hono, you wi
     </Card>
     <Card title="From Hono" href="/migrate/from-hono">
   		A guide to migrate from Hono to Elysia
-    </Card>
-</Deck>
-
-### Not a fan of tutorial?
-
-If you prefer a more try-it-yourself approach, you can skip this tutorial and go straight to the [key concept](/key-concept) page to get a good understanding of how Elysia works.
-
-<script setup>
-import Card from './components/nearl/card.vue'
-import Deck from './components/nearl/card-deck.vue'
-</script>
-
-<Deck>
-    <Card title="Key Concept (5 minutes)" href="/key-concept">
-    	The core concept of Elysia and how to use it.
     </Card>
 </Deck>
 
@@ -213,8 +213,7 @@ Now, let's create a singleton class to store our notes.
 import { Elysia } from 'elysia'
 import { openapi } from '@elysiajs/openapi'
 
-class Note {
-    // [!code ++]
+class Note { // [!code ++]
     constructor(public data: string[] = ['Moonhalo']) {} // [!code ++]
 } // [!code ++]
 
@@ -251,8 +250,7 @@ const app = new Elysia()
     .use(openapi())
     .decorate('note', new Note())
     .get('/note', ({ note }) => note.data)
-    .get('/note/:index', ({ note, params: { index } }) => {
-        // [!code ++]
+    .get('/note/:index', ({ note, params: { index } }) => { // [!code ++]
         return note.data[index] // [!code ++]
     }) // [!code ++]
     .listen(3000)
@@ -289,10 +287,8 @@ const app = new Elysia()
         ({ note, params: { index } }) => {
             return note.data[index]
         },
-        {
-            // [!code ++]
-            params: t.Object({
-                // [!code ++]
+        { // [!code ++]
+            params: t.Object({ // [!code ++]
                 index: t.Number() // [!code ++]
             }) // [!code ++]
         } // [!code ++]
@@ -345,8 +341,7 @@ const app = new Elysia()
     .get('/note', ({ note }) => note.data)
     .get(
         '/note/:index',
-        ({ note, params: { index }, status }) => {
-            // [!code ++]
+        ({ note, params: { index }, status }) => { // [!code ++]
             return note.data[index] ?? status(404) // [!code ++]
         },
         {
@@ -430,8 +425,7 @@ import { openapi } from '@elysiajs/openapi'
 
 import { note } from './note' // [!code ++]
 
-class Note {
-    // [!code --]
+class Note { // [!code --]
     constructor(public data: string[] = ['Moonhalo']) {} // [!code --]
 } // [!code --]
 
@@ -440,17 +434,13 @@ const app = new Elysia()
     .use(note) // [!code ++]
     .decorate('note', new Note()) // [!code --]
     .get('/note', ({ note }) => note.data) // [!code --]
-    .get(
-        // [!code --]
+    .get( // [!code --]
         '/note/:index', // [!code --]
-        ({ note, params: { index }, status }) => {
-            // [!code --]
+        ({ note, params: { index }, status }) => { // [!code --]
             return note.data[index] ?? status(404, 'oh no :(') // [!code --]
         }, // [!code --]
-        {
-            // [!code --]
-            params: t.Object({
-                // [!code --]
+        { // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }) // [!code --]
         } // [!code --]
@@ -478,20 +468,17 @@ import { Elysia, t } from 'elysia'
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
 
-    add(note: string) {
-        // [!code ++]
+    add(note: string) {// [!code ++]
         this.data.push(note) // [!code ++]
 
         return this.data // [!code ++]
     } // [!code ++]
 
-    remove(index: number) {
-        // [!code ++]
+    remove(index: number) { // [!code ++]
         return this.data.splice(index, 1) // [!code ++]
     } // [!code ++]
 
-    update(index: number, note: string) {
-        // [!code ++]
+    update(index: number, note: string) { // [!code ++]
         return (this.data[index] = note) // [!code ++]
     } // [!code ++]
 }
@@ -499,10 +486,8 @@ class Note {
 export const note = new Elysia()
     .decorate('note', new Note())
     .get('/note', ({ note }) => note.data)
-    .put('/note', ({ note, body: { data } }) => note.add(data), {
-        // [!code ++]
-        body: t.Object({
-            // [!code ++]
+    .put('/note', ({ note, body: { data } }) => note.add(data), { // [!code ++]
+        body: t.Object({ // [!code ++]
             data: t.String() // [!code ++]
         }) // [!code ++]
     }) // [!code ++]
@@ -517,40 +502,31 @@ export const note = new Elysia()
             })
         }
     )
-    .delete(
-        // [!code ++]
+    .delete( // [!code ++]
         '/note/:index', // [!code ++]
-        ({ note, params: { index }, status }) => {
-            // [!code ++]
+        ({ note, params: { index }, status }) => { // [!code ++]
             if (index in note.data) return note.remove(index) // [!code ++]
 
             return status(422) // [!code ++]
         }, // [!code ++]
-        {
-            // [!code ++]
-            params: t.Object({
-                // [!code ++]
+        { // [!code ++]
+            params: t.Object({ // [!code ++]
                 index: t.Number() // [!code ++]
             }) // [!code ++]
         } // [!code ++]
     ) // [!code ++]
-    .patch(
-        // [!code ++]
+    .patch( // [!code ++]
         '/note/:index', // [!code ++]
-        ({ note, params: { index }, body: { data }, status }) => {
-            // [!code ++]
+        ({ note, params: { index }, body: { data }, status }) => { // [!code ++]
             if (index in note.data) return note.update(index, data) // [!code ++]
 
             return status(422) // [!code ++]
         }, // [!code ++]
-        {
-            // [!code ++]
-            params: t.Object({
-                // [!code ++]
+        { // [!code ++]
+            params: t.Object({ // [!code ++]
                 index: t.Number() // [!code ++]
             }), // [!code ++]
-            body: t.Object({
-                // [!code ++]
+            body: t.Object({ // [!code ++]
                 data: t.String() // [!code ++]
             }) // [!code ++]
         } // [!code ++]
@@ -639,10 +615,8 @@ export const note = new Elysia({ prefix: '/note' })
             data: t.String()
         })
     })
-    .guard({
-        // [!code ++]
-        params: t.Object({
-            // [!code ++]
+    .guard({ // [!code ++]
+        params: t.Object({ // [!code ++]
             index: t.Number() // [!code ++]
         }) // [!code ++]
     }) // [!code ++]
@@ -651,10 +625,8 @@ export const note = new Elysia({ prefix: '/note' })
         ({ note, params: { index }, status }) => {
             return note.data[index] ?? status(404, 'Not Found :(')
         },
-        {
-            // [!code --]
-            params: t.Object({
-                // [!code --]
+        { // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }) // [!code --]
         } // [!code --]
@@ -666,10 +638,8 @@ export const note = new Elysia({ prefix: '/note' })
 
             return status(422)
         },
-        {
-            // [!code --]
-            params: t.Object({
-                // [!code --]
+        { // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }) // [!code --]
         } // [!code --]
@@ -682,8 +652,7 @@ export const note = new Elysia({ prefix: '/note' })
             return status(422)
         },
         {
-            params: t.Object({
-                // [!code --]
+            params: t.Object({ // [!code --]
                 index: t.Number() // [!code --]
             }), // [!code --]
             body: t.Object({
@@ -710,10 +679,8 @@ There are several lifecycles that we can use, but in this case we will be using 
 ```typescript [note.ts]
 export const note = new Elysia({ prefix: '/note' })
     .decorate('note', new Note())
-    .onTransform(function log({ body, params, path, request: { method } }) {
-        // [!code ++]
-        console.log(`${method} ${path}`, {
-            // [!code ++]
+    .onTransform(function log({ body, params, path, request: { method } }) { // [!code ++]
+        console.log(`${method} ${path}`, { // [!code ++]
             body, // [!code ++]
             params // [!code ++]
         }) // [!code ++]
@@ -774,60 +741,46 @@ Let's create a `user.ts` file that will handle the user authentication:
 import { Elysia, t } from 'elysia' // [!code ++]
 // [!code ++]
 export const user = new Elysia({ prefix: '/user' }) // [!code ++]
-    .state({
-        // [!code ++]
+    .state({ // [!code ++]
         user: {} as Record<string, string>, // [!code ++]
         session: {} as Record<number, string> // [!code ++]
     }) // [!code ++]
-    .put(
-        // [!code ++]
+    .put( // [!code ++]
         '/sign-up', // [!code ++]
-        async ({ body: { username, password }, store, status }) => {
-            // [!code ++]
-            if (store.user[username])
-                // [!code ++]
-                return status(400, {
-                    // [!code ++]
+        async ({ body: { username, password }, store, status }) => { // [!code ++]
+            if (store.user[username]) // [!code ++]
+                return status(400, { // [!code ++]
                     success: false, // [!code ++]
                     message: 'User already exists' // [!code ++]
                 }) // [!code ++]
             // [!code ++]
             store.user[username] = await Bun.password.hash(password) // [!code ++]
             // [!code ++]
-            return {
-                // [!code ++]
+            return { // [!code ++]
                 success: true, // [!code ++]
                 message: 'User created' // [!code ++]
             } // [!code ++]
         }, // [!code ++]
-        {
-            // [!code ++]
-            body: t.Object({
-                // [!code ++]
+        { // [!code ++]
+            body: t.Object({ // [!code ++]
                 username: t.String({ minLength: 1 }), // [!code ++]
                 password: t.String({ minLength: 8 }) // [!code ++]
             }) // [!code ++]
         } // [!code ++]
     ) // [!code ++]
-    .post(
-        // [!code ++]
+    .post( // [!code ++]
         '/sign-in', // [!code ++]
-        async ({
-            // [!code ++]
+        async ({ // [!code ++]
             store: { user, session }, // [!code ++]
             status, // [!code ++]
             body: { username, password }, // [!code ++]
             cookie: { token } // [!code ++]
-        }) => {
-            // [!code ++]
-            if (
-                // [!code ++]
+        }) => { // [!code ++]
+            if ( // [!code ++]
                 !user[username] || // [!code ++]
                 !(await Bun.password.verify(password, user[username])) // [!code ++]
-            )
-                // [!code ++]
-                return status(400, {
-                    // [!code ++]
+            ) // [!code ++]
+                return status(400, { // [!code ++]
                     success: false, // [!code ++]
                     message: 'Invalid username or password' // [!code ++]
                 }) // [!code ++]
@@ -836,23 +789,19 @@ export const user = new Elysia({ prefix: '/user' }) // [!code ++]
             session[key] = username // [!code ++]
             token.value = key // [!code ++]
 
-            return {
-                // [!code ++]
+            return { // [!code ++]
                 success: true, // [!code ++]
                 message: `Signed in as ${username}` // [!code ++]
             } // [!code ++]
         }, // [!code ++]
         {
             // [!code ++]
-            body: t.Object({
-                // [!code ++]
+            body: t.Object({ // [!code ++]
                 username: t.String({ minLength: 1 }), // [!code ++]
                 password: t.String({ minLength: 8 }) // [!code ++]
             }), // [!code ++]
-            cookie: t.Cookie(
-                // [!code ++]
-                {
-                    // [!code ++]
+            cookie: t.Cookie( // [!code ++]
+                { // [!code ++]
                     token: t.Number() // [!code ++]
                 }, // [!code ++]
                 {
@@ -901,21 +850,16 @@ export const user = new Elysia({ prefix: '/user' })
         user: {} as Record<string, string>,
         session: {} as Record<number, string>
     })
-    .model({
-        // [!code ++]
-        signIn: t.Object({
-            // [!code ++]
+    .model({ // [!code ++]
+        signIn: t.Object({ // [!code ++]
             username: t.String({ minLength: 1 }), // [!code ++]
             password: t.String({ minLength: 8 }) // [!code ++]
         }), // [!code ++]
-        session: t.Cookie(
-            // [!code ++]
-            {
-                // [!code ++]
+        session: t.Cookie( // [!code ++]
+            { // [!code ++]
                 token: t.Number() // [!code ++]
             }, // [!code ++]
-            {
-                // [!code ++]
+            { // [!code ++]
                 secrets: 'seia' // [!code ++]
             } // [!code ++]
         ), // [!code ++]
@@ -1070,35 +1014,27 @@ export const user = new Elysia({ prefix: '/user' })
             cookie: 'optionalSession'
         }
     )
-    .get(
-        // [!code ++]
+    .get( // [!code ++]
         '/sign-out', // [!code ++]
-        ({ cookie: { token } }) => {
-            // [!code ++]
+        ({ cookie: { token } }) => { // [!code ++]
             token.remove() // [!code ++]
             // [!code ++]
-            return {
-                // [!code ++]
+            return { // [!code ++]
                 success: true, // [!code ++]
                 message: 'Signed out' // [!code ++]
             } // [!code ++]
         }, // [!code ++]
-        {
-            // [!code ++]
+        { // [!code ++]
             cookie: 'optionalSession' // [!code ++]
         } // [!code ++]
     ) // [!code ++]
-    .get(
-        // [!code ++]
+    .get( // [!code ++]
         '/profile', // [!code ++]
-        ({ cookie: { token }, store: { session }, status }) => {
-            // [!code ++]
+        ({ cookie: { token }, store: { session }, status }) => { // [!code ++]
             const username = session[token.value] // [!code ++]
             // [!code ++]
-            if (!username)
-                // [!code ++]
-                return status(401, {
-                    // [!code ++]
+            if (!username) // [!code ++]
+                return status(401, { // [!code ++]
                     success: false, // [!code ++]
                     message: 'Unauthorized' // [!code ++]
                 }) // [!code ++]
@@ -1109,8 +1045,7 @@ export const user = new Elysia({ prefix: '/user' })
                 username // [!code ++]
             } // [!code ++]
         }, // [!code ++]
-        {
-            // [!code ++]
+        { // [!code ++]
             cookie: 'session' // [!code ++]
         } // [!code ++]
     ) // [!code ++]
@@ -1137,21 +1072,16 @@ export const userService = new Elysia({ name: 'user/service' }) // [!code ++]
         user: {} as Record<string, string>, // [!code ++]
         session: {} as Record<number, string> // [!code ++]
     }) // [!code ++]
-    .model({
-        // [!code ++]
-        signIn: t.Object({
-            // [!code ++]
+    .model({ // [!code ++]
+        signIn: t.Object({ // [!code ++]
             username: t.String({ minLength: 1 }), // [!code ++]
             password: t.String({ minLength: 8 }) // [!code ++]
         }), // [!code ++]
-        session: t.Cookie(
-            // [!code ++]
-            {
-                // [!code ++]
+        session: t.Cookie( // [!code ++]
+            { // [!code ++]
                 token: t.Number() // [!code ++]
             }, // [!code ++]
-            {
-                // [!code ++]
+            { // [!code ++]
                 secrets: 'seia' // [!code ++]
             } // [!code ++]
         ), // [!code ++]
@@ -1167,26 +1097,20 @@ export const userService = new Elysia({ name: 'user/service' }) // [!code ++]
 
 export const user = new Elysia({ prefix: '/user' })
     .use(userService) // [!code ++]
-    .state({
-        // [!code --]
+    .state({ // [!code --]
         user: {} as Record<string, string>, // [!code --]
         session: {} as Record<number, string> // [!code --]
     }) // [!code --]
-    .model({
-        // [!code --]
-        signIn: t.Object({
-            // [!code --]
+    .model({ // [!code --]
+        signIn: t.Object({ // [!code --]
             username: t.String({ minLength: 1 }), // [!code --]
             password: t.String({ minLength: 8 }) // [!code --]
         }), // [!code --]
-        session: t.Cookie(
-            // [!code --]
-            {
-                // [!code --]
+        session: t.Cookie( // [!code --]
+            { // [!code --]
                 token: t.Number() // [!code --]
             }, // [!code --]
-            {
-                // [!code --]
+            { // [!code --]
                 secrets: 'seia' // [!code --]
             } // [!code --]
         ), // [!code --]
@@ -1253,22 +1177,17 @@ export const userService = new Elysia({ name: 'user/service' })
                     status,
                     cookie: { token },
                     store: { session }
-                }) {
-                    // [!code ++]
-                    if (!token.value)
-                        // [!code ++]
-                        return status(401, {
-                            // [!code ++]
+                }) { // [!code ++]
+                    if (!token.value) // [!code ++]
+                        return status(401, { // [!code ++]
                             success: false, // [!code ++]
                             message: 'Unauthorized' // [!code ++]
                         }) // [!code ++]
 
                     const username = session[token.value as unknown as number] // [!code ++]
 
-                    if (!username)
-                        // [!code ++]
-                        return status(401, {
-                            // [!code ++]
+                    if (!username) // [!code ++]
+                        return status(401, { // [!code ++]
                             success: false, // [!code ++]
                             message: 'Unauthorized' // [!code ++]
                         }) // [!code ++]
@@ -1290,10 +1209,8 @@ export const user = new Elysia({ prefix: '/user' }).use(userService).get(
     ({ cookie: { token }, store: { session }, status }) => {
         const username = session[token.value]
 
-        if (!username)
-            // [!code --]
-            return status(401, {
-                // [!code --]
+        if (!username) // [!code --]
+            return status(401, { // [!code --]
                 success: false, // [!code --]
                 message: 'Unauthorized' // [!code --]
             }) // [!code --]
@@ -1327,12 +1244,10 @@ This ensures that the property like `cookie: 'session'` exists before creating a
 ```ts [user.ts]
 export const getUserId = new Elysia() // [!code ++]
     .use(userService) // [!code ++]
-    .guard({
-        // [!code ++]
+    .guard({ // [!code ++]
         cookie: 'session' // [!code ++]
     }) // [!code ++]
-    .resolve(({ store: { session }, cookie: { token } }) => ({
-        // [!code ++]
+    .resolve(({ store: { session }, cookie: { token } }) => ({ // [!code ++]
         username: session[token.value] // [!code ++]
     })) // [!code ++]
 ```

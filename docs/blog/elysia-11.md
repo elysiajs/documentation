@@ -3,6 +3,7 @@ title: Elysia 1.1 - Grown-up's Paradise
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'

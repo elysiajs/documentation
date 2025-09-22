@@ -3,6 +3,7 @@ title: Introducing OpenAPI Type Gen for Elysia
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -37,62 +38,89 @@ author="saltyaom"
 date="4 Sep 2025"
 >
 
-OpenAPI is an annotation for documenting RESTful APIs.
+API documentation plays a crucial role in the development of an API.
 
-It provides a standard way to describe the structure and behavior of APIs, making it easier for developers to understand and interact with them.
+Contacting with teams, vendors, or third-party services often requires a well-documented API to ensure smooth integration and collaboration.
 
-While Most web frameworks today require a lot of efforts, and manual annotation to create an API documentation, which can be tedious and error-prone. Elysia has an excellent support for OpenAPI with its own schema that can use for data validation, type inference, and OpenAPI annotation from a single source of truth.
+Most framework today, leave a burden on developers for a manual OpenAPI annotation. This can be time-consuming, error-prone, and difficult to maintain as the API evolves.
 
-Elysia also offers an interactable documentation with Scalar or Swagger UI all from 1 line of code with an OpenAPI plugin.
+### But Elysia takes OpenAPI seriously
+We believe that API documentation should be effortless and automatic, allowing developers to focus on building great APIs without worrying about the documentation.
 
-<img src=/blog/openapi-type-gen/scalar-preview-light.webp alt="Scalar preview" class="border border-gray-100" />
+That's why we built around OpenAPI from the ground up with Elysia.
 
-> Elysia running with Scalar UI from Elysia OpenAPI plugin
+- We make sure that schema can be used for data validation, type inference, and OpenAPI annotation all from a single source of truth.
+- We offers an effortless documentation with Scalar all from 1 line of code with an OpenAPI plugin.
+- We provide handle a integration with Standard Schema (Zod, Valibot, etc.), and turns it into OpenAPI documentation whenever possible.
+- We have a 1-liner OpenAPI plugin that add a beautiful UI to interact with your API with Scalar.
 
-But even with these exceptional experience, we want to push it even further.
+![Scalar Preview](/blog/openapi-type-gen/scalar-preview-light.webp)
 
-Today, we are excited to announce the release of **OpenAPI Type Gen** to automatically generates OpenAPI documentation from your Elysia server without any manual annotation.
+> Elysia running with Scalar UI from Elysia OpenAPI plugin from 1 line
+
+But even an already exceptional experience, we want to push it even further.
+
+Today, we are excited to announce the release of **OpenAPI Type Gen** to generates OpenAPI documentation from your Elysia code without any manual annotation.
 
 ## OpenAPI Type Gen
 
-With **1 line** of code, you can now generate OpenAPI documentation from your Elysia server without any manual schema annotation.
+We dreams of a world where you just write your code, and the documentation is created automatically, and accurately without any manual annotation at all.
+
+The closest thing we have is with **Python's FastAPI** that can generate OpenAPI documentation from pydantic model. But it is limited to only pydantic model, and cannot be used with other libraries or types.
+
+Elysia Type Gen brings the similar experience to TypeScript, with out that limitation. Allowing you turns **any TypeScript type** into OpenAPI documentation automatically **from any library** not limited to Elysia.
 
 ![Elysia Type Gen](/blog/openapi-type-gen/type-gen.webp)
 
-> Elysia reference body type into a response schema automatically, listing all the possible response status code without manual schema annotation.
+> Elysia reference body type into a response schema automatically, listing all the possible response status code without any manual schema annotation at all.
 
-Allowing you to have a complete, and accurate API documentation without any manual annotation from a single line of code.
+It takes **1 line** of code to generate OpenAPI documentation from your Elysia code directly **from TypeScript type** without any annotation at all.
 
-Type generation works by analyzing your Elysia instance types to generate the corresponding OpenAPI documentation, thanks to Elysia investment in strong type soundness and integrity.
+### This is truly ground-breaking
 
-It works with existing Elysia codebase and schema definitions without any breaking changes or additional configuration like type transformer at all (eg. Typia). It co-exists with existing schema definitions by priorizing with the existing schema definition first before fallback to inferring from types.
+For the first time ever, you can now document your API automatically without any manual annotation for real. It just works, out of the box with any library.
+
+<!--Type generation works by analyzing your Elysia instance types to generate the corresponding OpenAPI documentation, thanks to Elysia investment in strong type soundness and integrity.-->
+
+It works with existing Elysia codebase and schema definitions without any breaking changes or additional configuration like type transformer at all (eg. Typia).
+
+Type Gen co-exists with existing schema definitions by priorizing with the existing schema definition first before fallback to inferring from types.
 
 ![Using Drizzle with type gen Elysia Type Gen](/blog/openapi-type-gen/drizzle-typegen.webp)
 
 > Returning Drizzle query from Elysia route handler will be automatically inferred into OpenAPI schema.
 
-It's also compatible with complex types from modern library like **Drizzle**, Prisma by simply returning the value from your route handler.
+It's also compatible with any TypeScript library even a complex type from modern library like **Drizzle**, and **Prisma** out of the box.
+
+### Type Soundness
+OpenAPI Type Gen also supports complex scenario like multiple status from lifecycle/macro that overlap with each other separated by multiple response status code.
+
+Each status code can return multiple value which will be handle by Elysia as a union type for every possible response under the same status code. Listing of all the possible return value accurately.
+
+![Union response](/blog/openapi-type-gen/union.webp)
+> Listing multiple response status code from union type automatically.
+
+This is something profound, and can hardly replicated by any other framework.
 
 ## Adopt OpenAPI Type Gen
-To adopt this feature to your codebase, simply:
+To add OpenAPI Type Gen to your codebase, simply:
 
 1. export an Elysia instance
-2. provide file path to type generator
+2. provide root Elysia file path (if not provided, Elysia will use `src/index.ts`)
 
 ```ts
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen' // [!code ++]
+import { openapi, fromTypes } from '@elysiajs/openapi' // [!code ++]
 
 export const app = new Elysia() // [!code ++]
 	.use(
 		openapi({
-			references: fromTypes('src/index.ts') // [!code ++]
+			references: fromTypes() // [!code ++]
 		})
 	)
 ```
 
-Elysia Type Gen will analyze your Elysia instance and generate the OpenAPI documentation automatically on the fly.
+Elysia Type Gen will analyze your Elysia instance and generate the OpenAPI documentation automatically on the fly, no build step required.
 
 The documentation for OpenAPI Type Gen can be found at [Patterns: OpenAPI](/patterns/openapi#openapi-from-types).
 
@@ -100,7 +128,9 @@ The documentation for OpenAPI Type Gen can be found at [Patterns: OpenAPI](/patt
 
 ### We believe that this feature is truly unique to Elysia
 
-While most web frameworks (not only in JavaScript) require a lot of effort, and manual annotation to create a decent API documentation which is even harder to maintain. Elysia comes with a complete and accurate API documentation out of the box.
+While most web frameworks require a lot of effort, and manual annotation to create an API documentation.
+
+Elysia can write an API documentation for you, and there are no any other frameworks that comes close to this experience.
 
 This is only possible thanks to **Elysia's spectacular support for end-to-end type safety**.
 

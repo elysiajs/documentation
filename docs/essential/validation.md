@@ -84,9 +84,9 @@ new Elysia()
 
 ### TypeBox
 
-**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and for OpenAPI schemas, enabling the generation of OpenAPI documentation.
+**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and OpenAPI schema generation.
 
-TypeBox is a very fast, lightweight, and type-safe runtime validation library for TypeScript. Elysia extends and customizes the default behavior of TypeBox to match server-side validation requirements.
+Elysia extends and customizes the default behavior of TypeBox to match server-side validation requirements.
 
 We believe that validation should at least be handled by the framework natively, rather than relying on the user to set up a custom type for every project.
 
@@ -121,34 +121,6 @@ new Elysia()
 ```
 
 You can use any validator together in the same handler without any issue.
-
-### TypeScript
-We can get type definitions of every Elysia/TypeBox's type by accessing the `static` property as follows:
-
-```ts twoslash
-import { t } from 'elysia'
-
-const MyType = t.Object({
-	hello: t.Literal('Elysia')
-})
-
-type MyType = typeof MyType.static
-//    ^?
-````
-
-<br>
-<br>
-<br>
-
-This allows Elysia to infer and provide type automatically, reducing the need to declare duplicate schema
-
-A single Elysia/TypeBox schema can be used for:
-- Runtime validation
-- Data coercion
-- TypeScript type
-- OpenAPI schema
-
-This allows us to make a schema as a **single source of truth**.
 
 ## Schema type
 Elysia supports declarative schemas with the following types:
@@ -1241,3 +1213,31 @@ export const userModels = new Elysia()
 This can prevent naming duplication to some extent, but ultimately, it's best to let your team decide on the naming convention.
 
 Elysia provides an opinionated option to help prevent decision fatigue.
+
+### TypeScript
+We can get type definitions of every Elysia/TypeBox's type by accessing the `static` property as follows:
+
+```ts twoslash
+import { t } from 'elysia'
+
+const MyType = t.Object({
+	hello: t.Literal('Elysia')
+})
+
+type MyType = typeof MyType.static
+//    ^?
+````
+
+<br>
+<br>
+<br>
+
+This allows Elysia to infer and provide type automatically, reducing the need to declare duplicate schema
+
+A single Elysia/TypeBox schema can be used for:
+- Runtime validation
+- Data coercion
+- TypeScript type
+- OpenAPI schema
+
+This allows us to make a schema as a **single source of truth**.

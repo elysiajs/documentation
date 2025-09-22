@@ -4,7 +4,7 @@ layout: page
 sidebar: false
 editLink: false
 search: false
-gitChangelog: false
+comments: false
 authors: []
 head:
     - - meta
@@ -27,7 +27,7 @@ head:
 <Blogs
   :blogs="[
       {
-        title: 'Introducing OpenAPI Type Gen for Elysia',
+        title: 'Elysia 1.4 - Supersymmetry',
 		href: '/blog/elysia-14',
 		cover: 'elysia-14.webp',
 		detail: 'Support for Standard Validator. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improve type inference performance by 10%.'

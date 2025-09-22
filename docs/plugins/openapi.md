@@ -127,6 +127,21 @@ Exclude static file routes from documentation
 
 List of tags to exclude from documentation
 
+## mapJsonSchema
+A custom mapping function from Standard schema to OpenAPI schema
+
+### Example
+```typescript
+import { openapi } from '@elysiajs/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+	  	valibot: toJsonSchema
+  	}
+})
+```
+
 ## path
 
 @default '/openapi'
@@ -140,7 +155,7 @@ The endpoint to expose OpenAPI documentation frontend
 OpenAPI documentation frontend between:
 
 - [Scalar](https://github.com/scalar/scalar)
-- [SwaggerUI](https://github.com/openapi-api/openapi-ui)
+- [SwaggerUI](https://github.com/swagger-api/swagger-ui)
 - null: disable frontend
 
 ## references

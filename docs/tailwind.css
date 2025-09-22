@@ -791,7 +791,7 @@ button.copy::after {
 	will-change: opacity;
 
 	& > .VPMenu {
-		@apply !bg-white/60 dark:!bg-gray-700/60 p-1 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl shadow-black/5;
+		@apply !bg-white/80 dark:!bg-gray-700/80 p-1 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl shadow-black/5;
 
 		& > .items {
 			& > .VPMenuLink > .VPLink {
@@ -806,7 +806,7 @@ button.copy::after {
 	will-change: opacity;
 
 	& > .VPMenu {
-		@apply !bg-white/60 dark:!bg-gray-700/60 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl shadow-black/5;
+		@apply !bg-white/80 dark:!bg-gray-700/80 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl shadow-black/5;
 	}
 }
 

@@ -3,6 +3,7 @@ title: Elysia 1.0 - Lament of the Fallen
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -179,7 +180,7 @@ We ask you for feedback on Eden Treaty what you like and what could have been im
 
 That's why today, we introduce Eden Treaty 2, an overhaul to a more ergonomic design.
 
-As much as we dislike breaking change, Treaty 2 is a successor to Treaty 1. 
+As much as we dislike breaking change, Treaty 2 is a successor to Treaty 1.
 
 **What's new in Treaty 2**:
 - More ergonomic syntax
@@ -322,9 +323,9 @@ By changing the `type` value, the result should be as follows:
 
 | type       | child | current | parent | main |
 | ---------- | ----- | ------- | ------ | ---- |
-| 'local'    | ✅    | ✅       | ❌     | ❌   | 
-| 'scope'    | ✅    | ✅       | ✅     | ❌   | 
-| 'global'   | ✅    | ✅       | ✅     | ✅   | 
+| 'local'    | ✅    | ✅       | ❌     | ❌   |
+| 'scope'    | ✅    | ✅       | ✅     | ❌   |
+| 'global'   | ✅    | ✅       | ✅     | ✅   |
 
 Migrating from Elysia 0.8, if you want make a hook global, you have to specify that hook is global.
 

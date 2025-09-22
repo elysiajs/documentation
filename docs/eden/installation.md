@@ -220,7 +220,7 @@ import type { app } from '@/index'
 const client = treaty<app>('localhost:3000')
 
 // This should be able to resolve the same module both frontend and backend, and not `any`
-import { a, b } from '@/controllers'
+import { a, b } from '@/controllers' // [!code ++]
 ```
 
 To fix this, you must make sure that path alias is resolved to the same file in both frontend and backend.
@@ -243,8 +243,8 @@ If configured correctly, you should be able to resolve the same module in both f
 import { a, b } from '@/controllers'
 ```
 
-#### Scope
-We recommended adding a **scope** prefix for each module in your monorepo to avoid any confusion and conflict that may happen.
+#### Namespace
+We recommended adding a **namespace** prefix for each module in your monorepo to avoid any confusion and conflict that may happen.
 
 ```json
 {

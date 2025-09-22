@@ -15,7 +15,7 @@
 			</button>
 		</nav>
 
-		<h2 class="!my-0 !pt-4 !border-0">{{ names[activeTab] }}</h2>
+		<h2 v-if="!noTitle" class="!my-0 !pt-4 !border-0">{{ names[activeTab] }}</h2>
 		<slot :name="tabs[activeTab]" />
 	</section>
 </template>
@@ -23,10 +23,11 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted } from 'vue'
 
-const { tabs, id } = defineProps<{
+const { tabs, id, noTitle = false } = defineProps<{
 	id: string
 	tabs: string[]
 	names: string[]
+	noTitle: boolean
 }>()
 
 const activeTab = ref(0)

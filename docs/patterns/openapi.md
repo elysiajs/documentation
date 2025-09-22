@@ -14,6 +14,10 @@ head:
         content: Elysia has first-class support and follows OpenAPI schema by default. Allowing any Elysia server to generate an API documentation page and serve as documentation automatically by using just 1 line of the Elysia OpenAPI plugin.
 ---
 
+<script setup>
+import Tab from '../components/fern/tab.vue'
+</script>
+
 # OpenAPI
 
 Elysia has first-class support and follows OpenAPI schema by default.
@@ -42,22 +46,23 @@ For OpenAPI plugin configuration, see the [OpenAPI plugin page](/plugins/openapi
 
 ## OpenAPI from types
 
+> This is optional, but we highly recommend it for much better documentation experience.
+
 By default, Elysia relies on runtime schema to generate OpenAPI documentation.
 
 However, you can also generate OpenAPI documentation from types by using a generator from OpenAPI plugin as follows:
 
-1. Specify the root file of your project (usually `src/index.ts`), and export an instance
+1. Specify your Elysia root file (if not specified, Elysia will use `src/index.ts`), and export an instance
 
 2. Import a generator and provide a **file path from project root** to type generator
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen' // [!code ++]
+import { openapi, fromTypes } from '@elysiajs/openapi' // [!code ++]
 
 export const app = new Elysia() // [!code ++]
     .use(
         openapi({
-            references: fromTypes('src/index.ts') // [!code ++]
+            references: fromTypes() // [!code ++]
         })
     )
     .get('/', { test: 'hello' as const })
@@ -80,8 +85,7 @@ It's recommended that you should pre-generate the declaration file (**.d.ts**) t
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 const app = new Elysia()
     .use(
@@ -104,8 +108,7 @@ As it's unreliable to guess to root of the project, it's recommended to provide 
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
     .use(
@@ -129,8 +132,7 @@ If you have multiple `tsconfig.json` files, it's important that you must specify
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
     .use(
@@ -151,6 +153,89 @@ export const app = new Elysia()
 ```
 
 </details>
+
+## Standard Schema with OpenAPI
+Elysia will try to use a native method from each schema to convert to OpenAPI schema.
+
+However, if the schema doesn't provide a native method, you can provide a custom schema to OpenAPI by providing a `mapJsonSchema` as follows:
+
+<Tab
+	id="schema-openapi"
+	noTitle
+	:names="['Zod', 'Valibot', 'Effect']"
+	:tabs="['zod', 'valibot', 'effect']"
+>
+
+<template v-slot:zod>
+
+### Zod OpenAPI
+As Zod doesn't have a `toJSONSchema` method on the schema, we need to provide a custom mapper to convert Zod schema to OpenAPI schema.
+
+::: code-group
+
+```typescript [Zod 4]
+import openapi from '@elysiajs/openapi'
+import * as z from 'zod'
+
+openapi({
+	mapJsonSchema: {
+		zod: z.toJSONSchema
+	}
+})
+```
+
+```typescript [Zod 3]
+import openapi from '@elysiajs/openapi'
+import { zodToJsonSchema } from 'zod-to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+		zod: zodToJsonSchema
+	}
+})
+```
+
+:::
+
+</template>
+
+<template v-slot:valibot>
+
+### Valibot OpenAPI
+Valibot use a separate package (`@valibot/to-json-schema`) to convert Valibot schema to JSON Schema.
+
+```typescript
+import openapi from '@elysiajs/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+		valibot: toJsonSchema
+	}
+})
+```
+
+</template>
+
+<template v-slot:effect>
+
+### Effect OpenAPI
+As Effect doesn't have a `toJSONSchema` method on the schema, we need to provide a custom mapper to convert Effect schema to OpenAPI schema.
+
+```typescript
+import openapi from '@elysiajs/openapi'
+import { JSONSchema } from 'effect'
+
+openapi({
+ 	mapJsonSchema: {
+   		effect: JSONSchema.make
+ 	}
+})
+```
+
+</template>
+
+</Tab>
 
 ## Describing route
 
