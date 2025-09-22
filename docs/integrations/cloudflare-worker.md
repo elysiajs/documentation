@@ -27,7 +27,7 @@ wrangler init elysia-on-cloudflare
 2. Then add Cloudflare Adapter to your Elysia app, and make sure you called `.compile()` before exporting the app.
 ```ts
 import { Elysia } from 'elysia'
-import { CloudflareAdapter } from 'elysia/adapter/cloudflare' // [!code ++]
+import { CloudflareAdapter } from 'elysia/adapter/cloudflare-worker' // [!code ++]
 
 export default new Elysia({
 	adapter: CloudflareAdapter // [!code ++]
