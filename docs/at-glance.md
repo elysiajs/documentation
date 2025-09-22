@@ -116,7 +116,7 @@ new Elysia()
 
 <br>
 
-The above code creates a path parameter "id". The value that replaces `:id` will be passed to `params.id` both at runtime and in types, without manual type declaration.
+The above code creates a path parameter **"id"**. The value that replaces `:id` will be passed to `params.id` both at runtime and in types, without manual type declaration.
 
 <Playground
     :elysia="demo2"

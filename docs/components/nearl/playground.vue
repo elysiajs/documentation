@@ -20,7 +20,7 @@
 				</select>
 			</div>
 			<p
-				class="!my-0 font-bold pl-2 min-w-[5ch] text-right"
+				class="!my-0 font-semibold pl-2 min-w-[5.5ch] text-right whitespace-nowrap"
 				:class="
 					current.method === 'GET'
 						? 'text-green-600'
@@ -32,7 +32,7 @@
 		</div>
 		<section
 			class="flex justify-start items-stretch w-full h-full px-4 whitespace-pre-wrap pb-3"
-			style="min-height: 16rem"
+			style="min-height: 20rem"
 		>
 			{{ response }}
 		</section>
@@ -116,10 +116,10 @@ watch([current], compute)
 		}
 
 		& > .input {
-			@apply flex justify-start items-center gap-1 w-full max-w-sm px-3 rounded-lg bg-neutral-100 dark:bg-slate-700 overflow-hidden;
+			@apply flex justify-start items-center gap-1 w-full max-w-sm px-3 py-0.75 rounded-xl bg-neutral-100 dark:bg-slate-700 overflow-hidden;
 
 			& > .select {
-				@apply text-blue-500 font-bold px-1 bg-blue-500/10 hover:bg-blue-500/20 dark:bg-blue-500/25 dark:hover:bg-blue-500/40 border border-solid border-blue-500/50 dark:border-blue-500/75 rounded cursor-pointer transition-colors
+				@apply text-blue-500 font-bold px-1 py-0.25 bg-blue-500/10 hover:bg-blue-500/20 dark:bg-blue-500/25 dark:hover:bg-blue-500/40 border border-solid border-blue-500/50 dark:border-blue-500/75 rounded cursor-pointer transition-colors
 			}
 		}
 	}

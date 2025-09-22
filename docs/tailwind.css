@@ -98,6 +98,7 @@ pre.vp-code > code,
     --vp-custom-block-tip-text: var(--vp-c-text-1);
     --vp-nav-bg-color: color-mix(in srgb, var(--vp-c-bg) 95%, transparent);
     --vp-custom-block-tip-bg: #ecfdf5;
+    --vp-custom-block-tip-code-bg: #cdf7dc;
     --vp-custom-block-tip-border: #dcfce7;
     --vp-custom-block-tip-text: #15803d;
     --vp-c-brand-nav-active: color-mix(
