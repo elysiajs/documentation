@@ -457,6 +457,10 @@ export default defineConfig({
                         link: '/integrations/better-auth'
                     },
                     {
+                        text: 'Cloudflare Worker',
+                        link: '/integrations/cloudflare-worker'
+                    },
+                    {
                         text: 'Drizzle',
                         link: '/integrations/drizzle'
                     },
