@@ -118,6 +118,23 @@ Then you should be able to access your static file from the following path:
 - **http://localhost:8787/kyuukurarin.mp4**
 - **http://localhost:8787/static/mika.webp**
 
+## Binding
+You can use a Cloudflare Workers binding by importing env from `cloudflare:workers`.
+
+```ts
+import { Elysia } from 'elysia'
+import { CloudflareAdapter } from 'elysia/adapter/cloudflare-worker'
+import { env } from 'cloudflare:workers' // [!code ++]
+
+export default new Elysia({
+	adapter: CloudflareAdapter
+})
+	.get('/', () => `Hello ${await env.KV.get('my-key')}`) // [!code ++]
+	.compile()
+```
+
+See [Cloudflare Workers: Binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global) for more information about binding.
+
 ## AoT compilation
 Previously, to use Elysia on Cloudflare Worker, you have to pass `aot: false` to the Elysia constructor.
 
