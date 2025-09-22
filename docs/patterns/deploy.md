@@ -17,6 +17,43 @@ head:
 # Deploy to production
 This page is a guide on how to deploy Elysia to production.
 
+## Cluster mode
+Elysia is a single-threaded by default. To take advantage of multi-core CPU, we can run Elysia in cluster mode.
+
+Let's create a **index.ts** file that import our main server from **server.ts** and fork multiple workers based on the number of CPU cores available.
+
+::: code-group
+
+```ts [src/index.ts]
+import cluster from 'node:cluster'
+import os from 'node:os'
+import process from 'node:process'
+
+if (cluster.isPrimary) {
+  	for (let i = 0; i < os.availableParallelism(); i++)
+    	cluster.fork()
+} else {
+  	await import('./server')
+  	console.log(`Worker ${process.pid} started`)
+}
+```
+
+```ts [src/server.ts]
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', () => 'Hello World!')
+	.listen(3000)
+```
+
+:::
+
+This will make sure that Elysia is running on multiple CPU cores.
+
+::: tip
+Elysia on Bun use SO_REUSEPORT by default, which allows multiple instances to listen on the same port. This only works on Linux.
+:::
+
 ## Compile to binary
 We recommend running a build command before deploying to production as it could potentially reduce memory usage and file size significantly.
 
@@ -26,6 +63,7 @@ bun build \
 	--compile \
 	--minify-whitespace \
 	--minify-syntax \
+	--target bun
 	--outfile server \
 	src/index.ts
 ```
@@ -38,8 +76,9 @@ This command is a bit long, so let's break it down:
 1. **--compile** Compile TypeScript to binary
 2. **--minify-whitespace** Remove unnecessary whitespace
 3. **--minify-syntax** Minify JavaScript syntax to reduce file size
-4. **--outfile server** Output the binary as `server`
-5. **src/index.ts** The entry file of our server (codebase)
+4. **--target bun** Optimize the binary for Bun runtime
+5. **--outfile server** Output the binary as `server`
+6. **src/index.ts** The entry file of our server (codebase)
 
 To start our server, simply run the binary.
 ```bash
