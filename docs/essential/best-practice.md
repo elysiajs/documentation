@@ -146,43 +146,6 @@ Each file has its own responsibility as follows:
 
 Feel free to adapt this structure to your needs and use any coding pattern you prefer.
 
-## Method Chaining
-Elysia code should always use **method chaining**.
-
-As Elysia's type system is complex, every method in Elysia returns a new type reference.
-
-**This is important** to ensure type integrity and inference.
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .state('build', 1)
-    // Store is strictly typed // [!code ++]
-    .get('/', ({ store: { build } }) => build)
-    .listen(3000)
-```
-
-In the code above **state** returns a new **ElysiaInstance** type, adding a `build` type.
-
-### ❌ Don't: Use Elysia without method chaining
-Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const app = new Elysia()
-
-app.state('build', 1)
-
-app.get('/', ({ store: { build } }) => build)
-
-app.listen(3000)
-```
-
-We recommend to <u>**always use method chaining**</u> to provide accurate type inference.
-
 ## Controller
 > 1 Elysia instance = 1 controller
 
@@ -221,6 +184,21 @@ new Elysia()
     .get('/', ({ stuff }) => {
         Service.doStuff(stuff)
     })
+```
+
+Otherwise, if you really want to separate the controller, you may create a controller class that is not tied with HTTP request at all.
+
+```typescript
+import { Elysia } from 'elysia'
+
+abstract class Controller {
+	static doStuff(stuff: string) {
+		return Service.doStuff(stuff)
+	}
+}
+
+new Elysia()
+	.get('/', ({ stuff }) => Controller.doStuff(stuff))
 ```
 
 ### Testing
