@@ -41,6 +41,8 @@
 		"@rollup/plugin-node-resolve": "^16.0.1",
 		"@shikijs/vitepress-twoslash": "^3.9.1",
 		"@tailwindcss/postcss": "^4.1.11",
+		"@trpc/client": "^11.5.1",
+		"@trpc/server": "^11.5.1",
 		"@types/bun": "^1.2.19",
 		"@types/express": "^5.0.3",
 		"@types/node": "^24.1.0",

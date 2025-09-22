@@ -36,7 +36,7 @@ export default defineConfig({
         }
     },
     vite: {
-    	clearScreen: false,
+        clearScreen: false,
         server: {
             watch: {
                 usePolling: true
@@ -224,21 +224,7 @@ export default defineConfig({
                     {
                         text: 'Tutorial',
                         link: '/tutorial',
-                        collapsed: true,
-                        items: [
-                            {
-                                text: 'From Express',
-                                link: '/migrate/from-express'
-                            },
-                            {
-                                text: 'From Fastify',
-                                link: '/migrate/from-fastify'
-                            },
-                            {
-                                text: 'From Hono',
-                                link: '/migrate/from-hono'
-                            }
-                        ]
+                        collapsed: true
                     },
                     {
                         text: 'Key Concept',
@@ -247,7 +233,7 @@ export default defineConfig({
                     {
                         text: 'Table of Content',
                         link: '/table-of-content'
-                    }
+                    },
                 ]
             },
             {
@@ -437,7 +423,29 @@ export default defineConfig({
                     {
                         text: 'Stream',
                         link: '/plugins/stream'
+                    }
+                ]
+            },
+            {
+                text: 'Comparison',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Express',
+                        link: '/migrate/from-express'
                     },
+                    {
+                        text: 'Fastify',
+                        link: '/migrate/from-fastify'
+                    },
+                    {
+                        text: 'Hono',
+                        link: '/migrate/from-hono'
+                    },
+                    {
+                        text: 'tRPC',
+                        link: '/migrate/from-trpc'
+                    }
                 ]
             },
             {

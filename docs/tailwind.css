@@ -206,10 +206,14 @@ button.copy::after {
 }
 
 #VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/plugin.svg);
+    background-image: url(/assets/blocks.svg);
 }
 
 #VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+    background-image: url(/assets/search.svg);
+}
+
+#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/book.svg);
 }
 

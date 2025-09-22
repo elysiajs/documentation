@@ -48,13 +48,16 @@ If you have used other popular frameworks like Express, Fastify, or Hono, you wi
 
 <Deck>
 	<Card title="From Express" href="/migrate/from-express">
-  		A guide to migrate from Express to Elysia
+		Comparison between tRPC and Elysia
 	</Card>
     <Card title="From Fastify" href="/migrate/from-fastify">
-  		A guide to migrate from Fastify to Elysia
+  		Comparison between Fastify and Elysia
     </Card>
     <Card title="From Hono" href="/migrate/from-hono">
-  		A guide to migrate from Hono to Elysia
+  		Comparison between tRPC and Elysia
+    </Card>
+    <Card title="From tRPC" href="/migrate/from-trpc">
+  		Comparison between tRPC and Elysia
     </Card>
 </Deck>
 

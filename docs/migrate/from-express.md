@@ -861,6 +861,8 @@ While Express offers error handling using middleware, Elysia provide:
 
 The error code is useful for logging and debugging, and is important when differentiating between different error types extending the same class.
 
+Elysia provides all of this with type safety while Express doesn't.
+
 ## Encapsulation
 
 Express middleware is registered globally, while Elysia give you a control over side-effect of a plugin via explicit scoping mechanism, and order-of-code.
@@ -1319,9 +1321,12 @@ Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
     <Card title="From Fastify" href="/migrate/from-fastify">
-  		A guide to migrate from Fastify to Elysia
+  		Comparison between Fastify and Elysia
     </Card>
 	<Card title="From Hono" href="/migrate/from-hono">
-  		A guide to migrate from Hono to Elysia
+		Comparison between tRPC and Elysia
 	</Card>
+	<Card title="From tRPC" href="/migrate/from-trpc">
+  		Comparison between tRPC and Elysia
+    </Card>
 </Deck>
