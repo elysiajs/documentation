@@ -162,7 +162,7 @@ As Elysia type is complex, and heavily depends on plugin and multiple level of c
 
 We recommend abstracting service classes away from Elysia.
 
-However, **if the service is a request dependent service** or needs to process HTTP requests, ee recommend abstracting it as an Elysia instance to ensure type integrity and inference:
+However, **if the service is a request dependent service** or needs to process HTTP requests, we recommend abstracting it as an Elysia instance to ensure type integrity and inference:
 
 ```typescript
 import { Elysia } from 'elysia'
