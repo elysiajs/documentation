@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
@@ -8,6 +9,7 @@ import lightbox from 'vitepress-plugin-lightbox'
 import tailwindcss from '@tailwindcss/vite'
 import llmstxt from 'vitepress-plugin-llms'
 import { analyzer } from 'vite-bundle-analyzer'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -46,6 +48,12 @@ export default defineConfig({
             enableNativePlugin: true
         },
         plugins: [
+            // @ts-ignore
+            monacoEditorPlugin.default({}),
+            nodePolyfills({
+                include: ['path'],
+                globals: {}
+            }),
             tailwindcss(),
             process.env.NODE_ENV === 'production'
                 ? llmstxt({
@@ -233,7 +241,7 @@ export default defineConfig({
                     {
                         text: 'Table of Content',
                         link: '/table-of-content'
-                    },
+                    }
                 ]
             },
             {
