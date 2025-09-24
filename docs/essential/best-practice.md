@@ -18,15 +18,15 @@ head:
 
 Elysia is a pattern-agnostic framework, leaving the decision of which coding patterns to use up to you and your team.
 
-However, there are several concerns from trying to adapt an MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) with Elysia, and we found it's hard to decouple and handle types.
+However, there are several concerns when trying to adapt an MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) with Elysia, and we found it hard to decouple and handle types.
 
-This page is a guide on how to follow Elysia structure best practices combined with MVC pattern but can be adapted to any coding pattern you like.
+This page is a guide on how to follow Elysia structure best practices combined with the MVC pattern, but it can be adapted to any coding pattern you prefer.
 
 ## Folder Structure
 
 Elysia is unopinionated about folder structure, leaving you to **decide** how to organize your code yourself.
 
-However, **if you don't have a specific structure in mind**, we recommend a feature-based folder structure. Where each feature has its own folder containing controllers, services, and models.
+However, **if you don't have a specific structure in mind**, we recommend a feature-based folder structure where each feature has its own folder containing controllers, services, and models.
 
 ```
 | src
@@ -46,7 +46,7 @@ However, **if you don't have a specific structure in mind**, we recommend a feat
 	  | index.ts
 ```
 
-This structure allows you to easily find and manage your code, and keep related code together.
+This structure allows you to easily find and manage your code and keep related code together.
 
 Here's an example code of how to distribute your code into a feature-based folder structure:
 
@@ -62,7 +62,7 @@ import { AuthModel } from './model'
 export const auth = new Elysia({ prefix: '/auth' })
 	.get(
 		'/sign-in',
-		({ body, cookie: { session } }) => {
+		async ({ body, cookie: { session } }) => {
 			const response = await Auth.signIn(body)
 
 			// Set session cookie
@@ -144,44 +144,7 @@ Each file has its own responsibility as follows:
 - **Service**: Handle business logic, decoupled from Elysia controller if possible.
 - **Model**: Define the data structure and validation for the request and response.
 
-Feels free to abstract this structure to your own needs, and use any coding pattern you like.
-
-## Method Chaining
-Elysia code should always use **method chaining**.
-
-As Elysia type system is complex, every methods in Elysia returns a new type reference.
-
-**This is important** to ensure type integrity and inference.
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .state('build', 1)
-    // Store is strictly typed // [!code ++]
-    .get('/', ({ store: { build } }) => build)
-    .listen(3000)
-```
-
-In the code above **state** returns a new **ElysiaInstance** type, adding a `build` type.
-
-### ❌ Don't: Use Elysia without method chaining
-Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const app = new Elysia()
-
-app.state('build', 1)
-
-app.get('/', ({ store: { build } }) => build)
-
-app.listen(3000)
-```
-
-We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
+Feel free to adapt this structure to your needs and use any coding pattern you prefer.
 
 ## Controller
 > 1 Elysia instance = 1 controller
@@ -223,6 +186,21 @@ new Elysia()
     })
 ```
 
+Otherwise, if you really want to separate the controller, you may create a controller class that is not tied with HTTP request at all.
+
+```typescript
+import { Elysia } from 'elysia'
+
+abstract class Controller {
+	static doStuff(stuff: string) {
+		return Service.doStuff(stuff)
+	}
+}
+
+new Elysia()
+	.get('/', ({ stuff }) => Controller.doStuff(stuff))
+```
+
 ### Testing
 You can test your controller using `handle` to directly call a function (and it's lifecycle)
 
@@ -257,15 +235,15 @@ Service is a set of utility/helper functions decoupled as a business logic to us
 
 Any technical logic that can be decoupled from controller may live inside a **Service**.
 
-There're 2 types of service in Elysia:
+There are 2 types of service in Elysia:
 1. Non-request dependent service
 2. Request dependent service
 
 ### ✅ Do: Abstract away non-request dependent service
 
-We recommended to abstract a service class/function away from Elysia.
+We recommend abstracting a service class/function away from Elysia.
 
-If the service or function doesn't tied to HTTP request or access a `Context`. It's recommended to abstract it as a static class or function.
+If the service or function isn't tied to an HTTP request or doesn't access a `Context`, it's recommended to implement it as a static class or function.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -291,7 +269,7 @@ If your service doesn't need to store a property, you may use `abstract class` a
 
 ### ✅ Do: Request dependent service as Elysia instance
 
-**If the service is a request dependent service** or need to process HTTP request. We recommended to abstract it as Elysia instance to ensure type integrity and inference:
+**If the service is a request-dependent service** or needs to process HTTP requests, we recommend abstracting it as an Elysia instance to ensure type integrity and inference:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -318,14 +296,14 @@ const UserController = new Elysia()
 ```
 
 ::: tip
-Elysia handle [plugin deduplication](/essential/plugin.html#plugin-deduplication) by default so you don't have to worry about performance, as it's going to be Singleton if you specified a **"name"** property.
+Elysia handles [plugin deduplication](/essential/plugin.html#plugin-deduplication) by default, so you don't have to worry about performance, as it will be a singleton if you specify a **"name"** property.
 :::
 
 ### ✅ Do: Decorate only request dependent property
 
-It's recommended to `decorate` only request dependent property, such as `requestIP`, `requestTime`, or `session`.
+It's recommended to `decorate` only request-dependent properties, such as `requestIP`, `requestTime`, or `session`.
 
-Overusing decorator may tied your code to Elysia making it harder to test, and reuse.
+Overusing decorators may tie your code to Elysia, making it harder to test and reuse.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -530,7 +508,7 @@ const UserController = new Elysia({ prefix: '/auth' })
 This approach provide several benefits:
 1. Allow us to name a model and provide auto-completion.
 2. Modify schema for later usage, or perform a [remap](/essential/handler.html#remap).
-3. Show up as "models" in OpenAPI compliance client, eg. Swagger.
+3. Show up as "models" in OpenAPI compliance client, eg. OpenAPI.
 4. Improve TypeScript inference speed as model type will be cached during registration.
 
 ## Reuse a plugin

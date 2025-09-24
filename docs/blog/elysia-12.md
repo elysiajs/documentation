@@ -3,6 +3,7 @@ title: Elysia 1.2 - You and Me
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'

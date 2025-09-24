@@ -231,7 +231,7 @@ const app = new Elysia()
 </Compare>
 
 ## Validation
-Elysia has a built-in support for request validation with sounds type safety out of the box, while Express doesn't offers a built-in validation, and require a manual type declaration based on each validation library.
+Elysia has a built-in support for request validation using TypeBox sounds type safety, and support for Standard Schema out of the box allowing you to use your favorite library like Zod, Valibot, ArkType, Effect Schema and so on. While Express doesn't offers a built-in validation, and require a manual type declaration based on each validation library.
 
 <Compare>
 
@@ -284,7 +284,7 @@ app.patch('/user/:id', (req, res) => {
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts twoslash [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -307,12 +307,60 @@ const app = new Elysia()
 	})
 ```
 
+```ts twoslash [Elysia Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: z.object({
+			id: z.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	})
+```
+
+```ts twoslash [Elysia Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: v.object({
+			id: v.number()
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	})
+```
+
 :::
 </template>
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically
+> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
 
 </template>
 
@@ -813,6 +861,8 @@ While Express offers error handling using middleware, Elysia provide:
 
 The error code is useful for logging and debugging, and is important when differentiating between different error types extending the same class.
 
+Elysia provides all of this with type safety while Express doesn't.
+
 ## Encapsulation
 
 Express middleware is registered globally, while Elysia give you a control over side-effect of a plugin via explicit scoping mechanism, and order-of-code.
@@ -1075,27 +1125,28 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger' // [!code ++]
+import { openapi } from '@elysiajs/openapi' // [!code ++]
 
 const app = new Elysia()
-	.use(swagger()) // [!code ++]
+	.use(openapi()) // [!code ++]
 	.model({
-		user: t.Object({
-			name: t.String(),
-			age: t.Number()
-		})
+		user: t.Array(
+			t.Object({
+				name: t.String(),
+				age: t.Number()
+			})
+		)
 	})
 	.post('/users', ({ body }) => body, {
 	//                  ^?
-		body: 'user[]',
+		body: 'user',
 		response: {
-			201: 'user[]'
+			201: 'user'
 		},
 		detail: {
 			summary: 'Create user'
 		}
 	})
-
 ```
 
 :::
@@ -1270,9 +1321,12 @@ Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
     <Card title="From Fastify" href="/migrate/from-fastify">
-  		A guide to migrate from Fastify to Elysia
+  		Comparison between Fastify and Elysia
     </Card>
 	<Card title="From Hono" href="/migrate/from-hono">
-  		A guide to migrate from Hono to Elysia
+		Comparison between tRPC and Elysia
 	</Card>
+	<Card title="From tRPC" href="/migrate/from-trpc">
+  		Comparison between tRPC and Elysia
+    </Card>
 </Deck>

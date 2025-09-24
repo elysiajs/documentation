@@ -3,6 +3,7 @@ title: Elysia 0.8 - Gate of Steiner
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'

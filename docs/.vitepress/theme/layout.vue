@@ -11,8 +11,11 @@ import Ray from '../../components/fern/ray.vue'
 import { motion, cubicBezier, AnimatePresence } from 'motion-v'
 import GlareCard from './glare-card.vue'
 
+import { data } from '../../components/fern/sponsor.data'
+import { sponsorOverride } from '../../components/fern/sponsor.constant'
+
 const isDark = useDark()
-const { isDark: darkTheme, frontmatter } = useData()
+const { isDark: darkTheme } = useData()
 
 const showCard = ref(false)
 
@@ -81,6 +84,10 @@ const router = useRouter()
 router.onAfterRouteChange = () => {
     onNewPage()
 }
+
+const sponsors = Object.values(data).filter(
+    (x) => x.tier.monthlyPriceInDollars >= 200
+) satisfies (typeof data)[keyof typeof data][]
 </script>
 
 <template>
@@ -207,6 +214,32 @@ router.onAfterRouteChange = () => {
                     @click="() => setCard(true)"
                 />
             </div>
+        </template>
+        <template #aside-outline-after>
+            <h6 class="text-sm font-medium text-gray-500 mt-6 px-2">
+                Our Sponsors
+            </h6>
+            <aside class="grid grid-cols-2 w-48">
+                <a
+                    :key="sponsor.sponsorEntity.login"
+                    :href="sponsorOverride.href[sponsor.sponsorEntity.login] ?? `https://github.com/${sponsor.sponsorEntity.login}`"
+                    :class="
+                        sponsorOverride.class[sponsor.sponsorEntity.login] ??
+                        'p-2.25'
+                    "
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :title="sponsor.sponsorEntity.name"
+                    v-for="sponsor in sponsors"
+                >
+                    <img
+                        :src="sponsor.sponsorEntity.avatarUrl"
+                        :alt="sponsor.sponsorEntity.login"
+                        :class="`aspect-square rounded-lg opacity-70 hover:opacity-100 focus:opacity-100 transition-opacity`"
+                        style="object-position: 0 10%"
+                    />
+                </a>
+            </aside>
         </template>
     </DefaultTheme.Layout>
 </template>

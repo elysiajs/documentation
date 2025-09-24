@@ -23,7 +23,7 @@ const handler1 = new Elysia()
     .get('/', ({ path }) => path)
 
 const handler2 = new Elysia()
-    .get('/', ({ error }) => error(418, "Kirifuji Nagisa"))
+    .get('/', ({ status }) => status(418, "Kirifuji Nagisa"))
 
 const demo1 = new Elysia()
     .state('version', 1)
@@ -87,11 +87,7 @@ const demo7 = new Elysia()
 
 # Handler
 
-A handler is a function that responds to the request for each route.
-
-Accepting request information and returning a response to the client.
-
-Alternatively, a handler is also known as a **Controller** in other frameworks.
+**Handler** - a function that accept an HTTP request, and return a response.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -113,7 +109,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Using an inline value always returns the same value which is useful to optimize performance for static resources like files.
+Using an **inline value** always returns the same value which is useful to optimize performance for static resources like files.
 
 This allows Elysia to compile the response ahead of time to optimize performance.
 
@@ -137,29 +133,65 @@ new Elysia()
 
 **Context** can only be retrieved in a route handler. It consists of:
 
+#### Property
+-   [**body**](/essential/validation.html#body) - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
+-   [**query**](/essential/validation.html#query) - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
+-   [**params**](/essential/validation.html#params) - Elysia's path parameters parsed as JavaScript object
+-   [**headers**](/essential/validation.html#headers) - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
+-   [**cookie**](#cookie) - A global mutable signal store for interacting with Cookie (including get/set)
+-   [**store**](#state) - A global mutable store for Elysia instance
+
+#### Utility Function
+-   [**redirect**](#redirect) - A function to redirect a response
+-   [**status**](#status) - A function to return custom status code
+-   [**set**](#set) - Property to apply to Response:
+    -   [**headers**](#set.headers) - Response headers
+
+#### Additional Property
+-   [**request**](#request) - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
+-   [**server**](#server-bun-only) - Bun server instance
 -   **path** - Pathname of the request
--   **body** - [HTTP message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages), form or file upload.
--   **query** - [Query String](https://en.wikipedia.org/wiki/Query_string), include additional parameters for search query as JavaScript Object. (Query is extracted from a value after pathname starting from '?' question mark sign)
--   **params** - Elysia's path parameters parsed as JavaScript object
--   **headers** - [HTTP Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), additional information about the request like User-Agent, Content-Type, Cache Hint.
--   **request** - [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)
--   **redirect** - A function to redirect a response
--   **store** - A global mutable store for Elysia instance
--   **cookie** - A global mutable signal store for interacting with Cookie (including get/set)
--   **set** - Property to apply to Response:
-    -   **status** - [HTTP status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), defaults to 200 if not set.
-    -   **headers** - Response headers
-    -   **redirect** - Response as a path to redirect to
--   **error** - A function to return custom status code
--   **server** - Bun server instance
+
+## status
+A function to return a custom status code with type narrowing.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ status }) => status(418, "Kirifuji Nagisa"))
+    .listen(3000)
+```
+
+<Playground :elysia="handler2" />
+
+It's recommended use **never-throw** approach to return **status** instead of throw as it:
+- allows TypeScript to check if a return value is correctly type to response schema
+- autocompletion for type narrowing based on status code
+- type narrowing for error handling using End-to-end type safety ([Eden](/eden/overview))
+
+<!--### status
+We can return a custom status code by using either:
+
+- **status** function (recommended)
+- **set.status** (legacy)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/error', ({ status }) => status(418, 'I am a teapot'))
+	.get('/set.status', ({ set }) => {
+		set.status = 418
+		return 'I am a teapot'
+	})
+	.listen(3000)
+```
+-->
 
 ## Set
 
 **set** is a mutable property that form a response accessible via `Context.set`.
-
-- **set.status** - Set custom status code
-- **set.headers** - Append custom headers
-- **set.redirect** - Append redirect
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -173,44 +205,57 @@ new Elysia()
 	.listen(3000)
 ```
 
-### status
-We can return a custom status code by using either:
+### set.headers
+Allowing us to append or delete response headers represented as an Object.
 
-- **status** function (recommended)
-- **set.status** (legacy)
-
-```typescript
+```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.get('/error', ({ error }) => error(418, 'I am a teapot'))
-	.get('/set.status', ({ set }) => {
-		set.status = 418
-		return 'I am a teapot'
-	})
-	.listen(3000)
-```
+    .get('/', ({ set }) => {
+        set.headers['x-powered-by'] = 'Elysia'
 
-### status function
-A dedicated `status` function for returning status code with response.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .get('/', ({ status }) => status(418, "Kirifuji Nagisa"))
+        return 'a mimir'
+    })
     .listen(3000)
 ```
 
-<Playground :elysia="handler2" />
+::: tip
+Elysia provide an auto-completion for lowercase for case-sensitivity consistency, eg. use `set-cookie` rather than `Set-Cookie`.
+:::
 
-It's recommended to use `status` inside the main handler as it has better inference:
+<details>
 
-- allows TypeScript to check if a return value is correctly type to response schema
-- autocompletion for type narrowing based on status code
-- type narrowing for error handling using End-to-end type safety ([Eden](/eden/overview))
+<summary>
+redirect <Badge type="warning">Legacy</Badge>
+</summary>
 
-### set.status
+Redirect a request to another resource.
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ redirect }) => {
+        return redirect('https://youtu.be/whpVWVWBW4U?&t=8')
+    })
+    .get('/custom-status', ({ redirect }) => {
+        // You can also set custom status to redirect
+        return redirect('https://youtu.be/whpVWVWBW4U?&t=8', 302)
+    })
+    .listen(3000)
+```
+
+When using redirect, returned value is not required and will be ignored. As response will be from another resource.
+
+</details>
+
+<details>
+
+<summary>
+	set.status <Badge type="warning">Legacy</Badge>
+</summary>
+
 Set a default status code if not provided.
 
 It's recommended to use this in a plugin that only needs to return a specific status code while allowing the user to return a custom value. For example, HTTP 201/206 or 403/405, etc.
@@ -250,104 +295,46 @@ new Elysia()
     .listen(3000)
 ```
 
-### set.headers
-Allowing us to append or delete response headers represented as an Object.
+</details>
+
+## Cookie
+Elysia provides a mutable signal for interacting with Cookie.
+
+There's no get/set, you can extract the cookie name and retrieve or update its value directly.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ set }) => {
-        set.headers['x-powered-by'] = 'Elysia'
+	.get('/set', ({ cookie: { name } }) => {
+		// Get
+        name.value
 
-        return 'a mimir'
-    })
-    .listen(3000)
+        // Set
+        name.value = "New Value"
+	})
 ```
 
-::: warning
-The names of headers should be lowercase to force case-sensitivity consistency for HTTP headers and auto-completion, eg. use `set-cookie` rather than `Set-Cookie`.
-:::
+See [Patterns: Cookie](/essentials/cookie) for more information.
 
-### redirect
+## Redirect
 Redirect a request to another resource.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .get('/', ({ redirect }) => {
-        return redirect('https://youtu.be/whpVWVWBW4U?&t=8')
-    })
-    .get('/custom-status', ({ redirect }) => {
-        // You can also set custom status to redirect
-        return redirect('https://youtu.be/whpVWVWBW4U?&t=8', 302)
-    })
-    .listen(3000)
+	.get('/', ({ redirect }) => {
+		return redirect('https://youtu.be/whpVWVWBW4U?&t=8')
+	})
+	.get('/custom-status', ({ redirect }) => {
+		// You can also set custom status to redirect
+		return redirect('https://youtu.be/whpVWVWBW4U?&t=8', 302)
+	})
+	.listen(3000)
 ```
 
 When using redirect, returned value is not required and will be ignored. As response will be from another resource.
-
-## Server
-Server instance is accessible via `Context.server` to interact with the server.
-
-Server could be nullable as it could be running in a different environment (test).
-
-If server is running (allocating) using Bun, `server` will be available (not null).
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-	.get('/port', ({ server }) => {
-		return server?.port
-	})
-	.listen(3000)
-```
-
-### Request IP
-We can get request IP by using `server.requestIP` method
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-	.get('/ip', ({ server, request }) => {
-		return server?.requestIP(request)
-	})
-	.listen(3000)
-```
-
-## Response
-
-Elysia is built on top of Web Standard Request/Response.
-
-To comply with the Web Standard, a value returned from route handler will be mapped into a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) by Elysia.
-
-Letting you focus on business logic rather than boilerplate code.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    // Equivalent to "new Response('hi')"
-    .get('/', () => 'hi')
-    .listen(3000)
-```
-
-If you prefer an explicit Response class, Elysia also handles that automatically.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .get('/', () => new Response('hi'))
-    .listen(3000)
-```
-
-::: tip
-Using a primitive value or `Response` has near identical performance (+- 0.1%), so pick the one you prefer, regardless of performance.
-:::
 
 ## Formdata
 We may return a `FormData` by using returning `form` utility directly from the handler.
@@ -365,7 +352,7 @@ new Elysia()
 
 This pattern is useful if even need to return a file or multipart form data.
 
-### Return a single file
+### Return a file
 Or alternatively, you can return a single file by returning `file` directly without `form`.
 
 ```typescript
@@ -375,29 +362,6 @@ new Elysia()
 	.get('/', file('nagi.web'))
 	.listen(3000)
 ```
-
-## Handle
-
-As Elysia is built on top of Web Standard Request, we can programmatically test it using `Elysia.handle`.
-
-```typescript
-import { Elysia } from 'elysia'
-
-const app = new Elysia()
-    .get('/', () => 'hello')
-    .post('/hi', () => 'hi')
-    .listen(3000)
-
-app.handle(new Request('http://localhost/')).then(console.log)
-```
-
-**Elysia.handle** is a function to process an actual request sent to the server.
-
-::: tip
-Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
-
-But also useful for simulating or creating unit tests.
-:::
 
 ## Stream
 To return a response streaming out of the box by using a generator function with `yield` keyword.
@@ -436,10 +400,9 @@ new Elysia()
 
 When a value is wrapped in `sse`, Elysia will automatically set the response headers to `text/event-stream` and format the data as an SSE event.
 
-### Set headers
-Elysia will defers returning response headers until the first chunk is yielded.
+### Headers in Server-Sent Event
 
-This allows us to set headers before the response is streamed.
+Headers can only be set before the first chunk is yielded.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -457,9 +420,7 @@ const app = new Elysia()
 	})
 ```
 
-Once the first chunk is yielded, Elysia will send the headers and the first chunk in the same response.
-
-Setting headers after the first chunk is yielded will do nothing.
+Once the first chunk is yielded, Elysia will send the headers to the client, therefore mutating headers after the first chunk is yielded will do nothing.
 
 ### Conditional Stream
 If the response is returned without yield, Elysia will automatically convert stream to normal response instead.
@@ -479,10 +440,8 @@ const app = new Elysia()
 
 This allows us to conditionally stream a response or return a normal response if necessary.
 
-### Abort
-While streaming a response, it's common that request may be cancelled before the response is fully streamed.
-
-Elysia will automatically stop the generator function when the request is cancelled.
+### Automatic cancellation
+Before response streaming is completed, if the user cancels the request, Elysia will automatically stop the generator function.
 
 ### Eden
 [Eden](/eden/overview) will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
@@ -505,7 +464,104 @@ for await (const chunk of data)
 	console.log(chunk)
 ```
 
-## Extending context
+## Request
+Elysia is built on top of [Web Standard Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) which is shared between multiple runtime like Node, Bun, Deno, Cloudflare Worker, Vercel Edge Function, and more.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/user-agent', ({ request }) => {
+		return request.headers.get('user-agent')
+	})
+	.listen(3000)
+```
+
+Allowing you to access low-level request information if necessary.
+
+## Server <Badge type="warning">Bun only</Badge>
+Server instance is a Bun server instance, allowing us to access server information like port number or request IP.
+
+Server will only be available when HTTP server is running with `listen`.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/port', ({ server }) => {
+		return server?.port
+	})
+	.listen(3000)
+```
+
+### Request IP <Badge type="warning">Bun only</Badge>
+We can get request IP by using `server.requestIP` method
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/ip', ({ server, request }) => {
+		return server?.requestIP(request)
+	})
+	.listen(3000)
+```
+
+<!--## Response
+
+Elysia is built on top of Web Standard Request/Response.
+
+When a value returned from handler, it will be mapped into a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) by Elysia.
+
+Letting you focus on business logic rather than boilerplate code.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    // Equivalent to "new Response('hi')"
+    .get('/', () => 'hi')
+    .listen(3000)
+```
+
+If you prefer an explicit Response class, Elysia also handles that automatically.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => new Response('hi'))
+    .listen(3000)
+```
+
+::: tip
+Using a primitive value or `Response` has near identical performance (+- 0.1%), so pick the one you prefer, regardless of performance.
+:::-->
+
+<!--## Handle
+
+As Elysia is built on top of Web Standard Request, we can programmatically test it using `Elysia.handle`.
+
+```typescript
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'hello')
+    .post('/hi', () => 'hi')
+    .listen(3000)
+
+app.handle(new Request('http://localhost/')).then(console.log)
+```
+
+**Elysia.handle** is a function to process an actual request sent to the server.
+
+::: tip
+Unlike unit test's mock, **you can expect it to behave like an actual request** sent to the server.
+
+But also useful for simulating or creating unit tests.
+:::-->
+
+## Extending context <Badge type="warning">Advance concept</Badge>
 
 As Elysia only provides essential information, we can customize Context for our specific need for instance:
 - extracting user ID as variable
@@ -578,6 +634,56 @@ Beware that we cannot use a state value before assign.
 Elysia registers state values into the store automatically without explicit type or additional TypeScript generic needed.
 :::
 
+### Reference and value <Badge type="warning">Gotcha</Badge>
+
+To mutate the state, it's recommended to use **reference** to mutate rather than using an actual value.
+
+When accessing the property from JavaScript, if we define a primitive value from an object property as a new value, the reference is lost, the value is treated as new separate value instead.
+
+For example:
+
+```typescript
+const store = {
+    counter: 0
+}
+
+store.counter++
+console.log(store.counter) // ✅ 1
+```
+
+We can use **store.counter** to access and mutate the property.
+
+However, if we define a counter as a new value
+
+```typescript
+const store = {
+    counter: 0
+}
+
+let counter = store.counter
+
+counter++
+console.log(store.counter) // ❌ 0
+console.log(counter) // ✅ 1
+```
+
+Once a primitive value is redefined as a new variable, the reference **"link"** will be missing, causing unexpected behavior.
+
+This can apply to `store`, as it's a global mutable object instead.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('counter', 0)
+    // ✅ Using reference, value is shared
+    .get('/', ({ store }) => store.counter++)
+    // ❌ Creating a new variable on primitive value, the link is lost
+    .get('/error', ({ store: { counter } }) => counter)
+```
+
+<Playground :elysia="demo7" />
+
 ## Decorate
 
 **decorate** assigns an additional property to **Context** directly **at call time**.
@@ -611,6 +717,9 @@ new Elysia()
 - Make sure to assign a value before using it in a handler.
 
 ## Derive
+
+###### ⚠️ Derive doesn't handle type integrity, you might want to use [resolve](#resolve) instead.
+
 Retrieve values from existing properties in **Context** and assign new properties.
 
 Derive assigns when request happens **at transform lifecycle** allowing us to "derive" <small>(create new properties from existing properties)</small>.
@@ -642,9 +751,11 @@ Because **derive** is assigned once a new request starts, **derive** can access 
 - **derive is called at transform, or before validation** happens, Elysia cannot safely confirm the type of request property resulting in as **unknown**. If you want to assign a new value from typed request properties, you may want to use [resolve](#resolve) instead.
 
 ## Resolve
-Same as [derive](#derive), resolve allow us to assign a new property to context.
+Similar as [derive](#derive) but ensure type integrity.
 
-Resolve is called at **beforeHandle** lifecycle or **after validation**, allowing us to **derive** request properties safely.
+Resolve allow us to assign a new property to context.
+
+Resolve is called at **beforeHandle** lifecycle or **after validation**, allowing us to **resolve** request properties safely.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -691,7 +802,7 @@ new Elysia()
     .get('/', ({ bearer }) => bearer)
 ```
 
-## Pattern
+## Pattern <Badge type="info">Advance Concept</Badge>
 
 **state**, **decorate** offers a similar APIs pattern for assigning property to Context as the following:
 
@@ -773,7 +884,7 @@ However, it's important to note that Elysia doesn't offer reactivity from this a
 Using remap, Elysia will treat a returned object as a new property, removing any property that is missing from the object.
 :::
 
-## Affix
+## Affix <Badge type="info">Advance Concept</Badge>
 
 To provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
 
@@ -790,10 +901,8 @@ const setup = new Elysia({ name: 'setup' })
     })
 
 const app = new Elysia()
-    .use(
-        setup
-            .prefix('decorator', 'setup')
-    )
+    .use(setup)
+    .prefix('decorator', 'setup')
     .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
 
@@ -816,61 +925,12 @@ const setup = new Elysia({ name: 'setup' })
     })
 
 const app = new Elysia()
-    .use(setup.prefix('all', 'setup')) // [!code ++]
+    .use(setup)
+    .prefix('all', 'setup') // [!code ++]
     .get('/', ({ setupCarbon, ...rest }) => setupCarbon)
 ```
 
-## Reference and value
-
-To mutate the state, it's recommended to use **reference** to mutate rather than using an actual value.
-
-When accessing the property from JavaScript, if we define a primitive value from an object property as a new value, the reference is lost, the value is treated as new separate value instead.
-
-For example:
-
-```typescript
-const store = {
-    counter: 0
-}
-
-store.counter++
-console.log(store.counter) // ✅ 1
-```
-
-We can use **store.counter** to access and mutate the property.
-
-However, if we define a counter as a new value
-
-```typescript
-const store = {
-    counter: 0
-}
-
-let counter = store.counter
-
-counter++
-console.log(store.counter) // ❌ 0
-console.log(counter) // ✅ 1
-```
-
-Once a primitive value is redefined as a new variable, the reference **"link"** will be missing, causing unexpected behavior.
-
-This can apply to `store`, as it's a global mutable object instead.
-
-```typescript
-import { Elysia } from 'elysia'
-
-new Elysia()
-    .state('counter', 0)
-    // ✅ Using reference, value is shared
-    .get('/', ({ store }) => store.counter++)
-    // ❌ Creating a new variable on primitive value, the link is lost
-    .get('/error', ({ store: { counter } }) => counter)
-```
-
-<Playground :elysia="demo7" />
-
-## TypeScript
+<!--## TypeScript
 Elysia automatically type context base on various of factors like store, decorators, schema.
 
 It's recommended to leave Elysia to type context instead of manually define one.
@@ -924,4 +984,4 @@ const app = new Elysia()
 	.get('/', handler)
 ```
 
-Unlike `InferContext`, `InferHandler` requires a path and schema to define a handler type and can safely ensure type safety of a return type.
+Unlike `InferContext`, `InferHandler` requires a path and schema to define a handler type and can safely ensure type safety of a return type.-->

@@ -4,7 +4,7 @@ layout: page
 sidebar: false
 editLink: false
 search: false
-gitChangelog: false
+comments: false
 authors: []
 head:
     - - meta
@@ -26,6 +26,18 @@ head:
 
 <Blogs
   :blogs="[
+      {
+        title: 'Elysia 1.4 - Supersymmetry',
+		href: '/blog/elysia-14',
+		cover: 'elysia-14.webp',
+		detail: 'Support for Standard Validator. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improve type inference performance by 10%.'
+      },
+      {
+        title: 'Introducing OpenAPI Type Gen for Elysia',
+		href: '/blog/openapi-type-gen',
+		cover: 'cover.webp',
+		detail: 'Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types without any manual annotation.'
+      },
       {
         title: 'Elysia 1.3 and Scientific Witchery',
         href: '/blog/elysia-13',

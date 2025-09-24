@@ -1,5 +1,6 @@
 ---
 title: Swagger Plugin - ElysiaJS
+search: false
 head:
     - - meta
       - property: 'og:title'
@@ -14,6 +15,10 @@ head:
         content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
 ---
 
+::: warning
+Swagger plugin is deprecated and is no longer be maintained. Please use [OpenAPI plugin](/plugins/openapi) instead.
+:::
+
 # Swagger Plugin
 
 This plugin generates a Swagger endpoint for an Elysia server
@@ -26,7 +31,7 @@ bun add @elysiajs/swagger
 
 Then use it:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -91,7 +96,7 @@ Below you can find the common patterns to use the plugin.
 
 You can change the swagger endpoint by setting [path](#path) in the plugin config.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 
@@ -106,7 +111,7 @@ new Elysia()
 
 ## Customize Swagger info
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 

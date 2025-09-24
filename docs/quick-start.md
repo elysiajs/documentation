@@ -171,7 +171,7 @@ pacman -S nodejs npm
 
 ## Setup
 
-We recommended using TypeScript for your Node.js project.
+We recommend using TypeScript for your Node.js project.
 
 <Tab
 	id="language"
@@ -181,7 +181,7 @@ We recommended using TypeScript for your Node.js project.
 
 <template v-slot:ts>
 
-To create a new Elysia app with TypeScript, we recommended install Elysia with `tsx`:
+To create a new Elysia app with TypeScript, we recommend installing Elysia with `tsx`:
 
 ::: code-group
 

@@ -242,7 +242,7 @@ const app = new Elysia()
 While Hono requires a prefix to separate the subrouter, Elysia doesn't require a prefix to separate the subrouter.
 
 ## Validation
-While Hono supports for **zod**, Elysia focus on deep integration with **TypeBox** to offers seamless integration with OpenAPI, validation, and advanced feature behind the scene.
+While Hono supports for various validator via external package, Elysia has a built-in validation using **TypeBox**, and support for Standard Schema out of the box allowing you to use your favorite library like Zod, Valibot, ArkType, Effect Schema and so on without additional library. Elysia also offers seamless integration with OpenAPI, and type inference behind the scene.
 
 <Compare>
 
@@ -293,7 +293,7 @@ app.patch(
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts twoslash [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -316,12 +316,60 @@ const app = new Elysia()
 	})
 ```
 
+```ts twoslash [Elysia Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: z.object({
+			id: z.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	})
+```
+
+```ts twoslash [Elysia Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+//                          ^?
+		params,
+		body
+//   ^?
+	}),
+
+
+
+	{
+		params: v.object({
+			id: v.number()
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	})
+```
+
 :::
 </template>
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically
+> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
 
 </template>
 
@@ -828,6 +876,8 @@ While Hono offers error handling using middleware-like, Elysia provide:
 
 The error code is useful for logging and debugging, and is important when differentiating between different error types extending the same class.
 
+Elysia provides all of this with type safety while Hono doesn't.
+
 ## Encapsulation
 
 Hono encapsulate plugin side-effect, while Elysia give you a control over side-effect of a plugin via explicit scoping mechanism, and order-of-code.
@@ -1145,21 +1195,23 @@ export default app
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger' // [!code ++]
+import { openapi } from '@elysiajs/openapi' // [!code ++]
 
 const app = new Elysia()
-	.use(swagger()) // [!code ++]
+	.use(openapi()) // [!code ++]
 	.model({
-		user: t.Object({
-			name: t.String(),
-			age: t.Number()
-		})
+		user: t.Array(
+			t.Object({
+				name: t.String(),
+				age: t.Number()
+			})
+		)
 	})
 	.post('/users', ({ body }) => body, {
 	//                  ^?
-		body: 'user[]',
+		body: 'user',
 		response: {
-			201: 'user[]'
+			201: 'user'
 		},
 		detail: {
 			summary: 'Create user'
@@ -1425,9 +1477,12 @@ Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
 	<Card title="From Express" href="/migrate/from-express">
-  		A guide to migrate from Express to Elysia
+		Comparison between tRPC and Elysia
 	</Card>
     <Card title="From Fastify" href="/migrate/from-fastify">
-  		A guide to migrate from Fastify to Elysia
+  		Comparison between Fastify and Elysia
+    </Card>
+    <Card title="From tRPC" href="/migrate/from-trpc">
+  		Comparison between tRPC and Elysia
     </Card>
 </Deck>

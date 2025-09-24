@@ -25,7 +25,6 @@ export default defineConfig({
         },
         languages: ['js', 'ts'],
         codeTransformers: [
-            // @ts-ignore
             transformerTwoslash({
                 typesCache: createFileSystemTypesCache({
                     dir: './docs/.vitepress/cache/twoslash'
@@ -37,6 +36,7 @@ export default defineConfig({
         }
     },
     vite: {
+        clearScreen: false,
         server: {
             watch: {
                 usePolling: true
@@ -50,8 +50,7 @@ export default defineConfig({
             process.env.NODE_ENV === 'production'
                 ? llmstxt({
                       description: 'Ergonomic Framework for Humans',
-                      details:
-                          "Elysia is an ergonomic framework for Humans. With end-to-end type safety and great developer experience. Elysia is familiar, fast, and first class TypeScript support with well-thought integration between services whether it's tRPC, Swagger or WebSocket.",
+                      details: description,
                       ignoreFiles: [
                           'index.md',
                           'table-of-content.md',
@@ -183,6 +182,10 @@ export default defineConfig({
                         link: '/plugins/jwt'
                     },
                     {
+                        text: 'OpenAPI',
+                        link: '/plugins/openapi'
+                    },
+                    {
                         text: 'OpenTelemetry',
                         link: '/plugins/opentelemetry'
                     },
@@ -197,10 +200,6 @@ export default defineConfig({
                     {
                         text: 'Stream',
                         link: '/plugins/stream'
-                    },
-                    {
-                        text: 'Swagger',
-                        link: '/plugins/swagger'
                     }
                 ]
             },
@@ -225,21 +224,7 @@ export default defineConfig({
                     {
                         text: 'Tutorial',
                         link: '/tutorial',
-                        collapsed: true,
-                        items: [
-                            {
-                                text: 'From Express',
-                                link: '/migrate/from-express'
-                            },
-                            {
-                                text: 'From Fastify',
-                                link: '/migrate/from-fastify'
-                            },
-                            {
-                                text: 'From Hono',
-                                link: '/migrate/from-hono'
-                            }
-                        ]
+                        collapsed: true
                     },
                     {
                         text: 'Key Concept',
@@ -248,7 +233,7 @@ export default defineConfig({
                     {
                         text: 'Table of Content',
                         link: '/table-of-content'
-                    }
+                    },
                 ]
             },
             {
@@ -264,12 +249,12 @@ export default defineConfig({
                         link: '/essential/handler'
                     },
                     {
-                        text: 'Life Cycle',
-                        link: '/essential/life-cycle'
-                    },
-                    {
                         text: 'Validation',
                         link: '/essential/validation'
+                    },
+                    {
+                        text: 'Life Cycle',
+                        link: '/essential/life-cycle'
                     },
                     {
                         text: 'Plugin',
@@ -298,12 +283,20 @@ export default defineConfig({
                         link: '/patterns/deploy'
                     },
                     {
+                        text: 'Error Handling',
+                        link: '/patterns/error-handling'
+                    },
+                    {
                         text: 'Macro',
                         link: '/patterns/macro'
                     },
                     {
                         text: 'Mount',
                         link: '/patterns/mount'
+                    },
+                    {
+                        text: 'OpenAPI',
+                        link: '/patterns/openapi'
                     },
                     {
                         text: 'Trace',
@@ -412,6 +405,10 @@ export default defineConfig({
                         link: '/plugins/jwt'
                     },
                     {
+                        text: 'OpenAPI',
+                        link: '/plugins/openapi'
+                    },
+                    {
                         text: 'OpenTelemetry',
                         link: '/plugins/opentelemetry'
                     },
@@ -426,10 +423,28 @@ export default defineConfig({
                     {
                         text: 'Stream',
                         link: '/plugins/stream'
+                    }
+                ]
+            },
+            {
+                text: 'Comparison',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Express',
+                        link: '/migrate/from-express'
                     },
                     {
-                        text: 'Swagger',
-                        link: '/plugins/swagger'
+                        text: 'Fastify',
+                        link: '/migrate/from-fastify'
+                    },
+                    {
+                        text: 'Hono',
+                        link: '/migrate/from-hono'
+                    },
+                    {
+                        text: 'tRPC',
+                        link: '/migrate/from-trpc'
                     }
                 ]
             },
@@ -438,12 +453,20 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
+                        text: 'AI SDK',
+                        link: '/integrations/ai-sdk'
+                    },
+                    {
                         text: 'Astro',
                         link: '/integrations/astro'
                     },
                     {
                         text: 'Better Auth',
                         link: '/integrations/better-auth'
+                    },
+                    {
+                        text: 'Cloudflare Worker',
+                        link: '/integrations/cloudflare-worker'
                     },
                     {
                         text: 'Drizzle',
@@ -462,10 +485,6 @@ export default defineConfig({
                         link: '/integrations/nuxt'
                     },
                     {
-                        text: 'OpenAPI',
-                        link: '/integrations/openapi'
-                    },
-                    {
                         text: 'OpenTelemetry',
                         link: '/integrations/opentelemetry'
                     },
@@ -480,6 +499,10 @@ export default defineConfig({
                     {
                         text: 'SvelteKit',
                         link: '/integrations/sveltekit'
+                    },
+                    {
+                        text: 'Vercel',
+                        link: '/integrations/vercel'
                     }
                 ]
             }

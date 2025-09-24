@@ -162,7 +162,7 @@ As Elysia type is complex, and heavily depends on plugin and multiple level of c
 
 We recommend abstracting service classes away from Elysia.
 
-However, **if the service is a request dependent service** or needs to process HTTP requests, ee recommend abstracting it as an Elysia instance to ensure type integrity and inference:
+However, **if the service is a request dependent service** or needs to process HTTP requests, we recommend abstracting it as an Elysia instance to ensure type integrity and inference:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -362,7 +362,7 @@ const UserController = new Elysia({ prefix: '/auth' })
 This approach provide several benefits:
 1. Allow us to name a model and provide auto-completion.
 2. Modify schema for later usage, or perform [remapping](/patterns/remapping.html#remapping).
-3. Show up as "models" in OpenAPI compliance client, eg. Swagger.
+3. Show up as "models" in OpenAPI compliance client, eg. OpenAPI.
 4. Improve TypeScript inference speed as model type will be cached during registration.
 
 ---

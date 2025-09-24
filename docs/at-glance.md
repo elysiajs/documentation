@@ -31,10 +31,12 @@ const demo2 = new Elysia()
     .get('/user/abc', () => 'abc')
 </script>
 
-# At glance
+
+# At a glance
+
 Elysia is an ergonomic web framework for building backend servers with Bun.
 
-Designed with simplicity and type-safety in mind, Elysia has a familiar API with extensive support for TypeScript, optimized for Bun.
+Designed with simplicity and type-safety in mind, Elysia offers a familiar API with extensive support for TypeScript and is optimized for Bun.
 
 Here's a simple hello world in Elysia.
 
@@ -48,7 +50,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Navigate to [localhost:3000](http://localhost:3000/) and it should show 'Hello Elysia' as a result.
+Navigate to [localhost:3000](http://localhost:3000/) and you should see 'Hello Elysia' as the result.
 
 <Playground
     :elysia="demo1"
@@ -72,14 +74,14 @@ Hover over the code snippet to see the type definition.
 
 In the mock browser, click on the path highlighted in blue to change paths and preview the response.
 
-Elysia can run in the browser, and the results you see are actually run using Elysia.
+Elysia can run in the browser, and the results you see are actually executed using Elysia.
 :::
 
 ## Performance
 
-Building on Bun and extensive optimization like Static Code Analysis allows Elysia to generate optimized code on the fly.
+Building on Bun and extensive optimization like static code analysis allows Elysia to generate optimized code on the fly.
 
-Elysia can outperform most of the web frameworks available today<a href="#ref-1"><sup>[1]</sup></a>, and even match the performance of Golang and Rust frameworks<a href="#ref-2"><sup>[2]</sup></a>.
+Elysia can outperform most web frameworks available today<a href="#ref-1"><sup>[1]</sup></a>, and even match the performance of Golang and Rust frameworks<a href="#ref-2"><sup>[2]</sup></a>.
 
 | Framework     | Runtime | Average     | Plain Text | Dynamic Parameters | JSON Body  |
 | ------------- | ------- | ----------- | ---------- | ------------------ | ---------- |
@@ -99,7 +101,7 @@ Elysia can outperform most of the web frameworks available today<a href="#ref-1"
 
 Elysia is designed to help you write less TypeScript.
 
-Elysia's Type System is fine-tuned to infer your code into types automatically, without needing to write explicit TypeScript, while providing type-safety at both runtime and compile time to provide you with the most ergonomic developer experience.
+Elysia's Type System is fine-tuned to infer types from your code automatically, without needing to write explicit TypeScript, while providing type-safety at both runtime and compile time for the most ergonomic developer experience.
 
 Take a look at this example:
 
@@ -114,7 +116,7 @@ new Elysia()
 
 <br>
 
-The above code creates a path parameter "id". The value that replaces `:id` will be passed to `params.id` both at runtime and in types without manual type declaration.
+The above code creates a path parameter **"id"**. The value that replaces `:id` will be passed to `params.id` both at runtime and in types, without manual type declaration.
 
 <Playground
     :elysia="demo2"
@@ -128,13 +130,13 @@ The above code creates a path parameter "id". The value that replaces `:id` will
     }"
 />
 
-Elysia's goal is to help you write less TypeScript and focus more on business logic. Let the complex types be handled by the framework.
+Elysia's goal is to help you write less TypeScript and focus more on business logic. Let the framework handle the complex types.
 
-TypeScript is not needed to use Elysia, but it's recommended to use Elysia with TypeScript.
+TypeScript is not required to use Elysia, but it's recommended.
 
 ## Type Integrity
 
-To take a step further, Elysia provides **Elysia.t**, a schema builder to validate types and values at both runtime and compile-time to create a single source of truth for your data-type.
+To take it a step further, Elysia provides **Elysia.t**, a schema builder to validate types and values at both runtime and compile time, creating a single source of truth for your data types.
 
 Let's modify the previous code to accept only a number value instead of a string.
 
@@ -151,26 +153,58 @@ new Elysia()
     .listen(3000)
 ```
 
-This code ensures that our path parameter **id** will always be a number on both runtime and compile-time (type-level).
+This code ensures that our path parameter **id** will always be a number at both runtime and compile time (type-level).
 
 ::: tip
 Hover over "id" in the above code snippet to see a type definition.
 :::
 
-With Elysia's schema builder, we can ensure type safety like a strongly-typed language with a single source of truth.
+With Elysia's schema builder, we can ensure type safety like a strongly typed language with a single source of truth.
 
-## Standard
+## Standard Schema
 
-Elysia adopts many standards by default, like OpenAPI, and WinterCG compliance, allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
+Elysia supports [Standard Schema](https://github.com/standard-schema/standard-schema), allowing you to use your favorite validation library:
 
-For instance, because Elysia adopts OpenAPI by default, generating documentation with Swagger is as easy as adding a one-liner:
+- Zod
+- Valibot
+- ArkType
+- Effect Schema
+- Yup
+- Joi
+- [and more](https://github.com/standard-schema/standard-schema)
 
 ```typescript twoslash
-import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
 
 new Elysia()
-    .use(swagger())
+	.get('/id/:id', ({ params: { id }, query: { name } }) => id, {
+	//                           ^?
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		query: v.object({
+			name: v.literal('Lilith')
+		})
+	})
+	.listen(3000)
+```
+
+Elysia will infer the types from the schema automatically, allowing you to use your favorite validation library while still maintaining type safety.
+
+## OpenAPI
+
+Elysia adopts many standards by default, like OpenAPI, WinterTC compliance, and Standard Schema. Allowing you to integrate with most of the industry standard tools or at least easily integrate with tools you are familiar with.
+
+For instance, because Elysia adopts OpenAPI by default, generating API documentation is as easy as adding a one-liner:
+
+```typescript
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+
+new Elysia()
+    .use(openapi()) // [!code ++]
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Number()
@@ -179,20 +213,44 @@ new Elysia()
     .listen(3000)
 ```
 
-With the Swagger plugin, you can seamlessly generate a Swagger page without additional code or specific config and share it with your team effortlessly.
+With the OpenAPI plugin, you can seamlessly generate an API documentation page without additional code or specific configuration and share it with your team effortlessly.
+
+## OpenAPI from types
+
+Elysia has excellent support for OpenAPI with schemas that can be used for data validation, type inference, and OpenAPI annotation from a single source of truth.
+
+Elysia also supports OpenAPI schema generation with **1 line directly from types**, allowing you to have complete and accurate API documentation without any manual annotation.
+
+```typescript
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysiajs/openapi'
+
+export const app = new Elysia()
+    .use(openapi({
+    	references: fromTypes() // [!code ++]
+    }))
+    .get('/user/:id', ({ params: { id } }) => id, {
+        params: t.Object({
+            id: t.Number()
+        })
+    })
+    .listen(3000)
+```
 
 ## End-to-end Type Safety
 
-With Elysia, type safety is not limited to server-side only.
+With Elysia, type safety is not limited to server-side.
 
-With Elysia, you can synchronize your types with your frontend team automatically like tRPC, with Elysia's client library, "Eden".
+With Elysia, you can synchronize your types with your frontend team automatically, similar to tRPC, using Elysia's client library, "Eden".
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
-const app = new Elysia()
-    .use(swagger())
+export const app = new Elysia()
+    .use(openapi({
+    	references: fromTypes()
+    }))
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
             id: t.Number()
@@ -240,18 +298,18 @@ Elysia is not only about helping you create a confident backend but for all that
 
 ## Platform Agnostic
 
-Elysia was designed for Bun, but is  **not limited to Bun**. Being [WinterCG compliant](https://wintercg.org/) allows you to deploy Elysia servers on Cloudflare Workers, Vercel Edge Functions, and most other runtimes that support Web Standard Requests.
+Elysia was designed for Bun, but is **not limited to Bun**. Being [WinterTC compliant](https://wintertc.org/) allows you to deploy Elysia servers on Cloudflare Workers, Vercel Edge Functions, and most other runtimes that support Web Standard Requests.
 
 ## Our Community
 
-If you have questions or get stuck regarding Elysia, feel free to ask our community on GitHub Discussions, Discord, and Twitter.
+If you have questions or get stuck with Elysia, feel free to ask our community on GitHub Discussions, Discord, or Twitter.
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
-        Official ElysiaJS discord community server
+        Official ElysiaJS Discord community server
     </Card>
     <Card title="Twitter" href="https://twitter.com/elysiajs">
-        Track update and status of Elysia
+        Track updates and status of Elysia
     </Card>
     <Card title="GitHub" href="https://github.com/elysiajs">
         Source code and development

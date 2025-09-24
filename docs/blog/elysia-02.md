@@ -3,6 +3,7 @@ title: Elysia 0.2 - The Blessing
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
   - - meta
     - property: 'og:title'

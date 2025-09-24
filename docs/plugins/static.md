@@ -94,7 +94,7 @@ Below you can find the common patterns to use the plugin.
 
 ## Single file
 Suppose you want to return just a single file, you can use `file` instead of using the static plugin
-```typescript twoslash
+```typescript
 import { Elysia, file } from 'elysia'
 
 new Elysia()

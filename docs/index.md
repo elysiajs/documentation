@@ -55,9 +55,10 @@ new Elysia()
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
+import { z } from 'zod'
 
 new Elysia()
-	.patch('/profile', ({ body }) => body.profile, {
+	.patch('/profile', ({ body, query }) => body.profile, {
 	                    // ^?
 
 
@@ -66,7 +67,10 @@ new Elysia()
 		body: t.Object({
 			id: t.Number(),
 			profile: t.File({ type: 'image' })
-		})
+		}),
+		query: z.object({
+			name: z.literal('Lilith')
+		}),
 	})
 	.listen(3000)
 ```
@@ -78,6 +82,7 @@ new Elysia()
 ```typescript twoslash
 // @errors: 2345
 import { Elysia, t } from 'elysia'
+import { z } from 'zod'
 
 new Elysia()
 	.get('/profile', ({ status }) => {
@@ -88,7 +93,7 @@ new Elysia()
 	}, {
 		response: {
 			200: t.Literal('ok'),
-			418: t.Literal('Nagisa')
+			418: z.literal('Nagisa')
 		}
 	})
 	.listen(3000)
@@ -103,18 +108,18 @@ new Elysia()
 import { Elysia, t } from 'elysia'
 
 const role = new Elysia({ name: 'macro' })
-	.macro(({ onBeforeHandle }) => ({
-		role(type: 'user' | 'staff' | 'admin') {
-			onBeforeHandle(({ headers, status }) => {
+	.macro({
+		role: (type: 'user' | 'staff' | 'admin') => ({
+			beforeHandle({ headers, status }) {
 				if(headers.authorization !== type)
 					return status(401)
-			})
-		}
-	}))
+			}
+		})
+	})
 
 new Elysia()
 	.use(role)
-	.get('/admin/check', 'ok', {
+	.get('/admin/check', () => 'Hello admin!', {
         r
       // ^|
 	})
@@ -145,18 +150,117 @@ new Elysia()
 
 </template>
 
-<template v-slot:doc>
+<template v-slot:validator>
 
-```typescript
-import { Elysia } from 'elysia'
-import swagger from '@elysiajs/swagger'
+::: code-group
+
+```ts twoslash [TypeBox]
+import { Elysia, t } from 'elysia'
+
 
 new Elysia()
-	.use(swagger())
-	.use(character)
-	.use(auth)
+	// Try hover body  ↓
+	.post('/user', ({ body }) => body, {
+		body: t.Object({
+			name: t.Literal('SaltyAom'),
+			age: t.Number(),
+			friends: t.Array(t.String())
+		})
+	})
+```
+
+```ts twoslash [Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+new Elysia()
+	// Try hover body  ↓
+	.post('/user', ({ body }) => body, {
+		body: z.object({
+			name: z.literal('SaltyAom'),
+			age: z.number(),
+			friends: z.array(z.string())
+		})
+	})
+```
+
+```ts twoslash [Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+new Elysia()
+	// Try hover body  ↓
+	.post('/user', ({ body }) => body, {
+		body: v.object({
+			name: v.literal('SaltyAom'),
+			age: v.number(),
+			friends: v.array(v.string())
+		})
+	})
+```
+
+```ts twoslash [ArkType]
+import { Elysia } from 'elysia'
+import { type } from 'arktype'
+
+new Elysia()
+	// Try hover body  ↓
+	.post('/user', ({ body }) => body, {
+		body: type({
+			name: '"Elysia"',
+			age: 'number',
+			friends: 'string[]'
+		})
+	})
+```
+
+```ts twoslash [Effect]
+import { Elysia } from 'elysia'
+import { Schema } from 'effect'
+
+new Elysia()
+	// Try hover body  ↓
+	.post('/user', ({ body }) => body, {
+		body: Schema.standardSchemaV1(
+			Schema.Struct({
+				name: Schema.Literal('Elysia'),
+				age: Schema.Number,
+				friends: Schema.Array(Schema.String)
+			})
+		)
+	})
+```
+
+:::
+
+</template>
+
+<template v-slot:doc>
+
+::: code-group
+
+```typescript [OpenAPI]
+import { Elysia } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+
+new Elysia()
+	.use(openapi())
 	.listen(3000)
 ```
+
+```typescript [With Type Gen]
+import { Elysia } from 'elysia'
+import { openapi, fromTypes } from '@elysiajs/openapi'
+
+export const app = new Elysia()
+	.use(
+		openapi({
+			references: fromTypes()
+		})
+	)
+```
+
+:::
 
 </template>
 
