@@ -342,7 +342,7 @@ const app = new Elysia()
 
 ```ts twoslash [Elysia Valibot]
 import { Elysia } from 'elysia'
-import * as v from 'zod'
+import * as v from 'valibot'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
