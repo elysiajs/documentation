@@ -488,7 +488,7 @@ import { Elysia, t } from 'elysia'
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
 
-    add(note: string) {// [!code ++]
+    add(note: string) { // [!code ++]
         this.data.push(note) // [!code ++]
 // [!code ++]
         return this.data // [!code ++]
@@ -764,7 +764,7 @@ Let's create a `user.ts` file that will handle the user authentication:
 
 ```typescript [user.ts]
 import { Elysia, t } from 'elysia' // [!code ++]
-// [!code ++]
+ // [!code ++]
 export const user = new Elysia({ prefix: '/user' }) // [!code ++]
     .state({ // [!code ++]
         user: {} as Record<string, string>, // [!code ++]
@@ -778,9 +778,9 @@ export const user = new Elysia({ prefix: '/user' }) // [!code ++]
                     success: false, // [!code ++]
                     message: 'User already exists' // [!code ++]
                 }) // [!code ++]
-            // [!code ++]
+ // [!code ++]
             store.user[username] = await Bun.password.hash(password) // [!code ++]
-            // [!code ++]
+ // [!code ++]
             return { // [!code ++]
                 success: true, // [!code ++]
                 message: 'User created' // [!code ++]
@@ -819,8 +819,7 @@ export const user = new Elysia({ prefix: '/user' }) // [!code ++]
                 message: `Signed in as ${username}` // [!code ++]
             } // [!code ++]
         }, // [!code ++]
-        {  // [!code ++]
-            // [!code ++]
+        { // [!code ++]
             body: t.Object({ // [!code ++]
                 username: t.String({ minLength: 1 }), // [!code ++]
                 password: t.String({ minLength: 8 }) // [!code ++]
@@ -830,7 +829,6 @@ export const user = new Elysia({ prefix: '/user' }) // [!code ++]
                     token: t.Number() // [!code ++]
                 }, // [!code ++]
                 { // [!code ++]
-                    // [!code ++]
                     secrets: 'seia' // [!code ++]
                 } // [!code ++]
             ) // [!code ++]
@@ -912,9 +910,9 @@ export const user = new Elysia({ prefix: '/user' })
                 message: 'User created'
             }
         },
-        {
+        { // [!code ++]
             body: 'signIn' // [!code ++]
-        }
+        } // [!code ++]
     )
     .post(
         '/sign-in',
@@ -942,10 +940,10 @@ export const user = new Elysia({ prefix: '/user' })
                 message: `Signed in as ${username}`
             }
         },
-        {
+        { // [!code ++]
             body: 'signIn', // [!code ++]
             cookie: 'session' // [!code ++]
-        }
+        } // [!code ++]
     )
 ```
 
@@ -1043,7 +1041,7 @@ export const user = new Elysia({ prefix: '/user' })
         '/sign-out', // [!code ++]
         ({ cookie: { token } }) => { // [!code ++]
             token.remove() // [!code ++]
-            // [!code ++]
+ // [!code ++]
             return { // [!code ++]
                 success: true, // [!code ++]
                 message: 'Signed out' // [!code ++]
@@ -1057,15 +1055,14 @@ export const user = new Elysia({ prefix: '/user' })
         '/profile', // [!code ++]
         ({ cookie: { token }, store: { session }, status }) => { // [!code ++]
             const username = session[token.value] // [!code ++]
-            // [!code ++]
+ // [!code ++]
             if (!username) // [!code ++]
                 return status(401, { // [!code ++]
                     success: false, // [!code ++]
                     message: 'Unauthorized' // [!code ++]
                 }) // [!code ++]
-            // [!code ++]
-            return {
-                // [!code ++]
+ // [!code ++]
+            return { // [!code ++]
                 success: true, // [!code ++]
                 username // [!code ++]
             } // [!code ++]
@@ -1354,8 +1351,8 @@ export const note = new Elysia({ prefix: '/note' })
     	note.add({ data, author: username }),
      	{ // [!code ++]
      		body: 'memo' // [!code ++]
-      	}
-    ) // [!code ++]
+      	} // [!code ++]
+    )
     .guard({
         params: t.Object({
             index: t.Number()
@@ -1381,7 +1378,7 @@ export const note = new Elysia({ prefix: '/note' })
             if (index in note.data) return note.update(index, data) // [!code --]
         ({ note, params: { index }, body: { data }, status, username }) => { // [!code ++]
         	if (index in note.data) // [!code ++]
-         		return note.update(index, { data, author: username })) // [!code ++]
+         		return note.update(index, { data, author: username }) // [!code ++]
 
             return status(422)
         },
@@ -1389,7 +1386,7 @@ export const note = new Elysia({ prefix: '/note' })
             body: t.Object({ // [!code --]
                 data: t.String() // [!code --]
             }), // [!code --]
-            body: 'memo'
+            body: 'memo' // [!code ++]
         }
     )
 ```
@@ -1584,7 +1581,7 @@ Now let's apply the OpenTelemetry plugin to our server.
 ::: code-group
 
 ```typescript [index.ts]
-import { Elysia, t } from 'elysia'
+import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry' // [!code ++]
 import { openapi } from '@elysiajs/openapi'
 
