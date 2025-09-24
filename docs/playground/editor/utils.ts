@@ -89,7 +89,16 @@ export default app
 
 let esbuild: typeof import('esbuild-wasm')
 
-export const init = async (id: string, code = defaultCode) => {
+export const init = async (
+    id: string,
+    {
+        code = defaultCode,
+        onChange
+    }: {
+        code?: string
+        onChange?(): unknown
+    } = {}
+) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
         strict: true,
         target: monaco.languages.typescript.ScriptTarget.ESNext,
@@ -166,6 +175,17 @@ export const init = async (id: string, code = defaultCode) => {
 	        Courier New,
 	        monospace`
     })
+
+    let timeout: number
+
+    if (onChange)
+        editor.onDidChangeModelContent(() => {
+            if (timeout) clearTimeout(timeout)
+
+            timeout = setTimeout(() => {
+                onChange()
+            }, 250) as any as number
+        })
 
     const parent = placeholder.parentElement!
 
@@ -267,5 +287,5 @@ export const updateTheme = (theme: 'latte' | 'frappe') => {
         theme === 'latte' ? 'catppuccin-latte' : 'catppuccin-mocca'
     )
 
-    console.log(theme === 'latte' ? 'catppuccin-latte' : 'catppuccin-mocca'	)
+    console.log(theme === 'latte' ? 'catppuccin-latte' : 'catppuccin-mocca')
 }
