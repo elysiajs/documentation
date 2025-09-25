@@ -17,7 +17,7 @@ head:
 ---
 
 <script setup lang="ts">
-import Preview from './preview/preview.vue'
+import Preview from '../components/xiao/preview/preview.vue'
 </script>
 
 <Preview />

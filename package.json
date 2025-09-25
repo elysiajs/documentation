@@ -23,6 +23,7 @@
 		"monaco-editor": "^0.53.0",
 		"monaco-editor-auto-typings": "^0.4.6",
 		"motion-v": "^1.6.1",
+		"pinia": "^3.0.3",
 		"reka-ui": "^2.5.0",
 		"shiki": "^3.9.2",
 		"tailwindcss": "^4.1.11",

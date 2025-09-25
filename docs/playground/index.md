@@ -17,19 +17,17 @@ head:
 ---
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
-
-const Editor = defineAsyncComponent(() => import('./editor/editor.vue'));
+import Playground from '../components/xiao/playground/playground.vue'
 </script>
 
-<ClientOnly>
+<Playground>
 
-<Editor>
+# Welcome to ElysiaJS
 
-# Welcome to Elysia
+It's great to have you here! This playground is designed to help you get started with ElysiaJS quickly and easily.
 
-Hello World
+Unlike traditional backend framework, Elysia can also run in a browser! Allowing you to write, and try out Elysia directly in your browser! making it a perfect environment for learning and experimentation.
 
-</Editor>
+Elysia is an ergonomic web frameworks for humans.
 
-</ClientOnly>
+</Playground>

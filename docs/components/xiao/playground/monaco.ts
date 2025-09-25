@@ -79,15 +79,6 @@ class Resolver extends UnpkgSourceResolver implements SourceResolver {
     }
 }
 
-const defaultCode = `import { Elysia } from 'elysia'
-
-const app = new Elysia()
-	.get('/', 'Hello World!')
-	.listen(3000)
-
-export default app
-`
-
 let esbuild: typeof import('esbuild-wasm')
 
 const setupTheme = () => {
@@ -123,14 +114,18 @@ const files = {
 } as const
 
 interface CreateEditorOptions {
-    code?: string
+    id: string
+    code: string
     onChange?(value: string): unknown
+    theme: 'light' | 'dark'
 }
 
-export const createEditor = async (
-    id: string,
-    { code = defaultCode, onChange }: CreateEditorOptions = {}
-) => {
+export const createEditor = async ({
+    id,
+    code,
+    onChange,
+    theme = 'light'
+}: CreateEditorOptions) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
         strict: true,
         target: monaco.languages.typescript.ScriptTarget.ESNext,
@@ -155,7 +150,7 @@ export const createEditor = async (
         minimap: { enabled: false },
         wordWrap: 'off',
         renderWhitespace: 'none',
-        theme: 'catppuccin-latte',
+        theme: theme === 'light' ? 'catppuccin-latte' : 'catppuccin-mocha',
         fontFamily: `'Geist Mono',
 	        ui-monospace,
 	        SFMono-Regular,
@@ -210,10 +205,11 @@ export const createEditor = async (
     } catch {}
 }
 
-export const createJSONEditor = (
-    id: string,
-    { code = defaultCode, onChange }: CreateEditorOptions = {}
-) => {
+export const createJSONEditor = ({
+    id,
+    code,
+    onChange
+}: CreateEditorOptions) => {
     const placeholder = document.getElementById(id)!
     const model =
         monaco.editor.getModel(files['body.json']) ??
@@ -387,9 +383,9 @@ ${normalized}`
         }
     })
 
-export const updateTheme = (theme: 'latte' | 'frappe') => {
+export const updateTheme = (theme: 'light' | 'dark') => {
     monaco.editor.setTheme(
-        theme === 'latte' ? 'catppuccin-latte' : 'catppuccin-mocha'
+        theme === 'light' ? 'catppuccin-latte' : 'catppuccin-mocha'
     )
 }
 
