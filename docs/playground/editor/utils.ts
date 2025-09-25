@@ -6,8 +6,8 @@ import {
     type SourceResolver
 } from 'monaco-editor-auto-typings'
 
-import latte from '@catppuccin/vscode/themes/latte.json' with { type: 'json' }
-import frappe from '@catppuccin/vscode/themes/frappe.json' with { type: 'json' }
+import latte from './theme/latte.json' with { type: 'json' }
+import mocha from './theme/mocha.json' with { type: 'json' }
 
 class Resolver extends UnpkgSourceResolver implements SourceResolver {
     constructor() {
@@ -83,21 +83,53 @@ const defaultCode = `import { Elysia } from 'elysia'
 
 const app = new Elysia()
 	.get('/', 'Hello World!')
+	.listen(3000)
 
 export default app
 `
 
 let esbuild: typeof import('esbuild-wasm')
 
-export const init = async (
+const setupTheme = () => {
+    const transparent = {
+        'editor.background': '#00000000',
+        'editorGutter.background': '#00000000',
+        'scrollbarSlider.background': '#00000000',
+        'scrollbar.shadow': '#00000000'
+    } as const
+
+    // @ts-ignore
+    monaco.editor.defineTheme('catppuccin-latte', {
+        ...latte,
+        colors: {
+            ...latte.colors,
+            ...transparent
+        }
+    })
+
+    // @ts-ignore
+    monaco.editor.defineTheme('catppuccin-mocha', {
+        ...mocha,
+        colors: {
+            ...mocha.colors,
+            ...transparent
+        }
+    })
+}
+
+const files = {
+    'main.ts': monaco.Uri.parse('file:///main.ts'),
+    'body.json': monaco.Uri.parse('file:///body.json')
+} as const
+
+interface CreateEditorOptions {
+    code?: string
+    onChange?(value: string): unknown
+}
+
+export const createEditor = async (
     id: string,
-    {
-        code = defaultCode,
-        onChange
-    }: {
-        code?: string
-        onChange?(): unknown
-    } = {}
+    { code = defaultCode, onChange }: CreateEditorOptions = {}
 ) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
         strict: true,
@@ -108,62 +140,21 @@ export const init = async (
         noEmit: true
     })
 
-    monaco.editor.defineTheme('catppuccin-latte', {
-        base: 'vs', // light theme base
-        inherit: true,
-        colors: latte.colors,
-        rules: [
-            { token: 'comment', foreground: '6c6783', fontStyle: 'italic' },
-            { token: 'keyword', foreground: 'd7827e' },
-            { token: 'string', foreground: 'a6d189' },
-            { token: 'number', foreground: 'e5c890' },
-            { token: 'type', foreground: '85c1dc' },
-            { token: 'function', foreground: '8caaee' },
-            { token: 'variable', foreground: 'f4b8e4' }
-        ]
-    })
-
-    // @ts-ignore
-    monaco.editor.defineTheme('catppuccin-mocca', {
-        base: 'vs-dark',
-        inherit: true,
-        colors: frappe.colors,
-        rules: [
-            { token: 'comment', foreground: '6e6a86', fontStyle: 'italic' },
-            { token: 'keyword', foreground: 'f28fad' },
-            { token: 'string', foreground: 'f2cdcd' },
-            { token: 'number', foreground: 'f8bd96' },
-            { token: 'type', foreground: 'abe9b3' },
-            { token: 'function', foreground: '96cdfb' },
-            { token: 'variable', foreground: 'f5a97f' }
-        ]
-    })
-
-    // const elysiaDeclaration = await fetch(
-    //     'https://esm.sh/elysia/dist/index.d.ts'
-    // ).then((x) => x.text())
-
-    // monaco.languages.typescript.typescriptDefaults.addExtraLib(
-    //     elysiaDeclaration,
-    //     'file:///node_modules/elysia/dist/index'
-    // )
+    setupTheme()
 
     const model =
-        monaco.editor.getModels()[0] ??
-        monaco.editor.createModel(
-            code,
-            'typescript',
-            monaco.Uri.parse('file:///main.ts')
-        )
+        monaco.editor.getModel(files['main.ts']) ??
+        monaco.editor.createModel(code, 'typescript', files['main.ts'])
 
     const placeholder = document.getElementById(id)!
 
     const editor = monaco.editor.create(placeholder, {
         model,
         language: 'typescript',
-        automaticLayout: true,
         fontSize: 16,
         minimap: { enabled: false },
+        wordWrap: 'off',
+        renderWhitespace: 'none',
         theme: 'catppuccin-latte',
         fontFamily: `'Geist Mono',
 	        ui-monospace,
@@ -183,8 +174,12 @@ export const init = async (
             if (timeout) clearTimeout(timeout)
 
             timeout = setTimeout(() => {
-                onChange()
-            }, 250) as any as number
+                const value = monaco.editor
+                    .getModel(files['main.ts'])
+                    ?.getValue()
+
+                if (value !== undefined) onChange(value)
+            }, 200) as any as number
         })
 
     const parent = placeholder.parentElement!
@@ -215,15 +210,68 @@ export const init = async (
     } catch {}
 }
 
+export const createJSONEditor = (
+    id: string,
+    { code = defaultCode, onChange }: CreateEditorOptions = {}
+) => {
+    const placeholder = document.getElementById(id)!
+    const model =
+        monaco.editor.getModel(files['body.json']) ??
+        monaco.editor.createModel(code, 'json', files['body.json'])
+
+    setupTheme()
+
+    const editor = monaco.editor.create(placeholder, {
+        model,
+        language: 'json',
+        fontSize: 16,
+        minimap: { enabled: false },
+        glyphMargin: false,
+        lineNumbers: 'off',
+        fontFamily: `'Geist Mono',
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      Liberation Mono,
+      Courier New,
+      monospace`
+    })
+
+    let timeout: number
+
+    editor.onDidChangeModelContent(() => {
+        if (timeout) clearTimeout(timeout)
+
+        timeout = setTimeout(() => {
+            const value = monaco.editor.getModel(files['body.json'])?.getValue()
+
+            if (value !== undefined) {
+                if (onChange) onChange(value)
+
+                monaco.editor.setModelLanguage(
+                    model,
+                    isJSON(value) ? 'json' : 'plaintext'
+                )
+            }
+        }, 200) as any as number
+    })
+}
+
 export const updateCode = (code: string) => {
-    const model = monaco.editor.getModels()[0]
+    const model = monaco.editor.getModel(files['main.ts'])
     if (model) model.setValue(code)
 }
 
-export const execute = (url: string, options?: RequestInit) =>
+export const execute = (
+    url: string,
+    options?: RequestInit,
+    onLog?: (log: unknown[]) => unknown
+) =>
     new Promise<[string, ResponseInit]>(async (resolve, reject) => {
         let normalized = monaco.editor
-            .getModels()[0]
+            .getModel(files['main.ts'])!
             .getValue()
             .replace(
                 /import\s+([^\n]+?)\s+from\s+['"]([^'"]+)['"]/g,
@@ -238,54 +286,118 @@ export const execute = (url: string, options?: RequestInit) =>
                 }
             )
 
-        if (!/export default \w+/g.test(normalized))
-            throw new Error('No default export found')
+        if (!normalized.includes('.listen('))
+            reject(
+                'No Elysia server is running.\nDid you forget to call `.listen()`?'
+            )
 
-        normalized = normalized.replace(
-            /export default (\w+)/g,
-            `self.onmessage = async (e) => {
-   	try {
-   		const response = await $1.handle(new Request(e.data[0], e.data[1]))
-  		self.postMessage([
-    		await response.text(), {
-    			status: response.status,
-       			headers: Object.fromEntries(response.headers.entries())
-      		}
-       	])
-    } catch (error) {
-       	self.postMessage({ error })
-    }
-}`
-        )
+        normalized = normalized
+            .replace('openapi({', 'openapi({embedSpec:true,')
+            .replace('openapi()', 'openapi({embedSpec: true})')
+            .replace(
+                '.listen(',
+                `.use(app => {
+app.listen = (port, callback) => {
+	app.server = {
+		development: true,
+		fetch: (request) => app.fetch(request),
+		hostname: 'elysiajs.com',
+		id: 'Elysia',
+		pendingRequests: 0,
+		pendingWebSockets: 0,
+		port: port ?? 80,
+		publish() {},
+		ref() {},
+		reload() {},
+		requestIP() {
+			return {
+				address: '127.0.0.1',
+				family: 'IPv4',
+				port
+			}
+		},
+		upgrade() {},
+		unref() {}
+	}
 
-        const transpiled = await esbuild.transform(normalized, { loader: 'ts' })
+	callback?.(server)
 
-        const blob = new Blob([transpiled.code], {
-            type: 'application/javascript'
-        })
-        const worker = new Worker(URL.createObjectURL(blob), {
-            type: 'module'
-        })
+	self.onmessage = async (e) => {
+	   	try {
+	   		const response = await app.handle(new Request(e.data[0], e.data[1]))
+	  		self.postMessage({
+	    		response: [
+		    		await response.text(), {
+		    			status: response.status,
+		       			headers: Object.fromEntries(response.headers.entries())
+		      		}
+		       	]
+			})
+	    } catch (error) {
+	       	self.postMessage({ error })
+	    }
+	}
+}
 
-        worker.onmessage = (e) => {
-            if (e.data.error) return reject(e.data.error)
+	return app
+})
+.listen(`
+            )
 
-            resolve(e.data)
-            worker.terminate()
+        normalized = `self.console.log = self.console.warn = self.console.error = (...log) => {
+    self.postMessage({ log })
+}
+
+${normalized}`
+
+        try {
+            const transpiled = await esbuild.transform(normalized, {
+                loader: 'ts'
+            })
+
+            const blob = new Blob([transpiled.code], {
+                type: 'application/javascript'
+            })
+            const worker = new Worker(URL.createObjectURL(blob), {
+                type: 'module'
+            })
+
+            worker.onmessage = (e) => {
+                if (e.data.error) {
+                    worker.terminate()
+                    return reject(e.data.error)
+                }
+
+                if (e.data.log && onLog) return onLog(e.data.log)
+
+                if (e.data.response) {
+                    worker.terminate()
+                    return resolve(e.data.response)
+                }
+            }
+
+            worker.onerror = (e) => {
+                reject(e)
+                worker.terminate()
+            }
+
+            worker.postMessage([url, options ?? {}])
+        } catch (error) {
+            reject({ syntax: error })
         }
-
-        worker.onerror = (e) => {
-            reject(e)
-            worker.terminate()
-        }
-
-        worker.postMessage([url, options ?? {}])
     })
 
 export const updateTheme = (theme: 'latte' | 'frappe') => {
     monaco.editor.setTheme(
-        theme === 'latte' ? 'catppuccin-latte' : 'catppuccin-mocca'
+        theme === 'latte' ? 'catppuccin-latte' : 'catppuccin-mocha'
     )
+}
 
-    console.log(theme === 'latte' ? 'catppuccin-latte' : 'catppuccin-mocca')
+export const isJSON = (body: string) => {
+    body = body.trim()
+
+    return (
+        (body.startsWith('{') && body.endsWith('}')) ||
+        (body.startsWith('[') && body.endsWith(']'))
+    )
 }

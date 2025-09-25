@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress'
-import monacoEditorPlugin from 'vite-plugin-monaco-editor'
+import monacoEditorPlugin from 'vite-plugin-monaco-editor-esm'
 
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
@@ -48,11 +48,11 @@ export default defineConfig({
             enableNativePlugin: true
         },
         plugins: [
-            // @ts-ignore
-            monacoEditorPlugin.default({}),
             nodePolyfills({
-                include: ['path'],
-                globals: {}
+                include: ['path']
+            }),
+            monacoEditorPlugin({
+                languageWorkers: ['editorWorkerService', 'typescript', 'json']
             }),
             tailwindcss(),
             process.env.NODE_ENV === 'production'

@@ -17,8 +17,12 @@ head:
 ---
 
 <script setup lang="ts">
-import Editor from './editor/editor.vue'
+import { defineAsyncComponent } from 'vue'
+
+const Editor = defineAsyncComponent(() => import('./editor/editor.vue'));
 </script>
+
+<ClientOnly>
 
 <Editor>
 
@@ -27,3 +31,5 @@ import Editor from './editor/editor.vue'
 Hello World
 
 </Editor>
+
+</ClientOnly>

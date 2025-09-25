@@ -21,7 +21,7 @@
                 <Bookmark :size="18" stroke-width="2" />
             </button>
 
-            <button class="tab ml-auto" @click="toggleTheme">
+            <button class="tab mt-auto" @click="toggleTheme">
                 <Sun v-if="theme === 'dark'" :size="18" stroke-width="2" />
                 <Moon v-else :size="18" stroke-width="2" />
             </button>
@@ -55,12 +55,12 @@
             <SplitterResizeHandle />
 
             <SplitterPanel :default-size="75">
-                <div class="w-full h-full p-2 pl-1 pt-0">
+                <div class="w-full h-full px-0.75">
                     <SplitterGroup
                         direction="vertical"
-                        class="relative flex flex-1 w-full h-screen"
+                        class="relative flex flex-1 w-full h-screen gap-0.75"
                     >
-                        <SplitterPanel :default-size="60" class="mb-2">
+                        <SplitterPanel :default-size="60">
                             <div
                                 id="elysia-editor-code"
                                 class="w-full h-full border dark:border-gray-600 rounded-2xl overflow-hidden"
@@ -167,8 +167,22 @@
                                                 Cookie
                                             </button>
                                         </div>
+
+                                        <div class="w-full h-full">
+                                            <BodyEditor
+                                                v-if="restEditorTab === 'body'"
+                                                v-model="body"
+                                                class="w-full h-full overflow-hidden border-t border-gray-200 dark:border-gray-600 rounded-br-2xl"
+                                            />
+                                        </div>
                                     </motion.nav>
                                 </AnimatePresence>
+
+                                <div
+                                    v-if="restEditor"
+                                    class="rest-editor-overlay"
+                                    @click="restEditor = false"
+                                />
 
                                 <aside class="menu">
                                     <button
@@ -196,15 +210,67 @@
                                 </aside>
 
                                 <div
-                                    v-if="consoleTab === 'preview'"
-                                    class="whitespace-pre-wrap pt-9"
-                                    v-html="preview"
+                                    v-if="errorLog && consoleTab === 'preview'"
+                                    class="absolute top-0 left-0 z-10 flex justify-center items-center w-full h-full rounded-lg text-red-500"
+                                >
+                                    <div
+                                        class="w-lg h-60 p-4 bg-red-200/20 dark:bg-red-600/20 border border-red-200/40 dark:border-red-600/40 rounded-2xl backdrop-blur-md whitespace-pre-wrap"
+                                    >
+                                        <p
+                                            class="flex items-center gap-1.5 text-left mb-1.5"
+                                        >
+                                            <TriangleAlert
+                                                :size="14"
+                                                stroke-width="2"
+                                            />
+                                            <span>Error</span>
+                                        </p>
+                                        <pre
+                                            class="whitespace-pre-wrap w-full"
+                                            v-text="errorLog"
+                                        />
+                                    </div>
+                                </div>
+
+                                <iframe
+                                    v-if="
+                                        consoleTab === 'preview' &&
+                                        previewIsHTML
+                                    "
+                                    id="preview-sandbox"
+                                    class="block w-full h-full pt-10"
+                                    src="/playground/preview.html"
+                                    :class="{
+                                        hidden: consoleTab !== 'preview'
+                                    }"
                                 />
+
                                 <div
-                                    v-else
-                                    class="whitespace-pre-wrap"
-                                    v-text="console"
+                                    v-if="
+                                        consoleTab === 'preview' &&
+                                        !previewIsHTML
+                                    "
+                                    v-text="preview"
+                                    class="block w-full h-full pt-12 px-4"
                                 />
+
+                                <div
+                                    v-if="consoleTab === 'console'"
+                                    class="p-4"
+                                    :class="{
+                                        'text-red-500': errorLog
+                                    }"
+                                >
+                                    <pre
+                                        class="font-mono !text-sm text-gray-400 dark:text-gray-500 mb-3 whitespace-nowrap"
+                                    >
+                                        {{ 'console' }}
+                                    </pre>
+                                    <pre
+                                        v-text="errorLog || consoleLog"
+                                        class="whitespace-pre-wrap"
+                                    />
+                                </div>
                             </div>
                         </SplitterPanel>
                     </SplitterGroup>
@@ -215,7 +281,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, nextTick, watch } from 'vue'
+import { onMounted, ref, nextTick, watch, onUnmounted } from 'vue'
 import { watchDebounced } from '@vueuse/core'
 
 import {
@@ -226,15 +292,25 @@ import {
     Moon,
     Compass,
     Code,
-    Pencil,
     Cog,
-    X
+    X,
+    TriangleAlert
 } from 'lucide-vue-next'
 import { SplitterGroup, SplitterPanel, SplitterResizeHandle } from 'reka-ui'
 import { AnimatePresence, motion } from 'motion-v'
+
+import BodyEditor from './body-editor.vue'
+
 import Ray from '../../components/fern/ray.vue'
 
-import { init, execute, updateTheme } from './utils'
+import { keys } from './keys'
+import { createEditor, execute, updateTheme, isJSON } from './utils'
+
+import '../../tailwind.css'
+
+const props = defineProps<{
+    code?: string
+}>()
 
 const taskTab = ref<'tasks' | 'docs'>('tasks')
 const consoleTab = ref<'preview' | 'console'>('preview')
@@ -242,14 +318,20 @@ const consoleTab = ref<'preview' | 'console'>('preview')
 const theme = ref<'light' | 'dark'>('light')
 
 const preview = ref('')
-const console = ref('')
+const previewIsHTML = ref(false)
+const consoleLog = ref('')
+const errorLog = ref<string | null>(null)
+
+const userCode = ref(props.code || '')
 
 const method = ref('GET')
 const url = ref('/')
+const body = ref('')
+const headers = ref<Record<string, string>>({})
+const cookies = ref<Record<string, string>>({})
+
 const restEditor = ref(false)
 const restEditorTab = ref<'body' | 'headers' | 'cookie'>('body')
-
-import '../../tailwind.css'
 
 if (typeof localStorage !== 'undefined') {
     const localTheme = localStorage.getItem('vitepress-theme-appearance')
@@ -272,16 +354,61 @@ function setTheme(
     else document.documentElement.classList.remove('dark')
 }
 
-onMounted(() => {
-    init('elysia-editor-code', {
-        onChange: run
-    })
+const closeRestEditor = (e: KeyboardEvent) => {
+    if (restEditor && e.key === 'Escape') restEditor.value = false
+}
 
-    run()
+const save = () => {
+    if (userCode.value) localStorage.setItem(keys.code(), userCode.value)
+
+    localStorage.setItem(keys.path(), url.value)
+    localStorage.setItem(keys.method(), method.value)
+    localStorage.setItem(keys.body(), body.value)
+    localStorage.setItem(keys.headers(), JSON.stringify(headers.value))
+    localStorage.setItem(keys.cookies(), JSON.stringify(cookies.value))
+}
+
+onMounted(() => {
+    const saved = {
+        code: localStorage.getItem(keys.code()),
+        path: localStorage.getItem(keys.path()),
+        method: localStorage.getItem(keys.method()),
+        body: localStorage.getItem(keys.body()),
+        headers: localStorage.getItem(keys.headers()),
+        cookies: localStorage.getItem(keys.cookies())
+    } as const
+
+    if (saved.body) body.value = saved.body
+    if (saved.headers) headers.value = JSON.parse(saved.headers)
+    if (saved.cookies) cookies.value = JSON.parse(saved.cookies)
+    if (saved.method) method.value = saved.method
+    if (saved.path) url.value = saved.path
+
+    createEditor('elysia-editor-code', {
+        code: localStorage.getItem(keys.code()) ?? props.code,
+        onChange(value) {
+            userCode.value = value
+            run()
+        }
+    }).then(run)
 
     requestAnimationFrame(() => {
         updateTheme(theme.value === 'light' ? 'latte' : 'frappe')
     })
+
+    window.addEventListener('keydown', closeRestEditor, {
+        passive: true
+    })
+
+    window.addEventListener('beforeunload', save, {
+        passive: true
+    })
+})
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', closeRestEditor)
+
+    save()
 })
 
 async function toggleTheme() {
@@ -321,16 +448,78 @@ watch(() => method.value, run)
 watchDebounced(() => url.value, run, {
     debounce: 300
 })
+watchDebounced(() => body.value, run, {
+    debounce: 500
+})
+watchDebounced(() => headers.value, run, {
+    debounce: 500
+})
+watchDebounced(() => cookies.value, run, {
+    debounce: 500
+})
 
 async function run() {
-    const [response, { status, headers }] = await execute(
-        `http://localhost${url.value}`,
-        {
-            method: method.value
-        }
-    )
+    errorLog.value = null
 
-    preview.value = response
+    let isLogged = false
+
+    try {
+        const [response, responseMeta] = await execute(
+            `http://localhost${url.value}`,
+            {
+                method: method.value,
+                headers: Object.assign(
+                    isJSON(body.value)
+                        ? { 'Content-Type': 'application/json' }
+                        : body.value.trim()
+                          ? {
+                                'Content-Type': 'text/plain'
+                            }
+                          : {},
+                    headers.value
+                ),
+                body:
+                    body.value &&
+                    method.value !== 'GET' &&
+                    method.value !== 'HEAD'
+                        ? body.value
+                        : undefined
+            },
+            (log) => {
+                if (!isLogged) {
+                    isLogged = true
+                    consoleLog.value = ''
+                }
+
+                for (const value of log)
+                    if (typeof value === 'object')
+                        consoleLog.value +=
+                            JSON.stringify(value, null, 2) + '\n'
+                    else consoleLog.value += value + '\n'
+            }
+        )
+
+        preview.value = response
+
+        const sandbox = document.getElementById(
+            'preview-sandbox'
+        ) as HTMLIFrameElement
+
+        previewIsHTML.value = /<[^>]+>/.test(response)
+        localStorage.setItem('elysia-playground:preview', response)
+
+        if (previewIsHTML.value && sandbox && sandbox.contentWindow)
+            sandbox.contentWindow.location.reload()
+    } catch (err) {
+        const error = err as { syntax: Error } | Error
+
+        if (error) {
+            consoleLog.value = ''
+            errorLog.value =
+                // @ts-ignore
+                error.syntax?.message ?? error.message ?? error + ''
+        }
+    }
 }
 </script>
 
@@ -338,10 +527,10 @@ async function run() {
 @reference '../../tailwind.css';
 
 #elysia-editor {
-    @apply flex flex-col w-full min-h-screen bg-gray-50 dark:bg-gray-900;
+    @apply flex w-full min-h-screen py-1.5 bg-gray-50 dark:bg-gray-900;
 
     & > .tabs {
-        @apply flex h-10.5 px-2 py-1 gap-1;
+        @apply flex flex-col h-full px-1.5 py-1 gap-1;
 
         & > .tab {
             @apply clicky flex justify-center items-center size-8.5 text-gray-500 dark:text-gray-400 rounded-xl border border-transparent interact:bg-pink-400/10 interact:dark:bg-pink-500/30 interact:text-pink-400 active:border-pink-400/20 dark:active:border-pink-500/40 transition-colors;
@@ -353,8 +542,16 @@ async function run() {
     }
 }
 
+#elysia-editor-code {
+    @apply bg-[#eff1f5] dark:bg-[#1e1e2e];
+}
+
 #elysia-doc {
-    @apply relative w-full h-full p-2 pr-1 pt-0;
+    @apply relative w-full h-full pr-0.75;
+
+    & > .menu {
+        @apply top-11.5 right-5;
+    }
 
     & > .surface {
         @apply w-full h-full border border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden bg-white dark:bg-gray-800;
@@ -379,11 +576,11 @@ async function run() {
 
 #elysia-doc,
 #elysia-editor {
-    height: calc(100vh - (var(--spacing) * 10.5));
+    height: calc(100vh - (var(--spacing) * 3));
 }
 
 #elysia-editor-result {
-    @apply relative w-full h-full overflow-auto p-4 font-mono text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl;
+    @apply relative w-full h-full overflow-auto font-mono text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl;
 
     & > .menu,
     & > .rest,
@@ -403,40 +600,40 @@ async function run() {
             }
         }
     }
+
+    & > .rest,
+    & > .rest-editor {
+        @apply left-2;
+        right: unset;
+    }
+
+    & > .rest-editor {
+        @apply z-30 flex-col w-md h-72 p-0 dark:bg-gray-700/30 dark:border-gray-500/40 shadow-black/7.5;
+        transform-origin: 0.75rem 0.75rem;
+
+        & > .type {
+            @apply flex gap-1 text-sm p-0.5;
+
+            & > .button:not(:first-child) {
+                @apply px-1 w-auto !text-sm;
+
+                &.-active {
+                    @apply opacity-100;
+                }
+            }
+        }
+    }
+
+    & > .rest-editor-overlay {
+        @apply absolute top-0 left-0 z-20 w-full h-full bg-transparent;
+    }
 }
 
-#elysia-doc > .menu {
-    @apply top-11.5 right-5;
-}
-
-#elysia-editor-result > .rest {
+& > .rest {
     @apply opacity-0 transition-opacity duration-200;
 
     &.-active {
         @apply opacity-100;
-    }
-}
-
-#elysia-editor-result > .rest,
-#elysia-editor-result > .rest-editor {
-    @apply left-2;
-    right: unset;
-}
-
-#elysia-editor-result > .rest-editor {
-    @apply z-20 w-md h-72 shadow-black/7.5;
-    transform-origin: 0.75rem 0.75rem;
-
-    & > .type {
-        @apply flex gap-1 text-sm;
-
-        & > .button:not(:first-child) {
-            @apply px-1 w-auto !text-sm;
-
-            &.-active {
-				@apply opacity-100;
-			}
-        }
     }
 }
 </style>
