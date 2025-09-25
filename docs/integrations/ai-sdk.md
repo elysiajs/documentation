@@ -35,10 +35,10 @@ new Elysia().get('/', () => {
     })
 
     // Just return a ReadableStream
-    return result.textStream // [!code ++]
+    return stream.textStream // [!code ++]
 
     // UI Message Stream is also supported
-    return result.toUIMessageStream() // [!code ++]
+    return stream.toUIMessageStream() // [!code ++]
 })
 ```
 
@@ -61,10 +61,10 @@ new Elysia().get('/', () => {
     })
 
     // Each chunk will be sent as a Server Sent Event
-    return sse(result.textStream) // [!code ++]
+    return sse(stream.textStream) // [!code ++]
 
     // UI Message Stream is also supported
-    return sse(result.toUIMessageStream()) // [!code ++]
+    return sse(stream.toUIMessageStream()) // [!code ++]
 })
 ```
 
@@ -84,10 +84,10 @@ new Elysia().get('/', () => {
         prompt: 'Hi! How are you doing?'
     })
 
-    return result.toTextStreamResponse() // [!code ++]
+    return stream.toTextStreamResponse() // [!code ++]
 
     // UI Message Stream Response will use SSE
-    return result.toUIMessageStreamResponse() // [!code ++]
+    return stream.toUIMessageStreamResponse() // [!code ++]
 })
 ```
 
@@ -107,7 +107,7 @@ new Elysia().get('/', async function* () {
         prompt: 'Hi! How are you doing?'
     })
 
-    for await (const data of result.textStream) // [!code ++]
+    for await (const data of stream.textStream) // [!code ++]
         yield sse({ // [!code ++]
             data, // [!code ++]
             event: 'message' // [!code ++]
