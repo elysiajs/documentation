@@ -333,6 +333,8 @@ app.listen = (port, callback) => {
 	       	self.postMessage({ error })
 	    }
 	}
+
+	return app
 }
 
 	return app

@@ -47,10 +47,12 @@
             </div>
 
             <div class="w-full h-full">
-                <Body
-                    v-if="tab === 'body'"
-                    class="w-full h-full overflow-hidden border-t border-gray-200 dark:border-gray-600 rounded-br-2xl"
-                />
+                <ClientOnly>
+                    <Body
+                        v-if="tab === 'body'"
+                        class="w-full h-full overflow-hidden border-t border-gray-200 dark:border-gray-600 rounded-br-2xl"
+                    />
+                </ClientOnly>
             </div>
         </motion.nav>
     </AnimatePresence>
@@ -66,6 +68,8 @@
 import { ref, defineModel, defineAsyncComponent } from 'vue'
 import { AnimatePresence, motion } from 'motion-v'
 import { X } from 'lucide-vue-next'
+
+import ClientOnly from '../../client-only.vue'
 
 const Body = defineAsyncComponent(() => import('./body.vue'))
 

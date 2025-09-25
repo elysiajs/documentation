@@ -24,7 +24,9 @@
                             :default-size="60"
                             class="bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-600 rounded-2xl overflow-hidden"
                         >
-                            <Editor />
+                        	<ClientOnly>
+                            	<Editor />
+                        	</ClientOnly>
                         </SplitterPanel>
                         <SplitterResizeHandle />
                         <SplitterPanel>
@@ -43,6 +45,8 @@ import { watchDebounced } from '@vueuse/core'
 
 import { SplitterGroup, SplitterPanel, SplitterResizeHandle } from 'reka-ui'
 import { usePlaygroundStore } from './store'
+
+import ClientOnly from './components/client-only.vue'
 
 import Aside from './components/aside.vue'
 import Doc from './components/doc.vue'
