@@ -62,8 +62,6 @@ import ElysiaChan from './components/elysia-chan/elysia-chan.vue'
 
 const Editor = defineAsyncComponent(() => import('./components/editor.vue'))
 
-import '../../../tailwind.css'
-
 const props = defineProps<{
     code?: string
 }>()
