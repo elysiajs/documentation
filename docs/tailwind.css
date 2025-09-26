@@ -226,39 +226,31 @@ button.copy::after {
     content: '';
 }
 
-#VPSidebarNav > .group:nth-child(2) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(3) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/getting-start.svg);
 }
 
-#VPSidebarNav > .group:nth-child(3) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/essential.svg);
 }
 
-/* #VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/validation.svg);
-}
-
 #VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/lifecycle.svg);
-} */
-
-#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/pattern.svg);
 }
 
-#VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/eden.svg);
 }
 
-#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/blocks.svg);
 }
 
-#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/search.svg);
 }
 
-#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(9) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/book.svg);
 }
 

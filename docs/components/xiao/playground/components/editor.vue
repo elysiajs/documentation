@@ -13,10 +13,8 @@ onMounted(() => {
     createEditor({
         id: 'elysia-playground-editor',
         code: store.code,
-        theme: store.theme,
         onChange(newCode) {
             store.code = newCode
-            store.run()
         }
     })
         .then(store.syncEditorTheme)

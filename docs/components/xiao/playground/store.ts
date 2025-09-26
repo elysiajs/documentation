@@ -1,6 +1,7 @@
 import { nextTick } from 'vue'
 import { defineStore } from 'pinia'
 import { save, load } from './storage'
+import { execute, isJSON } from './utils'
 
 const defaultCode = `import { Elysia } from 'elysia'
 
@@ -9,8 +10,16 @@ const app = new Elysia()
 	.listen(3000)
 `
 
+let timeout: number | undefined
+
+const randomId = () =>
+    Math.random()
+        .toString(36)
+        .substring(2, length + 2)
+
 export const usePlaygroundStore = defineStore('playground', {
     state: () => ({
+        id: randomId(),
         code: '',
         defaultCode,
         theme: 'light' as 'light' | 'dark',
@@ -27,12 +36,12 @@ export const usePlaygroundStore = defineStore('playground', {
             headers: {} as Record<string, string>
         },
         result: {
-            console: '',
+            console: [] as { data: string; time: number }[],
             error: null as string | null,
             isHTML: false
         },
         tab: {
-            aside: 'task' as 'task' | 'docs',
+            aside: 'task' as 'task' | 'docs' | null,
             result: 'preview' as 'preview' | 'console' | 'response'
         }
     }),
@@ -145,13 +154,24 @@ export const usePlaygroundStore = defineStore('playground', {
             updateTheme(this.theme)
         },
         async run() {
-            const { execute, isJSON } = await import('./monaco')
+            const id = randomId()
+            this.id = id
 
             this.result.error = null
             let isLogged = false
 
+            timeout = setTimeout(() => {
+                if (this.id !== id) return
+
+                this.response.body = null
+                this.response.status = null
+                this.response.headers = {}
+                if (!isLogged) this.result.console = []
+            }, 300) as any as number
+
             try {
                 const [response, { headers, status }] = await execute(
+                    this.code,
                     `http://localhost${this.input.path}`,
                     {
                         method: this.input.method,
@@ -173,18 +193,27 @@ export const usePlaygroundStore = defineStore('playground', {
                                 : undefined
                     },
                     (log) => {
+                        if (this.id !== id) return
+
                         if (!isLogged) {
                             isLogged = true
-                            this.result.console = ''
+                            this.result.console = []
                         }
 
                         for (const value of log)
-                            if (typeof value === 'object')
-                                this.result.console +=
-                                    JSON.stringify(value, null, 2) + '\n'
-                            else this.result.console += value + '\n'
+                            this.result.console.push({
+                                data:
+                                    typeof value === 'object'
+                                        ? JSON.stringify(value, null, 2)
+                                        : value + '',
+                                time: Date.now()
+                            })
                     }
                 )
+
+                if (this.id !== id) return
+
+                clearTimeout(timeout)
 
                 this.response.body = response
                 this.response.headers = headers as Record<string, string>
@@ -203,7 +232,6 @@ export const usePlaygroundStore = defineStore('playground', {
                 const error = err as { syntax: Error } | Error
 
                 if (error) {
-                    this.result.console = ''
                     this.result.error =
                         // @ts-ignore
                         error.syntax?.message ?? error.message ?? error + ''

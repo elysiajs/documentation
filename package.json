@@ -26,6 +26,7 @@
 		"pinia": "^3.0.3",
 		"reka-ui": "^2.5.0",
 		"shiki": "^3.9.2",
+		"sucrase": "^3.35.0",
 		"tailwindcss": "^4.1.11",
 		"valibot": "^1.1.0",
 		"vite-plugin-monaco-editor-esm": "^2.0.2",

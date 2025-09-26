@@ -1,8 +1,12 @@
 <template>
     <div
         class="relative w-full h-full overflow-auto font-mono text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl"
+        :class="{
+            'overflow-y-hidden':
+                store.tab.result === 'preview' && store.result.isHTML
+        }"
     >
-        <Editor v-if="store.tab.result === 'preview'" />
+        <Editor />
 
         <aside class="playground-floating-menu top-2 right-2">
             <button
@@ -11,6 +15,13 @@
                 @click="store.tab.result = 'preview'"
             >
                 <Compass :size="16" stroke-width="2" />
+            </button>
+            <button
+                class="button"
+                :class="store.tab.result === 'response' ? '-active' : ''"
+                @click="store.tab.result = 'response'"
+            >
+                <Search :size="16" stroke-width="2" />
             </button>
             <button
                 class="button"
@@ -27,12 +38,12 @@
         >
             <TriangleAlert
                 :size="384"
-                stroke-width="0.375"
-                class="absolute opacity-7.5 dark:opacity-15 z-30 pointer-events-none"
+                stroke-width="0.25"
+                class="absolute z-30 opacity-5 dark:opacity-15 dark:text-red-600 pointer-events-none"
             />
 
             <div
-                class="w-lg h-56 p-4 bg-red-200/30 dark:bg-red-600/30 border border-red-300/50 dark:border-red-600/50 shadow-2xl shadow-red-500/15 rounded-lg backdrop-blur-sm whitespace-pre-wrap -skew-x-12"
+                class="w-lg h-56 p-4 bg-red-200/25 dark:bg-red-600/25 border border-red-300/50 dark:border-red-600/50 shadow-2xl shadow-red-500/15 rounded-lg backdrop-blur-sm whitespace-pre-wrap -skew-x-12"
             >
                 <div class="skew-x-12">
                     <p class="flex items-center gap-1.5 text-left mb-1.5 px-3">
@@ -48,49 +59,86 @@
         </div>
 
         <iframe
-            v-if="store.tab.result === 'preview' && store.response.body"
             id="preview-sandbox"
-            class="block w-full h-full pt-10"
-            src="/playground/preview.html"
+            ref="iframe"
+            :key="store.response.body ?? ''"
+            class="block w-full h-full pt-10 bg-white dark:bg-gray-900"
+            :srcdoc="store.response.body ?? ''"
             :class="{
-                hidden: !store.result.isHTML
+                hidden: store.tab.result !== 'preview' || !store.result.isHTML
             }"
         />
 
         <div
             v-if="store.tab.result === 'preview' && !store.result.isHTML"
             v-text="store.response.body"
-            class="block w-full h-full pt-12 px-4"
+            class="block w-full h-full pt-12 px-3"
         />
 
         <div
             v-if="store.tab.result === 'console'"
-            class="p-4 text-sm"
+            class="px-1.5 pt-11.5 text-sm"
             :class="{
                 'text-red-500': store.result.error
             }"
         >
-            <pre
-                class="font-mono text-gray-400 dark:text-gray-500 mb-3 whitespace-nowrap"
+            <p
+                class="font-mono !text-sm px-1.5 py-1 text-gray-400 dark:text-gray-500 whitespace-nowrap"
             >
-            {{ 'console' }}
-        </pre
-            >
+                Console
+            </p>
             <pre
-                v-text="store.result.error || store.result.console"
-                class="whitespace-pre-wrap"
+                v-if="store.result.error"
+                v-text="store.result.error"
             />
+            <div
+                v-else
+                v-for="{ data, time } in store.result.console"
+                class="flex px-1.5 py-0.5 opacity-75 interact:opacity-100 interact:bg-gray-50 interact:dark:bg-gray-700/50 rounded-lg"
+            >
+                <p class="inline-flex flex-1 whitespace-pre-wrap">{{ data }}</p>
+                <time class="text-xs opacity-60 translate-y-0.5">{{
+                    dayjs(time).format('hh:mm:ss')
+                }}</time>
+            </div>
+        </div>
+
+        <div
+            v-if="
+                store.tab.result === 'response' && store.response.body !== null
+            "
+            class="px-3 pt-11.5 text-sm"
+            :class="{
+                'text-red-500': store.result.error
+            }"
+        >
+            <h6
+                class="font-mono !text-sm text-gray-400 dark:text-gray-500 py-1 whitespace-nowrap"
+            >
+                Network
+            </h6>
+            <p>HTTP/1.1 {{ store.response.status }}</p>
+            <p v-for="[name, value] of Object.entries(store.response.headers)">
+                {{ name }}: {{ value }}
+            </p>
+            <br />
+            <pre v-text="store.response.body" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { Compass, Code, TriangleAlert } from 'lucide-vue-next'
+import { ref } from 'vue'
+import dayjs from 'dayjs'
+
+import { Compass, Code, TriangleAlert, Search } from 'lucide-vue-next'
 import Editor from './editor/editor.vue'
 
 import { usePlaygroundStore } from '../../store'
 
 const store = usePlaygroundStore()
+
+const iframe = ref<HTMLIFrameElement | null>(null)
 </script>
 
 <style>

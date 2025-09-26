@@ -2,10 +2,13 @@
     <SplitterPanel
         :default-size="25"
         id="elysia-playground-doc"
-        class="relative w-full h-full pr-0.75"
+        class="relative w-full h-full"
+        :class="{ 'pr-0.75': store.tab.aside !== null }"
+        :max-size="store.tab.aside === null ? 0 : undefined"
     >
         <div
-            class="w-full h-full border border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden bg-white dark:bg-gray-800"
+            class="w-full h-full border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden bg-white dark:bg-gray-800"
+            :class="{ 'border': store.tab.aside !== null }"
         >
             <iframe
                 class="w-full h-full"

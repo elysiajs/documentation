@@ -6,8 +6,11 @@ import {
     type SourceResolver
 } from 'monaco-editor-auto-typings'
 
+import { transform } from 'sucrase'
+
 import latte from './theme/latte.json' with { type: 'json' }
 import mocha from './theme/mocha.json' with { type: 'json' }
+import { isJSON } from './utils'
 
 class Resolver extends UnpkgSourceResolver implements SourceResolver {
     constructor() {
@@ -79,8 +82,6 @@ class Resolver extends UnpkgSourceResolver implements SourceResolver {
     }
 }
 
-let esbuild: typeof import('esbuild-wasm')
-
 const setupTheme = () => {
     const transparent = {
         'editor.background': '#00000000',
@@ -117,14 +118,12 @@ interface CreateEditorOptions {
     id: string
     code: string
     onChange?(value: string): unknown
-    theme: 'light' | 'dark'
 }
 
 export const createEditor = async ({
     id,
     code,
-    onChange,
-    theme = 'light'
+    onChange
 }: CreateEditorOptions) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
         strict: true,
@@ -150,7 +149,14 @@ export const createEditor = async ({
         minimap: { enabled: false },
         wordWrap: 'off',
         renderWhitespace: 'none',
-        theme: theme === 'light' ? 'catppuccin-latte' : 'catppuccin-mocha',
+        theme: 'catppuccin-latte',
+        automaticLayout: true,
+        stickyScroll: {
+            enabled: false
+        },
+        fontLigatures: true,
+        cursorSmoothCaretAnimation: 'on',
+        cursorBlinking: 'phase',
         fontFamily: `'Geist Mono',
 	        ui-monospace,
 	        SFMono-Regular,
@@ -195,14 +201,6 @@ export const createEditor = async ({
         sourceResolver: new Resolver(),
         fileRootPath: 'file:///'
     })
-
-    esbuild = await import('esbuild-wasm')
-    try {
-        await esbuild.initialize({
-            wasmURL: 'https://cdn.jsdelivr.net/npm/esbuild-wasm/esbuild.wasm',
-            worker: true
-        })
-    } catch {}
 }
 
 export const createJSONEditor = ({
@@ -260,142 +258,8 @@ export const updateCode = (code: string) => {
     if (model) model.setValue(code)
 }
 
-export const execute = (
-    url: string,
-    options?: RequestInit,
-    onLog?: (log: unknown[]) => unknown
-) =>
-    new Promise<[string, ResponseInit]>(async (resolve, reject) => {
-        let normalized = monaco.editor
-            .getModel(files['main.ts'])!
-            .getValue()
-            .replace(
-                /import\s+([^\n]+?)\s+from\s+['"]([^'"]+)['"]/g,
-                (match, specifiers, moduleName) => {
-                    if (
-                        moduleName.startsWith('.') ||
-                        moduleName.startsWith('/')
-                    )
-                        return match
-
-                    return `import ${specifiers} from 'https://esm.sh/${moduleName}'`
-                }
-            )
-
-        if (!normalized.includes('.listen('))
-            reject(
-                'No Elysia server is running.\nDid you forget to call `.listen()`?'
-            )
-
-        normalized = normalized
-            .replace('openapi({', 'openapi({embedSpec:true,')
-            .replace('openapi()', 'openapi({embedSpec: true})')
-            .replace(
-                '.listen(',
-                `.use(app => {
-app.listen = (port, callback) => {
-	app.server = {
-		development: true,
-		fetch: (request) => app.fetch(request),
-		hostname: 'elysiajs.com',
-		id: 'Elysia',
-		pendingRequests: 0,
-		pendingWebSockets: 0,
-		port: port ?? 80,
-		publish() {},
-		ref() {},
-		reload() {},
-		requestIP() {
-			return {
-				address: '127.0.0.1',
-				family: 'IPv4',
-				port
-			}
-		},
-		upgrade() {},
-		unref() {}
-	}
-
-	callback?.(server)
-
-	self.onmessage = async (e) => {
-	   	try {
-	   		const response = await app.handle(new Request(e.data[0], e.data[1]))
-	  		self.postMessage({
-	    		response: [
-		    		await response.text(), {
-		    			status: response.status,
-		       			headers: Object.fromEntries(response.headers.entries())
-		      		}
-		       	]
-			})
-	    } catch (error) {
-	       	self.postMessage({ error })
-	    }
-	}
-
-	return app
-}
-
-	return app
-})
-.listen(`
-            )
-
-        normalized = `self.console.log = self.console.warn = self.console.error = (...log) => {
-    self.postMessage({ log })
-}
-
-${normalized}`
-
-        try {
-            const transpiled = await esbuild.transform(normalized, {
-                loader: 'ts'
-            })
-
-            const blob = new Blob([transpiled.code], {
-                type: 'application/javascript'
-            })
-            const worker = new Worker(URL.createObjectURL(blob), {
-                type: 'module'
-            })
-
-            worker.onmessage = (e) => {
-                if (e.data.error) {
-                    worker.terminate()
-                    return reject(e.data.error)
-                }
-
-                if (e.data.log && onLog) return onLog(e.data.log)
-
-                if (e.data.response) {
-                    worker.terminate()
-                    return resolve(e.data.response)
-                }
-            }
-
-            worker.onerror = (e) => {
-                reject(e)
-                worker.terminate()
-            }
-
-            worker.postMessage([url, options ?? {}])
-        } catch (error) {
-            reject({ syntax: error })
-        }
-    })
-
 export const updateTheme = (theme: 'light' | 'dark') => {
     monaco.editor.setTheme(
         theme === 'light' ? 'catppuccin-latte' : 'catppuccin-mocha'
-    )
-}
-
-export const isJSON = (body: string) => {
-    body = body.trim()
-
-    return (
-        (body.startsWith('{') && body.endsWith('}')) ||
-        (body.startsWith('[') && body.endsWith(']'))
     )
 }

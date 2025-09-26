@@ -6,6 +6,8 @@ import DefaultTheme from 'vitepress/theme-without-fonts'
 import mediumZoom from 'medium-zoom'
 
 import useDark from './use-dark'
+import { Terminal } from 'lucide-vue-next'
+
 import Ray from '../../components/fern/ray.vue'
 
 import { motion, cubicBezier, AnimatePresence } from 'motion-v'
@@ -195,6 +197,7 @@ const sponsors = Object.values(data).filter(
                 static
             />
         </template>
+
         <template #sidebar-nav-after>
             <div class="mt-auto xl:hidden">
                 <img
@@ -205,6 +208,7 @@ const sponsors = Object.values(data).filter(
                 />
             </div>
         </template>
+
         <template #aside-bottom>
             <div class="mt-auto mx-auto">
                 <img
@@ -215,6 +219,7 @@ const sponsors = Object.values(data).filter(
                 />
             </div>
         </template>
+
         <template #aside-outline-after>
             <h6 class="text-sm font-medium text-gray-500 mt-6 px-2">
                 Our Sponsors
@@ -222,7 +227,10 @@ const sponsors = Object.values(data).filter(
             <aside class="grid grid-cols-2 w-48">
                 <a
                     :key="sponsor.sponsorEntity.login"
-                    :href="sponsorOverride.href[sponsor.sponsorEntity.login] ?? `https://github.com/${sponsor.sponsorEntity.login}`"
+                    :href="
+                        sponsorOverride.href[sponsor.sponsorEntity.login] ??
+                        `https://github.com/${sponsor.sponsorEntity.login}`
+                    "
                     :class="
                         sponsorOverride.class[sponsor.sponsorEntity.login] ??
                         'p-2.25'
@@ -240,6 +248,20 @@ const sponsors = Object.values(data).filter(
                     />
                 </a>
             </aside>
+        </template>
+
+        <template #sidebar-nav-before>
+            <a
+                target="_blank"
+                href="/playground"
+                class="clicky text-white font-semibold text-gradient from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 -translate-x-3"
+            >
+            	<div class="flex items-center gap-1 px-3 py-1.5 rounded-xl interact:bg-pink-400/7.5 interact:dark:bg-pink-400/10 transition-colors">
+	                <Terminal :size="21" class="text-pink-400" />
+
+	                Playground
+             	</div>
+            </a>
         </template>
     </DefaultTheme.Layout>
 </template>

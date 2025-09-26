@@ -7,7 +7,7 @@
         <button
             class="tab"
             :class="store.tab.aside === 'task' ? '-active' : ''"
-            @click="store.tab.aside = 'task'"
+            @click="store.tab.aside = store.tab.aside === 'task' ? null : 'task'"
         >
             <GraduationCap :size="18" stroke-width="2" />
         </button>
@@ -15,7 +15,7 @@
         <button
             class="tab"
             :class="{ '-active': store.tab.aside === 'docs' }"
-            @click="store.tab.aside = 'docs'"
+            @click="store.tab.aside = store.tab.aside === 'docs' ? null : 'docs'"
         >
             <Bookmark :size="18" stroke-width="2" />
         </button>
@@ -45,7 +45,7 @@ const toggleTheme = () => store.setThemeWithAnimation()
 @reference '../../../../tailwind.css';
 
 #elysia-editor-aside {
-    @apply flex flex-col px-1 py-1 gap-1;
+    @apply flex flex-col pl-1 pr-0.5 gap-1;
     height: calc(100vh - var(--spacing) * 3);
 
     & > .tab {

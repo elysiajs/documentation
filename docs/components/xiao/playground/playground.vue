@@ -1,5 +1,5 @@
 <template>
-	<ElysiaChan />
+    <ElysiaChan />
 
     <div class="flex w-full min-h-screen py-1.5 bg-gray-50 dark:bg-gray-950">
         <Aside />
@@ -12,21 +12,28 @@
                 <slot />
             </Doc>
 
-            <SplitterResizeHandle />
+            <SplitterResizeHandle v-if="store.tab.aside !== null" />
 
             <SplitterPanel :default-size="75">
-                <div class="w-full h-full px-0.75">
+                <div
+                    class="w-full h-full pr-0.75"
+                    :class="{ 'pl-0.75': store.tab.aside !== null }"
+                >
                     <SplitterGroup
                         direction="vertical"
                         class="relative flex flex-1 w-full h-playground gap-0.75"
                     >
                         <SplitterPanel
                             :default-size="60"
-                            class="bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-600 rounded-2xl overflow-hidden"
+                            class="relative bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-600 rounded-2xl overflow-hidden"
                         >
-                        	<ClientOnly>
-                            	<Editor />
-                        	</ClientOnly>
+                            <img
+                                class="absolute z-10 -right-40 pointer-events-none h-[130vh] opacity-10 dark:opacity-7.5"
+                                src="/assets/elysia_chan.webp"
+                            />
+                            <ClientOnly>
+                                <Editor />
+                            </ClientOnly>
                         </SplitterPanel>
                         <SplitterResizeHandle />
                         <SplitterPanel>
@@ -64,7 +71,10 @@ const props = defineProps<{
 const store = usePlaygroundStore()
 
 store.load()
-if (!store.code && props.code) store.code = props.code
+if (!store.code && props.code) {
+    store.code = props.code
+    store.run()
+}
 
 onMounted(() => {
     window.addEventListener('beforeunload', store.save, {
