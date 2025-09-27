@@ -233,7 +233,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia uses optional prefix constructor to define one
+> Elysia uses an optional constructor prefix to define one
 
 </template>
 
@@ -547,7 +547,7 @@ const app = new Elysia()
 While Hono has a `next` function to call the next middleware, Elysia does not have one.
 
 ## Sounds type safety
-Elysia is designed to be sound type safety.
+Elysia is designed to provide sound type safety.
 
 For example, you can customize context in a **type-safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Hono doesn't.
 
