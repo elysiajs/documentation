@@ -17,7 +17,7 @@ head:
 
     - - meta
       - property: 'og:description'
-        content: This guide is for Hono users who want to see a differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
+        content: This guide is for Hono users who want to see the differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
 ---
 
 <script setup>
@@ -30,7 +30,7 @@ import Benchmark from '../components/fern/benchmark-hono.vue'
 
 # From Hono to Elysia
 
-This guide is for Hono users who want to see a differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
+This guide is for Hono users who want to see the differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
 
 **Hono** is a fast and lightweight built on Web Standard. It has broad compatibility with multiple runtime like Deno, Bun, Cloudflare Workers, and Node.js.
 
@@ -45,7 +45,7 @@ Elysia has significant performance improvements over Hono thanks to static code 
 
 ## Routing
 
-Hono and Elysia has similar routing syntax, using `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
+Hono and Elysia have similar routing syntax, using `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
 
 Both use a single `Context` parameters to handle request and response, and return a response directly.
 
@@ -110,15 +110,15 @@ const app = new Elysia()
 
 </Compare>
 
-While Hono use a `c.text`, and `c.json` to warp a response, Elysia map a value to a response automatically.
+While Hono use a `c.text`, and `c.json` to wrap a response, Elysia map a value to a response automatically.
 
-There is a slight different in style guide, Elysia recommends usage of method chaining and object destructuring.
+There is a slight difference in style guide, Elysia recommends usage of method chaining and object destructuring.
 
-Hono port allocation is depends on runtime, and adapter while Elysia use a single `listen` method to start the server.
+Hono port allocation depends on runtime and adapter while Elysia uses a single `listen` method to start the server.
 
 ## Handler
 
-Hono use a function to parse query, header, and body manually while Elysia automatically parse properties.
+Hono uses a function to parse query, header, and body manually while Elysia automatically parses properties.
 
 <Compare>
 
@@ -145,7 +145,7 @@ app.post('/user', async (c) => {
 
 <template v-slot:left-content>
 
-> Hono parse body automatically but it doesn't apply to query and headers
+> Hono parses body automatically but it doesn't apply to query and headers
 
 </template>
 
@@ -171,19 +171,19 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use static code analysis to analyze what to parse
+> Elysia uses static code analysis to analyze what to parse
 
 </template>
 
 </Compare>
 
-Elysia use **static code analysis** to determine what to parse, and only parse the required properties.
+Elysia uses **static code analysis** to determine what to parse, and only parses the required properties.
 
 This is useful for performance and type safety.
 
 ## Subrouter
 
-Both can inherits another instance as a router, but Elysia treat every instances as a component which can be used as a subrouter.
+Both can inherit another instance as a router, but Elysia treats every instance as a component which can be used as a subrouter.
 
 <Compare>
 
@@ -233,7 +233,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use optional prefix constructor to define one
+> Elysia uses optional prefix constructor to define one
 
 </template>
 
@@ -242,7 +242,7 @@ const app = new Elysia()
 While Hono requires a prefix to separate the subrouter, Elysia doesn't require a prefix to separate the subrouter.
 
 ## Validation
-While Hono supports for various validator via external package, Elysia has a built-in validation using **TypeBox**, and support for Standard Schema out of the box allowing you to use your favorite library like Zod, Valibot, ArkType, Effect Schema and so on without additional library. Elysia also offers seamless integration with OpenAPI, and type inference behind the scene.
+While Hono supports various validators via external packages, Elysia has built-in validation using **TypeBox**, and supports Standard Schema out of the box allowing you to use your favorite library like Zod, Valibot, ArkType, Effect Schema and so on without additional libraries. Elysia also offers seamless integration with OpenAPI, and type inference behind the scenes.
 
 <Compare>
 
@@ -369,7 +369,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
+> Elysia uses TypeBox for validation, and coerces types automatically. While supporting various validation libraries like Zod, Valibot with the same syntax as well.
 
 </template>
 
@@ -378,7 +378,7 @@ const app = new Elysia()
 Both offers type inference from schema to context automatically.
 
 ## File upload
-Both Hono, and Elysia use Web Standard API to handle file upload, but Elysia has a built-in declarative support for file validation using **file-type** to validate mimetype.
+Both Hono and Elysia use Web Standard API to handle file upload, but Elysia has built-in declarative support for file validation using **file-type** to validate mimetype.
 
 <Compare>
 
@@ -448,17 +448,17 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia handle file, and mimetype validation declaratively
+> Elysia handles file and mimetype validation declaratively
 
 </template>
 
 </Compare>
 
-As Web Standard API doesn't validate mimetype, it is a security risk to trust `content-type` provided by the client so external library is required for Hono, while Elysia use `file-type` to validate mimetype automatically.
+As Web Standard API doesn't validate mimetype, it is a security risk to trust `content-type` provided by the client so external library is required for Hono, while Elysia uses `file-type` to validate mimetype automatically.
 
 ## Middleware
 
-Hono middleware use a single queue-based order similar to Express while Elysia give you a more granular control using an **event-based** lifecycle.
+Hono middleware uses a single queue-based order similar to Express while Elysia gives you more granular control using an **event-based** lifecycle.
 
 Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
@@ -538,18 +538,18 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use a specific event interceptor for each point in the request pipeline
+> Elysia uses a specific event interceptor for each point in the request pipeline
 
 </template>
 
 </Compare>
 
-While Hono has a `next` function to call the next middleware, Elysia does not has one.
+While Hono has a `next` function to call the next middleware, Elysia does not have one.
 
 ## Sounds type safety
-Elysia is designed to be sounds type safety.
+Elysia is designed to be sound type safety.
 
-For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Hono doesn't.
+For example, you can customize context in a **type-safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Hono doesn't.
 
 <Compare>
 
@@ -638,13 +638,13 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use a specific event interceptor for each point in the request pipeline
+> Elysia uses a specific event interceptor for each point in the request pipeline
 
 </template>
 
 </Compare>
 
-While Hono can, use `declare module` to extend the `ContextVariableMap` interface, it is globally available and doesn't have sounds type safety, and doesn't garantee that the property is available in all request handlers.
+While Hono can use `declare module` to extend the `ContextVariableMap` interface, it is globally available and doesn't have sound type safety, and doesn't guarantee that the property is available in all request handlers.
 
 ```ts
 declare module 'hono' {
@@ -654,10 +654,10 @@ declare module 'hono' {
   	}
 }
 ```
-> This is required for the above Hono example to work, which doesn't offers sounds type safety
+> This is required for the above Hono example to work, which doesn't offer sound type safety
 
 ## Middleware parameter
-Hono use a callback function to define a reusable route-specific middleware, while Elysia use [macro](/patterns/macro) to define a custom hook.
+Hono uses a callback function to define a reusable route-specific middleware, while Elysia uses [macro](/patterns/macro) to define a custom hook.
 
 <Compare>
 
@@ -746,7 +746,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use macro to pass custom argument to custom middleware
+> Elysia uses macro to pass custom arguments to custom middleware
 
 </template>
 
@@ -754,7 +754,7 @@ const app = new Elysia()
 
 ## Error handling
 
-Hono provide a `onError` function which apply to all routes while Elysia provides a more granular control over error handling.
+Hono provides an `onError` function which applies to all routes while Elysia provides more granular control over error handling.
 
 <Compare>
 
@@ -797,7 +797,7 @@ app.get('/error', (req, res) => {
 
 <template v-slot:left-content>
 
-> Hono use `onError` funcition to handle error, a single error handler for all routes
+> Hono uses `onError` function to handle errors, a single error handler for all routes
 
 </template>
 
@@ -862,13 +862,13 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia provide more granular control over error handling, and scoping mechanism
+> Elysia provides more granular control over error handling, and scoping mechanism
 
 </template>
 
 </Compare>
 
-While Hono offers error handling using middleware-like, Elysia provide:
+While Hono offers error handling using middleware-like approach, Elysia provides:
 
 1. Both global and route specific error handler
 2. Shorthand for mapping HTTP status and `toResponse` for mapping error to a response
@@ -880,7 +880,7 @@ Elysia provides all of this with type safety while Hono doesn't.
 
 ## Encapsulation
 
-Hono encapsulate plugin side-effect, while Elysia give you a control over side-effect of a plugin via explicit scoping mechanism, and order-of-code.
+Hono encapsulates plugin side-effects, while Elysia gives you control over side-effects of a plugin via explicit scoping mechanism, and order-of-code.
 
 <Compare>
 
@@ -907,7 +907,7 @@ app.route('/api', subRouter)
 
 <template v-slot:left-content>
 
-> Hono encapsulate side-effect of a plugin
+> Hono encapsulates side-effects of a plugin
 
 </template>
 
@@ -936,15 +936,15 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia encapsulate side-effect of a plugin unless explicitly stated
+> Elysia encapsulates side-effects of a plugin unless explicitly stated
 
 </template>
 
 </Compare>
 
-Both has a encapsulate mechanism of a plugin to prevent side-effect.
+Both have an encapsulation mechanism of a plugin to prevent side-effects.
 
-However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Fastify always encapsulate it.
+However, Elysia can explicitly state which plugin should have side-effects by declaring a scoped while Fastify always encapsulates it.
 
 ```ts [Elysia]
 import { Elysia } from 'elysia'
@@ -961,23 +961,23 @@ const app = new Elysia()
     .get('/', 'Hello World')
     .use(subRouter)
     // [!code ++]
-    // now have side-effect from subRouter
+    // now has side-effects from subRouter
     .get('/side-effect', () => 'hi')
 ```
 
-Elysia offers 3 type of scoping mechanism:
+Elysia offers 3 types of scoping mechanism:
 1. **local** - Apply to current instance only, no side-effect (default)
 2. **scoped** - Scoped side-effect to the parent instance but not beyond
 3. **global** - Affects every instances
 
 ---
 
-As Hono doesn't offers a scoping mechanism, we need to either:
+As Hono doesn't offer a scoping mechanism, we need to either:
 
 1. Create a function for each hooks and append them manually
 2. Use higher-order-function, and apply it to instance that need the effect
 
-However, this can caused a duplicated side-effect if not handled carefully.
+However, this can cause duplicated side-effects if not handled carefully.
 
 ```ts [Hono]
 import { Hono } from 'hono'
@@ -1005,7 +1005,7 @@ app.route('/sub', subRouter)
 export default app
 ```
 
-In this scenario, Elysia offers a plugin deduplication mechanism to prevent duplicated side-effect.
+In this scenario, Elysia offers a plugin deduplication mechanism to prevent duplicated side-effects.
 
 ```ts [Elysia]
 import { Elysia } from 'elysia'
@@ -1027,10 +1027,10 @@ const app = new Elysia()
 	.get('/side-effect', () => 'hi')
 ```
 
-By using a unique `name`, Elysia will apply the plugin only once, and will not cause duplicated side-effect.
+By using a unique `name`, Elysia will apply the plugin only once, and will not cause duplicated side-effects.
 
 ## Cookie
-Hono has a built-in cookie utility functions under `hono/cookie`, while Elysia use a signal-based approach to handle cookies.
+Hono has built-in cookie utility functions under `hono/cookie`, while Elysia uses a signal-based approach to handle cookies.
 
 <Compare>
 
@@ -1064,7 +1064,7 @@ app.get('/', async (c) => {
 
 <template v-slot:left-content>
 
-> Hono use utility functions to handle cookies
+> Hono uses utility functions to handle cookies
 
 </template>
 
@@ -1095,14 +1095,14 @@ const app = new Elysia({
 
 <template v-slot:right-content>
 
-> Elysia use signal-based approach to handle cookies
+> Elysia uses signal-based approach to handle cookies
 
 </template>
 
 </Compare>
 
 ## OpenAPI
-Hono require additional effort to describe the specification, while Elysia seamless integrate the specification into the schema.
+Hono requires additional effort to describe the specification, while Elysia seamlessly integrates the specification into the schema.
 
 <Compare>
 
@@ -1185,7 +1185,7 @@ export default app
 
 <template v-slot:left-content>
 
-> Hono require additional effort to describe the specification
+> Hono requires additional effort to describe the specification
 
 </template>
 
@@ -1225,7 +1225,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia seamlessly integrate the specification into the schema
+> Elysia seamlessly integrates the specification into the schema
 
 </template>
 
@@ -1233,13 +1233,13 @@ const app = new Elysia()
 
 Hono has separate function to describe route specification, validation, and require some effort to setup properly.
 
-Elysia use schema you provide to generate the OpenAPI specification, and validate the request/response, and infer type automatically all from a **single source of truth**.
+Elysia uses schema you provide to generate the OpenAPI specification, and validates the request/response, and infers types automatically all from a **single source of truth**.
 
-Elysia also appends the schema registered in `model` to the OpenAPI spec, allowing you to reference the model in a dedicated section in Swagger or Scalar UI while Hono inline the schema to the route.
+Elysia also appends the schema registered in `model` to the OpenAPI spec, allowing you to reference the model in a dedicated section in Swagger or Scalar UI while Hono inlines the schema to the route.
 
 ## Testing
 
-Both is built on top of Web Standard API allowing it be used with any testing library.
+Both are built on top of Web Standard API allowing them to be used with any testing library.
 
 <Compare>
 
@@ -1301,7 +1301,7 @@ describe('GET /', () => {
 
 <template v-slot:right-content>
 
-> Elysia use Web Standard API to handle request and response
+> Elysia uses Web Standard API to handle request and response
 
 </template>
 
@@ -1329,7 +1329,7 @@ describe('GET /', () => {
 ```
 
 ## End-to-end type safety
-Both offers end-to-end type safety, however Hono doesn't seems to offers type-safe error handling based on status code.
+Both offer end-to-end type safety, however Hono doesn't seem to offer type-safe error handling based on status code.
 
 <Compare>
 
@@ -1378,7 +1378,7 @@ console.log(data)
 
 <template v-slot:left-content>
 
-> Hono use `hc` to run the request, and offers end-to-end type safety
+> Hono uses `hc` to run the request, and offers end-to-end type safety
 
 </template>
 
@@ -1435,13 +1435,13 @@ console.log('ok')
 
 <template v-slot:right-content>
 
-> Elysia use `treaty` to run the request, and offers end-to-end type safety
+> Elysia uses `treaty` to run the request, and offers end-to-end type safety
 
 </template>
 
 </Compare>
 
-While both offers end-to-end type safety, Elysia offers a more type-safe error handling based on status code while Hono doesn't.
+While both offer end-to-end type safety, Elysia offers more type-safe error handling based on status code while Hono doesn't.
 
 Using the same purpose code for each framework to measure type inference speed, Elysia is 2.3x faster than Hono for type checking.
 
@@ -1469,7 +1469,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 Both are the next generation web framework built on top of Web Standard API with slight differences.
 
-Elysia is designed to be ergonomic and developer-friendly with a focus on **sounds type safety**, and has beter performance than Hono.
+Elysia is designed to be ergonomic and developer-friendly with a focus on **sound type safety**, and has better performance than Hono.
 
 While Hono offers a broad compatibility with multiple runtimes, especially with Cloudflare Workers, and a larger user base.
 
