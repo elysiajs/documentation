@@ -63,35 +63,35 @@ const expand = useExpandWidth(isInView)
                     <motion.h6 v-bind="flyIn(0.4)">
                         Gin <span>Go</span>
                     </motion.h6>
-                    <motion.div v-bind="expand(27.54, 0.5)" />
+                    <motion.div v-bind="expand(4.53, 0.5)" />
                     <motion.p v-bind="flyIn(0.6)">1,639,754</motion.p>
                 </li>
                 <li>
                     <motion.h6 v-bind="flyIn(0.6)">
                         Fastify <span>Node</span>
                     </motion.h6>
-                    <motion.div v-bind="expand(16.93, 0.7)" />
+                    <motion.div v-bind="expand(3.24, 0.7)" />
                     <motion.p v-bind="flyIn(0.8)">1,175,038</motion.p>
                 </li>
                 <li>
                     <motion.h6 v-bind="flyIn(0.5)">
                         Spring <span>Java</span>
                     </motion.h6>
-                    <motion.div v-bind="expand(20.62, 0.6)" />
+                    <motion.div v-bind="expand(2.30, 0.6)" />
                     <motion.p v-bind="flyIn(0.7)">832,509</motion.p>
                 </li>
                 <li>
                     <motion.h6 v-bind="flyIn(0.7)">
                         Express <span>Node</span>
                     </motion.h6>
-                    <motion.div v-bind="expand(4.61, 0.8)" />
+                    <motion.div v-bind="expand(0.77, 0.8)" />
                     <motion.p v-bind="flyIn(0.9)">279,922</motion.p>
                 </li>
                 <li>
                     <motion.h6 v-bind="flyIn(0.8)">
                         Nest <span>Node</span>
                     </motion.h6>
-                    <motion.div v-bind="expand(4.28, 0.9)" />
+                    <motion.div v-bind="expand(0.72, 0.9)" />
                     <motion.p v-bind="flyIn(1)">259,647</motion.p>
                 </li>
             </ol>
