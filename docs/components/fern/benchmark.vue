@@ -26,7 +26,7 @@ const expand = useExpandWidth(isInView)
                     class="text-gradient from-pink-400 to-fuchsia-400"
                     v-bind="flyIn(0.1)"
                 >
-                    21x
+                    93x
                 </motion.h3>
                 <motion.p v-bind="flyIn(0.2)">faster than Express</motion.p>
             </div>
@@ -36,7 +36,7 @@ const expand = useExpandWidth(isInView)
                     class="md:!text-7xl text-gradient from-violet-400 to-pink-400"
                     v-bind="flyIn(0.3)"
                 >
-                    6x
+                    22x
                 </motion.h3>
                 <motion.p v-bind="flyIn(0.4)">faster than Fastify</motion.p>
             </div>
@@ -56,7 +56,7 @@ const expand = useExpandWidth(isInView)
                         v-bind="expand(72, 0.4)"
                         class="bg-gradient-to-r from-violet-500 to-fuchsia-400 !text-white"
                     >
-                        <span>2,454,631 reqs/s</span>
+                        <span>26,060,081 reqs/s</span>
                     </motion.div>
                 </li>
                 <li>
@@ -64,46 +64,46 @@ const expand = useExpandWidth(isInView)
                         Gin <span>Go</span>
                     </motion.h6>
                     <motion.div v-bind="expand(27.54, 0.5)" />
-                    <motion.p v-bind="flyIn(0.6)">676,019</motion.p>
-                </li>
-                <li>
-                    <motion.h6 v-bind="flyIn(0.5)">
-                        Spring <span>Java</span>
-                    </motion.h6>
-                    <motion.div v-bind="expand(20.62, 0.6)" />
-                    <motion.p v-bind="flyIn(0.7)">506,087</motion.p>
+                    <motion.p v-bind="flyIn(0.6)">1,639,754</motion.p>
                 </li>
                 <li>
                     <motion.h6 v-bind="flyIn(0.6)">
                         Fastify <span>Node</span>
                     </motion.h6>
                     <motion.div v-bind="expand(16.93, 0.7)" />
-                    <motion.p v-bind="flyIn(0.8)">415,600</motion.p>
+                    <motion.p v-bind="flyIn(0.8)">1,175,038</motion.p>
+                </li>
+                <li>
+                    <motion.h6 v-bind="flyIn(0.5)">
+                        Spring <span>Java</span>
+                    </motion.h6>
+                    <motion.div v-bind="expand(20.62, 0.6)" />
+                    <motion.p v-bind="flyIn(0.7)">832,509</motion.p>
                 </li>
                 <li>
                     <motion.h6 v-bind="flyIn(0.7)">
                         Express <span>Node</span>
                     </motion.h6>
                     <motion.div v-bind="expand(4.61, 0.8)" />
-                    <motion.p v-bind="flyIn(0.9)">113,117</motion.p>
+                    <motion.p v-bind="flyIn(0.9)">279,922</motion.p>
                 </li>
                 <li>
                     <motion.h6 v-bind="flyIn(0.8)">
                         Nest <span>Node</span>
                     </motion.h6>
                     <motion.div v-bind="expand(4.28, 0.9)" />
-                    <motion.p v-bind="flyIn(1)">105,064</motion.p>
+                    <motion.p v-bind="flyIn(1)">259,647</motion.p>
                 </li>
             </ol>
             <motion.p class="text-sm mt-3 text-gray-400" v-bind="flyIn(1.1)">
                 Measured in requests/second. Result from
                 <a
-                    href="https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22"
+                    href="https://www.techempower.com/benchmarks/#section=data-r23&test=plaintext"
                     target="_blank"
                     class="underline"
                     >TechEmpower Benchmark</a
                 >
-                Round 22 (2023-10-17) in PlainText
+                Round 23 (2025-02-24) in PlainText
             </motion.p>
         </div>
     </article>
