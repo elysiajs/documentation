@@ -1,5 +1,7 @@
 import { nextTick } from 'vue'
 import { defineStore } from 'pinia'
+import { parse, serialize } from 'cookie'
+
 import { save, load } from './storage'
 import { execute, isJSON } from './utils'
 
@@ -17,6 +19,11 @@ const randomId = () =>
         .toString(36)
         .substring(2, length + 2)
 
+const serializeCookie = (cookies: Record<string, string>) =>
+    Object.entries(cookies)
+        .map(([key, value]) => serialize(key, value))
+        .join('; ')
+
 export const usePlaygroundStore = defineStore('playground', {
     state: () => ({
         id: randomId(),
@@ -27,8 +34,8 @@ export const usePlaygroundStore = defineStore('playground', {
             path: '/',
             method: 'GET',
             body: '',
-            headers: {} as Record<string, string>,
-            cookie: {} as Record<string, string>
+            headers: <string[][]>[],
+            cookie: <string[][]>[]
         },
         response: {
             body: null as string | null,
@@ -45,6 +52,26 @@ export const usePlaygroundStore = defineStore('playground', {
             result: 'preview' as 'preview' | 'console' | 'response'
         }
     }),
+    getters: {
+        inputHeadersObject() {
+            const obj: Record<string, string> = {}
+
+            if (this.input.headers)
+                for (const [key, value] of this.input.headers)
+                    if (key) obj[key] = value
+
+            return obj
+        },
+        inputCookieObject() {
+            const obj: Record<string, string> = {}
+
+            if (this.input.cookie)
+                for (const [key, value] of this.input.cookie)
+                    if (key) obj[key] = value
+
+            return obj
+        }
+    },
     actions: {
         load() {
             if (typeof window === 'undefined') return
@@ -64,16 +91,8 @@ export const usePlaygroundStore = defineStore('playground', {
             if (saved.path !== undefined) this.input.path = saved.path
             if (saved.method !== undefined) this.input.method = saved.method
             if (saved.body !== undefined) this.input.body = saved.body
-
-            if (saved.headers !== undefined)
-                try {
-                    this.input.headers = JSON.parse(saved.headers)
-                } catch {}
-
-            if (saved.cookies !== undefined)
-                try {
-                    this.input.cookie = JSON.parse(saved.cookies)
-                } catch {}
+            if (saved.headers !== undefined) this.input.headers = saved.headers
+            if (saved.cookies !== undefined) this.input.cookie = saved.cookies
 
             const localTheme = localStorage.getItem(
                 'vitepress-theme-appearance'
@@ -167,23 +186,36 @@ export const usePlaygroundStore = defineStore('playground', {
                 this.response.status = null
                 this.response.headers = {}
                 if (!isLogged) this.result.console = []
+
+                requestAnimationFrame(this.save)
             }, 300) as any as number
 
             try {
                 const [response, { headers, status }] = await execute(
                     this.code,
-                    `http://localhost${this.input.path}`,
+                    `https://elysiajs.com${this.input.path}`,
                     {
                         method: this.input.method,
+                        credentials: 'include',
                         headers: Object.assign(
                             isJSON(this.input.body)
-                                ? { 'Content-Type': 'application/json' }
-                                : this.input.path.trim()
+                                ? {
+                                      'content-type': 'application/json'
+                                  }
+                                : this.input.body.trim()
                                   ? {
-                                        'Content-Type': 'text/plain'
+                                        'content-type': 'text/plain'
                                     }
                                   : {},
-                            this.input.headers
+                            this.inputHeadersObject,
+                            {
+                                'x-browser-cookie': serializeCookie({
+                                    ...this.inputCookieObject,
+                                    ...(this.inputHeadersObject.cookie
+                                        ? parse(this.inputHeadersObject.cookie)
+                                        : ({} as any))
+                                })
+                            }
                         ),
                         body:
                             this.input.body &&

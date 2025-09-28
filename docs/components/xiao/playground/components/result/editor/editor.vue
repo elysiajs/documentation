@@ -38,7 +38,6 @@ import { ref, defineAsyncComponent, onMounted, onUnmounted } from 'vue'
 import { usePlaygroundStore } from '.././../../store'
 
 import { Cog } from 'lucide-vue-next'
-
 const Advance = defineAsyncComponent(() => import('./advance.vue'))
 
 const store = usePlaygroundStore()

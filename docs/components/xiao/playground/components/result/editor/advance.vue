@@ -46,13 +46,27 @@
                 </button>
             </div>
 
-            <div class="w-full h-full">
+            <div class="w-full h-full overflow-auto">
                 <ClientOnly>
                     <Body
                         v-if="tab === 'body'"
                         class="w-full h-full overflow-hidden border-t border-gray-200 dark:border-gray-600 rounded-br-2xl"
                     />
                 </ClientOnly>
+
+                <TableEditor
+                    v-if="tab === 'headers'"
+                    :headers="['Headers', 'Value']"
+                    v-model="store.input.headers"
+                    class="w-full"
+                />
+
+                <TableEditor
+                    v-if="tab === 'cookie'"
+                    :headers="['Cookie', 'Value']"
+                    v-model="store.input.cookie"
+                    class="w-full"
+                />
             </div>
         </motion.nav>
     </AnimatePresence>
@@ -66,14 +80,17 @@
 
 <script setup lang="ts">
 import { ref, defineModel, defineAsyncComponent } from 'vue'
+import { usePlaygroundStore } from '../../../store'
+
 import { AnimatePresence, motion } from 'motion-v'
 import { X } from 'lucide-vue-next'
 
 import ClientOnly from '../../client-only.vue'
-
+import TableEditor from '../../../../table-editor/table-editor.vue'
 const Body = defineAsyncComponent(() => import('./body.vue'))
 
 const isEdit = defineModel<boolean>()
+const store = usePlaygroundStore()
 
 const tab = ref<'body' | 'headers' | 'cookie'>('body')
 </script>
@@ -82,14 +99,14 @@ const tab = ref<'body' | 'headers' | 'cookie'>('body')
 @reference '../../../../../../tailwind.css';
 
 #playground-rest-editor {
-    @apply top-2 left-2 z-30 flex-col w-md h-72 p-0 dark:bg-gray-700/30 dark:border-gray-500/40 shadow-black/7.5;
+    @apply top-2 left-2 z-30 flex-col w-md h-72 p-0 border-gray-300/75  dark:bg-gray-700/30 dark:border-gray-500/75 shadow-black/7.5;
     transform-origin: 0.75rem 0.75rem;
 
     & > .type {
         @apply flex gap-1 text-sm p-0.5;
 
         & > .button:not(:first-child) {
-            @apply px-1 w-auto !text-sm;
+            @apply px-2 w-auto !text-sm;
 
             &.-active {
                 @apply opacity-100;

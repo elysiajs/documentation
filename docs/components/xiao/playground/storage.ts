@@ -19,8 +19,8 @@ export function save({
     path?: string
     method?: string
     body?: string
-    headers?: Record<string, string>
-    cookies?: Record<string, string>
+    headers?: string[][]
+    cookies?: string[][]
 }) {
     if (code !== undefined) localStorage.setItem(keys.code(), code)
     if (path !== undefined) localStorage.setItem(keys.path(), path)
@@ -32,7 +32,9 @@ export function save({
         localStorage.setItem(keys.cookies(), JSON.stringify(cookies))
 }
 
-export function load(key: keyof typeof keys): string | undefined {
+export function load<T extends keyof typeof keys>(
+    key: T
+): (T extends 'headers' | 'cookies' ? string[][] : string) | undefined {
     if (typeof localStorage === 'undefined') return
 
     const item = localStorage.getItem(keys[key]())

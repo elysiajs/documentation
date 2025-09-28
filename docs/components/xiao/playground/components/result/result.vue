@@ -145,7 +145,7 @@ const iframe = ref<HTMLIFrameElement | null>(null)
 @reference '../../../../../tailwind.css';
 
 .playground-floating-menu {
-    @apply absolute z-20 flex bg-gray-200/40 dark:bg-gray-500/30 border dark:border-gray-600/30 rounded-2xl p-0.5 backdrop-blur-sm shadow-2xl;
+    @apply absolute z-20 flex bg-gray-200/40 dark:bg-gray-500/30 border dark:border-gray-600/40 rounded-2xl p-0.5 backdrop-blur-md shadow-2xl;
 
     & > .button,
     & > .type > .button {

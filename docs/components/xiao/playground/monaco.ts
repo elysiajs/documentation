@@ -6,11 +6,9 @@ import {
     type SourceResolver
 } from 'monaco-editor-auto-typings'
 
-import { transform } from 'sucrase'
-
+import { isJSON } from './utils'
 import latte from './theme/latte.json' with { type: 'json' }
 import mocha from './theme/mocha.json' with { type: 'json' }
-import { isJSON } from './utils'
 
 class Resolver extends UnpkgSourceResolver implements SourceResolver {
     constructor() {
@@ -183,18 +181,18 @@ export const createEditor = async ({
             }, 200) as any as number
         })
 
-    const parent = placeholder.parentElement!
+    // const parent = placeholder.parentElement!
 
-    window.addEventListener('resize', () => {
-        // make editor as small as possible
-        editor.layout({ width: 0, height: 0 })
+    // window.addEventListener('resize', () => {
+    //     // make editor as small as possible
+    //     editor.layout({ width: 0, height: 0 })
 
-        window.requestAnimationFrame(() => {
-            const rect = parent.getBoundingClientRect()
+    //     window.requestAnimationFrame(() => {
+    //         const rect = parent.getBoundingClientRect()
 
-            editor.layout({ width: rect.width, height: rect.height })
-        })
-    })
+    //         editor.layout({ width: rect.width, height: rect.height })
+    //     })
+    // })
 
     AutoTypings.create(editor, {
         sourceCache: new LocalStorageCache(),

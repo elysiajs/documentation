@@ -21,7 +21,7 @@
                 >
                     <SplitterGroup
                         direction="vertical"
-                        class="relative flex flex-1 w-full h-playground gap-0.75"
+                        class="relative flex flex-1 w-full h-playground gap-0.75 pr-1"
                     >
                         <SplitterPanel
                             :default-size="60"
@@ -97,11 +97,13 @@ watchDebounced(() => store.input.path, run, {
 watchDebounced(() => store.input.body, run, {
     debounce: 500
 })
+
+// headers and cookie are already debounced by table editor
 watchDebounced(() => store.input.headers, run, {
-    debounce: 500
+    debounce: 10
 })
 watchDebounced(() => store.input.cookie, run, {
-    debounce: 500
+    debounce: 10
 })
 </script>
 
