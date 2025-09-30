@@ -4,13 +4,7 @@ import { parse, serialize } from 'cookie'
 
 import { save, load } from './storage'
 import { execute, isJSON } from './utils'
-
-const defaultCode = `import { Elysia } from 'elysia'
-
-const app = new Elysia()
-	.get('/', 'Hello World!')
-	.listen(3000)
-`
+import { Testcases } from './types'
 
 let timeout: number | undefined
 
@@ -28,7 +22,7 @@ export const usePlaygroundStore = defineStore('playground', {
     state: () => ({
         id: randomId(),
         code: '',
-        defaultCode,
+        defaultCode: '',
         theme: 'light' as 'light' | 'dark',
         input: {
             path: '/',
@@ -50,7 +44,9 @@ export const usePlaygroundStore = defineStore('playground', {
         tab: {
             aside: 'task' as 'task' | 'docs' | null,
             result: 'preview' as 'preview' | 'console' | 'response'
-        }
+        },
+        testcases: [] as Testcases,
+        testcasesResult: [] as boolean[]
     }),
     getters: {
         inputHeadersObject() {
@@ -87,7 +83,6 @@ export const usePlaygroundStore = defineStore('playground', {
 
             if (saved.code === undefined) this.code = this.defaultCode
             else this.code = saved.code
-
             if (saved.path !== undefined) this.input.path = saved.path
             if (saved.method !== undefined) this.input.method = saved.method
             if (saved.body !== undefined) this.input.body = saved.body
@@ -186,8 +181,6 @@ export const usePlaygroundStore = defineStore('playground', {
                 this.response.status = null
                 this.response.headers = {}
                 if (!isLogged) this.result.console = []
-
-                requestAnimationFrame(this.save)
             }, 300) as any as number
 
             try {
@@ -196,7 +189,6 @@ export const usePlaygroundStore = defineStore('playground', {
                     `https://elysiajs.com${this.input.path}`,
                     {
                         method: this.input.method,
-                        credentials: 'include',
                         headers: Object.assign(
                             isJSON(this.input.body)
                                 ? {
@@ -246,6 +238,7 @@ export const usePlaygroundStore = defineStore('playground', {
                 if (this.id !== id) return
 
                 clearTimeout(timeout)
+                requestAnimationFrame(this.save)
 
                 this.response.body = response
                 this.response.headers = headers as Record<string, string>
@@ -260,6 +253,91 @@ export const usePlaygroundStore = defineStore('playground', {
 
                 if (this.result.isHTML && sandbox && sandbox.contentWindow)
                     sandbox.contentWindow.location.reload()
+
+                this.testcasesResult = new Array(this.testcases.length).fill(
+                    false
+                )
+
+				for (let i = 0; i < this.testcases.length; i++) {
+                    const { request, response: expected } = this.testcases[i]
+
+                    const run = async () => {
+                        const [response, { headers, status }] = await execute(
+                            this.code,
+                            `https://elysiajs.com${this.input.path}`,
+                            {
+                                body: request.body,
+                                method: request.method ?? 'GET',
+                                headers: Object.assign(
+                                    isJSON(this.input.body)
+                                        ? {
+                                              'content-type': 'application/json'
+                                          }
+                                        : this.input.body.trim()
+                                          ? {
+                                                'content-type': 'text/plain'
+                                            }
+                                          : {},
+                                    this.inputHeadersObject,
+                                    {
+                                        'x-browser-cookie': serializeCookie({
+                                            ...this.inputCookieObject,
+                                            ...(this.inputHeadersObject.cookie
+                                                ? parse(
+                                                      this.inputHeadersObject
+                                                          .cookie
+                                                  )
+                                                : ({} as any))
+                                        })
+                                    }
+                                )
+                            }
+                        )
+
+                        if (this.id !== id) return
+
+                        const body =
+                            typeof expected.body === 'object'
+                                ? JSON.stringify(response)
+                                : response
+
+                        if (
+                            expected.body !== undefined &&
+                            expected.body !== body
+                        )
+                            return (this.testcasesResult[i] = false)
+
+                        if (
+                            expected.status !== undefined &&
+                            expected.status !== status
+                        )
+                            return (this.testcasesResult[i] = false)
+
+                        if (expected.headers) {
+                            if (!headers)
+                                return (this.testcasesResult[i] = false)
+
+                            let headersMatch = true
+
+                            for (const [key, value] of Object.entries(
+                                expected.headers
+                            )) {
+                                if (headers[key.toLowerCase()] !== value) {
+                                    headersMatch = false
+                                    break
+                                }
+                            }
+
+                            if (!headersMatch)
+                                return (this.testcasesResult[i] = false)
+                        }
+
+
+                        this.testcasesResult[i] = true
+                    }
+
+                    run()
+                }
             } catch (err) {
                 const error = err as { syntax: Error } | Error
 

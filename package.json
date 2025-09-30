@@ -9,6 +9,7 @@
 	"dependencies": {
 		"@catppuccin/vscode": "^3.18.0",
 		"@iconify/json": "^2.2.365",
+		"@neoconfetti/vue": "^2.2.1",
 		"@number-flow/vue": "^0.4.8",
 		"@tailwindcss/vite": "^4.1.11",
 		"@types/cookie": "^1.0.0",

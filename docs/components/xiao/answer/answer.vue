@@ -1,0 +1,50 @@
+<template>
+    <details class="playground-answer">
+        <summary>
+            <span>Show answer</span>
+            <EyeClosed class="closed" :stroke-width="1.5" />
+            <Eye class="opened" :stroke-width="1.5" />
+        </summary>
+
+        <div>
+            <slot />
+        </div>
+    </details>
+</template>
+
+<script setup lang="ts">
+import { Eye, EyeClosed } from 'lucide-vue-next'
+</script>
+
+<style>
+@reference '../../../tailwind.css';
+
+.playground-answer {
+    & > summary {
+        @apply clicky inline-flex justify-center items-center gap-1 text-sm font-medium text-pink-400 mr-auto my-2 px-3 py-1.5 rounded-xl bg-pink-500/7.5 dark:bg-pink-500/15 interact:bg-pink-500/10 dark:interact:bg-pink-500/25 transition-colors cursor-pointer;
+
+        & > .closed,
+        & > .opened {
+            @apply ml-1 h-4 w-4;
+        }
+
+        & > .opened {
+			@apply hidden;
+		}
+    }
+
+    &[open] > summary {
+    	& > .closed {
+			@apply hidden;
+		}
+
+		& > .opened {
+			@apply block;
+		}
+	}
+
+    & > div {
+        @apply mt-2 p-4 border dark:border-gray-700 rounded-2xl;
+    }
+}
+</style>

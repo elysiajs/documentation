@@ -8,13 +8,13 @@
             direction="horizontal"
             class="relative flex flex-1 w-full h-playground"
         >
-            <Doc>
+            <Doc :testcases="props.testcases">
                 <slot />
             </Doc>
 
             <SplitterResizeHandle v-if="store.tab.aside !== null" />
 
-            <SplitterPanel :default-size="75">
+            <SplitterPanel :default-size="70">
                 <div
                     class="w-full h-full pr-0.75"
                     :class="{ 'pl-0.75': store.tab.aside !== null }"
@@ -49,6 +49,7 @@
 <script lang="ts" setup>
 import { watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue'
 import { watchDebounced } from '@vueuse/core'
+import { useRouter } from 'vitepress'
 
 import { SplitterGroup, SplitterPanel, SplitterResizeHandle } from 'reka-ui'
 import { usePlaygroundStore } from './store'
@@ -62,17 +63,22 @@ import ElysiaChan from './components/elysia-chan/elysia-chan.vue'
 
 const Editor = defineAsyncComponent(() => import('./components/editor.vue'))
 
+import type { TestCases } from './types'
+
 const props = defineProps<{
     code?: string
+    testcases?: Testcases
 }>()
 
 const store = usePlaygroundStore()
+const router = useRouter()
+
+if (props.code) store.defaultCode = props.code
+if (props.testcases) store.testcases = props.testcases
 
 store.load()
-if (!store.code && props.code) {
-    store.code = props.code
-    store.run()
-}
+
+if (!store.code && props.code) store.run()
 
 onMounted(() => {
     window.addEventListener('beforeunload', store.save, {
@@ -84,6 +90,23 @@ onUnmounted(() => {
     store.save()
     window.removeEventListener('beforeunload', store.save)
 })
+
+// if (typeof window !== 'undefined')
+//     watch(
+//         () => {
+//             router.route.path
+//         },
+//         () => {
+//             store.$reset()
+//             console.log("RESET")
+
+//             // if (props.code) {
+//             //     store.defaultCode = props.code
+//             //     store.code = props.code
+//             // }
+//             // if (props.testcases) store.testcases = props.testcases
+//         }
+//     )
 
 const run = () => store.run()
 
@@ -106,7 +129,3 @@ watchDebounced(() => store.input.cookie, run, {
     debounce: 10
 })
 </script>
-
-<style>
-@reference '../../../tailwind.css';
-</style>

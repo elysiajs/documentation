@@ -911,14 +911,12 @@ button.copy::after {
 	border: 1px solid color-mix(in srgb, var(--vp-c-bg-soft) 80%, black 1%);
 }
 
-button[title="Copy Code"].copy,
-button[title="Copy Code"].copy::before {
+button[title="Copy Code"].copy {
 	@apply !rounded-xl clicky;
-}
 
-button[title="Copy Code"].copy::before {
-	@apply -translate-x-1;
-	border: 1px solid var(--vp-code-copy-code-border-color) !important;
+	&::before {
+		@apply -translate-x-0.25;
+	}
 }
 
 div[class*="language-"] {

@@ -98,7 +98,7 @@
             >
                 <p class="inline-flex flex-1 whitespace-pre-wrap">{{ data }}</p>
                 <time class="text-xs opacity-60 translate-y-0.5">{{
-                    dayjs(time).format('hh:mm:ss')
+                    dayjs(time).format('h:m:s:SSS')
                 }}</time>
             </div>
         </div>

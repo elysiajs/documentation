@@ -6,6 +6,7 @@
       "dependencies": {
         "@catppuccin/vscode": "^3.18.0",
         "@iconify/json": "^2.2.365",
+        "@neoconfetti/vue": "^2.2.1",
         "@number-flow/vue": "^0.4.8",
         "@tailwindcss/vite": "^4.1.11",
         "@types/cookie": "^1.0.0",
@@ -343,6 +344,8 @@
     "@lit/reactive-element": ["@lit/reactive-element@2.1.1", "", { "dependencies": { "@lit-labs/ssr-dom-shim": "^1.4.0" } }, "sha512-N+dm5PAYdQ8e6UlywyyrgI2t++wFGXfHx+dSJ1oBrg6FAxUj40jId++EaRm80MKX5JnlH1sBsyZ5h0bcZKemCg=="],
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@1.0.1", "", { "dependencies": { "@emnapi/core": "^1.4.5", "@emnapi/runtime": "^1.4.5", "@tybys/wasm-util": "^0.10.0" } }, "sha512-KVlQ/jgywZpixGCKMNwxStmmbYEMyokZpCf2YuIChhfJA2uqfAKNEM8INz7zzTo55iEXfBhIIs3VqYyqzDLj8g=="],
+
+    "@neoconfetti/vue": ["@neoconfetti/vue@2.2.1", "", {}, "sha512-GXe5XoHlMK8VIxmxKuAgF9QQwRoDLmtiwVhONA9rzF+zOLGfOVLxo4OEDZqU9F0gJkB7U23BLlGJ3ouOb+kguw=="],
 
     "@nolebase/markdown-it-element-transform": ["@nolebase/markdown-it-element-transform@2.18.1", "", { "peerDependencies": { "markdown-it": ">=14.1.0" } }, "sha512-iy6H36E7XrIkttU/F/aXec6SEetDJaGJ4j1javd5WjjRiG8XTGay6NwRM+zausgfSXAPzYN1h3DvHigufa4L7g=="],
 

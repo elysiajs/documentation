@@ -36,7 +36,15 @@ export const execute = (
     options: RequestInit,
     onLog?: (log: unknown[]) => unknown
 ) =>
-    new Promise<[string, ResponseInit]>((resolve, reject) => {
+    new Promise<
+        [
+            string,
+            {
+                headers: Record<string, string>
+                status: number
+            }
+        ]
+    >((resolve, reject) => {
         const id = Math.random()
             .toString(36)
             .substring(2, length + 2)

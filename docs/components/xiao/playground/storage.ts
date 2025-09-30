@@ -1,10 +1,16 @@
+const getPath = () =>
+    (location.pathname.endsWith('/')
+        ? location.pathname.slice(0, -1)
+        : location.pathname
+    ).replace(/.html$/g, '')
+
 export const keys = {
-    code: () => `elysia-playground:code:${location.pathname}`,
-    path: () => `elysia-playground:path:${location.pathname}`,
-    method: () => `elysia-playground:method:${location.pathname}`,
-    body: () => `elysia-playground:body:${location.pathname}`,
-    headers: () => `elysia-playground:headers:${location.pathname}`,
-    cookies: () => `elysia-playground:variables:${location.pathname}`
+    code: () => `elysia-playground:code:${getPath()}`,
+    path: () => `elysia-playground:path:${getPath()}`,
+    method: () => `elysia-playground:method:${getPath()}`,
+    body: () => `elysia-playground:body:${getPath()}`,
+    headers: () => `elysia-playground:headers:${getPath()}`,
+    cookies: () => `elysia-playground:cookies:${getPath()}`
 } as const
 
 export function save({

@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineModel, defineAsyncComponent } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import { usePlaygroundStore } from '../../../store'
 
 import { AnimatePresence, motion } from 'motion-v'

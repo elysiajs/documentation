@@ -65,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineModel, onUnmounted } from 'vue'
+import { ref, watch, onUnmounted } from 'vue'
 
 const props = defineProps<{
     headers: string[]

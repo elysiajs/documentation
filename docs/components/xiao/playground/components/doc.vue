@@ -1,15 +1,32 @@
 <template>
     <SplitterPanel
-        :default-size="25"
+        :default-size="30"
         id="elysia-playground-doc"
         class="relative w-full h-full"
         :class="{ 'pr-0.75': store.tab.aside !== null }"
         :max-size="store.tab.aside === null ? 0 : undefined"
     >
         <div
-            class="w-full h-full border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden bg-white dark:bg-gray-800"
-            :class="{ 'border': store.tab.aside !== null }"
+            class="relative w-full h-full border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden bg-white dark:bg-gray-800"
+            :class="{ border: store.tab.aside !== null }"
         >
+            <div
+                class="absolute flex justify-center items-end w-full h-full top-0 z-30 pointer-events-none"
+                v-if="
+                    store.testcases &&
+                    store.testcases.length &&
+                    store.testcasesResult.length &&
+                    store.testcasesResult.every((v) => v)
+                "
+            >
+                <div
+                    v-confetti="{
+                        particleCount: 225,
+                        force: 1.5,
+                        duration: 4500
+                    }"
+                />
+            </div>
             <iframe
                 class="w-full h-full"
                 :class="{ hidden: store.tab.aside !== 'docs' }"
@@ -22,24 +39,126 @@
                     class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
                 />
 
-                <div id="elysia-playground-task">
+                <section id="elysia-playground-task">
                     <slot v-if="store.tab.aside === 'task'" />
-                </div>
 
-                <footer class="footer" />
+                    <footer
+                        class="border-t border-gray-200 dark:border-gray-600 mt-4 pt-4"
+                        v-if="store.testcases && store.testcases.length"
+                    >
+                        <ol
+                            class="flex flex-col gap-2"
+                            v-for="(testcase, i) in store.testcases"
+                            :key="testcase.title"
+                        >
+                            <li class="group flex gap-3 text-gray-500">
+                                <div class="flex flex-col gap-2 mt-0.75 w-6">
+                                    <div
+                                        class="min-w-6 min-h-6 text-gray-400/80 *:absolute *:transition-opacity"
+                                        :class="{
+                                            'text-green-600 dark:text-green-400':
+                                                store.testcasesResult[i]
+                                        }"
+                                    >
+                                        <CircleCheckBig
+                                            class="opacity-0"
+                                            :class="{
+                                                'opacity-100':
+                                                    store.testcasesResult[i]
+                                            }"
+                                            :size="24"
+                                        />
+                                        <Circle
+                                            :size="24"
+                                            class="opacity-0"
+                                            :class="{
+                                                'opacity-100':
+                                                    !store.testcasesResult[i]
+                                            }"
+                                        />
+                                    </div>
+
+                                    <div
+                                        :size="24"
+                                        class="w-0.5 h-full mx-auto bg-gray-300/80 dark:bg-gray-400/80 rounded"
+                                    >
+                                        <div
+                                            class="w-full h-0 bg-green-600/75 dark:bg-green-400/75 transition-all ease-out-expo duration-500"
+                                            :class="{
+                                                'h-full':
+                                                    store.testcasesResult[i]
+                                            }"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="pb-2">
+                                    <h4
+                                        class="text-xl font-semibold text-gray-700 dark:text-gray-200"
+                                        :class="{
+                                            'text-green-600 dark:text-green-400':
+                                                store.testcasesResult[i]
+                                        }"
+                                    >
+                                        {{ testcase.title }}
+                                    </h4>
+                                    <p
+                                        class="text-sm mt-2 text-gray-500/80 dark:text-gray-300/80 group-hover:text-gray-600 dark:group-hover:text-gray-200 transition-colors"
+                                    >
+                                        {{ testcase.description }}
+                                    </p>
+                                </div>
+                            </li>
+                        </ol>
+                    </footer>
+
+                    <aside id="elysia-playground-aside">
+                        <a v-if="previous" class="-first" :href="previous.href" :key="previous.href">
+                            <small>Previous</small>
+                            {{ previous.title }}
+                        </a>
+                        <div v-else />
+
+                        <a v-if="next" class="last" :href="next.href" :key="next.href">
+                            <small>Next</small>
+                            {{ next.title }}
+                        </a>
+                    </aside>
+                </section>
             </article>
         </div>
     </SplitterPanel>
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vitepress'
 import { SplitterPanel } from 'reka-ui'
+import { Circle, CircleCheckBig } from 'lucide-vue-next'
 
-import { usePlaygroundStore } from '../store'
-
+import { vConfetti } from '@neoconfetti/vue'
 import Ray from '../../../fern/ray.vue'
 
+import { tableOfContents } from '../../table-of-content'
+
+import { usePlaygroundStore } from '../store'
+import type { Testcases } from '../types'
+
 const store = usePlaygroundStore()
+const router = useRouter()
+
+const getRelativePath = (path: string) =>
+	(path.endsWith('/') ? path.slice(0, -1) : path)
+
+const path = router.route.path.replace(/.html$/g, '')
+
+const contents = tableOfContents.flatMap((item) => item.contents)
+const index = contents.findIndex(
+    (item) =>
+        item.href === path ||
+        item.href === getRelativePath(path)
+)
+
+const next = contents[index + 1]
+const previous = contents[index - 1]
 </script>
 
 <style>
@@ -50,14 +169,131 @@ const store = usePlaygroundStore()
 }
 
 #elysia-playground-task {
-    @apply p-4;
+    @apply p-4 text-gray-800/85 dark:text-gray-200/85;
 
     & > h1 {
         @apply text-3xl font-bold mb-4;
     }
 
+    & > h2 {
+        @apply text-2xl font-bold pt-4 my-4 border-t dark:border-gray-600;
+    }
+
     & > p {
-    	@apply mt-4;
+        @apply mt-4;
+    }
+
+    & > h1,
+    & > h2,
+    & > p > strong,
+    & > ol > li > strong {
+        @apply text-black dark:text-white;
+    }
+
+    & > ol {
+        @apply list-decimal list-inside mt-4;
+
+        & > li {
+            @apply mt-2;
+        }
+    }
+
+    & > p > code,
+    & > details > div > p > code {
+        @apply text-sm rounded-lg;
+
+        padding: 3px 6px;
+        color: var(--vp-code-color);
+        background-color: var(--vp-code-bg);
+    }
+
+    & > div[class*='language-'],
+    & > details > div > div[class*='language-'] {
+        @apply relative my-4 py-4 text-sm;
+        background-color: var(--vp-code-copy-code-bg);
+
+        &:hover {
+            & > .lang {
+                @apply opacity-0;
+            }
+
+            & > .copy {
+                @apply opacity-100;
+            }
+        }
+
+        & > .lang {
+            @apply absolute top-2 right-2 text-xs text-gray-400 dark:text-gray-500 transition-opacity;
+        }
+
+        & > .copy {
+            @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-gray-50 dark:!bg-gray-700 interact:!bg-white dark:interact:!bg-gray-800 transition-opacity opacity-0;
+            border: 1px solid var(--vp-code-copy-code-border-color);
+
+            &::before {
+                @apply flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500;
+
+                content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>');
+            }
+
+            &::after {
+                @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-xl text-gray-500 dark:text-gray-400 !bg-white dark:!bg-gray-800 opacity-0 transition-opacity pointer-events-none;
+                border: inherit;
+                content: 'Copied';
+            }
+
+            &.copied {
+                @apply !bg-white dark:!bg-gray-800;
+
+                &::before {
+                    content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-copy-icon lucide-clipboard-copy"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v4"/><path d="M21 14H11"/><path d="m15 10-4 4 4 4"/></svg>');
+                }
+
+                &::after {
+                    @apply opacity-100;
+                }
+            }
+        }
+
+        & > .shiki {
+            & > code {
+                @apply flex flex-col w-full;
+
+                & > .line {
+                    @apply block w-full px-4;
+                    min-height: 1.5em;
+
+                    &.add {
+                        @apply w-full;
+                        background-color: var(--vp-code-line-diff-add-color);
+                    }
+
+                    &.remove {
+                        background-color: var(--vp-code-line-diff-remove-color);
+                    }
+                }
+            }
+        }
+    }
+}
+
+#elysia-playground-aside {
+    @apply grid grid-cols-2 items-center gap-3 mt-4;
+
+    a {
+        @apply clicky flex flex-col bg-gray-100/80 dark:bg-gray-700/80 interact:bg-pink-500/10 dark:interact:bg-pink-500/25 interact:text-pink-500 px-4 py-2 rounded-xl transition-colors;
+
+        &.-first {
+            @apply text-left;
+        }
+
+        &.-last {
+            @apply justify-end text-right;
+        }
+
+        & > small {
+            @apply text-xs opacity-40;
+        }
     }
 }
 </style>

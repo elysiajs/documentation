@@ -133,6 +133,7 @@ export const createEditor = async ({
     })
 
     setupTheme()
+    updateCode(code)
 
     const model =
         monaco.editor.getModel(files['main.ts']) ??
@@ -207,6 +208,7 @@ export const createJSONEditor = ({
     onChange
 }: CreateEditorOptions) => {
     const placeholder = document.getElementById(id)!
+
     const model =
         monaco.editor.getModel(files['body.json']) ??
         monaco.editor.createModel(code, 'json', files['body.json'])
