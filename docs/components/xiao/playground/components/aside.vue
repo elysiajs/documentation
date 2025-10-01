@@ -1,7 +1,7 @@
 <template>
     <aside id="elysia-editor-aside">
         <div class="tab">
-            <select class="absolute opacity-0" @change="changePage" :value="current.href">
+            <select class="absolute opacity-0" @change="changePage" :value="current?.href">
                 <optgroup
                     v-for="{ title, contents } of tableOfContents"
                     :label="title"

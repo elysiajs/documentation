@@ -173,6 +173,7 @@ export const usePlaygroundStore = defineStore('playground', {
 
             this.result.error = null
             let isLogged = false
+            let isTested = false
 
             timeout = setTimeout(() => {
                 if (this.id !== id) return
@@ -181,6 +182,11 @@ export const usePlaygroundStore = defineStore('playground', {
                 this.response.status = null
                 this.response.headers = {}
                 if (!isLogged) this.result.console = []
+
+                if (!isTested)
+                    this.testcasesResult = new Array(
+                        this.testcases.length
+                    ).fill(false)
             }, 300) as any as number
 
             try {
@@ -254,30 +260,32 @@ export const usePlaygroundStore = defineStore('playground', {
                 if (this.result.isHTML && sandbox && sandbox.contentWindow)
                     sandbox.contentWindow.location.reload()
 
-                this.testcasesResult = new Array(this.testcases.length).fill(
-                    false
-                )
+                if (this.testcasesResult.length !== this.testcases.length)
+                    this.testcasesResult = new Array(
+                        this.testcases.length
+                    ).fill(false)
 
-				for (let i = 0; i < this.testcases.length; i++) {
-                    const { request, response: expected } = this.testcases[i]
-
-                    const run = async () => {
+                const testResults = await Promise.all(this.testcases.map(
+                    async ({ request, response: expected }) => {
                         const [response, { headers, status }] = await execute(
                             this.code,
-                            `https://elysiajs.com${this.input.path}`,
+                            `https://elysiajs.com${request.url}`,
                             {
                                 body: request.body,
                                 method: request.method ?? 'GET',
                                 headers: Object.assign(
-                                    isJSON(this.input.body)
-                                        ? {
-                                              'content-type': 'application/json'
-                                          }
-                                        : this.input.body.trim()
+                                    !request.body
+                                        ? {}
+                                        : isJSON(request.body)
                                           ? {
-                                                'content-type': 'text/plain'
+                                                'content-type':
+                                                    'application/json'
                                             }
-                                          : {},
+                                          : request.body.trim()
+                                            ? {
+                                                  'content-type': 'text/plain'
+                                              }
+                                            : {},
                                     this.inputHeadersObject,
                                     {
                                         'x-browser-cookie': serializeCookie({
@@ -294,7 +302,7 @@ export const usePlaygroundStore = defineStore('playground', {
                             }
                         )
 
-                        if (this.id !== id) return
+                        if (this.id !== id) return false
 
                         const body =
                             typeof expected.body === 'object'
@@ -305,17 +313,16 @@ export const usePlaygroundStore = defineStore('playground', {
                             expected.body !== undefined &&
                             expected.body !== body
                         )
-                            return (this.testcasesResult[i] = false)
+                            return false
 
                         if (
                             expected.status !== undefined &&
                             expected.status !== status
                         )
-                            return (this.testcasesResult[i] = false)
+                            return false
 
                         if (expected.headers) {
-                            if (!headers)
-                                return (this.testcasesResult[i] = false)
+                            if (!headers) return false
 
                             let headersMatch = true
 
@@ -328,16 +335,15 @@ export const usePlaygroundStore = defineStore('playground', {
                                 }
                             }
 
-                            if (!headersMatch)
-                                return (this.testcasesResult[i] = false)
+                            if (!headersMatch) return false
                         }
 
-
-                        this.testcasesResult[i] = true
+                        return true
                     }
+                ))
 
-                    run()
-                }
+                isTested = true
+                this.testcasesResult = testResults
             } catch (err) {
                 const error = err as { syntax: Error } | Error
 

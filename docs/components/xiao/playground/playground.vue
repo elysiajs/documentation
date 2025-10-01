@@ -25,7 +25,7 @@
                     >
                         <SplitterPanel
                             :default-size="60"
-                            class="relative bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-600 rounded-2xl overflow-hidden"
+                            class="relative bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-700 rounded-2xl overflow-hidden"
                         >
                             <img
                                 class="absolute z-10 -right-40 pointer-events-none h-[130vh] opacity-10 dark:opacity-7.5"

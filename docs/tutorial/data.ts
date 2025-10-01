@@ -15,7 +15,7 @@ export const testcases = [
     {
         title: 'Return "Hello Elysia!"',
         description:
-            'modify the code to make the server respond with "Hello Elysia!" instead of "Hello World!".',
+            'Modify the code to make the server respond with "Hello Elysia!" instead of "Hello World!".',
         request: {
             url: '/'
         },

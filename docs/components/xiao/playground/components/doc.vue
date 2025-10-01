@@ -7,21 +7,16 @@
         :max-size="store.tab.aside === null ? 0 : undefined"
     >
         <div
-            class="relative w-full h-full border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden bg-white dark:bg-gray-800"
+            class="relative w-full h-full border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden bg-white dark:bg-gray-900"
             :class="{ border: store.tab.aside !== null }"
         >
             <div
                 class="absolute flex justify-center items-end w-full h-full top-0 z-30 pointer-events-none"
-                v-if="
-                    store.testcases &&
-                    store.testcases.length &&
-                    store.testcasesResult.length &&
-                    store.testcasesResult.every((v) => v)
-                "
+                v-if="showParticle"
             >
                 <div
                     v-confetti="{
-                        particleCount: 225,
+                        particleCount: 100,
                         force: 1.5,
                         duration: 4500
                     }"
@@ -33,7 +28,7 @@
                 src="/"
             />
             <article
-                class="relative w-full h-full overflow-x-hidden overflow-y-auto dark:bg-gray-800"
+                class="relative w-full h-full overflow-x-hidden overflow-y-auto"
             >
                 <Ray
                     class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
@@ -46,27 +41,33 @@
                         class="border-t border-gray-200 dark:border-gray-600 mt-4 pt-4"
                         v-if="store.testcases && store.testcases.length"
                     >
-                        <ol
-                            class="flex flex-col gap-2"
-                            v-for="(testcase, i) in store.testcases"
-                            :key="testcase.title"
-                        >
-                            <li class="group flex gap-3 text-gray-500">
+                        <ol class="flex flex-col gap-2">
+                            <li
+                                v-for="(testcase, i) in store.testcases"
+                                :key="testcase.title"
+                                class="group flex gap-3 text-gray-500"
+                            >
                                 <div class="flex flex-col gap-2 mt-0.75 w-6">
                                     <div
-                                        class="min-w-6 min-h-6 text-gray-400/80 *:absolute *:transition-opacity"
+                                        class="min-w-6 min-h-6 text-gray-400/80 *:absolute *:transition-all *:duration-250"
                                         :class="{
-                                            'text-green-600 dark:text-green-400':
+                                            'text-green-600 dark:text-green-500':
                                                 store.testcasesResult[i]
                                         }"
                                     >
                                         <CircleCheckBig
+                                            :size="24"
                                             class="opacity-0"
                                             :class="{
                                                 'opacity-100':
                                                     store.testcasesResult[i]
                                             }"
-                                            :size="24"
+                                            :style="{
+                                                transitionDelay: store
+                                                    .testcasesResult[i]
+                                                    ? `${i * 125}ms`
+                                                    : ''
+                                            }"
                                         />
                                         <Circle
                                             :size="24"
@@ -75,34 +76,58 @@
                                                 'opacity-100':
                                                     !store.testcasesResult[i]
                                             }"
+                                            :style="{
+                                                transitionDelay: store
+                                                    .testcasesResult[i]
+                                                    ? `${i * 125}ms`
+                                                    : ''
+                                            }"
                                         />
                                     </div>
 
                                     <div
                                         :size="24"
-                                        class="w-0.5 h-full mx-auto bg-gray-300/80 dark:bg-gray-400/80 rounded"
+                                        class="w-0.5 h-full mx-auto bg-gray-300/80 dark:bg-gray-500/80 rounded"
                                     >
                                         <div
-                                            class="w-full h-0 bg-green-600/75 dark:bg-green-400/75 transition-all ease-out-expo duration-500"
+                                            class="w-full h-0 bg-green-600/75 dark:bg-green-500/75 transition-all duration-500 ease-in-expo"
                                             :class="{
                                                 'h-full':
                                                     store.testcasesResult[i]
+                                            }"
+                                            :style="{
+                                                transitionDelay: store
+                                                    .testcasesResult[i]
+                                                    ? `${i * 125}ms`
+                                                    : ''
                                             }"
                                         />
                                     </div>
                                 </div>
                                 <div class="pb-2">
                                     <h4
-                                        class="text-xl font-semibold text-gray-700 dark:text-gray-200"
+                                        class="text-xl font-semibold text-gray-700 dark:text-gray-200 duration-250"
                                         :class="{
-                                            'text-green-600 dark:text-green-400':
+                                            'text-green-600 dark:text-green-500':
                                                 store.testcasesResult[i]
+                                        }"
+                                        :style="{
+                                            transitionDelay: store
+                                                .testcasesResult[i]
+                                                ? `${i * 125}ms`
+                                                : ''
                                         }"
                                     >
                                         {{ testcase.title }}
                                     </h4>
                                     <p
-                                        class="text-sm mt-2 text-gray-500/80 dark:text-gray-300/80 group-hover:text-gray-600 dark:group-hover:text-gray-200 transition-colors"
+                                        class="text-sm mt-2 text-gray-500/80 dark:text-gray-300/80 group-hover:text-gray-600 dark:group-hover:text-gray-200 transition-colors duration-250"
+                                        :style="{
+                                            transitionDelay: store
+                                                .testcasesResult[i]
+                                                ? `${i * 125}ms`
+                                                : ''
+                                        }"
                                     >
                                         {{ testcase.description }}
                                     </p>
@@ -112,13 +137,23 @@
                     </footer>
 
                     <aside id="elysia-playground-aside">
-                        <a v-if="previous" class="-first" :href="previous.href" :key="previous.href">
+                        <a
+                            v-if="previous"
+                            class="-first"
+                            :href="previous.href"
+                            :key="previous.href"
+                        >
                             <small>Previous</small>
                             {{ previous.title }}
                         </a>
                         <div v-else />
 
-                        <a v-if="next" class="last" :href="next.href" :key="next.href">
+                        <a
+                            v-if="next"
+                            class="last"
+                            :href="next.href"
+                            :key="next.href"
+                        >
                             <small>Next</small>
                             {{ next.title }}
                         </a>
@@ -130,7 +165,10 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { watchDebounced } from '@vueuse/core'
 import { useRouter } from 'vitepress'
+
 import { SplitterPanel } from 'reka-ui'
 import { Circle, CircleCheckBig } from 'lucide-vue-next'
 
@@ -146,19 +184,32 @@ const store = usePlaygroundStore()
 const router = useRouter()
 
 const getRelativePath = (path: string) =>
-	(path.endsWith('/') ? path.slice(0, -1) : path)
+    path.endsWith('/') ? path.slice(0, -1) : path
 
 const path = router.route.path.replace(/.html$/g, '')
 
 const contents = tableOfContents.flatMap((item) => item.contents)
 const index = contents.findIndex(
-    (item) =>
-        item.href === path ||
-        item.href === getRelativePath(path)
+    (item) => item.href === path || item.href === getRelativePath(path)
 )
 
 const next = contents[index + 1]
 const previous = contents[index - 1]
+
+const showParticle = ref(false)
+watchDebounced(
+    () => store.testcasesResult,
+    () => {
+        showParticle.value =
+            store.testcases &&
+            !!store.testcases.length &&
+            !!store.testcasesResult.length &&
+            store.testcasesResult.every((v) => v)
+    },
+    {
+        debounce: 400
+    }
+)
 </script>
 
 <style>
@@ -176,7 +227,7 @@ const previous = contents[index - 1]
     }
 
     & > h2 {
-        @apply text-2xl font-bold pt-4 my-4 border-t dark:border-gray-600;
+        @apply text-2xl font-bold pt-4 my-4 border-t dark:border-gray-700;
     }
 
     & > p {

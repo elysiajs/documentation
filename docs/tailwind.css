@@ -5,6 +5,14 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @custom-variant interact (&:hover, &:focus);
 
+@utility ease-out-expo {
+	--tw-ease: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+@utility ease-in-expo {
+	--tw-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 * {
     @apply border-gray-200 dark:border-gray-800;
 }

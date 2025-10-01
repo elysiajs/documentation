@@ -171,7 +171,10 @@ self.console.log = self.console.warn = self.console.error = (...log) => {
                 if (e.data.log && onLog) return onLog(e.data.log)
 
                 if (e.data.response) {
-                    setTimeout(worker.terminate, 5000)
+                    try {
+                        setTimeout(worker.terminate, 5000)
+                    } catch {}
+
                     return resolve(e.data.response)
                 }
             }

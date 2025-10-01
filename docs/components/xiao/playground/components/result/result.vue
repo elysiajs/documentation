@@ -1,6 +1,6 @@
 <template>
     <div
-        class="relative w-full h-full overflow-auto font-mono text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl"
+        class="relative w-full h-full overflow-auto font-mono text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl"
         :class="{
             'overflow-y-hidden':
                 store.tab.result === 'preview' && store.result.isHTML
@@ -145,7 +145,7 @@ const iframe = ref<HTMLIFrameElement | null>(null)
 @reference '../../../../../tailwind.css';
 
 .playground-floating-menu {
-    @apply absolute z-20 flex bg-gray-200/40 dark:bg-gray-500/30 border dark:border-gray-600/40 rounded-2xl p-0.5 backdrop-blur-md shadow-2xl;
+    @apply absolute z-20 flex bg-gray-200/40 dark:bg-gray-600/30 border dark:border-gray-700/40 rounded-2xl p-0.5 backdrop-blur-md shadow-2xl;
 
     & > .button,
     & > .type > .button {

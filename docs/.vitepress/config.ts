@@ -26,13 +26,13 @@ export default defineConfig({
             dark: 'github-dark'
         },
         languages: ['js', 'ts'],
-        codeTransformers: [
-            transformerTwoslash({
-                typesCache: createFileSystemTypesCache({
-                    dir: './docs/.vitepress/cache/twoslash'
-                })
-            })
-        ],
+        // codeTransformers: [
+        //     transformerTwoslash({
+        //         typesCache: createFileSystemTypesCache({
+        //             dir: './docs/.vitepress/cache/twoslash'
+        //         })
+        //     })
+        // ],
         config: (md) => {
             md.use(lightbox, {})
         }
@@ -55,19 +55,19 @@ export default defineConfig({
                 languageWorkers: ['editorWorkerService', 'typescript', 'json']
             }),
             tailwindcss(),
-            process.env.NODE_ENV === 'production'
-                ? llmstxt({
-                      description: 'Ergonomic Framework for Humans',
-                      details: description,
-                      ignoreFiles: [
-                          'index.md',
-                          'table-of-content.md',
-                          'blog/*',
-                          'public/*'
-                      ],
-                      domain: 'https://elysiajs.com'
-                  })
-                : undefined,
+            // process.env.NODE_ENV === 'production'
+            //     ? llmstxt({
+            //           description: 'Ergonomic Framework for Humans',
+            //           details: description,
+            //           ignoreFiles: [
+            //               'index.md',
+            //               'table-of-content.md',
+            //               'blog/*',
+            //               'public/*'
+            //           ],
+            //           domain: 'https://elysiajs.com'
+            //       })
+            //     : undefined,
             process.env.ANALYZE === 'true' ? analyzer() : undefined
         ],
         optimizeDeps: {
