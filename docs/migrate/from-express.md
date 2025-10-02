@@ -529,7 +529,7 @@ const app = new Elysia()
 
 </Compare>
 
-While Hono has a `next` function to call the next middleware, Elysia does not has one.
+While Express has a `next` function to call the next middleware, Elysia does not has one.
 
 ## Sounds type safety
 Elysia is designed to be sounds type safety.
