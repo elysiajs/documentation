@@ -32,7 +32,7 @@ import Benchmark from '../components/fern/benchmark-hono.vue'
 
 This guide is for Hono users who want to see a differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
 
-**Hono** is a fast and lightweight built on Web Standard. It has broad compatibility with multiple runtime like Deno, Bun, Cloudflare Workers, and Node.js.
+**Hono** is a fast and lightweight web framework built on Web Standard. It has broad compatibility with multiple runtime like Deno, Bun, Cloudflare Workers, and Node.js.
 
 **Elysia** is an ergonomic web framework. Designed to be ergonomic and developer-friendly with a focus on **sound type safety** and performance.
 
