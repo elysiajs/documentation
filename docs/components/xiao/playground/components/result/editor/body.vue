@@ -1,5 +1,5 @@
 <template>
-    <div id="elysia-playground-body" :class="props.class" />
+    <div id="elysia-playground-body" :class="classBinding" />
 </template>
 
 <script setup lang="ts">
@@ -10,16 +10,18 @@ import { usePlaygroundStore } from '../../../store'
 const store = usePlaygroundStore()
 
 onMounted(() => {
-    createJSONEditor({
-        id: 'elysia-playground-body',
-        code: store.input.body,
-        onChange(newBody) {
-            store.input.body = newBody
-        }
+    requestAnimationFrame(() => {
+        createJSONEditor({
+            id: 'elysia-playground-body',
+            code: store.input.body,
+            onChange(newBody) {
+                store.input.body = newBody
+            }
+        })
     })
 })
 
-const props = defineProps<{
-    class?: string
-}>()
+const classBinding = defineModel<
+    string | Record<string, boolean> | (string | Record<string, boolean>)[]
+>('class')
 </script>

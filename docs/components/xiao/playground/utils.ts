@@ -1,5 +1,40 @@
 import { transform } from 'sucrase'
 
+class LRUCache<K = string, V = string> {
+    private cache = new Map<K, V>()
+    private limit: number
+
+    constructor(limit = 4) {
+        this.limit = limit
+    }
+
+    get(key: K): V | undefined {
+        if (!this.cache.has(key)) return undefined
+
+        return this.cache.get(key)!
+    }
+
+    set(key: K, value: V): void {
+        if (this.cache.has(key)) this.cache.delete(key)
+        else if (this.cache.size >= this.limit)
+            this.cache.delete(this.cache.keys().next().value as any)
+
+        this.cache.set(key, value)
+    }
+
+    has(key: K): boolean {
+        return this.cache.has(key)
+    }
+
+    delete(key: K): boolean {
+        return this.cache.delete(key)
+    }
+
+    keys(): K[] {
+        return Array.from(this.cache.keys())
+    }
+}
+
 export function isJSON(body: string) {
     body = body.trim()
 
@@ -30,6 +65,109 @@ function getBalancedBracketIndex(input: string, startAt = 0) {
     return lastBalancedIndex
 }
 
+const cache = new LRUCache()
+
+function parse(code: string) {
+    if (cache.has(code)) return cache.get(code)!
+
+    if (!code.includes('.listen('))
+        throw new Error(
+            'No Elysia server is running.\nDid you forget to call `.listen()`?'
+        )
+
+    let parsed = code.replace(
+        /import\s+([^\n]+?)\s+from\s+['"]([^'"]+)['"]/g,
+        (match, specifiers, moduleName) => {
+            if (moduleName.startsWith('.') || moduleName.startsWith('/'))
+                return match
+
+            return `import ${specifiers} from 'https://esm.sh/${moduleName}'`
+        }
+    )
+
+    const newElysiaIndex = parsed.indexOf('new Elysia(')
+    if (newElysiaIndex) {
+        const closeParamIndex = getBalancedBracketIndex(parsed, newElysiaIndex)
+
+        if (closeParamIndex !== -1)
+            parsed =
+                parsed.slice(0, closeParamIndex + 1) +
+                `.use(app => {
+app.onTransform({ as: 'global' }, async (c) => {
+if(c.headers['x-browser-cookie']) {
+c.headers.cookie = c.headers['x-browser-cookie']
+delete c.headers['x-browser-cookie']
+
+c.cookie = await parseCookie(c.set, c.headers.cookie, app.config.cookie)
+}
+})
+
+app.listen = (port, callback) => {
+app.server = {
+development: true,
+fetch: (request) => app.fetch(request),
+hostname: 'elysiajs.com',
+id: 'Elysia',
+pendingRequests: 0,
+pendingWebSockets: 0,
+port: port ?? 80,
+publish() {},
+ref() {},
+reload() {},
+requestIP() {
+return {
+address: '127.0.0.1',
+family: 'IPv4',
+port
+}
+},
+upgrade() {},
+unref() {}
+}
+
+callback?.(server)
+
+self.onmessage = async (e) => {
+try {
+const response = await app.handle(new Request(e.data[0], e.data[1]))
+
+self.postMessage({
+id: __playground__,
+	response: [
+		await response.text(), {
+			status: response.status,
+   			headers: Object.fromEntries(response.headers.entries())
+  		}
+   	]
+})
+} catch (error) {
+  	self.postMessage({ id: __playground__, error })
+}
+}
+
+return app
+}
+
+return app
+})\n` +
+                parsed.slice(closeParamIndex + 2)
+    }
+
+    parsed =
+        `import { parseCookie } from 'https://esm.sh/elysia/cookies'\n
+
+self.console.log = self.console.warn = self.console.error = (...log) => {
+    self.postMessage({ id: __playground__, log: JSON.parse(JSON.stringify(log)) })
+}\n` +
+        parsed
+            .replace('openapi({', 'openapi({embedSpec:true,')
+            .replace('openapi()', 'openapi({embedSpec: true})')
+
+    cache.set(code, parsed)
+
+    return parsed
+}
+
 export const execute = (
     code: string,
     url: string,
@@ -49,104 +187,10 @@ export const execute = (
             .toString(36)
             .substring(2, length + 2)
 
-        let normalized = code.replace(
-            /import\s+([^\n]+?)\s+from\s+['"]([^'"]+)['"]/g,
-            (match, specifiers, moduleName) => {
-                if (moduleName.startsWith('.') || moduleName.startsWith('/'))
-                    return match
-
-                return `import ${specifiers} from 'https://esm.sh/${moduleName}'`
-            }
-        )
-
-        if (!normalized.includes('.listen('))
-            reject(
-                'No Elysia server is running.\nDid you forget to call `.listen()`?'
-            )
-
-        const newElysiaIndex = normalized.indexOf('new Elysia(')
-        if (newElysiaIndex) {
-            const closeParamIndex = getBalancedBracketIndex(
-                normalized,
-                newElysiaIndex
-            )
-
-            if (closeParamIndex !== -1)
-                normalized =
-                    normalized.slice(0, closeParamIndex + 1) +
-                    `.use(app => {
-	app.onTransform({ as: 'global' }, async (c) => {
-		if(c.headers['x-browser-cookie']) {
-			c.headers.cookie = c.headers['x-browser-cookie']
-			delete c.headers['x-browser-cookie']
-
-			c.cookie = await parseCookie(c.set, c.headers.cookie, app.config.cookie)
-		}
-	})
-
-	app.listen = (port, callback) => {
-		app.server = {
-			development: true,
-			fetch: (request) => app.fetch(request),
-			hostname: 'elysiajs.com',
-			id: 'Elysia',
-			pendingRequests: 0,
-			pendingWebSockets: 0,
-			port: port ?? 80,
-			publish() {},
-			ref() {},
-			reload() {},
-			requestIP() {
-				return {
-					address: '127.0.0.1',
-					family: 'IPv4',
-					port
-				}
-			},
-			upgrade() {},
-			unref() {}
-		}
-
-		callback?.(server)
-
-		self.onmessage = async (e) => {
-		   	try {
-		   		const response = await app.handle(new Request(e.data[0], e.data[1]))
-
-		  		self.postMessage({
-					id: '${id}',
-		    		response: [
-			    		await response.text(), {
-			    			status: response.status,
-			       			headers: Object.fromEntries(response.headers.entries())
-			      		}
-			       	]
-				})
-		    } catch (error) {
-		       	self.postMessage({ id: '${id}', error })
-		    }
-		}
-
-		return app
-	}
-
-	return app
-})\n` +
-                    normalized.slice(closeParamIndex + 2)
-        }
-
-        normalized =
-            `import { parseCookie } from 'https://esm.sh/elysia/cookies'\n
-
-self.console.log = self.console.warn = self.console.error = (...log) => {
-    self.postMessage({ id: '${id}', log: JSON.parse(JSON.stringify(log)) })
-}\n` +
-            normalized
-                .replace('openapi({', 'openapi({embedSpec:true,')
-                .replace('openapi()', 'openapi({embedSpec: true})')
+        const banner = `const __playground__ = '${id}'\n`
 
         try {
-            const transpiled = transform(normalized, {
+            const transpiled = transform(banner + parse(code), {
                 transforms: ['typescript']
             })
 

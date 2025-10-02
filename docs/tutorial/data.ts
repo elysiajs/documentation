@@ -16,11 +16,13 @@ export const testcases = [
         title: 'Return "Hello Elysia!"',
         description:
             'Modify the code to make the server respond with "Hello Elysia!" instead of "Hello World!".',
-        request: {
-            url: '/'
-        },
-        response: {
-            body: 'Hello Elysia!'
+        test: {
+            request: {
+                url: '/'
+            },
+            response: {
+                body: 'Hello Elysia!'
+            }
         }
     }
 ] satisfies Testcases

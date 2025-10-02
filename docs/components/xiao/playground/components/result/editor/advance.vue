@@ -1,75 +1,78 @@
 <template>
-    <AnimatePresence>
-        <motion.nav
-            v-if="isEdit"
-            id="playground-rest-editor"
-            class="playground-floating-menu"
-            :initial="{ opacity: 0, scale: 0 }"
-            :animate="{ opacity: 1, scale: 1 }"
-            :exit="{ opacity: 0, scale: 0 }"
-            :transition="{
-                duration: 0.4,
-                ease: [0.16, 1, 0.3, 1]
-            }"
-        >
-            <div class="type">
-                <button class="button" @click="isEdit = false">
-                    <X :size="16" stroke-width="2" />
-                </button>
+    <motion.nav
+        id="playground-rest-editor"
+        class="playground-floating-menu"
+        initial="hidden"
+        :animate="isEdit ? 'visible' : 'hidden'"
+        :variants="variants"
+        :transition="{
+            duration: 0.4,
+            ease: [0.16, 1, 0.3, 1]
+        }"
+    >
+        <div class="type">
+            <button class="button" @click="isEdit = false">
+                <X :size="16" stroke-width="2" />
+            </button>
 
-                <button
-                    class="button"
-                    @click="tab = 'body'"
-                    :class="{
-                        '-active': tab === 'body'
-                    }"
-                >
-                    Body
-                </button>
-                <button
-                    class="button"
-                    @click="tab = 'headers'"
-                    :class="{
-                        '-active': tab === 'headers'
-                    }"
-                >
-                    Headers
-                </button>
-                <button
-                    class="button"
-                    @click="tab = 'cookie'"
-                    :class="{
-                        '-active': tab === 'cookie'
-                    }"
-                >
-                    Cookie
-                </button>
-            </div>
+            <button
+                class="button"
+                @click="tab = 'body'"
+                :class="{
+                    '-active': tab === 'body'
+                }"
+            >
+                Body
+            </button>
+            <button
+                class="button"
+                @click="tab = 'headers'"
+                :class="{
+                    '-active': tab === 'headers'
+                }"
+            >
+                Headers
+            </button>
+            <button
+                class="button"
+                @click="tab = 'cookie'"
+                :class="{
+                    '-active': tab === 'cookie'
+                }"
+            >
+                Cookie
+            </button>
+        </div>
 
-            <div class="w-full h-full overflow-auto">
-                <ClientOnly>
-                    <Body
-                        v-if="tab === 'body'"
-                        class="w-full h-full overflow-hidden border-t border-gray-200 dark:border-gray-600 rounded-br-2xl"
-                    />
-                </ClientOnly>
-
-                <TableEditor
-                    v-if="tab === 'headers'"
-                    :headers="['Headers', 'Value']"
-                    v-model="store.input.headers"
-                    class="w-full"
+        <div class="w-full h-full overflow-auto">
+            <ClientOnly>
+                <Body
+                    :class="{
+                        hidden: tab !== 'body',
+                        'w-full h-full overflow-hidden border-t border-gray-200 dark:border-gray-600 rounded-br-2xl': true
+                    }"
                 />
+            </ClientOnly>
 
-                <TableEditor
-                    v-if="tab === 'cookie'"
-                    :headers="['Cookie', 'Value']"
-                    v-model="store.input.cookie"
-                    class="w-full"
-                />
-            </div>
-        </motion.nav>
-    </AnimatePresence>
+            <TableEditor
+                :headers="['Headers', 'Value']"
+                :data="store.input.headers"
+                :class="{
+                    hidden: tab !== 'headers',
+                    'w-full': true
+                }"
+            />
+
+            <TableEditor
+                :headers="['Cookie', 'Value']"
+                :data="store.input.cookie"
+                :class="{
+                    hidden: tab !== 'cookie',
+                    'w-full': true
+                }"
+            />
+        </div>
+    </motion.nav>
 
     <div
         v-if="isEdit"
@@ -93,6 +96,11 @@ const isEdit = defineModel<boolean>()
 const store = usePlaygroundStore()
 
 const tab = ref<'body' | 'headers' | 'cookie'>('body')
+
+const variants = {
+    hidden: { opacity: 0, scale: 0 },
+    visible: { opacity: 1, scale: 1 }
+} as const
 </script>
 
 <style>

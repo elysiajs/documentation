@@ -1,4 +1,4 @@
-import { nextTick } from 'vue'
+import { nextTick, UnwrapNestedRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { parse, serialize } from 'cookie'
 
@@ -17,6 +17,36 @@ const serializeCookie = (cookies: Record<string, string>) =>
     Object.entries(cookies)
         .map(([key, value]) => serialize(key, value))
         .join('; ')
+
+function partialEqual(a: unknown, b: unknown) {
+    if (
+        typeof a !== 'object' ||
+        typeof b !== 'object' ||
+        a === null ||
+        b === null
+    )
+        return a === b
+
+    const aKeys = Object.keys(a)
+    const bKeys = Object.keys(b)
+
+    for (const key of aKeys) {
+        // @ts-ignore
+        if (!bKeys.includes(key) || !partialEqual(a[key], b[key])) return false
+    }
+
+    return true
+}
+
+function pairsToObject(pairs: string[][] | undefined) {
+    if (!pairs) return {}
+
+    const object: Record<string, string> = {}
+
+    for (const [key, value] of pairs) if (key) object[key] = value
+
+    return object
+}
 
 export const usePlaygroundStore = defineStore('playground', {
     state: () => ({
@@ -48,26 +78,6 @@ export const usePlaygroundStore = defineStore('playground', {
         testcases: [] as Testcases,
         testcasesResult: [] as boolean[]
     }),
-    getters: {
-        inputHeadersObject() {
-            const obj: Record<string, string> = {}
-
-            if (this.input.headers)
-                for (const [key, value] of this.input.headers)
-                    if (key) obj[key] = value
-
-            return obj
-        },
-        inputCookieObject() {
-            const obj: Record<string, string> = {}
-
-            if (this.input.cookie)
-                for (const [key, value] of this.input.cookie)
-                    if (key) obj[key] = value
-
-            return obj
-        }
-    },
     actions: {
         load() {
             if (typeof window === 'undefined') return
@@ -167,13 +177,13 @@ export const usePlaygroundStore = defineStore('playground', {
             const { updateTheme } = await import('./monaco')
             updateTheme(this.theme)
         },
-        async run() {
+        async run({ test = false } = {}) {
             const id = randomId()
             this.id = id
 
             this.result.error = null
             let isLogged = false
-            let isTested = false
+            let isTested = !test
 
             timeout = setTimeout(() => {
                 if (this.id !== id) return
@@ -189,7 +199,19 @@ export const usePlaygroundStore = defineStore('playground', {
                     ).fill(false)
             }, 300) as any as number
 
+            const parsed = {
+                headers: pairsToObject(this.input.headers),
+                cookie: pairsToObject(this.input.cookie)
+            } as const
+
             try {
+                const cookie = serializeCookie({
+                    ...parsed.cookie,
+                    ...(parsed.headers.cookie
+                        ? parse(parsed.headers.cookie)
+                        : ({} as any))
+                })
+
                 const [response, { headers, status }] = await execute(
                     this.code,
                     `https://elysiajs.com${this.input.path}`,
@@ -205,15 +227,12 @@ export const usePlaygroundStore = defineStore('playground', {
                                         'content-type': 'text/plain'
                                     }
                                   : {},
-                            this.inputHeadersObject,
-                            {
-                                'x-browser-cookie': serializeCookie({
-                                    ...this.inputCookieObject,
-                                    ...(this.inputHeadersObject.cookie
-                                        ? parse(this.inputHeadersObject.cookie)
-                                        : ({} as any))
-                                })
-                            }
+                            parsed.headers,
+                            cookie
+                                ? {
+                                      'x-browser-cookie': cookie
+                                  }
+                                : {}
                         ),
                         body:
                             this.input.body &&
@@ -260,90 +279,111 @@ export const usePlaygroundStore = defineStore('playground', {
                 if (this.result.isHTML && sandbox && sandbox.contentWindow)
                     sandbox.contentWindow.location.reload()
 
-                if (this.testcasesResult.length !== this.testcases.length)
-                    this.testcasesResult = new Array(
-                        this.testcases.length
-                    ).fill(false)
+                if (test) {
+                    if (this.testcasesResult.length !== this.testcases.length)
+                        this.testcasesResult = new Array(
+                            this.testcases.length
+                        ).fill(false)
 
-                const testResults = await Promise.all(this.testcases.map(
-                    async ({ request, response: expected }) => {
-                        const [response, { headers, status }] = await execute(
-                            this.code,
-                            `https://elysiajs.com${request.url}`,
-                            {
-                                body: request.body,
-                                method: request.method ?? 'GET',
-                                headers: Object.assign(
-                                    !request.body
-                                        ? {}
-                                        : isJSON(request.body)
-                                          ? {
-                                                'content-type':
-                                                    'application/json'
-                                            }
-                                          : request.body.trim()
-                                            ? {
-                                                  'content-type': 'text/plain'
-                                              }
-                                            : {},
-                                    this.inputHeadersObject,
-                                    {
-                                        'x-browser-cookie': serializeCookie({
-                                            ...this.inputCookieObject,
-                                            ...(this.inputHeadersObject.cookie
-                                                ? parse(
-                                                      this.inputHeadersObject
-                                                          .cookie
-                                                  )
-                                                : ({} as any))
-                                        })
-                                    }
-                                )
-                            }
-                        )
+                    const testResults = await Promise.all(
+                        this.testcases.map(async ({ test }) => {
+                            if (!Array.isArray(test)) test = [test]
 
-                        if (this.id !== id) return false
+                            for (const {
+                                request,
+                                response: expected
+                            } of test) {
+                                const cookie = serializeCookie({
+                                    ...request.cookie,
+                                    ...(request.headers?.cookie
+                                        ? parse(request.headers.cookie)
+                                        : ({} as any))
+                                })
 
-                        const body =
-                            typeof expected.body === 'object'
-                                ? JSON.stringify(response)
-                                : response
+                                const [response, { headers, status }] =
+                                    await execute(
+                                        this.code,
+                                        `https://elysiajs.com${request.url}`,
+                                        {
+                                            body:
+                                                request.body &&
+                                                typeof request.body === 'object'
+                                                    ? JSON.stringify(
+                                                          request.body
+                                                      )
+                                                    : request.method !==
+                                                            'GET' &&
+                                                        request.method !==
+                                                            'HEAD'
+                                                      ? (request.body as any)
+                                                      : undefined,
+                                            method: request.method ?? 'GET',
+                                            headers: Object.assign(
+                                                !request.body
+                                                    ? {}
+                                                    : typeof request.body ===
+                                                        'object'
+                                                      ? {
+                                                            'content-type':
+                                                                'application/json'
+                                                        }
+                                                      : typeof request.body ===
+                                                          'string'
+                                                        ? {
+                                                              'content-type':
+                                                                  'text/plain'
+                                                          }
+                                                        : {},
+                                                { ...request.headers },
+                                                cookie
+                                                    ? {
+                                                          'x-browser-cookie':
+                                                              cookie
+                                                      }
+                                                    : {}
+                                            )
+                                        }
+                                    )
 
-                        if (
-                            expected.body !== undefined &&
-                            expected.body !== body
-                        )
-                            return false
+                                if (this.id !== id) return false
 
-                        if (
-                            expected.status !== undefined &&
-                            expected.status !== status
-                        )
-                            return false
-
-                        if (expected.headers) {
-                            if (!headers) return false
-
-                            let headersMatch = true
-
-                            for (const [key, value] of Object.entries(
-                                expected.headers
-                            )) {
-                                if (headers[key.toLowerCase()] !== value) {
-                                    headersMatch = false
-                                    break
+                                if (expected.body) {
+                                    if (typeof expected.body === 'object')
+                                        try {
+                                            if (
+                                                !partialEqual(
+                                                    expected.body,
+                                                    JSON.parse(response)
+                                                )
+                                            )
+                                                return false
+                                        } catch {
+                                            return false
+                                        }
+                                    else if (expected.body !== response)
+                                        return false
                                 }
+
+                                if (
+                                    expected.status !== undefined &&
+                                    expected.status !== status
+                                )
+                                    return false
+
+                                if (expected.headers)
+                                    for (const [key, value] of Object.entries(
+                                        expected.headers
+                                    ))
+                                        if (value !== headers[key]) return false
                             }
 
-                            if (!headersMatch) return false
-                        }
+                            return true
+                        })
+                    )
 
-                        return true
-                    }
-                ))
-
-                isTested = true
-                this.testcasesResult = testResults
+                    isTested = true
+                    this.testcasesResult = testResults
+                }
             } catch (err) {
                 const error = err as { syntax: Error } | Error
 

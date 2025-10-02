@@ -14,11 +14,23 @@ export const tableOfContents: TableOfContentGroup[] = [
         contents: [
             {
                 title: 'Introduction',
-                href: '/tutorial'
+                href: '/tutorial/'
             },
             {
                 title: 'Your First Route',
-                href: '/tutorial/your-first-route'
+                href: '/tutorial/your-first-route/'
+            },
+            {
+                title: 'Handler and Context',
+                href: '/tutorial/handler-and-context/'
+            },
+            {
+                title: 'Status and Headers',
+                href: '/tutorial/status-and-headers/'
+            },
+            {
+                title: 'Validation',
+                href: '/tutorial/validation/'
             }
         ]
     }

@@ -17,7 +17,7 @@ head:
 ---
 
 <script setup lang="ts">
-import Playground from '../components/xiao/playground/playground.vue'
+import Editor from '../components/xiao/playground/playground.vue'
 import Answer from '../components/xiao/answer/answer.vue'
 
 import { Bookmark } from 'lucide-vue-next'
@@ -25,7 +25,7 @@ import { Bookmark } from 'lucide-vue-next'
 import { code, testcases } from './data'
 </script>
 
-<Playground :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases">
 
 # Welcome to Elysia
 
@@ -65,7 +65,7 @@ As for the first assignment, let's modify the code to make the server respond wi
 
 Feels free to look around the code editor and preview section to get familiar with the environment.
 
-Once your code is correct, there should be a confetti animation 🎉 and you can proceed to the next lesson.
+<template #answer>
 
 <Answer>
 
@@ -84,4 +84,6 @@ This would make Elysia response with `"Hello Elysia!"` when you access `/`.
 
 </Answer>
 
-</Playground>
+</template>
+
+</Editor>

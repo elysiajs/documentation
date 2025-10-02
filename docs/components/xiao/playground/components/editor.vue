@@ -15,26 +15,20 @@ let editor = ref()
 const router = useRouter()
 
 const newEditor = () => {
-	editor.value?.dispose?.()
+    editor.value?.dispose?.()
     editor.value = createEditor({
         id: 'elysia-playground-editor',
         code: store.code,
         onChange(newCode) {
             store.code = newCode
         }
-    })
-        .then(store.syncEditorTheme)
-        .then(store.run)
+    }).then(store.syncEditorTheme)
 }
 
 if (typeof window !== 'undefined')
-    watch(
-        () => router.route.path,
-        newEditor,
-        {
-            immediate: true
-        }
-    )
+    watch(() => router.route.path, newEditor, {
+        immediate: true
+    })
 
 onMounted(newEditor)
 

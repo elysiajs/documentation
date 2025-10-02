@@ -1,24 +1,8 @@
 <template>
     <aside id="elysia-editor-aside">
-        <div class="tab">
-            <select class="absolute opacity-0" @change="changePage" :value="current?.href">
-                <optgroup
-                    v-for="{ title, contents } of tableOfContents"
-                    :label="title"
-                    :key="title"
-                >
-                    <option
-                        v-for="{ title, href } of contents"
-                        :value="href"
-                        :key="href"
-                    >
-                        {{ title }}
-                    </option>
-                </optgroup>
-            </select>
-
+        <!-- <div class="tab">
             <Menu :size="18" stroke-width="2" />
-        </div>
+        </div> -->
 
         <button
             class="tab"
@@ -52,35 +36,13 @@
 </template>
 
 <script setup lang="ts">
-import { Menu, GraduationCap, Bookmark, Moon, Sun } from 'lucide-vue-next'
-
-import { useRouter } from 'vitepress'
+import { GraduationCap, Bookmark, Moon, Sun } from 'lucide-vue-next'
 
 import { usePlaygroundStore } from '../store'
-import { tableOfContents } from '../../table-of-content'
 
 const store = usePlaygroundStore()
-const router = useRouter()
-
-const getRelativePath = (path: string) =>
-	(path.endsWith('/') ? path.slice(0, -1) : path)
-
-const path = router.route.path.replace(/.html$/g, '')
-
-const contents = tableOfContents.flatMap((item) => item.contents)
-const current = contents.find(
-    (item) =>
-        item.href === path ||
-        item.href === getRelativePath(path)
-)
 
 const toggleTheme = () => store.setThemeWithAnimation()
-
-function changePage(event: Event) {
-    const value = (event.target as HTMLSelectElement).value
-
-    if (value) router.go(value)
-}
 </script>
 
 <style>

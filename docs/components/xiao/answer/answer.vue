@@ -1,5 +1,5 @@
 <template>
-    <details class="playground-answer">
+    <details class="playground-answer" :class="props.class">
         <summary>
             <span>Show answer</span>
             <EyeClosed class="closed" :stroke-width="1.5" />
@@ -14,6 +14,10 @@
 
 <script setup lang="ts">
 import { Eye, EyeClosed } from 'lucide-vue-next'
+
+const props = defineProps<{
+	class?: string
+}>()
 </script>
 
 <style>

@@ -1,5 +1,5 @@
 <template>
-    <table ref="table" :class="props.class">
+    <table ref="table" :class="classBinding">
         <thead>
             <tr
                 class="text-left text-xs text-gray-400 dark:text-gray-500 *:px-1 *:py-0.5"
@@ -69,12 +69,18 @@ import { ref, watch, onUnmounted } from 'vue'
 
 const props = defineProps<{
     headers: string[]
-    class?: string
 }>()
 
-const data = defineModel<string[][]>({
+const headers = ref<string[]>(props.headers)
+
+const data = defineModel<string[][]>('data', {
     default: <string[][]>[]
 })
+
+const classBinding = defineModel<
+    string | Record<string, boolean> | (string | Record<string, boolean>)[]
+>('class')
+
 const active = ref<[x: number, y: number] | null>([0, 0])
 
 const table = ref<HTMLElement | null>(null)
@@ -83,6 +89,10 @@ const placeholderRow = ref<HTMLElement | null>(null)
 watch(
     () => props.headers,
     () => {
+        headers.value = props.headers
+
+        if (headers.value.every((h, i) => h === props.headers[i])) return
+
         if (!data.value || data.value.length === 0)
             data.value = [new Array(props.headers.length).fill('')]
         else

@@ -13,6 +13,7 @@
             <div
                 class="absolute flex justify-center items-end w-full h-full top-0 z-30 pointer-events-none"
                 v-if="showParticle"
+                :class="{ 'opacity-0': store.tab.aside !== 'task' }"
             >
                 <div
                     v-confetti="{
@@ -34,11 +35,45 @@
                     class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
                 />
 
-                <section id="elysia-playground-task">
-                    <slot v-if="store.tab.aside === 'task'" />
+                <section
+                    id="elysia-playground-task"
+                    v-if="store.tab.aside === 'task'"
+                >
+                    <p
+                        className="group text-xs mb-3 text-gray-400 transition-colors"
+                    >
+                        <label
+                            for="elysia-playground-table-of-contents"
+                            class="font-light"
+                        >
+                            {{ chapter?.title }} /
+                        </label>
+                        <select
+                            id="elysia-playground-table-of-contents"
+                            class="font-medium group-interact:text-pink-500 dark:group-interact:text-pink-400"
+                            @change="changePage"
+                            :value="current?.href"
+                        >
+                            <optgroup
+                                v-for="{ title, contents } of tableOfContents"
+                                :label="title"
+                                :key="title"
+                            >
+                                <option
+                                    v-for="{ title, href } of contents"
+                                    :value="href"
+                                    :key="href"
+                                >
+                                    {{ title }}
+                                </option>
+                            </optgroup>
+                        </select>
+                    </p>
+
+                    <slot />
 
                     <footer
-                        class="border-t border-gray-200 dark:border-gray-600 mt-4 pt-4"
+                        class="pt-4"
                         v-if="store.testcases && store.testcases.length"
                     >
                         <ol class="flex flex-col gap-2">
@@ -136,6 +171,10 @@
                         </ol>
                     </footer>
 
+                    <Answer class="mt-2">
+                    	<slot name="answer" />
+                    </Answer>
+
                     <aside id="elysia-playground-aside">
                         <a
                             v-if="previous"
@@ -143,18 +182,18 @@
                             :href="previous.href"
                             :key="previous.href"
                         >
-                            <small>Previous</small>
+                            <small>← Previous</small>
                             {{ previous.title }}
                         </a>
                         <div v-else />
 
                         <a
                             v-if="next"
-                            class="last"
+                            class="-last"
                             :href="next.href"
                             :key="next.href"
                         >
-                            <small>Next</small>
+                            <small>Next →</small>
                             {{ next.title }}
                         </a>
                     </aside>
@@ -174,6 +213,7 @@ import { Circle, CircleCheckBig } from 'lucide-vue-next'
 
 import { vConfetti } from '@neoconfetti/vue'
 import Ray from '../../../fern/ray.vue'
+import Answer from '../../answer/answer.vue'
 
 import { tableOfContents } from '../../table-of-content'
 
@@ -193,8 +233,24 @@ const index = contents.findIndex(
     (item) => item.href === path || item.href === getRelativePath(path)
 )
 
+const current = contents.find(
+    (item) => item.href === path || item.href === getRelativePath(path)
+)
+const chapter = tableOfContents.find((item) =>
+    item.contents.find(
+        (content) =>
+            content.href === path || content.href === getRelativePath(path)
+    )
+)
+
 const next = contents[index + 1]
 const previous = contents[index - 1]
+
+function changePage(event: Event) {
+    const value = (event.target as HTMLSelectElement).value
+
+    if (value) router.go(value)
+}
 
 const showParticle = ref(false)
 watchDebounced(
@@ -220,7 +276,7 @@ watchDebounced(
 }
 
 #elysia-playground-task {
-    @apply p-4 text-gray-800/85 dark:text-gray-200/85;
+    @apply p-4 pt-0 text-gray-800/85 dark:text-gray-200/85;
 
     & > h1 {
         @apply text-3xl font-bold mb-4;
@@ -230,12 +286,17 @@ watchDebounced(
         @apply text-2xl font-bold pt-4 my-4 border-t dark:border-gray-700;
     }
 
+    & > h3 {
+        @apply text-xl font-bold pt-4 my-4;
+    }
+
     & > p {
         @apply mt-4;
     }
 
     & > h1,
     & > h2,
+    & > h3,
     & > p > strong,
     & > ol > li > strong {
         @apply text-black dark:text-white;
@@ -249,7 +310,17 @@ watchDebounced(
         }
     }
 
+    & > ul {
+        @apply list-disc list-inside mt-4;
+
+        & > li {
+            @apply mt-2;
+        }
+    }
+
     & > p > code,
+    & > ul > li > code,
+    & > ol > li > code,
     & > details > div > p > code {
         @apply text-sm rounded-lg;
 
@@ -260,7 +331,7 @@ watchDebounced(
 
     & > div[class*='language-'],
     & > details > div > div[class*='language-'] {
-        @apply relative my-4 py-4 text-sm;
+        @apply relative my-4 text-sm -mx-4 !rounded-none;
         background-color: var(--vp-code-copy-code-bg);
 
         &:hover {
@@ -307,6 +378,8 @@ watchDebounced(
         }
 
         & > .shiki {
+        	@apply py-4 overflow-y-hidden overflow-x-auto;
+
             & > code {
                 @apply flex flex-col w-full;
 
