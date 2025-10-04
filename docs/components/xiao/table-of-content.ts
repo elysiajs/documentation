@@ -49,5 +49,18 @@ export const tableOfContents: TableOfContentGroup[] = [
                 href: '/tutorial/getting-started/encapsulation/'
             }
         ]
+    },
+    {
+        title: 'Patterns',
+        contents: [
+            {
+                title: 'Error Handling',
+                href: '/tutorial/patterns/error-handling/'
+            },
+            {
+                title: 'Extends Context',
+                href: '/tutorial/patterns/extends-context/'
+            }
+        ]
     }
 ]

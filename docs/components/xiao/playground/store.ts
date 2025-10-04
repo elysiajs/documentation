@@ -361,7 +361,15 @@ export const usePlaygroundStore = defineStore('playground', {
                                         } catch {
                                             return false
                                         }
-                                    else if (expected.body !== response)
+                                    else if (
+                                        typeof expected.body === 'function' &&
+                                        !expected.body(response)
+                                    )
+                                        return false
+                                    else if (
+                                        typeof expected.body !== 'function' &&
+                                        expected.body !== response
+                                    )
                                         return false
                                 }
 

@@ -168,11 +168,15 @@ body {
 ::view-transition-new(root) {
     mask: url('/assets/shigure-ui-smol.gif') center / 0 no-repeat;
     animation: var(--switch-name) var(--switch-duration);
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
 }
 
 ::view-transition-old(root),
 .dark::view-transition-old(root) {
     animation: var(--switch-name) var(--switch-duration);
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
 }
 
 @keyframes scale {
@@ -186,7 +190,7 @@ body {
         mask-size: 25vmax;
     }
     100% {
-        mask-size: 1000vmax;
+        mask-size: 750vmax;
     }
 }
 
@@ -197,11 +201,11 @@ body {
     10% {
         mask-size: 25vmax;
     }
-    80% {
+    87.5% {
         mask-size: 25vmax;
     }
     100% {
-        mask-size: 1000vmax;
+        mask-size: 750vmax;
     }
 }
 

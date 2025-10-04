@@ -39,8 +39,8 @@
                     id="elysia-playground-task"
                     v-if="store.tab.aside === 'task'"
                 >
-                    <p
-                        className="group text-xs mb-3 text-gray-400 transition-colors"
+                    <div
+                        className="group text-xs mt-4 !mb-1.5 text-gray-400 transition-colors"
                     >
                         <label
                             for="elysia-playground-table-of-contents"
@@ -68,7 +68,7 @@
                                 </option>
                             </optgroup>
                         </select>
-                    </p>
+                    </div>
 
                     <slot />
 

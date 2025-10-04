@@ -35,6 +35,10 @@ const props = defineProps<{
         & > .opened {
 			@apply hidden;
 		}
+
+		& > .closed {
+			@apply translate-y-0.5;
+		}
     }
 
     &[open] > summary {

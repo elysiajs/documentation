@@ -116,12 +116,13 @@ function __webEnv__(app) {
 				self.postMessage({
 					id: __playground__,
 					response: [
-						await response.text(), {
+						await response.text(),
+						{
 							status: response.status,
-								headers: Object.fromEntries(response.headers.entries())
-							}
-						]
-					})
+							headers: Object.fromEntries(response.headers.entries())
+						}
+					]
+				})
 			} catch (error) {
 				self.postMessage({ id: __playground__, error })
 			}
