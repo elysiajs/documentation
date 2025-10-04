@@ -19,7 +19,8 @@ head:
 <script setup lang="ts">
 import { Elysia } from 'elysia'
 
-import Editor from '../../components/xiao/playground/playground.vue'
+import Editor from '../../../components/xiao/playground/playground.vue'
+import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 
 import { code, testcases } from './data'
 </script>
@@ -53,8 +54,10 @@ When you define a schema, Elysia will ensure the data is in a correct shape.
 
 If the data doesn't match the schema, Elysia will return a **422 Unprocessable Entity** error.
 
+See <DocLink href="/essential/validation">Validation</DocLink>.
+
 ### Bring your own
-Alternatively, Elysia support **Standard Schema**, allowing you to use a library of your choice like `zod`, `yup` or `valibot`.
+Alternatively, Elysia support **Standard Schema**, allowing you to use a library of your choice like **zod**, **yup** or **valibot**.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -74,6 +77,8 @@ new Elysia()
 	.listen(3000)
 ```
 
+See <DocLink href="/essential/validation#standard-schema">Standard Schema</DocLink> for all compatible schema.
+
 ## Validation Type
 You can validate the following property:
 
@@ -85,6 +90,8 @@ You can validate the following property:
 - `response`
 
 Once schema is defined, Elysia will infers type for you so You don't have to define a separate schema in TypeScript.
+
+See <DocLink href="/essential/validation#schema-type">Schema Type</DocLink> for each type.
 
 ## Response Validation
 When you define a validation schema for `response`, Elysia will validate the response before sending it to the client, and type check the response for you.
@@ -108,6 +115,8 @@ new Elysia()
 	)
 	.listen(3000)
 ```
+
+See <DocLink href="/essential/validation#response">Response Validation</DocLink>.
 
 ## Assignment
 

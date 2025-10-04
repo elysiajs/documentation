@@ -26,7 +26,7 @@
             <iframe
                 class="w-full h-full"
                 :class="{ hidden: store.tab.aside !== 'docs' }"
-                src="/"
+                :src="store.doc"
             />
             <article
                 class="relative w-full h-full overflow-x-hidden overflow-y-auto"
@@ -172,7 +172,7 @@
                     </footer>
 
                     <Answer class="mt-2">
-                    	<slot name="answer" />
+                        <slot name="answer" />
                     </Answer>
 
                     <aside id="elysia-playground-aside">
@@ -291,7 +291,12 @@ watchDebounced(
     }
 
     & > p {
-        @apply mt-4;
+        @apply my-4;
+    }
+
+    & > blockquote {
+    	@apply border-l-2 font-light pl-4 py-1 mt-4;
+		background-color: var(--vp-c-bg-secondary);
     }
 
     & > h1,
@@ -300,6 +305,17 @@ watchDebounced(
     & > p > strong,
     & > ol > li > strong {
         @apply text-black dark:text-white;
+    }
+
+    & > a,
+    & > p > a,
+    & > ul > li > a,
+    & > ol > li > a {
+        @apply underline underline-offset-2 cursor-pointer;
+        color: var(--vp-c-brand-1);
+        transition:
+            color 0.25s,
+            opacity 0.25s;
     }
 
     & > ol {
@@ -378,7 +394,7 @@ watchDebounced(
         }
 
         & > .shiki {
-        	@apply py-4 overflow-y-hidden overflow-x-auto;
+            @apply py-4 overflow-y-hidden overflow-x-auto;
 
             & > code {
                 @apply flex flex-col w-full;

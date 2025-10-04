@@ -18,19 +18,35 @@ export const tableOfContents: TableOfContentGroup[] = [
             },
             {
                 title: 'Your First Route',
-                href: '/tutorial/your-first-route/'
+                href: '/tutorial/getting-started/your-first-route/'
             },
             {
                 title: 'Handler and Context',
-                href: '/tutorial/handler-and-context/'
+                href: '/tutorial/getting-started/handler-and-context/'
             },
             {
                 title: 'Status and Headers',
-                href: '/tutorial/status-and-headers/'
+                href: '/tutorial/getting-started/status-and-headers/'
             },
             {
                 title: 'Validation',
-                href: '/tutorial/validation/'
+                href: '/tutorial/getting-started/validation/'
+            },
+            {
+                title: 'Lifecycle',
+                href: '/tutorial/getting-started/life-cycle/'
+            },
+            {
+                title: 'Guard',
+                href: '/tutorial/getting-started/guard/'
+            },
+            {
+                title: 'Plugin',
+                href: '/tutorial/getting-started/plugin/'
+            },
+            {
+                title: 'Encapsulation',
+                href: '/tutorial/getting-started/encapsulation/'
             }
         ]
     }

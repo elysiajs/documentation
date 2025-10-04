@@ -53,6 +53,7 @@ export const usePlaygroundStore = defineStore('playground', {
         id: randomId(),
         code: '',
         defaultCode: '',
+        doc: '/',
         theme: 'light' as 'light' | 'dark',
         input: {
             path: '/',
@@ -366,7 +367,9 @@ export const usePlaygroundStore = defineStore('playground', {
 
                                 if (
                                     expected.status !== undefined &&
-                                    expected.status !== status
+                                    (typeof expected.status === 'function'
+                                        ? !expected.status(status)
+                                        : expected.status !== status)
                                 )
                                     return false
 

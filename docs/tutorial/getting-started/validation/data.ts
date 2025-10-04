@@ -1,4 +1,4 @@
-import { Testcases } from '../../components/xiao/playground/types'
+import { Testcases } from '../../../components/xiao/playground/types'
 
 export const code = `import { Elysia, t } from 'elysia'
 
@@ -12,7 +12,7 @@ new Elysia()
 
 export const testcases = [
     {
-        title: 'Body schema',
+        title: 'Add a Body Schema',
         description:
             'Define a body schema for POST `/user` endpoint that accept an object with `name` property with type string, and return \`Hello \${name}!\`',
         test: [
@@ -38,7 +38,7 @@ export const testcases = [
                     }
                 },
                 response: {
-                	status: 400
+                    status: (status) => status >= 400 && status < 500
                 }
             }
         ]

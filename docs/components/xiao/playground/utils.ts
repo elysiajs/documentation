@@ -67,6 +67,72 @@ function getBalancedBracketIndex(input: string, startAt = 0) {
 
 const cache = new LRUCache()
 
+const BANNERS = {
+    init: `import { parseCookie } from 'https://esm.sh/elysia/cookies'
+
+self.console.log = self.console.warn = self.console.error = (...log) => {
+    self.postMessage({ id: __playground__, log: JSON.parse(JSON.stringify(log)) })
+}
+
+function __webEnv__(app) {
+	app.onTransform({ as: 'global' }, async (c) => {
+		if(c.headers['x-browser-cookie']) {
+			c.headers.cookie = c.headers['x-browser-cookie']
+			delete c.headers['x-browser-cookie']
+
+			c.cookie = await parseCookie(c.set, c.headers.cookie, app.config.cookie)
+		}
+	})
+
+	app.listen = (port, callback) => {
+		app.server = {
+			development: true,
+			fetch: (request) => app.fetch(request),
+			hostname: 'elysiajs.com',
+			id: 'Elysia',
+			pendingRequests: 0,
+			pendingWebSockets: 0,
+			port: port ?? 80,
+			publish() {},
+			ref() {},
+			reload() {},
+			requestIP() {
+				return {
+					address: '127.0.0.1',
+					family: 'IPv4',
+					port
+				}
+			},
+			upgrade() {},
+			unref() {}
+		}
+
+		callback?.(server)
+
+		self.onmessage = async (e) => {
+			try {
+				const response = await app.handle(new Request(e.data[0], e.data[1]))
+
+				self.postMessage({
+					id: __playground__,
+					response: [
+						await response.text(), {
+							status: response.status,
+								headers: Object.fromEntries(response.headers.entries())
+							}
+						]
+					})
+			} catch (error) {
+				self.postMessage({ id: __playground__, error })
+			}
+		}
+	}
+
+	return app
+}\n\n`,
+    listen: `\n\t.use(__webEnv__)\n`
+}
+
 function parse(code: string) {
     if (cache.has(code)) return cache.get(code)!
 
@@ -85,83 +151,26 @@ function parse(code: string) {
         }
     )
 
-    const newElysiaIndex = parsed.indexOf('new Elysia(')
-    if (newElysiaIndex) {
+    let newElysiaIndex = parsed.indexOf('new Elysia(')
+
+    while (newElysiaIndex !== -1) {
         const closeParamIndex = getBalancedBracketIndex(parsed, newElysiaIndex)
 
         if (closeParamIndex !== -1)
             parsed =
                 parsed.slice(0, closeParamIndex + 1) +
-                `.use(app => {
-app.onTransform({ as: 'global' }, async (c) => {
-if(c.headers['x-browser-cookie']) {
-c.headers.cookie = c.headers['x-browser-cookie']
-delete c.headers['x-browser-cookie']
-
-c.cookie = await parseCookie(c.set, c.headers.cookie, app.config.cookie)
-}
-})
-
-app.listen = (port, callback) => {
-app.server = {
-development: true,
-fetch: (request) => app.fetch(request),
-hostname: 'elysiajs.com',
-id: 'Elysia',
-pendingRequests: 0,
-pendingWebSockets: 0,
-port: port ?? 80,
-publish() {},
-ref() {},
-reload() {},
-requestIP() {
-return {
-address: '127.0.0.1',
-family: 'IPv4',
-port
-}
-},
-upgrade() {},
-unref() {}
-}
-
-callback?.(server)
-
-self.onmessage = async (e) => {
-try {
-const response = await app.handle(new Request(e.data[0], e.data[1]))
-
-self.postMessage({
-id: __playground__,
-	response: [
-		await response.text(), {
-			status: response.status,
-   			headers: Object.fromEntries(response.headers.entries())
-  		}
-   	]
-})
-} catch (error) {
-  	self.postMessage({ id: __playground__, error })
-}
-}
-
-return app
-}
-
-return app
-})\n` +
+                BANNERS.listen +
                 parsed.slice(closeParamIndex + 2)
+
+        newElysiaIndex = parsed.indexOf(
+            'new Elysia(',
+            closeParamIndex + BANNERS.listen.length + 2
+        )
     }
 
-    parsed =
-        `import { parseCookie } from 'https://esm.sh/elysia/cookies'\n
-
-self.console.log = self.console.warn = self.console.error = (...log) => {
-    self.postMessage({ id: __playground__, log: JSON.parse(JSON.stringify(log)) })
-}\n` +
-        parsed
-            .replace('openapi({', 'openapi({embedSpec:true,')
-            .replace('openapi()', 'openapi({embedSpec: true})')
+    parsed = BANNERS.init + parsed
+        .replace('openapi({', 'openapi({embedSpec:true,')
+        .replace('openapi()', 'openapi({embedSpec: true})')
 
     cache.set(code, parsed)
 

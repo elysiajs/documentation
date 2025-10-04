@@ -20,7 +20,8 @@ head:
 import { Elysia } from 'elysia'
 
 import { Cog } from 'lucide-vue-next'
-import Editor from '../../components/xiao/playground/playground.vue'
+import Editor from '../../../components/xiao/playground/playground.vue'
+import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 
 import { code, testcases } from './data'
 </script>
@@ -40,7 +41,7 @@ new Elysia()
     .listen(3000)
 ```
 
-A handler can also be an literal value.
+A handler can also be an literal value, see <DocLink href="/essential/handler">Handler</DocLink>
 
 ```ts
 import { Elysia } from 'elysia'
@@ -66,12 +67,14 @@ new Elysia()
 ```
 
 **Context** stores information about the request like:
-- [**body**](/essential/validation.html#body) - data sent by client to server like form data, JSON payload.
-- [**query**](/essential/validation.html#query) - Path query string as Object. <small>(Query is extracted from a value after pathname starting from '?' question mark sign)</small>
-- [**params**](/essential/validation.html#params) - Elysia's path parameters parsed as object
-- [**headers**](/essential/validation.html#headers) - HTTP Header, additional information about the request like "Content-Type".
+- <DocLink href="/essential/validation#body">body</DocLink> - data sent by client to server like form data, JSON payload.
+- <DocLink href="/essential/validation#query">query</DocLink> - query string as an object. <small>(Query is extracted from a value after pathname starting from '?' question mark sign)</small>
+- <DocLink href="/essential/validation#params">params</DocLink> - Path parameters parsed as object
+- <DocLink href="/essential/validation#headers">headers</DocLink> - HTTP Header, additional information about the request like "Content-Type".
 
-### Preview
+See <DocLink href="/essential/handler#context">Context</DocLink>.
+
+## Preview
 
 You can preview the result by looking under the **editor** section.
 

@@ -19,14 +19,15 @@ head:
 <script setup lang="ts">
 import { Elysia } from 'elysia'
 
-import Editor from '../../components/xiao/playground/playground.vue'
+import Editor from '../../../components/xiao/playground/playground.vue'
+import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 
 import { code, testcases } from './data'
 </script>
 
 <Editor :code="code" :testcases="testcases">
 
-# Status and Headers
+# Status
 
 Status code is an indicator of how server handle the request.
 
@@ -51,6 +52,8 @@ new Elysia()
 	.listen(3000)
 ```
 
+See <DocLink href="/essential/handler#status">Status</DocLink>.
+
 ## Redirect
 Similarly, you can also redirect the request to another URL returning a `redirect` function.
 
@@ -61,6 +64,8 @@ new Elysia()
 	.get('/', ({ redirect }) => redirect('https://elysiajs.com'))
 	.listen(3000)
 ```
+
+See <DocLink href="/essential/handler#redirect">Redirect</DocLink>.
 
 ## Headers
 Unlike, status code, and redirect where you can return directly.
@@ -82,6 +87,8 @@ new Elysia()
 ```
 
 Because `headers` is a **request headers**, Elysia distinguish between request headers and response headers by prefixing **set.headers** for response.
+
+See <DocLink href="/essential/handler#set-headers">Headers</DocLink>.
 
 ## Assignment
 

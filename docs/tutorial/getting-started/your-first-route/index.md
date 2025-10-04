@@ -19,8 +19,9 @@ head:
 <script setup lang="ts">
 import { Elysia } from 'elysia'
 
-import Editor from '../../components/xiao/playground/playground.vue'
-import Playground from '../../components/nearl/playground.vue'
+import Editor from '../../../components/xiao/playground/playground.vue'
+import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
+import Playground from '../../../components/nearl/playground.vue'
 
 import { code, testcases } from './data'
 
@@ -73,6 +74,8 @@ Path in Elysia can be grouped into 3 types:
 2. dynamic paths - segment can be any value
 3. wildcards - path until a specific point can be anything
 
+See <DocLink href="/essential/route">Route</DocLink>.
+
 ## Static Path
 
 Static path is a hardcoded string to locate the resource on the server.
@@ -85,6 +88,8 @@ new Elysia()
 	.get('/hi', 'hi')
 	.listen(3000)
 ```
+
+See <DocLink href="/essential/route#static-path">Static Path</DocLink>.
 
 ## Dynamic path
 
@@ -100,11 +105,7 @@ new Elysia()
     .listen(3000)
 ```
 
-
-
 Here, a dynamic path is created with `/id/:id`. Which tells Elysia to capture the value `:id` segment with value like **/id/1**, **/id/123**, **/id/anything**.
-
-<br>
 
 <Playground
   :elysia="demo6"
@@ -117,6 +118,8 @@ Here, a dynamic path is created with `/id/:id`. Which tells Elysia to capture th
     }
   }"
 />
+
+See <DocLink href="/essential/route#dynamic-path">Dynamic Path</DocLink>.
 
 ### Optional path parameters
 We can make a path parameter optional by adding a question mark `?` after the parameter name.
@@ -140,6 +143,8 @@ new Elysia()
     },
   }"
 />
+
+See <DocLink href="/essential/route#optional-path-parameters">Optional Path Parameters</DocLink>.
 
 ## Wildcards
 
@@ -170,6 +175,8 @@ new Elysia()
     }
   }"
 />
+
+See <DocLink href="/essential/route#wildcards">Wildcards</DocLink>.
 
 ## Assignment
 
