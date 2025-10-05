@@ -54,6 +54,10 @@ export const tableOfContents: TableOfContentGroup[] = [
         title: 'Patterns',
         contents: [
             {
+                title: 'Cookie',
+                href: '/tutorial/patterns/cookie/'
+            },
+            {
                 title: 'Error Handling',
                 href: '/tutorial/patterns/error-handling/'
             },

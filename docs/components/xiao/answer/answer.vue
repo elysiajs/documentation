@@ -1,5 +1,5 @@
 <template>
-    <details class="playground-answer" :class="props.class">
+    <details v-if="slots.default" class="playground-answer" :class="props.class">
         <summary>
             <span>Show answer</span>
             <EyeClosed class="closed" :stroke-width="1.5" />
@@ -13,10 +13,13 @@
 </template>
 
 <script setup lang="ts">
+import { useSlots } from 'vue'
 import { Eye, EyeClosed } from 'lucide-vue-next'
 
+const slots = useSlots()
+
 const props = defineProps<{
-	class?: string
+    class?: string
 }>()
 </script>
 
@@ -33,23 +36,23 @@ const props = defineProps<{
         }
 
         & > .opened {
-			@apply hidden;
-		}
+            @apply hidden;
+        }
 
-		& > .closed {
-			@apply translate-y-0.5;
-		}
+        & > .closed {
+            @apply translate-y-0.5;
+        }
     }
 
     &[open] > summary {
-    	& > .closed {
-			@apply hidden;
-		}
+        & > .closed {
+            @apply hidden;
+        }
 
-		& > .opened {
-			@apply block;
-		}
-	}
+        & > .opened {
+            @apply block;
+        }
+    }
 
     & > div {
         @apply mt-2 p-4 border dark:border-gray-700 rounded-2xl;

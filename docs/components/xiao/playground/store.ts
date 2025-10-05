@@ -385,7 +385,12 @@ export const usePlaygroundStore = defineStore('playground', {
                                     for (const [key, value] of Object.entries(
                                         expected.headers
                                     ))
-                                        if (value !== headers[key]) return false
+                                        if (typeof value === 'function') {
+                                            if (value(headers[key])) continue
+
+                                            return false
+                                        } else if (value !== headers[key])
+                                            return false
                             }
 
                             return true

@@ -14,7 +14,7 @@ export interface Testcase {
         response: {
             body?: unknown
             status?: number | null | ((status: number) => boolean)
-            headers?: Record<string, string>
+            headers?: Record<string, string | ((status: string) => boolean)>
         }
     }>
 }

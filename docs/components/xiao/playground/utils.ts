@@ -68,21 +68,29 @@ function getBalancedBracketIndex(input: string, startAt = 0) {
 const cache = new LRUCache()
 
 const BANNERS = {
-    init: `import { parseCookie } from 'https://esm.sh/elysia/cookies'
+    init: `import { parseCookie as __parseCookie__ } from 'https://esm.sh/elysia/cookies'
+import { handleSet as __handleSet__ } from 'https://esm.sh/elysia/adapter/utils'
 
 self.console.log = self.console.warn = self.console.error = (...log) => {
     self.postMessage({ id: __playground__, log: JSON.parse(JSON.stringify(log)) })
 }
 
 function __webEnv__(app) {
-	app.onTransform({ as: 'global' }, async (c) => {
-		if(c.headers['x-browser-cookie']) {
-			c.headers.cookie = c.headers['x-browser-cookie']
-			delete c.headers['x-browser-cookie']
+	app
+		.onTransform({ as: 'global' }, async (c) => {
+			if(c.headers['x-browser-cookie']) {
+				c.headers.cookie = c.headers['x-browser-cookie']
+				delete c.headers['x-browser-cookie']
 
-			c.cookie = await parseCookie(c.set, c.headers.cookie, app.config.cookie)
-		}
-	})
+				c.cookie = await __parseCookie__(c.set, c.headers.cookie, app.config.cookie)
+			}
+		})
+		.mapResponse(({ set }) => {
+			__handleSet__(set)
+
+			if(set.headers['set-cookie'])
+				set.headers['x-browser-set-cookie'] = set.headers['set-cookie']
+		})
 
 	app.listen = (port, callback) => {
 		app.server = {
@@ -112,6 +120,12 @@ function __webEnv__(app) {
 		self.onmessage = async (e) => {
 			try {
 				const response = await app.handle(new Request(e.data[0], e.data[1]))
+				const headers = Object.fromEntries(response.headers.entries())
+
+				if(headers['x-browser-set-cookie']) {
+					headers['set-cookie'] = headers['x-browser-set-cookie']
+					delete headers['x-browser-set-cookie']
+				}
 
 				self.postMessage({
 					id: __playground__,
@@ -119,7 +133,7 @@ function __webEnv__(app) {
 						await response.text(),
 						{
 							status: response.status,
-							headers: Object.fromEntries(response.headers.entries())
+							headers
 						}
 					]
 				})
@@ -127,6 +141,8 @@ function __webEnv__(app) {
 				self.postMessage({ id: __playground__, error })
 			}
 		}
+
+		return app
 	}
 
 	return app
@@ -135,7 +151,7 @@ function __webEnv__(app) {
 }
 
 function parse(code: string) {
-    if (cache.has(code)) return cache.get(code)!
+    // if (cache.has(code)) return cache.get(code)!
 
     if (!code.includes('.listen('))
         throw new Error(
@@ -178,6 +194,11 @@ function parse(code: string) {
     return parsed
 }
 
+export function randomId() {
+	const uuid = crypto.randomUUID()
+	return uuid.slice(0, 8) + uuid.slice(24, 32)
+}
+
 export const execute = (
     code: string,
     url: string,
@@ -193,9 +214,7 @@ export const execute = (
             }
         ]
     >((resolve, reject) => {
-        const id = Math.random()
-            .toString(36)
-            .substring(2, length + 2)
+        const id = randomId()
 
         const banner = `const __playground__ = '${id}'\n`
 
