@@ -18,7 +18,6 @@ head:
 
 <script setup lang="ts">
 import Editor from '../components/xiao/playground/playground.vue'
-import Answer from '../components/xiao/answer/answer.vue'
 
 import { Bookmark } from 'lucide-vue-next'
 
@@ -67,8 +66,6 @@ Feels free to look around the code editor and preview section to get familiar wi
 
 <template #answer>
 
-<Answer>
-
 You can change the response by changing the content inside the `.get` method from `'Hello World!'` to `'Hello Elysia!'`.
 
 ```typescript
@@ -81,8 +78,6 @@ new Elysia()
 ```
 
 This would make Elysia response with `"Hello Elysia!"` when you access `/`.
-
-</Answer>
 
 </template>
 

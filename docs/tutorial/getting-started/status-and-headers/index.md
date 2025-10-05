@@ -96,6 +96,10 @@ Let's execrise what we have learned.
 
 <template #answer>
 
+1. To set status code to `418 I'm a teapot`, we can use `status` function.
+2. To redirect `/docs` to `https://elysiajs.com`, we can use `redirect` function.
+3. To set a custom header `x-powered-by` to `Elysia`, we can use `set.headers` object.
+
 ```typescript
 import { Elysia } from 'elysia'
 

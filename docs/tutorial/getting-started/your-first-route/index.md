@@ -184,6 +184,10 @@ Let's recap, and create 3 paths with different types:
 
 <template #answer>
 
+1. Static path `/elysia` that responds with `"Hello Elysia!"`
+2. Dynamic path `/friends/:name?` that responds with `"Hello {name}!"`
+3. Wildcard path `/flame-chasers/*` that responds with the rest of the path.
+
 ```typescript
 import { Elysia } from 'elysia'
 

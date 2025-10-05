@@ -318,7 +318,8 @@ watchDebounced(
             opacity 0.25s;
     }
 
-    & > ol {
+    & > ol,
+    & > details > div > ol {
         @apply list-decimal list-inside mt-4;
 
         & > li {
@@ -326,7 +327,8 @@ watchDebounced(
         }
     }
 
-    & > ul {
+    & > ul,
+    & > details > div > ul {
         @apply list-disc list-inside mt-4;
 
         & > li {
@@ -337,7 +339,9 @@ watchDebounced(
     & > p > code,
     & > ul > li > code,
     & > ol > li > code,
-    & > details > div > p > code {
+    & > details > div > p > code,
+    & > details > div > ul > li > code,
+    & > details > div > ol > li > code {
         @apply text-sm rounded-lg;
 
         padding: 3px 6px;

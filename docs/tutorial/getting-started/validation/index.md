@@ -124,6 +124,8 @@ Let's execrise what we have learned.
 
 <template #answer>
 
+We can define a schema by using `t.Object` provide to `body` property.
+
 ```typescript
 import { Elysia } from 'elysia'
 

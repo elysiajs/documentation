@@ -89,13 +89,13 @@ import { Elysia } from 'elysia'
 new Elysia()
 	.get('/1', () => 'Hello Elysia!')
 	.get('/auth', () => {
-		console.log('This is executed after "beforeHandle"')
+		console.log('Run after "beforeHandle"')
 
 		return 'Oh you are lucky!'
 	}, {
 		// This is a Local Hook
 		beforeHandle({ request, status }) {
-			console.log('This is executed before handler')
+			console.log('Run before handler')
 
 			if(Math.random() <= 0.5)
 				return status(418)
