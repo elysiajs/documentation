@@ -126,7 +126,7 @@ export const OpenAPI = {
 } as const
 ```
 
-Then in our Elysia instance that use `@elysiajs/swagger`.
+Then in our Elysia instance that use `@elysiajs/openapi`.
 
 ```ts
 import { Elysia } from 'elysia'

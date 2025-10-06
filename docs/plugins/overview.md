@@ -118,6 +118,7 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [Cap Checkpoint plugin for Elysia](https://capjs.js.org/guide/middleware/elysia.html) - Cloudflare-like middleware for Cap, a lightweight, modern open-source CAPTCHA alternative designed using SHA-256 PoW.
 -   [Elysia Background](https://github.com/staciax/elysia-background) - A background task processing plugin for Elysia.js
 -   [@fedify/elysia](https://github.com/fedify-dev/fedify/tree/main/packages/elysia) - A plugin that provides seamless integration with [Fedify](https://fedify.dev/), the ActivityPub server framework.
+-   [elysia-healthcheck](https://github.com/iam-medvedev/elysia-healthcheck) - Healthcheck plugin for Elysia.js
 
 ## Complementary projects:
 
