@@ -252,14 +252,13 @@ const sponsors = Object.values(data).filter(
 
         <template #sidebar-nav-before>
             <a
-                target="_blank"
-                href="/playground"
+                href="/tutorial/"
                 class="clicky text-white font-semibold text-gradient from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 -translate-x-3"
             >
             	<div class="flex items-center gap-1 px-3 py-1.5 rounded-xl interact:bg-pink-400/7.5 interact:dark:bg-pink-400/10 transition-colors">
 	                <Terminal :size="21" class="text-pink-400" />
 
-	                Playground
+	                Interactive Tutorial
              	</div>
             </a>
         </template>

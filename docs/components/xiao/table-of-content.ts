@@ -62,8 +62,54 @@ export const tableOfContents: TableOfContentGroup[] = [
                 href: '/tutorial/patterns/error-handling/'
             },
             {
+                title: 'Validation Error',
+                href: '/tutorial/patterns/validation-error/'
+            },
+            {
                 title: 'Extends Context',
                 href: '/tutorial/patterns/extends-context/'
+            },
+            {
+                title: 'Standalone Schema',
+                href: '/tutorial/patterns/standalone-schema/'
+            },
+            {
+                title: 'Macro',
+                href: '/tutorial/patterns/macro/'
+            }
+        ]
+    },
+    {
+        title: 'Features',
+        contents: [
+            {
+                title: 'OpenAPI',
+                href: '/tutorial/features/openapi/'
+            },
+            {
+                title: 'Mount',
+                href: '/tutorial/features/mount/'
+            },
+            {
+                title: 'Unit Test',
+                href: '/tutorial/features/unit-test/'
+            },
+            {
+                title: 'End-to-End Type Safety',
+                href: '/tutorial/features/end-to-end-type-safety/'
+            }
+        ]
+    },
+    {
+        title: 'Conclusion',
+        contents: [
+            {
+                title: "What's Next?",
+                href: '/tutorial/whats-next'
+            },
+            {
+            	title: 'Documentation',
+				href: '/table-of-content'
             }
         ]
     }

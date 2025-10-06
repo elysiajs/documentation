@@ -230,17 +230,12 @@ export default defineConfig({
                         link: '/quick-start'
                     },
                     {
-                        text: 'Tutorial',
-                        link: '/tutorial',
-                        collapsed: true
+                        text: 'Table of Content',
+                        link: '/table-of-content'
                     },
                     {
                         text: 'Key Concept',
                         link: '/key-concept'
-                    },
-                    {
-                        text: 'Table of Content',
-                        link: '/table-of-content'
                     }
                 ]
             },

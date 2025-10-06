@@ -1,36 +1,37 @@
 ---
-title: Table of Content - ElysiaJS
+title: Tutorial
+layout: false
+authors: []
 head:
-  - - meta
-    - property: 'og:title'
-      content: Table of Content - ElysiaJS
+    - - meta
+      - property: 'og:title'
+        content: Tutorial - ElysiaJS
 
-  - - meta
-    - name: 'description'
-      content: There's no correct or organized way to learn Elysia, however, we recommended completing the essential chapter first as the chapter briefly covers most of Elysia's features and foundation before jumping to other topics that interest you. Once you've completed the essential chapter, you may jump to any topic that interests you. However, we recommended following the order of the chapter as it may reference to previous chapter.
+    - - meta
+      - name: 'description'
+        content: Tutorial
 
-  - - meta
-    - property: 'og:description'
-      content: There's no correct or organized way to learn Elysia, however, we recommended completing the essential chapter first as the chapter briefly covers most of Elysia's features and foundation before jumping to other topics that interest you. Once you've completed the essential chapter, you may jump to any topic that interests you. However, we recommended following the order of the chapter as it may reference to previous chapter.
+    - - meta
+      - property: 'og:description'
+        content: Tutorial
 ---
 
-<script setup>
-	import TutorialLink from './components/xiao/tutorial-link.vue'
+<script setup lang="ts">
+import Editor from '../components/xiao/playground/playground.vue'
 
-    import Card from './components/nearl/card.vue'
-    import Deck from './components/nearl/card-deck.vue'
+import Card from '../components/nearl/card.vue'
+import Deck from '../components/nearl/card-deck.vue'
+
+import { code } from './data'
 </script>
 
-# Table of Content
+<Editor :code="code">
 
-There's no correct way to learn Elysia, but we **highly recommended** you checkout the an **Interactive Tutorial** first to get familiar with Elysia:
+# Congratulations!
 
-<TutorialLink />
+You have completed the tutorial.
 
-<!--### Prerequisite Knowledge
-Although Elysia's documentation is designed to be beginner-friendly, we need to establish a baseline so that the docs can stay focused on Elysia's functionality. We will provide links to relevant documentation whenever we introduce a new concept.
-
-To get the most out of our documentation, it's recommended that you have a basic understanding of Node.js and basic HTTP.-->
+Now you're ready to build your own application with Elysia!
 
 ## First up
 We highly recommended you to check out these 2 pages first before getting started with Elysia:
@@ -180,6 +181,10 @@ We have some integration with popular tools:
     </Card>
 </Deck>
 
+<br>
+
 ---
 
 We hope you will love Elysia as much as we do!
+
+</Editor>

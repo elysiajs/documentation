@@ -253,6 +253,8 @@ export const execute = (
             }
 
             worker.onerror = (e) => {
+           		reject(e.message ?? 'Something went wrong')
+
                 setTimeout(worker.terminate, 5000)
                 worker.terminate()
             }

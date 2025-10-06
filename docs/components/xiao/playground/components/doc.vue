@@ -295,8 +295,8 @@ watchDebounced(
     }
 
     & > blockquote {
-    	@apply border-l-2 font-light pl-4 py-1 mt-4;
-		background-color: var(--vp-c-bg-secondary);
+        @apply text-sm mt-4 pl-4 py-1 border-l-2;
+        color: var(--vp-c-text-2);
     }
 
     & > h1,
@@ -349,8 +349,13 @@ watchDebounced(
         background-color: var(--vp-code-bg);
     }
 
+    & > p:has(img) {
+        @apply -mx-4;
+    }
+
     & > div[class*='language-'],
-    & > details > div > div[class*='language-'] {
+    & > details > div > div[class*='language-'],
+    & > .vp-code-group > .blocks > div[class*='language-'] {
         @apply relative my-4 text-sm -mx-4 !rounded-none;
         background-color: var(--vp-code-copy-code-bg);
 
@@ -415,6 +420,31 @@ watchDebounced(
                     &.remove {
                         background-color: var(--vp-code-line-diff-remove-color);
                     }
+                }
+            }
+        }
+    }
+
+    & > .vp-code-group {
+        @apply -mx-4 !rounded-none;
+
+        & > .tabs {
+            @apply rounded-none;
+        }
+
+        & > .blocks {
+            @apply h-full;
+
+            & > div[class*='language-'] {
+                @apply !m-0;
+                height: calc(100% - 50px);
+
+                @media (max-width: theme(--breakpoint-sm)) {
+                    margin: 0 -24px;
+                }
+
+                & > pre {
+                    @apply h-full overflow-y-hidden;
                 }
             }
         }
