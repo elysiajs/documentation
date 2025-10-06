@@ -20,6 +20,20 @@ class Resolver extends UnpkgSourceResolver implements SourceResolver {
         version: string | undefined,
         path: string
     ): Promise<string | undefined> {
+        const localPath = monaco.Uri.parse(
+            `file:///node_modules/${packageName}/${path}`
+        )
+
+        const cached = monaco.editor.getModel(localPath)?.getValue()
+        if (cached) return cached
+
+        if (packageName === 'bun')
+            return super.resolveSourceFile(
+                '@types/bun',
+                version,
+                'index.d.ts'
+            )
+
         if (packageName === 'elysia')
             switch (path) {
                 case '..d.ts':
@@ -195,10 +209,23 @@ export const createEditor = async ({
     //     })
     // })
 
+    let resolveTimeout: number
+    let resolvedPackage = false
+
     AutoTypings.create(editor, {
         sourceCache: new LocalStorageCache(),
         sourceResolver: new Resolver(),
-        fileRootPath: 'file:///'
+        fileRootPath: 'file:///',
+        onUpdate() {
+            if (resolvedPackage) return
+
+            if (resolveTimeout) clearTimeout(resolveTimeout)
+
+            resolveTimeout = setTimeout(() => {
+                resolvedPackage = true
+                model.setValue(model.getValue())
+            }, 2000) as unknown as number
+        }
     })
 }
 

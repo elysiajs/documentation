@@ -66,7 +66,7 @@ import ClientOnly from './components/client-only.vue'
 import Aside from './components/aside.vue'
 import Doc from './components/doc.vue'
 import Result from './components/result/result.vue'
-import ElysiaChan from './components/elysia-chan/elysia-chan.vue'
+import ElysiaChan from '../elysia-chan/elysia-chan.vue'
 
 const Editor = defineAsyncComponent(() => import('./components/editor.vue'))
 
