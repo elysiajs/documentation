@@ -138,6 +138,10 @@ export const usePlaygroundStore = defineStore('playground', {
 
             return this.syncEditorTheme()
         },
+        reset() {
+            this.code = this.defaultCode
+            window.location.reload()
+        },
         async setThemeWithAnimation(value?: 'light' | 'dark') {
             if (typeof window === 'undefined') return
 

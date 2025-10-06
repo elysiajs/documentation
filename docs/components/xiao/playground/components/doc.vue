@@ -35,7 +35,7 @@
                     class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
                 />
 
-                <section
+                <main
                     id="elysia-playground-task"
                     v-if="store.tab.aside === 'task'"
                 >
@@ -197,7 +197,7 @@
                             {{ next.title }}
                         </a>
                     </aside>
-                </section>
+                </main>
             </article>
         </div>
     </SplitterPanel>

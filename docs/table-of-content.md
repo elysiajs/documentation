@@ -37,10 +37,10 @@ We highly recommended you to check out these 2 pages first before getting starte
 
 <Deck>
 	<Card title="Key Concept" href="/key-concept">
-		Prerequisted concept of Elysia and how to use it effectively
+		Core concept of Elysia and how to effectively
     </Card>
     <Card title="Best Practice" href="/essential/best-practice">
-        Understand how to write good Elysia code
+        Understand best practice to write Elysia code
     </Card>
 </Deck>
 

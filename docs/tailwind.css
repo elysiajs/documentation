@@ -733,6 +733,7 @@ button.copy::after {
         @apply lg:px-0;
 
         & > .content-container {
+        	@apply absolute;
             max-width: 100%;
 
             & > *:not(.main) {

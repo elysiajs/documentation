@@ -1,5 +1,5 @@
 <template>
-    <div class="absolute left-0 w-full h-0" ref="constraint">
+    <div class="absolute left-0 w-[calc(100%-100px)] h-0" ref="constraint">
         <motion.div
             id="elysia-chan"
             drag="x"
@@ -50,7 +50,6 @@
 import { ref, watch, computed, onMounted } from 'vue'
 import { motion, motionValue, useAnimationFrame } from 'motion-v'
 import { onUnmounted } from 'vue'
-import { load } from '../playground/storage'
 
 const constraint = ref<HTMLDivElement>()
 
@@ -68,7 +67,7 @@ const face = {
 
 const faceOffsetByBody = {
     [body.stand]: 32.2,
-    [body.walk]: 32.5,
+    [body.walk]: 32.6,
     [body.sit]: 39.8
 } as const
 

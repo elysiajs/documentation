@@ -56,6 +56,14 @@ const props = defineProps<{
 
     & > div {
         @apply mt-2 p-4 border dark:border-gray-700 rounded-2xl;
+
+        & > *:first-child {
+			@apply !mt-0;
+
+			& > li:first-child {
+				@apply !mt-0;
+			}
+		}
     }
 }
 </style>
