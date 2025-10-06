@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import monacoEditorPlugin from 'vite-plugin-monaco-editor-esm'
 
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
@@ -8,6 +9,7 @@ import lightbox from 'vitepress-plugin-lightbox'
 import tailwindcss from '@tailwindcss/vite'
 import llmstxt from 'vitepress-plugin-llms'
 import { analyzer } from 'vite-bundle-analyzer'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -24,13 +26,13 @@ export default defineConfig({
             dark: 'github-dark'
         },
         languages: ['js', 'ts'],
-        codeTransformers: [
-            transformerTwoslash({
-                typesCache: createFileSystemTypesCache({
-                    dir: './docs/.vitepress/cache/twoslash'
-                })
-            })
-        ],
+        // codeTransformers: [
+        //     transformerTwoslash({
+        //         typesCache: createFileSystemTypesCache({
+        //             dir: './docs/.vitepress/cache/twoslash'
+        //         })
+        //     })
+        // ],
         config: (md) => {
             md.use(lightbox, {})
         }
@@ -46,20 +48,26 @@ export default defineConfig({
             enableNativePlugin: true
         },
         plugins: [
+            nodePolyfills({
+                include: ['path']
+            }),
+            monacoEditorPlugin({
+                languageWorkers: ['editorWorkerService', 'typescript', 'json']
+            }),
             tailwindcss(),
-            process.env.NODE_ENV === 'production'
-                ? llmstxt({
-                      description: 'Ergonomic Framework for Humans',
-                      details: description,
-                      ignoreFiles: [
-                          'index.md',
-                          'table-of-content.md',
-                          'blog/*',
-                          'public/*'
-                      ],
-                      domain: 'https://elysiajs.com'
-                  })
-                : undefined,
+            // process.env.NODE_ENV === 'production'
+            //     ? llmstxt({
+            //           description: 'Ergonomic Framework for Humans',
+            //           details: description,
+            //           ignoreFiles: [
+            //               'index.md',
+            //               'table-of-content.md',
+            //               'blog/*',
+            //               'public/*'
+            //           ],
+            //           domain: 'https://elysiajs.com'
+            //       })
+            //     : undefined,
             process.env.ANALYZE === 'true' ? analyzer() : undefined
         ],
         optimizeDeps: {
@@ -222,18 +230,13 @@ export default defineConfig({
                         link: '/quick-start'
                     },
                     {
-                        text: 'Tutorial',
-                        link: '/tutorial',
-                        collapsed: true
+                        text: 'Table of Content',
+                        link: '/table-of-content'
                     },
                     {
                         text: 'Key Concept',
                         link: '/key-concept'
-                    },
-                    {
-                        text: 'Table of Content',
-                        link: '/table-of-content'
-                    },
+                    }
                 ]
             },
             {

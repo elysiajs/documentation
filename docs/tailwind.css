@@ -5,6 +5,14 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @custom-variant interact (&:hover, &:focus);
 
+@utility ease-out-expo {
+	--tw-ease: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+@utility ease-in-expo {
+	--tw-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 * {
     @apply border-gray-200 dark:border-gray-800;
 }
@@ -152,6 +160,55 @@ body {
     background-color: var(--vp-c-bg) !important;
 }
 
+::view-transition-group(root) {
+    animation-timing-function: var(--expo-in);
+    z-index: 100;
+}
+
+::view-transition-new(root) {
+    mask: url('/assets/shigure-ui-smol.gif') center / 0 no-repeat;
+    animation: var(--switch-name) var(--switch-duration);
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+::view-transition-old(root),
+.dark::view-transition-old(root) {
+    animation: var(--switch-name) var(--switch-duration);
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+@keyframes scale {
+    0% {
+        mask-size: 0;
+    }
+    10% {
+        mask-size: 25vmax;
+    }
+    90% {
+        mask-size: 25vmax;
+    }
+    100% {
+        mask-size: 750vmax;
+    }
+}
+
+@keyframes scale-fast {
+    0% {
+        mask-size: 0;
+    }
+    10% {
+        mask-size: 25vmax;
+    }
+    87.5% {
+        mask-size: 25vmax;
+    }
+    100% {
+        mask-size: 750vmax;
+    }
+}
+
 button.copy::after {
     top: 0;
     width: 40px;
@@ -181,39 +238,31 @@ button.copy::after {
     content: '';
 }
 
-#VPSidebarNav > .group:nth-child(2) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(3) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/getting-start.svg);
 }
 
-#VPSidebarNav > .group:nth-child(3) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/essential.svg);
 }
 
-/* #VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/validation.svg);
-}
-
 #VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/lifecycle.svg);
-} */
-
-#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/pattern.svg);
 }
 
-#VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/eden.svg);
 }
 
-#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/blocks.svg);
 }
 
-#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/search.svg);
 }
 
-#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(9) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/book.svg);
 }
 
@@ -684,6 +733,7 @@ button.copy::after {
         @apply lg:px-0;
 
         & > .content-container {
+        	@apply absolute;
             max-width: 100%;
 
             & > *:not(.main) {
@@ -874,14 +924,12 @@ button.copy::after {
 	border: 1px solid color-mix(in srgb, var(--vp-c-bg-soft) 80%, black 1%);
 }
 
-button[title="Copy Code"].copy,
-button[title="Copy Code"].copy::before {
+button[title="Copy Code"].copy {
 	@apply !rounded-xl clicky;
-}
 
-button[title="Copy Code"].copy::before {
-	@apply -translate-x-1;
-	border: 1px solid var(--vp-code-copy-code-border-color) !important;
+	&::before {
+		@apply -translate-x-0.25;
+	}
 }
 
 div[class*="language-"] {
