@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: End-to-End Type Safety - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: End-to-End Type Safety - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Elysia provides an end-to-end type safety between backend and frontend without code generation similar to tRPC, using Eden.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Elysia provides an end-to-end type safety between backend and frontend without code generation similar to tRPC, using Eden.
 ---
 
 <script setup lang="ts">

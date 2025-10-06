@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Cookie - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Cookie - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Learn how to manage cookies in Elysia, including setting, retrieving, and securing cookies for your web applications.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Learn how to manage cookies in Elysia, including setting, retrieving, and securing cookies for your web applications.
 ---
 
 <script setup lang="ts">

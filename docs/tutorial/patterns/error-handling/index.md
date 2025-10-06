@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Error Handling - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Error Handling - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Learn how to handle errors in Elysia, including custom error handling, error codes, and best practices for managing exceptions in your web applications.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Learn how to handle errors in Elysia, including custom error handling, error codes, and best practices for managing exceptions in your web applications.
 ---
 
 <script setup lang="ts">

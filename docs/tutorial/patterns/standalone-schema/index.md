@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Standalone Schema - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Standalone Schema - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Learn how to use standalone schemas in Elysia to define reusable validation schemas that coexist with route-specific schemas.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Learn how to use standalone schemas in Elysia to define reusable validation schemas that coexist with route-specific schemas.
 ---
 
 <script setup lang="ts">

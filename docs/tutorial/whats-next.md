@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: What's Next - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: What's Next - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Congratulations! You have completed the tutorial. Now you're ready to build your own application with Elysia! We highly recommended you to check out these 2 pages first before getting started with Elysia. Key Concept and Best Practice. Alternatively, you can download llms.txt or llms-full.txt and feed it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience. If you are stuck, feel free to ask our community on GitHub Discussions, Discord, and Twitter. If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences. We also have essential chapters, more patterns, integration with Meta Framework and your favorite tool.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Congratulations! You have completed the tutorial. Now you're ready to build your own application with Elysia! We highly recommended you to check out these 2 pages first before getting started with Elysia. Key Concept and Best Practice. Alternatively, you can download llms.txt or llms-full.txt and feed it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience. If you are stuck, feel free to ask our community on GitHub Discussions, Discord, and Twitter. If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences. We also have essential chapters, more patterns, integration with Meta Framework and your favorite tool.
 ---
 
 <script setup lang="ts">

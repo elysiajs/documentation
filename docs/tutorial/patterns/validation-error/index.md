@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Validation Error - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Validation Error - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Learn how to customize validation error messages in Elysia, including providing detailed feedback for invalid inputs.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Learn how to customize validation error messages in Elysia, including providing detailed feedback for invalid inputs.
 ---
 
 <script setup lang="ts">

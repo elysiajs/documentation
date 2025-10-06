@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Validation - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Validation - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Elysia offers built-in data validation using schemas to ensure request and response data integrity.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Elysia offers built-in data validation using schemas to ensure request and response data integrity.
 ---
 
 <script setup lang="ts">

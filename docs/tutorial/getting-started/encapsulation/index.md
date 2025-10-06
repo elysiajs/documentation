@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Encapsulation - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Encapsulation - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Elysia hooks are encapsulated to its own instance only. If you create a new instance, it will not share hook with other instances.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Elysia hooks are encapsulated to its own instance only. If you create a new instance, it will not share hook with other instances.
 ---
 
 <script setup lang="ts">

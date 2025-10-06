@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Status and Headers - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Status and Headers - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Learn how to manage status codes and headers in Elysia to control HTTP responses effectively.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Learn how to manage status codes and headers in Elysia to control HTTP responses effectively.
 ---
 
 <script setup lang="ts">

@@ -1,4 +1,8 @@
 import * as monaco from 'monaco-editor'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+
 import {
     AutoTypings,
     LocalStorageCache,
@@ -9,6 +13,24 @@ import {
 import { isJSON } from './utils'
 import latte from './theme/latte.json' with { type: 'json' }
 import mocha from './theme/mocha.json' with { type: 'json' }
+
+// @ts-ignore
+self.MonacoEnvironment = {
+	// @ts-ignore
+    getWorker: function (workerId, label) {
+        switch (label) {
+            case 'json':
+                return jsonWorker()
+
+            case 'typescript':
+            case 'javascript':
+                return tsWorker()
+
+            default:
+                return editorWorker()
+        }
+    }
+}
 
 class Resolver extends UnpkgSourceResolver implements SourceResolver {
     constructor() {
@@ -28,11 +50,7 @@ class Resolver extends UnpkgSourceResolver implements SourceResolver {
         if (cached) return cached
 
         if (packageName === 'bun')
-            return super.resolveSourceFile(
-                '@types/bun',
-                version,
-                'index.d.ts'
-            )
+            return super.resolveSourceFile('@types/bun', version, 'index.d.ts')
 
         if (packageName === 'elysia')
             switch (path) {

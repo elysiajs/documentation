@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Macro - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Macro - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Macro is a reusable route options. Learn how to create and use macros in Elysia to enhance your application.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Macro is a reusable route options. Learn how to create and use macros in Elysia to enhance your application.
 ---
 
 <script setup lang="ts">

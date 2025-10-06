@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Mount - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Mount - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Elysia provides a Elysia.mount to interlop between backend frameworks that is built on Web Standard like Hono, H3, etc.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Elysia provides a Elysia.mount to interlop between backend frameworks that is built on Web Standard like Hono, H3, etc.
 ---
 
 <script setup lang="ts">

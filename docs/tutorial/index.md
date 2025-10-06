@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Introduction - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Introduction - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Elysia offers an interactive tutorial experience to learn Elysia with IDE, playground, and more. Get started with Elysia now!
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Elysia offers an interactive tutorial experience to learn Elysia with IDE, playground, and more. Get started with Elysia now!
 ---
 
 <script setup lang="ts">

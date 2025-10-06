@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Your First Route - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Your First Route - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: There are 3 types of paths in Elysia. static paths, dynamic paths, and wildcards. Learn how to use them to create your first route.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: There are 3 types of paths in Elysia. static paths, dynamic paths, and wildcards. Learn how to use them to create your first route.
 ---
 
 <script setup lang="ts">

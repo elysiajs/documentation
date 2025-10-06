@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitepress'
-import monacoEditorPlugin from 'vite-plugin-monaco-editor-esm'
 
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
@@ -17,7 +16,7 @@ const description =
 export default defineConfig({
     lang: 'en-US',
     title: 'ElysiaJS',
-    // description,
+    description,
     ignoreDeadLinks: true,
     lastUpdated: true,
     markdown: {
@@ -45,14 +44,11 @@ export default defineConfig({
             }
         },
         experimental: {
-            enableNativePlugin: true
+            // enableNativePlugin: true
         },
         plugins: [
             nodePolyfills({
                 include: ['path']
-            }),
-            monacoEditorPlugin({
-                languageWorkers: ['editorWorkerService', 'typescript', 'json']
             }),
             tailwindcss(),
             process.env.NODE_ENV === 'production'

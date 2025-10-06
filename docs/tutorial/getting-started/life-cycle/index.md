@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Life Cycle - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Life Cycle - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Lifecycle hook is function that executed on a specific event during the request-response cycle.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Lifecycle hook is function that executed on a specific event during the request-response cycle.
 ---
 
 <script setup lang="ts">

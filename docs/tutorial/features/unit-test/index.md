@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Unit Test - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Unit Test - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Elysia provides a Elysia.fetch function to easily test your application.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Elysia provides a Elysia.fetch function to easily test your application.
 ---
 
 <script setup lang="ts">

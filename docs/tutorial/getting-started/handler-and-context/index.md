@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Handler and Context - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Handler and Context - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Handler is a resource or a route function to send data back to client. Context contains information about each request.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Handler is a resource or a route function to send data back to client. Context contains information about each request.
 ---
 
 <script setup lang="ts">

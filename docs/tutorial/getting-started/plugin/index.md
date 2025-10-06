@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Plugin - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Plugin - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Learn how to use plugins in Elysia to enhance your web applications with reusable components and features.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Learn how to use plugins in Elysia to enhance your web applications with reusable components and features.
 ---
 
 <script setup lang="ts">

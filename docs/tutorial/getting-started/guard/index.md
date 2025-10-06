@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Guard - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Guard - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Elysia provides a guard method to bulk add hooks and schema to multiple routes at once.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Elysia provides a guard method to bulk add hooks and schema to multiple routes at once.
 ---
 
 <script setup lang="ts">

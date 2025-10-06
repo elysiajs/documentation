@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: Extends Context - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: Extends Context - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Learn how to extend the context in Elysia using Decorate, State, Resolve, and Derive to enhance your web applications.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Learn how to extend the context in Elysia using Decorate, State, Resolve, and Derive to enhance your web applications.
 ---
 
 <script setup lang="ts">

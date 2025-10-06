@@ -1,19 +1,19 @@
 ---
-title: Tutorial
+title: OpenAPI - Elysia Tutorial
 layout: false
 authors: []
 head:
     - - meta
       - property: 'og:title'
-        content: Tutorial - ElysiaJS
+        content: OpenAPI - Elysia Tutorial
 
     - - meta
       - name: 'description'
-        content: Tutorial
+        content: Elysia is built around OpenAPI, and support OpenAPI documentation out of the box.
 
     - - meta
       - property: 'og:description'
-        content: Tutorial
+        content: Elysia is built around OpenAPI, and support OpenAPI documentation out of the box.
 ---
 
 <script setup lang="ts">
