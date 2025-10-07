@@ -1,12 +1,12 @@
 <template>
     <a
         href="/tutorial/"
-        class="isolate group relative flex flex-col justify-start items-start w-full p-4 pr-16 sm:p-6 border rounded-xl !no-underline bg-white dark:bg-gray-800 overflow-hidden"
+        class="clicky isolate group relative flex flex-col justify-start items-start w-full p-4 pr-16 sm:p-6 border rounded-xl !no-underline bg-white dark:bg-gray-800 overflow-hidden duration-750 ease-in-expo interact:shadow-xl interact:shadow-gray-700/5"
     >
-        <Ray class="absolute z-30 -top-4 left-0 h-[72px]" />
+        <Ray class="absolute z-30 -top-4 left-0 h-13 opacity-60" />
 
         <img
-            class="absolute z-20 bottom-0 right-1 sm:right-2 h-4/5 sm:h-full object-contain -scale-x-100"
+            class="absolute z-20 bottom-0 right-1 sm:right-2 h-11/12 object-contain"
             src="/elysia/sprite/sit.webp"
         />
 

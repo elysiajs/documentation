@@ -112,18 +112,14 @@ const flyIn2 = useFlyIn(isInView2)
 
         <section class="explain" ref="scope2">
             <div class="flex flex-col gap-4 w-full max-w-sm text-xl leading-8">
-                <motion.h4 class="flex flex-col gap-2 mb-2" v-bind="flyIn2()">
-                    <span class="text-xl">All of these in</span>
+                <motion.h4 class="flex flex-col gap-2 mb-2" v-bind="flyIn2(0.1)">
+                    <span class="text-xl">OpenAPI features, all in</span>
                     <span
                         class="text-8xl font-semibold text-gradient from-violet-400 to-blue-500"
                     >
                         1 line
                     </span>
                 </motion.h4>
-
-                <motion.p v-bind="flyIn2(0.1)">
-                    Yes, you read that right
-                </motion.p>
 
                 <motion.p v-bind="flyIn2(0.2)">
                     Just 1 line of code, you get a full-fledge API documentation

@@ -200,10 +200,6 @@ export default defineConfig({
                     {
                         text: 'Static',
                         link: '/plugins/static'
-                    },
-                    {
-                        text: 'Stream',
-                        link: '/plugins/stream'
                     }
                 ]
             },
@@ -284,6 +280,10 @@ export default defineConfig({
                     {
                         text: 'Error Handling',
                         link: '/patterns/error-handling'
+                    },
+                    {
+                        text: 'Extends Context',
+                        link: '/patterns/extends-context'
                     },
                     {
                         text: 'Macro',
@@ -418,10 +418,6 @@ export default defineConfig({
                     {
                         text: 'Static',
                         link: '/plugins/static'
-                    },
-                    {
-                        text: 'Stream',
-                        link: '/plugins/stream'
                     }
                 ]
             },
@@ -508,7 +504,7 @@ export default defineConfig({
         ],
         outline: {
             level: 2,
-            label: 'Outline'
+            label: 'On this page'
         },
         socialLinks: [
             { icon: 'github', link: 'https://github.com/elysiajs/elysia' },

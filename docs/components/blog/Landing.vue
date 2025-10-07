@@ -3,15 +3,15 @@
         class="h-[30vh] -top-16 -inset-0 left-0 opacity-30 dark:opacity-[.55] pointer-events-none"
     />
     <header
-        class="flex flex-col justify-center items-center max-w-3xl gap-2 w-full mx-auto pt-20 pb-4"
+        class="flex flex-col justify-start max-w-7xl gap-2 w-full mx-auto pt-20 px-4 pb-4"
     >
         <h1
-            class="text-2xl sm:text-3xl text-slate-700 dark:text-slate-100 font-semibold"
+            class="text-4xl text-gray-700 dark:text-gray-100 font-semibold"
         >
-        	Blog posts
+        	Blog
         </h1>
-        <p class="text-slate-500 dark:text-slate-300 text-lg">
-            Update of ElysiaJS from core maintainers
+        <p class="text-gray-500/80 dark:text-gray-300/80 text-base">
+            Update on the latest news, and insights about Elysia
         </p>
     </header>
     <main
@@ -23,19 +23,19 @@
             :href="blog.href"
             tabindex="1"
         >
-            <div class="mb-2 rounded-xl aspect-16/9 bg-slate-100 dark:bg-slate-800 group-interact:shadow-2xl group-interact:-translate-y-1 shadow-black/15 duration-300 ease-out transition-all">
+            <div class="mb-2 rounded-2xl aspect-16/9 bg-gray-100 dark:bg-gray-800 group-interact:shadow-2xl group-interact:scale-105 shadow-black/10 duration-450 ease-out transition-all">
                 <img
                     :src="`${blog.href}/${blog.cover}`"
                     loading="lazy"
-                    class="rounded-xl aspect-16/9"
+                    class="rounded-2xl aspect-16/9"
                 />
             </div>
             <h2
-                class="text-xl md:text-2xl font-semibold text-slate-700 dark:text-slate-100"
+                class="text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-100"
             >
                 {{ blog.title }}
             </h2>
-            <p class="text-slate-500/90 dark:text-slate-300/85">
+            <p class="text-gray-500/80 dark:text-gray-300/80">
                 {{ blog.detail }}
             </p>
         </a>

@@ -101,13 +101,13 @@ Here are the foundation of Elysia, we highly recommended you to go through these
   Understand how routing works in Elysia
 	</Card>
 	<Card title="Handler" href="/essential/handler">
-  		Learn about how to handle request and response
+  		Learn about how to handle request
 	</Card>
 	<Card title="Validation" href="/essential/plugin">
 		How to enforce type safety with Elysia
 	</Card>
 	<Card title="Lifecycle" href="/essential/plugin">
-		Learn different type of lifecycle and how to use it effectively
+		Learn different type of lifecycle
 	</Card>
 	<Card title="Plugin" href="/essential/plugin">
 	  	Learn how to extend Elysia with Plugin
@@ -170,7 +170,7 @@ We have some integration with popular tools:
    		Learn how to use Better Auth with Elysia
     </Card>
     <Card title="Drizzle" href="/integrations/drizzle">
-  		Elysia provides some type safe integration with Drizzle
+  		Elysia provides a type safe utility with Drizzle
     </Card>
     <Card title="Prisma" href="/integrations/prisma">
   		Learn how to use Prisma with Elysia

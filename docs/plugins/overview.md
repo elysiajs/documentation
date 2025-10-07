@@ -24,7 +24,9 @@ Following the same idea as Arch Linux (btw, I use Arch):
 
 This is to ensure developers end up with a performant web server they intend to create. By extension, Elysia includes pre-built common pattern plugins for convenient developer usage:
 
-## Official plugins:
+## Official plugins
+
+Here are some of the official plugins maintained by the Elysia team:
 
 -   [Bearer](/plugins/bearer) - retrieve [Bearer](https://swagger.io/docs/specification/authentication/bearer-authentication/) token automatically
 -   [CORS](/plugins/cors) - set up [Cross-origin resource sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
@@ -38,10 +40,8 @@ This is to ensure developers end up with a performant web server they intend to 
 -   [OpenTelemetry](/plugins/opentelemetry) - add support for OpenTelemetry
 -   [Server Timing](/plugins/server-timing) - audit performance bottlenecks with the [Server-Timing API](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing)
 -   [Static](/plugins/static) - serve static files/folders
--   [Stream](/plugins/stream) - integrate response streaming and [server-sent events (SSEs)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
--   [WebSocket](/patterns/websocket) - support [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 
-## Community plugins:
+## Community plugins
 
 -   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - scaffold your Elysia project with the environment easily (help with ORM, Linters and Plugins)!
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication, simple and clean
