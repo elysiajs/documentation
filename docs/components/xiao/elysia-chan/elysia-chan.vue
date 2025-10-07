@@ -1,5 +1,5 @@
 <template>
-    <div class="absolute left-0 w-[calc(100%-100px)] h-0" ref="constraint">
+    <div class="absolute left-0 w-full h-0" ref="constraint">
         <motion.div
             id="elysia-chan"
             drag="x"
