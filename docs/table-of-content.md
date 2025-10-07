@@ -15,10 +15,10 @@ head:
 ---
 
 <script setup>
-	import TutorialLink from './components/xiao/tutorial-link.vue'
-
     import Card from './components/nearl/card.vue'
     import Deck from './components/nearl/card-deck.vue'
+
+	import TutorialLink from './components/xiao/tutorial-link.vue'
 </script>
 
 # Table of Content
