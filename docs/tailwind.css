@@ -813,12 +813,16 @@ button.copy::after {
 			&::before {
 				--image-size: calc(var(--spacing) * 40);
 
-				@apply flex justify-center items-end h-48 text-gray-400 m-auto translate-y-1 bg-no-repeat opacity-90;
-				aspect-ratio: 466/703;
+				@apply flex justify-center items-end h-47.5 font-medium text-sm text-gray-500 m-auto translate-y-0.75 bg-no-repeat opacity-90;
+				aspect-ratio: 1/1;
 				background-image: url("/elysia/sprite/sit.webp");
-				background-position: 0.375rem 0;
+				background-position: calc(50% - 0.25rem) 0;
 				background-size: calc(var(--image-size) / 703 * 466) var(--image-size);
-				content: "How can I help?";
+				content: "Looking for something?";
+			}
+
+			.dark &::before {
+				@apply !text-gray-400;
 			}
 
 			&:has(li)::before {
@@ -835,7 +839,7 @@ button.copy::after {
 
 				&::before {
 					@apply flex h-40 -translate-x-1.25 translate-y-3.75;
-					background-position: 0 0;
+					background-position: calc(50% + 0.05rem) 0;
 					content: "";
 				}
 			}
