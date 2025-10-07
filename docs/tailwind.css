@@ -472,7 +472,7 @@ button.copy::after {
             @apply p-0 ml-auto;
 
             & > .items {
-                @apply top-10 right-4 md:right-0 max-w-[calc(100%-32px)] sm:max-w-sm !bg-white/75 dark:!bg-slate-900/75 p-1 rounded-2xl border border-slate-700/10 dark:border-slate-300/10 backdrop-blur-md shadow-2xl shadow-black/5;
+                @apply top-10 right-4 md:right-0 max-w-[calc(100%-32px)] sm:max-w-sm !bg-white/75 dark:!bg-slate-800/75 p-1 rounded-2xl border border-slate-700/10 dark:border-slate-300/10 backdrop-blur-md shadow-2xl shadow-black/5;
                 left: unset;
                 transition-duration: 0.5s;
                 transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
