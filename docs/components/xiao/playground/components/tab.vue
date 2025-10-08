@@ -15,8 +15,8 @@
                 </button>
             </TooltipTrigger>
             <TooltipPortal>
-                <AnimatePrecense>
-                    <TooltipContent side="right" :side-offset="4">
+                <AnimatePresence>
+                    <TooltipContent :side="props.side ?? 'right'" :side-offset="4">
                         <motion.p
                             :initial="{ opacity: 0, scale: 0.9 }"
                             :animate="{ opacity: 1, scale: 1 }"
@@ -32,7 +32,7 @@
 	                        :height="6"
 	                    /> -->
                     </TooltipContent>
-                </AnimatePrecense>
+                </AnimatePresence>
             </TooltipPortal>
         </TooltipRoot>
     </TooltipProvider>
@@ -54,6 +54,7 @@ const props = defineProps<{
     active?: boolean
     onClick?: () => void
     class?: string
+    side?: 'top' | 'right' | 'bottom' | 'left'
 }>()
 
 defineEmits<{

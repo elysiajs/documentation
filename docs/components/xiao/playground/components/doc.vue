@@ -3,7 +3,6 @@
         :default-size="30"
         id="elysia-playground-doc"
         class="relative w-full h-full"
-        :class="{ 'pr-0.75': store.tab.aside !== null }"
         :max-size="store.tab.aside === null ? 0 : undefined"
     >
         <div

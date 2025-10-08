@@ -1,12 +1,14 @@
 <template>
     <ElysiaChan />
 
-    <div class="flex w-full min-h-screen py-1.5 bg-gray-50 dark:bg-gray-950">
+    <div
+        class="flex flex-col sm:flex-row gap-0.5 w-full min-h-screen py-1.5 bg-gray-50 dark:bg-gray-950"
+    >
         <Aside />
 
         <SplitterGroup
-            direction="horizontal"
-            class="relative flex flex-1 w-full h-playground"
+            :direction="size.width.value >= 640 ? 'horizontal' : 'vertical'"
+            class="relative flex flex-1 w-full h-playground px-1 sm:px-0"
         >
             <Doc :testcases="props.testcases">
                 <slot />
@@ -15,16 +17,16 @@
                 </template>
             </Doc>
 
-            <SplitterResizeHandle v-if="store.tab.aside !== null" />
+            <SplitterResizeHandle
+                v-if="store.tab.aside !== null"
+                class="p-0.75"
+            />
 
             <SplitterPanel :default-size="70">
-                <div
-                    class="w-full h-full pr-0.75"
-                    :class="{ 'pl-0.75': store.tab.aside !== null }"
-                >
+                <div class="w-full h-full sm:pr-1">
                     <SplitterGroup
                         direction="vertical"
-                        class="relative flex flex-1 w-full h-playground gap-0.75 pr-1"
+                        class="relative flex flex-1 w-full h-playground"
                     >
                         <SplitterPanel
                             :default-size="60"
@@ -42,7 +44,7 @@
                                 <Editor />
                             </ClientOnly>
                         </SplitterPanel>
-                        <SplitterResizeHandle />
+                        <SplitterResizeHandle class="p-0.75" />
                         <SplitterPanel>
                             <Result />
                         </SplitterPanel>
@@ -55,7 +57,7 @@
 
 <script lang="ts" setup>
 import { watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue'
-import { watchDebounced } from '@vueuse/core'
+import { watchDebounced, useWindowSize } from '@vueuse/core'
 import { useRouter } from 'vitepress'
 
 import { SplitterGroup, SplitterPanel, SplitterResizeHandle } from 'reka-ui'
@@ -69,6 +71,7 @@ import Result from './components/result/result.vue'
 import ElysiaChan from '../elysia-chan/elysia-chan.vue'
 
 const Editor = defineAsyncComponent(() => import('./components/editor.vue'))
+const size = useWindowSize()
 
 import type { Testcases } from './types'
 
@@ -138,8 +141,8 @@ watchDebounced(() => store.input.path, run, {
     debounce: 300
 })
 watchDebounced(() => store.input.body, run, {
-	// Preview is hidden between body editor
-	// High debounce is ok since user can't see the result immediately
+    // Preview is hidden between body editor
+    // High debounce is ok since user can't see the result immediately
     debounce: 500
 })
 
