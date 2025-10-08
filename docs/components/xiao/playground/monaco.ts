@@ -211,7 +211,9 @@ export const createEditor = async ({
                     ?.getValue()
 
                 if (value !== undefined) onChange(value)
-            }, 200) as any as number
+                // 1 / (average dev wpm * average English characters in a word / 60 secs in min) + single frame delay of 1/120
+                // 1 / (60 * 4.79 / 60) + 0.08
+            }, 288) as any as number
         })
 
     // const parent = placeholder.parentElement!

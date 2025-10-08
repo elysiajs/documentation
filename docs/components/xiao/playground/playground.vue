@@ -118,30 +118,38 @@ onUnmounted(() => {
 
 const run = () => store.run()
 
+// This doesn't need a high debounce
+// The editor itself already debounced the input
+// Just a single frame of 1/120 to avoid accidental
+// state sync if infinite loops occurs
+// so it doesn't freeze the tab
 watchDebounced(
     () => store.code,
     () => {
         store.run({ test: true })
     },
     {
-        debounce: 300
+        debounce: 8
     }
 )
+
 watch(() => store.input.method, run)
 watchDebounced(() => store.input.path, run, {
     debounce: 300
 })
 watchDebounced(() => store.input.body, run, {
+	// Preview is hidden between body editor
+	// High debounce is ok since user can't see the result immediately
     debounce: 500
 })
 
 // headers and cookie are already debounced by table editor
 watchDebounced(() => store.input.headers, run, {
-    debounce: 10,
+    debounce: 8,
     deep: true
 })
 watchDebounced(() => store.input.cookie, run, {
-    debounce: 10,
+    debounce: 8,
     deep: true
 })
 </script>
