@@ -166,6 +166,19 @@ Additional OpenAPI reference for each endpoint
 
 Scalar configuration, refers to [Scalar config](https://github.com/scalar/scalar/blob/main/documentation/configuration.md)
 
+### Self-hosted Scalar bundle
+
+Self-host the Scalar bundle and disable CDN Fonts.
+
+```typescript
+    openapi({ 
+      scalar: {
+        cdn: "/public/scalar-standalone.min.js", //Self-hosted
+        withDefaultFonts: false, //Disable CDN Fonts
+      },
+    })
+```
+
 ## specPath
 
 @default '/${path}/json'
