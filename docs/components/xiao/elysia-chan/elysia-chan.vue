@@ -5,7 +5,7 @@
             drag="x"
             :drag-constraints="constraint"
             aria-label="Elysia chan chibi"
-            class="fixed z-30 bottom-0 h-40 select-none"
+            class="fixed z-30 bottom-0 h-32 sm:h-40 select-none"
             style="aspect-ratio: 1251/2036"
             :style="{
                 x,
