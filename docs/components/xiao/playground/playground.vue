@@ -2,7 +2,7 @@
     <ElysiaChan />
 
     <div
-        class="flex flex-col sm:flex-row gap-0.5 w-full min-h-dvh py-1.5 bg-gray-50 dark:bg-gray-950"
+        class="flex flex-col sm:flex-row gap-0.5 w-full h-dvh py-1.5 bg-gray-50 dark:bg-gray-950"
     >
         <Aside />
 
@@ -10,19 +10,28 @@
             :direction="size.width.value >= 640 ? 'horizontal' : 'vertical'"
             class="relative flex flex-1 w-full h-playground px-1 sm:px-0"
         >
-            <Doc :testcases="props.testcases">
-                <slot />
-                <template #answer>
-                    <slot name="answer" />
-                </template>
-            </Doc>
+            <SplitterPanel
+                :default-size="30"
+                collapsible
+                :collapsed-size="0"
+                :min-size="20"
+                class="relative w-full h-full"
+                :max-size="store.tab.aside === null ? 0 : undefined"
+            >
+                <Doc :testcases="props.testcases">
+                    <slot />
+                    <template #answer>
+                        <slot name="answer" />
+                    </template>
+                </Doc>
+            </SplitterPanel>
 
             <SplitterResizeHandle
                 v-if="store.tab.aside !== null"
                 class="p-0.75"
             />
 
-            <SplitterPanel :default-size="70" class="flex flex-col sm:block">
+            <SplitterPanel :default-size="70" class="flex sm:block">
                 <div class="flex flex-col flex-1 w-full h-full sm:pr-1">
                     <SplitterGroup
                         direction="vertical"
@@ -30,6 +39,9 @@
                     >
                         <SplitterPanel
                             :default-size="60"
+                            :collapsible="true"
+                            :collapsed-size="0"
+                            :min-size="10"
                             class="relative flex flex-col bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-700 rounded-2xl overflow-hidden"
                         >
                             <div
@@ -47,7 +59,12 @@
                             </EditorLayout>
                         </SplitterPanel>
                         <SplitterResizeHandle class="p-0.75" />
-                        <SplitterPanel class="flex flex-col">
+                        <SplitterPanel
+                            class="flex flex-col"
+                            :collapsible="true"
+                            :collapsed-size="0"
+                            :min-size="10"
+                        >
                             <Result />
                         </SplitterPanel>
                     </SplitterGroup>
@@ -60,7 +77,6 @@
 <script lang="ts" setup>
 import { watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue'
 import { watchDebounced, useWindowSize } from '@vueuse/core'
-import { useRouter } from 'vitepress'
 
 import { SplitterGroup, SplitterPanel, SplitterResizeHandle } from 'reka-ui'
 import { usePlaygroundStore } from './store'
@@ -77,7 +93,7 @@ const ElysiaChan = defineAsyncComponent(
     () => import('../elysia-chan/elysia-chan.vue')
 )
 const EditorLayout = defineAsyncComponent(
-    () => import('./components/editor-layout.vue')
+    () => import('./components/editor-layout/editor-layout.vue')
 )
 const Editor = defineAsyncComponent(() => import('./components/editor.vue'))
 

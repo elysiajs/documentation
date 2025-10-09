@@ -1,10 +1,10 @@
-import { nextTick, UnwrapNestedRefs } from 'vue'
+import { nextTick } from 'vue'
 import { defineStore } from 'pinia'
 import { parse, serialize } from 'cookie'
 
 import { save, load } from './storage'
-import { execute, isJSON, VirtualFS } from './utils'
-import { Testcases } from './types'
+import { execute, isJSON, type VirtualFS } from './utils'
+import type { Testcases } from './types'
 
 let timeout: number | undefined
 
@@ -53,10 +53,14 @@ export const usePlaygroundStore = defineStore('playground', {
         id: randomId(),
         fs: {
             'index.ts': ''
-        } satisfies VirtualFS,
+        } as VirtualFS,
         defaultFS: {
             'index.ts': ''
-        } satisfies VirtualFS,
+        } as VirtualFS,
+        tabs: {
+            active: 0,
+            files: ['index.ts']
+        },
         doc: '/',
         theme: 'light' as 'light' | 'dark',
         input: {
@@ -83,7 +87,17 @@ export const usePlaygroundStore = defineStore('playground', {
         testcases: [] as Testcases,
         testcasesResult: [] as boolean[]
     }),
+    getters: {
+        activeFile: (state) => state.tabs.files[state.tabs.active]
+    },
     actions: {
+        createNewFile() {
+            const name = `${this.tabs.files.length}.ts`
+
+            this.tabs.files.push(name)
+            this.fs[name] = ''
+            this.tabs.active = this.tabs.files.length - 1
+        },
         load() {
             if (typeof window === 'undefined') return
 

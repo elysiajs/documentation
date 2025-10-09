@@ -86,8 +86,16 @@ pre.vp-code > code {
     text-decoration: none !important;
 }
 
-.vp-doc > div > p > img {
-    @apply rounded-lg;
+.vp-doc > div {
+	.dark & {
+		--vp-code-color: #f9d5e5;
+		--vp-c-brand-1: #f9d5e5;
+		--vp-code-bg: color-mix(in oklab, oklch(82.3% 0.12 346.018) 15%, transparent);
+	}
+
+	& > p > img {
+	    @apply rounded-lg;
+	}
 }
 
 :root {
@@ -235,6 +243,10 @@ button.copy::after {
     @apply my-6 h-[720px] w-full rounded-lg border-0;
 }
 
+.dark #VPSidebarNav {
+    --vp-c-brand-1: oklch(82.3% 0.12 346.018);
+}
+
 #VPSidebarNav > .group > .VPSidebarItem > .item > .text::before {
     @apply mr-2 block w-4 h-4 bg-cover;
     content: '';
@@ -283,10 +295,18 @@ button.copy::after {
 
     .is-link:hover {
         background-color: #f0629215 !important;
+
+        .dark & {
+        	@apply !bg-pink-300/10;
+        }
     }
 
     .is-link.has-active {
         background-color: #f0629220 !important;
+
+        .dark & {
+        	@apply !bg-pink-300/12.5;
+        }
     }
 
     &.collapsible {

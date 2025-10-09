@@ -1,205 +1,194 @@
 <template>
-    <SplitterPanel
-        :default-size="30"
-        id="elysia-playground-doc"
-        class="relative w-full h-full"
-        :max-size="store.tab.aside === null ? 0 : undefined"
+    <div
+        class="relative w-full h-full border-gray-200 dark:border-gray-700 rounded-2xl overflow-y-scroll bg-white dark:bg-gray-900"
+        :class="{ border: store.tab.aside !== null }"
     >
         <div
-            class="relative w-full h-full border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden bg-white dark:bg-gray-900"
-            :class="{ border: store.tab.aside !== null }"
+            class="absolute flex justify-center items-end w-full h-full top-0 z-30 pointer-events-none"
+            v-if="showParticle"
+            :class="{ 'opacity-0': store.tab.aside !== 'task' }"
         >
             <div
-                class="absolute flex justify-center items-end w-full h-full top-0 z-30 pointer-events-none"
-                v-if="showParticle"
-                :class="{ 'opacity-0': store.tab.aside !== 'task' }"
-            >
-                <div
-                    v-confetti="{
-                        particleCount: 100,
-                        force: 1.5,
-                        duration: 4500
-                    }"
-                />
-            </div>
-            <iframe
-                class="w-full h-full"
-                :class="{ hidden: store.tab.aside !== 'docs' }"
-                :src="store.doc"
+                v-confetti="{
+                    particleCount: 100,
+                    force: 1.5,
+                    duration: 4500
+                }"
             />
-            <article
-                class="relative w-full h-full overflow-x-hidden overflow-y-auto"
-            >
-                <Ray
-                    class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
-                />
-
-                <main
-                    id="elysia-playground-task"
-                    v-if="store.tab.aside === 'task'"
-                >
-                    <div
-                        className="group text-xs mt-4 !mb-1.5 text-gray-400 transition-colors"
-                    >
-                        <label
-                            for="elysia-playground-table-of-contents"
-                            class="font-light"
-                        >
-                            {{ chapter?.title }} /
-                        </label>
-                        <select
-                            id="elysia-playground-table-of-contents"
-                            class="font-medium group-interact:text-pink-500 dark:group-interact:text-pink-400"
-                            @change="changePage"
-                            :value="current?.href"
-                        >
-                            <optgroup
-                                v-for="{ title, contents } of tableOfContents"
-                                :label="title"
-                                :key="title"
-                            >
-                                <option
-                                    v-for="{ title, href } of contents"
-                                    :value="href"
-                                    :key="href"
-                                >
-                                    {{ title }}
-                                </option>
-                            </optgroup>
-                        </select>
-                    </div>
-
-                    <slot />
-
-                    <footer
-                        class="pt-4"
-                        v-if="store.testcases && store.testcases.length"
-                    >
-                        <ol class="flex flex-col gap-2">
-                            <li
-                                v-for="(testcase, i) in store.testcases"
-                                :key="testcase.title"
-                                class="group flex gap-3 text-gray-500"
-                            >
-                                <div class="flex flex-col gap-2 mt-0.75 w-6">
-                                    <div
-                                        class="min-w-6 min-h-6 text-gray-400/80 *:absolute *:transition-all *:duration-250"
-                                        :class="{
-                                            'text-green-600 dark:text-green-500':
-                                                store.testcasesResult[i]
-                                        }"
-                                    >
-                                        <CircleCheckBig
-                                            :size="24"
-                                            class="opacity-0"
-                                            :class="{
-                                                'opacity-100':
-                                                    store.testcasesResult[i]
-                                            }"
-                                            :style="{
-                                                transitionDelay: store
-                                                    .testcasesResult[i]
-                                                    ? `${i * 125}ms`
-                                                    : ''
-                                            }"
-                                        />
-                                        <Circle
-                                            :size="24"
-                                            class="opacity-0"
-                                            :class="{
-                                                'opacity-100':
-                                                    !store.testcasesResult[i]
-                                            }"
-                                            :style="{
-                                                transitionDelay: store
-                                                    .testcasesResult[i]
-                                                    ? `${i * 125}ms`
-                                                    : ''
-                                            }"
-                                        />
-                                    </div>
-
-                                    <div
-                                        :size="24"
-                                        class="w-0.5 h-full mx-auto bg-gray-300/80 dark:bg-gray-500/80 rounded"
-                                    >
-                                        <div
-                                            class="w-full h-0 bg-green-600/75 dark:bg-green-500/75 transition-all duration-500 ease-in-expo"
-                                            :class="{
-                                                'h-full':
-                                                    store.testcasesResult[i]
-                                            }"
-                                            :style="{
-                                                transitionDelay: store
-                                                    .testcasesResult[i]
-                                                    ? `${i * 125}ms`
-                                                    : ''
-                                            }"
-                                        />
-                                    </div>
-                                </div>
-                                <div class="pb-2">
-                                    <h4
-                                        class="text-xl font-semibold text-gray-700 dark:text-gray-200 duration-250"
-                                        :class="{
-                                            'text-green-600 dark:text-green-500':
-                                                store.testcasesResult[i]
-                                        }"
-                                        :style="{
-                                            transitionDelay: store
-                                                .testcasesResult[i]
-                                                ? `${i * 125}ms`
-                                                : ''
-                                        }"
-                                    >
-                                        {{ testcase.title }}
-                                    </h4>
-                                    <p
-                                        class="text-sm mt-2 text-gray-500/80 dark:text-gray-300/80 group-hover:text-gray-600 dark:group-hover:text-gray-200 transition-colors duration-250"
-                                        :style="{
-                                            transitionDelay: store
-                                                .testcasesResult[i]
-                                                ? `${i * 125}ms`
-                                                : ''
-                                        }"
-                                    >
-                                        {{ testcase.description }}
-                                    </p>
-                                </div>
-                            </li>
-                        </ol>
-                    </footer>
-
-                    <Answer class="mt-2">
-                        <slot name="answer" />
-                    </Answer>
-
-                    <aside id="elysia-playground-aside">
-                        <a
-                            v-if="previous"
-                            class="-first"
-                            :href="previous.href"
-                            :key="previous.href"
-                        >
-                            <small>← Previous</small>
-                            {{ previous.title }}
-                        </a>
-                        <div v-else />
-
-                        <a
-                            v-if="next"
-                            class="-last"
-                            :href="next.href"
-                            :key="next.href"
-                        >
-                            <small>Next →</small>
-                            {{ next.title }}
-                        </a>
-                    </aside>
-                </main>
-            </article>
         </div>
-    </SplitterPanel>
+        <iframe
+            class="w-full h-full"
+            :class="{ hidden: store.tab.aside !== 'docs' }"
+            :src="store.doc"
+        />
+        <article class="relative w-full overflow-hidden">
+            <Ray
+                class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
+            />
+
+            <main id="elysia-playground-task" v-if="store.tab.aside === 'task'">
+                <div
+                    className="group text-xs mt-4 !mb-1.5 text-gray-400 transition-colors"
+                >
+                    <label
+                        for="elysia-playground-table-of-contents"
+                        class="font-light"
+                    >
+                        {{ chapter?.title }} /
+                    </label>
+                    <select
+                        id="elysia-playground-table-of-contents"
+                        class="font-medium group-interact:text-pink-500 dark:group-interact:text-pink-400"
+                        @change="changePage"
+                        :value="current?.href"
+                    >
+                        <optgroup
+                            v-for="{ title, contents } of tableOfContents"
+                            :label="title"
+                            :key="title"
+                        >
+                            <option
+                                v-for="{ title, href } of contents"
+                                :value="href"
+                                :key="href"
+                            >
+                                {{ title }}
+                            </option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <slot />
+
+                <footer
+                    class="pt-4"
+                    v-if="store.testcases && store.testcases.length"
+                >
+                    <ol class="flex flex-col gap-2">
+                        <li
+                            v-for="(testcase, i) in store.testcases"
+                            :key="testcase.title"
+                            class="group flex gap-3 text-gray-500"
+                        >
+                            <div class="flex flex-col gap-2 mt-0.75 w-6">
+                                <div
+                                    class="min-w-6 min-h-6 text-gray-400/80 *:absolute *:transition-all *:duration-250"
+                                    :class="{
+                                        'text-green-600 dark:text-green-500':
+                                            store.testcasesResult[i]
+                                    }"
+                                >
+                                    <CircleCheckBig
+                                        :size="24"
+                                        class="opacity-0"
+                                        :class="{
+                                            'opacity-100':
+                                                store.testcasesResult[i]
+                                        }"
+                                        :style="{
+                                            transitionDelay: store
+                                                .testcasesResult[i]
+                                                ? `${i * 125}ms`
+                                                : ''
+                                        }"
+                                    />
+                                    <Circle
+                                        :size="24"
+                                        class="opacity-0"
+                                        :class="{
+                                            'opacity-100':
+                                                !store.testcasesResult[i]
+                                        }"
+                                        :style="{
+                                            transitionDelay: store
+                                                .testcasesResult[i]
+                                                ? `${i * 125}ms`
+                                                : ''
+                                        }"
+                                    />
+                                </div>
+
+                                <div
+                                    :size="24"
+                                    class="w-0.5 h-full mx-auto bg-gray-300/80 dark:bg-gray-500/80 rounded"
+                                >
+                                    <div
+                                        class="w-full h-0 bg-green-600/75 dark:bg-green-500/75 transition-all duration-500 ease-in-expo"
+                                        :class="{
+                                            'h-full': store.testcasesResult[i]
+                                        }"
+                                        :style="{
+                                            transitionDelay: store
+                                                .testcasesResult[i]
+                                                ? `${i * 125}ms`
+                                                : ''
+                                        }"
+                                    />
+                                </div>
+                            </div>
+                            <div class="pb-2">
+                                <h4
+                                    class="text-xl font-semibold text-gray-700 dark:text-gray-200 duration-250"
+                                    :class="{
+                                        'text-green-600 dark:text-green-500':
+                                            store.testcasesResult[i]
+                                    }"
+                                    :style="{
+                                        transitionDelay: store.testcasesResult[
+                                            i
+                                        ]
+                                            ? `${i * 125}ms`
+                                            : ''
+                                    }"
+                                >
+                                    {{ testcase.title }}
+                                </h4>
+                                <p
+                                    class="text-sm mt-2 text-gray-500/80 dark:text-gray-300/80 group-hover:text-gray-600 dark:group-hover:text-gray-200 transition-colors duration-250"
+                                    :style="{
+                                        transitionDelay: store.testcasesResult[
+                                            i
+                                        ]
+                                            ? `${i * 125}ms`
+                                            : ''
+                                    }"
+                                >
+                                    {{ testcase.description }}
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+                </footer>
+
+                <Answer class="mt-2">
+                    <slot name="answer" />
+                </Answer>
+
+                <aside id="elysia-playground-aside">
+                    <a
+                        v-if="previous"
+                        class="-first"
+                        :href="previous.href"
+                        :key="previous.href"
+                    >
+                        <small>← Previous</small>
+                        {{ previous.title }}
+                    </a>
+                    <div v-else />
+
+                    <a
+                        v-if="next"
+                        class="-last"
+                        :href="next.href"
+                        :key="next.href"
+                    >
+                        <small>Next →</small>
+                        {{ next.title }}
+                    </a>
+                </aside>
+            </main>
+        </article>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -269,12 +258,18 @@ watchDebounced(
 <style>
 @reference '../../../../tailwind.css';
 
-#elysia-playground-doc {
-    height: calc(100vh - (var(--spacing) * 3));
-}
-
 #elysia-playground-task {
     @apply p-4 pt-0 text-gray-800/85 dark:text-gray-200/85;
+
+    .dark & {
+        --vp-code-color: #f9d5e5;
+        --vp-c-brand-1: #f9d5e5;
+        --vp-code-bg: color-mix(
+            in oklab,
+            oklch(82.3% 0.12 346.018) 15%,
+            transparent
+        );
+    }
 
     & > h1 {
         @apply text-3xl font-bold mb-4;
@@ -453,7 +448,7 @@ watchDebounced(
     @apply grid grid-cols-2 items-center gap-3 mt-4;
 
     a {
-        @apply clicky flex flex-col bg-gray-100/80 dark:bg-gray-700/80 interact:bg-pink-500/10 dark:interact:bg-pink-500/25 interact:text-pink-500 px-4 py-2 rounded-xl transition-colors;
+        @apply clicky flex flex-col dark:bg-gray-700/80 interact:bg-pink-500/5 dark:interact:bg-pink-300/25 interact:text-pink-500 interact:dark:text-pink-300 px-4 py-2 rounded-xl transition-colors;
 
         &.-first {
             @apply text-left;

@@ -28,7 +28,7 @@ const props = defineProps<{
 
 .playground-answer {
     & > summary {
-        @apply clicky inline-flex justify-center items-center gap-1 text-sm font-medium text-pink-400 mr-auto my-2 px-3 py-1.5 rounded-xl bg-pink-500/7.5 dark:bg-pink-500/15 interact:bg-pink-500/10 dark:interact:bg-pink-500/25 transition-colors cursor-pointer;
+        @apply clicky inline-flex justify-center items-center gap-1 text-sm font-medium text-pink-400 dark:text-pink-300 mr-auto my-2 px-3 py-1.5 rounded-xl bg-pink-500/7.5 dark:bg-pink-300/15 interact:bg-pink-500/10 dark:interact:bg-pink-300/25 transition-colors cursor-pointer;
 
         & > .closed,
         & > .opened {

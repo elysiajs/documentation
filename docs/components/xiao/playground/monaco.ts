@@ -1,6 +1,9 @@
 import * as monaco from 'monaco-editor'
+// @ts-ignore
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+// @ts-ignore
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+// @ts-ignore
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 
 import {
@@ -10,13 +13,13 @@ import {
     type SourceResolver
 } from 'monaco-editor-auto-typings'
 
-import { isJSON } from './utils'
+import { isJSON, LRUCache, VirtualFS } from './utils'
 import latte from './theme/latte.json' with { type: 'json' }
 import mocha from './theme/mocha.json' with { type: 'json' }
 
 // @ts-ignore
 self.MonacoEnvironment = {
-	// @ts-ignore
+    // @ts-ignore
     getWorker: function (workerId, label) {
         switch (label) {
             case 'json':
@@ -139,20 +142,61 @@ const setupTheme = () => {
     })
 }
 
-const files = {
-    'main.ts': monaco.Uri.parse('file:///main.ts'),
-    'body.json': monaco.Uri.parse('file:///body.json')
-} as const
+const files = new LRUCache<string, monaco.Uri>(25)
 
-interface CreateEditorOptions {
-    id: string
-    code: string
-    onChange?(value: string): unknown
+files.set('main.ts', monaco.Uri.parse('file:///main.ts'))
+files.set('__body__.json', monaco.Uri.parse('file:///__body__.json'))
+
+function getPath(name: string) {
+    let path = files.get(name)
+    if (path) return path
+
+    path = monaco.Uri.parse(`file:///${name}`)
+    files.set(name, path)
+
+    return path
 }
 
-export const createEditor = async ({
-    id,
-    code,
+interface CreateEditorOptions {
+    element: HTMLElement
+    active(): string
+    fs: VirtualFS
+    onChange?(value: string, file: string): unknown
+}
+
+export type StandaloneEditor = monaco.editor.IStandaloneCodeEditor
+
+const mapExtensionToLanguage = {
+    ts: 'typescript',
+    js: 'typescript',
+    json: 'json'
+} as const
+
+export function getOrCreateModel(localPath: string, create = () => '') {
+    const monacoPath = getPath(localPath)
+
+    const extension = localPath.slice(localPath.lastIndexOf('.'))
+    const language =
+        mapExtensionToLanguage[extension as keyof typeof mapExtensionToLanguage]
+
+    const model = monaco.editor.getModel(monacoPath)
+    if (model) {
+        model.setValue(create())
+        return model
+    }
+
+    return monaco.editor.createModel(create(), language, monacoPath)
+}
+
+export function removeModel(file: string) {
+	const model = monaco.editor.getModel(getPath(file))
+	if (model) model.dispose()
+}
+
+export const createEditor = ({
+    element,
+    active,
+    fs,
     onChange
 }: CreateEditorOptions) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -165,16 +209,13 @@ export const createEditor = async ({
     })
 
     setupTheme()
-    updateCode(code)
+    updateCode(fs, active())
 
-    const model =
-        monaco.editor.getModel(files['main.ts']) ??
-        monaco.editor.createModel(code, 'typescript', files['main.ts'])
+    for (const [file, content] of Object.entries(fs))
+        getOrCreateModel(file, () => content)
 
-    const placeholder = document.getElementById(id)!
-
-    const editor = monaco.editor.create(placeholder, {
-        model,
+    const editor = monaco.editor.create(element, {
+        model: getOrCreateModel(active(), () => fs[active()]),
         language: 'typescript',
         fontSize: 16,
         minimap: { enabled: false },
@@ -208,27 +249,14 @@ export const createEditor = async ({
 
             timeout = setTimeout(() => {
                 const value = monaco.editor
-                    .getModel(files['main.ts'])
+                    .getModel(getPath(active()))
                     ?.getValue()
 
-                if (value !== undefined) onChange(value)
-                // 1 / (average dev wpm * average English characters in a word / 60 secs in min) + single frame delay of 1/120
-                // 1 / (60 * 4.79 / 60) + 0.08
-            }, 288) as any as number
+                if (value !== undefined) onChange(value, active())
+                // 1 / (average dev wpm * average English characters in a word / 60 secs in min)
+                // 1 / (60 * 4.79 / 60)
+            }, 280) as any as number
         })
-
-    // const parent = placeholder.parentElement!
-
-    // window.addEventListener('resize', () => {
-    //     // make editor as small as possible
-    //     editor.layout({ width: 0, height: 0 })
-
-    //     window.requestAnimationFrame(() => {
-    //         const rect = parent.getBoundingClientRect()
-
-    //         editor.layout({ width: rect.width, height: rect.height })
-    //     })
-    // })
 
     let resolveTimeout: number
     let resolvedPackage = false
@@ -244,22 +272,40 @@ export const createEditor = async ({
 
             resolveTimeout = setTimeout(() => {
                 resolvedPackage = true
-                model.setValue(model.getValue())
+
+                const model = editor.getModel()
+                if (model) model.setValue(model.getValue())
             }, 2000) as unknown as number
         }
     })
+
+    return editor
+}
+
+export function setTab(editor: StandaloneEditor, fs: VirtualFS, path: string) {
+    const model = getOrCreateModel(path, () => fs[path])
+
+    editor.setModel(model)
+}
+
+interface CreateJSONEditorOptions {
+    id: string
+    code: string
+    onChange?(value: string): unknown
 }
 
 export const createJSONEditor = ({
     id,
     code,
     onChange
-}: CreateEditorOptions) => {
+}: CreateJSONEditorOptions) => {
     const placeholder = document.getElementById(id)!
 
+    const path = getPath('__body__.json')
+
     const model =
-        monaco.editor.getModel(files['body.json']) ??
-        monaco.editor.createModel(code, 'json', files['body.json'])
+        monaco.editor.getModel(path) ??
+        monaco.editor.createModel(code, 'json', path)
 
     setupTheme()
 
@@ -292,7 +338,7 @@ export const createJSONEditor = ({
         if (timeout) clearTimeout(timeout)
 
         timeout = setTimeout(() => {
-            const value = monaco.editor.getModel(files['body.json'])?.getValue()
+            const value = monaco.editor.getModel(path)?.getValue()
 
             if (value !== undefined) {
                 if (onChange) onChange(value)
@@ -306,12 +352,12 @@ export const createJSONEditor = ({
     })
 }
 
-export const updateCode = (code: string) => {
-    const model = monaco.editor.getModel(files['main.ts'])
-    if (model) model.setValue(code)
+export function updateCode(fs: VirtualFS, file: string) {
+    const model = monaco.editor.getModel(getPath(file))
+    if (model) model.setValue(fs[file])
 }
 
-export const updateTheme = (theme: 'light' | 'dark') => {
+export function updateTheme(theme: 'light' | 'dark') {
     monaco.editor.setTheme(
         theme === 'light' ? 'catppuccin-latte' : 'catppuccin-mocha'
     )

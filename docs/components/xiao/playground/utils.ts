@@ -1,8 +1,8 @@
 import { transform } from 'sucrase'
 
-import { rollup } from '@rollup/browser'
+import { rollup, RollupCache } from '@rollup/browser'
 
-class LRUCache<K = string, V = string> {
+export class LRUCache<K = string, V = string> {
     private cache = new Map<K, V>()
     private limit: number
 
@@ -67,7 +67,9 @@ function getBalancedBracketIndex(input: string, startAt = 0) {
     return lastBalancedIndex
 }
 
-const cache = new LRUCache()
+const fileCache = new LRUCache(25)
+const fsCache = new LRUCache()
+let rollupCache: RollupCache
 
 const BANNERS = {
     init: `import { parseCookie as __parseCookie__ } from 'https://esm.sh/elysia/cookies'
@@ -188,15 +190,10 @@ function __webEnv__(app) {
     listen: `\n\t.use(__webEnv__)\n`
 }
 
-function parse(code: string) {
-    if (cache.has(code)) return cache.get(code)!
-
+function elysiaWebWorker(code: string) {
     let parsed = code.replace(
         /import\s+([^\n]+?)\s+from\s+['"]([^'"]+)['"]/g,
         (match, specifiers, moduleName) => {
-            if (moduleName.startsWith('.') || moduleName.startsWith('/'))
-                return match
-
             return `import ${specifiers} from 'https://esm.sh/${moduleName}'`
         }
     )
@@ -224,9 +221,89 @@ function parse(code: string) {
             .replace('openapi({', 'openapi({embedSpec:true,')
             .replace('openapi()', 'openapi({embedSpec: true})')
 
-    cache.set(code, parsed)
-
     return parsed
+}
+
+export function resolveImport(from: string, to: string): string {
+    const normalize = (p: string) => p.replace(/\\/g, '/').replace(/\/+/g, '/')
+
+    const fromDir = normalize(from).split('/').slice(0, -1).join('/')
+    const joined = normalize(fromDir + '/' + to)
+
+    const parts: string[] = []
+    for (const part of joined.split('/')) {
+        if (part === '' || part === '.') continue
+        if (part === '..') parts.pop()
+        else parts.push(part)
+    }
+
+    return parts.join('/')
+}
+
+async function parse(files: VirtualFS) {
+    const id = randomId()
+    const banner = `const __playground__ = '${id}'\n`
+
+    const key = JSON.stringify(files)
+    if (fsCache.has(key)) return { id, code: banner + fsCache.get(key)! }
+
+    let fs: Record<string, string> = {}
+
+    for (const [path, code] of Object.entries(files)) {
+        if (path === 'index.ts' && !code.includes('.listen('))
+            throw new Error(
+                'No Elysia server is running in index.ts\nDid you forget to call `.listen()`?'
+            )
+
+        const key = path.replace(/\.ts$/, '.js')
+
+        if (fileCache.has(code)) fs[key] = fileCache.get(code)!
+
+        fs[key] = transform(code, {
+            transforms: ['typescript']
+        }).code
+
+        fileCache.set(code, fs[key])
+    }
+
+    const code =
+        Object.keys(fs).length === 1 && fs['index.js']
+            ? elysiaWebWorker(fs['index.js'])
+            : await rollup({
+                  input: 'index.js',
+                  cache: rollupCache,
+                  plugins: [
+                      {
+                          name: 'loader',
+                          resolveId(source, current) {
+                              if (!current) return source
+
+                              let resolved = resolveImport(current, source)
+
+                              if (resolved + '/index.js' in fs)
+                                  return resolved + '/index.js'
+
+                              if (!resolved.endsWith('.js')) resolved += '.js'
+
+                              if (resolved in fs) return resolved
+                          },
+                          load(id) {
+                              if (fs.hasOwnProperty(id)) return fs[id]
+                          }
+                      }
+                  ]
+              })
+                  .then((bundle) => {
+                      if (bundle.cache) rollupCache = bundle.cache
+
+                      return bundle.generate({ format: 'es' })
+                  })
+                  .then(({ output }) => output[0].code)
+                  .then(elysiaWebWorker)
+
+    fsCache.set(key, code)
+
+    return { id, code: banner + code }
 }
 
 export function randomId() {
@@ -234,7 +311,9 @@ export function randomId() {
     return uuid.slice(0, 8) + uuid.slice(24, 32)
 }
 
-export type VirtualFS = { 'index.ts': string } & Record<string, string>
+export interface VirtualFS extends Record<string, string> {
+    'index.ts': ''
+}
 
 export const execute = <FS extends VirtualFS>(
     files: FS,
@@ -251,46 +330,8 @@ export const execute = <FS extends VirtualFS>(
             }
         ]
     >(async (resolve, reject) => {
-        const id = randomId()
-
-        const banner = `const __playground__ = '${id}'\n`
-        let fs: Record<string, string> = {}
-
         try {
-            let hasListen = false
-
-            for (const [path, code] of Object.entries(files)) {
-                if (code.includes('.listen(')) hasListen = true
-
-                fs[path.replace(/\.ts$/, '.js')] = transform(banner + code, {
-                    transforms: ['typescript']
-                }).code
-            }
-
-            if (!hasListen)
-                throw new Error(
-                    'No Elysia server is running.\nDid you forget to call `.listen()`?'
-                )
-
-            const code = await rollup({
-                input: 'index.js',
-                plugins: [
-                    {
-                        name: 'loader',
-                        resolveId(source) {
-                            source = source.replace('./', '')
-
-                            if (fs.hasOwnProperty(source)) return source
-                        },
-                        load(id) {
-                            if (fs.hasOwnProperty(id)) return fs[id]
-                        }
-                    }
-                ]
-            })
-                .then((bundle) => bundle.generate({ format: 'es' }))
-                .then(({ output }) => output[0].code)
-                .then((code) => banner + parse(code))
+            const { id, code } = await parse(files)
 
             const blob = new Blob([code], {
                 type: 'application/javascript'

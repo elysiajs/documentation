@@ -26,7 +26,11 @@
                             :initial="{ opacity: 0, scale: 0.9 }"
                             :animate="{ opacity: 1, scale: 1 }"
                             :exit="{ opacity: 0, scale: 0.9 }"
-                            class="rounded-2xl px-2.5 py-0.75 text-sm bg-white/85 dark:bg-gray-700/60 backdrop-blur-sm border dark:border-gray-600 origin-left shadow-lg"
+                            class="rounded-2xl px-2.5 py-0.75 text-sm bg-white/85 dark:bg-gray-700/60 backdrop-blur-sm border dark:border-gray-600 shadow-lg"
+                            :style="{
+                                transformOrigin:
+                                    mapTransformOrigin[props.side ?? 'right']
+                            }"
                         >
                             {{ props.tip }}
                         </motion.p>
@@ -61,6 +65,13 @@ const props = defineProps<{
     side?: 'top' | 'right' | 'bottom' | 'left'
     disabled?: boolean
 }>()
+
+const mapTransformOrigin = {
+    top: 'center bottom',
+    right: 'left center',
+    bottom: 'center top',
+    left: 'right center'
+}
 
 const emit = defineEmits<{
     (e: 'click'): void

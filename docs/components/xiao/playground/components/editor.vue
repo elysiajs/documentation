@@ -1,28 +1,60 @@
 <template>
-    <div id="elysia-playground-editor" class="flex flex-1 w-full h-full" />
+    <div ref="element" class="flex flex-1 w-full h-full" />
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vitepress'
 
-import { createEditor } from '../monaco'
+import {
+    createEditor,
+    setTab,
+    removeModel,
+    type StandaloneEditor
+} from '../monaco'
 import { usePlaygroundStore } from '../store'
 
 const store = usePlaygroundStore()
-let editor = ref()
+
+const element = ref<HTMLElement>()
+
+// https://github.com/microsoft/monaco-editor/issues/3154
+let editor: StandaloneEditor
 
 const router = useRouter()
 
 const newEditor = () => {
-    editor.value?.dispose?.()
-    editor.value = createEditor({
-        id: 'elysia-playground-editor',
-        code: store.fs['index.ts'],
-        onChange(newCode) {
-            store.fs['index.ts'] = newCode
+    if (!element.value) return
+
+    destroy()
+
+    editor = createEditor({
+        element: element.value,
+        fs: store.fs,
+        active: () => store.activeFile,
+        onChange(code, file) {
+            store.fs[file] = code
         }
-    }).then(store.syncEditorTheme)
+    })
+
+    store.syncEditorTheme()
+}
+
+watch(
+    () => store.activeFile,
+    () => {
+        if (!editor) return
+
+        requestAnimationFrame(() => {
+            setTab(editor, store.fs, store.activeFile)
+        })
+    }
+)
+
+function destroy() {
+    if (!editor) return
+
+    editor.dispose()
 }
 
 if (typeof window !== 'undefined')
@@ -31,8 +63,17 @@ if (typeof window !== 'undefined')
     })
 
 onMounted(newEditor)
+onUnmounted(destroy)
 
-onUnmounted(() => {
-    editor.value?.dispose?.()
-})
+watch(
+    () => store.fs,
+    (newFs, oldFs) => {
+        if (!editor) return
+
+        const newFiles = Object.keys(newFs)
+        const oldFiles = Object.keys(oldFs)
+
+        oldFiles.filter((f) => !newFiles.includes(f)).forEach(removeModel)
+    }
+)
 </script>
