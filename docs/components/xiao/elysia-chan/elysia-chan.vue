@@ -47,9 +47,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watch, computed, onUnmounted } from 'vue'
 import { motion, motionValue, useAnimationFrame } from 'motion-v'
-import { onUnmounted } from 'vue'
 
 const constraint = ref<HTMLDivElement>()
 

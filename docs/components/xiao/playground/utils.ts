@@ -72,7 +72,43 @@ const BANNERS = {
 import { handleSet as __handleSet__ } from 'https://esm.sh/elysia/adapter/utils'
 
 self.console.log = self.console.warn = self.console.error = (...log) => {
-    self.postMessage({ id: __playground__, log: JSON.parse(JSON.stringify(log)) })
+	const isNotEmpty = (obj) => {
+		if (!obj) return false
+
+		for (const _ in obj) return true
+
+		return false
+	}
+
+	const isClass = (v) =>
+		(typeof v === 'function' && /^\s*class\s+/.test(v.toString())) ||
+		// Handle Object.create(null)
+		(v.toString &&
+			// Handle import * as Sentry from '@sentry/bun'
+			// This also handle [object Date], [object Array]
+			// and FFI value like [object Prisma]
+			v.toString().startsWith('[object ') &&
+			v.toString() !== '[object Object]') ||
+		// If object prototype is not pure, then probably a class-like object
+		isNotEmpty(Object.getPrototypeOf(v))
+
+    self.postMessage({
+    	id: __playground__,
+     	log: JSON.parse(
+      		JSON.stringify(log, (k, v) => {
+		   		if (v instanceof Error)
+		   			return { message: v.message, stack: v.stack }
+
+				if (isClass(v))
+					return '[class \${v.constructor.name}]'
+
+				if (typeof v === 'function')
+					return '[Function]'
+
+		    	return v
+		    })
+		)
+	})
 }
 
 function __webEnv__(app) {

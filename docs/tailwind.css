@@ -60,14 +60,8 @@ body {
         url('/assets/GeistMono-Regular.woff') format('woff');
 }
 
-code,
-kbd,
-samp,
-pre,
-pre.vp-code,
-pre.vp-code > code,
 .font-mono {
-    font-family:
+ 	font-family:
         'Geist Mono',
         ui-monospace,
         SFMono-Regular,
@@ -77,6 +71,14 @@ pre.vp-code > code,
         Liberation Mono,
         Courier New,
         monospace !important;
+}
+
+code,
+kbd,
+samp,
+pre,
+pre.vp-code,
+pre.vp-code > code {
     font-size: 1.05em;
 }
 

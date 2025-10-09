@@ -182,10 +182,11 @@ export const createEditor = async ({
         renderWhitespace: 'none',
         theme: 'catppuccin-latte',
         automaticLayout: true,
+        fontLigatures: true,
+        lineNumbersMinChars: 4,
         stickyScroll: {
             enabled: false
         },
-        fontLigatures: true,
         cursorSmoothCaretAnimation: 'on',
         cursorBlinking: 'phase',
         fontFamily: `'Geist Mono',
@@ -269,6 +270,11 @@ export const createJSONEditor = ({
         minimap: { enabled: false },
         glyphMargin: false,
         lineNumbers: 'off',
+        stickyScroll: {
+            enabled: false
+        },
+        cursorSmoothCaretAnimation: 'on',
+        cursorBlinking: 'phase',
         fontFamily: `'Geist Mono',
       ui-monospace,
       SFMono-Regular,

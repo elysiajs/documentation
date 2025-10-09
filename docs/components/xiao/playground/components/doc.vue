@@ -217,7 +217,6 @@ import Answer from '../../answer/answer.vue'
 import { tableOfContents } from '../../table-of-content'
 
 import { usePlaygroundStore } from '../store'
-import type { Testcases } from '../types'
 
 const store = usePlaygroundStore()
 const router = useRouter()

@@ -1,6 +1,6 @@
 <template>
     <div
-        class="relative w-full h-full overflow-auto font-mono text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl"
+        class="relative flex-1 w-full h-full overflow-auto font-mono text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl"
         :class="{
             'overflow-y-hidden':
                 store.tab.result === 'preview' && store.result.isHTML
