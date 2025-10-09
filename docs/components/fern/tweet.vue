@@ -1,6 +1,6 @@
 <template>
     <a
-        class="flex flex-col w-full rounded-2xl border dark:border-gray-700 bg-gray-50/90 dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:scale-105 hover:shadow-xl hover:z-10 p-4 gap-3 text-gray-500 dark:text-gray-300 transition-all ease-out-expo duration-250"
+        class="flex flex-col w-full rounded-2xl border dark:border-gray-700 bg-gray-50/90 dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:scale-105 hover:shadow-xl hover:z-10 p-4 gap-3 text-gray-500 dark:text-gray-300 transition-all ease-in-expo duration-250"
     >
         <header class="flex gap-2.5">
             <img loading="lazy" class="w-12 h-12 rounded-full" :src="image" />

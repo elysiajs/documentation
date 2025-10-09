@@ -448,7 +448,7 @@ watchDebounced(
     @apply grid grid-cols-2 items-center gap-3 mt-4;
 
     a {
-        @apply clicky flex flex-col dark:bg-gray-700/80 interact:bg-pink-500/5 dark:interact:bg-pink-300/25 interact:text-pink-500 interact:dark:text-pink-300 px-4 py-2 rounded-xl transition-colors;
+        @apply clicky flex flex-col interact:bg-pink-500/5 dark:interact:bg-pink-300/25 interact:text-pink-500 interact:dark:text-pink-300 px-4 py-2 rounded-xl transition-colors duration-400 ease-out-expo;
 
         &.-first {
             @apply text-left;

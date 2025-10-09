@@ -5,7 +5,7 @@
                 v-for="(name, index) in names"
                 :key="index"
                 @click="activeTab = index"
-                class="px-4 py-2 rounded-full font-medium transition-colors ease-out duration-150 translate-y-[1px] !outline-none"
+                class="clicky px-4 py-2 rounded-full font-medium transition-colors ease-out duration-150 translate-y-[1px] !outline-none"
                 :class="
                     index === activeTab
                         ? 'text-pink-400 dark:text-pink-300 bg-pink-50 dark:bg-pink-300/25 border-pink-300'

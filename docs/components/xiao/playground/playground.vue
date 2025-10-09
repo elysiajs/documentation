@@ -2,7 +2,7 @@
     <ElysiaChan />
 
     <div
-        class="flex flex-col sm:flex-row gap-0.5 w-full h-dvh py-1.5 bg-gray-50 dark:bg-gray-950"
+        class="flex flex-col sm:flex-row gap-0.5 w-full h-dvh py-1.5 bg-gray-50 dark:bg-gray-950 pr-0.5"
     >
         <Aside />
 

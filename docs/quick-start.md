@@ -414,18 +414,3 @@ console.log(
 </template>
 
 </Tab>
-
-## Next Steps
-
-We recommend checking out the either one of the following:
-
-<Deck>
-    <Card title="Key Concept (5 minutes)" href="/key-concept">
-    	The core concept of Elysia and how to use it.
-    </Card>
-    <Card title="Tutorial (15 minutes)" href="/tutorial">
-    	A step-by-step guide walkthrough Elysia's features.
-    </Card>
-</Deck>
-
-If you have any questions, feel free to ask in our [Discord](https://discord.gg/eaFJ2KDJck) community.

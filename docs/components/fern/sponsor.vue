@@ -249,7 +249,7 @@
         <div class="flex sm:justify-center my-8">
             <a
                 id="become-sponsor"
-                class="inline-flex items-center mx-auto text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform !ease-out-expo transform hover:scale-110 focus:scale-110"
+                class="inline-flex items-center mx-auto text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform !ease-in-expo transform hover:scale-110 focus:scale-110"
                 href="https://github.com/sponsors/saltyaom"
                 target="_blank"
             >

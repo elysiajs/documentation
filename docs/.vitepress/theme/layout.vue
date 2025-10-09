@@ -88,6 +88,9 @@ const onNewPage = () => {
 onMounted(onNewPage)
 
 const router = useRouter()
+const isInTutorial =
+    router.route.path.startsWith('/tutorial/') ||
+    router.route.path.startsWith('/playground')
 
 router.onAfterRouteChange = () => {
     onNewPage()
@@ -129,7 +132,19 @@ const prompt = computed(() =>
         href="/assets/elysia-chan-card.webp"
         fetchpriority="low"
     />
-    <meta name="theme-color" :content="isDark ? '#0f172a' : '#ffffff'" />
+
+    <meta
+        name="theme-color"
+        :content="
+            isInTutorial
+                ? isDark
+                    ? '#030712'
+                    : '#f9fafb'
+                : isDark
+                  ? '#0f172a'
+                  : '#ffffff'
+        "
+    />
 
     <GlareCard v-model="showCard" />
 
@@ -219,8 +234,10 @@ const prompt = computed(() =>
         </template>
 
         <template #aside-outline-after>
-            <h6 class="flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-300 mt-4">
-            	<Heart :size="16" />
+            <h6
+                class="flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-300 mt-4"
+            >
+                <Heart :size="16" />
                 Our Sponsors
             </h6>
             <aside class="grid grid-cols-2 w-48">
@@ -255,7 +272,7 @@ const prompt = computed(() =>
                 class="clicky text-white font-semibold text-gradient from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 -translate-x-3"
             >
                 <div
-                    class="flex items-center gap-1 px-3 py-1.5 rounded-xl interact:bg-pink-400/7.5 interact:dark:bg-pink-400/10 transition-colors"
+                    class="flex items-center gap-1.5 px-3 py-2 rounded-xl interact:bg-pink-400/7.5 interact:dark:bg-pink-300/10 transition-colors"
                 >
                     <Terminal :size="21" class="text-pink-400" />
 
