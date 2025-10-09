@@ -26,11 +26,9 @@ export default defineConfig({
         },
         languages: ['js', 'ts'],
         codeTransformers: [
-            transformerTwoslash({
-                typesCache: createFileSystemTypesCache({
-                    dir: './docs/.vitepress/cache/twoslash'
-                })
-            })
+            // transformerTwoslash({
+            //     typesCache: createFileSystemTypesCache()
+            // })
         ],
         config: (md) => {
             md.use(lightbox, {})
@@ -48,7 +46,7 @@ export default defineConfig({
         },
         plugins: [
             nodePolyfills({
-                include: ['path']
+                include: ['path', 'crypto']
             }),
             tailwindcss(),
             process.env.NODE_ENV === 'production'
@@ -67,7 +65,7 @@ export default defineConfig({
             process.env.ANALYZE === 'true' ? analyzer() : undefined
         ],
         optimizeDeps: {
-            exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client']
+            exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client', '.vitepress/cache', '@rollup/browser']
         },
         ssr: {
             noExternal: [

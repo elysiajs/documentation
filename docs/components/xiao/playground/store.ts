@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { parse, serialize } from 'cookie'
 
 import { save, load } from './storage'
-import { execute, isJSON } from './utils'
+import { execute, isJSON, VirtualFS } from './utils'
 import { Testcases } from './types'
 
 let timeout: number | undefined
@@ -51,8 +51,12 @@ function pairsToObject(pairs: string[][] | undefined) {
 export const usePlaygroundStore = defineStore('playground', {
     state: () => ({
         id: randomId(),
-        code: '',
-        defaultCode: '',
+        fs: {
+            'index.ts': ''
+        } satisfies VirtualFS,
+        defaultFS: {
+            'index.ts': ''
+        } satisfies VirtualFS,
         doc: '/',
         theme: 'light' as 'light' | 'dark',
         input: {
@@ -84,7 +88,7 @@ export const usePlaygroundStore = defineStore('playground', {
             if (typeof window === 'undefined') return
 
             const saved = {
-                code: load('code'),
+                fs: load('fs'),
                 body: load('body'),
                 headers: load('headers'),
                 cookies: load('cookies'),
@@ -92,8 +96,9 @@ export const usePlaygroundStore = defineStore('playground', {
                 path: load('path')
             }
 
-            if (saved.code === undefined) this.code = this.defaultCode
-            else this.code = saved.code
+            if (saved.fs !== undefined) this.fs = saved.fs
+            else this.fs = this.defaultFS
+
             if (saved.path !== undefined) this.input.path = saved.path
             if (saved.method !== undefined) this.input.method = saved.method
             if (saved.body !== undefined) this.input.body = saved.body
@@ -114,7 +119,7 @@ export const usePlaygroundStore = defineStore('playground', {
             if (typeof window === 'undefined') return
 
             save({
-                code: this.code,
+                fs: this.fs,
                 path: this.input.path,
                 body: this.input.body,
                 headers: this.input.headers,
@@ -139,7 +144,7 @@ export const usePlaygroundStore = defineStore('playground', {
             return this.syncEditorTheme()
         },
         reset() {
-            this.code = this.defaultCode
+            this.fs = this.defaultFS
             window.location.reload()
         },
         async setThemeWithAnimation(value?: 'light' | 'dark') {
@@ -218,7 +223,7 @@ export const usePlaygroundStore = defineStore('playground', {
                 })
 
                 const [response, { headers, status }] = await execute(
-                    this.code,
+                    this.fs,
                     `https://elysiajs.com${this.input.path}`,
                     {
                         method: this.input.method,
@@ -307,7 +312,7 @@ export const usePlaygroundStore = defineStore('playground', {
 
                                 const [response, { headers, status }] =
                                     await execute(
-                                        this.code,
+                                        this.fs,
                                         `https://elysiajs.com${request.url}`,
                                         {
                                             body:

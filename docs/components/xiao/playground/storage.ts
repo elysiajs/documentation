@@ -1,3 +1,5 @@
+import { VirtualFS } from './utils'
+
 const getPath = () =>
     (location.pathname.endsWith('/')
         ? location.pathname.slice(0, -1)
@@ -5,7 +7,7 @@ const getPath = () =>
     ).replace(/.html$/g, '')
 
 export const keys = {
-    code: () => `elysia-playground:code:${getPath()}`,
+    fs: () => `elysia-playground:fs:${getPath()}`,
     path: () => `elysia-playground:path:${getPath()}`,
     method: () => `elysia-playground:method:${getPath()}`,
     body: () => `elysia-playground:body:${getPath()}`,
@@ -14,21 +16,21 @@ export const keys = {
 } as const
 
 export function save({
-    code,
+    fs,
     path,
     method,
     body,
     headers,
     cookies
 }: {
-    code?: string
+    fs?: VirtualFS
     path?: string
     method?: string
     body?: string
     headers?: string[][]
     cookies?: string[][]
 }) {
-    if (code !== undefined) localStorage.setItem(keys.code(), code)
+    if (fs !== undefined) localStorage.setItem(keys.fs(), JSON.stringify(fs))
     if (path !== undefined) localStorage.setItem(keys.path(), path)
     if (method !== undefined) localStorage.setItem(keys.method(), method)
     if (body !== undefined) localStorage.setItem(keys.body(), body)
@@ -40,19 +42,36 @@ export function save({
 
 export function load<T extends keyof typeof keys>(
     key: T
-): (T extends 'headers' | 'cookies' ? string[][] : string) | undefined {
+):
+    | (T extends 'fs'
+          ? VirtualFS
+          : T extends 'headers' | 'cookies'
+            ? string[][]
+            : string)
+    | undefined {
     if (typeof localStorage === 'undefined') return
 
     const item = localStorage.getItem(keys[key]())
     if (!item) return
 
-    if (key === 'headers' || key === 'cookies') {
+    if (key === 'fs' || key === 'headers' || key === 'cookies') {
         try {
             return JSON.parse(item)
         } catch {
+            if (key === 'fs' && item) {
+                const legacyCode = localStorage.getItem(
+                    `elysia-playground:code:${getPath()}`
+                )
+
+                if (legacyCode)
+                    return {
+                        'index.ts': legacyCode
+                    } as any
+            }
+
             return
         }
     }
 
-    return item
+    return item as any
 }

@@ -1,5 +1,5 @@
 <template>
-    <div id="elysia-playground-editor" class="w-full h-full" />
+    <div id="elysia-playground-editor" class="flex flex-1 w-full h-full" />
 </template>
 
 <script setup lang="ts">
@@ -18,9 +18,9 @@ const newEditor = () => {
     editor.value?.dispose?.()
     editor.value = createEditor({
         id: 'elysia-playground-editor',
-        code: store.code,
+        code: store.fs['index.ts'],
         onChange(newCode) {
-            store.code = newCode
+            store.fs['index.ts'] = newCode
         }
     }).then(store.syncEditorTheme)
 }

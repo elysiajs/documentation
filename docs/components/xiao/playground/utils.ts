@@ -1,5 +1,7 @@
 import { transform } from 'sucrase'
 
+import { rollup } from '@rollup/browser'
+
 class LRUCache<K = string, V = string> {
     private cache = new Map<K, V>()
     private limit: number
@@ -187,12 +189,7 @@ function __webEnv__(app) {
 }
 
 function parse(code: string) {
-    // if (cache.has(code)) return cache.get(code)!
-
-    if (!code.includes('.listen('))
-        throw new Error(
-            'No Elysia server is running.\nDid you forget to call `.listen()`?'
-        )
+    if (cache.has(code)) return cache.get(code)!
 
     let parsed = code.replace(
         /import\s+([^\n]+?)\s+from\s+['"]([^'"]+)['"]/g,
@@ -221,9 +218,11 @@ function parse(code: string) {
         )
     }
 
-    parsed = BANNERS.init + parsed
-        .replace('openapi({', 'openapi({embedSpec:true,')
-        .replace('openapi()', 'openapi({embedSpec: true})')
+    parsed =
+        BANNERS.init +
+        parsed
+            .replace('openapi({', 'openapi({embedSpec:true,')
+            .replace('openapi()', 'openapi({embedSpec: true})')
 
     cache.set(code, parsed)
 
@@ -231,12 +230,14 @@ function parse(code: string) {
 }
 
 export function randomId() {
-	const uuid = crypto.randomUUID()
-	return uuid.slice(0, 8) + uuid.slice(24, 32)
+    const uuid = crypto.randomUUID()
+    return uuid.slice(0, 8) + uuid.slice(24, 32)
 }
 
-export const execute = (
-    code: string,
+export type VirtualFS = { 'index.ts': string } & Record<string, string>
+
+export const execute = <FS extends VirtualFS>(
+    files: FS,
     url: string,
     options: RequestInit,
     onLog?: (log: unknown[]) => unknown
@@ -249,19 +250,52 @@ export const execute = (
                 status: number
             }
         ]
-    >((resolve, reject) => {
+    >(async (resolve, reject) => {
         const id = randomId()
 
         const banner = `const __playground__ = '${id}'\n`
+        let fs: Record<string, string> = {}
 
         try {
-            const transpiled = transform(banner + parse(code), {
-                transforms: ['typescript']
-            })
+            let hasListen = false
 
-            const blob = new Blob([transpiled.code], {
+            for (const [path, code] of Object.entries(files)) {
+                if (code.includes('.listen(')) hasListen = true
+
+                fs[path.replace(/\.ts$/, '.js')] = transform(banner + code, {
+                    transforms: ['typescript']
+                }).code
+            }
+
+            if (!hasListen)
+                throw new Error(
+                    'No Elysia server is running.\nDid you forget to call `.listen()`?'
+                )
+
+            const code = await rollup({
+                input: 'index.js',
+                plugins: [
+                    {
+                        name: 'loader',
+                        resolveId(source) {
+                            source = source.replace('./', '')
+
+                            if (fs.hasOwnProperty(source)) return source
+                        },
+                        load(id) {
+                            if (fs.hasOwnProperty(id)) return fs[id]
+                        }
+                    }
+                ]
+            })
+                .then((bundle) => bundle.generate({ format: 'es' }))
+                .then(({ output }) => output[0].code)
+                .then((code) => banner + parse(code))
+
+            const blob = new Blob([code], {
                 type: 'application/javascript'
             })
+
             const worker = new Worker(URL.createObjectURL(blob), {
                 type: 'module'
             })
@@ -289,7 +323,7 @@ export const execute = (
             }
 
             worker.onerror = (e) => {
-           		reject(e.message ?? 'Something went wrong')
+                reject(e.message ?? 'Something went wrong')
 
                 setTimeout(worker.terminate, 5000)
                 worker.terminate()

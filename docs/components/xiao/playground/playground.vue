@@ -2,7 +2,7 @@
     <ElysiaChan />
 
     <div
-        class="flex flex-col sm:flex-row gap-0.5 w-full min-h-screen py-1.5 bg-gray-50 dark:bg-gray-950"
+        class="flex flex-col sm:flex-row gap-0.5 w-full min-h-dvh py-1.5 bg-gray-50 dark:bg-gray-950"
     >
         <Aside />
 
@@ -30,7 +30,7 @@
                     >
                         <SplitterPanel
                             :default-size="60"
-                            class="relative h-fit bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-700 rounded-2xl overflow-hidden"
+                            class="relative flex flex-col bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-700 rounded-2xl overflow-hidden"
                         >
                             <div
                                 class="absolute w-full h-full opacity-7.5 dark:opacity-6.25 bg-no-repeat pointer-events-none"
@@ -41,9 +41,9 @@
                                 "
                             />
                             <EditorLayout>
-	                            <ClientOnly>
-	                                <Editor />
-	                            </ClientOnly>
+                                <ClientOnly>
+                                    <Editor />
+                                </ClientOnly>
                             </EditorLayout>
                         </SplitterPanel>
                         <SplitterResizeHandle class="p-0.75" />
@@ -70,32 +70,44 @@ import ClientOnly from './components/client-only.vue'
 import Aside from './components/aside.vue'
 
 const Doc = defineAsyncComponent(() => import('./components/doc.vue'))
-const Result = defineAsyncComponent(() => import('./components/result/result.vue'))
-const ElysiaChan = defineAsyncComponent(() => import('../elysia-chan/elysia-chan.vue'))
-const EditorLayout = defineAsyncComponent(() => import('./components/editor-layout.vue'))
+const Result = defineAsyncComponent(
+    () => import('./components/result/result.vue')
+)
+const ElysiaChan = defineAsyncComponent(
+    () => import('../elysia-chan/elysia-chan.vue')
+)
+const EditorLayout = defineAsyncComponent(
+    () => import('./components/editor-layout.vue')
+)
 const Editor = defineAsyncComponent(() => import('./components/editor.vue'))
 
 const size = useWindowSize()
 
+import type { VirtualFS } from './utils'
 import type { Testcases } from './types'
 
 const props = defineProps<{
-    code?: string
+    code?: string | VirtualFS
     testcases?: Testcases
 }>()
 
 const store = usePlaygroundStore()
-const router = useRouter()
 
-if (props.code) store.defaultCode = props.code
+if (props.code)
+    store.defaultFS =
+        typeof props.code === 'string' ? { 'index.ts': props.code } : props.code
+
 if (props.testcases) store.testcases = props.testcases
 
 store.load()
 
-if (!store.code && props.code) store.run()
-else if (store.code) store.run({ test: true })
+if (!store.fs['index.ts'] && props.code) store.run()
+else if (store.fs['index.ts']) store.run({ test: true })
 
 onMounted(() => {
+    if (!document.documentElement.classList.contains('overscroll-none'))
+        document.documentElement.classList.add('overscroll-none')
+
     window.addEventListener('beforeunload', store.save, {
         passive: true
     })
@@ -104,6 +116,9 @@ onMounted(() => {
 onUnmounted(() => {
     store.save()
     window.removeEventListener('beforeunload', store.save)
+
+    if (document.documentElement.classList.contains('overscroll-none'))
+        document.documentElement.classList.remove('overscroll-none')
 })
 
 // if (typeof window !== 'undefined')
@@ -131,11 +146,12 @@ const run = () => store.run()
 // state sync if infinite loops occurs
 // so it doesn't freeze the tab
 watchDebounced(
-    () => store.code,
+    () => store.fs,
     () => {
         store.run({ test: true })
     },
     {
+        deep: true,
         debounce: 8
     }
 )
