@@ -878,7 +878,7 @@ button.copy::after {
         animation: search-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
         & > .search-bar {
-            @apply mt-1 py-0.25 px-1.5 !rounded-xl bg-gray-200/40 dark:bg-gray-600/20 !border-gray-400/25 dark:!border-gray-600/65 mx-auto;
+            @apply py-0.25 px-1.5 !rounded-xl bg-gray-200/40 dark:bg-gray-600/20 !border-gray-400/25 dark:!border-gray-600/65 mx-auto;
             width: calc(100% - 1.5rem);
 
             & > #localsearch-label {
