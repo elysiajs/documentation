@@ -272,15 +272,15 @@ watchDebounced(
     }
 
     & > h1 {
-        @apply text-3xl font-bold mb-4;
+        @apply text-2xl sm:text-3xl font-bold mb-4;
     }
 
     & > h2 {
-        @apply text-2xl font-bold pt-4 my-4 border-t dark:border-gray-700;
+        @apply text-xl sm:text-2xl font-bold pt-4 my-4 border-t dark:border-gray-700;
     }
 
     & > h3 {
-        @apply text-xl font-bold pt-4 my-4;
+        @apply text-lg sm:text-xl font-bold pt-4 my-4;
     }
 
     & > p {
@@ -445,7 +445,7 @@ watchDebounced(
 }
 
 #elysia-playground-aside {
-    @apply grid grid-cols-2 items-center gap-3 mt-4;
+    @apply grid grid-cols-2 items-start gap-3 mt-4;
 
     a {
         @apply clicky flex flex-col interact:bg-pink-500/5 dark:interact:bg-pink-300/25 interact:text-pink-500 interact:dark:text-pink-300 px-4 py-2 rounded-xl transition-colors duration-400 ease-out-expo;

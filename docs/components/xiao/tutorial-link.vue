@@ -6,7 +6,7 @@
         <Ray class="absolute z-30 -top-4 left-0 h-13 opacity-60" />
 
         <img
-            class="absolute z-20 bottom-0 right-1 sm:right-2 h-11/12 object-contain"
+            class="absolute z-20 bottom-0 right-1 sm:right-2 h-10/12 sm:h-11/12 object-contain"
             src="/elysia/sprite/sit.webp"
         />
 

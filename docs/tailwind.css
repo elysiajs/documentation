@@ -847,7 +847,7 @@ button.copy::after {
     /* Vitepress breakpoint */
     @media (max-width: 959.9px) {
         @apply max-w-68 translate-x-2 translate-y-2 !p-1 bg-white/85 dark:bg-gray-800/85 border dark:border-gray-700 border-gray-200 rounded-3xl backdrop-blur shadow-lg overflow-x-hidden overflow-y-auto max-h-dvh;
-        height: calc(100vh - 1rem);
+        height: calc(100dvh - 1rem);
 
         & > .nav {
             @apply w-full p-4 pt-2;
@@ -1195,7 +1195,7 @@ div[class*='language-'] {
     }
 
     & > .prev-next {
-        @apply !pt-0 !border-0;
+        @apply flex justify-between !pt-0 !border-0;
 
         .dark {
             --vp-c-brand-1: oklch(82.3% 0.12 346.018);

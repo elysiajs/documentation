@@ -217,7 +217,7 @@ export const createEditor = ({
     const editor = monaco.editor.create(element, {
         model: getOrCreateModel(active(), () => fs[active()]),
         language: 'typescript',
-        fontSize: 16,
+        fontSize: window.innerWidth <= 568 ? 14 : 16,
         minimap: { enabled: false },
         wordWrap: 'off',
         renderWhitespace: 'none',
