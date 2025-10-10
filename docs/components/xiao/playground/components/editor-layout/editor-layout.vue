@@ -102,7 +102,7 @@
                         <File class="size-3.5 min-w-3.5" />
                         <input
                             ref="createFileInput"
-                            class="w-full overflow-x-auto"
+                            class="w-full overflow-x-auto font-mono"
                             autocomplete="off"
                             autocorrect="off"
                             autocapitalize="off"
