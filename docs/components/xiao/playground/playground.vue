@@ -45,7 +45,7 @@
                             class="relative flex flex-col bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-700 rounded-2xl overflow-hidden"
                         >
                             <div
-                                class="absolute w-full h-full opacity-7.5 dark:opacity-6.25 bg-no-repeat pointer-events-none"
+                                class="absolute w-full h-full opacity-3.75 sm:opacity-7.5 sm:dark:opacity-6.25 bg-no-repeat pointer-events-none"
                                 style="
                                     background-image: url('/assets/elysia_chan.webp');
                                     background-size: 640px;
@@ -111,7 +111,9 @@ const store = usePlaygroundStore()
 
 if (props.code)
     store.defaultFS =
-        typeof props.code === 'string' ? { 'index.ts': props.code } : props.code
+        typeof props.code === 'string'
+            ? ({ 'index.ts': props.code } as VirtualFS)
+            : props.code
 
 if (props.testcases) store.testcases = props.testcases
 
