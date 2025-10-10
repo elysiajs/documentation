@@ -8,8 +8,8 @@
                     store.tabs.files[store.tabs.active] === item.value.path
             }"
         >
-            <FolderOpen v-if="item.hasChildren" class="size-3.5 min-w-3.5" />
-            <File v-else class="size-3.5 min-w-3.5" />
+            <FolderOpen v-if="item.hasChildren" class="size-3 sm:size-3.5 min-w-3 sm:min-w-3.5" />
+            <File v-else class="size-3 sm:size-3.5 min-w-3 sm:min-w-3.5" />
 
             <input
                 ref="input"
@@ -40,10 +40,10 @@
                 @select="setActive"
             >
                 <template v-if="item.hasChildren">
-                    <FolderOpen v-if="isExpanded" class="size-3.5 min-w-3.5" />
-                    <Folder v-else class="size-3.5 min-w-3.5" />
+                    <FolderOpen v-if="isExpanded" class="size-2.5 sm:size-3.5 min-w-2.5 sm:min-w-3.5" />
+                    <Folder v-else class="size-3 sm:size-3.5 min-w-3 sm:min-w-3.5" />
                 </template>
-                <File v-else class="size-3.5 min-w-3.5" />
+                <File v-else class="size-3 sm:size-3.5 min-w-3 sm:min-w-3.5" />
 
                 <p>{{ item.value.title }}</p>
             </TreeItem>
