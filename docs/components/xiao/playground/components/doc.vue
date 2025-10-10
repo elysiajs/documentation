@@ -261,7 +261,7 @@ watchDebounced(
 #elysia-playground-task {
     @apply p-4 pt-0 text-gray-800/85 dark:text-gray-200/85;
 
-    font-size: 14px;
+    font-size: 15px;
 
     .dark & {
         --vp-code-color: #f9d5e5;
