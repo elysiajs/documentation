@@ -5,7 +5,8 @@ import {
     provide,
     onMounted,
     computed,
-    defineAsyncComponent
+    defineAsyncComponent,
+    Teleport
 } from 'vue'
 import { useData, useRouter } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
@@ -88,9 +89,13 @@ const onNewPage = () => {
 onMounted(onNewPage)
 
 const router = useRouter()
-const isInTutorial =
-    router.route.path.startsWith('/tutorial/') ||
-    router.route.path.startsWith('/playground')
+const isInTutorial = computed(
+    () =>
+        router.route.path.startsWith('/tutorial/') ||
+        router.route.path.startsWith('/playground')
+)
+
+console.log(router.route.path, isInTutorial.value)
 
 router.onAfterRouteChange = () => {
     onNewPage()
@@ -108,43 +113,60 @@ const prompt = computed(() =>
 </script>
 
 <template>
-    <link
-        rel="preload"
-        as="image"
-        href="/assets/elysia_v.webp"
-        fetchpriority="high"
-    />
-    <link
-        rel="preload"
-        as="image"
-        href="/assets/elysia.svg"
-        fetchpriority="high"
-    />
-    <link
-        rel="preload"
-        as="image"
-        href="/assets/shigure-ui-smol.gif"
-        fetchpriority="low"
-    />
-    <link
-        rel="preload"
-        as="image"
-        href="/assets/elysia-chan-card.webp"
-        fetchpriority="low"
-    />
+    <Teleport to="head">
+        <link
+            rel="preload"
+            as="image"
+            href="/assets/elysia_v.webp"
+            fetchpriority="high"
+        />
+        <link
+            rel="preload"
+            as="image"
+            href="/assets/elysia.svg"
+            fetchpriority="high"
+        />
+        <link
+            rel="preload"
+            as="image"
+            href="/assets/shigure-ui-smol.gif"
+            fetchpriority="low"
+        />
+        <link
+            rel="preload"
+            as="image"
+            href="/assets/elysia-chan-card.webp"
+            fetchpriority="low"
+        />
 
-    <meta
-        name="theme-color"
-        :content="
-            isInTutorial
-                ? isDark
-                    ? '#030712'
-                    : '#f9fafb'
-                : isDark
-                  ? '#0f172a'
-                  : '#ffffff'
-        "
-    />
+        <meta
+            id="theme-color"
+            :content="
+                isInTutorial
+                    ? isDark
+                        ? '#ff0000'
+                        : '#ff0000'
+                    : isDark
+                      ? '#0f172a'
+                      : '#ffffff'
+            "
+            media="(prefers-color-scheme: light)"
+        />
+
+        <meta
+            id="theme-color"
+            :content="
+                isInTutorial
+                    ? isDark
+                        ? '#ff0000'
+                        : '#ff0000'
+                    : isDark
+                      ? '#0f172a'
+                      : '#ffffff'
+            "
+            media="(prefers-color-scheme: dark)"
+        />
+    </Teleport>
 
     <GlareCard v-model="showCard" />
 
