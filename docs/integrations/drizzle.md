@@ -75,7 +75,6 @@ Assuming we have a `user` table in our codebase as follows:
 ::: code-group
 
 ```ts [src/database/schema.ts]
-import { relations } from 'drizzle-orm'
 import {
     pgTable,
     varchar,
@@ -113,6 +112,7 @@ We may convert the `user` table into TypeBox models by using `drizzle-typebox`:
 ::: code-group
 
 ```ts [src/index.ts]
+import { t } from 'elysia'
 import { createInsertSchema } from 'drizzle-typebox'
 import { table } from './database/schema'
 
@@ -328,7 +328,7 @@ This will allow us to access the table schema from anywhere in the codebase:
 ::: code-group
 
 ```ts [src/index.ts]
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 import { db } from './database/model'
 
 const { user } = db.insert
