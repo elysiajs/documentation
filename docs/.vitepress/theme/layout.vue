@@ -95,8 +95,6 @@ const isInTutorial = computed(
         router.route.path.startsWith('/playground')
 )
 
-console.log(router.route.path, isInTutorial.value)
-
 router.onAfterRouteChange = () => {
     onNewPage()
 }

@@ -429,7 +429,14 @@ export const usePlaygroundStore = defineStore('playground', {
                 if (error) {
                     this.result.error =
                         // @ts-ignore
-                        error.syntax?.message ?? error.message ?? error + ''
+                        error.syntax?.stack ??
+                        // @ts-ignore
+                        error.stack?.message ??
+                        // @ts-ignore
+                        error.stack ??
+                        // @ts-ignore
+                        error.message ??
+                        error + ''
                 }
             }
         }
