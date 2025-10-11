@@ -128,18 +128,16 @@ We can define a schema by using `t.Object` provide to `body` property.
 
 ```typescript
 import { Elysia, t } from 'elysia'
-
 new Elysia()
-	.post(
-		'/user',
-		({ body: { name } }) => `Hello ${name}!`,
-		{
-			body: t.Object({
-				name: t.String()
-			})
-		}
-	)
-	.listen(3000)
+  .post(
+    '/user',
+    ({ body: { name } }) => `Hello ${name}!`,
+    {
+      body: t.Object({
+        name: t.String()
+      })
+    }
+  )
 ```
 
 </template>
