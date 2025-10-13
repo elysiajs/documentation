@@ -48,7 +48,7 @@ You can also return a status code by return your response in a `status` function
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.get('/', ({ status }) => status(418, "I'm a teapot'"))
+	.get('/', ({ status }) => status(418, "I'm a teapot"))
 	.listen(3000)
 ```
 
