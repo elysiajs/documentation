@@ -1122,7 +1122,7 @@ div[class*='language-'] {
 }
 
 .VPSocialLinks.VPNavBarSocialLinks.social-links {
-    @apply ml-2.5;
+    @apply pl-2.5;
 
     &::before {
         @apply hidden;
@@ -1130,7 +1130,7 @@ div[class*='language-'] {
 }
 
 .VPNavBarAppearance.appearance {
-    @apply md:ml-1;
+    @apply md:pl-1;
 
     &::before {
         @apply hidden;
