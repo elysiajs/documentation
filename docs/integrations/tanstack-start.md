@@ -34,13 +34,13 @@ const app = new Elysia({
 	prefix: '/api' // [!code ++]
 }).get('/', 'Hello Elysia!')
 
-const handle = ({ request }: { request: Request }) => app.fetch(request)
+const handle = ({ request }: { request: Request }) => app.fetch(request) // [!code ++]
 
 export const Route = createFileRoute('/api/$')({
 	server: {
 		handlers: {
-			GET: handle,
-			POST: handle
+			GET: handle, // [!code ++]
+			POST: handle // [!code ++]
 		}
 	}
 })
