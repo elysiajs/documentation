@@ -101,7 +101,7 @@ Tanstack Start support **Loader** to fetch data before rendering the component.
 ```tsx [src/routes/index.tsx]
 import { createFileRoute } from '@tanstack/react-router'
 
-import { getTreaty } from './api.$' // ![code ++]
+import { getTreaty } from './api.$' // [!code ++]
 
 export const Route = createFileRoute('/a')({
 	component: App,
