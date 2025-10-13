@@ -284,6 +284,10 @@ export default defineConfig({
                         link: '/patterns/extends-context'
                     },
                     {
+                        text: 'Fullstack Dev Server',
+                        link: '/patterns/fullstack-dev-server'
+                    },
+                    {
                         text: 'Macro',
                         link: '/patterns/macro'
                     },
@@ -300,8 +304,12 @@ export default defineConfig({
                         link: '/patterns/trace'
                     },
                     {
-                        text: 'Type',
-                        link: '/patterns/type'
+                        text: 'TypeBox (Elysia.t)',
+                        link: '/patterns/typebox'
+                    },
+                    {
+                        text: 'TypeScript',
+                        link: '/patterns/typescript'
                     },
                     {
                         text: 'Unit Test',
@@ -492,6 +500,10 @@ export default defineConfig({
                     {
                         text: 'SvelteKit',
                         link: '/integrations/sveltekit'
+                    },
+                    {
+                    	text: 'Tanstack Start',
+                    	link: '/integrations/tanstack-start'
                     },
                     {
                         text: 'Vercel',

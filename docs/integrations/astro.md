@@ -58,8 +58,6 @@ We recommend running [Astro on Bun](https://docs.astro.build/en/recipes/bun) as 
 
 ::: tip
 You can run Elysia server without running Astro on Bun thanks to WinterCG support.
-
-However, some plugins like **Elysia Static** may not work if you are running Astro on Node.
 :::
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden.

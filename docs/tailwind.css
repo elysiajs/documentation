@@ -98,7 +98,7 @@ pre.vp-code > code {
     }
 
     & > p > img {
-        @apply rounded-lg;
+        @apply rounded-xl;
     }
 }
 

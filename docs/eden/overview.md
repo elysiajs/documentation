@@ -25,7 +25,7 @@ For a framework to have end-to-end type safety means you can connect client and 
 
 Elysia provides end-to-end type safety **without code generation** out of the box with an RPC-like connector, **Eden**
 
-<video mute controls>
+<video mute controls style="aspect-ratio: 16/9;">
   <source src="/eden/eden-treaty.mp4" type="video/mp4" />
   Something went wrong trying to load video
 </video>
