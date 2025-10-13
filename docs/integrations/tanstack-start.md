@@ -152,4 +152,4 @@ This can works with any React Query features like caching, pagination, infinite 
 
 ---
 
-Please visit [Tanstack Start Documentation](https://tanstack.com/start/v1/docs/overview) for more information about Tanstack Start.
+Please visit [Tanstack Start Documentation](https://tanstack.com/start) for more information about Tanstack Start.
