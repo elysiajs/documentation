@@ -1,9 +1,9 @@
 ---
-title: Type - ElysiaJS
+title: TypeBox (Elysia.t) - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Type - ElysiaJS
+        content: TypeBox (Elysia.t) - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -19,7 +19,7 @@ import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
 </script>
 
-# Type
+# TypeBox (Elysia.t)
 
 Here's a common patterns for writing validation types using `Elysia.t`.
 

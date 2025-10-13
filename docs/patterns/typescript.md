@@ -1,17 +1,17 @@
 ---
-title: Type - ElysiaJS
+title: TypeScript - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Type - ElysiaJS
+        content: TypeScript - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Schemas are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation is based on Sinclair's TypeBox, a TypeScript library for data validation.
+        content: TypeScript has first-class support in Elysia. Learn how to leverage TypeScript's powerful type system with Elysia's intuitive API, schema-based validation and debugging type inference performance issue.
 
     - - meta
       - property: 'og:description'
-        content: Schemas are strictly typed definitions, used to infer TypeScript's type and data validation of an incoming request and outgoing response. Elysia's schema validation is based on Sinclair's TypeBox, a TypeScript library for data validation.
+        content: TypeScript has first-class support in Elysia. Learn how to leverage TypeScript's powerful type system with Elysia's intuitive API, schema-based validation and debugging type inference performance issue.
 ---
 
 <script setup>
@@ -29,12 +29,13 @@ Most of the time, you wouldn't need to add any TypeScript annotations manually.
 ## Inference
 Elysia infers the type of request and response based on the schema you provide.
 
-```ts
+```ts twoslash
 import { Elysia, t } from 'elysia'
+import { z } from 'zod'
 
 const app = new Elysia()
-  	.post('/user/:id', ({ body }) => body {
-   	//                     ^?
+  	.post('/user/:id', ({ body }) => body, {
+  	//                     ^?
 	  	body: t.Object({
 			id: t.String()
 		}),
@@ -187,3 +188,5 @@ const api = treaty<subApp>('localhost:3000') // [!code ++]
 ```
 
 This should make your type inference faster it doesn't need to evaluate the whole app.
+
+See [Eden Treaty](/eden/overview) to learn more about Eden.

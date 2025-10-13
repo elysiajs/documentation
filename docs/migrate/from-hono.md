@@ -298,14 +298,9 @@ import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                           ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: t.Object({
 			id: t.Number()
@@ -322,14 +317,9 @@ import { z } from 'zod'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                          ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: z.object({
 			id: z.number()
@@ -346,14 +336,9 @@ import * as v from 'valibot'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                          ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: v.object({
 			id: v.number()

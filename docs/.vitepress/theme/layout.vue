@@ -178,8 +178,8 @@ const prompt = computed(() =>
 
         <template #doc-before>
             <div
-                class="sm:absolute flex gap-2.5 sm:justify-end items-center w-full pt-0.5 pr-2 text-gray-400 dark:text-gray-500 text-xs *:z-20 [&>a>svg]:size-4.5 sm:[&>a>svg]:size-5 [&>a>svg]:opacity-50 [&>a>svg]:interact:opacity-100 [&>a>svg]:transition-opacity"
-                style="max-width: 688px"
+            	id="open-elysia-in"
+                class="sm:absolute right-0 flex gap-2.5 sm:justify-end items-center pt-0.5 pr-2 text-gray-400 dark:text-gray-500 text-xs *:z-20 [&>a>svg]:size-4.5 sm:[&>a>svg]:size-5 [&>a>svg]:opacity-50 [&>a>svg]:interact:opacity-100 [&>a>svg]:transition-opacity"
             >
                 Open in
                 <a

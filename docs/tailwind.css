@@ -814,6 +814,18 @@ button.copy::after {
     @apply !pt-4 xl:!pt-8;
 }
 
+.VPDoc > .container {
+    & > .content {
+        & > .content-container {
+        	@apply relative;
+
+         	& > #open-elysia-in {
+          		max-width: 688px;
+          	}
+        }
+    }
+}
+
 .VPDoc > .container.-wide {
     & > .content {
         @apply lg:px-0;
@@ -824,7 +836,6 @@ button.copy::after {
 
             & > *:not(.main) {
                 @apply mx-auto;
-                max-width: 668px;
             }
         }
     }

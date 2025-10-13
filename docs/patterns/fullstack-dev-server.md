@@ -1,17 +1,17 @@
 ---
-title: Extends Context - ElysiaJS
+title: Fullstack Dev Server - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Extends Context - ElysiaJS
+        content: Fullstack Dev Server - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Elysia provides a minimal Context by default, allowing us to extend Context for our specific need using state, decorate, derive, and resolve.
+        content: Bun Fullstack Dev Server allows us to develop frontend and backend in a single project without any bundler. Learn how to use Elysia with Bun Fullstack Dev Server with HMR, and Tailwind support.
 
     - - meta
       - property: 'og:description'
-        content: Elysia provides a minimal Context by default, allowing us to extend Context for our specific need using state, decorate, derive, and resolve.
+        content: Bun Fullstack Dev Server allows us to develop frontend and backend in a single project without any bundler. Learn how to use Elysia with Bun Fullstack Dev Server with HMR, and Tailwind support.
 ---
 
 # Elysia with Bun Fullstack Dev Server
@@ -87,7 +87,7 @@ root.render(<App />)
 
 This would allows us to develop frontend and backend in a single project without any bundler.
 
-We have tested that Fullstack Dev Server works with HMR, [Tailwind](#tailwind), Tanstack Query, [Eden Treaty](/eden/overview), and path alias.
+We have verified that Fullstack Dev Server works with HMR, [Tailwind](#tailwind), Tanstack Query, [Eden Treaty](/eden/overview), and path alias.
 
 ## Custom prefix path
 
