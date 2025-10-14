@@ -78,7 +78,7 @@ new Elysia()
 		}
 	})
 	.get('/', () => {
-		throw new CustomError('Custom error message')
+		throw new NicheError('Custom error message')
 	})
 	.listen(3000)
 ```
