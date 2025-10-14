@@ -117,7 +117,7 @@ function App() {
 
 :::
 
-Calling Elysia in a loader will be executed on the server side during SSR, and doesn't have HTTP overhead.
+Calling Elysia in the loader will make sure to execute it on the server side during SSR, and doesn't have HTTP overhead.
 
 Eden Treaty will ensure type safety on both server and client.
 
