@@ -117,7 +117,8 @@ function App() {
 
 :::
 
-Calling Elysia in the loader will make sure to execute it on the server side during SSR, and doesn't have HTTP overhead.
+Calling Elysia in a loader executes it on the server during SSR and doesn’t incur HTTP overhead.
+When navigating from one page to another, the loader will run on the client-side, making an HTTP request to the endpoint.
 
 Eden Treaty will ensure type safety on both server and client.
 
@@ -148,7 +149,7 @@ function App() {
 
 ::: code-group
 
-This can work with any React Query features like caching, pagination, infinite query, etc.
+This can work with any React Query features like caching, pagination, infinite queries, etc.
 
 ---
 
