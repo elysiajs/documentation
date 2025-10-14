@@ -98,7 +98,13 @@ However if we are using [@elysiajs/openapi](/plugins/openapi), you might want to
 
 We may do that with the following code:
 
+
 ```ts
+export const auth = betterAuth({
+  plugins: [openAPI()], // [!code ++]
+});
+
+
 import { openAPI } from 'better-auth/plugins'
 
 let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>
