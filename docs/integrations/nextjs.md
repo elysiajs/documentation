@@ -58,7 +58,7 @@ For example, if you place Elysia server in **app/user/[[...slugs]]/route.ts**, y
 ```typescript [app/user/[[...slugs]]/route.ts]
 import { Elysia, t } from 'elysia'
 
-export default new Elysia({ prefix: '/user' }) // [!code ++]
+const app = new Elysia({ prefix: '/user' }) // [!code ++]
 	.get('/', 'Hello Nextjs')
     .post('/', ({ body }) => body, {
         body: t.Object({
