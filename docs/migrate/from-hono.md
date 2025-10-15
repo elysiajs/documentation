@@ -1454,7 +1454,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 Both are the next generation web framework built on top of Web Standard API with slight differences.
 
-Elysia is designed to be ergonomic and developer-friendly with a focus on **sounds type safety**, and has beter performance than Hono.
+Elysia is designed to be ergonomic and developer-friendly with a focus on **sounds type safety**, and has better performance than Hono.
 
 While Hono offers a broad compatibility with multiple runtimes, especially with Cloudflare Workers, and a larger user base.
 
