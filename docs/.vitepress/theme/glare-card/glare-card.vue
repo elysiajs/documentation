@@ -82,6 +82,8 @@ import Card from './card.vue'
 const model = defineModel({ default: false })
 
 watch(model, (value) => {
+    if (typeof window === 'undefined') return
+
     if (value) {
         document.documentElement.classList.add('overflow-hidden')
         document.body.classList.add('overflow-hidden')
@@ -92,6 +94,8 @@ watch(model, (value) => {
 }, { immediate: true })
 
 onBeforeUnmount(() => {
+    if (typeof window === 'undefined') return
+
     document.documentElement.classList.remove('overflow-hidden')
     document.body.classList.remove('overflow-hidden')
 })
