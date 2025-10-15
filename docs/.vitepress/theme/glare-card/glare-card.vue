@@ -30,7 +30,7 @@
         <div
             v-if="model"
             class="fixed z-[110] top-0 left-0 flex justify-center items-center w-full h-screen px-8"
-            @click="() => setCard(false)"
+            @click="model = false"
         >
             <motion.div
                 key="glare"
@@ -75,19 +75,19 @@
 
 <script setup lang="ts">
 import { motion, cubicBezier, AnimatePresence } from 'motion-v'
+import { watch } from 'vue'
 
 import Card from './card.vue'
 
-const model = defineModel()
+const model = defineModel({ default: false })
 
-const setCard = (value: boolean) => {
-    model.value = value
-    if (model.value) {
+watch(model, (value) => {
+    if (value) {
         document.documentElement.classList.add('overflow-hidden')
         document.body.classList.add('overflow-hidden')
     } else {
         document.documentElement.classList.remove('overflow-hidden')
         document.body.classList.remove('overflow-hidden')
     }
-}
+}, { immediate: true })
 </script>
