@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { motion, cubicBezier, AnimatePresence } from 'motion-v'
-import { watch } from 'vue'
+import { onBeforeUnmount, watch } from 'vue'
 
 import Card from './card.vue'
 
@@ -90,4 +90,9 @@ watch(model, (value) => {
         document.body.classList.remove('overflow-hidden')
     }
 }, { immediate: true })
+
+onBeforeUnmount(() => {
+    document.documentElement.classList.remove('overflow-hidden')
+    document.body.classList.remove('overflow-hidden')
+})
 </script>
