@@ -1446,7 +1446,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 ---
 
-Elysia offers a more ergonomic and developer-friendly experience with a focus on performance, type safety, and simplicity while Fastify is one of the established framework for Node.js, but doesn't has **sounds type safety** and **end-to-end type safety** offers by next generation framework.
+Elysia offers a more ergonomic and developer-friendly experience with a focus on performance, type safety, and simplicity while Fastify is one of the established framework for Node.js, but doesn't have **sounds type safety** and **end-to-end type safety** offered by next generation framework.
 
 If you are looking for a framework that is easy to use, has a great developer experience, and is built on top of Web Standard API, Elysia is the right choice for you.
 
