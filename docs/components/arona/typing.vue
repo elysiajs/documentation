@@ -17,7 +17,7 @@
             }"
         >
             <img src="/assets/elysia.svg" alt="Elysia logo" class="size-4" />
-            <p class="text-sm text-gray-400">Typing{{ suffix }}</p>
+            <p class="text-sm text-gray-400">Cooking{{ suffix }}</p>
         </motion.div>
     </AnimatePresence>
 </template>

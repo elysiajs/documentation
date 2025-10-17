@@ -1088,17 +1088,19 @@ button.copy::after {
     @apply hover:scale-[1.03] focus:scale-[1.03] active:scale-[0.98] !transition-all;
 }
 
-#local-search > .DocSearch-Button {
-    @apply rounded-xl backdrop-blur-sm clicky;
+#local-search {
+	& > .DocSearch-Button {
+	    @apply clicky rounded-xl backdrop-blur-sm ml-2;
 
-    @media (min-width: var(--breakpoint-sm)) {
-        background-color: color-mix(
-            in srgb,
-            var(--vp-c-bg-soft) 80%,
-            transparent
-        );
-        border: 1px solid color-mix(in srgb, var(--vp-c-bg-soft) 80%, black 1%);
-    }
+		 @media screen and (min-width: theme('--breakpoint-md')) {
+			@apply bg-pink-400/6.25 dark:bg-pink-300/8.75;
+
+			& > span,
+			& > span > span {
+				@apply text-pink-400 dark:text-pink-300 font-medium;
+			}
+		}
+	}
 }
 
 button[title='Copy Code'].copy {
@@ -1270,7 +1272,7 @@ div[class*='language-'] {
 }
 
 #ai-shortcut {
-	@apply font-normal ml-auto text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800;
+	@apply px-1.5 py-0.5 text-xs font-normal ml-auto text-cyan-400 dark:text-cyan-300 bg-cyan-400/7.5 dark:bg-cyan-300/10 rounded border border-cyan-400/25 dark:border-cyan-200/15;
 
 	&::after {
 		content: 'Ctrl K';
@@ -1279,4 +1281,8 @@ div[class*='language-'] {
 	.mac &::after {
 		content: '\2318  I';
 	}
+}
+
+.VPNavBarSearch.search {
+	@apply ml-2 !pl-0;
 }

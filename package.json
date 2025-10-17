@@ -34,6 +34,7 @@
 		"sucrase": "^3.35.0",
 		"tailwindcss": "^4.1.11",
 		"valibot": "^1.1.0",
+		"vue-renderer-markdown": "^0.0.57-beta.2",
 		"vue3-carousel": "^0.16.0",
 		"zod": "^4.1.8"
 	},

@@ -92,6 +92,16 @@ const onNewPage = () => {
     }
 }
 
+function toggleAIDesktop() {
+    showArona.value = !showArona.value
+
+    const backdrop = document.querySelector(
+        '.VPBackdrop.backdrop'
+    ) as HTMLButtonElement
+
+    backdrop?.click()
+}
+
 onMounted(onNewPage)
 
 const router = useRouter()
@@ -293,11 +303,21 @@ const prompt = computed(() =>
             </aside>
         </template>
 
+        <template #nav-bar-content-before>
+            <button
+                class="clicky flex lg:hidden gap-1.5 justify-center items-center h-10 ml-4 px-3 py-0-.25 text-cyan-400 dark:text-cyan-300 font-medium bg-cyan-300/10 dark:bg-cyan-300/5 rounded-xl"
+                @click="toggleAIDesktop"
+            >
+                <Sparkles :size="21" stroke-width="1.5" />
+                Ask AI
+            </button>
+        </template>
+
         <template #sidebar-nav-before>
             <button
                 href="/tutorial/"
                 class="clicky font-semibold text-gradient from-25% to-65% from-sky-400 to-teal-400 -translate-x-3"
-                @click="showArona = !showArona"
+                @click="toggleAIDesktop"
             >
                 <div
                     class="flex items-center gap-1.5 px-3 py-2 rounded-xl interact:bg-cyan-400/7.5 interact:dark:bg-cyan-300/10 transition-colors"
@@ -317,7 +337,6 @@ const prompt = computed(() =>
 
                     <span
                         id="ai-shortcut"
-                        class="DocSearch-Button-Keys"
                         aria-keyshortcuts="control+i meta+i"
                     />
                 </div>
