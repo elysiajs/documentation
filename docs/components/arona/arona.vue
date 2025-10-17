@@ -348,7 +348,7 @@ watch(
         if (visible)
             setTimeout(() => {
                 textarea.value?.focus()
-            }, 200)
+            }, 60)
 
         if (visible) document.documentElement.classList.add('arona')
         else document.documentElement.classList.remove('arona')
