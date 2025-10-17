@@ -48,7 +48,7 @@ const app = new Elysia()
 	.listen(3000)
 
 console.log(
-    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+    `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
 )
 ```
 
@@ -100,12 +100,10 @@ We may do that with the following code:
 
 
 ```ts
-export const auth = betterAuth({
-  plugins: [openAPI()], // [!code ++]
-});
-
-
 import { openAPI } from 'better-auth/plugins'
+export const auth = betterAuth({
+  plugins: [openAPI()], // [!code ++]
+});
 
 let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>
 const getSchema = async () => (_schema ??= auth.api.generateOpenAPISchema())
