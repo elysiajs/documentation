@@ -305,11 +305,10 @@ const prompt = computed(() =>
 
         <template #nav-bar-content-before>
             <button
-                class="clicky flex lg:hidden gap-1.5 justify-center items-center h-10 ml-4 px-3 py-0-.25 text-cyan-400 dark:text-cyan-300 font-medium bg-cyan-300/10 dark:bg-cyan-300/5 rounded-xl"
+                class="clicky block lg:hidden size-10 ml-4 px-3 py-0-.25 text-cyan-400 dark:text-cyan-300 font-medium bg-cyan-300/10 dark:bg-cyan-300/5 rounded-xl"
                 @click="toggleAIDesktop"
             >
                 <Sparkles :size="21" stroke-width="1.5" />
-                Ask AI
             </button>
         </template>
 
