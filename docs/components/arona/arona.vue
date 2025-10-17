@@ -58,10 +58,10 @@
                 >
                     <div class="relative isolate flex flex-col w-full h-full">
                         <h3
-                            class="absolute z-20 top-2 flex items-center text-gray-500 font-mono text-lg font-medium pl-3 h-11 bg-white/10 dark:bg-gray-900/50 rounded-full backdrop-blur-sm"
+                            class="absolute z-20 top-2 flex items-center text-gray-500 font-mono text-lg font-medium pl-3 h-11 bg-white/80 dark:bg-gray-900/50 rounded-full backdrop-blur-sm"
                         >
                             <button
-                                class="clicky flex justify-center items-center size-10 mr-1 text-gray-400/60 interact:text-gray-500 bg-white/10 interact:bg-gray-200/20 dark:bg-gray-900/50 dark:interact:bg-gray-700/50 backdrop-blur-sm rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300"
+                                class="clicky flex justify-center items-center size-10 mr-1 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300"
                                 :class="{
                                     '!w-0 pointer-events-none mr-0':
                                         isStreaming || !history.length
@@ -81,7 +81,7 @@
                         </h3>
 
                         <button
-                            class="absolute clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 mr-1 text-gray-400/60 interact:text-gray-500 bg-white/10 interact:bg-gray-200/20 dark:bg-gray-900/50 dark:interact:bg-gray-700/50 backdrop-blur-sm rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
+                            class="absolute clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 mr-1 text-gray-400/60 interact:text-gray-500 bg-white/80 interact:bg-gray-200/80 dark:bg-gray-900/50 dark:interact:bg-gray-700/50 backdrop-blur-sm rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
                             @click="model = false"
                             title="Close chat window"
                         >
@@ -89,7 +89,7 @@
                         </button>
 
                         <button
-                            class="absolute clicky z-20 interact:z-30 top-2 right-9 hidden sm:flex justify-center items-center size-10 mr-1 text-gray-400/60 interact:text-gray-500 bg-white/10 interact:bg-gray-200/20 dark:bg-gray-900/50 dark:interact:bg-gray-700/50 backdrop-blur-sm rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
+                            class="absolute clicky z-20 interact:z-30 top-2 right-9 hidden sm:flex justify-center items-center size-10 mr-1 text-gray-400/60 interact:text-gray-500 bg-white/80 interact:bg-gray-200/80 dark:bg-gray-900/50 dark:interact:bg-gray-700/50 backdrop-blur-sm rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
                             @click="_isExpanded = !_isExpanded"
                             title="Expand chat window"
                         >
@@ -486,10 +486,6 @@ if (typeof window !== 'undefined')
     // @ts-ignore
     window.turnstileCallback = turnstileCallback
 
-if (typeof window !== 'undefined')
-    // @ts-ignore
-    window.turnstileCallback = turnstileCallback
-
 onMounted(() => {
     window.addEventListener('keydown', handleGlobalShortcut, {
         passive: true
@@ -622,7 +618,7 @@ onUnmounted(() => {
         * > *,
         * > * > * {
             & > div[theme] > .shiki {
-                @apply relative my-4 text-sm py-4 -mx-4 @overflow-x-auto overflow-y-hidden;
+                @apply relative my-4 text-sm py-4 -mx-4 overflow-x-auto overflow-y-hidden;
                 background-color: var(--vp-code-copy-code-bg);
 
                 &:hover {
