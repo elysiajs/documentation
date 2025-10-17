@@ -28,7 +28,7 @@
             <aside
                 id="arona"
                 v-if="model"
-                class="fixed isolate z-20 bottom-0 sm:bottom-2 right-2 max-w-sm w-full transition-all duration-700 ease-out-expo"
+                class="fixed isolate z-31 bottom-0 sm:bottom-2 right-2 max-w-sm w-full transition-all duration-700 ease-out-expo"
                 :class="{
                     'z-30 !max-w-3xl !right-1/2 translate-x-1/2': isExpanded
                 }"
