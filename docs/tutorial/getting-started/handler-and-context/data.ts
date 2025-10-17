@@ -10,7 +10,7 @@ new Elysia()
 export const testcases = [
     {
         title: 'Create POST endpoint',
-        description: 'Let\'s a POST endpoint "/", so we can send a body',
+        description: 'Let\'s create a POST endpoint "/", so we can send a body',
         test: {
             request: {
                 method: 'POST',
@@ -23,7 +23,7 @@ export const testcases = [
     },
     {
         title: 'Extract Body',
-        description: "Let's extract a body a return it as `return { body }`",
+        description: "Let's extract a body and return it as `return { body }`",
         test: {
             request: {
                 method: 'POST',
@@ -45,7 +45,7 @@ export const testcases = [
     {
         title: 'Extract Query',
         description:
-            "Let's extract a query a return it as `return { body, query }`",
+            "Let's extract a query and return it as `return { body, query }`",
         test: {
             request: {
                 method: 'POST',
@@ -64,7 +64,7 @@ export const testcases = [
     {
         title: 'Extract Headers',
         description:
-            "Let's extract a header a return it as `return { body, query, headers }`",
+            "Let's extract a header and return it as `return { body, query, headers }`",
         test: {
             request: {
                 method: 'POST',
