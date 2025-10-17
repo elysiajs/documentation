@@ -877,7 +877,7 @@ button.copy::after {
     @apply flex flex-col min-h-full;
 }
 
-#app > .Layout {
+/*#app > .Layout {
 	@apply transition-transform duration-600 ease-out-expo;
 
 	@media (width >= 106rem) {
@@ -885,7 +885,7 @@ button.copy::after {
 			@apply 2xl:!-translate-x-36;
 		}
 	}
-}
+}*/
 
 .VPLocalSearchBox {
     & > .backdrop {
