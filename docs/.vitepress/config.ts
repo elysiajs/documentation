@@ -26,9 +26,9 @@ export default defineConfig({
         },
         languages: ['js', 'ts'],
         codeTransformers: [
-            // transformerTwoslash({
-            //     typesCache: createFileSystemTypesCache()
-            // })
+            transformerTwoslash({
+                typesCache: createFileSystemTypesCache()
+            })
         ],
         config: (md) => {
             md.use(lightbox, {})
@@ -147,7 +147,7 @@ export default defineConfig({
         search: {
             provider: 'local',
             options: {
-                detailedView: true,
+                detailedView: true
             }
         },
         logo: '/assets/elysia.svg',

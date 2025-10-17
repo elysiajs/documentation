@@ -167,7 +167,22 @@
                                         ease: easeOutExpo
                                     }"
                                 >
-                                    <MarkdownRender :content="content" />
+                                    <StreamMarkdown
+                                        :content="content"
+                                        :done="
+                                            index === history.length - 1
+                                                ? !isStreaming
+                                                : true
+                                        "
+                                        :components="{
+                                            codeblock: Code
+                                        }"
+                                        :shiki-theme="
+                                            isDark
+                                                ? 'catppuccin-mocha'
+                                                : 'catppuccin-latte'
+                                        "
+                                    />
                                 </motion.div>
                             </template>
 
@@ -244,7 +259,7 @@ import { motion, AnimatePresence } from 'motion-v'
 
 import { useTextareaAutosize, useWindowSize } from '@vueuse/core'
 
-import { MarkdownRender, setCustomComponents } from 'vue-renderer-markdown'
+import { StreamMarkdown } from 'streamdown-vue'
 
 import A from './a.vue'
 import Code from './code.vue'
@@ -265,11 +280,6 @@ import useDark from '../../.vitepress/theme/use-dark'
 
 const model = defineModel<boolean>()
 const isDark = useDark()
-
-setCustomComponents({
-    code_block: Code,
-    a: A
-})
 
 const { input: question, textarea } = useTextareaAutosize()
 
@@ -383,7 +393,7 @@ async function ask() {
 
     error.value = undefined
 
-    const response = await fetch('http://localhost:3000/ask', {
+    const response = await fetch('http://arona.elysiajs.com/ask', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -470,6 +480,20 @@ async function ask() {
     // @ts-ignore
     window.turnstile?.reset()
     controller = undefined
+
+    const a = document
+        .getElementById('#elysia-chat-content')
+        ?.querySelector('.user > div')
+        ?.querySelectorAll('a')
+
+    if (a)
+        a.forEach((link) => {
+            if (
+                link.href.startsWith('https://elysiajs.com') ||
+                link.href.startsWith('http://localhost')
+            )
+                link.removeAttribute('target')
+        })
 }
 
 function turnstileCallback(turnstileToken: string) {
@@ -506,7 +530,7 @@ onUnmounted(() => {
 .markdown-renderer {
     & > div {
         & > *:first-child {
-            @apply !mt-1;
+            @apply !mt-2;
         }
 
         & > h1 {
