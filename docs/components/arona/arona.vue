@@ -3,7 +3,7 @@
         <AnimatePresence>
             <motion.div
                 v-if="isExpanded && model"
-                class="fixed top-0 left-0 z-30 w-full h-screen bg-black/15"
+                class="fixed top-0 left-0 z-41 w-full h-screen bg-black/15"
                 @click="model = false"
                 :initial="{ opacity: 0 }"
                 :animate="{
@@ -30,7 +30,7 @@
                 v-if="model"
                 class="fixed isolate z-31 bottom-0 sm:bottom-2 right-2 max-w-sm w-full transition-all duration-700 ease-out-expo"
                 :class="{
-                    'z-30 !max-w-3xl !right-1/2 translate-x-1/2': isExpanded
+                    'z-42 !max-w-3xl !right-1/2 translate-x-1/2': isExpanded
                 }"
                 style="will-change: transform, width, right"
             >
