@@ -256,31 +256,31 @@ button.copy::after {
     content: '';
 }
 
-#VPSidebarNav > .group:nth-child(3) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/getting-start.svg);
 }
 
-#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/essential.svg);
 }
 
-#VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/pattern.svg);
 }
 
-#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/eden.svg);
 }
 
-#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/blocks.svg);
 }
 
-#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(9) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/search.svg);
 }
 
-#VPSidebarNav > .group:nth-child(9) > .VPSidebarItem > .item > .text::before {
+#VPSidebarNav > .group:nth-child(10) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/book.svg);
 }
 
@@ -877,6 +877,16 @@ button.copy::after {
     @apply flex flex-col min-h-full;
 }
 
+#app > .Layout {
+	@apply transition-transform duration-600 ease-out-expo;
+
+	@media (width >= 106rem) {
+		.arona:not(.-arona-wide) & {
+			@apply 2xl:!-translate-x-36;
+		}
+	}
+}
+
 .VPLocalSearchBox {
     & > .backdrop {
         @apply !bg-black/7.5;
@@ -1257,4 +1267,16 @@ div[class*='language-'] {
 
 #giscus {
     @apply !mt-4 !border-0;
+}
+
+#ai-shortcut {
+	@apply font-normal ml-auto text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800;
+
+	&::after {
+		content: 'Ctrl K';
+	}
+
+	.mac &::after {
+		content: '\2318  I';
+	}
 }

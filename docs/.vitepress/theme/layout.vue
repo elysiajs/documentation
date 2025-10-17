@@ -6,18 +6,23 @@ import {
     onMounted,
     computed,
     defineAsyncComponent,
-    Teleport
+    Teleport,
+    onUnmounted
 } from 'vue'
 import { useData, useRouter } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
-import { File, Heart, Terminal } from 'lucide-vue-next'
+import { File, Heart, Sparkles, Terminal } from 'lucide-vue-next'
 import mediumZoom from 'medium-zoom'
+
 import useDark from './use-dark'
 
 import Ray from '../../components/fern/ray.vue'
 const GlareCard = defineAsyncComponent(
     () => import('./glare-card/glare-card.vue')
+)
+const Arona = defineAsyncComponent(
+    () => import('../../components/arona/arona.vue')
 )
 
 import { data } from '../../components/fern/sponsor.data'
@@ -27,6 +32,7 @@ const isDark = useDark()
 const { isDark: darkTheme } = useData()
 
 const showCard = ref(false)
+const showArona = ref(false)
 
 const setCard = (value: boolean) => {
     showCard.value = value
@@ -167,6 +173,7 @@ const prompt = computed(() =>
     </Teleport>
 
     <GlareCard v-model="showCard" />
+    <Arona v-model="showArona" />
 
     <DefaultTheme.Layout>
         <template #doc-top>
@@ -178,7 +185,7 @@ const prompt = computed(() =>
 
         <template #doc-before>
             <div
-            	id="open-elysia-in"
+                id="open-elysia-in"
                 class="sm:absolute right-0 flex gap-2.5 sm:justify-end items-center pt-0.5 pr-2 text-gray-400 dark:text-gray-500 text-xs *:z-20 [&>a>svg]:size-4.5 sm:[&>a>svg]:size-5 [&>a>svg]:opacity-50 [&>a>svg]:interact:opacity-100 [&>a>svg]:transition-opacity"
             >
                 Open in
@@ -287,9 +294,38 @@ const prompt = computed(() =>
         </template>
 
         <template #sidebar-nav-before>
+            <button
+                href="/tutorial/"
+                class="clicky font-semibold text-gradient from-25% to-65% from-sky-400 to-teal-400 -translate-x-3"
+                @click="showArona = !showArona"
+            >
+                <div
+                    class="flex items-center gap-1.5 px-3 py-2 rounded-xl interact:bg-cyan-400/7.5 interact:dark:bg-cyan-300/10 transition-colors"
+                >
+                    <Sparkles
+                        :size="21"
+                        class="text-sky-400"
+                        stroke-width="1.5"
+                    />
+
+                    Ask Elysia
+                    <span
+                        class="text-xs -translate-x-0.5 -translate-y-1.5 font-semibold text-gradient from-50% to-100% from-teal-400 to-emerald-400"
+                    >
+                        AI
+                    </span>
+
+                    <span
+                        id="ai-shortcut"
+                        class="DocSearch-Button-Keys"
+                        aria-keyshortcuts="control+i meta+i"
+                    />
+                </div>
+            </button>
+
             <a
                 href="/tutorial/"
-                class="clicky text-white font-semibold text-gradient from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 -translate-x-3"
+                class="clicky font-semibold text-gradient from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 -translate-x-3"
             >
                 <div
                     class="flex items-center gap-1.5 px-3 py-2 rounded-xl interact:bg-pink-400/7.5 interact:dark:bg-pink-300/10 transition-colors"

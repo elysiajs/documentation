@@ -78,7 +78,7 @@ import { motion, cubicBezier, AnimatePresence } from 'motion-v'
 
 import Card from './card.vue'
 
-const model = defineModel()
+const model = defineModel<boolean>()
 
 const setCard = (value: boolean) => {
     model.value = value

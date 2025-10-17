@@ -65,7 +65,11 @@ export default defineConfig({
             process.env.ANALYZE === 'true' ? analyzer() : undefined
         ],
         optimizeDeps: {
-            exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client', '.vitepress/cache', '@rollup/browser']
+            exclude: [
+                '@nolebase/vitepress-plugin-inline-link-preview/client',
+                '.vitepress/cache',
+                '@rollup/browser'
+            ]
         },
         ssr: {
             noExternal: [
@@ -143,7 +147,7 @@ export default defineConfig({
         search: {
             provider: 'local',
             options: {
-                detailedView: true
+                detailedView: true,
             }
         },
         logo: '/assets/elysia.svg',
@@ -502,8 +506,8 @@ export default defineConfig({
                         link: '/integrations/sveltekit'
                     },
                     {
-                    	text: 'Tanstack Start',
-                    	link: '/integrations/tanstack-start'
+                        text: 'Tanstack Start',
+                        link: '/integrations/tanstack-start'
                     },
                     {
                         text: 'Vercel',
