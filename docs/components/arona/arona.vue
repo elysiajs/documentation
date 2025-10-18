@@ -400,7 +400,7 @@ async function ask() {
             headers: {
                 'Content-Type': 'application/json',
                 'x-turnstile-token': token.value!,
-                cache: 'no-store'
+                'Cache-Control': 'no-store'
             },
             body: JSON.stringify({
                 message,
