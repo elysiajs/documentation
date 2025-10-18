@@ -394,13 +394,12 @@ async function ask() {
     error.value = undefined
 
     const response = await fetch(
-        `http://arona.elysiajs.com/ask?t=${Date.now()}`,
+        `https://arona.elysiajs.com/ask`,
         {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-turnstile-token': token.value!,
-                'Cache-Control': 'no-store'
+                'x-turnstile-token': token.value!
             },
             body: JSON.stringify({
                 message,
