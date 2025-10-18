@@ -393,21 +393,25 @@ async function ask() {
 
     error.value = undefined
 
-    const response = await fetch('http://arona.elysiajs.com/ask', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-turnstile-token': token.value!
-        },
-        body: JSON.stringify({
-            message,
-            history: history.value
-                .slice(-17)
-                .slice(0, -1)
-                .filter((x) => x.content.length < 4096)
-        }),
-        signal: controller.signal
-    }).catch((err) => {
+    const response = await fetch(
+        `http://arona.elysiajs.com/ask?t=${Date.now()}`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-turnstile-token': token.value!,
+                cache: 'no-store'
+            },
+            body: JSON.stringify({
+                message,
+                history: history.value
+                    .slice(-17)
+                    .slice(0, -1)
+                    .filter((x) => x.content.length < 4096)
+            }),
+            signal: controller.signal
+        }
+    ).catch((err) => {
         isStreaming.value = false
         controller = undefined
 
