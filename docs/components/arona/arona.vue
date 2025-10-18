@@ -393,24 +393,21 @@ async function ask() {
 
     error.value = undefined
 
-    const response = await fetch(
-        `https://arona.elysiajs.com/ask`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-turnstile-token': token.value!
-            },
-            body: JSON.stringify({
-                message,
-                history: history.value
-                    .slice(-17)
-                    .slice(0, -1)
-                    .filter((x) => x.content.length < 4096)
-            }),
-            signal: controller.signal
-        }
-    ).catch((err) => {
+    const response = await fetch(`https://arona.elysiajs.com/ask`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-turnstile-token': token.value!
+        },
+        body: JSON.stringify({
+            message,
+            history: history.value
+                .slice(-17)
+                .slice(0, -1)
+                .filter((x) => x.content.length < 4096)
+        }),
+        signal: controller.signal
+    }).catch((err) => {
         isStreaming.value = false
         controller = undefined
 
@@ -530,8 +527,26 @@ onUnmounted(() => {
 <style>
 @reference '../../tailwind.css';
 
-.markdown-renderer {
-    & > div {
+#elysia-chat-content {
+    @apply relative flex items-start flex-col h-full pt-13 pb-15 px-2 text-base overflow-y-scroll;
+
+    .dark & {
+        --vp-code-color: #f9d5e5;
+        --vp-c-brand-1: #f9d5e5;
+        --vp-code-bg: color-mix(
+            in oklab,
+            oklch(82.3% 0.12 346.018) 15%,
+            transparent
+        );
+    }
+
+    & > .user {
+        @apply px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-bottom-right;
+    }
+
+    & > .elysia-chan > div {
+        @apply w-full px-2 py-4;
+
         & > *:first-child {
             @apply !mt-2;
         }
@@ -594,6 +609,11 @@ onUnmounted(() => {
             }
         }
 
+        & > ol,
+        & > ul {
+            @apply !pl-0;
+        }
+
         & > p > code,
         & > ul > li > code,
         & > ol > li > code {
@@ -617,93 +637,80 @@ onUnmounted(() => {
             }
         }
 
-        & > .shiki {
-            @apply relative my-4 text-sm py-4 -mx-4 overflow-x-auto overflow-y-hidden;
-            background-color: var(--vp-code-copy-code-bg);
+        &,
+        *,
+        * > *,
+        * > * > * {
+            & > div[theme] > .shiki {
+                @apply relative my-4 text-sm py-4 -mx-4;
+                background-color: var(--vp-code-copy-code-bg);
 
-            &:hover {
-                & > .lang {
-                    @apply opacity-0;
-                }
-
-                & > .copy {
-                    @apply opacity-100;
-                }
-            }
-
-            & > .lang {
-                @apply absolute top-2 right-2 text-xs text-gray-400 dark:text-gray-500 transition-opacity;
-            }
-
-            & > .copy {
-                @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-gray-50 dark:!bg-gray-700 interact:!bg-white dark:interact:!bg-gray-800 transition-opacity opacity-0;
-                border: 1px solid var(--vp-code-copy-code-border-color);
-
-                &::before {
-                    @apply flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500;
-
-                    content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>');
-                }
-
-                &::after {
-                    @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-xl text-gray-500 dark:text-gray-400 !bg-white dark:!bg-gray-800 opacity-0 transition-opacity pointer-events-none;
-                    border: inherit;
-                    content: 'Copied';
-                }
-
-                &.copied {
-                    @apply !bg-white dark:!bg-gray-800;
-
-                    &::before {
-                        content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-copy-icon lucide-clipboard-copy"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v4"/><path d="M21 14H11"/><path d="m15 10-4 4 4 4"/></svg>');
+                &:hover {
+                    & > .lang {
+                        @apply opacity-0;
                     }
 
-                    &::after {
+                    & > .copy {
                         @apply opacity-100;
                     }
                 }
-            }
 
-            & > code {
-                @apply flex flex-col w-full;
+                & > .lang {
+                    @apply absolute top-2 right-2 text-xs text-gray-400 dark:text-gray-500 transition-opacity;
+                }
 
-                & > .line {
-                    @apply block w-full px-4;
-                    min-height: 1.5em;
+                & > .copy {
+                    @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-gray-50 dark:!bg-gray-700 interact:!bg-white dark:interact:!bg-gray-800 transition-opacity opacity-0;
+                    border: 1px solid var(--vp-code-copy-code-border-color);
 
-                    &.add {
-                        @apply w-full;
-                        background-color: var(--vp-code-line-diff-add-color);
+                    &::before {
+                        @apply flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500;
+
+                        content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>');
                     }
 
-                    &.remove {
-                        background-color: var(--vp-code-line-diff-remove-color);
+                    &::after {
+                        @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-xl text-gray-500 dark:text-gray-400 !bg-white dark:!bg-gray-800 opacity-0 transition-opacity pointer-events-none;
+                        border: inherit;
+                        content: 'Copied';
+                    }
+
+                    &.copied {
+                        @apply !bg-white dark:!bg-gray-800;
+
+                        &::before {
+                            content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-copy-icon lucide-clipboard-copy"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v4"/><path d="M21 14H11"/><path d="m15 10-4 4 4 4"/></svg>');
+                        }
+
+                        &::after {
+                            @apply opacity-100;
+                        }
+                    }
+                }
+
+                & > code {
+                    @apply flex flex-col w-full;
+
+                    & > .line {
+                        @apply block w-full px-4;
+                        min-height: 1.5em;
+
+                        &.add {
+                            @apply w-full;
+                            background-color: var(
+                                --vp-code-line-diff-add-color
+                            );
+                        }
+
+                        &.remove {
+                            background-color: var(
+                                --vp-code-line-diff-remove-color
+                            );
+                        }
                     }
                 }
             }
         }
-    }
-}
-
-#elysia-chat-content {
-    @apply relative flex items-start flex-col h-full pt-13 pb-15 px-2 text-base overflow-y-scroll;
-
-    .dark & {
-        --vp-code-color: #f9d5e5;
-        --vp-c-brand-1: #f9d5e5;
-        --vp-code-bg: color-mix(
-            in oklab,
-            oklch(82.3% 0.12 346.018) 15%,
-            transparent
-        );
-    }
-
-    & > .user {
-        @apply px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-bottom-right;
-    }
-
-    & > .elysia-chan > div {
-        @apply w-full px-2 py-4;
     }
 }
 </style>
