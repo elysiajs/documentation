@@ -11,15 +11,8 @@ import { addCopyButton } from 'shiki-transformer-copy-button'
 import { highlighter } from './shiki'
 
 const props = defineProps<{
-    node: {
-        type: 'code_block'
-        language: string
-        code: string
-        raw: string
-        diff?: boolean
-        originalCode?: string
-        updatedCode?: string
-    }
+    code: string
+    language: string
 }>()
 
 const syntax = ref('')
@@ -30,8 +23,8 @@ const theme = computed(() =>
 )
 
 onMounted(() => {
-    syntax.value = highlighter.codeToHtml(props.node.code.trim(), {
-        lang: props.node.code,
+    syntax.value = highlighter.codeToHtml(props.code.trim(), {
+        lang: props.language,
         theme: theme.value,
         transformers: [
             addCopyButton({
@@ -42,8 +35,8 @@ onMounted(() => {
 })
 
 watch(
-    () => ({ node: props.node, theme: theme.value }),
-    ({ theme, node: { code, language } }) => {
+    () => ({ props, theme: theme.value }),
+    ({ theme, props: { code, language } }) => {
         if (!code) return
 
         syntax.value = highlighter.codeToHtml(code.trim(), {
