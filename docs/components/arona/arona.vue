@@ -82,7 +82,7 @@
                             >
                                 Elysia chan
                                 <sup
-                                    class="inline-block text-xs scale-75 text-gray-400/60 dark:text-gray-500/60 font-light -translate-y-1 -translate-x-1"
+                                    class="inline-block text-xs scale-75 text-gray-400/60 dark:text-gray-500/60 font-light -translate-y-1 -translate-x-3"
                                     >(AI)</sup
                                 >
                             </span>
@@ -150,12 +150,29 @@
                                     class="absolute flex flex-col justify-center items-center w-full h-[calc(100dvh-7.9rem)] pb-24 text-gray-500 dark:text-gray-400 text-center"
                                 >
                                     <img
-                                        class="h-48 mb-3"
+                                        class="h-48 mb-3 mt-16"
                                         src="/elysia/sprite/sit-idle.webp"
                                         alt="Elysia chan sitting"
                                     />
                                     <p>Hi~ Did you miss me?</p>
                                     <p>How's your day?</p>
+
+                                    <h6 class="text-xs mt-8 mb-2 opacity-75">
+                                        Example questions
+                                    </h6>
+                                    <div
+                                        class="flex flex-wrap justify-center gap-1.5 max-w-md px-2"
+                                    >
+                                        <button
+                                            v-for="(
+                                                example, index
+                                            ) in questions"
+                                            :key="index"
+                                            @click="ask(example)"
+                                            class="text-sm px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
+                                            v-text="example"
+                                        />
+                                    </div>
                                 </motion.div>
                             </AnimatePresence>
 
@@ -226,7 +243,7 @@
 
                         <form
                             class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex items-center min-h-11 pr-1.25 bg-gray-200/50 dark:bg-gray-700/50 backdrop-blur-sm rounded-3xl"
-                            @submit.prevent="ask"
+                            @submit.prevent="ask()"
                         >
                             <textarea
                                 ref="textarea"
@@ -307,12 +324,19 @@ const chatbox = ref<HTMLElement | undefined>()
 
 const { input: question, textarea } = useTextareaAutosize()
 
+const size = useWindowSize()
+
 interface History {
     role: 'user' | 'assistant'
     content: string
 }
 
-const size = useWindowSize()
+const questions = ref<string[]>([
+    'What is Eden',
+    'Explain lifecycle events',
+    'How to add OpenAPI',
+    'Can I use Zod with Elysia?'
+])
 
 const history = ref<History[]>([])
 const isStreaming = ref(false)
@@ -410,7 +434,9 @@ onUnmounted(() => {
     document.body.style.overflow = ''
 })
 
-async function ask() {
+async function ask(input?: string) {
+    if (input) question.value = input
+
     const latest = history.value.at(-1)
 
     if (!question.value.trim() && latest?.role !== 'user') return
@@ -509,12 +535,24 @@ async function ask() {
     const decoder = new TextDecoder()
     const reader = response.body.getReader()
 
+    let scroll = false
+
     while (true) {
         const { done, value } = await reader.read()
 
-        // const box = chatbox.value
-        // if (box && box.scrollHeight - 200 <= box.scrollTop + box.clientHeight)
-        //     box.scrollTo(0, box.scrollHeight)
+        if (!scroll && chatbox.value) {
+            const box = chatbox.value
+
+            scroll = true
+            const isAtBottom =
+                box &&
+                box.scrollHeight - 200 <= box.scrollTop + box.clientHeight
+
+            setTimeout(() => {
+                const box = chatbox.value
+                if (box && isAtBottom) box.scrollTo(0, box.scrollHeight)
+            }, 275)
+        }
 
         if (done || !controller) break
 
@@ -564,10 +602,9 @@ if (typeof window !== 'undefined')
     window.turnstileCallback = turnstileCallback
 
 function handleGlobalShortcut(event: KeyboardEvent) {
-	const metaKey = event.ctrlKey || event.metaKey
+    const metaKey = event.ctrlKey || event.metaKey
 
-    if (metaKey && event.key === 'i')
-        model.value = !model.value
+    if (metaKey && event.key === 'i') model.value = !model.value
 }
 
 onMounted(() => {
