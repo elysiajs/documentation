@@ -7,7 +7,7 @@
                 opacity: 1,
                 y: 0,
                 scale: 1,
-                transition: { delay: 5, duration: 0.95, ease: easeOutExpo }
+                transition: { delay: 6, duration: 0.95, ease: easeOutExpo }
             }"
             :exit="{
                 opacity: 0,

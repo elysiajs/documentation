@@ -33,6 +33,7 @@
                     'z-42 !max-w-3xl !right-1/2 translate-x-1/2': isExpanded
                 }"
                 style="will-change: transform, width, right"
+                aria-keyshortcuts="Meta+i"
             >
                 <motion.section
                     class="h-[calc(100dvh-4rem)] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden"
@@ -58,35 +59,43 @@
                 >
                     <div class="relative isolate flex flex-col w-full h-full">
                         <h3
-                            class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium pl-3 h-11 bg-white/80 dark:bg-gray-900/50 rounded-full backdrop-blur-sm"
+                            class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 bg-white/80 dark:bg-gray-800/50 rounded-full backdrop-blur-sm"
                         >
                             <button
-                                class="clicky flex justify-center items-center size-10 mr-1 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300"
+                                class="clicky flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300 ease-out-expo"
+                                @click="history = []"
                                 :class="{
                                     '!w-0 pointer-events-none mr-0':
                                         isStreaming || !history.length
                                 }"
-                                @click="history = []"
                                 :disabled="isStreaming || !history.length"
                                 title="Clear chat history"
                             >
                                 <RotateCcw stroke-width="1.25" />
                             </button>
 
-                            Elysia chan
-                            <sup
-                                class="inline-block text-xs scale-75 text-gray-400/60 dark:text-gray-500/60 font-light -translate-y-1 -translate-x-1"
-                                >(AI)</sup
+                            <span
+                                class="transition-transform duration-300 ease-out-expo"
+                                :class="{
+                                    'ml-3': isStreaming || !history.length
+                                }"
                             >
+                                Elysia chan
+                                <sup
+                                    class="inline-block text-xs scale-75 text-gray-400/60 dark:text-gray-500/60 font-light -translate-y-1 -translate-x-1"
+                                    >(AI)</sup
+                                >
+                            </span>
                         </h3>
 
                         <section
-                            class="absolute isolate z-20 top-2 right-2 flex p-0.5 bg-white/80 dark:bg-gray-900/50 backdrop-blur-sm rounded-full"
+                            class="absolute isolate z-20 top-2 right-2 flex p-0.5 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-full"
                         >
                             <button
                                 class="clicky z-20 interact:z-30 top-2 right-9 hidden sm:flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
                                 @click="_isExpanded = !_isExpanded"
-                                title="Expand chat window"
+                                :title="isExpanded ? 'Minimize chat window (Cmd/Ctrl + Arrow Left)' : 'Expand chat window (Cmd/Ctrl + Arrow Right)'"
+                                :aria-keyshortcuts="isExpanded ? 'Meta+ArrowLeft' : 'Meta+ArrowRight'"
                             >
                                 <Minimize2
                                     v-if="isExpanded"
@@ -98,7 +107,8 @@
                             <button
                                 class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
                                 @click="model = false"
-                                title="Close chat window"
+                                title="Close chat window (Escape)"
+                                aria-keyshortcuts="Escape"
                             >
                                 <X stroke-width="1.25" />
                             </button>
@@ -107,6 +117,7 @@
                         <article
                             id="elysia-chat-content"
                             class="h-full overflow-x-hidden overflow-y-auto"
+                            ref="chatbox"
                         >
                             <AnimatePresence>
                                 <motion.div
@@ -128,7 +139,7 @@
                                             ease: easeOutExpo
                                         }
                                     }"
-                                    class="absolute flex flex-col justify-center items-center w-full h-[calc(100dvh-7.9rem)] pb-24 text-gray-500 text-center"
+                                    class="absolute flex flex-col justify-center items-center w-full h-[calc(100dvh-7.9rem)] pb-24 text-gray-500 dark:text-gray-400 text-center"
                                 >
                                     <img
                                         class="h-48 mb-3"
@@ -213,12 +224,13 @@
                                 ref="textarea"
                                 v-model="question"
                                 placeholder="What's on your mind"
-                                class="w-full h-inherit px-4 py-3 resize-none focus:outline-none"
+                                class="w-full h-inherit px-4 py-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                 autofocus
                                 @keydown="handleShortcut"
+                                data-gramm="false"
                             />
                             <button
-                                class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-30 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full dark:text-gray-500 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
+                                class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-30 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
                                 :disabled="!token"
                                 :title="
                                     isStreaming
@@ -227,7 +239,7 @@
                                           ? 'Verifying that you are a human...'
                                           : token === null
                                             ? 'Verification failed, please refresh the page.'
-                                            : 'Send message (Cmd + Enter)'
+                                            : 'Send message (Cmd/Ctrl + Enter)'
                                 "
                                 @click="cancelRequest()"
                             >
@@ -275,11 +287,15 @@ import {
     RotateCcw
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
+import { useRouter } from 'vitepress'
 
 import useDark from '../../.vitepress/theme/use-dark'
 
 const model = defineModel<boolean>()
 const isDark = useDark()
+
+const router = useRouter()
+const chatbox = ref<HTMLElement | undefined>()
 
 const { input: question, textarea } = useTextareaAutosize()
 
@@ -294,7 +310,7 @@ const history = ref<History[]>([])
 const isStreaming = ref(false)
 const error = ref<string | undefined>()
 
-const _isExpanded = ref(false)
+const _isExpanded = ref(true)
 const isExpanded = computed(() => size.width.value < 640 || _isExpanded.value)
 
 const init = ref(false)
@@ -313,11 +329,10 @@ watch(
 
         requestAnimationFrame(() => {
             const script = document.createElement('script')
-            script.id = 'cf-turnstile'
-            script.src =
-                'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback'
+            script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
             script.async = true
             script.defer = true
+
             document.head.appendChild(script)
         })
     }
@@ -329,7 +344,15 @@ const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
 const easeOutExpo = [0.16, 1, 0.3, 1] as const
 
 function handleShortcut(event: KeyboardEvent) {
-    if (event.metaKey && event.key === 'Enter') ask()
+    if (event.metaKey && event.key === 'Enter') return ask()
+    if (event.key === 'Escape') return (model.value = false)
+    if (event.key === 'ArrowLeft') return (_isExpanded.value = true)
+    if (event.key === 'ArrowRight') return (_isExpanded.value = false)
+}
+
+// @ts-ignore
+window.toggleAI = function () {
+    model.value = !model.value
 }
 
 function cancelRequest() {
@@ -360,8 +383,13 @@ watch(
                 textarea.value?.focus()
             }, 60)
 
-        if (visible) document.documentElement.classList.add('arona')
-        else document.documentElement.classList.remove('arona')
+		if (visible) {
+			document.documentElement.classList.add('arona')
+			document.body.style.overflow = isExpanded.value ? 'hidden' : ''
+		} else {
+			document.documentElement.classList.remove('arona')
+			document.body.style.overflow = ''
+		}
     }
 )
 
@@ -393,6 +421,11 @@ async function ask() {
 
     error.value = undefined
 
+    requestAnimationFrame(() => {
+        const box = chatbox.value
+        if (box) box.scrollTo(0, box.scrollHeight)
+    })
+
     const response = await fetch(`https://arona.elysiajs.com/ask`, {
         method: 'POST',
         headers: {
@@ -420,8 +453,7 @@ async function ask() {
         }
 
         if (err?.message && err.message.includes('Failed to fetch')) {
-            error.value =
-                'Elysia chan is currently unavailable. Please try again later.'
+            error.value = 'Elysia chan is currently unavailable.'
 
             return
         }
@@ -468,6 +500,10 @@ async function ask() {
     while (true) {
         const { done, value } = await reader.read()
 
+        // const box = chatbox.value
+        // if (box && box.scrollHeight - 200 <= box.scrollTop + box.clientHeight)
+        //     box.scrollTo(0, box.scrollHeight)
+
         if (done || !controller) break
 
         const text = decoder.decode(value)
@@ -482,17 +518,26 @@ async function ask() {
     controller = undefined
 
     const a = document
-        .getElementById('#elysia-chat-content')
-        ?.querySelector('.user > div')
+        .getElementById('elysia-chat-content')
+        ?.querySelector('.elysia-chan:last-child > div')
         ?.querySelectorAll('a')
 
-    if (a)
+    if (a && !location.href.includes('/tutorial'))
         a.forEach((link) => {
             if (
                 link.href.startsWith('https://elysiajs.com') ||
                 link.href.startsWith('http://localhost')
             )
                 link.removeAttribute('target')
+
+            const src = link.href.slice(link.href.indexOf('/', 11))
+
+            link.addEventListener('click', (e) => {
+                e.preventDefault()
+
+                router.go(src)
+                _isExpanded.value = false
+            })
         })
 }
 
@@ -502,13 +547,13 @@ function turnstileCallback(turnstileToken: string) {
     token.value = turnstileToken
 }
 
-function handleGlobalShortcut(event: KeyboardEvent) {
-    if (event.metaKey && event.key === 'i') model.value = !model.value
-}
-
 if (typeof window !== 'undefined')
     // @ts-ignore
     window.turnstileCallback = turnstileCallback
+
+function handleGlobalShortcut(event: KeyboardEvent) {
+    if (event.metaKey && event.key === 'i') model.value = !model.value
+}
 
 onMounted(() => {
     window.addEventListener('keydown', handleGlobalShortcut, {
@@ -528,7 +573,7 @@ onUnmounted(() => {
 @reference '../../tailwind.css';
 
 #elysia-chat-content {
-    @apply relative flex items-start flex-col h-full pt-13 pb-15 px-2 text-base overflow-y-scroll;
+    @apply relative flex items-start flex-col h-full pt-15 pb-15 px-2 text-base overflow-y-scroll;
 
     .dark & {
         --vp-code-color: #f9d5e5;
@@ -540,8 +585,104 @@ onUnmounted(() => {
         );
     }
 
+    background-image:
+        radial-gradient(
+            closest-side at center,
+            rgba(255, 255, 255, 1) 70%,
+            transparent 150%
+        ),
+        radial-gradient(
+            closest-side at center,
+            rgba(255, 255, 255, 1) 90%,
+            transparent 150%
+        ),
+        radial-gradient(
+            at 9% 67%,
+            hsla(223, 100%, 65%, 0.14) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 22% 0%,
+            hsla(210, 100%, 69%, 0.29) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 97% 49%,
+            hsla(240, 100%, 87%, 0.35) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 100% 75%,
+            hsla(280, 100%, 75%, 0.26) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 75% 100%,
+            hsla(22, 100%, 77%, 0.19) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 40% 100%,
+            hsla(240, 100%, 70%, 0.15) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 72% 0%,
+            hsla(343, 100%, 76%, 0.17) 0px,
+            transparent 50%
+        );
+
+    html.dark & {
+        background-image:
+            radial-gradient(
+                closest-side at center,
+                var(--color-gray-800) 70%,
+                transparent 150%
+            ),
+            radial-gradient(
+                closest-side at center,
+                var(--color-gray-800) 90%,
+                transparent 150%
+            ),
+            radial-gradient(
+                at 9% 67%,
+                hsla(223, 100%, 65%, 0.14) 0px,
+                transparent 50%
+            ),
+            radial-gradient(
+                at 22% 0%,
+                hsla(210, 100%, 69%, 0.29) 0px,
+                transparent 50%
+            ),
+            radial-gradient(
+                at 97% 49%,
+                hsla(240, 100%, 87%, 0.35) 0px,
+                transparent 50%
+            ),
+            radial-gradient(
+                at 100% 75%,
+                hsla(280, 100%, 75%, 0.26) 0px,
+                transparent 50%
+            ),
+            radial-gradient(
+                at 75% 100%,
+                hsla(22, 100%, 77%, 0.19) 0px,
+                transparent 50%
+            ),
+            radial-gradient(
+                at 40% 100%,
+                hsla(240, 100%, 70%, 0.15) 0px,
+                transparent 50%
+            ),
+            radial-gradient(
+                at 72% 0%,
+                hsla(343, 100%, 76%, 0.17) 0px,
+                transparent 50%
+            );
+    }
+
     & > .user {
-        @apply px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-bottom-right;
+        @apply px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-bottom-right;
     }
 
     & > .elysia-chan > div {

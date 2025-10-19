@@ -623,7 +623,7 @@ button.copy::after {
 
         /* Doc layout */
         & > .wrapper > .container > .content > .content-body {
-            @apply bg-transparent;
+            @apply bg-transparent gap-0;
         }
 
         & > .divider {
@@ -1090,16 +1090,16 @@ button.copy::after {
 
 #local-search {
 	& > .DocSearch-Button {
-	    @apply clicky rounded-xl backdrop-blur-sm ml-2;
+	    @apply clicky rounded-xl backdrop-blur-sm lg:ml-2;
 
-		 @media screen and (min-width: theme('--breakpoint-md')) {
+		 /*@media screen and (min-width: theme('--breakpoint-md')) {
 			@apply bg-pink-400/6.25 dark:bg-pink-300/8.75;
 
 			& > span,
 			& > span > span {
 				@apply text-pink-400 dark:text-pink-300 font-medium;
 			}
-		}
+		}*/
 	}
 }
 

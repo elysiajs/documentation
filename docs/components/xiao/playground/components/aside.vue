@@ -22,6 +22,15 @@
             >
                 <Bookmark :size="18" stroke-width="2" />
             </Tab>
+
+            <Tab
+                tip="Toggle Elysia AI"
+                :active="store.tab.aside === 'docs'"
+                :side="side"
+                @click="toggleAI"
+            >
+                <Sparkles :size="18" stroke-width="2" />
+            </Tab>
         </div>
 
         <div class="flex sm:flex-col gap-0.5">
@@ -56,7 +65,8 @@ import {
     Bookmark,
     Moon,
     Sun,
-    X
+    X,
+    Sparkles
 } from 'lucide-vue-next'
 
 import { useWindowSize } from '@vueuse/core'
@@ -69,4 +79,9 @@ const store = usePlaygroundStore()
 const size = useWindowSize()
 
 const side = computed(() => (size.width.value >= 640 ? 'right' : 'bottom'))
+
+function toggleAI() {
+    // @ts-ignore
+    window.toggleAI()
+}
 </script>
