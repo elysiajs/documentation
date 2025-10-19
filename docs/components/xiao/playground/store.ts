@@ -11,7 +11,7 @@ let timeout: number | undefined
 const randomId = () =>
     Math.random()
         .toString(36)
-        .substring(2, length + 2)
+        .substring(2)
 
 const serializeCookie = (cookies: Record<string, string>) =>
     Object.entries(cookies)
