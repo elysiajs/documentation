@@ -352,10 +352,13 @@ const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
 const easeOutExpo = [0.16, 1, 0.3, 1] as const
 
 function handleShortcut(event: KeyboardEvent) {
-    if (event.metaKey && event.key === 'Enter') return ask()
+    const metaKey = event.ctrlKey || event.metaKey
+
     if (event.key === 'Escape') return (model.value = false)
-    if (event.key === 'ArrowLeft') return (_isExpanded.value = true)
-    if (event.key === 'ArrowRight') return (_isExpanded.value = false)
+    if (metaKey && event.key === 'Enter') return ask()
+    if (metaKey && event.key === 'ArrowLeft') return (_isExpanded.value = true)
+    if (metaKey && event.key === 'ArrowRight')
+        return (_isExpanded.value = false)
 }
 
 if (typeof window !== 'undefined')
@@ -561,7 +564,10 @@ if (typeof window !== 'undefined')
     window.turnstileCallback = turnstileCallback
 
 function handleGlobalShortcut(event: KeyboardEvent) {
-    if (event.metaKey && event.key === 'i') model.value = !model.value
+	const metaKey = event.ctrlKey || event.metaKey
+
+    if (metaKey && event.key === 'i')
+        model.value = !model.value
 }
 
 onMounted(() => {
