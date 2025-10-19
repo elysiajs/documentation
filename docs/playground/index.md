@@ -28,6 +28,6 @@ It's great to have you here! This playground is designed to help you get started
 
 Unlike traditional backend framework, Elysia can also run in a browser! Allowing you to write, and try out Elysia directly in your browser! making it a perfect environment for learning and experimentation.
 
-Elysia is an ergonomic web frameworks for humans.
+Elysia is an ergonomic web framework for humans.
 
 </Playground>
