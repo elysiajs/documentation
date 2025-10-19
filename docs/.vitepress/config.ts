@@ -26,9 +26,9 @@ export default defineConfig({
         },
         languages: ['js', 'ts'],
         codeTransformers: [
-            transformerTwoslash({
-                typesCache: createFileSystemTypesCache()
-            })
+            // transformerTwoslash({
+            //     typesCache: createFileSystemTypesCache()
+            // })
         ],
         config: (md) => {
             md.use(lightbox, {})
@@ -49,19 +49,19 @@ export default defineConfig({
                 include: ['path', 'crypto']
             }),
             tailwindcss(),
-            process.env.NODE_ENV === 'production'
-                ? llmstxt({
-                      description: 'Ergonomic Framework for Humans',
-                      details: description,
-                      ignoreFiles: [
-                          'index.md',
-                          'table-of-content.md',
-                          'blog/*',
-                          'public/*'
-                      ],
-                      domain: 'https://elysiajs.com'
-                  })
-                : undefined,
+            // process.env.NODE_ENV === 'production'
+            //     ? llmstxt({
+            //           description: 'Ergonomic Framework for Humans',
+            //           details: description,
+            //           ignoreFiles: [
+            //               'index.md',
+            //               'table-of-content.md',
+            //               'blog/*',
+            //               'public/*'
+            //           ],
+            //           domain: 'https://elysiajs.com'
+            //       })
+            //     : undefined,
             process.env.ANALYZE === 'true' ? analyzer() : undefined
         ],
         optimizeDeps: {

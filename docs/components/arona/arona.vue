@@ -94,8 +94,16 @@
                             <button
                                 class="clicky z-20 interact:z-30 top-2 right-9 hidden sm:flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
                                 @click="_isExpanded = !_isExpanded"
-                                :title="isExpanded ? 'Minimize chat window (Cmd/Ctrl + Arrow Left)' : 'Expand chat window (Cmd/Ctrl + Arrow Right)'"
-                                :aria-keyshortcuts="isExpanded ? 'Meta+ArrowLeft' : 'Meta+ArrowRight'"
+                                :title="
+                                    isExpanded
+                                        ? 'Minimize chat window (Cmd/Ctrl + Arrow Left)'
+                                        : 'Expand chat window (Cmd/Ctrl + Arrow Right)'
+                                "
+                                :aria-keyshortcuts="
+                                    isExpanded
+                                        ? 'Meta+ArrowLeft'
+                                        : 'Meta+ArrowRight'
+                                "
                             >
                                 <Minimize2
                                     v-if="isExpanded"
@@ -350,10 +358,11 @@ function handleShortcut(event: KeyboardEvent) {
     if (event.key === 'ArrowRight') return (_isExpanded.value = false)
 }
 
-// @ts-ignore
-window.toggleAI = function () {
-    model.value = !model.value
-}
+if (typeof window !== 'undefined')
+    // @ts-ignore
+    window.toggleAI = function () {
+        model.value = !model.value
+    }
 
 function cancelRequest() {
     isStreaming.value = false
@@ -383,13 +392,13 @@ watch(
                 textarea.value?.focus()
             }, 60)
 
-		if (visible) {
-			document.documentElement.classList.add('arona')
-			document.body.style.overflow = isExpanded.value ? 'hidden' : ''
-		} else {
-			document.documentElement.classList.remove('arona')
-			document.body.style.overflow = ''
-		}
+        if (visible) {
+            document.documentElement.classList.add('arona')
+            document.body.style.overflow = isExpanded.value ? 'hidden' : ''
+        } else {
+            document.documentElement.classList.remove('arona')
+            document.body.style.overflow = ''
+        }
     }
 )
 
@@ -556,9 +565,10 @@ function handleGlobalShortcut(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-    window.addEventListener('keydown', handleGlobalShortcut, {
-        passive: true
-    })
+    if (typeof window !== 'undefined')
+        window.addEventListener('keydown', handleGlobalShortcut, {
+            passive: true
+        })
 })
 
 onUnmounted(() => {
