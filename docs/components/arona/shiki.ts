@@ -15,9 +15,12 @@ export const highlighter = await createHighlighterCore({
         import('@shikijs/langs/vue'),
         import('@shikijs/langs/html'),
         import('@shikijs/langs/json'),
+        import('@shikijs/langs/yml'),
+        import('@shikijs/langs/yaml'),
         import('@shikijs/langs/toml'),
         import('@shikijs/langs/bash'),
-        import('@shikijs/langs/bash')
+        import('@shikijs/langs/docker'),
+        import('@shikijs/langs/dockerfile')
     ],
     engine: createOnigurumaEngine(() => import('shiki/wasm'))
 })
