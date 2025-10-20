@@ -839,7 +839,7 @@ onUnmounted(() => {
         * > *,
         * > * > * {
             & > div[theme] > .shiki {
-                @apply relative my-4 text-sm py-4 -mx-4;
+                @apply relative my-4 text-sm py-4 -mx-4 overflow-x-auto overflow-y-hidden;
                 background-color: var(--vp-code-copy-code-bg);
 
                 &:hover {
