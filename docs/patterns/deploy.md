@@ -63,7 +63,7 @@ bun build \
 	--compile \
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun
+	--target bun \
 	--outfile server \
 	src/index.ts
 ```
