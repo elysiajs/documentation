@@ -929,7 +929,7 @@ const app = new Elysia()
 
 Both has a encapsulate mechanism of a plugin to prevent side-effect.
 
-However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Fastify always encapsulate it.
+However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Hono always encapsulate it.
 
 ```ts [Elysia]
 import { Elysia } from 'elysia'
