@@ -536,25 +536,28 @@ async function ask(input?: string) {
     const reader = response.body.getReader()
 
     let scroll = false
-
     while (true) {
         const { done, value } = await reader.read()
 
-        if (!scroll && chatbox.value) {
-            const box = chatbox.value
-
-            scroll = true
-            const isAtBottom =
-                box &&
-                box.scrollHeight - 200 <= box.scrollTop + box.clientHeight
-
-            setTimeout(() => {
-                const box = chatbox.value
-                if (box && isAtBottom) box.scrollTo(0, box.scrollHeight)
-            }, 275)
-        }
-
         if (done || !controller) break
+
+        if (!scroll) {
+            scroll = true
+            requestAnimationFrame(() => {
+                scroll = false
+
+                const box = chatbox.value
+                if (!box) return
+
+                if (window.innerHeight * 1.5 > box.scrollHeight) return
+
+                if (
+                    box.scrollTop >
+                    box.scrollHeight - box.clientHeight * 1.5
+                )
+                    box.scrollTo(0, box.scrollHeight)
+            })
+        }
 
         const text = decoder.decode(value)
         history.value[index].content += text
