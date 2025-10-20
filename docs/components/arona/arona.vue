@@ -753,7 +753,7 @@ onUnmounted(() => {
         }
 
         & > h2 {
-            @apply text-xl sm:text-2xl font-bold pt-4 my-4 border-t dark:border-gray-700;
+            @apply text-xl sm:text-2xl font-bold pt-4 my-4;
         }
 
         & > h3 {

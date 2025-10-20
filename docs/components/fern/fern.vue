@@ -13,6 +13,7 @@ import Tweets from './tweets.vue'
 import Sponsors from './sponsor.vue'
 import Banner from './banner.vue'
 import BuiltWithLove from './built-with-love.vue'
+import AskElysia from './ask-elysia.vue'
 </script>
 
 <template>
@@ -64,6 +65,8 @@ import BuiltWithLove from './built-with-love.vue'
             <Sponsors />
             <!-- <Features /> -->
             <!-- <Future /> -->
+
+            <AskElysia />
             <Banner class="mt-10" />
             <BuiltWithLove />
         </article>
