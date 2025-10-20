@@ -446,6 +446,12 @@ Because **derive** is assigned once a new request starts, **derive** can access 
 
 Unlike **state**, and **decorate**. Properties which assigned by **derive** is unique and not shared with another request.
 
+::: tip
+You might want to use [resolve](#resolve) instead of derive in most cases.
+
+Resolve is similar to derive but execute after validation. This make resolve more secure as we can validate the incoming data before using it to derive new properties.
+:::
+
 ### Queue
 
 `derive` and `transform` are stored in the same queue.
