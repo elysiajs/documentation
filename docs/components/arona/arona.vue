@@ -91,7 +91,7 @@
                         <section
                             class="absolute isolate z-20 top-2 right-2 flex p-0.5 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-full"
                         >
-                            <Tooltip tip="Include current page content">
+                            <Tooltip tip="Use current page as primary reference">
                                 <label
                                     class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
                                     :class="{
@@ -417,11 +417,19 @@ function handleShortcut(event: KeyboardEvent) {
 
 if (typeof window !== 'undefined')
     // @ts-ignore
-    window.toggleAI = function ({ shouldIncludeCurrentPage } = {}) {
+    window.toggleAI = ({
+        shouldIncludeCurrentPage,
+        defaultValue
+    }: {
+        shouldIncludeCurrentPage?: boolean
+        defaultValue?: string
+    } = {}) => {
         model.value = !model.value
 
         if (shouldIncludeCurrentPage !== undefined)
             includeCurrentPage.value = shouldIncludeCurrentPage
+
+        if (!question.value) question.value = defaultValue || ''
     }
 
 function cancelRequest() {
@@ -857,7 +865,7 @@ onUnmounted(() => {
         }
 
         & > hr {
-        	@apply border-gray-600;
+            @apply border-gray-600;
         }
 
         & > p > code,
@@ -923,7 +931,7 @@ onUnmounted(() => {
                     }
 
                     .dark &::after {
-                    	@apply text-gray-400 !bg-gray-700
+                        @apply text-gray-400 !bg-gray-700;
                     }
 
                     &.copied {

@@ -130,7 +130,12 @@ const prompt = computed(() =>
 
 function toggleAI() {
     // @ts-ignore
-    window.toggleAI({ shouldIncludeCurrentPage: true })
+    window.toggleAI()
+}
+
+function toggleAIForCurrentPage() {
+    // @ts-ignore
+    window.toggleAI({ shouldIncludeCurrentPage: true, defaultValue: 'Summarize this page' })
 }
 </script>
 
@@ -207,7 +212,7 @@ function toggleAI() {
                 class="flex gap-2.5 justify-between items-center pt-0.5 pr-2 text-gray-400 dark:text-gray-500 text-xs mb-1"
             >
                 <button
-                    @click="toggleAI"
+                    @click="toggleAIForCurrentPage"
                     class="flex items-center gap-1 clicky pl-2 pr-1 py-1 -translate-x-2 rounded-full interact:text-sky-500 interact:bg-sky-300/15 transition duration-500 ease-out-expo"
                 >
                     <Sparkles :size="16" stroke-width="1.25" />
