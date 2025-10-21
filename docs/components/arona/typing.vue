@@ -17,7 +17,7 @@
             }"
         >
             <img src="/assets/elysia.svg" alt="Elysia logo" class="size-4" />
-            <p class="text-sm text-gray-400">Cooking{{ suffix }}</p>
+            <p class="text-sm text-gray-400">{{ word }}{{ suffix }}</p>
         </motion.div>
     </AnimatePresence>
 </template>
@@ -28,6 +28,30 @@ import { motion, AnimatePresence } from 'motion-v'
 
 const easeOutExpo = [0.16, 1, 0.3, 1] as const
 
+const words = [
+    'Cooking',
+    'Thinking',
+    'Analyzing',
+    'Typing',
+    'Looking for your answer',
+    "Preparing your waifu's cosplay",
+    'Finding the meaning of life',
+    'Summoning eldritch horrors',
+    'Looking through the library',
+    'Calculating infinity',
+    'Brewing potions',
+    'Exploring the multiverse',
+    'Elysia chan is thinking',
+    'Decoding ancient scripts',
+    'Aligning the stars',
+    'Charging magical energies',
+    'Consulting the oracle',
+    'Traversing time streams',
+    'Communing with nature',
+    'Unlocking hidden knowledge'
+]
+
+const word = ref(words[Math.floor(Math.random() * words.length)])
 const suffix = ref('.')
 
 let interval: number

@@ -91,35 +91,61 @@
                         <section
                             class="absolute isolate z-20 top-2 right-2 flex p-0.5 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-full"
                         >
-                            <button
-                                class="clicky z-20 interact:z-30 top-2 right-9 hidden sm:flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
-                                @click="_isExpanded = !_isExpanded"
-                                :title="
+                            <Tooltip tip="Include current page content">
+                                <label
+                                    class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
+                                    :class="{
+                                        'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
+                                            includeCurrentPage,
+                                        'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
+                                            !includeCurrentPage
+                                    }"
+                                    aria-keyshortcuts="Escape"
+                                    for="elysia-ai-include-current-page"
+                                >
+                                    <Book stroke-width="1.25" />
+                                    <input
+                                        id="elysia-ai-include-current-page"
+                                        type="checkbox"
+                                        class="absolute w-0 h-0 opacity-0 pointer-events-none"
+                                        v-model="includeCurrentPage"
+                                    />
+                                </label>
+                            </Tooltip>
+
+                            <Tooltip
+                                :tip="
                                     isExpanded
                                         ? 'Minimize chat window (Cmd/Ctrl + Arrow Left)'
                                         : 'Expand chat window (Cmd/Ctrl + Arrow Right)'
                                 "
-                                :aria-keyshortcuts="
-                                    isExpanded
-                                        ? 'Meta+ArrowLeft'
-                                        : 'Meta+ArrowRight'
-                                "
                             >
-                                <Minimize2
-                                    v-if="isExpanded"
-                                    stroke-width="1.25"
-                                />
-                                <Maximize2 v-else stroke-width="1.25" />
-                            </button>
+                                <button
+                                    class="clicky z-20 interact:z-30 top-2 right-9 hidden sm:flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
+                                    @click="_isExpanded = !_isExpanded"
+                                    :aria-keyshortcuts="
+                                        isExpanded
+                                            ? 'Meta+ArrowLeft'
+                                            : 'Meta+ArrowRight'
+                                    "
+                                >
+                                    <Minimize2
+                                        v-if="isExpanded"
+                                        stroke-width="1.25"
+                                    />
+                                    <Maximize2 v-else stroke-width="1.25" />
+                                </button>
+                            </Tooltip>
 
-                            <button
-                                class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
-                                @click="model = false"
-                                title="Close chat window (Escape)"
-                                aria-keyshortcuts="Escape"
-                            >
-                                <X stroke-width="1.25" />
-                            </button>
+                            <Tooltip tip="Close chat window (Escape)">
+                                <button
+                                    class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
+                                    @click="model = false"
+                                    aria-keyshortcuts="Escape"
+                                >
+                                    <X stroke-width="1.25" />
+                                </button>
+                            </Tooltip>
                         </section>
 
                         <article
@@ -147,7 +173,7 @@
                                             ease: easeOutExpo
                                         }
                                     }"
-                                    class="absolute flex flex-col justify-center items-center w-full h-[calc(100dvh-7.9rem)] pb-24 text-gray-500 dark:text-gray-400 text-center"
+                                    class="absolute flex flex-col justify-center items-center w-full h-[calc(100dvh-8.5rem)] pb-24 text-gray-500 dark:text-gray-400 text-center"
                                 >
                                     <img
                                         class="h-48 mb-3 mt-16"
@@ -298,6 +324,7 @@ import { useTextareaAutosize, useWindowSize } from '@vueuse/core'
 
 import { StreamMarkdown } from 'streamdown-vue'
 
+import Tooltip from './tooltip.vue'
 import A from './a.vue'
 import Code from './code.vue'
 import Verifying from './verifying.vue'
@@ -309,7 +336,9 @@ import {
     Square,
     Maximize2,
     Minimize2,
-    RotateCcw
+    RotateCcw,
+    File,
+    Book
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
 import { useRouter } from 'vitepress'
@@ -338,6 +367,7 @@ const questions = ref<string[]>([
     'Can I use Zod with Elysia?'
 ])
 
+const includeCurrentPage = ref(false)
 const history = ref<History[]>([])
 const isStreaming = ref(false)
 const error = ref<string | undefined>()
@@ -387,8 +417,11 @@ function handleShortcut(event: KeyboardEvent) {
 
 if (typeof window !== 'undefined')
     // @ts-ignore
-    window.toggleAI = function () {
+    window.toggleAI = function ({ shouldIncludeCurrentPage } = {}) {
         model.value = !model.value
+
+        if (shouldIncludeCurrentPage !== undefined)
+            includeCurrentPage.value = shouldIncludeCurrentPage
     }
 
 function cancelRequest() {
@@ -470,13 +503,28 @@ async function ask(input?: string) {
             'Content-Type': 'application/json',
             'x-turnstile-token': token.value!
         },
-        body: JSON.stringify({
-            message,
-            history: history.value
-                .slice(-17)
-                .slice(0, -1)
-                .filter((x) => x.content.length < 4096)
-        }),
+        body: JSON.stringify(
+            Object.assign(
+                {
+                    message,
+                    history: history.value
+                        .slice(-17)
+                        .slice(0, -1)
+                        .filter((x) => x.content.length < 4096)
+                },
+                includeCurrentPage.value
+                    ? {
+                          reference:
+                              'docs/' +
+                              location.pathname
+                                  .replace('.html', '')
+                                  .replace(/\/$/g, '/index')
+                                  .slice(1) +
+                              '.md'
+                      }
+                    : {}
+            )
+        ),
         signal: controller.signal
     }).catch((err) => {
         isStreaming.value = false
@@ -551,10 +599,7 @@ async function ask(input?: string) {
 
                 if (window.innerHeight * 1.5 > box.scrollHeight) return
 
-                if (
-                    box.scrollTop >
-                    box.scrollHeight - box.clientHeight * 1.5
-                )
+                if (box.scrollTop > box.scrollHeight - box.clientHeight * 1.5)
                     box.scrollTo(0, box.scrollHeight)
             })
         }
@@ -809,6 +854,10 @@ onUnmounted(() => {
         & > ol,
         & > ul {
             @apply !pl-0;
+        }
+
+        & > hr {
+        	@apply border-gray-600;
         }
 
         & > p > code,

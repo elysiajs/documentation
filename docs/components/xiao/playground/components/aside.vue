@@ -82,6 +82,6 @@ const side = computed(() => (size.width.value >= 640 ? 'right' : 'bottom'))
 
 function toggleAI() {
     // @ts-ignore
-    window.toggleAI()
+    window.toggleAI({ shouldIncludeCurrentPage: true })
 }
 </script>

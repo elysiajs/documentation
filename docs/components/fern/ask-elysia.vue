@@ -25,6 +25,7 @@ function askAI() {
     >
         <motion.section
             class="group relative isolate flex flex-col md:flex-row justify-center items-center gap-10 w-full max-w-5xl h-full p-8 md:py-16 border border-gray-200 dark:border-gray-700 lg:rounded-[2.5rem] overflow-hidden rounded-2xl"
+            id="ask-elysia-landing"
             v-bind="flyIn()"
         >
             <div
@@ -78,3 +79,54 @@ function askAI() {
         </motion.section>
     </div>
 </template>
+
+<style>
+@reference '../../tailwind.css';
+
+#ask-elysia-landing {
+ 	background-image: radial-gradient(
+            closest-side at center,
+            rgba(255, 255, 255, 0.8) 70%,
+            transparent 150%
+        ),
+        radial-gradient(
+            at 29% 66%,
+            hsla(123, 100%, 65%, 0.14) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 47% 51%,
+            hsla(110, 100%, 69%, 0.29) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 34% 34%,
+            hsla(140, 100%, 87%, 0.35) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 74% 32%,
+            hsla(180, 100%, 75%, 0.26) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 57% 66%,
+            hsla(222, 100%, 77%, 0.19) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 42% 84%,
+            hsla(140, 100%, 70%, 0.15) 0px,
+            transparent 50%
+        ),
+        radial-gradient(
+            at 59% 10%,
+            hsla(243, 100%, 76%, 0.17) 0px,
+            transparent 50%
+        );
+
+    html.dark & {
+        background-image: unset;
+    }
+}
+</style>
