@@ -104,7 +104,7 @@ const app = new Elysia()
 <summary>Having issues with type generation?</summary>
 
 ### Caveats: Root path
-As it's unreliable to guess to root of the project, it's recommended to provide the path to the project root to allow generator to run correctly, especially when using monorepo.
+If you use turbomonorepo, you don't need to worry about the root path . As it's unreliable to guess to root of the project, it's recommended to provide the path to the project root to allow generator to run correctly, especially when using monorepo.
 
 ```ts
 import { Elysia, t } from 'elysia'
