@@ -69,10 +69,10 @@ import { Elysia } from 'elysia'
 
 new Elysia()
 	.state('count', 0)
-	.get('/', ({ count }) => {
-		count++
+	.get('/', ({ store } }) => {
+		store.count++
 
-		return count
+		return store.count
 	})
 ```
 
