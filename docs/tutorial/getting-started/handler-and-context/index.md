@@ -47,7 +47,7 @@ A handler can also be an literal value, see <DocLink href="/essential/handler">H
 import { Elysia } from 'elysia'
 
 new Elysia()
-    // `() => 'hello world'` is a handler
+    // `'hello world'` is a handler
     .get('/', 'hello world')
     .listen(3000)
 ```
