@@ -153,59 +153,6 @@ export default defineConfig({
         logo: '/assets/elysia.svg',
         nav: [
             {
-                text: 'Plugins',
-                items: [
-                    {
-                        text: 'Overview',
-                        link: '/plugins/overview'
-                    },
-                    {
-                        text: 'Bearer',
-                        link: '/plugins/bearer'
-                    },
-                    {
-                        text: 'CORS',
-                        link: '/plugins/cors'
-                    },
-                    {
-                        text: 'Cron',
-                        link: '/plugins/cron'
-                    },
-                    {
-                        text: 'GraphQL Apollo',
-                        link: '/plugins/graphql-apollo'
-                    },
-                    {
-                        text: 'GraphQL Yoga',
-                        link: '/plugins/graphql-yoga'
-                    },
-                    {
-                        text: 'HTML',
-                        link: '/plugins/html'
-                    },
-                    {
-                        text: 'JWT',
-                        link: '/plugins/jwt'
-                    },
-                    {
-                        text: 'OpenAPI',
-                        link: '/plugins/openapi'
-                    },
-                    {
-                        text: 'OpenTelemetry',
-                        link: '/plugins/opentelemetry'
-                    },
-                    {
-                        text: 'Server Timing',
-                        link: '/plugins/server-timing'
-                    },
-                    {
-                        text: 'Static',
-                        link: '/plugins/static'
-                    }
-                ]
-            },
-            {
                 text: 'Blog',
                 link: '/blog'
             }
@@ -517,7 +464,7 @@ export default defineConfig({
             }
         ],
         outline: {
-            level: 2,
+            level: [2, 3],
             label: 'On this page'
         },
         socialLinks: [

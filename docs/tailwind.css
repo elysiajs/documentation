@@ -440,7 +440,7 @@ button.copy::after {
                             background-color: var(--vp-c-brand-nav-active);
 
                             & > h3 {
-                            	color: var(--vp-c-brand) !important;
+                                color: var(--vp-c-brand) !important;
                             }
 
                             & > .indicator {
@@ -453,8 +453,8 @@ button.copy::after {
                         }
 
                         & > h3 {
-							@apply font-normal;
-						}
+                            @apply font-normal;
+                        }
 
                         &:has(.link):hover,
                         &:has(.link):focus {
@@ -803,7 +803,23 @@ button.copy::after {
 }
 
 .VPSwitchAppearance {
-    @apply dark:!border-slate-700;
+    @apply clicky !size-7 !bg-transparent !border-0 opacity-80;
+
+    &::before {
+        @apply hidden;
+    }
+
+    & > .check {
+        @apply m-auto !bg-transparent !shadow-none;
+
+        & > .icon {
+        	@apply !size-7;
+
+        	& > span {
+         		@apply scale-150 top-1.75 left-1.75;
+         	}
+        }
+    }
 }
 
 .VPLink.link.pager-link {
@@ -817,11 +833,11 @@ button.copy::after {
 .VPDoc > .container {
     & > .content {
         & > .content-container {
-        	@apply relative;
+            @apply relative;
 
-         	& > #open-elysia-in {
-          		max-width: 688px;
-          	}
+            & > #open-elysia-in {
+                max-width: 688px;
+            }
         }
     }
 }
@@ -1059,10 +1075,14 @@ button.copy::after {
 
 .VPNavBarAppearance.appearance {
     @apply h-11 bg-white/80 dark:bg-gray-900/70 backdrop-blur-lg;
+
+    &::before {
+        @apply hidden;
+    }
 }
 
 .VPSocialLinks.VPNavBarSocialLinks.social-links {
-    @apply h-11 pr-2 bg-white/80 dark:bg-gray-900/70 backdrop-blur-lg rounded-r-3xl;
+	@apply h-11 !pr-0 !pl-1.5 bg-white/80 dark:bg-gray-900/70 backdrop-blur-lg rounded-r-3xl;
 }
 
 /* ... mobile */
@@ -1089,10 +1109,10 @@ button.copy::after {
 }
 
 #local-search {
-	& > .DocSearch-Button {
-	    @apply clicky rounded-xl backdrop-blur-sm lg:ml-2;
+    & > .DocSearch-Button {
+        @apply clicky rounded-xl backdrop-blur-sm lg:ml-2;
 
-		 /*@media screen and (min-width: theme('--breakpoint-md')) {
+        /*@media screen and (min-width: theme('--breakpoint-md')) {
 			@apply bg-pink-400/6.25 dark:bg-pink-300/8.75;
 
 			& > span,
@@ -1100,7 +1120,7 @@ button.copy::after {
 				@apply text-pink-400 dark:text-pink-300 font-medium;
 			}
 		}*/
-	}
+    }
 }
 
 button[title='Copy Code'].copy {
@@ -1124,36 +1144,8 @@ div[class*='language-'] {
     @apply active:scale-[0.98] !transition-all;
 }
 
-.VPDocOutlineItem.root > li {
-    &:hover,
-    &:focus {
-        & > .outline-link {
-            color: var(--vp-c-brand-1);
-        }
-    }
-
-    & > .outline-link {
-        @apply transition-all dark:interact:text-pink-300;
-
-        &.active {
-            @apply font-semibold dark:!text-pink-300;
-            color: var(--vp-c-brand-1);
-            transition-timing-function: var(--ease-out-expo);
-            transition-duration: 0.35s;
-        }
-    }
-}
-
 .VPSocialLinks.VPNavBarSocialLinks.social-links {
     @apply pl-2.5;
-
-    &::before {
-        @apply hidden;
-    }
-}
-
-.VPNavBarAppearance.appearance {
-    @apply md:pl-1;
 
     &::before {
         @apply hidden;
@@ -1171,7 +1163,7 @@ div[class*='language-'] {
         }
 
         & > .outline-title {
-            @apply flex items-center text-black dark:text-white;
+            @apply flex items-center font-medium text-gray-700 dark:text-gray-100;
 
             &::before {
                 @apply inline-block size-3.5 bg-cover mr-1.5;
@@ -1184,10 +1176,50 @@ div[class*='language-'] {
             }
         }
 
+        .VPDocOutlineItem.root > li {
+            & > .outline-link {
+                @apply text-gray-600/80 dark:text-gray-300/80 transition-all dark:interact:text-pink-300;
+
+                &:hover,
+                &:focus,
+                &.active {
+                    @apply font-semibold dark:!text-pink-300;
+                    color: var(--vp-c-brand-1);
+                    transition-timing-function: var(--ease-out-expo);
+                    transition-duration: 0.35s;
+                }
+            }
+
+            & > ul {
+                & > li {
+                    & > a {
+                        @apply leading-7 opacity-60 dark:opacity-70 transition-all;
+                        font-size: 0.825rem;
+
+                        &:hover,
+                        &:focus,
+                        &.active {
+                            @apply opacity-100 font-semibold dark:!text-pink-300;
+                            color: var(--vp-c-brand-1);
+                            transition-timing-function: var(--ease-out-expo);
+                            transition-duration: 0.35s;
+                        }
+                    }
+                }
+            }
+        }
+
         & > .VPDocOutlineItem {
             @apply border-l-2 border-gray-100 dark:border-gray-700 pl-4;
         }
     }
+}
+
+.aside-container {
+    padding-top: calc(
+        var(--vp-nav-height) + var(--vp-layout-top-height, 0px) +
+            var(--vp-doc-top-height, 0px) + 24px
+    ) !important;
 }
 
 .VPDocFooter {
@@ -1272,17 +1304,17 @@ div[class*='language-'] {
 }
 
 #ai-shortcut {
-	@apply px-1.5 py-0.5 text-xs font-normal ml-auto text-cyan-400 dark:text-cyan-300 bg-cyan-400/7.5 dark:bg-cyan-300/10 rounded border border-cyan-400/25 dark:border-cyan-200/15;
+    @apply px-1.5 py-0.5 text-xs font-normal ml-auto text-cyan-400 dark:text-cyan-300 bg-cyan-400/7.5 dark:bg-cyan-300/10 rounded border border-cyan-400/25 dark:border-cyan-200/15;
 
-	&::after {
-		content: 'Ctrl K';
-	}
+    &::after {
+        content: 'Ctrl K';
+    }
 
-	.mac &::after {
-		content: '\2318  I';
-	}
+    .mac &::after {
+        content: '\2318  I';
+    }
 }
 
 .VPNavBarSearch.search {
-	@apply ml-2 !pl-0;
+    @apply ml-2 !pl-0;
 }

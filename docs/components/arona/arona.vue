@@ -906,23 +906,28 @@ onUnmounted(() => {
                 }
 
                 & > .copy {
-                    @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-gray-50 dark:!bg-gray-700 interact:!bg-white dark:interact:!bg-gray-800 transition-opacity opacity-0;
+                    @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-gray-50 dark:!bg-gray-800 interact:!bg-white dark:interact:!bg-gray-700 transition-opacity opacity-0;
                     border: 1px solid var(--vp-code-copy-code-border-color);
 
                     &::before {
-                        @apply flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500;
+                        @apply flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500 !pr-1 !rounded-l-xl;
+                        transform: translateX(1.25px);
 
                         content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>');
                     }
 
                     &::after {
-                        @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-xl text-gray-500 dark:text-gray-400 !bg-white dark:!bg-gray-800 opacity-0 transition-opacity pointer-events-none;
+                        @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-l-xl -translate-y-0.25 translate-x-4 text-gray-500 !bg-white !border-r-0 opacity-0 transition-opacity pointer-events-none;
                         border: inherit;
                         content: 'Copied';
                     }
 
+                    .dark &::after {
+                    	@apply text-gray-400 !bg-gray-700
+                    }
+
                     &.copied {
-                        @apply !bg-white dark:!bg-gray-800;
+                        @apply !bg-white dark:!bg-gray-700 !pr-1;
 
                         &::before {
                             content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-copy-icon lucide-clipboard-copy"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v4"/><path d="M21 14H11"/><path d="m15 10-4 4 4 4"/></svg>');
