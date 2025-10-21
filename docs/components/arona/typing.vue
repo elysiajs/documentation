@@ -1,7 +1,7 @@
 <template>
     <AnimatePresence>
         <motion.div
-            class="flex items-center gap-1.5 pl-0.5 origin-bottom-left"
+            class="flex items-center gap-1.5 mt-1 pl-0.5 origin-bottom-left"
             :initial="{ opacity: 0, y: 8, scale: 0.8 }"
             :animate="{
                 opacity: 1,
