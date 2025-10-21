@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
     ref,
+    watch,
     nextTick,
     provide,
     onMounted,
@@ -34,16 +35,18 @@ const { isDark: darkTheme } = useData()
 const showCard = ref(false)
 const showArona = ref(false)
 
-const setCard = (value: boolean) => {
-    showCard.value = value
-    if (showCard.value) {
-        document.documentElement.classList.add('overflow-hidden')
-        document.body.classList.add('overflow-hidden')
-    } else {
-        document.documentElement.classList.remove('overflow-hidden')
-        document.body.classList.remove('overflow-hidden')
+watch(
+    () => showCard.value,
+    (value) => {
+        if (value) {
+            document.documentElement.classList.add('overflow-hidden')
+            document.body.classList.add('overflow-hidden')
+        } else {
+            document.documentElement.classList.remove('overflow-hidden')
+            document.body.classList.remove('overflow-hidden')
+        }
     }
-}
+)
 
 const enableTransitions = () =>
     'startViewTransition' in document &&
@@ -126,8 +129,8 @@ const prompt = computed(() =>
 )
 
 function toggleAI() {
-	// @ts-ignore
-	window.toggleAI({ shouldIncludeCurrentPage: true })
+    // @ts-ignore
+    window.toggleAI({ shouldIncludeCurrentPage: true })
 }
 </script>
 
@@ -203,9 +206,12 @@ function toggleAI() {
                 id="open-elysia-in"
                 class="flex gap-2.5 justify-between items-center pt-0.5 pr-2 text-gray-400 dark:text-gray-500 text-xs mb-1"
             >
-                <button @click="toggleAI" class="flex items-center gap-1 clicky pl-2 pr-1 py-1 -translate-x-2 rounded-full interact:text-sky-500 interact:bg-sky-300/15 transition duration-500 ease-out-expo">
-                	<Sparkles :size="16" stroke-width="1.25" />
-                	Ask Elysia <sup>(AI)</sup>
+                <button
+                    @click="toggleAI"
+                    class="flex items-center gap-1 clicky pl-2 pr-1 py-1 -translate-x-2 rounded-full interact:text-sky-500 interact:bg-sky-300/15 transition duration-500 ease-out-expo"
+                >
+                    <Sparkles :size="16" stroke-width="1.25" />
+                    Ask Elysia <sup>(AI)</sup>
                 </button>
 
                 <div
@@ -268,18 +274,7 @@ function toggleAI() {
                     src="/assets/elysia-chan-card.webp"
                     class="clicky aspect-video max-h-24 rounded-lg border object-cover lg:opacity-40 interact:opacity-100 interact:shadow-2xl shadow-gray-700/10 transition-all ease-out duration-200 cursor-pointer"
                     style="object-position: 0 10%"
-                    @click="() => setCard(true)"
-                />
-            </div>
-        </template>
-
-        <template #aside-bottom>
-            <div class="mt-auto mx-auto">
-                <img
-                    src="/assets/elysia-chan-card.webp"
-                    class="clicky aspect-video max-h-24 rounded-lg border object-cover lg:opacity-40 interact:opacity-100 interact:shadow-2xl shadow-gray-700/10 transition-all ease-out duration-200 cursor-pointer"
-                    style="object-position: 0 10%"
-                    @click="() => setCard(true)"
+                    @click="showCard = true"
                 />
             </div>
         </template>
@@ -315,6 +310,17 @@ function toggleAI() {
                     />
                 </a>
             </aside>
+
+            <button
+                class="clicky w-48 px-2 mt-2 opacity-60 interact:opacity-100 duration-400 ease-out-expo"
+                @click="showCard = true"
+            >
+                <img
+                    src="/assets/elysia-chan-card.webp"
+                    class="aspect-video rounded-lg object-top object-cover"
+                    style="object-position: 0 10%"
+                />
+            </button>
         </template>
 
         <template #nav-bar-content-before>

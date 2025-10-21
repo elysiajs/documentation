@@ -5,19 +5,15 @@
             class="fixed z-[100] top-0 left-0 w-full h-screen"
             style="will-change: background-color, backdrop-filter"
             :initial="{
-                backgroundColor: 'rgba(0, 0, 0, 0)',
-                backdropFilter: 'blur(0)'
+                backgroundColor: 'rgba(0, 0, 0, 0)'
             }"
             :animate="{
-                backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                backdropFilter: 'blur(0.5rem)'
+                backgroundColor: 'rgba(0, 0, 0, 0.15)'
             }"
             :exit="{
                 backgroundColor: 'rgba(0, 0, 0, 0)',
-                backdropFilter: 'blur(0)',
                 transition: {
                     duration: 0.6,
-                    ease: 'linear'
                 }
             }"
             :transition="{
@@ -30,7 +26,7 @@
         <div
             v-if="model"
             class="fixed z-[110] top-0 left-0 flex justify-center items-center w-full h-screen px-8"
-            @click="() => setCard(false)"
+            @click="setCard(false)"
         >
             <motion.div
                 key="glare"
