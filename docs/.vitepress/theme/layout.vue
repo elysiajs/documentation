@@ -11,6 +11,7 @@ import {
     onUnmounted
 } from 'vue'
 import { useData, useRouter } from 'vitepress'
+import ClientOnly from '../../components/xiao/playground/components/client-only.vue'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
 import { File, Heart, Sparkles, Terminal } from 'lucide-vue-next'
@@ -135,7 +136,10 @@ function toggleAI() {
 
 function toggleAIForCurrentPage() {
     // @ts-ignore
-    window.toggleAI({ shouldIncludeCurrentPage: true, defaultValue: 'Summarize this page' })
+    window.toggleAI({
+        shouldIncludeCurrentPage: true,
+        defaultValue: 'Summarize this page'
+    })
 }
 </script>
 
@@ -196,7 +200,10 @@ function toggleAIForCurrentPage() {
     </Teleport>
 
     <GlareCard v-model="showCard" />
-    <Arona v-model="showArona" />
+
+    <ClientOnly>
+        <Arona v-model="showArona" />
+    </ClientOnly>
 
     <DefaultTheme.Layout>
         <template #doc-top>
