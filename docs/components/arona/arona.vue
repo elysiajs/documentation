@@ -913,7 +913,7 @@ onUnmounted(() => {
         }
 
         & > hr {
-            @apply border-gray-600;
+            @apply border-gray-200 dark:border-gray-600;
         }
 
         & > p > code,
