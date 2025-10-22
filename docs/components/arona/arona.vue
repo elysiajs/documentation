@@ -263,12 +263,14 @@
                             :message="error"
                             @retry="ask"
                         />
-                        <Verifying
-                            v-else-if="(token ?? powToken) === undefined"
-                        />
                         <ErrorMessage
                             message="Failed to verify that you're a human."
-                            v-else-if="(token ?? powToken) === null"
+                            v-else-if="token === null || powToken === null"
+                        />
+                        <Verifying
+                            v-else-if="
+                                token === undefined || powToken === undefined
+                            "
                         />
 
                         <form
