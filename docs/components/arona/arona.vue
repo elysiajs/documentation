@@ -392,7 +392,7 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
-const url = 'http://localhost:3000'
+const url = 'https://arona.elysiajs.com'
 
 watch(
     () => model.value,
