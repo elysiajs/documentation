@@ -131,7 +131,7 @@ If you feels like exploring more Elysia feature, check out:
     <Card title="Open Telemetry" href="/eden/opentelemetry">
    		Learn how to monitor your application with Open Telemetry
     </Card>
-    <Card title="Deploy to Production" href="/patterns/deploys">
+    <Card title="Deploy to Production" href="/patterns/deploy">
     	Learn how to deploy Elysia to production
     </Card>
 </Deck>
