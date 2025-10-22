@@ -9,6 +9,7 @@ import tailwindcss from '@tailwindcss/vite'
 import llmstxt from 'vitepress-plugin-llms'
 import { analyzer } from 'vite-bundle-analyzer'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import { comlink } from 'vite-plugin-comlink'
 
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -49,6 +50,7 @@ export default defineConfig({
                 include: ['path', 'crypto']
             }),
             tailwindcss(),
+            comlink(),
             process.env.NODE_ENV === 'production'
                 ? llmstxt({
                       description: 'Ergonomic Framework for Humans',
@@ -64,6 +66,9 @@ export default defineConfig({
                 : undefined,
             process.env.ANALYZE === 'true' ? analyzer() : undefined
         ],
+        worker: {
+            plugins: () => [comlink()]
+        },
         optimizeDeps: {
             exclude: [
                 '@nolebase/vitepress-plugin-inline-link-preview/client',

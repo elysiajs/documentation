@@ -91,7 +91,9 @@
                         <section
                             class="absolute isolate z-20 top-2 right-2 flex p-0.5 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-full"
                         >
-                            <Tooltip tip="Use current page as primary reference">
+                            <Tooltip
+                                tip="Use current page as primary reference"
+                            >
                                 <label
                                     class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
                                     :class="{
@@ -261,10 +263,12 @@
                             :message="error"
                             @retry="ask"
                         />
-                        <Verifying v-else-if="token === undefined" />
+                        <Verifying
+                            v-else-if="(token ?? powToken) === undefined"
+                        />
                         <ErrorMessage
                             message="Failed to verify that you're a human."
-                            v-else-if="token === null"
+                            v-else-if="(token ?? powToken) === null"
                         />
 
                         <form
@@ -282,14 +286,15 @@
                             />
                             <button
                                 class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-30 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
-                                :disabled="!token"
+                                :disabled="!token || !powToken"
                                 :title="
                                     isStreaming
                                         ? 'Elysia chan is thinking...'
-                                        : token === undefined
-                                          ? 'Verifying that you are a human...'
-                                          : token === null
-                                            ? 'Verification failed, please refresh the page.'
+                                        : token === null || powToken === null
+                                          ? 'Verification failed, please refresh the page.'
+                                          : token === undefined ||
+                                              powToken === undefined
+                                            ? 'Verifying that you are a human...'
                                             : 'Send message (Cmd/Ctrl + Enter)'
                                 "
                                 @click="cancelRequest()"
@@ -317,7 +322,11 @@
 </template>
 
 <script lang="ts" setup>
+/// <reference types="vite-plugin-comlink/client" />
+
 import { ref, watch, computed, onMounted, onUnmounted, Teleport } from 'vue'
+import { useRouter } from 'vitepress'
+
 import { motion, AnimatePresence } from 'motion-v'
 
 import { useTextareaAutosize, useWindowSize } from '@vueuse/core'
@@ -341,7 +350,11 @@ import {
     Book
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
-import { useRouter } from 'vitepress'
+import { retry } from './retry'
+
+const Pow = new ComlinkWorker<typeof import('./pow')>(
+    new URL('./pow', import.meta.url)
+)
 
 import useDark from '../../.vitepress/theme/use-dark'
 
@@ -379,6 +392,8 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
+const url = 'http://localhost:3000'
+
 watch(
     () => model.value,
     (visible) => {
@@ -397,10 +412,23 @@ watch(
 
             document.head.appendChild(script)
         })
+
+        retry(() =>
+            requestAnimationFrame(() => {
+                Pow.request(url)
+                    .then((x) => {
+                        powToken.value = x
+                    })
+                    .catch(() => {
+                        powToken.value = null
+                    })
+            })
+        )
     }
 )
 
 const token = ref<string | undefined | null>()
+const powToken = ref<string | undefined | null>()
 
 const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
 const easeOutExpo = [0.16, 1, 0.3, 1] as const
@@ -475,13 +503,41 @@ onUnmounted(() => {
     document.body.style.overflow = ''
 })
 
+function auth() {
+    powToken.value = undefined
+
+    retry(() =>
+        requestAnimationFrame(() => {
+            Pow.request(url).then((x) => {
+                powToken.value = x
+            })
+        })
+    ).catch(() => {
+        powToken.value = null
+    })
+
+    retry(() =>
+        requestAnimationFrame(() => {
+            // @ts-ignore
+            window.turnstile?.reset()
+        })
+    )
+}
+
+function resetState() {
+    isStreaming.value = false
+    controller = undefined
+    token.value = undefined
+    powToken.value = undefined
+}
+
 async function ask(input?: string) {
     if (input) question.value = input
 
     const latest = history.value.at(-1)
 
     if (!question.value.trim() && latest?.role !== 'user') return
-    if (isStreaming.value || !token.value) return
+    if (isStreaming.value || !token.value || !powToken.value) return
 
     isStreaming.value = true
 
@@ -505,15 +561,19 @@ async function ask(input?: string) {
         if (box) box.scrollTo(0, box.scrollHeight)
     })
 
-    const response = await fetch(`https://arona.elysiajs.com/ask`, {
+    const response = await fetch(`${url}/ask`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'x-turnstile-token': token.value!
         },
+        credentials: 'include',
         body: JSON.stringify(
             Object.assign(
                 {
+                    pow: {
+                        suffix: powToken.value
+                    },
                     message,
                     history: history.value
                         .slice(-17)
@@ -535,9 +595,6 @@ async function ask(input?: string) {
         ),
         signal: controller.signal
     }).catch((err) => {
-        isStreaming.value = false
-        controller = undefined
-
         if (err.name === 'AbortError') return
 
         if (!navigator.onLine) {
@@ -558,26 +615,18 @@ async function ask(input?: string) {
     })
 
     if (!controller || !response) {
-        isStreaming.value = false
-        controller = undefined
-        token.value = undefined
-
-        // @ts-ignore
-        window.turnstile?.reset()
+        resetState()
+        auth()
 
         return
     }
 
     if (!response.ok || !response.body) {
-        isStreaming.value = false
-        controller = undefined
-        token.value = undefined
+        resetState()
+        auth()
 
         error.value =
             (await response.text()) || 'Something went wrong, please try again.'
-
-        // @ts-ignore
-        window.turnstile?.reset()
 
         return
     }
@@ -616,12 +665,8 @@ async function ask(input?: string) {
         history.value[index].content += text
     }
 
-    token.value = undefined
-    isStreaming.value = false
-
-    // @ts-ignore
-    window.turnstile?.reset()
-    controller = undefined
+    resetState()
+    auth()
 
     const a = document
         .getElementById('elysia-chat-content')
@@ -664,10 +709,11 @@ function handleGlobalShortcut(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-    if (typeof window !== 'undefined')
-        window.addEventListener('keydown', handleGlobalShortcut, {
-            passive: true
-        })
+    if (typeof window === 'undefined') return
+
+    window.addEventListener('keydown', handleGlobalShortcut, {
+        passive: true
+    })
 })
 
 onUnmounted(() => {
