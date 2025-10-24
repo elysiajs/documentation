@@ -347,7 +347,7 @@
                                 data-gramm="false"
                             />
                             <button
-                                class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-30 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
+                                class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-60 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
                                 :disabled="!token || !powToken"
                                 :title="
                                     isStreaming
