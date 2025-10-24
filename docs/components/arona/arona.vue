@@ -1297,7 +1297,7 @@ onUnmounted(() => {
 
             &.feedback {
                 &.-active {
-                    @apply text-pink-500 dark:text-pink-300 !bg-pink-300/15 dark:!bg-pink-200/15;
+                    @apply !text-pink-500 dark:!text-pink-300 !bg-pink-300/15 dark:!bg-pink-200/15;
                 }
 
                 &:disabled {
