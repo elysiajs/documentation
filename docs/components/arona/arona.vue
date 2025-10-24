@@ -82,9 +82,10 @@
                             >
                                 Elysia chan
                                 <sup
-                                    class="inline-block text-xs scale-75 text-gray-400/60 dark:text-gray-500/60 font-light -translate-y-1 -translate-x-3"
-                                    >(AI)</sup
+                                    class="inline-block text-xs scale-75 text-gray-400/60 dark:text-gray-500/60 font-light -translate-x-3"
                                 >
+                                    (AI)
+                                </sup>
                             </span>
                         </h3>
 
@@ -248,6 +249,64 @@
                                         "
                                     />
                                 </motion.div>
+
+                                <aside
+                                    class="elysia-chan-tools"
+                                    v-if="
+                                        !isStreaming &&
+                                        !error &&
+                                        index === history.length - 1
+                                    "
+                                >
+                                    <Tooltip
+                                        :tip="
+                                            token === undefined ||
+                                            powToken === undefined
+                                                ? 'Verifying that you are a human...'
+                                                : copied
+                                                  ? 'Copied'
+                                                  : 'Copy to clipboard'
+                                        "
+                                    >
+                                        <button
+                                            @click="copyContent(index)"
+                                            :disabled="copied"
+                                        >
+                                            <Check
+                                                v-if="copied"
+                                                stroke-width="1.5"
+                                                :size="16"
+                                            />
+                                            <Copy
+                                                v-else
+                                                stroke-width="1.5"
+                                                :size="16"
+                                            />
+                                        </button>
+                                    </Tooltip>
+
+                                    <Tooltip
+                                        :tip="
+                                            token === undefined ||
+                                            powToken === undefined
+                                                ? 'Verifying that you are a human...'
+                                                : 'Regenerate'
+                                        "
+                                    >
+                                        <button
+                                            @click="regenerate(index)"
+                                            :disabled="
+                                                token === undefined ||
+                                                powToken === undefined
+                                            "
+                                        >
+                                            <RefreshCw
+                                                stroke-width="1.5"
+                                                :size="16"
+                                            />
+                                        </button>
+                                    </Tooltip>
+                                </aside>
                             </template>
 
                             <Typing
@@ -278,6 +337,7 @@
                             @submit.prevent="ask()"
                         >
                             <textarea
+                                id="elysia-chan-question"
                                 ref="textarea"
                                 v-model="question"
                                 placeholder="What's on your mind"
@@ -303,6 +363,14 @@
                             >
                                 <Square
                                     v-if="isStreaming"
+                                    :size="21"
+                                    stroke-width="1.5"
+                                />
+                                <Loader
+                                    v-else-if="
+                                        token === undefined ||
+                                        powToken === undefined
+                                    "
                                     :size="21"
                                     stroke-width="1.5"
                                 />
@@ -349,7 +417,11 @@ import {
     Minimize2,
     RotateCcw,
     File,
-    Book
+    Book,
+    RefreshCw,
+    Copy,
+    Check,
+    Loader
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
 import { retry } from './retry'
@@ -438,11 +510,7 @@ const easeOutExpo = [0.16, 1, 0.3, 1] as const
 function handleShortcut(event: KeyboardEvent) {
     const metaKey = event.ctrlKey || event.metaKey
 
-    if (event.key === 'Escape') return (model.value = false)
     if (metaKey && event.key === 'Enter') return ask()
-    if (metaKey && event.key === 'ArrowLeft') return (_isExpanded.value = true)
-    if (metaKey && event.key === 'ArrowRight')
-        return (_isExpanded.value = false)
 }
 
 if (typeof window !== 'undefined')
@@ -533,7 +601,30 @@ function resetState() {
     powToken.value = undefined
 }
 
-async function ask(input?: string) {
+function regenerate(index?: number) {
+    if (index === undefined) return
+
+    const latestQuestion = history.value[index - 1].content
+    history.value.splice(index, 2)
+
+    ask(latestQuestion, ~~(Math.random() * 2_000_000))
+}
+
+const copied = ref(false)
+function copyContent(index: number) {
+    if (copied.value) return
+
+    const content = history.value[index]?.content
+    if (!content) return
+
+    navigator.clipboard.writeText(content)
+    copied.value = true
+    setTimeout(() => {
+        copied.value = false
+    }, 2000)
+}
+
+async function ask(input?: string, seed?: number) {
     if (input) question.value = input
 
     const latest = history.value.at(-1)
@@ -582,6 +673,7 @@ async function ask(input?: string) {
                         .slice(0, -1)
                         .filter((x) => x.content.length < 4096)
                 },
+                seed !== undefined ? { seed } : {},
                 includeCurrentPage.value
                     ? {
                           reference:
@@ -708,6 +800,39 @@ function handleGlobalShortcut(event: KeyboardEvent) {
     const metaKey = event.ctrlKey || event.metaKey
 
     if (metaKey && event.key === 'i') model.value = !model.value
+
+    if (model.value) {
+        if (event.key === 'Escape') return (model.value = false)
+
+        const active = document.activeElement as HTMLInputElement | null
+        if (active?.id === 'elysia-chan-question') {
+            if (
+                metaKey &&
+                event.key === 'ArrowLeft' &&
+                active.selectionStart === 0
+            ) {
+                event.preventDefault()
+                return (_isExpanded.value = true)
+            }
+            if (
+                metaKey &&
+                event.key === 'ArrowRight' &&
+                active.selectionStart === active.value.length
+            ) {
+                event.preventDefault()
+                return (_isExpanded.value = false)
+            }
+        }
+        //      else {
+        // if (metaKey && event.key === 'ArrowLeft') {
+        // 	event.preventDefault()
+        // 	return (_isExpanded.value = true)
+        // } if (metaKey && event.key === 'ArrowRight') {
+        // 	event.preventDefault()
+        // 	return (_isExpanded.value = false)
+        // }
+        //      }
+    }
 }
 
 onMounted(() => {
@@ -849,6 +974,22 @@ onUnmounted(() => {
             @apply !mt-2;
         }
 
+        & > *:last-child {
+            @apply !mb-0;
+
+            &:is(ul) {
+                @apply flex flex-wrap gap-y-1.5 list-none -mx-2;
+
+                & > li {
+                    @apply text-xs my-0;
+
+                    & > a {
+                        @apply clicky px-2 py-1 text-pink-500 dark:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors duration-500 ease-out-expo;
+                    }
+                }
+            }
+        }
+
         & > h1 {
             @apply text-2xl sm:text-3xl font-bold mb-4;
         }
@@ -876,6 +1017,20 @@ onUnmounted(() => {
         & > p > strong,
         & > ol > li > strong {
             @apply text-black dark:text-white;
+        }
+
+        & > ul,
+        & > ol {
+            & > li {
+                & > ul,
+                & > ol {
+                    @apply mt-2;
+
+                    & > li {
+                        @apply mt-2;
+                    }
+                }
+            }
         }
 
         & > a,
@@ -913,7 +1068,7 @@ onUnmounted(() => {
         }
 
         & > hr {
-            @apply border-gray-200 dark:border-gray-600;
+            @apply my-4 border-gray-200 dark:border-gray-600;
         }
 
         & > p > code,
@@ -1016,6 +1171,18 @@ onUnmounted(() => {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    & > .elysia-chan-tools {
+        @apply flex items-center w-full px-1 -translate-y-3 mt-2 mb-8;
+
+        & > button {
+            @apply clicky z-20 interact:z-30 flex justify-center items-center size-7 text-gray-400 interact:text-gray-500 interact:bg-gray-200/80 not-disabled:dark:interact:bg-gray-700/50 rounded-full !outline-none not-disabled:focus:ring-1 ring-offset-2 ring-gray-300 duration-300 cursor-pointer;
+
+            &:disabled {
+                @apply opacity-60 interact:!bg-transparent cursor-progress;
             }
         }
     }

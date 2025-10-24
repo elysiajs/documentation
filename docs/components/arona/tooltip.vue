@@ -6,7 +6,11 @@
             </TooltipTrigger>
             <TooltipPortal>
                 <AnimatePresence>
-                    <TooltipContent side="bottom" :side-offset="4" class="z-60">
+                    <TooltipContent
+                        :side="side ?? 'bottom'"
+                        :side-offset="4"
+                        class="z-60"
+                    >
                         <motion.p
                             :initial="{ opacity: 0, scale: 0.9 }"
                             :animate="{ opacity: 1, scale: 1 }"
@@ -35,5 +39,6 @@ import { motion, AnimatePresence } from 'motion-v'
 
 defineProps<{
     tip: string
+    side?: 'top' | 'right' | 'bottom' | 'left'
 }>()
 </script>
