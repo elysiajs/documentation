@@ -1288,7 +1288,7 @@ onUnmounted(() => {
             @apply clicky z-20 interact:z-30 flex justify-center items-center rounded-lg !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300 cursor-pointer;
 
             &:disabled {
-                @apply opacity-60 interact:!bg-transparent cursor-progress;
+                @apply opacity-60 interact:!bg-transparent !text-gray-400 cursor-progress;
             }
         }
 
