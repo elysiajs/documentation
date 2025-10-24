@@ -206,7 +206,9 @@
                             </AnimatePresence>
 
                             <template
-                                v-for="({ role, content }, index) in history"
+                                v-for="(
+                                    { id, role, content }, index
+                                ) in history"
                                 :key="index"
                             >
                                 <motion.p
@@ -285,6 +287,38 @@
                                         </button>
                                     </Tooltip>
 
+                                    <Tooltip tip="Good Response" v-if="id">
+                                        <button
+                                            class="feedback"
+                                            :class="{
+                                                '-active': feedback === true
+                                            }"
+                                            @click="sendFeedback(id, true)"
+                                            :disabled="feedback !== null"
+                                        >
+                                            <ThumbsUp
+                                                stroke-width="1.5"
+                                                :size="16"
+                                            />
+                                        </button>
+                                    </Tooltip>
+
+                                    <Tooltip tip="Bad Response" v-if="id">
+                                        <button
+                                            class="feedback"
+                                            :class="{
+                                                '-active': feedback == false
+                                            }"
+                                            @click="sendFeedback(id, false)"
+                                            :disabled="feedback !== null"
+                                        >
+                                            <ThumbsDown
+                                                stroke-width="1.5"
+                                                :size="16"
+                                            />
+                                        </button>
+                                    </Tooltip>
+
                                     <Tooltip
                                         :tip="
                                             token === undefined ||
@@ -309,8 +343,8 @@
 
                                     <a
                                         href="https://elysiajs.com"
-                                        class="flex items-center text-xs gap-1 ml-auto px-2 py-1 opacity-60 interact:opacity-100"
-                                        target="_blank"
+                                        class="flex items-center text-xs gap-1 ml-auto px-2 py-1 opacity-60 interact:opacity-100 font-light"
+                                        @click.prevent="poweredBy"
                                     >
                                         Powered by
                                         <img
@@ -427,7 +461,9 @@ import {
     RefreshCw,
     Copy,
     Check,
-    Loader
+    Loader,
+    ThumbsUp,
+    ThumbsDown
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
 import { retry } from './retry'
@@ -449,6 +485,7 @@ const { input: question, textarea } = useTextareaAutosize()
 const size = useWindowSize()
 
 interface History {
+    id?: string
     role: 'user' | 'assistant'
     content: string
 }
@@ -463,6 +500,7 @@ const questions = ref<string[]>([
 const includeCurrentPage = ref(false)
 const history = ref<History[]>([])
 const isStreaming = ref(false)
+const feedback = ref<boolean | null>(null)
 const error = ref<string | undefined>()
 
 const _isExpanded = ref(true)
@@ -472,6 +510,7 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
+// const url = 'http://localhost:3000'
 const url = 'https://arona.elysiajs.com'
 
 watch(
@@ -544,6 +583,7 @@ function cancelRequest() {
     token.value = undefined
     controller.abort()
     controller = undefined
+    feedback.value = null
 }
 
 watch(
@@ -605,6 +645,23 @@ function resetState() {
     controller = undefined
     token.value = undefined
     powToken.value = undefined
+    feedback.value = null
+}
+
+function sendFeedback(id: string, value: boolean) {
+    // Ignore feedback result
+    retry(
+        () =>
+            fetch(`${url}/feedback/${id}`, {
+                method: 'POST',
+                credentials: 'include',
+                body: value + ''
+            }),
+        5,
+        1500
+    )
+
+    feedback.value = value
 }
 
 function regenerate(index?: number) {
@@ -614,6 +671,11 @@ function regenerate(index?: number) {
     history.value.splice(index, 2)
 
     ask(latestQuestion, ~~(Math.random() * 2_000_000))
+}
+
+function poweredBy() {
+    router.go('/')
+    _isExpanded.value = false
 }
 
 const copied = ref(false)
@@ -675,9 +737,16 @@ async function ask(input?: string, seed?: number) {
                     },
                     message,
                     history: history.value
-                        .slice(-17)
+                        .slice(-9)
                         .slice(0, -1)
-                        .filter((x) => x.content.length < 4096)
+                        .map(({ id, ...x }) =>
+                            x.content.length < 4096
+                                ? x
+                                : {
+                                      ...x,
+                                      content: x.content.slice(-4096)
+                                  }
+                        )
                 },
                 seed !== undefined ? { seed } : {},
                 includeCurrentPage.value
@@ -763,6 +832,16 @@ async function ask(input?: string, seed?: number) {
 
         const text = decoder.decode(value)
         history.value[index].content += text
+    }
+
+    const getId = /- id:([A-Z|0-9]+)$/g
+    const id = getId.exec(history.value[index].content)
+    if (id) {
+        history.value[index].id = id[1]
+        history.value[index].content = history.value[index].content.replace(
+            getId,
+            ''
+        )
     }
 
     resetState()
@@ -993,6 +1072,10 @@ onUnmounted(() => {
                 & > li {
                     @apply text-xs my-0;
 
+                    &:last-child {
+                        @apply hidden;
+                    }
+
                     & > a {
                         @apply clicky px-2 py-1 text-pink-500 dark:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors duration-500 ease-out-expo;
                     }
@@ -1019,6 +1102,19 @@ onUnmounted(() => {
         & > blockquote {
             @apply text-sm mt-4 pl-4 py-1 border-l-2;
             color: var(--vp-c-text-2);
+        }
+
+        &,
+        & > div {
+	        & > table > thead,
+	        & > table > tbody {
+	        	&,
+	 			& > tr,
+	    		& > tr > th,
+				& > tr > td {
+					@apply border border-gray-200 dark:border-gray-700;
+				}
+	        }
         }
 
         & > h1,
@@ -1186,20 +1282,43 @@ onUnmounted(() => {
     }
 
     & > .elysia-chan-tools {
-        @apply flex items-center w-full px-1 -translate-y-3 mt-2 text-sm text-gray-400 *:interact:text-gray-500 *:interact:dark:text-gray-300 *:interact:bg-gray-200/80 *:dark:interact:bg-gray-700/50;
-
-        & > button {
-            @apply size-7;
-        }
+        @apply flex items-center w-full px-1 -translate-y-3 mt-2 text-sm text-gray-400 *:interact:text-pink-500 *:interact:dark:text-pink-300 *:interact:bg-pink-300/15 *:dark:interact:bg-pink-200/15;
+        animation: spring-in 0.6s var(--ease-out-expo);
 
         & > button,
         & > a {
-            @apply clicky z-20 interact:z-30 flex justify-center items-center rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300 cursor-pointer;
+            @apply clicky z-20 interact:z-30 flex justify-center items-center rounded-lg !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300 cursor-pointer;
 
             &:disabled {
                 @apply opacity-60 interact:!bg-transparent cursor-progress;
             }
         }
+
+        & > button {
+            @apply size-7;
+
+            &.feedback {
+                &.-active {
+                    @apply text-pink-500 dark:text-pink-300 !bg-pink-300/15 dark:!bg-pink-200/15;
+                }
+
+                &:disabled {
+                    @apply cursor-default;
+                }
+            }
+        }
+    }
+
+    @keyframes spring-in {
+    	from {
+			transform: scale(0.7) translateY(8px);
+			opacity: 0;
+		}
+
+		to {
+			transform: scale(1) translateY(0);
+			opacity: 1;
+		}
     }
 }
 </style>

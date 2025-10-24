@@ -1,7 +1,7 @@
 <template>
     <TooltipProvider>
         <TooltipRoot>
-            <TooltipTrigger>
+            <TooltipTrigger as-child>
                 <slot />
             </TooltipTrigger>
             <TooltipPortal>
