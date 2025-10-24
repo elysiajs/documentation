@@ -224,7 +224,7 @@
 
                                 <motion.div
                                     v-else
-                                    class="w-full elysia-chan"
+                                    class="elysia-chan"
                                     :initial="{ opacity: 0, y: 8, scale: 0.7 }"
                                     :animate="{ opacity: 1, y: 0, scale: 1 }"
                                     :transition="{
@@ -306,6 +306,20 @@
                                             />
                                         </button>
                                     </Tooltip>
+
+                                    <a
+                                        href="https://elysiajs.com"
+                                        class="flex items-center text-xs gap-1 ml-auto px-2 py-1 opacity-60 interact:opacity-100"
+                                        target="_blank"
+                                    >
+                                        Powered by
+                                        <img
+                                            class="size-3.5 ml-0.5"
+                                            src="/assets/elysia.svg"
+                                            alt="Elysia Logo"
+                                        />
+                                        Elysia
+                                    </a>
                                 </aside>
                             </template>
 
@@ -347,7 +361,7 @@
                                 data-gramm="false"
                             />
                             <button
-                                class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-60 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
+                                class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-50 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
                                 :disabled="!token || !powToken"
                                 :title="
                                     isStreaming
@@ -363,14 +377,6 @@
                             >
                                 <Square
                                     v-if="isStreaming"
-                                    :size="21"
-                                    stroke-width="1.5"
-                                />
-                                <Loader
-                                    v-else-if="
-                                        token === undefined ||
-                                        powToken === undefined
-                                    "
                                     :size="21"
                                     stroke-width="1.5"
                                 />
@@ -466,7 +472,7 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
-const url = 'https://arona.elysiajs.com'
+const url = 'http://localhost:3000'
 
 watch(
     () => model.value,
@@ -855,7 +861,7 @@ onUnmounted(() => {
 @reference '../../tailwind.css';
 
 #elysia-chat-content {
-    @apply relative flex items-start flex-col h-full pt-15 pb-15 px-2 text-base overflow-y-scroll;
+    @apply relative flex items-start flex-col h-full pt-15 pb-15 px-2 text-base overflow-x-hidden overflow-y-scroll;
 
     .dark & {
         --vp-code-color: #f9d5e5;
@@ -964,14 +970,18 @@ onUnmounted(() => {
     }
 
     & > .user {
-        @apply px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-bottom-right;
+        @apply px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-top-right;
+    }
+
+    & > .elysia-chan {
+        @apply w-full origin-top-left;
     }
 
     & > .elysia-chan > div {
         @apply w-full px-2 py-4;
 
         & > *:first-child {
-            @apply !mt-2;
+            @apply !mt-2 !pt-0;
         }
 
         & > *:last-child {
@@ -1176,10 +1186,15 @@ onUnmounted(() => {
     }
 
     & > .elysia-chan-tools {
-        @apply flex items-center w-full px-1 -translate-y-3 mt-2 mb-8;
+        @apply flex items-center w-full px-1 -translate-y-3 mt-2 text-sm text-gray-400 *:interact:text-gray-500 *:interact:dark:text-gray-300 *:interact:bg-gray-200/80 *:dark:interact:bg-gray-700/50;
 
         & > button {
-            @apply clicky z-20 interact:z-30 flex justify-center items-center size-7 text-gray-400 interact:text-gray-500 interact:bg-gray-200/80 not-disabled:dark:interact:bg-gray-700/50 rounded-full !outline-none not-disabled:focus:ring-1 ring-offset-2 ring-gray-300 duration-300 cursor-pointer;
+            @apply size-7;
+        }
+
+        & > button,
+        & > a {
+            @apply clicky z-20 interact:z-30 flex justify-center items-center rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300 cursor-pointer;
 
             &:disabled {
                 @apply opacity-60 interact:!bg-transparent cursor-progress;
