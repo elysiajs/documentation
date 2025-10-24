@@ -27,9 +27,9 @@ export default defineConfig({
         },
         languages: ['js', 'ts'],
         codeTransformers: [
-            // transformerTwoslash({
-            //     typesCache: createFileSystemTypesCache()
-            // })
+            transformerTwoslash({
+                typesCache: createFileSystemTypesCache()
+            })
         ],
         config: (md) => {
             md.use(lightbox, {})
