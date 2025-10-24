@@ -11,13 +11,13 @@ const images = [
         light: '/assets/scalar/scalar-body-light.webp',
         dark: '/assets/scalar/scalar-body-dark.webp',
         content:
-            'Elysia deeply integrate with OpenAPI to generate beautiful API documentation out of the box'
+            'Elysia deeply integrates with OpenAPI to generate beautiful API documentation out of the box'
     },
     {
         light: '/assets/scalar/scalar-status-light.webp',
         dark: '/assets/scalar/scalar-status-dark.webp',
         content:
-            'With Elysia OpenAPI Type Gen. Elysia use TypeScript type, and turn it into OpenAPI schema automatically'
+            'With Elysia OpenAPI Type Gen, Elysia uses TypeScript types and turns them into OpenAPI schema automatically'
     },
     {
         light: '/assets/scalar/scalar-editor-light.webp',
@@ -28,7 +28,7 @@ const images = [
         light: '/assets/scalar/scalar-landing-light.webp',
         dark: '/assets/scalar/scalar-landing-dark.webp',
         content:
-            'Describe your API with a built-in schema, or bring your own validator that support OpenAPI document'
+            'Describe your API with a built-in schema, or bring your own validator that supports OpenAPI documents'
     },
     {
         light: '/assets/scalar/scalar-model-light.webp',
@@ -62,7 +62,7 @@ const flyIn2 = useFlyIn(isInView2)
                 class="flex flex-col gap-2 text-xl text-gray-500 dark:text-gray-400 mb-2"
             >
                 <motion.span v-bind="flyIn()">
-                    Says hello to your actual API with
+                    Say hello to your actual API with
                 </motion.span>
                 <motion.span
                     v-bind="flyIn(0.1)"
@@ -122,7 +122,7 @@ const flyIn2 = useFlyIn(isInView2)
                 </motion.h4>
 
                 <motion.p v-bind="flyIn2(0.2)">
-                    Just 1 line of code, you get a full-fledge API documentation
+                    Just 1 line of code, you get a full-fledged API documentation
                     effortlessly
                 </motion.p>
 
@@ -136,11 +136,11 @@ const flyIn2 = useFlyIn(isInView2)
                     <span
                         class="font-medium text-gradient from-violet-400 to-blue-500"
                     >
-                        TypeScript type
+                        TypeScript types
                     </span>
                     into an API documentation
                     <small class="block mt-1 text-gray-400/80 dark:text-gray-400/70">
-                        (like FastAPI but from TypeScript type)
+                        (like FastAPI but from TypeScript types)
                     </small>
                 </motion.p>
             </div>
