@@ -56,7 +56,7 @@ const flyIn = useFlyIn(isInView)
                     v-bind="flyIn(0.4)"
                 >
                     With seamless support for type inference, and OpenAPI. You
-                    will feels
+                    will feel
                     <span class="text-pink-400 font-medium">right at home</span
                     >.
                 </motion.p>

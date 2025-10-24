@@ -106,7 +106,7 @@
                 <motion.p v-bind="flyIn(0.3)">
                     Elysia has 1st party support for OpenTelemetry.
                     Instrumentation is built-in, so you can easily monitor your
-                    services on regardless of the platform.
+                    services regardless of the platform.
                 </motion.p>
             </header>
         </article>
@@ -140,7 +140,7 @@
                 <motion.p  v-bind="flyIn(0.5)">
                     Like tRPC, Elysia provides type-safety from the backend to
                     the frontend without code generation. The interaction between
-                    frontend and backend is both type-checked on compile and runtime.
+                    frontend and backend is both type-checked at compile and runtime.
                 </motion.p>
             </header>
         </article>

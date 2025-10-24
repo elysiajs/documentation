@@ -15,8 +15,8 @@
             <motion.span class="inline-block" v-bind="flyIn(0.1)">
                 Elysia is
                 <span class="text-gray-700 dark:text-gray-200 font-medium">
-                    not owned by an organization </span
-                >, driven by volunteer, and community.
+                    not owned by an organization</span
+                >, driven by volunteers, and community.
             </motion.span>
             <motion.span class="inline-block mt-2" v-bind="flyIn(0.2)">
                 Elysia is possible by these awesome sponsors.
@@ -243,7 +243,7 @@
         </p>
 
         <p class="inline-block text-center">
-            We can only develop Elysia full-time thanks to your supports.
+            We can only develop Elysia full-time thanks to your support.
         </p>
 
         <div class="flex sm:justify-center my-8">

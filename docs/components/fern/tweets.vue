@@ -8,7 +8,7 @@
                 class="text-3xl font-medium text-gray-500 dark:text-gray-300 leading-[3rem]"
                 v-bind="flyIn()"
             >
-                What people says about
+                What people say about
             </h2>
             <div class="flex items-center">
                 <img
