@@ -153,7 +153,7 @@
 
                         <article
                             id="elysia-chat-content"
-                            class="h-full overflow-x-hidden overflow-y-auto"
+                            class="relative flex items-start flex-col h-full pt-15 pb-15 px-2 text-base overflow-x-hidden overflow-y-scroll"
                             ref="chatbox"
                         >
                             <AnimatePresence>
@@ -940,8 +940,6 @@ onUnmounted(() => {
 @reference '../../tailwind.css';
 
 #elysia-chat-content {
-    @apply relative flex items-start flex-col h-full pt-15 pb-15 px-2 text-base overflow-x-hidden overflow-y-scroll;
-
     .dark & {
         --vp-code-color: #f9d5e5;
         --vp-c-brand-1: #f9d5e5;
