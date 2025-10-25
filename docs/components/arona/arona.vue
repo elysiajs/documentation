@@ -252,7 +252,7 @@
                                         "
                                         :class="
                                             isStreaming &&
-                                            history.length - 1 === i
+                                            index === history.length - 1
                                                 ? '-streaming'
                                                 : ''
                                         "
