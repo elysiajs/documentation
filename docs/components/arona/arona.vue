@@ -250,6 +250,7 @@
                                                 ? 'catppuccin-mocha'
                                                 : 'catppuccin-latte'
                                         "
+                                        :class="isStreaming ? '-streaming' : ''"
                                     />
                                 </motion.div>
 
@@ -1094,21 +1095,17 @@ onUnmounted(() => {
             @apply !mt-2 !pt-0;
         }
 
-        & > *:last-child {
+        &:not(.-streaming) > *:last-child {
             @apply !mb-0;
 
             &:is(ul) {
-                @apply flex flex-wrap gap-y-1.5 list-none -mx-2;
+                @apply flex flex-wrap gap-x-1 gap-y-2.5 list-none -mx-2;
 
                 & > li {
-                    @apply text-xs my-0;
-
-                    &:last-child {
-                        @apply hidden;
-                    }
+                    @apply clicky text-xs my-0 w-auto;
 
                     & > a {
-                        @apply clicky px-2 py-1 text-pink-500 dark:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors duration-500 ease-out-expo;
+                        @apply px-2 py-1 text-gray-400 bg-gray-100/80 dark:bg-gray-700/80 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
                     }
                 }
             }
@@ -1201,7 +1198,11 @@ onUnmounted(() => {
 
         & > ol,
         & > ul {
-            @apply !pl-0;
+            @apply w-full !pl-0;
+
+            & > li {
+                @apply w-full;
+            }
         }
 
         & > hr {
@@ -1283,7 +1284,7 @@ onUnmounted(() => {
                         @apply !bg-white dark:!bg-gray-700 !pr-1;
 
                         &::before {
-                        background-image: var(--vp-icon-copied);
+                            background-image: var(--vp-icon-copied);
                         }
 
                         &::after {
