@@ -40,7 +40,7 @@ It accept **context** similar to handler but include an additional:
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.onError(({ error, code }) => {
+	.onError(({ code, status }) => {
 		if(code === "NOT_FOUND")
 			return 'uhe~ are you lost?'
 
