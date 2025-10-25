@@ -604,7 +604,7 @@ function toggleAI() {
                                     </span>
                                     <span class="title main">
                                         <span
-                                            class="text bold *:bg-transparent"
+                                            class="text bold *:bg-transparent *:!p-0"
                                         >
                                             {{ filterText }}
                                         </span>
