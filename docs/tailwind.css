@@ -955,7 +955,7 @@ button.copy::after {
                 @apply z-10 scroll-pt-2;
 
                 & > .result {
-                    @apply !rounded-xl border-1 border-gray-400/25 dark:border-gray-600/65;
+                    @apply !rounded-xl py-0.5 border-1 border-gray-400/25 dark:border-gray-600/65;
 
                     &.selected {
                         border-color: var(--vp-c-brand-1) !important;

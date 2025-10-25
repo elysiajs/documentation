@@ -600,7 +600,7 @@ function onMouseMove(e: MouseEvent) {
                         </button>
                     </li>
                     <div
-                        class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-400 m-auto mt-10 mb-6 opacity-90"
+                        class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-400 m-auto md:mt-10 md:mb-6 opacity-90"
                         v-if="!filterText || (filterText && !results.length)"
                     >
                         <img
@@ -615,9 +615,9 @@ function onMouseMove(e: MouseEvent) {
                     <li
                         v-for="(p, index) in results"
                         :key="p.id"
-                        :id="'localsearch-item-' + index + 1"
+                        :id="'localsearch-item-' + (index + 1)"
                         :aria-selected="
-                            selectedIndex === index + 1 ? 'true' : 'false'
+                            selectedIndex === (index + 1) ? 'true' : 'false'
                         "
                         role="option"
                     >
@@ -625,15 +625,15 @@ function onMouseMove(e: MouseEvent) {
                             :href="p.id"
                             class="result"
                             :class="{
-                                selected: selectedIndex === index + 1
+                                selected: selectedIndex === (index + 1)
                             }"
                             :aria-label="[...p.titles, p.title].join(' > ')"
                             @mouseenter="
-                                !disableMouseOver && (selectedIndex = index + 1)
+                                !disableMouseOver && (selectedIndex = (index + 1))
                             "
-                            @focusin="selectedIndex = index + 1"
+                            @focusin="selectedIndex = (index + 1)"
                             @click="$emit('close')"
-                            :data-index="index + 1"
+                            :data-index="(index + 1)"
                         >
                             <div>
                                 <div class="titles">
