@@ -32,7 +32,7 @@ function askAI() {
                 class="flex flex-col justify-center items-center md:items-start md:max-w-xs w-full"
             >
                 <motion.h4 class="ml-3 mb-1" v-bind="flyIn(0.1)">
-                    Got more question?
+                    Got more questions?
                 </motion.h4>
                 <motion.a
                     class="text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-tl from-emerald-400/80 to-sky-400/80"
