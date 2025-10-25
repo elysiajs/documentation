@@ -586,9 +586,11 @@ if (typeof window !== 'undefined')
     // @ts-ignore
     window.toggleAI = ({
         shouldIncludeCurrentPage,
+        value,
         defaultValue
     }: {
         shouldIncludeCurrentPage?: boolean
+        value?: string
         defaultValue?: string
     } = {}) => {
         model.value = !model.value
@@ -597,6 +599,7 @@ if (typeof window !== 'undefined')
             includeCurrentPage.value = shouldIncludeCurrentPage
 
         if (!question.value) question.value = defaultValue || ''
+        if (value) question.value = value
     }
 
 function cancelRequest() {

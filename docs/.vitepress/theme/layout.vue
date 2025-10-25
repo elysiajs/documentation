@@ -14,7 +14,7 @@ import { useData, useRouter } from 'vitepress'
 import ClientOnly from '../../components/xiao/playground/components/client-only.vue'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
-import { File, Heart, Sparkles, Terminal } from 'lucide-vue-next'
+import { File, Heart, Search, Sparkles, Terminal } from 'lucide-vue-next'
 import mediumZoom from 'medium-zoom'
 
 import useDark from './use-dark'
@@ -29,12 +29,14 @@ const Arona = defineAsyncComponent(
 
 import { data } from '../../components/fern/sponsor.data'
 import { sponsorOverride } from '../../components/fern/sponsor.constant'
+import ElysiaSearch from './search.vue'
 
 const isDark = useDark()
 const { isDark: darkTheme } = useData()
 
 const showCard = ref(false)
 const showArona = ref(false)
+const showSearch = ref(false)
 
 watch(
     () => showCard.value,

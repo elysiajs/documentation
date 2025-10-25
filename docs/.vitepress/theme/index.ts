@@ -10,7 +10,6 @@ import { createPinia } from 'pinia'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
 import Layout from './layout.vue'
-import Search from './search.vue'
 
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
 import '@shikijs/vitepress-twoslash/style.css'
@@ -27,8 +26,6 @@ export default {
 
         app.use(pinia)
         app.use(TwoslashFloatingVue)
-
-        app.component('CustomSearch', Search)
     },
     setup() {
         // Get frontmatter and route

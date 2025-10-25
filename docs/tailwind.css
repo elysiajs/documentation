@@ -942,22 +942,6 @@ button.copy::after {
         & > .results {
             @apply relative mt-4 pb-4 px-3 min-h-full md:min-h-60;
 
-            &::before {
-                --image-size: calc(var(--spacing) * 40);
-
-                @apply flex justify-center items-end h-47.5 font-medium text-sm text-gray-500 m-auto translate-y-0.75 bg-no-repeat opacity-90;
-                aspect-ratio: 1/1;
-                background-image: url('/elysia/sprite/sit.webp');
-                background-position: calc(50% - 0.25rem) 0;
-                background-size: calc(var(--image-size) / 703 * 466)
-                    var(--image-size);
-                content: 'Looking for something?';
-            }
-
-            .dark &::before {
-                @apply !text-gray-400;
-            }
-
             &:has(li)::before {
                 @apply hidden;
             }
@@ -965,16 +949,6 @@ button.copy::after {
             &::after {
                 @apply fixed hidden md:block left-0 bottom-11 w-full h-0.25 bg-gray-400/25 dark:bg-gray-600/65;
                 content: '';
-            }
-
-            &:has(.no-results) {
-                @apply text-gray-500 !min-h-60 dark:text-gray-400;
-
-                &::before {
-                    @apply flex h-40 -translate-x-1.25 translate-y-3.75;
-                    background-position: calc(50% + 0.05rem) 0;
-                    content: '';
-                }
             }
 
             & > li {

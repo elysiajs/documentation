@@ -10,6 +10,7 @@ import llmstxt from 'vitepress-plugin-llms'
 import { analyzer } from 'vite-bundle-analyzer'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { comlink } from 'vite-plugin-comlink'
+import { fileURLToPath } from 'url'
 
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -44,6 +45,23 @@ export default defineConfig({
         },
         experimental: {
             // enableNativePlugin: true
+        },
+        resolve: {
+            alias: [
+                {
+                    find: /^.*\/VPLocalSearchBox\.vue$/,
+                    replacement: fileURLToPath(
+                        new URL(
+                            './theme/search.vue',
+                            import.meta.url
+                        )
+                    )
+                }
+            ]
+            // 'vitepress/dist/client/theme-default/components/VPLocalSearchBox.vue':
+            //     resolve(__dirname, './theme/search.vue'),
+            // 'vitepress/dist/client/theme-default/components/VPNavbarSearch.vue':
+            //     resolve(__dirname, './theme/navbar-search.vue')
         },
         plugins: [
             nodePolyfills({
