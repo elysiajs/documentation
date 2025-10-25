@@ -153,7 +153,7 @@
 
                         <article
                             id="elysia-chat-content"
-                            class="relative flex items-start flex-col h-full pt-15 pb-15 px-2 text-base overflow-x-hidden overflow-y-scroll"
+                            class="relative flex items-start flex-col w-full h-full pt-15 pb-15 px-2 text-base overflow-x-hidden overflow-y-scroll"
                             ref="chatbox"
                         >
                             <AnimatePresence>
@@ -227,6 +227,7 @@
                                 <motion.div
                                     v-else
                                     class="elysia-chan"
+                                    :class="`elysia-chan-${index}`"
                                     :initial="{ opacity: 0, y: 8, scale: 0.7 }"
                                     :animate="{ opacity: 1, y: 0, scale: 1 }"
                                     :transition="{
@@ -260,6 +261,22 @@
                                         index === history.length - 1
                                     "
                                 >
+                                    <Tooltip
+                                        :tip="
+                                            token === undefined ||
+                                            powToken === undefined
+                                                ? 'Verifying that you are a human...'
+                                                : 'Regenerate'
+                                        "
+                                    >
+                                        <button @click="scrollToMessage(index)">
+                                            <ArrowUp
+                                                stroke-width="1.5"
+                                                :size="16"
+                                            />
+                                        </button>
+                                    </Tooltip>
+
                                     <Tooltip
                                         :tip="
                                             token === undefined ||
@@ -463,7 +480,8 @@ import {
     Check,
     Loader,
     ThumbsUp,
-    ThumbsDown
+    ThumbsDown,
+    ArrowUp
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
 import { retry } from './retry'
@@ -676,6 +694,21 @@ function regenerate(index?: number) {
 function poweredBy() {
     router.go('/')
     _isExpanded.value = false
+}
+
+function scrollToMessage(index: number) {
+    requestAnimationFrame(() => {
+        const box = chatbox.value
+        const message = box?.querySelector(
+            `.elysia-chan-${index}`
+        ) as HTMLElement | null
+
+        if (box && message)
+            box.scrollTo({
+                top: message.offsetTop - box.clientHeight / 3,
+                behavior: 'smooth'
+            })
+    })
 }
 
 const copied = ref(false)
@@ -1104,15 +1137,15 @@ onUnmounted(() => {
 
         &,
         & > div {
-	        & > table > thead,
-	        & > table > tbody {
-	        	&,
-	 			& > tr,
-	    		& > tr > th,
-				& > tr > td {
-					@apply border border-gray-200 dark:border-gray-700;
-				}
-	        }
+            & > table > thead,
+            & > table > tbody {
+                &,
+                & > tr,
+                & > tr > th,
+                & > tr > td {
+                    @apply border border-gray-200 dark:border-gray-700;
+                }
+            }
         }
 
         & > h1,
@@ -1203,7 +1236,7 @@ onUnmounted(() => {
         * > *,
         * > * > * {
             & > div[theme] > .shiki {
-                @apply relative my-4 text-sm py-4 -mx-4 overflow-x-auto overflow-y-hidden;
+                @apply relative my-4 text-sm -mx-4;
                 background-color: var(--vp-code-copy-code-bg);
 
                 &:hover {
@@ -1225,10 +1258,15 @@ onUnmounted(() => {
                     border: 1px solid var(--vp-code-copy-code-border-color);
 
                     &::before {
-                        @apply flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500 !pr-1 !rounded-l-xl;
-                        transform: translateX(1.25px);
+                        @apply absolute flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500 !pr-1 !rounded-l-xl;
 
-                        content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>');
+                        content: '';
+                        top: -2.5px;
+                        left: -1px;
+                        background-size: 21px;
+                        background-image: var(--vp-icon-copy);
+                        background-repeat: no-repeat;
+                        background-position: center;
                     }
 
                     &::after {
@@ -1245,7 +1283,7 @@ onUnmounted(() => {
                         @apply !bg-white dark:!bg-gray-700 !pr-1;
 
                         &::before {
-                            content: url('data:image/svg+xml;utf,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="oklch(55.1% 0.027 264.364)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-copy-icon lucide-clipboard-copy"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v4"/><path d="M21 14H11"/><path d="m15 10-4 4 4 4"/></svg>');
+                        background-image: var(--vp-icon-copied);
                         }
 
                         &::after {
@@ -1255,7 +1293,7 @@ onUnmounted(() => {
                 }
 
                 & > code {
-                    @apply flex flex-col w-full;
+                    @apply flex flex-col w-full py-4 overflow-x-auto overflow-y-hidden;
 
                     & > .line {
                         @apply block w-full px-4;
@@ -1280,7 +1318,7 @@ onUnmounted(() => {
     }
 
     & > .elysia-chan-tools {
-        @apply flex items-center w-full px-1 -translate-y-3 mt-2 text-sm text-gray-400 *:interact:text-pink-500 *:interact:dark:text-pink-300 *:interact:bg-pink-300/15 *:dark:interact:bg-pink-200/15;
+        @apply flex items-end w-full px-1 -translate-y-3 mt-2 text-sm text-gray-400 *:interact:text-pink-500 *:interact:dark:text-pink-300 *:interact:bg-pink-300/15 *:dark:interact:bg-pink-200/15;
         animation: spring-in 0.6s var(--ease-out-expo);
 
         & > button,
@@ -1308,15 +1346,15 @@ onUnmounted(() => {
     }
 
     @keyframes spring-in {
-    	from {
-			transform: scale(0.7) translateY(8px);
-			opacity: 0;
-		}
+        from {
+            transform: scale(0.7) translateY(8px);
+            opacity: 0;
+        }
 
-		to {
-			transform: scale(1) translateY(0);
-			opacity: 1;
-		}
+        to {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
     }
 }
 </style>

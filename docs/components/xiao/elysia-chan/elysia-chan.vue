@@ -1,5 +1,9 @@
 <template>
-    <div class="absolute left-0 w-full h-0" ref="constraint">
+    <div
+        class="absolute left-0 w-full h-0"
+        ref="constraint"
+        :style="{ width: 'calc(100% - 96px)' }"
+    >
         <motion.div
             id="elysia-chan"
             drag="x"
@@ -197,8 +201,7 @@ watch(
         if (sit.value) {
             sprite.value.body = body.sit
             walkTo.value = x.get()
-        } else
-            sprite.value.body = body.stand
+        } else sprite.value.body = body.stand
     }
 )
 
