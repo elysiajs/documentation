@@ -103,6 +103,8 @@ pre.vp-code > code {
 }
 
 :root {
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
     --vp-c-brand-1: #f06292;
     --vp-c-brand-2: #f06292;
     --vp-c-brand-light: #ff94c2;

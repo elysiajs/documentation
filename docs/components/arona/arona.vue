@@ -250,7 +250,12 @@
                                                 ? 'catppuccin-mocha'
                                                 : 'catppuccin-latte'
                                         "
-                                        :class="isStreaming ? '-streaming' : ''"
+                                        :class="
+                                            isStreaming &&
+                                            history.length - 1 === i
+                                                ? '-streaming'
+                                                : ''
+                                        "
                                     />
                                 </motion.div>
 
@@ -529,8 +534,8 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
-// const url = 'http://localhost:3000'
-const url = 'https://arona.elysiajs.com'
+const url = 'http://localhost:3000'
+// const url = 'https://arona.elysiajs.com'
 
 watch(
     () => model.value,
@@ -626,6 +631,18 @@ watch(
         if (visible) {
             document.documentElement.classList.add('arona')
             document.body.style.overflow = isExpanded.value ? 'hidden' : ''
+
+            requestAnimationFrame(() => {
+                const a = document
+                    .querySelector('.elysia-chan > div')
+                    ?.querySelectorAll('a')
+
+                if (a && !location.href.includes('/tutorial'))
+                    a.forEach(reRouteLink)
+
+                if (chatbox.value)
+                    chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
+            })
         } else {
             document.documentElement.classList.remove('arona')
             document.body.style.overflow = ''
@@ -886,23 +903,24 @@ async function ask(input?: string, seed?: number) {
         ?.querySelector('.elysia-chan:last-child > div')
         ?.querySelectorAll('a')
 
-    if (a && !location.href.includes('/tutorial'))
-        a.forEach((link) => {
-            if (
-                link.href.startsWith('https://elysiajs.com') ||
-                link.href.startsWith('http://localhost')
-            )
-                link.removeAttribute('target')
+    if (a && !location.href.includes('/tutorial')) a.forEach(reRouteLink)
+}
 
-            const src = link.href.slice(link.href.indexOf('/', 11))
+function reRouteLink(link: HTMLAnchorElement) {
+    if (
+        link.href.startsWith('https://elysiajs.com') ||
+        link.href.startsWith('http://localhost')
+    )
+        link.removeAttribute('target')
 
-            link.addEventListener('click', (e) => {
-                e.preventDefault()
+    const src = link.href.slice(link.href.indexOf('/', 11))
 
-                router.go(src)
-                _isExpanded.value = false
-            })
-        })
+    link.addEventListener('click', (e) => {
+        e.preventDefault()
+
+        router.go(src)
+        _isExpanded.value = false
+    })
 }
 
 function turnstileCallback(turnstileToken: string) {
@@ -1319,7 +1337,7 @@ onUnmounted(() => {
     }
 
     & > .elysia-chan-tools {
-        @apply flex items-end w-full px-1 -translate-y-3 mt-2 text-sm text-gray-400 *:interact:text-pink-500 *:interact:dark:text-pink-300 *:interact:bg-pink-300/15 *:dark:interact:bg-pink-200/15;
+        @apply flex items-end w-full px-1 -translate-y-3 mt-2 text-sm text-gray-400 *:interact:text-pink-500 *:interact:dark:text-pink-300 *:interact:bg-pink-300/15 *:dark:interact:bg-pink-200/15 origin-top-left;
         animation: spring-in 0.6s var(--ease-out-expo);
 
         & > button,
@@ -1345,17 +1363,17 @@ onUnmounted(() => {
             }
         }
     }
+}
 
-    @keyframes spring-in {
-        from {
-            transform: scale(0.7) translateY(8px);
-            opacity: 0;
-        }
+@keyframes spring-in {
+    from {
+        transform: scale(0.9) translateY(8px);
+        opacity: 0;
+    }
 
-        to {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
     }
 }
 </style>
