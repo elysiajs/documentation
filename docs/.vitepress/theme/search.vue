@@ -446,6 +446,12 @@ function onMouseMove(e: MouseEvent) {
     }
     disableMouseOver.value = false
 }
+
+function toggleAI() {
+    // @ts-ignore
+    window.toggleAI({ value: filterText.value })
+    emit('close')
+}
 </script>
 
 <template>
@@ -563,10 +569,17 @@ function onMouseMove(e: MouseEvent) {
                                 !disableMouseOver && (selectedIndex = 0)
                             "
                             @focusin="selectedIndex = 0"
-                            @click="$emit('close')"
+                            @click="toggleAI"
                             :data-index="0"
                         >
-                            <div>
+                            <div
+                                style="
+                                    --vp-local-search-highlight-bg: transparent;
+                                    --vp-local-search-highlight-text: var(
+                                        --vp-c-brand-1
+                                    );
+                                "
+                            >
                                 <div class="titles">
                                     <span class="mr-1">
                                         <Sparkles
@@ -575,8 +588,15 @@ function onMouseMove(e: MouseEvent) {
                                         />
                                     </span>
                                     <span class="title">
-                                        <span class="text">
-                                            Ask Elysia<sup>(AI)</sup>
+                                        <span
+                                            class="text *:!p-0 !text-black dark:!text-white *:!text-black dark:*:!text-white"
+                                        >
+                                            Ask Elysia
+                                            <sup
+                                                class="!text-black dark:!text-white opacity-50 font-light text-xs"
+                                            >
+                                                (AI)
+                                            </sup>
                                         </span>
                                         <!-- <span
                                             class="vpi-chevron-right local-search-icon"
@@ -585,12 +605,6 @@ function onMouseMove(e: MouseEvent) {
                                     <span class="title main">
                                         <span
                                             class="text bold *:bg-transparent"
-                                            style="
-                                                --vp-local-search-highlight-bg: transparent;
-                                                --vp-local-search-highlight-text: var(
-                                                    --vp-c-brand-1
-                                                );
-                                            "
                                         >
                                             {{ filterText }}
                                         </span>
@@ -608,7 +622,9 @@ function onMouseMove(e: MouseEvent) {
                             src="/elysia/sprite/sit.webp"
                             alt="Elysia chan sitting"
                         />
-                        <h1 v-if="filterText && !results.length">Do you want my help?</h1>
+                        <h1 v-if="filterText && !results.length">
+                            Do you want my help?
+                        </h1>
                         <h1 v-else>Looking for something?</h1>
                     </div>
 
@@ -617,7 +633,7 @@ function onMouseMove(e: MouseEvent) {
                         :key="p.id"
                         :id="'localsearch-item-' + (index + 1)"
                         :aria-selected="
-                            selectedIndex === (index + 1) ? 'true' : 'false'
+                            selectedIndex === index + 1 ? 'true' : 'false'
                         "
                         role="option"
                     >
@@ -625,15 +641,15 @@ function onMouseMove(e: MouseEvent) {
                             :href="p.id"
                             class="result"
                             :class="{
-                                selected: selectedIndex === (index + 1)
+                                selected: selectedIndex === index + 1
                             }"
                             :aria-label="[...p.titles, p.title].join(' > ')"
                             @mouseenter="
-                                !disableMouseOver && (selectedIndex = (index + 1))
+                                !disableMouseOver && (selectedIndex = index + 1)
                             "
-                            @focusin="selectedIndex = (index + 1)"
+                            @focusin="selectedIndex = index + 1"
                             @click="$emit('close')"
-                            :data-index="(index + 1)"
+                            :data-index="index + 1"
                         >
                             <div>
                                 <div class="titles">
