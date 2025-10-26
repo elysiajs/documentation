@@ -14,7 +14,7 @@
     </header>
     <main class="flex flex-col max-w-5xl gap-6 w-full mx-auto p-4">
         <a
-            class="flex group gap-4 cursor-pointer !outline-none"
+            class="flex flex-col sm:flex-row items-start group gap-4 cursor-pointer !outline-none"
             :href="props.blogs[0].href"
             tabindex="1"
         >
