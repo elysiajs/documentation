@@ -205,7 +205,7 @@ EXPOSE 3000
 ```
 
 ### OpenTelemetry
-If you are using [OpenTelemetry](/integrations/opentelemetry) to deploys production server.
+If you are using [OpenTelemetry](/patterns/opentelemetry) to deploys production server.
 
 As OpenTelemetry rely on monkey-patching `node_modules/<library>`. It's required that make instrumentations works properly, we need to specify that libraries to be instrument is an external module to exclude it from being bundled.
 

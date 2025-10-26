@@ -46,7 +46,7 @@ new Elysia()
 Elysia OpenTelemetry is will **collect span of any library compatible OpenTelemetry standard**, and will apply parent and child span automatically.
 
 ## Usage
-See [opentelemetry](/integrations/opentelemetry) for usage and utilities
+See [opentelemetry](/patterns/opentelemetry) for usage and utilities
 
 ## Config
 This plugin extends OpenTelemetry SDK parameters options.

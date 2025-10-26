@@ -274,6 +274,10 @@ export default defineConfig({
                         link: '/patterns/openapi'
                     },
                     {
+                        text: 'OpenTelemetry',
+                        link: '/integrations/opentelemetry'
+                    },
+                    {
                         text: 'Trace',
                         link: '/patterns/trace'
                     },
@@ -458,10 +462,6 @@ export default defineConfig({
                     {
                         text: 'Nuxt',
                         link: '/integrations/nuxt'
-                    },
-                    {
-                        text: 'OpenTelemetry',
-                        link: '/integrations/opentelemetry'
                     },
                     {
                         text: 'Prisma',
