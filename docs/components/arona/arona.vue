@@ -35,6 +35,19 @@
                 style="will-change: transform, width, right"
                 aria-keyshortcuts="Meta+i"
             >
+                <div
+                    class="absolute flex justify-center items-end w-full h-full top-0 z-30 pointer-events-none"
+                    v-if="feedback"
+                >
+                    <div
+                        v-confetti="{
+                            particleCount: 100,
+                            force: 1.5,
+                            duration: 4500
+                        }"
+                    />
+                </div>
+
                 <motion.section
                     class="h-[calc(100dvh-4rem)] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden"
                     :initial="{ opacity: 0, y: 32, scale: 0.95 }"
@@ -465,6 +478,7 @@ import { motion, AnimatePresence } from 'motion-v'
 import { useTextareaAutosize, useWindowSize } from '@vueuse/core'
 
 import { StreamMarkdown } from 'streamdown-vue'
+import { vConfetti } from '@neoconfetti/vue'
 
 import Tooltip from './tooltip.vue'
 import A from './a.vue'
@@ -534,8 +548,9 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
-// const url = 'http://localhost:3000'
-const url = 'https://arona.elysiajs.com'
+const url = import.meta.env.DEV
+    ? 'http://localhost:3000'
+    : 'https://arona.elysiajs.com'
 
 watch(
     () => model.value,
@@ -1123,7 +1138,11 @@ onUnmounted(() => {
                 @apply flex flex-wrap gap-x-1 gap-y-2.5 list-none -mx-2;
 
                 & > li {
-                    @apply clicky text-xs my-0 w-auto;
+                    @apply text-xs my-0 w-auto;
+
+                    &:has(a) {
+                    	@apply clicky;
+                    }
 
                     & > a {
                         @apply px-2 py-1 text-gray-400 bg-gray-100/80 dark:bg-gray-700/80 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;

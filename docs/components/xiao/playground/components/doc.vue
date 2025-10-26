@@ -1,6 +1,6 @@
 <template>
     <div
-        class="relative w-full h-full border-gray-200 dark:border-gray-700 rounded-2xl overflow-y-scroll bg-white dark:bg-gray-900"
+        class="relative w-full h-full border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-900"
         :class="{ border: store.tab.aside !== null }"
     >
         <div
@@ -21,7 +21,7 @@
             :class="{ hidden: store.tab.aside !== 'docs' }"
             :src="store.doc"
         />
-        <article class="relative w-full overflow-hidden">
+        <article class="relative w-full h-full overflow-x-hidden overflow-y-auto">
             <Ray
                 class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
             />
@@ -196,7 +196,6 @@ import { ref } from 'vue'
 import { watchDebounced } from '@vueuse/core'
 import { useRouter } from 'vitepress'
 
-import { SplitterPanel } from 'reka-ui'
 import { Circle, CircleCheckBig } from 'lucide-vue-next'
 
 import { vConfetti } from '@neoconfetti/vue'
