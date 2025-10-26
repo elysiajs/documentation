@@ -275,7 +275,7 @@ export default defineConfig({
                     },
                     {
                         text: 'OpenTelemetry',
-                        link: '/integrations/opentelemetry'
+                        link: '/patterns/opentelemetry'
                     },
                     {
                         text: 'Trace',
