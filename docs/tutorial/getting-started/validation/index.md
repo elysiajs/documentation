@@ -96,7 +96,7 @@ See <DocLink href="/essential/validation#schema-type">Schema Type</DocLink> for 
 ## Response Validation
 When you define a validation schema for `response`, Elysia will validate the response before sending it to the client, and type check the response for you.
 
-You can also specified which status code to validate:
+You can also specify which status code to validate:
 ```typescript
 import { Elysia, t } from 'elysia'
 
