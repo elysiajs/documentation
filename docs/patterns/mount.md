@@ -7,7 +7,7 @@ head:
 
   - - meta
     - name: 'description'
-      content: Applying WinterCG interoperable code to run with Elysia or vice-versa.
+      content: Applying WinterTC interoperable code to run with Elysia or vice-versa.
 
   - - meta
     - property: 'og:description'
@@ -21,7 +21,7 @@ It allows web servers to run interoperably across runtimes by using [Request](ht
 
 Elysia is WinterTC compliant. Optimized to run on Bun, but also support other runtimes if possible.
 
-This allows any framework or code that is WinterCG compliant to be run together, allowing frameworks like Elysia, Hono, Remix, Itty Router to run together in a simple function.
+This allows any framework or code that is WinterTC compliant to be run together, allowing frameworks like Elysia, Hono, Remix, Itty Router to run together in a simple function.
 
 ## Mount
 To use **.mount**, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
