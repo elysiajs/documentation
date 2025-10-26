@@ -22,14 +22,8 @@ To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin
 import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysiajs/opentelemetry'
 
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
-
-new Elysia().use(
-	opentelemetry({
-		spanProcessors: [new BatchSpanProcessor(new OTLPTraceExporter())]
-	})
-)
+new Elysia()
+	.use(opentelemetry())
 ```
 
 ![jaeger showing collected trace automatically](/blog/elysia-11/jaeger.webp)
