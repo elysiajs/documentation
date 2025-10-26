@@ -41,7 +41,7 @@ new Elysia()
     .listen(3000)
 ```
 
-A handler can also be an literal value, see <DocLink href="/essential/handler">Handler</DocLink>
+A handler can also be a literal value, see <DocLink href="/essential/handler">Handler</DocLink>
 
 ```ts
 import { Elysia } from 'elysia'
