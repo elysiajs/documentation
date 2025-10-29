@@ -119,9 +119,6 @@ if (props.testcases) store.testcases = props.testcases
 
 store.load()
 
-if (!store.fs['index.ts'] && props.code) store.run()
-else if (store.fs['index.ts']) store.run({ test: true })
-
 onMounted(() => {
     if (!document.documentElement.classList.contains('overscroll-none'))
         document.documentElement.classList.add('overscroll-none')
@@ -129,6 +126,9 @@ onMounted(() => {
     window.addEventListener('beforeunload', store.save, {
         passive: true
     })
+
+    if (!store.fs['index.ts'] && props.code) store.run()
+    else if (store.fs['index.ts']) store.run({ test: true })
 })
 
 onUnmounted(() => {

@@ -58,10 +58,6 @@ export default defineConfig({
                     )
                 }
             ]
-            // 'vitepress/dist/client/theme-default/components/VPLocalSearchBox.vue':
-            //     resolve(__dirname, './theme/search.vue'),
-            // 'vitepress/dist/client/theme-default/components/VPNavbarSearch.vue':
-            //     resolve(__dirname, './theme/navbar-search.vue')
         },
         plugins: [
             nodePolyfills({

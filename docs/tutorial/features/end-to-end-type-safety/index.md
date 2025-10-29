@@ -1,6 +1,7 @@
 ---
 title: End-to-End Type Safety - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

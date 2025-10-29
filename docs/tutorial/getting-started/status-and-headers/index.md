@@ -1,6 +1,7 @@
 ---
 title: Status and Headers - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

@@ -1,6 +1,7 @@
 ---
 title: Error Handling - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

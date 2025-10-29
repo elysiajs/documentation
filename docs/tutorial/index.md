@@ -1,6 +1,7 @@
 ---
 title: Introduction - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

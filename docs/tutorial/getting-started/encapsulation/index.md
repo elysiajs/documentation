@@ -1,6 +1,7 @@
 ---
 title: Encapsulation - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

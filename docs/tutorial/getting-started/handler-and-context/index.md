@@ -1,6 +1,7 @@
 ---
 title: Handler and Context - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

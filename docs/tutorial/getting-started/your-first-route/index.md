@@ -1,6 +1,7 @@
 ---
 title: Your First Route - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

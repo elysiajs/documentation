@@ -1,6 +1,7 @@
 ---
 title: What's Next - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

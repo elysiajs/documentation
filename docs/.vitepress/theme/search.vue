@@ -614,7 +614,7 @@ function toggleAI() {
                         </button>
                     </li>
                     <div
-                        class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-400 m-auto md:mt-10 md:mb-6 opacity-90"
+                        class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-gray-300 m-auto md:mt-10 md:mb-6 opacity-90"
                         v-if="!filterText || (filterText && !results.length)"
                     >
                         <img
@@ -623,7 +623,7 @@ function toggleAI() {
                             alt="Elysia chan sitting"
                         />
                         <h1 v-if="filterText && !results.length">
-                            Do you want my help?
+                        	Not found? Maybe I can help!
                         </h1>
                         <h1 v-else>Looking for something?</h1>
                     </div>
@@ -674,7 +674,7 @@ function toggleAI() {
                                     class="excerpt-wrapper"
                                 >
                                     <div v-if="p.text" class="excerpt" inert>
-                                        <div class="vp-doc" v-html="p.text" />
+                                        <!-- <div class="vp-doc" v-html="p.text" /> -->
                                     </div>
                                     <div class="excerpt-gradient-bottom" />
                                     <div class="excerpt-gradient-top" />

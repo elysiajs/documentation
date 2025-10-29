@@ -1,6 +1,7 @@
 ---
 title: Standalone Schema - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta

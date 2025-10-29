@@ -66,6 +66,8 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         const lastSwitchTime = +lastSwitch
 
         if (Date.now() - lastSwitchTime > 3 * 60 * 1000) {
+        	console.log("A")
+
             if (document.documentElement.classList.contains('-animated'))
                 document.documentElement.classList.remove('-animated')
         } else {
