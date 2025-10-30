@@ -39,7 +39,7 @@ const demo2 = new Elysia()
 
 # Key Concept <Badge type="danger" text="MUST READ" />
 
-Elysia has a every important concepts that you need to understand to use.
+Elysia has very important concepts that you need to understand to begin with.
 
 This page covers most concepts that you should know before getting started.
 
