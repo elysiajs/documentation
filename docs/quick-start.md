@@ -348,7 +348,7 @@ Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `t
 
 <template v-slot:web-standard>
 
-Elysia is a WinterCG compliance library, which means if a framework or runtime supports Web Standard Request/Response, it can run Elysia.
+Elysia is a WinterTC compliant library, which means if a framework or runtime supports Web Standard Request/Response, it can run Elysia.
 
 First, install Elysia with the command below:
 

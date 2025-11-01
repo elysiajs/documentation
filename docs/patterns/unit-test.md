@@ -16,7 +16,7 @@ head:
 
 # Unit Test
 
-Being WinterCG compliant, we can use Request / Response classes to test an Elysia server.
+Being WinterTC compliant, we can use Request / Response classes to test an Elysia server.
 
 Elysia provides the **Elysia.handle** method, which accepts a Web Standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) and returns [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response), simulating an HTTP Request.
 
