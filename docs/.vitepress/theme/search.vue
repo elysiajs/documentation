@@ -251,14 +251,24 @@ debouncedWatch(
         // FIXME: without this whole page scrolls to the bottom
         resultsEl.value?.firstElementChild?.scrollIntoView({ block: 'start' })
     },
-    { debounce: 200, immediate: true }
+    { debounce: 150, immediate: true }
 )
 
+const excerptCache = new LRUCache<string, unknown>(256) // 256 excerpts
+
 async function fetchExcerpt(id: string) {
+    const cache = excerptCache.get(id)
+    if (cache)
+        return { id, mod: cache }
+
     const file = pathToFile(id.slice(0, id.indexOf('#')))
     try {
         if (!file) throw new Error(`Cannot find file for id: ${id}`)
-        return { id, mod: await import(/*@vite-ignore*/ file) }
+        const mod = await import(/*@vite-ignore*/ file)
+
+        excerptCache.set(id, mod)
+
+        return { id, mod }
     } catch (e) {
         console.error(e)
         return { id, mod: {} }
