@@ -27,10 +27,10 @@ import {
     useSessionStorage
 } from '@vueuse/core'
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
+import { motion, AnimatePresence, easingDefinitionToFunction } from 'motion-v'
 
 // @ts-ignore
 import localSearchIndex from '@localSearchIndex'
-import Mark from 'mark.js/src/vanilla.js'
 
 import { LRUCache } from './search/lru-cache'
 import { useData } from './search/use-data'
@@ -160,11 +160,6 @@ watch(filterText, () => {
     enableNoResults.value = false
 })
 
-const mark = computedAsync(async () => {
-    if (!resultsEl.value) return
-    return markRaw(new Mark(resultsEl.value))
-}, null)
-
 const cache = new LRUCache<string, Map<string, string>>(16) // 16 files
 
 debouncedWatch(
@@ -253,20 +248,6 @@ debouncedWatch(
         await nextTick()
         if (canceled) return
 
-        await new Promise((r) => {
-            mark.value?.unmark({
-                done: () => {
-                    mark.value?.markRegExp(formMarkRegex(terms), { done: r })
-                }
-            })
-        })
-
-        const excerpts = el.value?.querySelectorAll('.result .excerpt') ?? []
-        for (const excerpt of excerpts) {
-            excerpt
-                .querySelector('mark[data-markjs="true"]')
-                ?.scrollIntoView({ block: 'center' })
-        }
         // FIXME: without this whole page scrolls to the bottom
         resultsEl.value?.firstElementChild?.scrollIntoView({ block: 'start' })
     },
@@ -465,10 +446,46 @@ function toggleAI() {
             aria-labelledby="localsearch-label"
             class="VPLocalSearchBox"
         >
-            <div class="backdrop" @click="$emit('close')" />
+            <motion.div
+                class="backdrop"
+                @click="$emit('close')"
+                :initial="{
+                    opacity: 0
+                }"
+                :animate="{
+                    opacity: 1
+                }"
+                :exit="{
+                    opacity: 0
+                }"
+                :transition="{
+                    duration: 0.55,
+                    ease: [0.16, 1, 0.3, 1]
+                }"
+            />
 
-            <div class="shell">
-                <form
+            <motion.div
+                layout="size"
+                class="shell"
+                :initial="{
+                    opacity: 0,
+                    scale: 0.925
+                }"
+                :animate="{
+                    opacity: 1,
+                    scale: 1
+                }"
+                :exit="{
+                    opacity: 0,
+                    scale: 0.925
+                }"
+                :transition="{
+                    duration: 0.55,
+                    ease: [0.16, 1, 0.3, 1]
+                }"
+            >
+                <motion.form
+                    layout
                     class="search-bar"
                     @pointerup="onSearchBarClick($event)"
                     @submit.prevent=""
@@ -541,7 +558,7 @@ function toggleAI() {
                             <span class="vpi-delete local-search-icon" />
                         </button>
                     </div>
-                </form>
+                </motion.form>
 
                 <ul
                     ref="resultsEl"
@@ -553,147 +570,249 @@ function toggleAI() {
                     class="results"
                     @mousemove="onMouseMove"
                 >
-                    <li
-                        v-if="filterText"
-                        :id="'localsearch-item-0'"
-                        :aria-selected="selectedIndex === 0 ? 'true' : 'false'"
-                        role="option"
-                    >
-                        <button
-                            class="result w-full"
-                            :class="{
-                                selected: selectedIndex === 0
-                            }"
-                            aria-label="Ask Elysia chan (AI)"
-                            @mouseenter="
-                                !disableMouseOver && (selectedIndex = 0)
+                    <AnimatePresence>
+                        <motion.li
+                            layout="position"
+                            v-if="filterText"
+                            :id="'localsearch-item-0'"
+                            :aria-selected="
+                                selectedIndex === 0 ? 'true' : 'false'
                             "
-                            @focusin="selectedIndex = 0"
-                            @click="toggleAI"
-                            :data-index="0"
+                            role="option"
+                            :initial="{
+                                opacity: 0,
+                                scale: 0.925
+                            }"
+                            :animate="{
+                                opacity: 1,
+                                scale: 1
+                            }"
+                            :exit="{
+                                opacity: 0,
+                                height: 0,
+                                scale: 0.925,
+                                transition: {
+                                    duration: 0.2
+                                }
+                            }"
+                            :transition="{
+                                duration: 0.55,
+                                ease: [0.16, 1, 0.3, 1]
+                            }"
                         >
-                            <div
-                                style="
-                                    --vp-local-search-highlight-bg: transparent;
-                                    --vp-local-search-highlight-text: var(
-                                        --vp-c-brand-1
-                                    );
+                            <button
+                                class="result w-full"
+                                :class="{
+                                    selected: selectedIndex === 0
+                                }"
+                                aria-label="Ask Elysia chan (AI)"
+                                @mouseenter="
+                                    !disableMouseOver && (selectedIndex = 0)
                                 "
+                                @focusin="selectedIndex = 0"
+                                @click="toggleAI"
+                                :data-index="0"
                             >
-                                <div class="titles">
-                                    <span class="mr-1">
-                                        <Sparkles
-                                            :size="18"
-                                            stroke-width="1.5"
-                                        />
-                                    </span>
-                                    <span class="title">
-                                        <span
-                                            class="text *:!p-0 !text-black dark:!text-white *:!text-black dark:*:!text-white"
-                                        >
-                                            Ask Elysia
-                                            <sup
-                                                class="!text-black dark:!text-white opacity-50 font-light text-xs"
-                                            >
-                                                (AI)
-                                            </sup>
-                                        </span>
-                                        <!-- <span
-                                            class="vpi-chevron-right local-search-icon"
-                                        /> -->
-                                    </span>
-                                    <span class="title main">
-                                        <span
-                                            class="text bold *:bg-transparent *:!p-0"
-                                        >
-                                            {{ filterText }}
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                        </button>
-                    </li>
-                    <div
-                        class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-gray-300 m-auto md:mt-10 md:mb-6 opacity-90"
-                        v-if="!filterText || (filterText && !results.length)"
-                    >
-                        <img
-                            class="h-40 object-contain object-center -translate-x-2"
-                            src="/elysia/sprite/sit.webp"
-                            alt="Elysia chan sitting"
-                        />
-                        <h1 v-if="filterText && !results.length">
-                        	Not found? Maybe I can help!
-                        </h1>
-                        <h1 v-else>Looking for something?</h1>
-                    </div>
-
-                    <li
-                        v-for="(p, index) in results"
-                        :key="p.id"
-                        :id="'localsearch-item-' + (index + 1)"
-                        :aria-selected="
-                            selectedIndex === index + 1 ? 'true' : 'false'
-                        "
-                        role="option"
-                    >
-                        <a
-                            :href="p.id"
-                            class="result"
-                            :class="{
-                                selected: selectedIndex === index + 1
-                            }"
-                            :aria-label="[...p.titles, p.title].join(' > ')"
-                            @mouseenter="
-                                !disableMouseOver && (selectedIndex = index + 1)
-                            "
-                            @focusin="selectedIndex = index + 1"
-                            @click="$emit('close')"
-                            :data-index="index + 1"
-                        >
-                            <div>
-                                <div class="titles">
-                                    <span class="title-icon">#</span>
-                                    <span
-                                        v-for="(t, index) in p.titles"
-                                        :key="index"
-                                        class="title"
-                                    >
-                                        <span class="text" v-html="t" />
-                                        <span
-                                            class="vpi-chevron-right local-search-icon"
-                                        />
-                                    </span>
-                                    <span class="title main">
-                                        <span class="text" v-html="p.title" />
-                                    </span>
-                                </div>
-
                                 <div
-                                    v-if="showDetailedList"
-                                    class="excerpt-wrapper"
+                                    style="
+                                        --vp-local-search-highlight-bg: transparent;
+                                        --vp-local-search-highlight-text: var(
+                                            --vp-c-brand-1
+                                        );
+                                    "
                                 >
-                                    <div v-if="p.text" class="excerpt" inert>
-                                        <!-- <div class="vp-doc" v-html="p.text" /> -->
+                                    <div class="titles">
+                                        <span class="mr-1">
+                                            <Sparkles
+                                                :size="18"
+                                                stroke-width="1.5"
+                                            />
+                                        </span>
+                                        <span class="title">
+                                            <span
+                                                class="text *:!p-0 !text-black dark:!text-white *:!text-black dark:*:!text-white"
+                                            >
+                                                Ask Elysia
+                                                <sup
+                                                    class="!text-black dark:!text-white opacity-50 font-light text-xs"
+                                                >
+                                                    (AI)
+                                                </sup>
+                                            </span>
+                                            <!-- <span
+	                                        class="vpi-chevron-right local-search-icon"
+	                                    /> -->
+                                        </span>
+                                        <span class="title main">
+                                            <span
+                                                class="text bold *:bg-transparent *:!p-0"
+                                            >
+                                                {{ filterText }}
+                                            </span>
+                                        </span>
                                     </div>
-                                    <div class="excerpt-gradient-bottom" />
-                                    <div class="excerpt-gradient-top" />
                                 </div>
-                            </div>
-                        </a>
-                    </li>
+                            </button>
+                        </motion.li>
+                    </AnimatePresence>
+
+                    <AnimatePresence>
+                        <motion.div
+                            class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-gray-300 m-auto md:mt-10 md:mb-6 opacity-90"
+                            v-if="
+                                !filterText || (filterText && !results.length)
+                            "
+                            :initial="{
+                                opacity: 0
+                            }"
+                            :animate="{
+                                opacity: 1,
+                                transition: {
+                                    delay: 0.15
+                                }
+                            }"
+                            :exit="{
+                                opacity: 0,
+                                height: 0,
+                                transition: {
+                                    duration: 0.2
+                                }
+                            }"
+                            :transition="{
+                                duration: 0.7,
+                                ease: [0.16, 1, 0.3, 1]
+                            }"
+                        >
+                            <img
+                                class="h-40 object-contain object-center -translate-x-2"
+                                src="/elysia/sprite/sit.webp"
+                                alt="Elysia chan sitting"
+                            />
+                            <h1 v-if="filterText && !results.length">
+                                Not found? Maybe I can help!
+                            </h1>
+                            <h1 v-else>Looking for something?</h1>
+                        </motion.div>
+                    </AnimatePresence>
+
+                    <AnimatePresence>
+                        <motion.li
+                            v-for="(p, index) in results"
+                            :key="p.id"
+                            class="result-layout"
+                            :id="'localsearch-item-' + (index + 1)"
+                            :aria-selected="
+                                selectedIndex === index + 1 ? 'true' : 'false'
+                            "
+                            role="option"
+                            :initial="{
+                                opacity: 0,
+                                scale: 0.925
+                            }"
+                            :animate="{
+                                opacity: 1,
+                                scale: 1
+                            }"
+                            :exit="{
+                                opacity: 0,
+                                scale: 0.925,
+                                height: 0,
+                                transition: {
+                                    duration: 0.2
+                                }
+                            }"
+                            :transition="{
+                                duration: 0.55,
+                                ease: [0.16, 1, 0.3, 1],
+                                delay: index * 0.02
+                            }"
+                        >
+                            <a
+                                :href="p.id"
+                                class="result"
+                                :class="{
+                                    selected: selectedIndex === index + 1
+                                }"
+                                :aria-label="[...p.titles, p.title].join(' > ')"
+                                @mouseenter="
+                                    !disableMouseOver &&
+                                    (selectedIndex = index + 1)
+                                "
+                                @focusin="selectedIndex = index + 1"
+                                @click="$emit('close')"
+                                :data-index="index + 1"
+                            >
+                                <div>
+                                    <div class="titles">
+                                        <span class="title-icon">#</span>
+                                        <span
+                                            v-for="(t, index) in p.titles"
+                                            :key="index"
+                                            class="title"
+                                        >
+                                            <span class="text" v-html="t" />
+                                            <span
+                                                class="vpi-chevron-right local-search-icon"
+                                            />
+                                        </span>
+                                        <span class="title main">
+                                            <span
+                                                class="text"
+                                                v-html="p.title"
+                                            />
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        v-if="showDetailedList"
+                                        class="excerpt-wrapper"
+                                    >
+                                        <AnimatePresence>
+                                            <motion.div
+                                                v-if="p.text"
+                                                layout
+                                                :initial="{
+                                                    height: 0
+                                                }"
+                                                :animate="{
+                                                    height: 'auto'
+                                                }"
+                                                :exit="{
+                                                    height: 0
+                                                }"
+                                                :transition="{
+                                                    duration: 0.55,
+                                                    ease: [0.16, 1, 0.3, 1],
+                                                    delay: index * 0.02
+                                                }"
+                                                class="excerpt"
+                                                inert
+                                            >
+                                                <div
+                                                    class="vp-doc"
+                                                    v-html="p.text"
+                                                />
+                                            </motion.div>
+                                        </AnimatePresence>
+                                        <div class="excerpt-gradient-bottom" />
+                                        <div class="excerpt-gradient-top" />
+                                    </div>
+                                </div>
+                            </a>
+                        </motion.li>
+                    </AnimatePresence>
                     <!-- <li
-                        v-if="filterText && !results.length && enableNoResults"
-                        class="no-results"
-                    >
-                        {{ translate('modal.noResultsText') }} "<strong>{{
-                            filterText
-                        }}</strong
-                        >"
-                    </li> -->
+                    v-if="filterText && !results.length && enableNoResults"
+                    class="no-results"
+                >
+                    {{ translate('modal.noResultsText') }} "<strong>{{
+                        filterText
+                    }}</strong
+                    >"
+                </li> -->
                 </ul>
 
-                <div class="search-keyboard-shortcuts">
+                <motion.div layout class="search-keyboard-shortcuts">
                     <span>
                         <kbd
                             :aria-label="
@@ -732,8 +851,8 @@ function toggleAI() {
                         >
                         {{ translate('modal.footer.closeText') }}
                     </span>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     </Teleport>
 </template>
@@ -751,6 +870,7 @@ function toggleAI() {
     inset: 0;
     background: var(--vp-backdrop-bg-color);
     transition: opacity 0.5s;
+    will-change: opacity;
 }
 
 .shell {
@@ -765,6 +885,7 @@ function toggleAI() {
     height: min-content;
     max-height: min(100vh - 128px, 900px);
     border-radius: 6px;
+    will-change: transform, opacity, height;
 }
 
 @media (max-width: 767px) {
@@ -784,6 +905,7 @@ function toggleAI() {
     align-items: center;
     padding: 0 12px;
     cursor: text;
+    will-change: height;
 }
 
 @media (max-width: 767px) {
@@ -904,6 +1026,10 @@ function toggleAI() {
     overscroll-behavior: contain;
 }
 
+.result-layout {
+    will-change: transform, opacity, height;
+}
+
 .result {
     display: flex;
     align-items: center;
@@ -972,6 +1098,7 @@ function toggleAI() {
     overflow: hidden;
     position: relative;
     margin-top: 4px;
+    will-change: height;
 }
 
 .result.selected .excerpt {

@@ -914,13 +914,11 @@ button.copy::after {
 .VPLocalSearchBox {
     & > .backdrop {
         @apply !bg-black/7.5;
-        animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     & > .shell {
         /* 688px is the max-width of the content (Vitepress default) */
         @apply !gap-0 md:max-w-[688px] !px-0 md:translate-x-2 !bg-white md:!bg-white/70 dark:!bg-gray-900 md:dark:!bg-gray-800/80 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-gray-700 md:shadow-xl shadow-black/5;
-        animation: search-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
         & > .search-bar {
             @apply py-0.25 px-1.5 !rounded-xl bg-gray-200/40 dark:bg-gray-600/20 !border-gray-400/25 dark:!border-gray-600/65 mx-auto;
@@ -971,28 +969,6 @@ button.copy::after {
                 @apply rounded-lg dark:!bg-gray-700;
             }
         }
-    }
-}
-
-@keyframes search-in {
-    from {
-        opacity: 0;
-        transform: translateY(1.25rem);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
     }
 }
 
