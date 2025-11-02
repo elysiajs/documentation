@@ -259,10 +259,10 @@ debouncedWatch(
 
         resultsEl.value?.scrollTo(0, 0)
     },
-    { debounce: 200, immediate: true }
+    { debounce: 180, immediate: true }
 )
 
-const excerptCache = new LRUCache<string, unknown>(256) // 256 excerpts
+const excerptCache = new LRUCache<string, unknown>(60) // 60 excerpts
 
 async function fetchExcerpt(id: string) {
     const cache = excerptCache.get(id)
