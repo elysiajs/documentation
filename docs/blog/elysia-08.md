@@ -3,6 +3,7 @@ title: Elysia 0.8 - Gate of Steiner
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -10,11 +11,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Introducing Macro API, a new way to interact with Elysia. New Lifecycle, resolve, and mapResponse to interact with Elysia even more. Static Content to compile static resource ahead of time. Default Property, Default Header and several improvement.
+        content: Introducing Macro API, a new way to interact with Elysia. New lifecycle, resolve, and mapResponse to interact with Elysia even more. Static Content to compile static resources ahead of time. Default Property, Default Header, and several improvements.
 
     - - meta
       - property: 'og:description'
-        content: Introducing Macro API, a new way to interact with Elysia. New Lifecycle, resolve, and mapResponse to interact with Elysia even more. Static Content to compile static resource ahead of time. Default Property, Default Header and several improvement.
+        content: Introducing Macro API, a new way to interact with Elysia. New lifecycle, resolve, and mapResponse to interact with Elysia even more. Static Content to compile static resources ahead of time. Default Property, Default Header, and several improvements.
 
     - - meta
       - property: 'og:image'
@@ -39,9 +40,9 @@ head:
 
 Named after the ending song of Steins;Gate Zero, [**"Gate of Steiner"**](https://youtu.be/S5fnglcM5VI).
 
-Gate of Steiner isn't focused on new exciting APIs and features but on API stability and a solid foundation to make sure that the API will be stable once Elysia 1.0 is released.
+Gate of Steiner isn't focused on new, exciting APIs and features but on API stability and a solid foundation to make sure the API will be stable once Elysia 1.0 is released.
 
-However, we do bring improvement and new features including:
+However, we do bring improvements and new features, including:
 - [Macro API](#macro-api)
 - [New Lifecycle: resolve, mapResponse](#new-life-cycle)
 - [Error Function](#error-function)
@@ -51,11 +52,12 @@ However, we do bring improvement and new features including:
 - [Performance and Notable Improvement](#performance-and-notable-improvement)
 
 ## Macro API
-Macro allows us to define a custom field to hook and guard by exposing full control of the life cycle event stack.
 
-Allowing us to compose custom logic into a simple configuration with full type safety.
+Macro allows us to define a custom field to hook and guard by exposing full control over the life cycle event stack.
 
-Suppose we have an authentication plugin to restrict access based on role, we can define a custom **role** field.
+This allows us to compose custom logic into a simple configuration with full type safety.
+
+Suppose we have an authentication plugin to restrict access based on role; we can define a custom **role** field.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -76,32 +78,36 @@ const plugin = new Elysia({ name: 'plugin' }).macro(({ beforeHandle }) => {
             beforeHandle(
                 { insert: 'before' },
                 async ({ cookie: { session } }) => {
-                  const user = await validateSession(session.value)
-                  await validateRole('admin', user)
-}
+                    const user = await validateSession(session.value)
+                    await validateRole('admin', user)
+                }
             )
         }
     }
 })
 ```
 
-We hope that with this macro API, plugin maintainers will be able to customize Elysia to their heart's content opening a new way to interact better with Elysia, and Elysia users will be able to enjoy even more ergonomic API Elysia could provide.
+We hope that with this macro API, plugin maintainers will be able to customize Elysia to their heart's content, opening a new way to interact better with Elysia, and Elysia users will be able to enjoy even more ergonomic APIs Elysia could provide.
 
-The documentation of [Macro API](/patterns/macro) is now available in **pattern** section.
+The documentation for [Macro API](/patterns/macro) is now available in the **pattern** section.
 
-The next generation of customizability is now only a reach away from your keyboard and imagination.
+The next generation of customizability is now just a reach away from your keyboard and imagination.
 
 ## New Life Cycle
-Elysia introduced a new life cycle to fix an existing problem and highly requested API including **Resolve** and **MapResponse**:
-resolve: a safe version of **derive**. Execute in the same queue as **beforeHandle**
-mapResponse: Execute just after **afterResponse** for providing transform function from primitive value to Web Standard Response
+
+Elysia introduces a new life cycle to fix an existing problem and add highly requested APIs, including **Resolve** and **MapResponse**:
+resolve: a safe version of **derive**. Executes in the same queue as **beforeHandle**
+mapResponse: Executes just after **afterResponse** to provide a transform function from a primitive value to a Web Standard Response
 
 ### Resolve
+
 A "safe" version of [derive](/essential/context.html#derive).
 
-Designed to append new value to context after validation process storing in the same stack as **beforeHandle**.
+Designed to append a new value to the context after validation, storing it in the same stack as **beforeHandle**.
 
-Resolve syntax is identical to [derive](/life-cycle/before-handle#derive), below is an example of retrieving a bearer header from Authorization plugin.
+The syntax for Resolve is identical to [derive](/life-cycle/before-handle#derive).
+
+Below is an example of retrieving a bearer header from Authorization plugin.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -126,9 +132,10 @@ new Elysia()
 ```
 
 ### MapResponse
-Executed just after **"afterHandle"**, designed to provide custom response mapping from primitive value into a Web Standard Response.
 
-Below is an example of using mapResponse to provide Response compression.
+Executed just after **afterHandle**; designed to provide custom response mapping from a primitive value into a Web Standard Response.
+
+Below is an example of using mapResponse to provide response compression.
 
 ```typescript
 import { Elysia, mapResponse } from 'elysia'
@@ -147,17 +154,18 @@ new Elysia()
     .listen(3000)
 ```
 
-Why not use **afterHandle** but introduce a new API?
+Why not use **afterHandle** instead of introducing a new API?
 
 Because **afterHandle** is designed to read and modify a primitive value. Storing plugins like HTML, and Compression which depends on creating Web Standard Response.
 
-This means that plugins registered after this type of plugin will be unable to read a value or modify the value making the plugin behavior incorrect.
+This means that plugins registered after this type of plugin will be unable to read or modify the value, making the plugin behavior incorrect.
 
-This is why we introduce a new life-cycle run after **afterHandle** dedicated to providing a custom response mapping instead of mixing the response mapping and primitive value mutation in the same queue.
-
+This is why we introduce a new life cycle that runs after **afterHandle**, dedicated to providing a custom response mapping instead of mixing response mapping and primitive value mutation in the same queue.
 
 ## Error Function
+
 We can set the status code by using either **set.status** or returning a new Response.
+
 ```typescript
 import { Elysia } from 'elysia'
 
@@ -170,15 +178,15 @@ new Elysia()
     .listen(3000)
 ```
 
-This aligns with our goal, to just the literal value to the client instead of worrying about how the server should behave.
+This aligns with our goal: to send the literal value to the client instead of worrying about how the server should behave.
 
-However, this is proven to have a challenging integration with Eden. Since we return a literal value, we can't infer the status code from the response making Eden unable to differentiate the response from the status code.
+However, this has proven challenging to integrate with Eden. Since we return a literal value, we can't infer the status code from the response, making Eden unable to differentiate the response from the status code.
 
-This results in Eden not being able to use its full potential, especially in error handling as it cannot infer type without declaring explicit response type for each status.
+This prevents Eden from reaching its full potential, especially in error handling, as it cannot infer types without declaring an explicit response type for each status.
 
-Along with many requests from our users wanting to have a more explicit way to return the status code directly with the value, not wanting to rely on **set.status**, and **new Response** for verbosity or returning a response from utility function declared outside handler function.
+Along with many requests from our users for a more explicit way to return the status code directly with the value—without relying on **set.status** or **new Response**, which can be verbose or require returning a response from a utility function declared outside the handler function.
 
-This is why we introduce an **error** function to return a status code alongside with value back to the client.
+This is why we introduce an **error** function to return a status code alongside the value back to the client.
 
 ```typescript
 import { Elysia, error } from 'elysia' // [!code ++]
@@ -188,7 +196,8 @@ new Elysia()
     .listen(3000)
 ```
 
-Which is an equivalent to:
+Which is equivalent to:
+
 ```typescript
 import { Elysia } from 'elysia'
 
@@ -203,7 +212,7 @@ new Elysia()
 
 The difference is that using an **error** function, Elysia will automatically differentiate from the status code into a dedicated response type, helping Eden to infer a response based on status correctly.
 
-This means that by using **error**, we don't have to include the explicit response schema to make Eden infers type correctly for each status code.
+This means that by using **error**, we don't have to include an explicit response schema to make Eden infer types correctly for each status code.
 
 ```typescript
 import { Elysia, error, t } from 'elysia'
@@ -220,16 +229,17 @@ new Elysia()
     .listen(3000)
 ```
 
-We recommended using `error` function to return a response with the status code for the correct type inference, however, we do not intend to remove the usage of **set.status** from Elysia to keep existing servers working.
+We recommend using the `error` function to return a response with the status code for correct type inference; however, we do not intend to remove the use of **set.status** from Elysia to keep existing servers working.
 
 ## Static Content
+
 Static Content refers to a response that almost always returns the same value regardless of the incoming request.
 
-This type of resource on the server is usually something like a public **File**, **video** or hardcode value that is rarely changed unless the server is updated.
+This type of resource on the server is usually something like a public **File**, **video**, or hardcoded value that is rarely changed unless the server is updated.
 
-By far, most content in Elysia is static content. But we also found that many cases like serving a static file or serving an HTML page using a template engine are usually static content.
+Most content in Elysia is static. We also found that many cases, like serving a static file or serving an HTML page using a template engine, are usually static content.
 
-This is why Elysia introduced a new API to optimize static content by determining the Response Ahead of Time.
+This is why Elysia introduces a new API to optimize static content by determining the response ahead of time.
 
 ```typescript
 new Elysia()
@@ -238,14 +248,15 @@ new Elysia()
     .listen(3000)
 ```
 
-Notice that the handler now isn't a function but is an inline value instead.
+Notice that the handler is no longer a function but an inline value instead.
 
-This will improve the performance by around 20-25% by compiling the response ahead of time.
+This improves performance by around 20–25% by compiling the response ahead of time.
 
 ## Default Property
-Elysia 0.8 updates to [TypeBox to 0.32](https://github.com/sinclairzx81/typebox/blob/index/changelog/0.32.0.md) which introduces many new features including dedicated RegEx, Deref but most importantly the most requested feature in Elysia, **default** field support.
 
-Now defining a default field in Type Builder, Elysia will provide a default value if the value is not provided, supporting schema types from type to body.
+Elysia 0.8 updates [TypeBox to 0.32](https://github.com/sinclairzx81/typebox/blob/index/changelog/0.32.0.md), which introduces many new features including dedicated RegEx, Deref, but most importantly the most requested feature in Elysia: **default** field support.
+
+Now, by defining a default field in Type Builder, Elysia will provide a default value if one is not provided, supporting schema types from type to body.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -261,16 +272,18 @@ new Elysia()
     .listen(3000)
 ```
 
-This allows us to provide a default value from schema directly, especially useful when using reference schema.
+This allows us to provide a default value directly from the schema, especially useful when using a reference schema.
 
 ## Default Header
-We can set headers using **set.headers**, which Elysia always creates a default empty object for every request.
 
-Previously we could use **onRequest** to append desired values into set.headers, but this will always have some overhead because a function is called.
+We can set headers using **set.headers**; Elysia creates a default empty object for every request.
 
-Stacking functions to mutate an object can be a little slower than having the desired value set in the first hand if the value is always the same for every request like CORS or cache header.
+Previously, we could use **onRequest** to append desired values to set.headers, but this always adds some overhead because a function is called.
+
+Stacking functions to mutate an object can be a little slower than having the desired value set upfront if the value is always the same for every request, like CORS or cache headers.
 
 This is why we now support setting default headers out of the box instead of creating an empty object for every new request.
+
 ```typescript
 new Elysia()
     .headers({
@@ -278,44 +291,49 @@ new Elysia()
     })
 ```
 
-Elysia CORS plugin also has an update to use this new API to improve this performance.
+Elysia's CORS plugin also has an update to use this new API to improve performance.
 
-## Performance and notable improvement
-As usual, we found a way to optimize Elysia even more to make sure you have the best performance out of the box.
+## Performance and notable improvements
 
-### Removable of bind
-We found that **.bind** is slowing down the path lookup by around ~5%, with the removal of bind from our codebase we can speed up that process a little bit.
+As usual, we found ways to optimize Elysia even more to make sure you have the best performance out of the box.
+
+### Removal of bind
+
+We found that **.bind** slows down path lookup by around 5%. Removing bind from our codebase speeds up that process a bit.
 
 ### Static Query Analysis
-Elysia Static Code Analysis is now able to infer a query if the query name is referenced in the code.
 
-This usually results in a speed-up of 15-20% by default.
+Elysia's Static Code Analysis can now infer a query if the query name is referenced in the code.
+
+This usually results in a 15–20% speed-up by default.
 
 ### Video Stream
-Elysia now adds **content-range** header to File and Blob by default to fix problems with large files like videos that require to be sent by chunk.
 
-To fix this, Elysia now adds **content-range** header to by default.
+Elysia now adds the **content-range** header to File and Blob by default to fix problems with large files like videos that need to be sent in chunks.
 
-Elysia will not send the **content-range** if the status code is set to 206, 304, 412, 416, or if the headers explicitly provide the **content-range**.
+Elysia will not send the **content-range** header if the status code is 206, 304, 412, or 416, or if the headers explicitly provide the **content-range** header.
 
-It's recommended to use [ETag plugin](https://github.com/bogeychan/elysia-etag) to handle the correct status code to avoid **content-range** collision from the cache.
+It's recommended to use the [ETag plugin](https://github.com/bogeychan/elysia-etag) to handle the correct status code to avoid **content-range** collisions from the cache.
 
-This is an initial support for **content-range** header, we have created a discussion to implement more accurate behavior based on [RPC-7233](https://datatracker.ietf.org/doc/html/rfc7233#section-4.2) in the future. Feels free to join the discussion to propose a new behavior for Elysia with **content-range** and **etag generation** at [Discussion 371](https://github.com/elysiajs/elysia/discussions/371).
+This is initial support for the **content-range** header. We have created a discussion to implement more accurate behavior based on [RFC 7233](https://datatracker.ietf.org/doc/html/rfc7233#section-4.2) in the future. Feel free to join the discussion to propose new behavior for Elysia with **content-range** and **ETag generation** at [Discussion 371](https://github.com/elysiajs/elysia/discussions/371).
 
 ### Runtime Memory improvement
-Elysia now reuses the return value of the life cycle event instead of declaring a new dedicated value.
 
-This reduces the memory usage of Elysia by a little bit better for peak concurrent requests a little better.
+Elysia now reuses the return value of life cycle events instead of declaring a new dedicated value.
+
+This reduces memory usage slightly, improving performance under peak concurrent requests.
 
 ### Plugins
-Most official plugins now take advantage of newer **Elysia.headers**, Static Content, **MapResponse** ,and revised code to comply with static code analysis even more to improve the overall performance.
 
-Plugins that are improved by this are the following: Static, HTML, and CORS.
+Most official plugins now take advantage of newer **Elysia.headers**, Static Content, **MapResponse**, and revised code that complies with static code analysis to improve overall performance.
+
+Plugins improved by this include Static, HTML, and CORS.
 
 ### Validation Error
-Elysia now returns validation error as JSON instead of text.
 
-Showing current errors and all errors and expected values instead, to help you identify an error easier.
+Elysia now returns validation errors as JSON instead of text.
+
+It shows current errors, all errors, and expected values to help you identify an error more easily.
 
 Example:
 ```json
@@ -351,52 +369,53 @@ Example:
 }
 ```
 
-**expect**, and **errors** fields are removed by default on the production environment to prevent an attacker from identifying a model for further attack.
+The **expect** and **errors** fields are removed by default in the production environment to prevent an attacker from identifying a model for further attacks.
 
-## Notable Improvement
+## Notable Improvements
 
-**Improvement**
+**Improvements**
 - lazy query reference
-- add content-range header to `Blob` by default
+- add `content-range` header to `Blob` by default
 - update TypeBox to 0.32
 - override lifecycle response of `be` and `af`
 
 **Breaking Change**
-- `afterHandle` no longer early return
+- `afterHandle` no longer triggers early return
 
-**Change**
+**Changes**
 - change validation response to JSON
 - differentiate derive from `decorator['request']` as `decorator['derive']`
-- `derive` now don't show infer type in onRequest
+- `derive` now doesn't show inferred type in `onRequest`
 
-**Bug fix**
+**Bug fixes**
 - remove `headers`, `path` from `PreContext`
 - remove `derive` from `PreContext`
-- Elysia type doesn't output custom `error`
+- Elysia types don't output custom `error`
 
 ## Afterword
+
 It has been a great journey since the first release.
 
-Elysia evolved from a generic REST API framework to an ergonomic framework to support End-to-end type safety, OpenAPI documentation generation, we we would like to keep introduce more exciting features in the future.
+Elysia evolved from a generic REST API framework to an ergonomic framework that supports end-to-end type safety and OpenAPI documentation generation. We would like to continue introducing more exciting features in the future.
 
-<br>
-We are happy to have you, and the developers to build amazing stuff with Elysia and your overwhelming continuous support for Elysia encourages us to keep going.
+We are happy to have you, and the developers to build amazing stuff with Elysia, and your overwhelming, continuous support for Elysia encourages us to keep going.
 
 It's exciting to see Elysia grow more as a community:
-- [Scalar's Elysia theme](https://x.com/saltyAom/status/1737468941696421908?s=20) for new documentation instead of Swagger UI.
-- [pkgx](https://pkgx.dev/) supports Elysia out of the box.
-- Community submitted Elysia to [TechEmpower](https://www.techempower.com/benchmarks/#section=data-r22&hw=ph&test=composite) ranking at 32 out of all frameworks in composite score, even surpassing Go's Gin and Echo.
+- [Scalar's Elysia theme](https://x.com/saltyAom/status/1737468941696421908?s=20) for new documentation instead of Swagger UI
+- [pkgx](https://pkgx.dev/) supports Elysia out of the box
+- The community submitted Elysia to [TechEmpower](https://www.techempower.com/benchmarks/#section=data-r22&hw=ph&test=composite), ranking 32 among all frameworks in composite score, surpassing Go's Gin and Echo
 
-We are now trying to provide more support for each runtime, plugin, and integration to return the kindness you have given us, starting with the rewrite of the documentation with more detailed and beginner-friendliness, [Integration with Nextjs](/integrations/nextj), [Astro](/integrations/astro) and more to come in the future.
+We are now trying to provide more support for each runtime, plugin, and integration to return the kindness you have given us, starting with rewriting the documentation to be more detailed and beginner-friendly, [Integration with Next.js](/integrations/nextj), [Astro](/integrations/astro), and more to come in the future.
 
-And since the release of 0.7, we have seen fewer issues compared to the previous releases.
+And since the release of 0.7, we have seen fewer issues compared to previous releases.
 
-Now **we are preparing for the first stable release of Elysia**, Elysia 1.0 aiming to release **in Q1 2024** to repay your kindness.
-Elysia will now enter soft API lockdown mode, to prevent an API change and make sure that there will be no or less breaking change once the stable release arrives.
+Now **we are preparing for the first stable release of Elysia**—Elysia 1.0—aiming to release **in Q1 2024** to repay your kindness.
 
-So you can expect your Elysia app to work starting from 0.7 with no or minimal change to support the stable release of Elysia.
+Elysia will now enter a soft API lockdown mode to prevent API changes and make sure there will be no or minimal breaking changes once the stable release arrives.
 
-We again thank your continuous support for Elysia, and we hope to see you again on the stable release day.
+So you can expect your Elysia app to work starting from 0.7 with no or minimal changes to support the stable release of Elysia.
+
+We again thank you for your continuous support for Elysia, and we hope to see you again on the stable release day.
 
 *Keep fighting for all that is beautiful in this world*.
 

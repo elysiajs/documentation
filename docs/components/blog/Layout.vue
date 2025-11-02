@@ -1,5 +1,12 @@
 <template>
     <article id="blog" class="flex flex-col max-w-3xl w-full mx-auto mt-8">
+        <a
+            href="/blog"
+            class="inline-flex items-center gap-2 text-base !text-gray-500 dark:!text-gray-400 !no-underline hover:!text-pink-500 focus:!text-pink-500 my-2 mr-auto"
+        >
+            <span>←</span>
+            Blog
+        </a>
         <h1 class="!text-3xl !md:text-4xl font-medium">
             {{ props.title }}
         </h1>
@@ -14,7 +21,7 @@
                 <p
                     class="flex flex-row items-center gap-2 !text-xs !m-0 opacity-75"
                 >
-                    <span>{{ props.date }}</span>
+                    <time :datetime="props.date">{{ props.date }}</time>
                     <span>ー</span>
                     <a :href="twitter" target="_blank">@{{ author.twitter }}</a>
                 </p>
@@ -29,15 +36,34 @@
         <main id="blog-content">
             <slot />
         </main>
+
+        <a
+            href="/"
+            class="inline-flex items-center gap-2 text-base !text-gray-500 dark:!text-gray-400 !no-underline hover:!text-pink-500 focus:!text-pink-500 mt-2 mr-auto"
+        >
+            <span>←</span>
+            Elysia: Ergonomic Framework for Humans
+        </a>
     </article>
+    <Teleport v-if="loaded" defer to="#VPContent">
+   		<Banner class="-translate-y-12 md:-translate-y-18" />
+    </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
+
+const loaded = ref(false)
+
+onMounted(() => {
+	loaded.value = true
+})
+
+import Banner from '../fern/banner.vue'
 
 const authors = {
     saltyaom: {
-        src: 'aris.webp',
+        src: 'lilith-happy.webp',
         twitter: 'saltyaom'
     }
 }

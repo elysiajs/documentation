@@ -1,18 +1,36 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useInView, motion } from 'motion-v'
+import { useFlyIn } from './animate'
+
+const scope = ref(null)
+const isInView = useInView(scope, {
+    once: true,
+    margin: '0px 0px -35% 0px'
+})
+const flyIn = useFlyIn(isInView)
+</script>
+
 <template>
-    <article id="test-with-confidence" class="fern-gap">
+    <article id="test-with-confidence" class="fern-gap" ref="scope">
         <div class="body">
             <header class="flex flex-col w-full lg:w-5/12 text-xl gap-6">
                 <div class="flex flex-col gap-3">
                     <h2
-                        class="text-6xl text-gray-700 font-medium leading-[4.5rem] dark:text-gray-400"
+                        class="text-6xl text-gray-700 dark:text-gray-200 font-medium leading-[4.5rem]"
                     >
-                        Test with
-                        <span
+                        <motion.span class="mr-2" v-bind="flyIn()">Test with</motion.span>
+                        <motion.span
                             class="text-gradient font-semibold from-violet-500 to-sky-400"
-                            >Confidence</span
+                            v-bind="flyIn(0.1)"
                         >
+                            Confidence
+                        </motion.span>
                     </h2>
-                    <h3 class="sm:flex items-center text-2xl">
+                    <motion.h3
+                        class="sm:flex items-center text-2xl"
+                        v-bind="flyIn(0.2)"
+                    >
                         Type safe with
                         <span
                             class="text-gradient font-semibold from-violet-500 to-sky-400 ml-1 sm:ml-2 mr-1"
@@ -55,21 +73,27 @@
                                 </radialGradient>
                             </defs>
                         </svg>
-                    </h3>
+                    </motion.h3>
                 </div>
-                <p class="lg:max-w-md leading-normal">
-                    Elysia provides a type-safe layer to interact with and test your
-                    server, from routes to parameters.
-                </p>
-                <p class="lg:max-w-md leading-normal">
-                    With auto-completion, you can easily write tests for the server
-                    without any hassle.
-                </p>
+                <motion.p
+                    class="lg:max-w-md leading-normal"
+                    v-bind="flyIn(0.3)"
+                >
+                    Elysia provides a type-safe layer to interact with and test
+                    your server, from routes to parameters.
+                </motion.p>
+                <motion.p
+                    class="lg:max-w-md leading-normal"
+                    v-bind="flyIn(0.4)"
+                >
+                    With auto-completion, you can easily write tests for the
+                    server without any hassle.
+                </motion.p>
                 <!-- <slot name="test-script" /> -->
             </header>
-            <section class="showcase">
+            <motion.section class="showcase" v-bind="flyIn(0.5)">
                 <slot name="test-code" />
-            </section>
+            </motion.section>
         </div>
     </article>
 </template>

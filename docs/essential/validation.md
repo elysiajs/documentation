@@ -68,7 +68,7 @@ const demo4 = new Elysia()
 
 The purpose of creating an API server is to take an input and process it.
 
-JavaScript allows any data to be any type. Elysia provides a tool to validate data out of the box to ensure that the data is in the correct format.
+JavaScript allows any data to be of any type. Elysia provides a tool to validate data out of the box to ensure that the data is in the correct format.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -84,39 +84,41 @@ new Elysia()
 
 ### TypeBox
 
-**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and for OpenAPI schemas, enabling the generation of OpenAPI/Swagger documentation.
+**Elysia.t** is a schema builder based on [TypeBox](https://github.com/sinclairzx81/typebox) that provides type-safety at runtime, compile-time, and OpenAPI schema generation from a single source of truth.
 
-TypeBox is a very fast, lightweight, and type-safe runtime validation library for TypeScript. Elysia extends and customizes the default behavior of TypeBox to match server-side validation requirements.
+Elysia tailor TypeBox for server-side validation for a seamless experience.
 
-We believe that validation should be handled by the framework natively, rather than relying on the user to set up a custom type for every project.
+### Standard Schema
+Elysia also support [Standard Schema](https://github.com/standard-schema/standard-schema), allowing you to use your favorite validation library:
+- Zod
+- Valibot
+- ArkType
+- Effect Schema
+- Yup
+- Joi
+- [and more](https://github.com/standard-schema/standard-schema)
 
-### TypeScript
-We can get a type definitions of every Elysia/TypeBox's type by accessing `static` property as follows:
+To use Standard Schema, simply import the schema and provide it to the route handler.
 
-```ts twoslash
-import { t } from 'elysia'
+```typescript twoslash
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
 
-const MyType = t.Object({
-	hello: t.Literal('Elysia')
-})
+new Elysia()
+	.get('/id/:id', ({ params: { id }, query: { name } }) => id, {
+	//                           ^?
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		query: v.object({
+			name: v.literal('Lilith')
+		})
+	})
+	.listen(3000)
+```
 
-type MyType = typeof MyType.static
-//    ^?
-````
-
-<br>
-<br>
-<br>
-
-This allows Elysia to infer and provide type automatically, reducing the need to declare duplicate schema
-
-A single Elysia/TypeBox schema can be used for:
-- Runtime validation
-- Data coercion
-- TypeScript type
-- OpenAPI schema
-
-This allows us to make a schema as a **single source of truth**.
+You can use any validator together in the same handler without any issue.
 
 ## Schema type
 Elysia supports declarative schemas with the following types:
@@ -172,7 +174,7 @@ The response should be as follows:
 | /id/a?name=Elysia | ✅ | ❌ |
 | /id/a?alias=Elysia | ❌ | ❌ |
 
-When a schema is provided, the type will be inferred from the schema automatically and an OpenAPI type will be generated for Swagger documentation, eliminating the redundant task of providing the type manually.
+When a schema is provided, the type will be inferred from the schema automatically and an OpenAPI type will be generated for an API documentation, eliminating the redundant task of providing the type manually.
 
 ## Guard
 
@@ -224,7 +226,7 @@ Guard supports 2 types to define a validation.
 
 ### **override (default)**
 
-Override schema if schema if schema is collide with each others.
+Override schema if schema is collide with each others.
 
 ![Elysia run with default override guard showing schema gets override](/blog/elysia-13/schema-override.webp)
 
@@ -321,6 +323,25 @@ new Elysia()
 ```
 
 By providing a file type, Elysia will automatically assume that the content-type is `multipart/form-data`.
+
+### File (Standard Schema)
+If you're using Standard Schema, it's important that Elysia will not be able to valiate content type automatically similar to `t.File`.
+
+But Elysia export a `fileType` that can be used to validate file type by using magic number.
+
+```typescript twoslash
+import { Elysia, fileType } from 'elysia'
+import { z } from 'zod'
+
+new Elysia()
+	.post('/body', ({ body }) => body, {
+		body: z.object({
+			file: z.file().refine((file) => fileType(file, 'image/jpeg')) // [!code ++]
+		})
+	})
+```
+
+It's very important that you **should use** `fileType` to validate the file type as **most validator doesn't actually validate the file** correctly, like checking the content type the value of it which can lead to security vulnerability.
 
 ## Query
 Query is the data sent through the URL. It can be in the form of `?key=value`.
@@ -753,7 +774,7 @@ All members must be a string
 t.Object({
     x: t.Number()
 }, {
-    error: 'Invalid object UwU'
+    error: 'Invalid object UnU'
 })
 ```
 
@@ -761,7 +782,7 @@ t.Object({
 <td>
 
 ```
-Invalid object UwU
+Invalid object UnU
 ```
 
 </td>
@@ -829,7 +850,7 @@ Invalid Email :(
 t.Object({
     x: t.Number()
 }, {
-    error: 'Invalid object UwU'
+    error: 'Invalid object UnU'
 })
 ```
 
@@ -837,7 +858,7 @@ t.Object({
 <td>
 
 ```
-Invalid object UwU
+Invalid object UnU
 ```
 
 </td>
@@ -990,13 +1011,13 @@ The narrowed-down error type will be typed as `ValidationError` imported from **
 
 **ValidationError** exposes a property named **validator**, typed as [TypeCheck](https://github.com/sinclairzx81/typebox#typecheck), allowing us to interact with TypeBox functionality out of the box.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
     .onError(({ code, error }) => {
         if (code === 'VALIDATION')
-            return error.validator.Errors(error.value).First().message
+            return error.all[0].message
     })
     .listen(3000)
 ```
@@ -1005,7 +1026,7 @@ new Elysia()
 
 **ValidationError** provides a method `ValidatorError.all`, allowing us to list all of the error causes.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -1141,7 +1162,7 @@ const app = new Elysia()
     })
 ```
 
-This approach not only allows us to separate concerns but also enables us to reuse the model in multiple places while integrating the model into Swagger documentation.
+This approach not only allows us to separate concerns but also enables us to reuse the model in multiple places while integrating the model into OpenAPI documentation.
 
 ### Multiple Models
 `model` accepts an object with the key as a model name and the value as the model definition. Multiple models are supported by default.
@@ -1190,3 +1211,31 @@ export const userModels = new Elysia()
 This can prevent naming duplication to some extent, but ultimately, it's best to let your team decide on the naming convention.
 
 Elysia provides an opinionated option to help prevent decision fatigue.
+
+### TypeScript
+We can get type definitions of every Elysia/TypeBox's type by accessing the `static` property as follows:
+
+```ts twoslash
+import { t } from 'elysia'
+
+const MyType = t.Object({
+	hello: t.Literal('Elysia')
+})
+
+type MyType = typeof MyType.static
+//    ^?
+````
+
+<br>
+<br>
+<br>
+
+This allows Elysia to infer and provide type automatically, reducing the need to declare duplicate schema
+
+A single Elysia/TypeBox schema can be used for:
+- Runtime validation
+- Data coercion
+- TypeScript type
+- OpenAPI schema
+
+This allows us to make a schema as a **single source of truth**.

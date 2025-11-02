@@ -15,7 +15,7 @@ head:
 ---
 
 # JWT Plugin
-This plugin adds support for using JWT in Elysia handler
+This plugin adds support for using JWT in Elysia handlers.
 
 Install with:
 ```bash

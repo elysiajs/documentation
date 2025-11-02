@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Elysia supports end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
+      content: Elysia supports end-to-end type safety with Elysia Eden from the start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
 
   - - meta
     - property: 'og:description'
-      content: Elysia supports end-to-end type safety with Elysia Eden since start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
+      content: Elysia supports end-to-end type safety with Elysia Eden from the start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
 ---
 
 # End-to-End Type Safety
@@ -23,14 +23,14 @@ End-to-end type safety is like making sure all the pieces of the track match up 
 
 For a framework to have end-to-end type safety means you can connect client and server in a type-safe manner.
 
-Elysia provide end-to-end type safety **without code generation** out of the box with RPC-like connector, **Eden**
+Elysia provides end-to-end type safety **without code generation** out of the box with an RPC-like connector, **Eden**
 
-<video mute controls>
+<video mute controls style="aspect-ratio: 16/9;">
   <source src="/eden/eden-treaty.mp4" type="video/mp4" />
   Something went wrong trying to load video
 </video>
 
-Others framework that support e2e type safety:
+Other frameworks that support e2e type safety:
 - tRPC
 - Remix
 - SvelteKit
@@ -52,20 +52,20 @@ Hover over variable and function to see type definition.
 Elysia allows you to change the type on the server and it will be instantly reflected on the client, helping with auto-completion and type-enforcement.
 
 ## Eden
-Eden is a RPC-like client to connect Elysia  **end-to-end type safety** using only TypeScript's type inference instead of code generation.
+Eden is an RPC-like client to connect Elysia with **end-to-end type safety** using only TypeScript's type inference instead of code generation.
 
-Allowing you to sync client and server types effortlessly, weighing less than 2KB.
+It allows you to sync client and server types effortlessly, weighing less than 2KB.
 
-Eden is consists of 2 modules:
-1. Eden Treaty **(recommended)**: an improved version RFC version of Eden Treaty
-2. Eden Fetch: Fetch-like client with type safety.
+Eden consists of 2 modules:
+1. Eden Treaty **(recommended)**: an improved RPC version of Eden Treaty
+2. Eden Fetch: Fetch-like client with type safety
 
 Below is an overview, use-case and comparison for each module.
 
 ## Eden Treaty (Recommended)
 Eden Treaty is an object-like representation of an Elysia server providing end-to-end type safety and a significantly improved developer experience.
 
-With Eden Treaty we can connect interact Elysia server with full-type support and auto-completion, error handling with type narrowing, and creating type safe unit test.
+With Eden Treaty we can interact with an Elysia server with full-type support and auto-completion, error handling with type narrowing, and create type-safe unit tests.
 
 Example usage of Eden Treaty:
 ```typescript twoslash
@@ -131,5 +131,5 @@ const { data } = await fetch('/name/:name', {
 ```
 
 ::: tip NOTE
-Unlike Eden Treaty, Eden Fetch doesn't provide Web Socket implementation for Elysia server
+Unlike Eden Treaty, Eden Fetch doesn't provide Web Socket implementation for Elysia server.
 :::

@@ -13,7 +13,7 @@ head:
 
     - - meta
       - name: 'description'
-        content: This guide is for Hono users who want to see a differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
+        content: This guide is for Hono users who want to see the differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
 
     - - meta
       - property: 'og:description'
@@ -32,11 +32,11 @@ import Benchmark from '../components/fern/benchmark-hono.vue'
 
 This guide is for Hono users who want to see a differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
 
-**Hono** is a fast and lightweight built on Web Standard. It has broad compatibility with multiple runtime like Deno, Bun, Cloudflare Workers, and Node.js.
+**Hono** is a fast and lightweight web framework built on Web Standard. It has broad compatibility with multiple runtimes like Deno, Bun, Cloudflare Workers, and Node.js.
 
-**Elysia** is an ergonomic web framework. Designed to be ergonomic and developer-friendly with a focus on **sounds type safety** and performance.
+**Elysia** is an ergonomic web framework. Designed to be ergonomic and developer-friendly with a focus on **sound type safety** and performance.
 
-Both frameworks are built on top of Web Standard API, and has slight different syntax. Hono offers more compatability with multiple runtimes while Elysia focus on specific set of runtimes.
+Both frameworks are built on top of Web Standard API, and have slightly different syntax. Hono offers more compatibility with multiple runtimes while Elysia focuses on a specific set of runtimes.
 
 ## Performance
 Elysia has significant performance improvements over Hono thanks to static code analysis.
@@ -242,7 +242,7 @@ const app = new Elysia()
 While Hono requires a prefix to separate the subrouter, Elysia doesn't require a prefix to separate the subrouter.
 
 ## Validation
-While Hono supports for **zod**, Elysia focus on deep integration with **TypeBox** to offers seamless integration with OpenAPI, validation, and advanced feature behind the scene.
+While Hono supports for various validator via external package, Elysia has a built-in validation using **TypeBox**, and support for Standard Schema out of the box allowing you to use your favorite library like Zod, Valibot, ArkType, Effect Schema and so on without additional library. Elysia also offers seamless integration with OpenAPI, and type inference behind the scene.
 
 <Compare>
 
@@ -293,19 +293,14 @@ app.patch(
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts twoslash [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                           ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: t.Object({
 			id: t.Number()
@@ -316,12 +311,50 @@ const app = new Elysia()
 	})
 ```
 
+```ts twoslash [Elysia Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+		params,
+		body
+	}),
+	{
+		params: z.object({
+			id: z.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	})
+```
+
+```ts twoslash [Elysia Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+		params,
+		body
+	}),
+	{
+		params: v.object({
+			id: v.number()
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	})
+```
+
 :::
 </template>
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically
+> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
 
 </template>
 
@@ -473,7 +506,7 @@ import { Elysia } from 'elysia'
 
 const app = new Elysia()
 	// Global middleware
-	.onRequest('/user', ({ method, path }) => {
+	.onRequest(({ method, path }) => {
 		console.log(`${method} ${path}`)
 	})
 	// Route-specific middleware
@@ -501,7 +534,7 @@ While Hono has a `next` function to call the next middleware, Elysia does not ha
 ## Sounds type safety
 Elysia is designed to be sounds type safety.
 
-For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Hono doesn't not.
+For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Hono doesn't.
 
 <Compare>
 
@@ -828,6 +861,8 @@ While Hono offers error handling using middleware-like, Elysia provide:
 
 The error code is useful for logging and debugging, and is important when differentiating between different error types extending the same class.
 
+Elysia provides all of this with type safety while Hono doesn't.
+
 ## Encapsulation
 
 Hono encapsulate plugin side-effect, while Elysia give you a control over side-effect of a plugin via explicit scoping mechanism, and order-of-code.
@@ -894,7 +929,7 @@ const app = new Elysia()
 
 Both has a encapsulate mechanism of a plugin to prevent side-effect.
 
-However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Fastify always encapsulate it.
+However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Hono always encapsulate it.
 
 ```ts [Elysia]
 import { Elysia } from 'elysia'
@@ -1145,21 +1180,23 @@ export default app
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger' // [!code ++]
+import { openapi } from '@elysiajs/openapi' // [!code ++]
 
 const app = new Elysia()
-	.use(swagger()) // [!code ++]
+	.use(openapi()) // [!code ++]
 	.model({
-		user: t.Object({
-			name: t.String(),
-			age: t.Number()
-		})
+		user: t.Array(
+			t.Object({
+				name: t.String(),
+				age: t.Number()
+			})
+		)
 	})
 	.post('/users', ({ body }) => body, {
 	//                  ^?
-		body: 'user[]',
+		body: 'user',
 		response: {
-			201: 'user[]'
+			201: 'user'
 		},
 		detail: {
 			summary: 'Create user'
@@ -1417,7 +1454,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 Both are the next generation web framework built on top of Web Standard API with slight differences.
 
-Elysia is designed to be ergonomic and developer-friendly with a focus on **sounds type safety**, and has beter performance than Hono.
+Elysia is designed to be ergonomic and developer-friendly with a focus on **sounds type safety**, and has better performance than Hono.
 
 While Hono offers a broad compatibility with multiple runtimes, especially with Cloudflare Workers, and a larger user base.
 
@@ -1425,9 +1462,12 @@ Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
 	<Card title="From Express" href="/migrate/from-express">
-  		A guide to migrate from Express to Elysia
+		Comparison between tRPC and Elysia
 	</Card>
     <Card title="From Fastify" href="/migrate/from-fastify">
-  		A guide to migrate from Fastify to Elysia
+  		Comparison between Fastify and Elysia
+    </Card>
+    <Card title="From tRPC" href="/migrate/from-trpc">
+  		Comparison between tRPC and Elysia
     </Card>
 </Deck>

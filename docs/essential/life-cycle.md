@@ -1,17 +1,17 @@
 ---
-title: Life Cycle - ElysiaJS
+title: Lifecycle - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Life Cycle - ElysiaJS
+        content: Lifecycle - ElysiaJS
 
     - - meta
       - name: 'description'
-        content: Lifecycle event is a concept for each stage of Elysia processing, "Life Cycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+        content: Lifecycle event is a concept for each stage of Elysia processing, "Lifecycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
 
     - - meta
       - property: 'og:description'
-        content: Lifecycle event is a concept for each stage of Elysia processing, "Life Cycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
+        content: Lifecycle event is a concept for each stage of Elysia processing, "Lifecycle" or "Hook" is an event listener to intercept, and listen to those events cycling around. Hook allows you to transform data running through the data pipeline. With the hook, you can customize Elysia to its fullest potential.
 ---
 
 <script setup>
@@ -25,9 +25,9 @@ const demo = new Elysia()
 	.onError(({ code }) => {
 		if (code === 418) return 'caught'
 	})
-    .get('/throw', ({ error }) => {
+    .get('/throw', ({ status }) => {
 		// This will be caught by onError
-		throw error(418)
+		throw status(418)
 	})
 	.get('/return', ({ status }) => {
 		// This will NOT be caught by onError
@@ -37,13 +37,13 @@ const demo = new Elysia()
 
 # Lifecycle
 
-Life Cycle allows us to intercept an important event at the predefined point allowing us to customize the behavior of our server as needed.
+Lifecycle events allow you to intercept important events at predefined points, allowing you to customize the behavior of your server as needed.
 
-Elysia's Life Cycle event can be illustrated as the following.
+Elysia's lifecycle can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
 > Click on image to enlarge
 
-Below are the request life cycle available in Elysia:
+Below are the request lifecycle events available in Elysia:
 
 <Deck>
     <Card title="Request" href="#request">
@@ -65,7 +65,7 @@ Below are the request life cycle available in Elysia:
         Map returned value into a response
     </Card>
     <Card title="On Error (Error Handling)" href="#on-error-error-handling">
-   		Handle error thrown in life-cycle
+   		Handle errors thrown in the life-cycle
     </Card>
     <Card title="After Response" href="#after-response">
         Executed after response sent to the client
@@ -77,34 +77,32 @@ Below are the request life cycle available in Elysia:
 
 ## Why
 
-Imagine we want to return some HTML.
+Let’s say we want to send back some HTML.
 
-We need to set **"Content-Type"** headers as **"text/html"** for the browser to render HTML.
+Normally, we’d set the **"Content-Type"** header to **"text/html"** so the browser can render it.
 
-Explicitly specifying that the response is HTML could be repetitive if there are a lot of handlers, say ~200 endpoints.
+But manually setting one for each route is tedious.
 
-This can lead to a lot of duplicated code just to specify the **"text/html"** **"Content-Type"**
-
-But what if after we send a response, we could detect that the response is an HTML string then append the header automatically?
-
-That's when the concept of Life Cycle comes into play.
+Instead, what if the framework could detect when a response is HTML and automatically set the header for you? That’s where the idea of a lifecycle comes in.
 
 ## Hook
 
-We refer to each function that intercepts the life cycle event as **"hook"**, as the function hooks into the lifecycle event.
+Each function that intercepts the **lifecycle event** as **"hook"**.
+
+<small>(as the function **"hooks"** into the lifecycle event)</small>
 
 Hooks can be categorized into 2 types:
 
-1. Local Hook: Execute on a specific route
-2. Interceptor Hook: Execute on every route
+1. [Local Hook](#local-hook): Execute on a specific route
+2. [Interceptor Hook](#interceptor-hook): Execute on every route **after the hook is registered**
 
 ::: tip
-The hook will accept the same Context as a handler, you can imagine adding a route handler but at a specific point.
+The hook will accept the same Context as a handler; you can imagine adding a route handler but at a specific point.
 :::
 
 ## Local Hook
 
-The local hook is executed on a specific route.
+A local hook is executed on a specific route.
 
 To use a local hook, you can inline hook into a route handler:
 
@@ -114,8 +112,8 @@ import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {
-        afterHandle({ response, set }) {
-            if (isHtml(response))
+        afterHandle({ responseValue, set }) {
+            if (isHtml(responseValue))
                 set.headers['Content-Type'] = 'text/html; charset=utf8'
         }
     })
@@ -134,7 +132,7 @@ The response should be listed as follows:
 
 Register hook into every handler **of the current instance** that came after.
 
-To add an interceptor hook, you can use `.on` followed by a life cycle event in camelCase:
+To add an interceptor hook, you can use `.on` followed by a lifecycle event in camelCase:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -142,8 +140,8 @@ import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
-    .onAfterHandle(({ response, set }) => {
-        if (isHtml(response))
+    .onAfterHandle(({ responseValue, set }) => {
+        if (isHtml(responseValue))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
     .get('/', () => '<h1>Hello World</h1>')
@@ -155,25 +153,23 @@ The response should be listed as follows:
 
 | Path  | Content-Type             |
 | ----- | ------------------------ |
-| /     | text/html; charset=utf8  |
-| /hi   | text/html; charset=utf8  |
-| /none | text/plain; charset=utf8 |
+| /none | text/**plain**; charset=utf8 |
+| /     | text/**html**; charset=utf8  |
+| /hi   | text/**html**; charset=utf8  |
 
-Events from other plugins are also applied to the route so the order of code is important.
+Events from other plugins are also applied to the route, so the order of code is important.
 
-::: tip
+<!--::: tip
 The code above will only apply to the current instance, not applying to parent.
 
 See [scope](/essential/plugin#scope) to find out why
-:::
+:::-->
 
 ## Order of code
 
-The order of Elysia's life-cycle code is very important.
+Event will only apply to routes **after** it is registered.
 
-Because event will only apply to routes **after** it is registered.
-
-If you put the onError before plugin, plugin will not inherit the onError event.
+If you put the `onError` before plugin, plugin will not inherit the `onError` event.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -195,7 +191,7 @@ Console should log the following:
 1
 ```
 
-Notice that it doesn't log **3**, because the event is registered after the route so it is not applied to the route.
+Notice that it doesn't log **2**, because the event is registered after the route so it is not applied to the route.
 
 This also applies to the plugin.
 
@@ -213,17 +209,16 @@ new Elysia()
 	.listen(3000)
 ```
 
-In the code above, only **1** will be logged, because the event is registered after the plugin.
+In this example, only **1** will be logged because the event is registered after the plugin.
 
-This is because each events will be inline into a route handler to create a true encapsulation scope and static code analysis.
-
-The only exception is `onRequest` which is executed before the route handler so it couldn't be inlined and tied to the routing process instead.
+Every events will follows the same rule except is `onRequest`.
+<small>Because onRequest happens on request, it doesn't know which route to applied to so it's a global event</small>
 
 ## Request
 
-The first life-cycle event to get executed for every new request is recieved.
+The first lifecycle event to get executed for every new request is received.
 
-As `onRequest` is designed to provide only the most crucial context to reduce overhead, it is recommended to use in the following scenario:
+As `onRequest` is designed to provide only the most crucial context to reduce overhead, it is recommended to use in the following scenarios:
 
 - Caching
 - Rate Limiter / IP/Region Lock
@@ -232,7 +227,7 @@ As `onRequest` is designed to provide only the most crucial context to reduce ov
 
 #### Example
 
-Below is a pseudo code to enforce rate-limit on a certain IP address.
+Below is a pseudocode to enforce rate-limits on a certain IP address.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -246,11 +241,11 @@ new Elysia()
     .listen(3000)
 ```
 
-If a value is returned from `onRequest`, it will be used as the response and the rest of the life-cycle will be skipped.
+If a value is returned from `onRequest`, it will be used as the response and the rest of the lifecycle will be skipped.
 
 ### Pre Context
 
-Context's onRequest is typed as `PreContext`, a minimal representation of `Context` with the attribute on the following:
+Context's `onRequest` is typed as `PreContext`, a minimal representation of `Context` with the attribute on the following:
 request: `Request`
 
 - set: `Set`
@@ -286,7 +281,7 @@ new Elysia().onParse(({ request, contentType }) => {
 })
 ```
 
-The returned value will be assigned to Context.body. If not, Elysia will continue iterating through additional parser functions from **onParse** stack until either body is assigned or all parsers have been executed.
+The returned value will be assigned to `Context.body`. If not, Elysia will continue iterating through additional parser functions from **onParse** stack until either body is assigned or all parsers have been executed.
 
 ### Context
 
@@ -328,7 +323,7 @@ This allows Elysia to optimize body parser ahead of time, and reduce overhead in
 
 ### Explicit Parser
 
-However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`
+However, in some scenario if Elysia fails to pick the correct body parser function, we can explicitly tell Elysia to use a certain function by specifying `type`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -339,7 +334,7 @@ new Elysia().post('/', ({ body }) => body, {
 })
 ```
 
-Allowing us to control Elysia behavior for picking body parser function to fit our needs in a complex scenario.
+This allows us to control Elysia behavior for picking body parser function to fit our needs in a complex scenario.
 
 `type` may be one of the following:
 
@@ -351,12 +346,34 @@ type ContentType = |
     | 'json'
     // Shorthand for 'multipart/form-data'
     | 'formdata'
-    // Shorthand for 'application/x-www-form-urlencoded'\
+    // Shorthand for 'application/x-www-form-urlencoded'
     | 'urlencoded'
+    // Skip body parsing entirely
+    | 'none'
     | 'text/plain'
     | 'application/json'
     | 'multipart/form-data'
     | 'application/x-www-form-urlencoded'
+```
+
+### Skip Body Parsing
+When you need to integrate a third-party library with HTTP handler like `trpc`, `orpc`, and it throw `Body is already used`.
+
+This is because Web Standard Request can be parsed only once.
+
+Both Elysia and the third-party library both has its own body parser, so you can skip body parsing on Elysia side by specifying `parse: 'none'`
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.post(
+		'/',
+		({ request }) => library.handle(request),
+		{
+			parse: 'none'
+		}
+	)
 ```
 
 ### Custom Parser
@@ -409,7 +426,7 @@ new Elysia()
 
 Append new value to context directly **before validation**. It's stored in the same stack as **transform**.
 
-Unlike **state** and **decorate** that assigned value before the server started. **derive** assigns a property when each request happens. Allowing us to extract a piece of information into a property instead.
+Unlike **state** and **decorate** that assigned value before the server started. **derive** assigns a property when each request happens. This allows us to extract a piece of information into a property instead.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -429,9 +446,15 @@ Because **derive** is assigned once a new request starts, **derive** can access 
 
 Unlike **state**, and **decorate**. Properties which assigned by **derive** is unique and not shared with another request.
 
+::: tip
+You might want to use [resolve](#resolve) instead of derive in most cases.
+
+Resolve is similar to derive but execute after validation. This make resolve more secure as we can validate the incoming data before using it to derive new properties.
+:::
+
 ### Queue
 
-`derive` and `transform` is stored in the same queue.
+`derive` and `transform` are stored in the same queue.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -682,12 +705,12 @@ import { Elysia } from 'elysia'
 const encoder = new TextEncoder()
 
 new Elysia()
-    .mapResponse(({ response, set }) => {
+    .mapResponse(({ responseValue, set }) => {
         const isJson = typeof response === 'object'
 
         const text = isJson
-            ? JSON.stringify(response)
-            : (response?.toString() ?? '')
+            ? JSON.stringify(responseValue)
+            : (responseValue?.toString() ?? '')
 
         set.headers['Content-Encoding'] = 'gzip'
 
@@ -710,13 +733,13 @@ Elysia will handle the merging process of **set.headers** from **mapResponse** a
 
 ## On Error (Error Handling)
 
-Designed for error-handling. It will be executed when an error is thrown in any life-cycle.
+Designed for error handling. It will be executed when an error is thrown in any lifecycle.
 
-Its recommended to use on Error in the following situation:
+It's recommended to use on Error in the following situations:
 
-- To provide custom error message
-- Fail safe or an error handler or retrying a request
-- Logging and analytic
+- providing a custom error message
+- fail-safe handling, an error handler, or retrying a request
+- logging and analytics
 
 #### Example
 
@@ -726,7 +749,7 @@ Elysia catches all the errors thrown in the handler, classifies the error code, 
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .onError(({ code, error }) => {
+    .onError(({ error }) => {
         return new Response(error.toString())
     })
     .get('/', () => {
@@ -770,8 +793,6 @@ new Elysia()
 
 Elysia error code consists of:
 
-"UNKNOWN" | "VALIDATION" | "NOT_FOUND" | "PARSE" | "INTERNAL_SERVER_ERROR" | "INVALID_COOKIE_SIGNATURE" | "INVALID_FILE_TYPE"
-
 - **NOT_FOUND**
 - **PARSE**
 - **VALIDATION**
@@ -787,71 +808,6 @@ By default, the thrown error code is `UNKNOWN`.
 If no error response is returned, the error will be returned using `error.name`.
 :::
 
-### To Throw or To Return
-
-`Elysia.error` is a shorthand for returning an error with a specific HTTP status code.
-
-It could either be **return** or **throw** based on your specific needs.
-
-- If an `status` is **throw**, it will be caught by `onError` middleware.
-- If an `status` is **return**, it will be **NOT** caught by `onError` middleware.
-
-See the following code:
-
-```typescript
-import { Elysia, file } from 'elysia'
-
-new Elysia()
-    .onError(({ code, error, path }) => {
-        if (code === 418) return 'caught'
-    })
-    .get('/throw', ({ status }) => {
-        // This will be caught by onError
-        throw status(418)
-    })
-    .get('/return', ({ status }) => {
-        // This will NOT be caught by onError
-        return status(418)
-    })
-```
-
-<Playground
-    :elysia="demo"
-/>
-
-### Custom Error
-
-Elysia supports custom error both in the type-level and implementation level.
-
-To provide a custom error code, we can use `Elysia.error` to add a custom error code, helping us to easily classify and narrow down the error type for full type safety with auto-complete as the following:
-
-```typescript twoslash
-import { Elysia } from 'elysia'
-
-class MyError extends Error {
-    constructor(public message: string) {
-        super(message)
-    }
-}
-
-new Elysia()
-    .error({
-        MyError
-    })
-    .onError(({ code, error }) => {
-        switch (code) {
-            // With auto-completion
-            case 'MyError':
-                // With type narrowing
-                // Hover to see error is typed as `CustomError`
-                return error
-        }
-    })
-    .get('/', () => {
-        throw new MyError('Hello Error')
-    })
-```
-
 ### Local Error
 
 Same as others life-cycle, we provide an error into an [scope](/essential/plugin.html#scope) using guard:
@@ -864,7 +820,7 @@ new Elysia()
         beforeHandle({ set, request: { headers }, error }) {
             if (!isSignIn(headers)) throw error(401)
         },
-        error({ error }) {
+        error() {
             return 'Handled'
         }
     })
@@ -904,14 +860,14 @@ Response 0.0002
 
 ### Response
 
-Similar to [Map Response](#map-resonse), `afterResponse` also accept a `response` value.
+Similar to [Map Response](#map-resonse), `afterResponse` also accept a `responseValue` value.
 
 ```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.onAfterResponse(({ response }) => {
-		console.log(response)
+	.onAfterResponse(({ responseValue }) => {
+		console.log(responseValue)
 	})
 	.get('/', () => 'Hello')
 	.listen(3000)

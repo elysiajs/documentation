@@ -1,42 +1,63 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useInView, motion } from 'motion-v'
+import { useFlyIn } from './animate'
+
+const scope = ref(null)
+const isInView = useInView(scope, {
+    once: true,
+    margin: '0px 0px -35% 0px'
+})
+const flyIn = useFlyIn(isInView)
+</script>
+
 <template>
-    <article id="features" class="fern-gap">
+    <article id="features" class="fern-gap" ref="scope">
         <div
             class="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-4 w-full mb-6 sm:mb-12"
         >
-            <h2
+            <motion.h2
                 class="text-5xl sm:text-6xl text-left text-gray-700 dark:text-gray-300 font-medium leading-[3.5rem] sm:leading-[4.5rem]"
+                v-bind="flyIn()"
             >
                 <span
                     class="text-gray-500 dark:text-gray-400 font-medium text-xl"
-                    >To summarize</span
-                ><br />
+                >
+                    To summarize
+                </span>
+                <br />
                 Only the
                 <span
                     class="text-gradient font-semibold from-purple-500 to-sky-400"
-                    >best</span
                 >
+                    best
+                </span>
                 <br />
                 for the bold
-            </h2>
+            </motion.h2>
             <p
                 class="w-full sm:w-1/2 lg:max-w-lg lg:w-full lg:pr-24 dark:text-gray-400 dark:font-medium"
+                v-bind="flyIn(0.1)"
             >
-                <span class="inline-block mb-2"
-                    >For builders, inventors, and visionaries</span
-                >
+                <motion.span class="inline-block mb-2" v-bind="flyIn(0.2)">
+                    For builders, inventors, and visionaries
+                </motion.span>
                 <br />
-                We spent years studying the strengths and weaknesses of
-                JavaScript frameworks, all to deliver an exceptional experience
+                <motion.span class="inline-block" v-bind="flyIn(0.3)">
+                    We spent years studying the strengths and weaknesses of
+                    JavaScript frameworks, all to deliver an exceptional
+                    experience
+                </motion.span>
             </p>
         </div>
         <div class="list">
-            <section>
+            <motion.section v-bind="flyIn(0.2)">
                 <h3>At the speed of light</h3>
                 <h4 class="text-purple-400">Up to 21x faster than Express</h4>
                 <p>Supercharged by Bun,</p>
                 <p>Elysia is one of top performing JavaScript frameworks</p>
-            </section>
-            <section>
+            </motion.section>
+            <motion.section v-bind="flyIn(0.3)">
                 <h3>Maximum Type Safety</h3>
                 <h4 class="text-blue-400">Dynamic type safety</h4>
                 <p>Built from type to runtime</p>
@@ -44,19 +65,23 @@
                     Elysia learns from your codebase, adapts, and enforces your
                     types
                 </p>
-            </section>
-            <section>
+            </motion.section>
+            <motion.section v-bind="flyIn(0.4)">
                 <h3>Productive in a reach</h3>
                 <h4 class="text-teal-400">The best experience of today</h4>
                 <p>
-                    Ergonomically designed for humans, prioritizing DX. No technical nonsense
+                    Ergonomically designed for humans, prioritizing DX. No
+                    technical nonsense
                 </p>
-            </section>
+            </motion.section>
         </div>
-        <h5 class="text-right text-base mt-6 text-gray-400/75">
+        <motion.h5
+            class="text-right text-base mt-6 text-gray-400/75"
+            v-bind="flyIn(0.5)"
+        >
             These are the pillars we built Elysia upon,<br />to deliver the best
             experience yet
-        </h5>
+        </motion.h5>
     </article>
 </template>
 

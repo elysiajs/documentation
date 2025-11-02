@@ -36,20 +36,20 @@ const demo4 = new Elysia()
 
 const demo5 = new Elysia()
     .get('/', () => 'hello')
-    .get('/hi', ({ error }) => error(404, 'Route not found :('))
+    .get('/hi', ({ status }) => status(404, 'Route not found :('))
 
 const demo6 = new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
     .get('/id/123', '123')
     .get('/id/anything', 'anything')
-    .get('/id', ({ error }) => error(404))
-    .get('/id/anything/test', ({ error }) => error(404))
+    .get('/id', ({ status }) => status(404))
+    .get('/id/anything/test', ({ status }) => status(404))
 
 const demo7 = new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
     .get('/id/123', '123')
     .get('/id/anything', 'anything')
-    .get('/id', ({ error }) => error(404))
+    .get('/id', ({ status }) => status(404))
     .get('/id/:id/:name', ({ params: { id, name } }) => id + ' ' + name)
 
 const demo8 = new Elysia()
@@ -61,7 +61,7 @@ const demo9 = new Elysia()
     .get('/id/:id', ({ params: { id } }) => id)
     .get('/id/123', '123')
     .get('/id/anything', 'anything')
-    .get('/id', ({ error }) => error(404))
+    .get('/id', ({ status }) => status(404))
     .get('/id/:id/:name', ({ params: { id, name } }) => id + '/' + name)
 
 const demo10 = new Elysia()
@@ -94,9 +94,9 @@ const demo13 = new Elysia()
 
 # Routing
 
-Web servers use the request's **path and HTTP method** to look up the correct resource, refers as **"routing"**.
+Web servers use the request's **path and method** to look up the correct resource, known as **"routing"**.
 
-We can define a route by calling a **method named after HTTP verbs**, passing a path and a function to execute when matched.
+We can define a route with **HTTP verb method**, a path and a function to execute when matched.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -114,7 +114,7 @@ By default, web browsers will send a GET method when visiting a page.
 <Playground :elysia="demo1" />
 
 ::: tip
-Using an interactive browser above, hover on a blue highlight area to see difference result between each path
+Using the interactive browser above, hover on the blue highlight area to see different results between each path.
 :::
 
 ## Path type
@@ -126,14 +126,6 @@ Path in Elysia can be grouped into 3 types:
 -   **wildcards** - path until a specific point can be anything
 
 You can use all of the path types together to compose a behavior for your web server.
-
-The priorities are as follows:
-
-1. static paths
-2. dynamic paths
-3. wildcards
-
-If the path is resolved as the static wild dynamic path is presented, Elysia will resolve the static path rather than the dynamic path
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -158,20 +150,31 @@ new Elysia()
   }"
 />
 
-Here the server will respond as follows:
+<!--Here the server will respond as follows:
 
 | Path    | Response      |
 | ------- | ------------- |
 | /id/1   | static path   |
 | /id/2   | dynamic path  |
-| /id/2/a | wildcard path |
+| /id/2/a | wildcard path |-->
 
 ## Static Path
 
-A path or pathname is an identifier to locate resources of a server.
+Static path is a hardcoded string to locate the resource on the server.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/hello', 'hello')
+	.get('/hi', 'hi')
+	.listen(3000)
+```
+
+<!--A path or pathname is an identifier to locate resources of a server.
 
 ```bash
-http://localhost:/path/page
+http://localhost/path/page
 ```
 
 Elysia uses the path and method to look up the correct resource.
@@ -182,9 +185,9 @@ Elysia uses the path and method to look up the correct resource.
 
 A path starts after the origin. Prefix with **/** and ends before search query **(?)**
 
-We can categorize the URL and path as follows:
+We can categorize the URL and path as follows:-->
 
-| URL                             | Path         |
+<!--| URL                             | Path         |
 | ------------------------------- | ------------ |
 | http://example.com/                | /            |
 | http://example.com/hello           | /hello       |
@@ -197,14 +200,13 @@ If the path is not specified, the browser and web server will treat the path as 
 :::
 
 Elysia will look up each request for [route](/essential/route) and response using [handler](/essential/handler) function.
+--->
 
 ## Dynamic path
 
-URLs can be both static and dynamic.
+Dynamic paths match some part and capture the value to extract extra information.
 
-Static paths are hardcoded strings that can be used to locate resources of the server, while dynamic paths match some part and captures the value to extract extra information.
-
-For instance, we can extract the user ID from the pathname. For example:
+To define a dynamic path, we can use a colon `:` followed by a name.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -217,7 +219,7 @@ new Elysia()
 
 <br>
 
-Here dynamic path is created with `/id/:id` which tells Elysia to match any path up until `/id`. What comes after that is then stored as **params** object.
+Here, a dynamic path is created with `/id/:id`. Which tells Elysia to capture the value `:id` segment with value like **/id/1**, **/id/123**, **/id/anything**.
 
 <Playground
   :elysia="demo6"
@@ -242,11 +244,11 @@ When requested, the server should return the response as follows:
 | /id                    | Not Found |
 | /id/anything/rest      | Not Found |
 
-Dynamic paths are great to include things like IDs, which then can be used later.
+Dynamic paths are great to include things like IDs that can be used later.
 
 We refer to the named variable path as **path parameter** or **params** for short.
 
-## Segment
+<!--## Segment
 
 URL segments are each path that is composed into a full path.
 
@@ -264,9 +266,9 @@ The named path parameter will then be stored in `Context.params`.
 | --------- | ------ | ------- |
 | /id/:id   | /id/1  | id=1    |
 | /id/:id   | /id/hi | id=hi   |
-| /id/:name | /id/hi | name=hi |
+| /id/:name | /id/hi | name=hi |-->
 
-## Multiple path parameters
+### Multiple path parameters
 
 You can have as many path parameters as you like, which will then be stored into a `params` object.
 
@@ -338,20 +340,18 @@ new Elysia()
   }"
 />
 
-The server will respond as follows:
+<!--The server will respond as follows:
 
 | Path                   | Response      |
 | ---------------------- | ------------- |
 | /id                    | id undefined  |
-| /id/1                  | id 1          |
+| /id/1                  | id 1          |-->
 
 ## Wildcards
 
-Dynamic paths allow capturing certain segments of the URL.
+Dynamic paths allow capturing a single segment while wildcards allow capturing the rest of the path.
 
-However, when you need a value of the path to be more dynamic and want to capture the rest of the URL segment, a wildcard can be used.
-
-Wildcards can capture the value after segment regardless of amount by using "\*".
+To define a wildcard, we can use an asterisk `*`.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -380,7 +380,7 @@ new Elysia()
   }"
 />
 
-In this case the server will respond as follows:
+<!--In this case the server will respond as follows:
 
 | Path                   | Response      |
 | ---------------------- | ------------- |
@@ -389,13 +389,39 @@ In this case the server will respond as follows:
 | /id/anything           | anything      |
 | /id/anything?name=salt | anything      |
 | /id                    | Not Found     |
-| /id/anything/rest      | anything/rest |
+| /id/anything/rest      | anything/rest |-->
 
-Wildcards are useful for capturing a path until a specific point.
+## Path priority
+Elysia has a path priorities as follows:
 
-::: tip
-You can use a wildcard with a path parameter.
-:::
+1. static paths
+2. dynamic paths
+3. wildcards
+
+If the path is resolved as the static wild dynamic path is presented, Elysia will resolve the static path rather than the dynamic path
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/1', 'static path')
+    .get('/id/:id', 'dynamic path')
+    .get('/id/*', 'wildcard path')
+    .listen(3000)
+```
+
+<Playground
+  :elysia="demo10"
+    :alias="{
+    '/id/:id': '/id/2',
+    '/id/*': '/id/2/a'
+  }"
+  :mock="{
+    '/id/*': {
+      GET: 'wildcard path'
+    }
+  }"
+/>
 
 ## HTTP Verb
 
@@ -469,12 +495,12 @@ const app = new Elysia()
 -   **function**: Function to response to the client
 -   **hook**: Additional metadata
 
-When navigating to each method, you should see the results as the following:
+<!--When navigating to each method, you should see the results as the following:
 | Path      | Method   | Result  |
 | --------- | -------- | ------- |
 | /get      | GET      | hello   |
 | /post     | POST     | hi      |
-| /m-search | M-SEARCH | connect |
+| /m-search | M-SEARCH | connect |-->
 
 ::: tip
 Based on [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231#section-4.1), HTTP Verb is case-sensitive.
@@ -482,7 +508,7 @@ Based on [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231#section-4.1), HTTP Ve
 It's recommended to use the UPPERCASE convention for defining a custom HTTP Verb with Elysia.
 :::
 
-## Elysia.all
+### ALL method
 
 Elysia provides an `Elysia.all` for handling any HTTP method for a specified path using the same API like **Elysia.get** and **Elysia.post**
 
@@ -528,7 +554,7 @@ Unlike unit test's mock, **you can expect it to behave like an actual request** 
 But also useful for simulating or creating unit tests.
 :::
 
-## 404
+<!--## 404
 
 If no path matches the defined routes, Elysia will pass the request to [error](/essential/life-cycle.html#on-error) life cycle before returning a **"NOT_FOUND"** with an HTTP status of 404.
 
@@ -563,7 +589,7 @@ You can learn more about life cycle and error handling in [Life Cycle Events](/e
 HTTP Status is used to indicate the type of response. By default if everything is correct, the server will return a '200 OK' status code (If a route matches and there is no error, Elysia will return 200 as default)
 
 If the server fails to find any route to handle, like in this case, then the server shall return a '404 NOT FOUND' status code.
-:::
+:::-->
 
 ## Group
 

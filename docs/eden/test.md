@@ -17,13 +17,6 @@ head:
 # Eden Test
 Using Eden, we can create an integration test with end-to-end type safety and auto-completion.
 
-<video mute controls>
-  <source src="/eden/eden-test.mp4" type="video/mp4" />
-  Something went wrong trying to load video
-</video>
-
-> Using Eden Treaty to create tests by [irvilerodrigues on Twitter](https://twitter.com/irvilerodrigues/status/1724836632300265926)
-
 ## Setup
 We can use [Bun test](https://bun.sh/guides/test/watch-mode) to create tests.
 

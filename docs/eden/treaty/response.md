@@ -7,15 +7,15 @@ head:
 
     - - meta
       - name: 'og:description'
-        content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
+        content: Eden Treaty is an object-like representation of an Elysia server, providing end-to-end type safety and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 
     - - meta
       - name: 'og:description'
-        content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
+        content: Eden Treaty is an object-like representation of an Elysia server, providing end-to-end type safety and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 ---
 
 # Response
-Once the fetch method is called, Eden Treaty return a promise containing an object with the following properties:
+Once the fetch method is called, Eden Treaty returns a `Promise` containing an object with the following properties:
 - data - returned value of the response (2xx)
 - error - returned value from the response (>= 3xx)
 - response `Response` - Web Standard Response class
@@ -30,8 +30,7 @@ import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
     .post('/user', ({ body: { name }, status }) => {
-        if(name === 'Otto')
-            return status(400, 'Bad Request')
+        if(name === 'Otto') return status(400)
 
         return name
     }, {
@@ -67,19 +66,20 @@ const submit = async (name: string) => {
 }
 ```
 
-By default, Elysia infers `error` and `response` type to TypeScript automatically, and Eden will be providing auto-completion and type narrowing for accurate behavior.
+By default, Elysia infers `error` and `response` types to TypeScript automatically, and Eden will be providing auto-completion and type narrowing for accurate behavior.
 
 ::: tip
-If the server responds with an HTTP status >= 300, then value will be always be null, and `error` will have a returned value instead.
+If the server responds with an HTTP status >= 300, then the value will always be `null`, and `error` will have a returned value instead.
 
-Otherwise, response will be passed to data.
+Otherwise, response will be passed to `data`.
 :::
 
 ## Stream response
-Eden will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+Eden will interpret a stream response or [Server-Sent Events](/essential/handler.html#server-sent-events-sse) as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
 
+::: code-group
 
-```typescript twoslash
+```typescript twoslash [Stream]
 import { Elysia } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
@@ -96,4 +96,96 @@ if (error) throw error
 for await (const chunk of data)
 	console.log(chunk)
                // ^?
+```
+
+```typescript twoslash [Server-Sent Events]
+import { Elysia, sse } from 'elysia'
+import { treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield sse({
+			event: 'message',
+			data: 1
+		})
+		yield sse({
+			event: 'message',
+			data: 2
+		})
+		yield sse({
+			event: 'end'
+		})
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+               // ^?
+
+
+
+
+
+
+
+//
+```
+
+:::
+
+
+## Utility type
+Eden Treaty provides a utility type `Treaty.Data<T>` and `Treaty.Error<T>` to extract the `data` and `error` type from the response.
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+import { treaty, Treaty } from '@elysiajs/eden'
+
+const app = new Elysia()
+	.post('/user', ({ body: { name }, status }) => {
+		if(name === 'Otto') return status(400)
+
+		return name
+	}, {
+		body: t.Object({
+			name: t.String()
+		})
+	})
+	.listen(3000)
+
+const api =
+	treaty<typeof app>('localhost:3000')
+
+type UserData = Treaty.Data<typeof api.user.post>
+//     ^?
+
+
+// Alternatively you can also pass a response
+const response = await api.user.post({
+	name: 'Saltyaom'
+})
+
+type UserDataFromResponse = Treaty.Data<typeof response>
+//     ^?
+
+
+
+type UserError = Treaty.Error<typeof api.user.post>
+//     ^?
+
+
+
+
+
+
+
+
+
+
+
+
+//
 ```

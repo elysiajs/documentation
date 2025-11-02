@@ -1,61 +1,48 @@
 <template>
-    <section class="flex flex-col w-full max-w-5xl mx-auto mt-4 fern-gap">
-        <h2
-            class="text-5xl lg:text-6xl !leading-[4rem] sm:text-center font-bold text-gray-400 mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-rose-400 to-fuchsia-400"
+    <section
+        class="flex flex-col w-full max-w-6xl mx-auto mt-4 fern-gap"
+        ref="scope"
+    >
+        <motion.h2
+            class="text-5xl lg:text-6xl !leading-14 lg:!leading-16 sm:text-center font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-tl from-rose-400 to-fuchsia-400"
+            v-bind="flyIn()"
         >
-            Made possible by you
-        </h2>
+        	Because of You
+        </motion.h2>
         <p
-            class="text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto dark:text-gray-400 dark:font-medium"
+            class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto mb-8 dark:text-gray-400 dark:font-medium"
         >
-            Elysia is
-            <span class="text-gray-700 dark:text-gray-200 font-medium"
-                >not owned by an organization</span
-            >, but is driven by the community.
-            <br />
-            Elysia development is only possible thanks to your support.
+            <motion.span class="inline-block" v-bind="flyIn(0.1)">
+                Elysia is
+                <span class="text-gray-700 dark:text-gray-200 font-medium">
+                    not owned by an organization</span
+                >, driven by volunteers, and community.
+            </motion.span>
+            <motion.span class="inline-block mt-2" v-bind="flyIn(0.2)">
+                Elysia is possible by these awesome sponsors.
+            </motion.span>
         </p>
-        <div class="flex sm:justify-center my-8">
-            <a
-                id="become-sponsor"
-                class="inline-flex items-center text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform transform hover:scale-110 focus:scale-110"
-                href="https://github.com/sponsors/saltyaom"
-                target="_blank"
-            >
-                Become a sponsor
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="transform scale-75 translate-x-1.5"
-                >
-                    <path
-                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    />
-                </svg>
-            </a>
-        </div>
+
         <section v-if="goldSponsors.length">
             <header class="mt-4 text-center">
-                <h4
-                    class="text-4xl text-center font-semibold text-gradient from-sky-500 to-violet-500"
+                <motion.h4
+                    class="text-4xl text-center font-semibold text-gradient from-pink-500 to-yellow-500"
+                    v-bind="flyIn(0.3)"
                 >
-                    Gold Sponsors <span class="text-pink-400 ml-0.5">💖</span>
-                </h4>
+                    Gold Sponsors <span class="text-pink-400 ml-0.5">💛</span>
+                </motion.h4>
             </header>
-            <ul id="sponsors-fern-gold" class="my-4">
+            <motion.ul id="sponsors-fern-gold" class="my-4" v-bind="flyIn(0.4)">
                 <li
                     v-for="sponsor in goldSponsors"
                     :key="sponsor.sponsorEntity.login"
                 >
                     <a
-                        :href="`https://github.com/${sponsor.sponsorEntity.login}`"
+                        :href="
+                            // @ts-ignore
+                            sponsorOverride.href[sponsor.sponsorEntity.login] ??
+                            `https://github.com/${sponsor.sponsorEntity.login}`
+                        "
                         target="_blank"
                         class="sponsor"
                     >
@@ -76,31 +63,29 @@
                                 }}
                             </h5>
                             <p>
-                                {{
-                                    dayjs()
-                                        .from(dayjs(sponsor.createdAt))
-                                        .replace('in', 'for')
-                                }}
+                                {{ sponsor.duration }}
                             </p>
                         </section>
                     </a>
                 </li>
-            </ul>
+            </motion.ul>
         </section>
 
         <section v-if="silverSponsors.length">
             <header class="mt-4 text-center">
-                <h4
+                <motion.h4
                     class="text-3xl text-center font-semibold text-gradient from-violet-500 to-sky-400"
+                    v-bind="flyIn(0.5)"
                 >
-                    Silver Sponsors <span class="text-pink-400 ml-0.5">💞</span>
-                </h4>
+                    Silver Sponsors <span class="text-pink-400 ml-0.5">🤍</span>
+                </motion.h4>
             </header>
 
-            <ul
+            <motion.ul
                 id="sponsors-fern-silver"
                 v-if="sponsors.length > 0"
                 class="my-4"
+                v-bind="flyIn(0.6)"
             >
                 <li
                     v-for="sponsor in silverSponsors"
@@ -128,30 +113,29 @@
                                 }}
                             </h6>
                             <p>
-                                {{
-                                    dayjs()
-                                        .from(dayjs(sponsor.createdAt))
-                                        .replace('in', 'for')
-                                }}
+                                {{ sponsor.duration }}
                             </p>
                         </section>
                     </a>
                 </li>
-            </ul>
+            </motion.ul>
         </section>
 
         <section v-if="individualSponsors.length">
             <header class="mt-6 text-center">
-                <h4
-                    class="text-2xl text-center font-semibold text-gradient from-rose-400 to-pink-400"
+                <motion.h4
+                    class="text-2xl text-center font-semibold text-gradient from-purple-400 to-rose-400"
+                    v-bind="flyIn(0.7)"
                 >
-                    Individual Sponsors <span class="text-pink-400 ml-0.5">💕</span>
-                </h4>
+                    Generous Sponsors
+                    <span class="text-pink-400 ml-0.5">💞</span>
+                </motion.h4>
             </header>
 
-            <ul
+            <motion.ul
                 id="sponsors-fern"
                 v-if="individualSponsors.length > 0"
+                v-bind="flyIn(0.8)"
                 class="my-4"
             >
                 <li
@@ -179,11 +163,7 @@
                             }}
                         </p>
                         <p>
-                            {{
-                                dayjs()
-                                    .from(dayjs(sponsor.createdAt))
-                                    .replace('in', 'for')
-                            }}
+                            {{ sponsor.duration }}
                         </p>
                     </a>
                 </li>
@@ -217,24 +197,104 @@
                         </p>
                     </a>
                 </li>
+            </motion.ul>
+        </section>
+
+        <section v-if="smolSponsors.length">
+            <header class="mt-6 text-center">
+                <h4
+                    class="text-2xl text-center font-medium text-gradient from-rose-400 to-pink-400"
+                >
+                    Individual Sponsors
+                    <span class="text-pink-400 ml-0.5">💕</span>
+                </h4>
+            </header>
+
+            <ul
+                id="sponsors-fern-smol"
+                class="mt-6"
+                v-if="smolSponsors.length > 0"
+            >
+                <li
+                    v-for="sponsor in smolSponsors"
+                    :key="sponsor.sponsorEntity.login"
+                >
+                    <a
+                        :href="`https://github.com/${sponsor.sponsorEntity.login}`"
+                        target="_blank"
+                        class="sponsor"
+                    >
+                        <div>
+                            <img
+                                v-if="sponsor.sponsorEntity.avatarUrl"
+                                :src="sponsor.sponsorEntity.avatarUrl"
+                                alt="Sponsor avatar"
+                                loading="lazy"
+                                :title="sponsor.sponsorEntity.name"
+                            />
+                        </div>
+                    </a>
+                </li>
             </ul>
         </section>
 
-        <p
-            class="sm:text-center text-gradient from-pink-400 to-fuchsia-400 font-semibold text-base"
-        >
+        <p class="inline-block text-center mt-12 mb-4">
             Thank you for making Elysia possible
+        </p>
+
+        <p class="inline-block text-center">
+            We can only develop Elysia full-time thanks to your support.
+        </p>
+
+        <div class="flex sm:justify-center my-8">
+            <a
+                id="become-sponsor"
+                class="inline-flex items-center mx-auto text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform !ease-in-expo transform hover:scale-110 focus:scale-110"
+                href="https://github.com/sponsors/saltyaom"
+                target="_blank"
+            >
+                Become a sponsor
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="transform scale-75 translate-x-1.5"
+                >
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                    />
+                </svg>
+            </a>
+        </div>
+
+        <p
+            class="mx-auto sm:text-center text-gradient from-pink-400 to-fuchsia-400 font-semibold text-base"
+        >
+            With love from our community
         </p>
     </section>
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
-dayjs.extend(relativeTime)
+import { ref } from 'vue'
+import { useInView, motion } from 'motion-v'
+import { useFlyIn } from './animate'
 
 import { data, type Sponsor } from './sponsor.data'
+import { sponsorOverride } from './sponsor.constant'
+
+const scope = ref(null)
+const isInView = useInView(scope, {
+    once: true,
+    margin: '0px 0px -35% 0px'
+})
+const flyIn = useFlyIn(isInView)
 
 const sponsors: Sponsor[] = data
 
@@ -247,7 +307,11 @@ const silverSponsors = sponsors.filter(
         sponsor.tier.monthlyPriceInDollars < 200
 )
 const individualSponsors = sponsors.filter(
-    (sponsor) => sponsor.tier.monthlyPriceInDollars < 75
+    (sponsor) => sponsor.tier.monthlyPriceInDollars < 75 && sponsor.tier.monthlyPriceInDollars > 9
+)
+
+const smolSponsors = sponsors.filter(
+    (sponsor) => sponsor.tier.monthlyPriceInDollars <= 9
 )
 </script>
 
@@ -269,7 +333,7 @@ const individualSponsors = sponsors.filter(
         }
 
         & > p {
-            @apply my-0;
+            @apply my-0 line-clamp-3 max-w-full text-ellipsis flex-nowrap;
         }
     }
 }
@@ -278,13 +342,13 @@ const individualSponsors = sponsors.filter(
     @apply grid gap-2 grid-cols-1;
 
     & > li > .sponsor {
-        @apply flex justify-center items-center gap-3 text-xs text-center py-2;
+        @apply flex justify-start items-center gap-3 text-xs text-center py-2;
 
         & > div {
-            @apply min-w-21 min-h-21 bg-gray-100 overflow-hidden rounded-full;
+            @apply min-w-21 min-h-21 overflow-hidden rounded-full;
 
             & > img {
-                @apply w-21 h-21 rounded-full object-cover object-center;
+                @apply w-21 h-21 !rounded-sm object-cover object-center;
             }
         }
 
@@ -318,7 +382,7 @@ const individualSponsors = sponsors.filter(
         }
 
         & > section {
-            @apply flex flex-col;
+            @apply flex flex-col w-full;
 
             & > h6 {
                 @apply text-left text-lg font-medium m-0;
@@ -331,6 +395,26 @@ const individualSponsors = sponsors.filter(
     }
 }
 
+#sponsors-fern-smol {
+    @apply grid justify-center gap-2.5;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(56px, 1fr)
+    ) !important;
+
+    & > li > .sponsor {
+        @apply flex flex-col justify-center items-center text-xs text-center;
+
+        & > div {
+            @apply w-full h-full aspect-square bg-gray-100 overflow-hidden rounded-full;
+
+            & > img {
+                @apply w-full h-full rounded-full object-cover object-center;
+            }
+        }
+    }
+}
+
 #become-sponsor {
     transition: all 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
@@ -338,13 +422,13 @@ const individualSponsors = sponsors.filter(
 /* equivalent to md screen */
 @media (min-width: 40rem) {
     #sponsors-fern {
-        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)) !important;
+        grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)) !important;
     }
 
     #sponsors-fern-gold {
         grid-template-columns: repeat(
             auto-fit,
-            minmax(224px, 256px)
+            minmax(224px, 288px)
         ) !important;
         justify-content: center;
     }

@@ -18,61 +18,116 @@ head:
 
 Starting from Expo SDK 50, and App Router v3, Expo allows us to create API route directly in an Expo app.
 
-1. Create an Expo app if it doesn't exist with:
-```typescript
-bun create expo-app --template tabs
-```
+1. Create **app/[...slugs]+api.ts**
+2. Define an Elysia server
+3. Export **Elysia.fetch** name of HTTP methods you want to use
 
-2. Create **app/[...slugs]+api.ts**
-3. In **[...slugs]+api.ts**, create or import an existing Elysia server
-4. Export the handler with the name of method you want to expose
+::: code-group
 
-```typescript
-// app/[...slugs]+api.ts
+```typescript [app/[...slugs]+api.ts]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
-    .get('/', () => 'hello Next')
+    .get('/', 'hello Expo')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
 
-export const GET = app.handle // [!code ++]
-export const POST = app.handle // [!code ++]
+export const GET = app.fetch // [!code ++]
+export const POST = app.fetch // [!code ++]
 ```
 
-Elysia will work normally as expected because of WinterCG compliance, however, some plugins like **Elysia Static** may not work if you are running Expo on Node.
+:::
 
 You can treat the Elysia server as if normal Expo API route.
-
-With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action.
-
-Please refer to [API route](https://docs.expo.dev/router/reference/api-routes/) for more information.
 
 ## Prefix
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
 
 For example, if you place Elysia server in **app/api/[...slugs]+api.ts**, you need to annotate prefix as **/api** to Elysia server.
 
-```typescript
-// app/api/[...slugs]+api.ts
+::: code-group
+
+```typescript [app/api/[...slugs]+api.ts]
 import { Elysia, t } from 'elysia'
 
-const app = new Elysia({ prefix: '/api' })
-    .get('/', () => 'hi')
+const app = new Elysia({ prefix: '/api' }) // [!code ++]
+    .get('/', 'Hello Expo')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
 
-export const GET = app.handle
-export const POST = app.handle
+export const GET = app.fetch
+export const POST = app.fetch
 ```
 
-This will ensure that Elysia routing will work properly in any location you place in.
+:::
+
+This will ensure that Elysia routing will work properly in any location you place it in.
+
+## Eden
+
+We can add [Eden](/eden/overview) for **end-to-end type safety** similar to tRPC.
+
+1. Export `type` from the Elysia server
+
+::: code-group
+
+```typescript [app/[...slugs]+api.ts]
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.get('/', 'Hello Nextjs')
+	.post(
+		'/user',
+		({ body }) => body,
+		{
+			body: treaty.schema('User', {
+				name: 'string'
+			})
+		}
+	)
+
+export type app = typeof app // [!code ++]
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+:::
+
+2. Create a Treaty client
+
+::: code-group
+
+```typescript [lib/eden.ts]
+import { treaty } from '@elysiajs/eden'
+import type { app } from '../app/[...slugs]+api'
+
+export const api = treaty<app>('localhost:3000/api')
+```
+
+:::
+
+3. Use the client in both server and client components
+
+::: code-group
+
+```tsx [app/page.tsx]
+import { api } from '../lib/eden'
+
+export default async function Page() {
+	const message = await api.get()
+
+	return <h1>Hello, {message}</h1>
+}
+```
+
+:::
 
 ## Deployment
 You can either directly use API route using Elysia and deploy as normal Elysia app normally if need or using [experimental Expo server runtime](https://docs.expo.dev/router/reference/api-routes/#deployment).

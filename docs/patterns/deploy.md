@@ -17,10 +17,47 @@ head:
 # Deploy to production
 This page is a guide on how to deploy Elysia to production.
 
-## Compile to binary
-We recommended running a build command before deploying to production as it could potentially reduce memory usage and file size significantly.
+## Cluster mode
+Elysia is a single-threaded by default. To take advantage of multi-core CPU, we can run Elysia in cluster mode.
 
-We recommended compile Elysia into a single binary using the command as follows:
+Let's create a **index.ts** file that import our main server from **server.ts** and fork multiple workers based on the number of CPU cores available.
+
+::: code-group
+
+```ts [src/index.ts]
+import cluster from 'node:cluster'
+import os from 'node:os'
+import process from 'node:process'
+
+if (cluster.isPrimary) {
+  	for (let i = 0; i < os.availableParallelism(); i++)
+    	cluster.fork()
+} else {
+  	await import('./server')
+  	console.log(`Worker ${process.pid} started`)
+}
+```
+
+```ts [src/server.ts]
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', () => 'Hello World!')
+	.listen(3000)
+```
+
+:::
+
+This will make sure that Elysia is running on multiple CPU cores.
+
+::: tip
+Elysia on Bun use SO_REUSEPORT by default, which allows multiple instances to listen on the same port. This only works on Linux.
+:::
+
+## Compile to binary
+We recommend running a build command before deploying to production as it could potentially reduce memory usage and file size significantly.
+
+We recommend compiling Elysia into a single binary using the command as follows:
 ```bash
 bun build \
 	--compile \
@@ -28,22 +65,22 @@ bun build \
 	--minify-syntax \
 	--target bun \
 	--outfile server \
-	./src/index.ts
+	src/index.ts
 ```
 
 This will generate a portable binary `server` which we can run to start our server.
 
-Compiling server to binary usually significantly reduce memory usage by 2-3x compared to development environment.
+Compiling server to binary usually significantly reduces memory usage by 2-3x compared to development environment.
 
 This command is a bit long, so let's break it down:
-1. `--compile` - Compile TypeScript to binary
-2. `--minify-whitespace` - Remove unnecessary whitespace
-3. `--minify-syntax` - Minify JavaScript syntax to reduce file size
-4. `--target bun` - Target the `bun` platform, this can optimize the binary for the target platform
-5. `--outfile server` - Output the binary as `server`
-6. `./src/index.ts` - The entry file of our server (codebase)
+1. **--compile** Compile TypeScript to binary
+2. **--minify-whitespace** Remove unnecessary whitespace
+3. **--minify-syntax** Minify JavaScript syntax to reduce file size
+4. **--target bun** Optimize the binary for Bun runtime
+5. **--outfile server** Output the binary as `server`
+6. **src/index.ts** The entry file of our server (codebase)
 
-To start our server, simly run the binary.
+To start our server, simply run the binary.
 ```bash
 ./server
 ```
@@ -52,25 +89,49 @@ Once binary is compiled, you don't need `Bun` installed on the machine to run th
 
 This is great as the deployment server doesn't need to install an extra runtime to run making binary portable.
 
+### Target
+You can also add a `--target` flag to optimize the binary for the target platform.
+
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun-linux-x64 \
+	--outfile server \
+	src/index.ts
+```
+
+Here's a list of available targets:
+| Target                  | Operating System | Architecture | Modern | Baseline | Libc  |
+|--------------------------|------------------|--------------|--------|----------|-------|
+| bun-linux-x64           | Linux            | x64          | ✅      | ✅        | glibc |
+| bun-linux-arm64         | Linux            | arm64        | ✅      | N/A      | glibc |
+| bun-windows-x64         | Windows          | x64          | ✅      | ✅        | -     |
+| bun-windows-arm64       | Windows          | arm64        | ❌      | ❌        | -     |
+| bun-darwin-x64          | macOS            | x64          | ✅      | ✅        | -     |
+| bun-darwin-arm64        | macOS            | arm64        | ✅      | N/A      | -     |
+| bun-linux-x64-musl      | Linux            | x64          | ✅      | ✅        | musl  |
+| bun-linux-arm64-musl    | Linux            | arm64        | ✅      | N/A      | musl  |
+
 ### Why not --minify
 Bun does have `--minify` flag that will minify the binary.
 
 However if we are using [OpenTelemetry](/plugins/opentelemetry), it's going to reduce a function name to a single character.
 
-This make tracing harder than it should as OpenTelemetry rely on a function name.
+This makes tracing harder than it should as OpenTelemetry relies on a function name.
 
 However, if you're not using OpenTelemetry, you may opt in for `--minify` instead
 ```bash
 bun build \
 	--compile \
 	--minify \
-	--target bun \
 	--outfile server \
-	./src/index.ts
+	src/index.ts
 ```
 
 ### Permission
-Some Linux distro might not be able to run the binary, we suggest enable executable permission to a binary if you're on Linux:
+Some Linux distros might not be able to run the binary, we suggest enabling executable permission to a binary if you're on Linux:
 ```bash
 chmod +x ./server
 
@@ -82,7 +143,7 @@ If you're trying to deploy a binary to your server but unable to run with random
 
 It means that the machine you're running on **doesn't support AVX2**.
 
-Unfortunately, Bun require machine that has an `AVX2` hardware support.
+Unfortunately, Bun requires a machine that has `AVX2` hardware support.
 
 There's no workaround as far as we know.
 
@@ -93,12 +154,10 @@ You may bundle your server to a JavaScript file instead.
 
 ```bash
 bun build \
-	--compile \ // [!code --]
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun \
 	--outfile ./dist/index.js \
-	./src/index.ts
+	src/index.ts
 ```
 
 This will generate a single portable JavaScript file that you can deploy on your server.
@@ -129,9 +188,8 @@ RUN bun build \
 	--compile \
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun \
 	--outfile server \
-	./src/index.ts
+	src/index.ts
 
 FROM gcr.io/distroless/base
 
@@ -147,7 +205,7 @@ EXPOSE 3000
 ```
 
 ### OpenTelemetry
-If you are using [OpenTelemetry](/integrations/opentelemetry) to deploys production server.
+If you are using [OpenTelemetry](/patterns/opentelemetry) to deploys production server.
 
 As OpenTelemetry rely on monkey-patching `node_modules/<library>`. It's required that make instrumentations works properly, we need to specify that libraries to be instrument is an external module to exclude it from being bundled.
 
@@ -224,9 +282,8 @@ RUN bun build \
 	--compile \
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun \
 	--outfile server \
-	./src/index.ts
+	src/index.ts
 
 FROM gcr.io/distroless/base
 
@@ -244,9 +301,9 @@ EXPOSE 3000
 ## Railway
 [Railway](https://railway.app) is one of the popular deployment platform.
 
-Railway assign **random port** to expose for each deployment that can be access via `PORT` environment variable.
+Railway assigns a **random port** to expose for each deployment, which can be accessed via the `PORT` environment variable.
 
-We need to modify our Elysia server to accept `PORT` environment to comply with Railway port.
+We need to modify our Elysia server to accept the `PORT` environment variable to comply with Railway port.
 
 Instead of a fixed port, we may use `process.env.PORT` and provide a fallback on development instead.
 ```ts

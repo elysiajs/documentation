@@ -7,44 +7,45 @@ head:
 
     - - meta
       - name: 'description'
-        content: With Nextjs App Router, you can run Elysia on Nextjs route. Elysia will work normally as expected because of WinterCG compliance.
+        content: With Next.js App Router, you can run Elysia on Next.js routes. Elysia will work normally as expected because of WinterCG compliance.
 
     - - meta
       - property: 'og:description'
-        content: With Nextjs App Router, you can run Elysia on Nextjs route. Elysia will work normally as expected because of WinterCG compliance.
+        content: With Next.js App Router, you can run Elysia on Next.js routes. Elysia will work normally as expected because of WinterCG compliance.
 ---
 
-# Integration with Nextjs
+# Integration with Next.js
 
-With Nextjs App Router, we can run Elysia on Nextjs route.
+With Next.js App Router, we can run Elysia on Next.js routes.
 
-1. Create **api/[[...slugs]]/route.ts** inside app router
-2. In **route.ts**, create or import an existing Elysia server
-3. Export the handler with the name of method you want to expose
+1. Create **app/api/[[...slugs]]/route.ts**
+2. define an Elysia server
+3. Export **Elysia.fetch** name of HTTP methods you want to use
 
-```typescript
-// app/api/[[...slugs]]/route.ts
+::: code-group
+
+```typescript [app/api/[[...slugs]]/route.ts]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia({ prefix: '/api' })
-    .get('/', () => 'hello Next')
+    .get('/', 'Hello Nextjs')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
 
-export const GET = app.handle // [!code ++]
-export const POST = app.handle // [!code ++]
+export const GET = app.fetch // [!code ++]
+export const POST = app.fetch // [!code ++]
 ```
 
-Elysia will work normally as expected because of WinterCG compliance, however, some plugins like **Elysia Static** may not work if you are running Nextjs on Node.
+:::
 
-You can treat the Elysia server as a normal Nextjs API route.
+Elysia will work normally as expected because of WinterCG compliance.
 
-With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
+You can treat the Elysia server as a normal Next.js API route.
 
-Please refer to [Nextjs Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
+With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](/eden/overview) with both client-side and server action
 
 ## Prefix
 
@@ -52,20 +53,85 @@ Because our Elysia server is not in the root directory of the app router, you ne
 
 For example, if you place Elysia server in **app/user/[[...slugs]]/route.ts**, you need to annotate prefix as **/user** to Elysia server.
 
-```typescript
-// app/user/[[...slugs]]/route.ts
+::: code-group
+
+```typescript [app/user/[[...slugs]]/route.ts]
 import { Elysia, t } from 'elysia'
 
-const app = new Elysia({ prefix: '/user' }) // [!code ++]
-    .get('/', () => 'hi')
+export default new Elysia({ prefix: '/user' }) // [!code ++]
+	.get('/', 'Hello Nextjs')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
 
-export const GET = app.handle
-export const POST = app.handle
+export const GET = app.fetch
+export const POST = app.fetch
 ```
 
+:::
+
 This will ensure that Elysia routing will work properly in any location you place it.
+
+## Eden
+
+We can add [Eden](/eden/overview) for **end-to-end type safety** similar to tRPC.
+
+1. Export `type` from the Elysia server
+
+::: code-group
+
+```typescript [app/api/[[...slugs]]/route.ts]
+import { Elysia } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+	.get('/', 'Hello Nextjs')
+	.post(
+		'/user',
+		({ body }) => body,
+		{
+			body: treaty.schema('User', {
+				name: 'string'
+			})
+		}
+	)
+
+export type app = typeof app // [!code ++]
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+:::
+
+2. Create a Treaty client
+
+::: code-group
+
+```typescript [lib/eden.ts]
+import { treaty } from '@elysiajs/eden'
+import type { app } from '../app/api/[[...slugs]]/route'
+
+export const api = treaty<app>('localhost:3000/api')
+```
+
+:::
+
+3. Use the client in both server and client components
+
+::: code-group
+
+```tsx [app/page.tsx]
+import { api } from '../lib/eden'
+
+export default async function Page() {
+	const message = await api.get()
+
+	return <h1>Hello, {message}</h1>
+}
+```
+
+:::
+
+Please refer to [Next.js Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.

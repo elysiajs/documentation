@@ -3,6 +3,7 @@ title: Elysia 1.2 - You and Me
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -10,11 +11,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Introducing Adapter for universal runtime suppport, Object macro with resolve, Parser with custom name, WebSocket with lifecycle, TypeBox 0.34 with recursive type, and Eden validation inference.
+        content: Introducing Adapter for universal runtime support, Object macro with resolve, Parser with custom name, WebSocket with lifecycle, TypeBox 0.34 with recursive type, and Eden validation inference.
 
     - - meta
       - property: 'og:description'
-        content: Introducing Adapter for universal runtime suppport, Object macro with resolve, Parser with custom name, WebSocket with lifecycle, TypeBox 0.34 with recursive type, and Eden validation inference.
+        content: Introducing Adapter for universal runtime support, Object macro with resolve, Parser with custom name, WebSocket with lifecycle, TypeBox 0.34 with recursive type, and Eden validation inference.
 
     - - meta
       - property: 'og:image'
@@ -38,9 +39,9 @@ head:
     shadow
 >
 
-Named after the song [Φ²](https://youtu.be/b9IkzWO63Fg) from album "At the Fingertip of the Sea" by HoyoMix as used in as in [**"You and Me"**](https://youtu.be/nz_Ra4G57A4).
+Named after the song [Φ²](https://youtu.be/b9IkzWO63Fg) from album "At the Fingertip of the Sea" by HoyoMix as used in [**"You and Me"**](https://youtu.be/nz_Ra4G57A4).
 
-Elysia 1.2 focus on commitment to expand universal runtime support and developer experience:
+Elysia 1.2 focuses on commitment to expand universal runtime support and developer experience:
 - [Adapter](#adapter)
 - [Macro with resolve](#macro-with-resolve)
 - [Parser](#parser)
@@ -92,7 +93,7 @@ We will continue to expand support for more runtimes in the future starting with
 - uWebSocket.js
 
 ### Universal runtime API
-To be comaptible with different runtime, Elysia now wrap over a hand-picked utility function to provide a consistent API across different runtime.
+To be compatible with different runtime, Elysia now wraps over a hand-picked utility function to provide a consistent API across different runtime.
 
 For example, in Bun you may use `Bun.file` to return a file response which is not available in Node.
 

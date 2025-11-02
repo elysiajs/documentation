@@ -3,6 +3,7 @@ title: Elysia 0.7 - Stellar Stellar
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -43,10 +44,10 @@ For once being forgotten, she really is a star that truly shine in the dark.
 
 **Stellar Stellar** brings many exciting new update to help Elysia solid the foundation, and handle complexity with ease, featuring:
 - Entirely rewrite type, up to 13x faster type inference.
-- "Trace" for declarative telemetry and better performance audit. 
-- Reactive Cookie model and cookie valiation to simplify cookie handling. 
+- "Trace" for declarative telemetry and better performance audit.
+- Reactive Cookie model and cookie valiation to simplify cookie handling.
 - TypeBox 0.31 with a custom decoder support.
-- Rewritten Web Socket for even better support. 
+- Rewritten Web Socket for even better support.
 - Definitions remapping, and declarative affix for preventing name collision.
 - Text based status
 
@@ -423,7 +424,7 @@ A future where we can freely create anything we want with an astonishing develop
 
 We feels truly thanksful to be loved by you and lovely community of TypeScript and Bun.
 
-It's exciting to see Elysia is bring to live with amazing developer like: 
+It's exciting to see Elysia is bring to live with amazing developer like:
 - [Ethan Niser with his amazing BETH Stack](https://youtu.be/aDYYn9R-JyE?si=hgvGgbywu_-jsmhR)
 - Being mentioned by [Fireship](https://youtu.be/dWqNgzZwVJQ?si=AeCmcMsTZtNwmhm2)
 - Having official integration for [Lucia Auth](https://github.com/pilcrowOnPaper/lucia)
@@ -453,7 +454,7 @@ Thanks you and your love and overwhelming support for Elysia, we hope we can pai
 > Not Cinderella, forever waiting
 >
 > But the prince that came to for her
-> 
+>
 > Cause I'm a star, that's why
 >
 > Stellar Stellar

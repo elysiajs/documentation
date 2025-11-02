@@ -3,6 +3,7 @@ title: Elysia 0.4 - 月夜の音楽会 (Moonlit Night Concert)
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
   - - meta
     - property: 'og:title'

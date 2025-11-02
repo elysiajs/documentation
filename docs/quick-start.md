@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all it needs to do a quick start or get started with ElysiaJS.
+        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all you need to do a quick start or get started with ElysiaJS.
 
     - - meta
       - property: 'og:description'
-        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all it needs to do a quick start or get started with ElysiaJS.
+        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all you need to do a quick start or get started with ElysiaJS.
 ---
 
 <script setup>
@@ -171,7 +171,7 @@ pacman -S nodejs npm
 
 ## Setup
 
-We recommended using TypeScript for your Node.js project.
+We recommend using TypeScript for your Node.js project.
 
 <Tab
 	id="language"
@@ -181,7 +181,7 @@ We recommended using TypeScript for your Node.js project.
 
 <template v-slot:ts>
 
-To create a new Elysia app with TypeScript, we recommended install Elysia with `tsx`:
+To create a new Elysia app with TypeScript, we recommend installing Elysia with `tsx`:
 
 ::: code-group
 
@@ -414,18 +414,3 @@ console.log(
 </template>
 
 </Tab>
-
-## Next Steps
-
-We recommend checking out the either one of the following:
-
-<Deck>
-    <Card title="Key Concept (5 minutes)" href="/key-concept">
-    	The core concept of Elysia and how to use it.
-    </Card>
-    <Card title="Tutorial (15 minutes)" href="/tutorial">
-    	A step-by-step guide walkthrough Elysia's features.
-    </Card>
-</Deck>
-
-If you have any questions, feel free to ask in our [Discord](https://discord.gg/eaFJ2KDJck) community.

@@ -3,6 +3,7 @@ title: Elysia with Supabase. Your next backend at sonic speed
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -59,7 +60,7 @@ Things that take many hours to redo in every project are now a matter of a minut
 
 If you haven't heard, Elysia is a Bun-first web framework built with speed and Developer Experience in mind.
 
-Elysia outperforms Express by nearly ~20x faster, while having almost the same syntax as Express and Fastify. 
+Elysia outperforms Express by nearly ~20x faster, while having almost the same syntax as Express and Fastify.
 
 ###### (Performance may vary per machine, we recommended you run [the benchmark](https://github.com/SaltyAom/bun-http-framework-benchmark) on your machine before deciding the performance)
 
@@ -706,7 +707,7 @@ export const post = (app: Elysia) =>
 
 ```
 
-Great right? We don't even see that we handled the authorization by looking at the code like magic. 
+Great right? We don't even see that we handled the authorization by looking at the code like magic.
 
 Putting our focus back on our core business logic instead.
 
