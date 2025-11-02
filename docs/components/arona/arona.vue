@@ -71,6 +71,8 @@
                     }"
                 >
                     <div class="relative isolate flex flex-col w-full h-full">
+                  		<Ray class="h-66 !z-10 opacity-20 pointer-events-none" />
+
                         <h3
                             class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 bg-white/80 dark:bg-gray-800/50 rounded-full backdrop-blur-sm"
                         >
@@ -485,6 +487,7 @@ import A from './a.vue'
 import Code from './code.vue'
 import Verifying from './verifying.vue'
 import ErrorMessage from './error-message.vue'
+import Ray from '../fern/ray.vue'
 
 import {
     X,

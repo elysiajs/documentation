@@ -103,7 +103,7 @@ pre.vp-code > code {
 }
 
 :root {
-	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
     --vp-c-brand-1: #f06292;
     --vp-c-brand-2: #f06292;
@@ -139,8 +139,8 @@ pre.vp-code > code {
     --vp-code-copy-code-hover-bg: #fff;
     --vp-code-copy-code-border-color: theme(--color-slate-200);
 
-    --vp-icon-copy: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(128,128,128)%22%20stroke-width=%221.5%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20width=%2214%22%20height=%2214%22%20x=%228%22%20y=%228%22%20rx=%222%22%20ry=%222%22/%3E%3Cpath%20d=%22M4%2016c-1.1%200-2-.9-2-2V4c0-1.1.9-2%202-2h10c1.1%200%202%20.9%202%202%22/%3E%3C/svg%3E");
-    --vp-icon-copied: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(128,128,128)%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%206%209%2017l-5-5%22/%3E%3C/svg%3E")
+    --vp-icon-copy: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(128,128,128)%22%20stroke-width=%221.5%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20width=%2214%22%20height=%2214%22%20x=%228%22%20y=%228%22%20rx=%222%22%20ry=%222%22/%3E%3Cpath%20d=%22M4%2016c-1.1%200-2-.9-2-2V4c0-1.1.9-2%202-2h10c1.1%200%202%20.9%202%202%22/%3E%3C/svg%3E');
+    --vp-icon-copied: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(128,128,128)%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%206%209%2017l-5-5%22/%3E%3C/svg%3E');
 }
 
 .dark {
@@ -173,8 +173,8 @@ pre.vp-code > code {
     --vp-code-copy-code-hover-bg: theme(--color-slate-700);
     --vp-code-copy-code-border-color: theme(--color-slate-600);
 
-    --vp-icon-copy: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(160,160,160)%22%20stroke-width=%221.5%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20width=%2214%22%20height=%2214%22%20x=%228%22%20y=%228%22%20rx=%222%22%20ry=%222%22/%3E%3Cpath%20d=%22M4%2016c-1.1%200-2-.9-2-2V4c0-1.1.9-2%202-2h10c1.1%200%202%20.9%202%202%22/%3E%3C/svg%3E");
-    --vp-icon-copied: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(160,160,160)%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%206%209%2017l-5-5%22/%3E%3C/svg%3E")
+    --vp-icon-copy: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(160,160,160)%22%20stroke-width=%221.5%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20width=%2214%22%20height=%2214%22%20x=%228%22%20y=%228%22%20rx=%222%22%20ry=%222%22/%3E%3Cpath%20d=%22M4%2016c-1.1%200-2-.9-2-2V4c0-1.1.9-2%202-2h10c1.1%200%202%20.9%202%202%22/%3E%3C/svg%3E');
+    --vp-icon-copied: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(160,160,160)%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%206%209%2017l-5-5%22/%3E%3C/svg%3E');
 }
 
 html,
@@ -821,11 +821,11 @@ button.copy::after {
         @apply m-auto !bg-transparent !shadow-none;
 
         & > .icon {
-        	@apply !size-7;
+            @apply !size-7;
 
-        	& > span {
-         		@apply scale-150 top-1.75 left-1.75;
-         	}
+            & > span {
+                @apply scale-150 top-1.75 left-1.75;
+            }
         }
     }
 }
@@ -918,11 +918,10 @@ button.copy::after {
 
     & > .shell {
         /* 688px is the max-width of the content (Vitepress default) */
-        @apply !gap-0 md:max-w-[688px] !px-0 md:translate-x-2 !bg-white md:!bg-white/70 dark:!bg-gray-900 md:dark:!bg-gray-800/80 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-gray-700 md:shadow-xl shadow-black/5;
+        @apply !gap-0 md:max-w-[688px] !px-0 !pt-0.5 md:translate-x-2 !bg-white md:!bg-white/70 dark:!bg-gray-900 md:dark:!bg-gray-800/80 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-gray-700 md:shadow-xl shadow-black/5;
 
         & > .search-bar {
-            @apply py-0.25 px-1.5 !rounded-xl bg-gray-200/40 dark:bg-gray-600/20 !border-gray-400/25 dark:!border-gray-600/65 mx-auto;
-            width: calc(100% - 1.5rem);
+            @apply w-full py-1.5 px-2 border-0 border-b !border-gray-400/25 dark:!border-gray-600/65 rounded-none;
 
             & > #localsearch-label {
                 @apply !opacity-50;
@@ -938,7 +937,7 @@ button.copy::after {
         }
 
         & > .results {
-            @apply relative mt-4 pb-4 px-3 min-h-full md:min-h-60;
+            @apply relative gap-1 pb-4 px-3 min-h-full md:min-h-60;
 
             &:has(li)::before {
                 @apply hidden;
@@ -952,11 +951,15 @@ button.copy::after {
             & > li {
                 @apply z-10 scroll-pt-2;
 
+                &:first-child {
+                	@apply mt-2;
+                }
+
                 & > .result {
-                    @apply !rounded-xl py-0.5 border-1 border-gray-400/25 dark:border-gray-600/65;
+                    @apply !rounded-xl py-0.5 border-0;
 
                     &.selected {
-                        border-color: var(--vp-c-brand-1) !important;
+                    	@apply !bg-pink-500/5 dark:!bg-pink-300/5;
                     }
                 }
             }
@@ -1040,7 +1043,7 @@ button.copy::after {
 }
 
 .VPSocialLinks.VPNavBarSocialLinks.social-links {
-	@apply h-11 !pr-0 !pl-1.5 bg-white/80 dark:bg-gray-900/70 backdrop-blur-lg rounded-r-3xl;
+    @apply h-11 !pr-0 !pl-1.5 bg-white/80 dark:bg-gray-900/70 backdrop-blur-lg rounded-r-3xl;
 }
 
 /* ... mobile */
@@ -1068,7 +1071,19 @@ button.copy::after {
 
 #local-search {
     & > .DocSearch-Button {
-        @apply clicky rounded-xl backdrop-blur-sm lg:ml-2;
+        @apply clicky h-10 rounded-xl backdrop-blur-sm lg:ml-2;
+        color: var(--docsearch-secondary-text-color);
+        background-color: var(--vp-c-bg-alt);
+
+        & > .DocSearch-Button-Container {
+            & > .DocSearch-Button-Placeholder {
+                @apply pl-2 pr-3;
+            }
+        }
+
+        & > .DocSearch-Button-Keys {
+        	@apply py-0.75 -translate-y-1;
+        }
 
         /*@media screen and (min-width: theme('--breakpoint-md')) {
 			@apply bg-pink-400/6.25 dark:bg-pink-300/8.75;

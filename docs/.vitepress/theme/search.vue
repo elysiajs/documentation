@@ -14,7 +14,9 @@ import {
     type Ref
 } from 'vue'
 import { dataSymbol, inBrowser, useRouter } from 'vitepress'
+// @ts-ignore
 import { pathToFile } from 'vitepress/dist/client/app/utils'
+// @ts-ignore
 import { escapeRegExp } from 'vitepress/dist/client/shared'
 
 import {
@@ -27,15 +29,17 @@ import {
     useSessionStorage
 } from '@vueuse/core'
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
-import { motion, AnimatePresence, easingDefinitionToFunction } from 'motion-v'
+import { motion, AnimatePresence } from 'motion-v'
 
 // @ts-ignore
 import localSearchIndex from '@localSearchIndex'
 
+import Ray from '../../components/fern/ray.vue'
+
 import { LRUCache } from './search/lru-cache'
 import { useData } from './search/use-data'
 import { createSearchTranslate } from './search/translation'
-import { Sparkles } from 'lucide-vue-next'
+import { ArrowRight, TextAlignStart, Delete, File, Hash, Sparkles } from 'lucide-vue-next'
 
 export interface FooterTranslations {
     selectText?: string
@@ -55,9 +59,7 @@ export interface ModalTranslations {
     footer?: FooterTranslations
 }
 
-const emit = defineEmits<{
-    (e: 'close'): void
-}>()
+const showSearch = defineModel<boolean>()
 
 const el = shallowRef<HTMLElement>()
 const resultsEl = shallowRef<HTMLElement>()
@@ -86,7 +88,10 @@ const { activate } = useFocusTrap(el, {
     immediate: true,
     allowOutsideClick: true,
     clickOutsideDeactivates: true,
-    escapeDeactivates: true
+    escapeDeactivates: true,
+    initialFocus: () => {
+        return searchInput.value
+    }
 })
 const { localeIndex, theme } = vitePressData
 const searchIndex = computedAsync(async () =>
@@ -130,13 +135,12 @@ const showDetailedList = useLocalStorage(
 const disableDetailedView = computed(() => {
     return (
         theme.value.search?.provider === 'local' &&
-        (theme.value.search.options?.disableDetailedView === true ||
-            theme.value.search.options?.detailedView === false)
+        theme.value.search.options?.detailedView === false
     )
 })
 
 const buttonText = computed(() => {
-    const options = theme.value.search?.options ?? theme.value.algolia
+    const options = theme.value.search?.options
 
     return (
         options?.locales?.[localeIndex.value]?.translations?.button
@@ -179,10 +183,15 @@ debouncedWatch(
         if (!index) return
 
         // Search
-        results.value = index
+        const _result = index
             .search(filterTextValue)
             .slice(0, 16) as (SearchResult & Result)[]
         enableNoResults.value = true
+
+        if (!_result) {
+            results.value = []
+            return
+        }
 
         // Highlighting
         const mods = showDetailedListValue
@@ -235,7 +244,7 @@ debouncedWatch(
 
         const terms = new Set<string>()
 
-        results.value = results.value.map((r) => {
+        results.value = _result.map((r) => {
             const [id, anchor] = r.id.split('#')
             const map = cache.get(id)
             const text = map?.get(anchor) ?? ''
@@ -248,18 +257,16 @@ debouncedWatch(
         await nextTick()
         if (canceled) return
 
-        // FIXME: without this whole page scrolls to the bottom
-        resultsEl.value?.firstElementChild?.scrollIntoView({ block: 'start' })
+        resultsEl.value?.scrollTo(0, 0)
     },
-    { debounce: 150, immediate: true }
+    { debounce: 200, immediate: true }
 )
 
 const excerptCache = new LRUCache<string, unknown>(256) // 256 excerpts
 
 async function fetchExcerpt(id: string) {
     const cache = excerptCache.get(id)
-    if (cache)
-        return { id, mod: cache }
+    if (cache) return { id, mod: cache }
 
     const file = pathToFile(id.slice(0, id.indexOf('#')))
     try {
@@ -346,7 +353,7 @@ onKeyStroke('Enter', (e) => {
     if (index === -1) {
         // @ts-ignore
         window.toggleAI({ value: filterText.value })
-        emit('close')
+        showSearch.value = false
         return
     }
 
@@ -358,12 +365,12 @@ onKeyStroke('Enter', (e) => {
 
     if (selectedPackage) {
         router.go(selectedPackage.id)
-        emit('close')
+        showSearch.value = false
     }
 })
 
 onKeyStroke('Escape', () => {
-    emit('close')
+    showSearch.value = false
 })
 
 // Translations
@@ -396,22 +403,26 @@ onMounted(() => {
 
 useEventListener('popstate', (event) => {
     event.preventDefault()
-    emit('close')
+    showSearch.value = false
 })
 
 /** Lock body */
 const isLocked = useScrollLock(inBrowser ? document.body : null)
 
-onMounted(() => {
-    nextTick(() => {
-        isLocked.value = true
-        nextTick().then(() => activate())
-    })
-})
+watch(
+    () => showSearch.value,
+    (val) => {
+        if (!val) {
+            isLocked.value = false
+            return
+        }
 
-onBeforeUnmount(() => {
-    isLocked.value = false
-})
+        nextTick(() => {
+            isLocked.value = true
+            nextTick().then(() => activate())
+        })
+    }
+)
 
 function resetSearch() {
     filterText.value = ''
@@ -441,7 +452,7 @@ function onMouseMove(e: MouseEvent) {
 function toggleAI() {
     // @ts-ignore
     window.toggleAI({ value: filterText.value })
-    emit('close')
+    showSearch.value = false
 }
 </script>
 
@@ -455,346 +466,364 @@ function toggleAI() {
             aria-haspopup="listbox"
             aria-labelledby="localsearch-label"
             class="VPLocalSearchBox"
+            :class="{ 'pointer-events-none': !showSearch }"
         >
-            <motion.div
-                class="backdrop"
-                @click="$emit('close')"
-                :initial="{
-                    opacity: 0
-                }"
-                :animate="{
-                    opacity: 1
-                }"
-                :exit="{
-                    opacity: 0
-                }"
-                :transition="{
-                    duration: 0.55,
-                    ease: [0.16, 1, 0.3, 1]
-                }"
-            />
+            <AnimatePresence>
+                <motion.div
+                    v-if="showSearch"
+                    class="backdrop"
+                    @click="showSearch = false"
+                    :initial="{
+                        opacity: 0
+                    }"
+                    :animate="{
+                        opacity: 1
+                    }"
+                    :exit="{
+                        opacity: 0
+                    }"
+                    :transition="{
+                        duration: 0.55,
+                        ease: [0.16, 1, 0.3, 1]
+                    }"
+                />
+            </AnimatePresence>
 
-            <motion.div
-                layout="size"
-                class="shell"
-                :initial="{
-                    opacity: 0,
-                    scale: 0.925
-                }"
-                :animate="{
-                    opacity: 1,
-                    scale: 1
-                }"
-                :exit="{
-                    opacity: 0,
-                    scale: 0.925
-                }"
-                :transition="{
-                    duration: 0.55,
-                    ease: [0.16, 1, 0.3, 1]
-                }"
-            >
-                <motion.form
-                    layout
-                    class="search-bar"
-                    @pointerup="onSearchBarClick($event)"
-                    @submit.prevent=""
+            <AnimatePresence>
+                <motion.div
+                    v-if="showSearch"
+                    layout="size"
+                    class="shell"
+                    :initial="{
+                        opacity: 0,
+                        scale: 0.9375
+                    }"
+                    :animate="{
+                        opacity: 1,
+                        scale: 1
+                    }"
+                    :exit="{
+                        opacity: 0,
+                        scale: 0.9375
+                    }"
+                    :transition="{
+                        duration: 0.55,
+                        ease: [0.16, 1, 0.3, 1]
+                    }"
                 >
-                    <label
-                        :title="buttonText"
-                        id="localsearch-label"
-                        for="localsearch-input"
+                    <div
+                        class="absolute left-0 w-full h-28 overflow-hidden opacity-15 rounded-t-2xl pointer-events-none"
+                        style="top: -1px"
                     >
-                        <span
-                            aria-hidden="true"
-                            class="vpi-search search-icon local-search-icon"
-                        />
-                    </label>
-                    <div class="search-actions before">
-                        <button
-                            class="back-button"
-                            :title="translate('modal.backButtonTitle')"
-                            @click="$emit('close')"
-                        >
-                            <span class="vpi-arrow-left local-search-icon" />
-                        </button>
+                        <Ray class="h-28" />
                     </div>
-                    <input
-                        ref="searchInput"
-                        v-model="filterText"
-                        :aria-activedescendant="
-                            selectedIndex > -1
-                                ? 'localsearch-item-' + selectedIndex
-                                : undefined
-                        "
-                        aria-autocomplete="both"
-                        :aria-controls="
-                            results?.length ? 'localsearch-list' : undefined
-                        "
-                        aria-labelledby="localsearch-label"
-                        autocapitalize="off"
-                        autocomplete="off"
-                        autocorrect="off"
-                        class="search-input"
-                        id="localsearch-input"
-                        enterkeyhint="go"
-                        maxlength="64"
-                        :placeholder="buttonText"
-                        spellcheck="false"
-                        type="search"
-                    />
-                    <div class="search-actions">
-                        <button
-                            v-if="!disableDetailedView"
-                            class="toggle-layout-button"
-                            type="button"
-                            :class="{ 'detailed-list': showDetailedList }"
-                            :title="translate('modal.displayDetails')"
-                            @click="
-                                selectedIndex > -1 &&
-                                (showDetailedList = !showDetailedList)
-                            "
-                        >
-                            <span class="vpi-layout-list local-search-icon" />
-                        </button>
 
-                        <button
-                            class="clear-button"
-                            type="reset"
-                            :disabled="disableReset"
-                            :title="translate('modal.resetButtonTitle')"
-                            @click="resetSearch"
+                    <motion.form
+                        layout="position"
+                        class="search-bar"
+                        @pointerup="onSearchBarClick($event)"
+                        @submit.prevent=""
+                    >
+                        <label
+                            :title="buttonText"
+                            id="localsearch-label"
+                            for="localsearch-input"
                         >
-                            <span class="vpi-delete local-search-icon" />
-                        </button>
-                    </div>
-                </motion.form>
-
-                <ul
-                    ref="resultsEl"
-                    :id="results?.length ? 'localsearch-list' : undefined"
-                    :role="results?.length ? 'listbox' : undefined"
-                    :aria-labelledby="
-                        results?.length ? 'localsearch-label' : undefined
-                    "
-                    class="results"
-                    @mousemove="onMouseMove"
-                >
-                    <AnimatePresence>
-                        <motion.li
-                            layout="position"
-                            v-if="filterText"
-                            :id="'localsearch-item-0'"
-                            :aria-selected="
-                                selectedIndex === 0 ? 'true' : 'false'
-                            "
-                            role="option"
-                            :initial="{
-                                opacity: 0,
-                                scale: 0.925
-                            }"
-                            :animate="{
-                                opacity: 1,
-                                scale: 1
-                            }"
-                            :exit="{
-                                opacity: 0,
-                                height: 0,
-                                scale: 0.925,
-                                transition: {
-                                    duration: 0.2
-                                }
-                            }"
-                            :transition="{
-                                duration: 0.55,
-                                ease: [0.16, 1, 0.3, 1]
-                            }"
-                        >
+                            <span
+                                aria-hidden="true"
+                                class="vpi-search search-icon local-search-icon"
+                            />
+                        </label>
+                        <div class="search-actions before">
                             <button
-                                class="result w-full"
-                                :class="{
-                                    selected: selectedIndex === 0
-                                }"
-                                aria-label="Ask Elysia chan (AI)"
-                                @mouseenter="
-                                    !disableMouseOver && (selectedIndex = 0)
-                                "
-                                @focusin="selectedIndex = 0"
-                                @click="toggleAI"
-                                :data-index="0"
+                                class="back-button"
+                                :title="translate('modal.backButtonTitle')"
+                                @click="showSearch = false"
                             >
-                                <div
-                                    style="
-                                        --vp-local-search-highlight-bg: transparent;
-                                        --vp-local-search-highlight-text: var(
-                                            --vp-c-brand-1
-                                        );
+                                <span
+                                    class="vpi-arrow-left local-search-icon"
+                                />
+                            </button>
+                        </div>
+                        <input
+                            ref="searchInput"
+                            v-model="filterText"
+                            :aria-activedescendant="
+                                selectedIndex > -1
+                                    ? 'localsearch-item-' + selectedIndex
+                                    : undefined
+                            "
+                            aria-autocomplete="both"
+                            :aria-controls="
+                                results?.length ? 'localsearch-list' : undefined
+                            "
+                            aria-labelledby="localsearch-label"
+                            autocapitalize="off"
+                            autocomplete="off"
+                            autocorrect="off"
+                            class="search-input"
+                            id="localsearch-input"
+                            enterkeyhint="go"
+                            maxlength="64"
+                            :placeholder="buttonText"
+                            spellcheck="false"
+                            type="search"
+                        />
+                        <div class="search-actions">
+                            <button
+                                v-if="!disableDetailedView"
+                                class="toggle-layout-button"
+                                type="button"
+                                :class="{ 'detailed-list': showDetailedList }"
+                                :title="translate('modal.displayDetails')"
+                                @click="
+                                    selectedIndex > -1 &&
+                                    (showDetailedList = !showDetailedList)
+                                "
+                            >
+                            	<TextAlignStart :size="19" stroke-width="1.25" />
+                            </button>
+
+                            <button
+                                class="clear-button"
+                                type="reset"
+                                :disabled="disableReset"
+                                :title="translate('modal.resetButtonTitle')"
+                                @click="resetSearch"
+                            >
+                                <Delete :size="19" stroke-width="1.25" />
+                            </button>
+                        </div>
+                    </motion.form>
+
+                    <ul
+                        ref="resultsEl"
+                        :id="results?.length ? 'localsearch-list' : undefined"
+                        :role="results?.length ? 'listbox' : undefined"
+                        :aria-labelledby="
+                            results?.length ? 'localsearch-label' : undefined
+                        "
+                        class="results"
+                        @mousemove="onMouseMove"
+                    >
+                        <AnimatePresence>
+                            <motion.li
+                                layout="position"
+                                v-if="filterText"
+                                :id="'localsearch-item-0'"
+                                :aria-selected="
+                                    selectedIndex === 0 ? 'true' : 'false'
+                                "
+                                role="option"
+                                :initial="{
+                                    opacity: 0,
+                                    scale: 0.9375
+                                }"
+                                :animate="{
+                                    opacity: 1,
+                                    scale: 1
+                                }"
+                                :exit="{
+                                    opacity: 0,
+                                    height: 0,
+                                    scale: 0.9375,
+                                    transition: {
+                                        duration: 0.2
+                                    }
+                                }"
+                                :transition="{
+                                    duration: 0.55,
+                                    ease: [0.16, 1, 0.3, 1]
+                                }"
+                            >
+                                <button
+                                    class="result w-full"
+                                    :class="{
+                                        selected: selectedIndex === 0
+                                    }"
+                                    aria-label="Ask Elysia chan (AI)"
+                                    @mouseenter="
+                                        !disableMouseOver && (selectedIndex = 0)
                                     "
+                                    @focusin="selectedIndex = 0"
+                                    @click="toggleAI"
+                                    :data-index="0"
                                 >
-                                    <div class="titles">
-                                        <span class="mr-1">
-                                            <Sparkles
-                                                :size="18"
-                                                stroke-width="1.5"
-                                            />
-                                        </span>
-                                        <span class="title">
-                                            <span
-                                                class="text *:!p-0 !text-black dark:!text-white *:!text-black dark:*:!text-white"
-                                            >
-                                                Ask Elysia
-                                                <sup
-                                                    class="!text-black dark:!text-white opacity-50 font-light text-xs"
-                                                >
-                                                    (AI)
-                                                </sup>
+                                    <div
+                                        style="
+                                            --vp-local-search-highlight-bg: transparent;
+                                            --vp-local-search-highlight-text: var(
+                                                --vp-c-brand-1
+                                            );
+                                        "
+                                    >
+                                        <div class="titles">
+                                            <span class="mr-1">
+                                                <Sparkles
+                                                    :size="18"
+                                                    stroke-width="1.5"
+                                                />
                                             </span>
-                                            <!-- <span
+                                            <span class="title">
+                                                <span
+                                                    class="text *:!p-0 !text-black dark:!text-white *:!text-black dark:*:!text-white"
+                                                >
+                                                    Ask Elysia
+                                                    <sup
+                                                        class="!text-black dark:!text-white opacity-50 font-light text-xs"
+                                                    >
+                                                        (AI)
+                                                    </sup>
+                                                </span>
+                                                <!-- <span
 	                                        class="vpi-chevron-right local-search-icon"
 	                                    /> -->
-                                        </span>
-                                        <span class="title main">
-                                            <span
-                                                class="text bold *:bg-transparent *:!p-0"
-                                            >
-                                                {{ filterText }}
                                             </span>
-                                        </span>
+                                            <span class="title main">
+                                                <span
+                                                    class="text bold *:bg-transparent *:!p-0"
+                                                >
+                                                    {{ filterText }}
+                                                </span>
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </button>
-                        </motion.li>
-                    </AnimatePresence>
+                                </button>
+                            </motion.li>
+                        </AnimatePresence>
 
-                    <AnimatePresence>
-                        <motion.div
-                            class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-gray-300 m-auto md:mt-10 md:mb-6 opacity-90"
-                            v-if="
-                                !filterText || (filterText && !results.length)
-                            "
-                            :initial="{
-                                opacity: 0
-                            }"
-                            :animate="{
-                                opacity: 1,
-                                transition: {
-                                    delay: 0.15
-                                }
-                            }"
-                            :exit="{
-                                opacity: 0,
-                                height: 0,
-                                transition: {
-                                    duration: 0.2
-                                }
-                            }"
-                            :transition="{
-                                duration: 0.7,
-                                ease: [0.16, 1, 0.3, 1]
-                            }"
-                        >
-                            <img
-                                class="h-40 object-contain object-center -translate-x-2"
-                                src="/elysia/sprite/sit.webp"
-                                alt="Elysia chan sitting"
-                            />
-                            <h1 v-if="filterText && !results.length">
-                                Not found? Maybe I can help!
-                            </h1>
-                            <h1 v-else>Looking for something?</h1>
-                        </motion.div>
-                    </AnimatePresence>
-
-                    <AnimatePresence>
-                        <motion.li
-                            v-for="(p, index) in results"
-                            :key="p.id"
-                            class="result-layout"
-                            :id="'localsearch-item-' + (index + 1)"
-                            :aria-selected="
-                                selectedIndex === index + 1 ? 'true' : 'false'
-                            "
-                            role="option"
-                            :initial="{
-                                opacity: 0,
-                                scale: 0.925
-                            }"
-                            :animate="{
-                                opacity: 1,
-                                scale: 1
-                            }"
-                            :exit="{
-                                opacity: 0,
-                                scale: 0.925,
-                                height: 0,
-                                transition: {
-                                    duration: 0.2
-                                }
-                            }"
-                            :transition="{
-                                duration: 0.55,
-                                ease: [0.16, 1, 0.3, 1],
-                                delay: index * 0.02
-                            }"
-                        >
-                            <a
-                                :href="p.id"
-                                class="result"
-                                :class="{
-                                    selected: selectedIndex === index + 1
-                                }"
-                                :aria-label="[...p.titles, p.title].join(' > ')"
-                                @mouseenter="
-                                    !disableMouseOver &&
-                                    (selectedIndex = index + 1)
+                        <AnimatePresence>
+                            <motion.div
+                                class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-gray-300 m-auto md:mt-10 md:mb-6 opacity-90"
+                                v-if="
+                                    !filterText ||
+                                    (filterText && !results.length)
                                 "
-                                @focusin="selectedIndex = index + 1"
-                                @click="$emit('close')"
-                                :data-index="index + 1"
+                                :initial="{
+                                    opacity: 0
+                                }"
+                                :animate="{
+                                    opacity: 1,
+                                    transition: {
+                                        delay: 0.1
+                                    }
+                                }"
+                                :exit="{
+                                    opacity: 0,
+                                    height: 0,
+                                    transition: {
+                                        duration: 0.2
+                                    }
+                                }"
+                                :transition="{
+                                    duration: 0.7,
+                                    ease: [0.16, 1, 0.3, 1]
+                                }"
                             >
-                                <div>
-                                    <div class="titles">
-                                        <span class="title-icon">#</span>
-                                        <span
-                                            v-for="(t, index) in p.titles"
-                                            :key="index"
-                                            class="title"
-                                        >
-                                            <span class="text" v-html="t" />
-                                            <span
-                                                class="vpi-chevron-right local-search-icon"
-                                            />
-                                        </span>
-                                        <span class="title main">
-                                            <span
-                                                class="text"
-                                                v-html="p.title"
-                                            />
-                                        </span>
-                                    </div>
+                                <img
+                                    class="h-40 object-contain object-center -translate-x-2"
+                                    src="/elysia/sprite/sit.webp"
+                                    alt="Elysia chan sitting"
+                                />
+                                <h1 v-if="filterText && !results.length">
+                                    Not found? Maybe I can help!
+                                </h1>
+                                <h1 v-else>Looking for something?</h1>
+                            </motion.div>
+                        </AnimatePresence>
 
-                                    <div
-                                        v-if="showDetailedList"
-                                        class="excerpt-wrapper"
-                                    >
-                                        <AnimatePresence>
-                                            <motion.div
+                        <AnimatePresence>
+                            <motion.li
+                                v-for="(p, index) in results"
+                                :key="p.id"
+                                layout
+                                class="result-layout"
+                                :id="'localsearch-item-' + (index + 1)"
+                                :aria-selected="
+                                    selectedIndex === index + 1
+                                        ? 'true'
+                                        : 'false'
+                                "
+                                role="option"
+                                :initial="{
+                                    opacity: 0,
+                                    scale: 0.9375
+                                }"
+                                :animate="{
+                                    opacity: 1,
+                                    scale: 1
+                                }"
+                                :exit="{
+                                    opacity: 0,
+                                    scale: 0.9375,
+                                    height: 0,
+                                    transition: {
+                                        duration: 0.25
+                                    }
+                                }"
+                                :transition="{
+                                    duration: 0.55,
+                                    ease: [0.16, 1, 0.3, 1],
+                                    delay: index * 0.02
+                                }"
+                            >
+                                <a
+                                    :href="p.id"
+                                    class="result"
+                                    :class="{
+                                        selected: selectedIndex === index + 1
+                                    }"
+                                    :aria-label="
+                                        [...p.titles, p.title].join(' > ')
+                                    "
+                                    @mouseenter="
+                                        !disableMouseOver &&
+                                        (selectedIndex = index + 1)
+                                    "
+                                    @focusin="selectedIndex = index + 1"
+                                    @click="showSearch = false"
+                                    :data-index="index + 1"
+                                >
+                                    <div>
+                                        <div class="titles">
+                                            <Hash
+                                                v-if="p.titles.length > 0"
+                                                stroke-width="1.25"
+                                                :size="18"
+                                            />
+                                            <File
+                                                v-else
+                                                stroke-width="1.25"
+                                                :size="18"
+                                            />
+
+                                            <span
+                                                v-for="(t, index) in p.titles"
+                                                :key="index"
+                                                class="title"
+                                            >
+                                                <span class="text" v-html="t" />
+                                                <ArrowRight
+                                                    stroke-width="1.25"
+                                                    :size="18"
+                                                    class="mx-0.5"
+                                                />
+                                            </span>
+                                            <span class="title main">
+                                                <span
+                                                    class="text"
+                                                    v-html="p.title"
+                                                />
+                                            </span>
+                                        </div>
+
+                                        <div
+                                            v-if="showDetailedList"
+                                            class="excerpt-wrapper"
+                                        >
+                                            <div
                                                 v-if="p.text"
                                                 layout
-                                                :initial="{
-                                                    height: 0
-                                                }"
-                                                :animate="{
-                                                    height: 'auto'
-                                                }"
-                                                :exit="{
-                                                    height: 0
-                                                }"
-                                                :transition="{
-                                                    duration: 0.55,
-                                                    ease: [0.16, 1, 0.3, 1],
-                                                    delay: index * 0.02
-                                                }"
                                                 class="excerpt"
                                                 inert
                                             >
@@ -802,16 +831,17 @@ function toggleAI() {
                                                     class="vp-doc"
                                                     v-html="p.text"
                                                 />
-                                            </motion.div>
-                                        </AnimatePresence>
-                                        <div class="excerpt-gradient-bottom" />
-                                        <div class="excerpt-gradient-top" />
+                                            </div>
+                                            <div
+                                                class="excerpt-gradient-bottom"
+                                            />
+                                            <div class="excerpt-gradient-top" />
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </motion.li>
-                    </AnimatePresence>
-                    <!-- <li
+                                </a>
+                            </motion.li>
+                        </AnimatePresence>
+                        <!-- <li
                     v-if="filterText && !results.length && enableNoResults"
                     class="no-results"
                 >
@@ -820,49 +850,56 @@ function toggleAI() {
                     }}</strong
                     >"
                 </li> -->
-                </ul>
+                    </ul>
 
-                <motion.div layout class="search-keyboard-shortcuts">
-                    <span>
-                        <kbd
-                            :aria-label="
-                                translate('modal.footer.navigateUpKeyAriaLabel')
-                            "
-                        >
-                            <span class="vpi-arrow-up navigate-icon" />
-                        </kbd>
-                        <kbd
-                            :aria-label="
-                                translate(
-                                    'modal.footer.navigateDownKeyAriaLabel'
-                                )
-                            "
-                        >
-                            <span class="vpi-arrow-down navigate-icon" />
-                        </kbd>
-                        {{ translate('modal.footer.navigateText') }}
-                    </span>
-                    <span>
-                        <kbd
-                            :aria-label="
-                                translate('modal.footer.selectKeyAriaLabel')
-                            "
-                        >
-                            <span class="vpi-corner-down-left navigate-icon" />
-                        </kbd>
-                        {{ translate('modal.footer.selectText') }}
-                    </span>
-                    <span>
-                        <kbd
-                            :aria-label="
-                                translate('modal.footer.closeKeyAriaLabel')
-                            "
-                            >esc</kbd
-                        >
-                        {{ translate('modal.footer.closeText') }}
-                    </span>
+                    <motion.div layout class="search-keyboard-shortcuts">
+                        <span>
+                            <kbd
+                                :aria-label="
+                                    translate(
+                                        'modal.footer.navigateUpKeyAriaLabel'
+                                    )
+                                "
+                            >
+                                <span class="vpi-arrow-up navigate-icon" />
+                            </kbd>
+                            <kbd
+                                :aria-label="
+                                    translate(
+                                        'modal.footer.navigateDownKeyAriaLabel'
+                                    )
+                                "
+                            >
+                                <span class="vpi-arrow-down navigate-icon" />
+                            </kbd>
+                            {{ translate('modal.footer.navigateText') }}
+                        </span>
+                        <span>
+                            <kbd
+                                :aria-label="
+                                    translate('modal.footer.selectKeyAriaLabel')
+                                "
+                            >
+                                <span
+                                    class="vpi-corner-down-left navigate-icon"
+                                />
+                            </kbd>
+                            {{ translate('modal.footer.selectText') }}
+                        </span>
+                        <span>
+                            <kbd
+                                :aria-label="
+                                    translate('modal.footer.closeKeyAriaLabel')
+                                "
+                                >esc</kbd
+                            >
+                            {{ translate('modal.footer.closeText') }}
+                        </span>
+                    </motion.div>
                 </motion.div>
-            </motion.div>
+            </AnimatePresence>
+
+            <button v-if="!showSearch" />
         </div>
     </Teleport>
 </template>
@@ -1083,9 +1120,8 @@ function toggleAI() {
 }
 
 .title-icon {
-    opacity: 0.5;
+    opacity: 1;
     font-weight: 500;
-    color: var(--vp-c-brand-1);
 }
 
 .title svg {
@@ -1104,7 +1140,7 @@ function toggleAI() {
 .excerpt {
     opacity: 50%;
     pointer-events: none;
-    max-height: 140px;
+    max-height: 78px;
     overflow: hidden;
     position: relative;
     margin-top: 4px;
@@ -1134,6 +1170,10 @@ function toggleAI() {
 
 .excerpt :deep(.vp-code-group) div[class*='language-'] {
     border-radius: 8px !important;
+}
+
+.excerpt > .vp-doc > *:first-child {
+    margin-top: 6px !important;
 }
 
 .excerpt-gradient-bottom {

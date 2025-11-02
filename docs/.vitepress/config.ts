@@ -49,10 +49,10 @@ export default defineConfig({
         resolve: {
             alias: [
                 {
-                    find: /^.*\/VPLocalSearchBox\.vue$/,
+                    find: /^.*\/VPNavBarSearch\.vue$/,
                     replacement: fileURLToPath(
                         new URL(
-                            './theme/search.vue',
+                            './theme/navbar-search.vue',
                             import.meta.url
                         )
                     )
