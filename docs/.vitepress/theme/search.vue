@@ -821,17 +821,30 @@ function toggleAI() {
                                             v-if="showDetailedList"
                                             class="excerpt-wrapper"
                                         >
-                                            <div
+                                            <motion.div
                                                 v-if="p.text"
                                                 layout
                                                 class="excerpt"
                                                 inert
+                                                :initial="{
+													height: 0
+												}"
+												:animate="{
+													height: '78px'
+												}"
+												:exit="{
+													height: 0
+												}"
+												:transition="{
+													duration: 0.4,
+													ease: [0.16, 1, 0.3, 1]
+												}"
                                             >
                                                 <div
                                                     class="vp-doc"
                                                     v-html="p.text"
                                                 />
-                                            </div>
+                                            </motion.div>
                                             <div
                                                 class="excerpt-gradient-bottom"
                                             />
