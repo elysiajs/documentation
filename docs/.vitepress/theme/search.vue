@@ -830,7 +830,7 @@ function toggleAI() {
 													height: 0
 												}"
 												:animate="{
-													height: '78px'
+													height: '84px'
 												}"
 												:exit="{
 													height: 0
@@ -1153,7 +1153,7 @@ function toggleAI() {
 .excerpt {
     opacity: 50%;
     pointer-events: none;
-    max-height: 78px;
+    max-height: 84px;
     overflow: hidden;
     position: relative;
     margin-top: 4px;

@@ -1071,18 +1071,21 @@ button.copy::after {
 
 #local-search {
     & > .DocSearch-Button {
-        @apply clicky h-10 rounded-xl backdrop-blur-sm lg:ml-2;
+        @apply clicky h-10 rounded-xl backdrop-blur-sm lg:ml-2 sm:bg-red-50;
         color: var(--docsearch-secondary-text-color);
-        background-color: var(--vp-c-bg-alt);
+
+        @media (width >= 40rem /* 640px */) {
+        	background-color: var(--vp-c-bg-alt);
+        }
 
         & > .DocSearch-Button-Container {
             & > .DocSearch-Button-Placeholder {
-                @apply pl-2 pr-3;
+                @apply pl-2 pr-3 hidden sm:inline;
             }
         }
 
         & > .DocSearch-Button-Keys {
-        	@apply py-0.75 -translate-y-1;
+        	@apply py-0.75 -translate-y-1 hidden sm:inline;
         }
 
         /*@media screen and (min-width: theme('--breakpoint-md')) {

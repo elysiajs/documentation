@@ -24,7 +24,7 @@ const translate = createSearchTranslate(defaultTranslations)
         class="DocSearch DocSearch-Button"
     >
         <span class="DocSearch-Button-Container">
-           	<Search :size="15" stroke-width="1.375" class="inline -translate-y-0.25" />
+           	<Search :size="15" stroke-width="1.375" class="inline -translate-y-0.25 scale-125 sm:scale-100" />
             <span class="DocSearch-Button-Placeholder">{{
                 translate('button.buttonText')
             }}</span>
