@@ -71,7 +71,9 @@
                     }"
                 >
                     <div class="relative isolate flex flex-col w-full h-full">
-                  		<Ray class="h-66 !z-10 opacity-20 pointer-events-none" />
+                        <Ray
+                            class="h-66 !z-10 opacity-20 pointer-events-none"
+                        />
 
                         <h3
                             class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 bg-white/80 dark:bg-gray-800/50 rounded-full backdrop-blur-sm"
@@ -765,7 +767,21 @@ function copyContent(index: number) {
 }
 
 async function ask(input?: string, seed?: number) {
+    let reference = includeCurrentPage.value
+        ? 'docs/' +
+          location.pathname
+              .replace('.html', '')
+              .replace(/\/$/g, '/index')
+              .slice(1) +
+          '.md'
+        : undefined
+
     if (input) question.value = input
+    if (
+        !reference &&
+        (input?.includes('lifecycle') || input?.includes('middleware'))
+    )
+        reference = 'docs/essential/life-cycle.md'
 
     const latest = history.value.at(-1)
 
@@ -821,17 +837,7 @@ async function ask(input?: string, seed?: number) {
                         )
                 },
                 seed !== undefined ? { seed } : {},
-                includeCurrentPage.value
-                    ? {
-                          reference:
-                              'docs/' +
-                              location.pathname
-                                  .replace('.html', '')
-                                  .replace(/\/$/g, '/index')
-                                  .slice(1) +
-                              '.md'
-                      }
-                    : {}
+                reference ? { reference } : {}
             )
         ),
         signal: controller.signal
@@ -1144,7 +1150,7 @@ onUnmounted(() => {
                     @apply text-xs my-0 w-auto;
 
                     &:has(a) {
-                    	@apply clicky;
+                        @apply clicky;
                     }
 
                     & > a {
