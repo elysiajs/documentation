@@ -1283,7 +1283,7 @@ div[class*='language-'] {
     @apply px-1.5 py-0.5 text-xs font-normal ml-auto text-cyan-400 dark:text-cyan-300 bg-cyan-400/7.5 dark:bg-cyan-300/10 rounded border border-cyan-400/25 dark:border-cyan-200/15;
 
     &::after {
-        content: 'Ctrl K';
+        content: 'Ctrl I';
     }
 
     .mac &::after {
