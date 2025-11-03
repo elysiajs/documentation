@@ -613,14 +613,14 @@ Allows the value to be null and undefined.
 t.MaybeEmpty(t.String())
 ```
 
-For additional information, you can find the full source code of the type system in [`elysia/type-system`](https://github.com/elysiajs/elysia/blob/main/src/type-system.ts).
+For additional information, you can find the full source code of the type system in [`elysia/type-system`](https://github.com/elysiajs/elysia/blob/main/src/type-system/index.ts).
 
 ### Form
 
 A syntax sugar our `t.Object` with support for verifying return value of [form](/essential/handler.html#formdata) (FormData).
 
 ```typescript
-t.FormData({
+t.Form({
 	someValue: t.File()
 })
 ```
