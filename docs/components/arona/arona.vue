@@ -837,7 +837,7 @@ async function ask(input?: string, seed?: number) {
                         )
                 },
                 seed !== undefined ? { seed } : {},
-                reference
+                reference ? { reference } : {}
             )
         ),
         signal: controller.signal
