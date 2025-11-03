@@ -837,17 +837,7 @@ async function ask(input?: string, seed?: number) {
                         )
                 },
                 seed !== undefined ? { seed } : {},
-                includeCurrentPage.value
-                    ? {
-                          reference:
-                              'docs/' +
-                              location.pathname
-                                  .replace('.html', '')
-                                  .replace(/\/$/g, '/index')
-                                  .slice(1) +
-                              '.md'
-                      }
-                    : {}
+                reference
             )
         ),
         signal: controller.signal
