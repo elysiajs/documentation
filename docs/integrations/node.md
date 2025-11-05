@@ -14,7 +14,7 @@ head:
         content: Elysia provide a runtime adapter to run Elysia on multiple runtime, including Node.js, Cloudflare Worker, and more
 ---
 
-# Integration with Next.js
+# Integration with Node.js
 Elysia provide a runtime adapter to run Elysia on multiple runtime, including Node.js.
 
 To run Elysia on Node.js, simply install Node adapter.

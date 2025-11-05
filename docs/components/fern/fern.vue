@@ -27,6 +27,7 @@ import AskElysia from './ask-elysia.vue'
             <Easy>
                 <slot name="easy" />
             </Easy>
+            <Benchmark />
             <TypeIntegrity>
                 <template v-slot:type-1>
                     <slot name="type-1" />
@@ -52,7 +53,6 @@ import AskElysia from './ask-elysia.vue'
             <Beyond>
                 <slot name="e2e-type-safety" />
             </Beyond>
-            <Benchmark />
             <Test>
                 <template v-slot:test-code>
                     <slot name="test-code" />
