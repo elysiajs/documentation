@@ -51,10 +51,7 @@ export default defineConfig({
                 {
                     find: /^.*\/VPNavBarSearch\.vue$/,
                     replacement: fileURLToPath(
-                        new URL(
-                            './theme/navbar-search.vue',
-                            import.meta.url
-                        )
+                        new URL('./theme/navbar-search.vue', import.meta.url)
                     )
                 }
             ]
@@ -171,6 +168,10 @@ export default defineConfig({
         },
         logo: '/assets/elysia.svg',
         nav: [
+            {
+                text: 'Docs',
+                link: '/table-of-content'
+            },
             {
                 text: 'Blog',
                 link: '/blog'
@@ -454,6 +455,10 @@ export default defineConfig({
                     {
                         text: 'Nextjs',
                         link: '/integrations/nextjs'
+                    },
+                    {
+                        text: 'Node.js',
+                        link: '/integrations/node'
                     },
                     {
                         text: 'Nuxt',
