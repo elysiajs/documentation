@@ -445,12 +445,20 @@ export default defineConfig({
                         link: '/integrations/cloudflare-worker'
                     },
                     {
+                        text: 'Deno',
+                        link: '/integrations/deno'
+                    },
+                    {
                         text: 'Drizzle',
                         link: '/integrations/drizzle'
                     },
                     {
                         text: 'Expo',
                         link: '/integrations/expo'
+                    },
+                    {
+                        text: 'Netlify',
+                        link: '/integrations/netlify'
                     },
                     {
                         text: 'Nextjs',
