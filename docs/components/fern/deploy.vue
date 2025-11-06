@@ -4,7 +4,7 @@
         ref="scope"
     >
         <div
-            class="relative flex justify-center items-center w-full size-72 sm:size-96 md:size-128 overflow-hidden"
+            class="relative flex justify-center items-center w-full size-72 sm:size-96 md:size-128"
         >
             <motion.img
                 v-bind="fadeIn()"
@@ -109,7 +109,7 @@ const items = [
 @reference '../../tailwind.css';
 
 .circle-item {
-    --radius: 10rem;
+    --radius: 9rem;
 
     @apply absolute z-10 size-11 sm:size-12 rounded-full;
     transform: rotate(var(--angle)) translate(var(--radius))
