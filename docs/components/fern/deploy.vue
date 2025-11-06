@@ -9,7 +9,7 @@
             <motion.img
                 v-bind="fadeIn()"
                 src="/assets/elysia.svg"
-                class="circle-item !size-24"
+                class="circle-item !size-20 sm:!size-24"
             />
 
             <template v-for="(src, index) in items" :key="index">
@@ -109,7 +109,7 @@ const items = [
 @reference '../../tailwind.css';
 
 .circle-item {
-    --radius: 12rem;
+    --radius: 10rem;
 
     @apply absolute z-10 size-11 sm:size-12 rounded-full;
     transform: rotate(var(--angle)) translate(var(--radius))
