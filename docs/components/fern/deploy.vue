@@ -4,7 +4,7 @@
         ref="scope"
     >
         <div
-            class="relative flex justify-center items-center w-full size-72 sm:size-96 md:size-128"
+            class="relative flex justify-center items-center w-full size-72 sm:size-96 md:size-128 overflow-hidden"
         >
             <motion.img
                 v-bind="fadeIn()"
