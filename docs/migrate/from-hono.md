@@ -1062,7 +1062,7 @@ import { Elysia } from 'elysia'
 
 const app = new Elysia({
 	cookie: {
-		secret: 'secret'
+		secret: 'secret' // Need to set to have cookies signed
 	}
 })
 	.get('/', ({ cookie: { name } }) => {
