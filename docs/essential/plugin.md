@@ -155,35 +155,9 @@ We can use the plugin by passing an instance to **Elysia.use**.
 
 <Playground :elysia="demo1" />
 
-The plugin will inherit all properties of the plugin instance like `state`, `decorate` but **WILL NOT inherit  plugin lifecycle** as it's [isolated by default](#scope).
+The plugin will inherit all properties of the plugin instance like `state`, `decorate` but **WILL NOT inherit  plugin lifecycle** as it's [isolated by default](#scope) (mentioned in the next section ↓).
 
 Elysia will also handle the type inference automatically as well.
-
-## Plugin
-
-Every Elysia instance can be a plugin.
-
-We decouple our logic into a separate Elysia instance and reuse it across multiple instances.
-
-To create a plugin, simply define an instance in a separate file:
-```typescript twoslash
-// plugin.ts
-import { Elysia } from 'elysia'
-
-export const plugin = new Elysia()
-    .get('/plugin', () => 'hi')
-```
-
-And then we import the instance into the main file:
-```typescript
-import { Elysia } from 'elysia'
-import { plugin } from './plugin' // [!code ++]
-
-const app = new Elysia()
-    .use(plugin) // [!code ++]
-    .listen(3000)
-```
-
 
 ## Scope
 
