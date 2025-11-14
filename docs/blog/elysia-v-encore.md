@@ -35,7 +35,7 @@ head:
     src="/blog/elysia-v-encore/elysia-v-encore.webp"
     alt="2x faster than Encore. 1.5 year later after Encore vs Elysia performance comparison"
     author="saltyaom"
-    date="11 Nov 2025"
+    date="14 Nov 2025"
     shadow
 >
 
