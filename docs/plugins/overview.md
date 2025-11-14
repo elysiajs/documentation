@@ -120,6 +120,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [@fedify/elysia](https://github.com/fedify-dev/fedify/tree/main/packages/elysia) - A plugin that provides seamless integration with [Fedify](https://fedify.dev/), the ActivityPub server framework.
 -   [elysia-healthcheck](https://github.com/iam-medvedev/elysia-healthcheck) - Healthcheck plugin for Elysia.js
 -   [elysia-csrf](https://github.com/lauhon/elysia-csrf) - A CSRF plugin, ported from [express-csrf](https://github.com/expressjs/csurf)
+-   [elysia-paseto](https://github.com/aashahin/elysia-paseto) - A PASETO (Platform-Agnostic Security Tokens) plugin for Elysia.js that provides secure token generation and verification using PASETO v4 local tokens.
 
 ## Complementary projects:
 
