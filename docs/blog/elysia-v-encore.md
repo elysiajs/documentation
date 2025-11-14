@@ -82,7 +82,7 @@ After running the benchmark, we obtained the following results
 ![Benchmark result](/blog/elysia-v-encore/benchmark-result.webp)
 > Benchmark result: Elysia is 2x faster than Encore
 
-| Framework | With Validation | Without Validation |
+| Framework | Without Validation | With Validation |
 | --- | --- | --- |
 | Encore | 139,033 | 95854 |
 | Elysia | 293,991 | 223,924 |
