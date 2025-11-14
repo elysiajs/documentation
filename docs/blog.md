@@ -27,6 +27,13 @@ head:
 <Blogs
   :blogs="[
       {
+        title: '2x faster than Encore - 1 year later',
+		href: '/blog/elysia-v-encore',
+		cover: 'elysia-v-encore.webp',
+		detail: 'Support for Standard Validator. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improve type inference performance by 10%.',
+		date: '13 Sep 2025'
+      },
+      {
         title: 'Elysia 1.4 - Supersymmetry',
 		href: '/blog/elysia-14',
 		cover: 'elysia-14.webp',
