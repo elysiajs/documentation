@@ -92,7 +92,7 @@ const fadeIn = useFadeIn(isInView)
 const items = [
     'bun.svg',
     ['deno-light.svg', 'deno-dark.svg'],
-    'docker.svg',
+    ['vercel-light.svg', 'vercel-dark.svg'],
     ['railway-light.svg', 'railway-dark.svg'],
     'svelte.svg',
     ['expo-light.svg', 'expo-dark.svg'],
@@ -111,7 +111,7 @@ const items = [
 .circle-item {
     --radius: 9rem;
 
-    @apply absolute z-10 size-11 sm:size-12 rounded-full;
+    @apply absolute z-10 size-11 sm:size-12;
     transform: rotate(var(--angle)) translate(var(--radius))
         rotate(calc(var(--angle) * -1));
     transform-origin: 0 0; /* Set origin to center of container */

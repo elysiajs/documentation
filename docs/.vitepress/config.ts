@@ -175,6 +175,10 @@ export default defineConfig({
             {
                 text: 'Blog',
                 link: '/blog'
+            },
+            {
+                text: '4koma',
+                link: '/4koma'
             }
         ],
         sidebar: [
