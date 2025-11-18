@@ -47,7 +47,7 @@
                 Ergonomic Framework <br v-if="kawaii" />
                 for
                 <a
-                	href="#"
+                    href="#"
                     role="button"
                     class="appearance-none rounded-lg interact:bg-violet-500/7.5 px-0.5 transition-colors duration-100 text-left"
                     @click="toggleKawaii"
@@ -126,12 +126,17 @@
                 class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left w-full max-w-2xl"
                 :class="kawaii ? '' : 'md:text-center'"
             >
-                TypeScript with
+                Backend TypeScript framework with
                 <span
                     class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"
                     >End-to-End Type Safety</span
-                >, type integrity, and exceptional developer experience.
-                Supercharged by Bun.
+                >, formidable speed, and exceptional developer experience.
+                <br />
+                <span
+                    class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400"
+                >
+                    Supercharged by Bun
+                </span>
             </h3>
             <section
                 class="flex flex-col sm:flex-row items-start sm:items-center w-full md:w-auto gap-4 mt-8 mb-12"
@@ -185,9 +190,7 @@
                     </p>
                 </div>
             </section>
-            <p
-                class="flex gap-2 text-gray-400 mr-auto sm:mx-auto"
-            >
+            <p class="flex gap-2 text-gray-400 mr-auto sm:mx-auto">
                 See why developers love Elysia
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
