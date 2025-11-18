@@ -14,7 +14,11 @@ head:
         content: You can use `bun:test` to create a unit test with Elysia. Elysia instance has a `handle` method that accepts `Request` and will return a `Response`, the same as creating an HTTP request.
 ---
 
-# Unit Test
+<script setup lang="ts">
+import TutorialBadge from '../components/arona/badge.vue'
+</script>
+
+# Unit Test <TutorialBadge href="/tutorial/features/openapi" />
 
 Being WinterCG compliant, we can use Request / Response classes to test an Elysia server.
 

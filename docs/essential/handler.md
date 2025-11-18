@@ -17,6 +17,7 @@ head:
 <script setup>
 import Playground from '../components/nearl/playground.vue'
 import Tab from '../components/fern/tab.vue'
+import TutorialBadge from '../components/arona/badge.vue'
 import { Elysia } from 'elysia'
 
 const handler1 = new Elysia()
@@ -26,7 +27,7 @@ const handler2 = new Elysia()
     .get('/', ({ status }) => status(418, "Kirifuji Nagisa"))
 </script>
 
-# Handler
+# Handler <TutorialBadge href="/tutorial/getting-started/handler-and-context" />
 
 **Handler** - a function that accept an HTTP request, and return a response.
 
@@ -93,7 +94,7 @@ new Elysia()
 -   [**server**](#server-bun-only) - Bun server instance
 -   **path** - Pathname of the request
 
-## status
+## status <TutorialBadge href="/tutorial/getting-started/status-and-headers" />
 A function to return a custom status code with type narrowing.
 
 ```typescript

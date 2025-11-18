@@ -55,7 +55,7 @@ const demo2 = new Elysia()
 
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/plugin.html#scope">
 
 # Encapsulation
 

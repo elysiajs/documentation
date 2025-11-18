@@ -16,6 +16,8 @@ head:
 
 <script setup>
 import Playground from '../components/nearl/playground.vue'
+import TutorialBadge from '../components/arona/badge.vue'
+
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
@@ -131,7 +133,7 @@ const scope2 = new Elysia()
 	.patch('/rename', ({ status }) => status(401))
 </script>
 
-# Plugin
+# Plugin <TutorialBadge href="/tutorial/getting-started/plugin" />
 
 Plugin is a pattern that decouples functionality into smaller parts. Creating reusable components for our web server.
 
@@ -159,7 +161,7 @@ The plugin will inherit all properties of the plugin instance like `state`, `dec
 
 Elysia will also handle the type inference automatically as well.
 
-## Scope
+## Scope <TutorialBadge href="/tutorial/getting-started/encapsulation" />
 
 Elysia lifecycle methods are **encapsulated** to its own instance only.
 
@@ -443,7 +445,7 @@ const main = new Elysia()
 
 <Playground :elysia="demo5" />
 
-## Guard
+## Guard <TutorialBadge href="/tutorial/getting-started/guard" />
 
 Guard allows us to apply hook and schema into multiple routes all at once.
 

@@ -20,6 +20,7 @@ import { Elysia, t, ValidationError } from 'elysia'
 import Playground from '../components/nearl/playground.vue'
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
+import TutorialBadge from '../components/arona/badge.vue'
 
 const demo1 = new Elysia()
     .get('/none', () => 'hi')
@@ -64,7 +65,7 @@ const demo4 = new Elysia()
     .get('/query?name=rapi&name=anis&name=neon&squad=counter', ({ query: { id } }) => id)
 </script>
 
-# Validation
+# Validation <TutorialBadge href="/tutorial/getting-started/validation" />
 
 The purpose of creating an API server is to take an input and process it.
 
@@ -230,8 +231,7 @@ Override schema if schema is collide with each others.
 
 ![Elysia run with default override guard showing schema gets override](/blog/elysia-13/schema-override.webp)
 
-### **standalone**
-
+### **standalone** <TutorialBadge href="/tutorial/patterns/standalone-schema" />
 
 Separate collided schema, and runs both independently resulting in both being validated.
 

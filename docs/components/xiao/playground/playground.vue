@@ -105,6 +105,7 @@ import type { Testcases } from './types'
 const props = defineProps<{
     code?: string | VirtualFS
     testcases?: Testcases
+    doc?: string
 }>()
 
 const store = usePlaygroundStore()
@@ -114,6 +115,8 @@ if (props.code)
         typeof props.code === 'string'
             ? ({ 'index.ts': props.code } as VirtualFS)
             : props.code
+
+if (props.doc) store.doc = props.doc
 
 if (props.testcases) store.testcases = props.testcases
 
