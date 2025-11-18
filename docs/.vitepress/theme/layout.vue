@@ -231,7 +231,7 @@ function toggleAIForCurrentPage() {
                 </button>
 
                 <div
-                    class="relative flex justify-center items-center gap-2.5 *:z-20 [&>a>svg]:size-4.5 sm:[&>a>svg]:size-5 [&>a>svg]:opacity-50 [&>a>svg]:interact:opacity-100 [&>a>svg]:transition-opacity"
+                    class="relative z-10 flex justify-center items-center gap-2.5 *:z-20 [&>a>svg]:size-4.5 sm:[&>a>svg]:size-5 [&>a>svg]:opacity-50 [&>a>svg]:interact:opacity-100 [&>a>svg]:transition-opacity"
                 >
                     Open in
                     <a
