@@ -19,7 +19,7 @@
 		"cookie": "^1.0.2",
 		"dayjs": "^1.11.13",
 		"effect": "^3.17.13",
-		"elysia": "^1.4.16",
+		"elysia": "1.4.17-exp.1",
 		"lucide-vue-next": "^0.544.0",
 		"markdown-it-shiki": "^0.9.0",
 		"medium-zoom": "^1.1.0",
