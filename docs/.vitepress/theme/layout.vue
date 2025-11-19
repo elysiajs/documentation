@@ -341,7 +341,7 @@ function toggleAIForCurrentPage() {
 
         <template #nav-bar-content-before>
             <button
-                class="clicky lg:hidden size-10 ml-4 grid place-items-center text-cyan-400 dark:text-cyan-300 font-medium bg-cyan-300/10 dark:bg-cyan-300/5 !rounded-xl backdrop-blur-md"
+                class="clicky lg:hidden size-10 ml-4 grid place-items-center text-cyan-400 dark:text-cyan-300 font-medium bg-cyan-300/10 dark:bg-cyan-300/5 !rounded-lg backdrop-blur-md"
                 @click="toggleAIDesktop"
             >
                 <Sparkles :size="21" stroke-width="1.5" />

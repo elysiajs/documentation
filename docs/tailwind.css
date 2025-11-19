@@ -1091,7 +1091,7 @@ button.copy::after {
 
 #local-search {
     & > .DocSearch-Button {
-        @apply clicky h-10 rounded-xl backdrop-blur-sm lg:ml-2 sm:bg-red-50;
+        @apply clicky h-10 rounded-lg backdrop-blur-sm lg:ml-2 sm:bg-red-50;
         color: var(--docsearch-secondary-text-color);
 
         @media (width >= 40rem /* 640px */) {

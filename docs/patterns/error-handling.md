@@ -171,6 +171,8 @@ Elysia will only return that validation failed without any details.
 
 The `message` property is optional and is omitted by default unless you provide a custom error message in the schema.
 
+This can be overridden by setting `Elysia.allowUnsafeValidationDetails` to `true`, see [Elysia configuration](/patterns/configuration#allow-unsafe-validation-details) for more details.
+
 ## Custom Error
 
 Elysia supports custom error both in the type-level and implementation level.
