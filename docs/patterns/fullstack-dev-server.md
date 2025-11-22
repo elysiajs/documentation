@@ -83,7 +83,17 @@ root.render(<App />)
 
 :::
 
-3. Navigate to `http://localhost:3000/public` and see the result.
+3. Enable JSX in tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+	"jsx": "react-jsx" // [!code ++]
+  }
+}
+```
+
+4. Navigate to `http://localhost:3000/public` and see the result.
 
 This would allows us to develop frontend and backend in a single project without any bundler.
 
@@ -193,10 +203,10 @@ We can also use path alias in Bun Fullstack Dev Server.
 ```json
 {
   "compilerOptions": {
-	"baseUrl": ".", // [!code +=]
-	"paths": { // [!code +=]
-	  "@public/*": ["public/*"] // [!code +=]
-	} // [!code +=]
+	"baseUrl": ".", // [!code ++]
+	"paths": { // [!code ++]
+	  "@public/*": ["public/*"] // [!code ++]
+	} // [!code ++]
   }
 }
 ```
