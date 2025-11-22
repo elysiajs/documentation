@@ -115,7 +115,7 @@ import { staticPlugin } from '@elysiajs/static'
 
 new Elysia()
   	.use(
-  		staticPlugin({
+  		await staticPlugin({
   			prefix: '/' // [!code ++]
    		})
    )
