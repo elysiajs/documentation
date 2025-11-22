@@ -35,9 +35,15 @@ import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysiajs/static'
 
 new Elysia()
-	.use(staticPlugin())
+	.use(await staticPlugin()) // [!code ++]
 	.listen(3000)
 ```
+
+:::tip
+Notice that we need to add `await` before `staticPlugin()` to enable Fullstack Dev Server.
+
+This is required to setup the necessary HMR hooks.
+:::
 
 2. Create **public/index.html** and **index.tsx**
 
