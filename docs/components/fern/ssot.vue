@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import { motion } from 'motion-v'
-</script>
-
 <template>
     <article class="flex flex-row max-w-5xl w-full mx-auto mt-12">
         <header class="flex flex-col flex-1 text-xl gap-1.5 max-w-3xl px-4 md:px-0">
@@ -39,7 +35,8 @@ import { motion } from 'motion-v'
                 class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
             />
             <div
-                class="z-9 absolute -left-19 -top-2.5 size-14 rotate-45 rounded-full border-l border-gray-300 dark:border-gray-500"
+                class="z-9 absolute -left-19 -top-2.5 size-14 rotate-45 rounded-full border-l border-gray-300 dark:border-gray-500 animate-spin"
+                style="animation-duration: 24s;"
             />
             <header class="flex flex-col flex-1">
                 <h1
@@ -71,7 +68,8 @@ import { motion } from 'motion-v'
                 class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
             />
             <div
-                class="z-9 absolute -left-19 -top-2.5 size-14 rounded-full border-l border-b border-gray-300 dark:border-gray-500"
+                class="z-9 absolute -left-19 -top-2.5 size-14 rounded-full border-l border-b border-gray-300 dark:border-gray-500 animate-spin"
+                style="animation-duration: 24s;"
             />
             <header class="flex flex-col flex-1">
                 <h1
@@ -96,12 +94,13 @@ import { motion } from 'motion-v'
             </div>
         </article>
         <article class="relative flex flex-col md:flex-row w-full gap-8 text-lg pr-4">
-            <div
-                class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
-            />
-            <div
-                class="z-9 absolute -left-19 -top-2.5 size-14 rotate-180 rounded-full border-l border-b border-gray-300 dark:border-gray-500"
-            />
+	        <div
+	            class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
+	        />
+	        <div
+	            class="z-9 absolute -left-19 -top-2.5 size-14 rotate-45 rounded-full border-r border-gray-300 dark:border-gray-500 animate-spin"
+				style="animation-duration: 24s;"
+	        />
             <header class="flex flex-col flex-1">
                 <h1
                     class="text-3xl font-medium text-black dark:text-white mb-3"
@@ -131,12 +130,13 @@ import { motion } from 'motion-v'
             </div>
         </article>
         <article class="relative flex flex-col md:flex-row w-full gap-8 text-lg pr-4">
-            <div
-                class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
-            />
-            <div
-                class="z-9 absolute -left-19 -top-2.5 size-14 rotate-45 rounded-full border-r border-gray-300 dark:border-gray-500"
-            />
+	        <div
+	            class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
+	        />
+	        <div
+	            class="z-9 absolute -left-19 -top-2.5 size-14 rotate-180 rounded-full border-l border-b border-gray-300 dark:border-gray-500 animate-spin"
+				style="animation-duration: 24s;"
+	        />
             <header class="flex flex-col flex-1">
                 <h1
                     class="text-3xl font-medium text-black dark:text-white mb-3"

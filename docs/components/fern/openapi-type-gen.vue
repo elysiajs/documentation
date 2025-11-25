@@ -18,7 +18,7 @@ const isInView = useInView(scope, {
 const flyIn = useFlyIn(isInView)
 
 const scale = useTransform(() => scrollYProgress.get() / 2 + 0.5)
-const opacity = useTransform(() => Math.min(scrollYProgress.get() + 0.75, 1))
+const opacity = useTransform(() => Math.min(scrollYProgress.get(), 1))
 const roundness = useTransform(() => 48 - scrollYProgress.get() * 48 + 'px')
 </script>
 
