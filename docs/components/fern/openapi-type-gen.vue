@@ -38,14 +38,14 @@ const roundness = useTransform(() => 48 - scrollYProgress.get() * 48 + 'px')
             }"
         />
     </header>
-    <article id="openapi-type-gen" class="flex flex-col items-center max-w-6xl mx-auto w-full md:text-center mb-8 px-4 md:px-0" ref="scope">
+    <article id="openapi-type-gen" class="flex flex-col items-center max-w-6xl mx-auto w-full md:text-center mb-12 px-4 md:px-0" ref="scope">
         <div class="flex flex-col items-center gap-3 mb-5 max-w-3xl mx-auto">
             <motion.div class="flex sm:justify-center items-center md:gap-4 w-full" v-bind="flyIn()">
-                <div class="hidden md:flex flex-1 h-0.25 bg-gray-300" />
-                <h3 class="text-lg sm:text-xl text-gray-400/80">
+                <div class="hidden md:flex flex-1 h-0.25 bg-gray-300 dark:bg-gray-500" />
+                <h3 class="text-lg sm:text-xl text-gray-400">
                     Introducing our most powerful feature yet
                 </h3>
-                <div class="hidden md:flex flex-1 h-0.25 bg-gray-300" />
+                <div class="hidden md:flex flex-1 h-0.25 bg-gray-300 dark:bg-gray-500" />
             </motion.div>
             <motion.h2
                 class="text-5xl md:text-7xl font-semibold text-gradient from-teal-300 to-indigo-400 leading-tight"
@@ -68,8 +68,7 @@ const roundness = useTransform(() => 48 - scrollYProgress.get() * 48 + 'px')
                 class="font-bold text-gradient from-blue-400 to-emerald-400 leading-tight"
                 >any library</span
             >
-            like Prisma, Drizzle and every TypeScript library to reflect it
-            directly to your API documentation.
+            like Prisma, Drizzle and every TypeScript library into your own API documentation.
         </motion.p>
         <motion.div class="showcase text-left mt-8 max-w-full" v-bind="flyIn(0.4)">
         	<slot name="oai-type-gen" />

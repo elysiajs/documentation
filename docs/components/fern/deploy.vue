@@ -6,6 +6,15 @@
         <div
             class="relative flex justify-center items-center w-full size-72 sm:size-96 md:size-128"
         >
+            <motion.div v-bind="fadeIn()" class="absolute size-36 rotate-45 border-t border-l border-b border-gray-300 dark:border-gray-700 rounded-full" />
+            <motion.div v-bind="fadeIn()" class="absolute size-52 border-t border-l border-gray-200 dark:border-gray-700 rounded-full" />
+            <motion.div v-bind="fadeIn()" class="absolute size-68 rotate-45 border-l border-gray-200 dark:border-gray-700 rounded-full" />
+            <motion.div v-bind="fadeIn()" class="absolute size-84 rotate-45 border-r border-gray-200 dark:border-gray-700 rounded-full" />
+            <motion.div v-bind="fadeIn()" class="absolute size-52 rotate-45 border-r border-gray-200 dark:border-gray-700 rounded-full" />
+
+            <motion.div v-bind="fadeIn()" class="hidden sm:block absolute size-164 rotate-45 border-l border-gray-200 dark:border-gray-700 rounded-full" />
+            <motion.div v-bind="fadeIn()" class="hidden sm:block absolute size-148 border-l border-t border-gray-200 dark:border-gray-700 rounded-full" />
+
             <motion.img
                 v-bind="fadeIn()"
                 src="/assets/elysia.svg"
