@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import Hero from './hero.vue'
 import Note from './note.vue'
+import SSOT from './ssot.vue'
 import Validator from './validator.vue'
 import TrustedBy from './trusted-by.vue'
 import Benchmark from './benchmark.vue'
 import TypeIntegrity from './type-integrity.vue'
+import OpenAPITypeGen from './openapi-type-gen.vue'
 import Easy from './easy.vue'
 import Doc from './doc.vue'
 import Beyond from './beyond.vue'
@@ -29,8 +31,29 @@ import AskElysia from './ask-elysia.vue'
                 <slot name="easy" />
             </Easy>
             <Benchmark />
-            <Deploy />
-            <TypeIntegrity>
+            <SSOT>
+	            <template v-slot:ssot-1>
+	                <slot name="ssot-1" />
+	            </template>
+	            <template v-slot:ssot-2>
+	                <slot name="ssot-2" />
+	            </template>
+	            <template v-slot:ssot-3>
+	                <slot name="ssot-3" />
+	            </template>
+	            <template v-slot:ssot-4>
+	                <slot name="ssot-4" />
+	            </template>
+            </SSOT>
+            <OpenAPITypeGen>
+            	<template v-slot:oai-type-gen>
+	                <slot name="oai-type-gen" />
+	            </template>
+            </OpenAPITypeGen>
+            <!-- <Doc>
+                <slot name="doc" />
+            </Doc> -->
+             <!-- <TypeIntegrity>
                 <template v-slot:type-1>
                     <slot name="type-1" />
                 </template>
@@ -43,15 +66,12 @@ import AskElysia from './ask-elysia.vue'
                 <template v-slot:type-4>
                     <slot name="type-4" />
                 </template>
-            </TypeIntegrity>
+            </TypeIntegrity> -->
             <Validator>
 	            <template v-slot:validator>
 	                <slot name="validator" />
 	            </template>
             </Validator>
-            <Doc>
-                <slot name="doc" />
-            </Doc>
             <Beyond>
                 <slot name="e2e-type-safety" />
             </Beyond>
@@ -63,6 +83,7 @@ import AskElysia from './ask-elysia.vue'
                     <slot name="test-script" />
                 </template>
             </Test>
+            <Deploy />
             <Tweets />
             <Sponsors />
             <!-- <Features /> -->

@@ -67,7 +67,7 @@ We dreams of a world where you just write your code, and the documentation is cr
 
 The closest thing we have is with **Python's FastAPI** that can generate OpenAPI documentation from pydantic model. But it is limited to only pydantic model, and cannot be used with other libraries or types.
 
-Elysia Type Gen brings the similar experience to TypeScript, with out that limitation. Allowing you turns **any TypeScript type** into OpenAPI documentation automatically **from any library** not limited to Elysia.
+Elysia Type Gen brings the similar experience to TypeScript, without that limitation. Allowing you turns **any TypeScript type** into OpenAPI documentation automatically **from any library** not limited to Elysia.
 
 ![Elysia Type Gen](/blog/openapi-type-gen/type-gen.webp)
 
