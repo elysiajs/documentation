@@ -121,7 +121,7 @@ See <DocLink href="/essential/validation#response">Response Validation</DocLink>
 
 ## Assignment
 
-Let's execrise what we have learned.
+Let's exercise what we have learned.
 
 <template #answer>
 

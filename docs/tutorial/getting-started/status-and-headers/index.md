@@ -93,7 +93,7 @@ See <DocLink href="/essential/handler#set-headers">Headers</DocLink>.
 
 ## Assignment
 
-Let's execrise what we have learned.
+Let's exercise what we have learned.
 
 <template #answer>
 
