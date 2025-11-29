@@ -80,7 +80,7 @@ export const Route = createFileRoute('/api/$')({
 	}
 })
 
-export const api = createIsomorphicFn() // [!code ++]
+export const getTreaty = createIsomorphicFn() // [!code ++]
 	.server(() => treaty(app).api) // [!code ++]
 	.client(() => treaty<typeof app>('localhost:3000').api) // [!code ++]
 ```
