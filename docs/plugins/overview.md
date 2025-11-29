@@ -120,7 +120,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [@fedify/elysia](https://github.com/fedify-dev/fedify/tree/main/packages/elysia) - A plugin that provides seamless integration with [Fedify](https://fedify.dev/), the ActivityPub server framework.
 -   [elysia-healthcheck](https://github.com/iam-medvedev/elysia-healthcheck) - Healthcheck plugin for Elysia.js
 -   [elysia-csrf](https://github.com/lauhon/elysia-csrf) - A CSRF plugin, ported from [express-csrf](https://github.com/expressjs/csurf)
-
+-   [elysia-circuit-breaker](https://github.com/camargo-leonardo/elysia-circuit-breaker) - A Circuit Breaker plugin that brings fault tolerance to Elysia.js.
 ## Complementary projects:
 
 -   [prismabox](https://github.com/m1212e/prismabox) - Generator for typebox schemes based on your database models, works well with elysia
