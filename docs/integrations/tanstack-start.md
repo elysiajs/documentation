@@ -148,7 +148,7 @@ function App() {
 
 ::: code-group
 
-This can works with any React Query features like caching, pagination, infinite query, etc.
+This can work with any React Query features like caching, pagination, infinite query, etc.
 
 ---
 
