@@ -583,7 +583,7 @@ To apply hook to parent may use one of the following:
 2. [guard as](#guard-as) apply to all hook in a guard
 3. [instance as](#instance-as) apply to all hook in an instance
 
-### Inline
+### Inline as
 Every event listener will accept `as` parameter to specify the scope of the hook.
 
 ```typescript twoslash
