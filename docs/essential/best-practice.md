@@ -188,7 +188,7 @@ abstract class Controller {
 }
 
 new Elysia()
-    .get('/', Controller.hi)
+    .get('/', Controller.root)
 ```
 
 This approach makes it hard to type `Context` properly, and may lead to loss of type integrity.
