@@ -325,7 +325,7 @@ new Elysia()
 By providing a file type, Elysia will automatically assume that the content-type is `multipart/form-data`.
 
 ### File (Standard Schema)
-If you're using Standard Schema, it's important that Elysia will not be able to valiate content type automatically similar to `t.File`.
+If you're using Standard Schema, it's important that Elysia will not be able to validate content type automatically similar to `t.File`.
 
 But Elysia export a `fileType` that can be used to validate file type by using magic number.
 
