@@ -162,7 +162,7 @@ We recommended one of the following approach to implement a controller in Elysia
 ### 1. Elysia instance as a controller
 > 1 Elysia instance = 1 controller
 
-Treat an Elysia instance is a controller, and define your routes directly on the Elysia instance.
+Treat an Elysia instance as a controller, and define your routes directly on the Elysia instance.
 
 ```typescript
 // ✅ Do
