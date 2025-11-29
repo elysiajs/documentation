@@ -38,41 +38,40 @@ head:
     date="30 Mar 2023"
 >
 
-Named after the opening music of ["The Liar Princess and the Blind Prince" trailer](https://youtu.be/UdBespMvxaA), [「月夜の音楽会」(Moonlit Night Concert)](https://youtu.be/o8b-IQulh1c) composed and sang by Akiko Shikata.
+Named after the opening music of ["The Liar Princess and the Blind Prince" trailer](https://youtu.be/UdBespMvxaA), [「月夜の音楽会」(Moonlit Night Concert)](https://youtu.be/o8b-IQulh1c), composed and performed by Akiko Shikata.
 
-This version doesn't introduce an exciting new feature, later but a foundation for more solid ground, and internal improvement for the future of Elysia.
+This version doesn't introduce a single exciting new feature but rather lays a foundation for a more solid platform, focusing on internal improvements for the future of Elysia.
 
-## Ahead of Time Complie
-By default, Elysia has to deal with conditional checking in various situations, for example, checking if the life-cycle of the route existed before performing, or unwrapping validation schema if provided.
+## Ahead-of-Time Compile
+By default, Elysia must deal with conditional checks in various situations, for example, checking if a route's life-cycle exists before executing it, or unwrapping a validation schema if provided.
 
-This introduces a minimal overhead to Elysia and overall because even if the route doesn't have a life-cycle event attached to it, it needs to be runtime checked.
+This introduces a small runtime overhead because even if a route doesn't have a life-cycle event attached, it still needs to be checked at runtime.
 
 Since every function is checked on compile time, it's not possible to have a conditional async, for example, a simple route that returns a file should be synced, but since it's compile-time checking, some routes might be async thus making the same simple route async too.
 
-An async function introduces an additional tick to the function, making it a bit slower. But since Elysia is a foundation for web servers, we want to optimize every part to make sure that you don't run into performance problems.
+An async function introduces an additional tick, making it slightly slower. Since Elysia is a foundation for web servers, we optimize every part to help you avoid performance problems.
 
-We fix this small overhead by introducing Ahead Time Compilation.
+We address this overhead by introducing Ahead-of-Time Compilation.
 
-As the name suggests, instead of checking dynamic life-cycle and validation on the runtime, Elysia checks life-cycle, validation, and the possibility of an async function and generates a compact function, removing an unnecessary part like an un-used life-cycle and validation.
+As the name suggests, instead of checking dynamic life-cycle hooks and validation at runtime, Elysia checks life-cycle hooks, validation, and the possibility of an async function at compile time and generates a compact function, removing unnecessary parts like unused life-cycle hooks and validation.
 
-Making conditional async function possible, since instead of using a centralized function for handling, we compose a new function especially created for each route instead. Elysia then checks all life-cycle functions and handlers to see if there's an async, and if not, the function will be synced to reduce additional overhead.
+Conditional async functions become possible because, instead of using a centralized handler, we compose a new function specifically created for each route. Elysia checks all life-cycle functions and handlers to see if any are async; if not, the generated function will be synchronous to reduce overhead.
 
 ## TypeBox 0.26
-TypeBox is a library that powered Elysia's validation and type provider to create a type-level single source of truth, re-exported as **Elysia.t**.
+TypeBox is the library that powers Elysia's validation and type system, providing a single source of truth at the type level and re-exported as **Elysia.t**.
 
-In this update, we update TypeBox from 0.25.4 to 0.26.
+In this update, we upgrade TypeBox from 0.25.4 to 0.26.
 
-This brings a lot of improvement and new features, for example, a `Not` type and `Convert` for `coercion` value which we might support in some next version of Elysia.
+This brings many improvements and new features, for example, a `Not` type and `Convert` for `coercion` values which we may support in a future version of Elysia.
 
-But the one benefit for Elysia would be, `Error.First()` which allows us to get the first error of type instead of using Iterator, this reduces overhead in creating a new Error to send back to the client.
+One notable benefit for Elysia is `Error.First()`, which lets us get the first error instead of using an iterator. This reduces overhead when creating a new `Error` to send back to the client.
 
-There are some changes to **TypeBox** and **Elysia.t** that normally wouldn't have much effect on your end, but you can see what's a new feature in [TypeBox release here.](https://github.com/sinclairzx81/typebox/blob/master/changelog/0.26.0.md)
+There are some changes to **TypeBox** and **Elysia.t** that normally won't affect you much, but you can see what's new in the [TypeBox release notes](https://github.com/sinclairzx81/typebox/blob/master/changelog/0.26.0.md).
 
 ## Validate response per status
-Previously, Elysia's response validate multiple status responses using union type.
+Previously, Elysia validated multiple status responses using a union type.
 
-This might have unexpected results for highly dynamic apps with a strict response for status.
-For example if you have a route like:
+This could produce unexpected results for highly dynamic apps that require strict validation per status. For example, if you have a route like:
 ```ts
 app.post('/strict-status', process, {
     schema: {
@@ -84,27 +83,27 @@ app.post('/strict-status', process, {
 })
 ```
 
-It's expected that if 200 response is not a string, then it should throw a validation error, but in reality, it wouldn't throw an error because response validation is using union. This might leave an unexpected value to the end user and a type error for Eden Treaty.
+It's expected that if a 200 response is not a string, it should throw a validation error, but in reality it wouldn't because response validation used a union. This could leave an unexpected value for the end user and cause a type error for Eden Treaty.
 
-With this release, a response is validated per status instead of union, which means that it will strictly validate based on response status instead of unioned type.
+With this release, responses are validated per status instead of using a union, which means validation is strict based on the response status.
 
 ## Separation of Elysia Fn
-Elysia Fn is a great addition to Elysia, with Eden, it breaks the boundary between client and server allowing you to use any server-side function in your client, fully type-safe and even with primitive types like Error, Set, and Map.
+Elysia Fn is a great addition to Elysia. With Eden, it breaks the boundary between client and server, allowing you to use server-side functions in your client app, fully type-safe and with primitive types like Error, Set, and Map.
 
-But with the primitive type support, Elysia Fn depends on "superjson" which is around 38% of Elysia's dependency size.
+However, because of primitive type support, Elysia Fn depends on `superjson`, which accounts for around 38% of Elysia's dependency size.
 
-In this release, to use Elysia Fn, you're required to explicitly install `@elysiajs/fn` to use Elysia Fn. This approach is like installing an additional feature same as `cargo add --feature`.
+In this release, to use Elysia Fn you must explicitly install `@elysiajs/fn`. This approach is similar to installing an optional feature (e.g., `cargo add --feature`).
 
-This makes Elysia lighter for servers that don't use Elysia Fn, Following our philosophy, **To ensure that you have what you actually need**
+This makes Elysia lighter for servers that don't use Elysia Fn—following our philosophy: **To ensure that you have only what you actually need**.
 
-However, if you forgot to install Elysia Fn and accidentally use Elysia Fn, there will be a type warning reminding you to install Elysia Fn before usage, and a runtime error telling the same thing.
+If you forget to install Elysia Fn and attempt to use it, you'll get a type warning reminding you to install `@elysiajs/fn`, and a runtime error with the same message.
 
-For migration, besides a breaking change of installing `@elysiajs/fn` explicitly, there's no migration need.
+For migration, besides the breaking change of installing `@elysiajs/fn` explicitly, no other migration is required.
 
 ## Conditional Route
-This release introduces `.if` method for registering a conditional route or plugin.
+This release introduces the `.if` method for registering a conditional route or plugin.
 
-This allows you to declaratively for a specific conditional, for example excluding Swagger documentation from the production environment.
+This allows you to declaratively register conditional—for example, excluding Swagger documentation in production:
 ```ts
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -113,10 +112,10 @@ const app = new Elysia().if(!isProduction, (app) =>
 )
 ```
 
-Eden Treaty will be able to recognize the route as if it's a normal route/plugin.
+Eden Treaty will be able to recognize the route as a normal route/plugin.
 
 ## Custom Validation Error
-Big thanks to amirrezamahyari on [#31](https://github.com/elysiajs/elysia/pull/31) which allows Elysia to access TypeBox's error property, for a better programmatically error response.
+Big thanks to amirrezamahyari on [#31](https://github.com/elysiajs/elysia/pull/31) which allows Elysia to access TypeBox's error property for better programmatic error responses.
 
 ```ts
 new Elysia()
@@ -146,26 +145,26 @@ new Elysia()
     .listen(3000)
 ```
 
-Now you can create a validation error for your API not limited to only the first error.
+Now you can create a validation error for your API that is not limited to only the first error.
 
 ---
 
-### Notable Improvement:
+### Notable Improvements:
 - Update TypeBox to 0.26.8
 - Inline a declaration for response type
-- Refactor some type for faster response
-- Use Typebox `Error().First()` instead of iteration
+- Refactor some types for faster responses
+- Use TypeBox `Error().First()` instead of iteration
 - Add `innerHandle` for returning an actual response (for benchmark)
 
 ### Breaking Change:
-- Separate `.fn` to `@elysiajs/fn`
+- Separate `.fn` into `@elysiajs/fn`
 
 ## Afterward
-This release might not be a big release with a new exciting feature, but this improve a solid foundation, and Proof of Concept for planned I have for Elysia in the future, and making Elysia even faster and more versatile than it was.
+This release might not introduce an exciting new feature, but it improves the foundation and serves as a proof of concept for planned features in Elysia's future, making Elysia faster and more versatile.
 
-I'm really excited for what will be unfold in the future.
+I'm really excited about what will unfold in the future.
 
-Thank you for your continuous support for Elysia~
+Thank you for your continuous support of Elysia.
 
 > the moonlit night concert, our secret
 >
