@@ -191,7 +191,8 @@ bun add -d tsx @types/node typescript
 ```
 
 ```bash [pnpm]
-pnpm add elysia @elysiajs/node && \
+# pnpm doesn't install peer dependencies
+pnpm add elysia @elysiajs/node @sinclair/typebox exact-mirror openapi-types && \
 pnpm add -D tsx @types/node typescript
 ```
 
@@ -276,7 +277,8 @@ bun add elysia @elysiajs/node
 ```
 
 ```bash [pnpm]
-pnpm add elysia @elysiajs/node
+# pnpm doesn't install peer dependencies
+pnpm add elysia @elysiajs/node @sinclair/typebox exact-mirror openapi-types
 ```
 
 ```bash [npm]
