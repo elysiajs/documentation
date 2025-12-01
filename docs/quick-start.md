@@ -359,7 +359,8 @@ bun install elysia
 ```
 
 ```bash [pnpm]
-pnpm install elysia
+# pnpm doesn't install peer depepdencies
+pnpm install elysia @sinclair/typebox exact-mirror openapi-types
 ```
 
 ```bash [npm]
