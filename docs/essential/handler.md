@@ -257,7 +257,7 @@ new Elysia()
 	})
 ```
 
-See [Patterns: Cookie](/essentials/cookie) for more information.
+See [Patterns: Cookie](/patterns/cookie) for more information.
 
 ## Redirect
 Redirect a request to another resource.
