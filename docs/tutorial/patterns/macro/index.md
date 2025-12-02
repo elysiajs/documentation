@@ -115,7 +115,7 @@ new Elysia()
             if(!isFibonacci(body)) return status(418)
         }
     })
-	.post('/fibo', ({ body }) => body, {
+	.post('/', ({ body }) => body, {
 		isFibonacci: true
 	})
     .listen(3000)

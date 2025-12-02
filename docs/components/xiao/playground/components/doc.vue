@@ -21,7 +21,7 @@
             :class="{ hidden: store.tab.aside !== 'docs' }"
             :src="store.doc"
         />
-        <article class="relative w-full h-full overflow-x-hidden overflow-y-auto">
+        <article class="relative w-full h-full overflow-x-hidden overflow-y-auto rounded-xl">
             <Ray
                 class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
             />
