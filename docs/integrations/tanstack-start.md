@@ -16,7 +16,7 @@ head:
 
 # Integration with Tanstack Start
 
-Elysia can runs inside Tanstack Start server routes.
+Elysia can run inside Tanstack Start server routes.
 
 1. Create **src/routes/api.$.ts**
 2. Define an Elysia server
