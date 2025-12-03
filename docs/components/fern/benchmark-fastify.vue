@@ -13,24 +13,24 @@
                     <div
                         class="w-full bg-gradient-to-r from-violet-500 to-fuchsia-400 !text-white"
                     >
-                        2,454,631 reqs/s
+                        26,060,081 reqs/s
                     </div>
                 </li>
                 <li>
                     <h6>Fastify</h6>
-                    <div style="width: 16.93%" />
-                    <p>415,600</p>
+                    <div style="width: 4.51%" />
+                    <p>1,175,038</p>
                 </li>
             </ol>
             <p class="text-sm !m-0 text-gray-400 !leading-normal">
                 Measured in requests/second. Result from
                 <a
-                    href="https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22"
+                    href="https://www.techempower.com/benchmarks/#section=data-r23&test=plaintext"
                     target="_blank"
                     class="underline"
                     >TechEmpower Benchmark</a
                 >
-                Round 22 (2023-10-17) in PlainText
+                Round 23 (2025-02-24) in PlainText
             </p>
         </article>
     </div>
