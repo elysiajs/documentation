@@ -16,7 +16,7 @@ head:
 
 # Integration with Tanstack Start
 
-Elysia can runs inside Tanstack Start server routes.
+Elysia can run inside Tanstack Start server routes.
 
 1. Create **src/routes/api.$.ts**
 2. Define an Elysia server
@@ -148,7 +148,7 @@ function App() {
 
 ::: code-group
 
-This can works with any React Query features like caching, pagination, infinite query, etc.
+This can work with any React Query features like caching, pagination, infinite query, etc.
 
 ---
 
