@@ -45,7 +45,7 @@ new Elysia()
 		if(code === "NOT_FOUND")
 			return 'uhe~ are you lost?'
 
-		return status(418, "My bad! But I\'m cute so you'll forgive me, right?")
+		return status(418, "My bad! But I'm cute so you'll forgive me, right?")
 	})
 	.get('/', () => 'ok')
 	.listen(3000)
