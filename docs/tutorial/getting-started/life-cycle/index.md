@@ -56,11 +56,13 @@ new Elysia()
 			console.log('This is executed before handler')
 
 			if(Math.random() <= 0.5)
-				return status(418)
+				return status(418) // or status("I'm a teapot")
 		}
 	})
 	.get('/2', () => 'Hello Elysia!')
 ```
+
+The `status` function accepts both numeric codes (`418`) and string status names (`"I'm a teapot"`).
 
 When `beforeHandle` returns a value, it will skip the handler and return the value instead.
 
@@ -99,7 +101,7 @@ new Elysia()
 			console.log('Run before handler')
 
 			if(Math.random() <= 0.5)
-				return status(418)
+				return status(418) // or status("I'm a teapot")
 		}
 	})
 	.get('/2', () => 'Hello Elysia!')
@@ -120,7 +122,7 @@ new Elysia()
 		console.log('This is executed before handler')
 
 		if(Math.random() <= 0.5)
-			return status(418)
+			return status(418) // or status("I'm a teapot")
 	})
 	// "beforeHandle" is applied
 	.get('/auth', () => {
@@ -147,7 +149,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
 	.onBeforeHandle(({ query: { name }, status }) => {
-		if(!name) return status(401)
+		if(!name) return status(401) // or status("Unauthorized")
 	})
 	.get('/auth', ({ query: { name = 'anon' } }) => {
 		return `Hello ${name}!`
