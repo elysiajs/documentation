@@ -53,6 +53,15 @@ new Elysia()
 	.listen(3000)
 ```
 
+The status code can be a number or a string status name. Both of these are equivalent:
+
+```typescript
+status(418, "I'm a teapot")
+status("I'm a teapot", "I'm a teapot")
+```
+
+String status names provide TypeScript autocompletion for all valid HTTP statuses.
+
 See <DocLink href="/essential/handler#status">Status</DocLink>.
 
 ## Redirect
