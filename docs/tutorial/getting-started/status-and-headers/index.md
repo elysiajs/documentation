@@ -49,9 +49,18 @@ You can also return a status code by returning your response using a `status` fu
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.get('/', ({ status }) => status(418, "I'm a teapot'"))
+	.get('/', ({ status }) => status(418, "I'm a teapot"))
 	.listen(3000)
 ```
+
+The status code can be a number or a string status name. Both of these are equivalent:
+
+```typescript
+status(418, "I'm a teapot")
+status("I'm a teapot", "I'm a teapot")
+```
+
+String status names provide TypeScript autocompletion for all valid HTTP statuses.
 
 See <DocLink href="/essential/handler#status">Status</DocLink>.
 
