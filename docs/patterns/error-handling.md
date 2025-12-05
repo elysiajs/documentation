@@ -28,11 +28,11 @@ const demo = new Elysia()
 	})
     .get('/throw', ({ error }) => {
 		// This will be caught by onError
-		throw error(418) // or error("I'm a teapot")
+		throw error(418)
 	})
 	.get('/return', ({ status }) => {
 		// This will NOT be caught by onError
-		return status(418) // or status("I'm a teapot")
+		return status(418)
 	})
 
 const demo2 = new Elysia()
@@ -300,11 +300,11 @@ new Elysia()
     })
     .get('/throw', ({ status }) => {
         // This will be caught by onError
-        throw status(418) // or status("I'm a teapot")
+        throw status(418)
     })
     .get('/return', ({ status }) => {
         // This will NOT be caught by onError
-        return status(418) // or status("I'm a teapot")
+        return status(418)
     })
 ```
 
