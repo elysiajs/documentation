@@ -286,8 +286,8 @@ But for `status` it can be a little bit confusing, since it can be used both as 
 
 It could either be **return** or **throw** based on your specific needs.
 
-- If an `status` is **throw**, it will be caught by `onError` middleware.
-- If an `status` is **return**, it will be **NOT** caught by `onError` middleware.
+- If a `status` is **throw**, it will be caught by `onError` middleware.
+- If a `status` is **return**, it will be **NOT** caught by `onError` middleware.
 
 See the following code:
 
