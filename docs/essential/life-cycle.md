@@ -502,7 +502,7 @@ import { validateSession } from './user'
 new Elysia()
     .get('/', () => 'hi', {
         beforeHandle({ set, cookie: { session }, status }) {
-            if (!validateSession(session.value)) return status("Unauthorized")
+            if (!validateSession(session.value)) return status('Unauthorized')
         }
     })
     .listen(3000)
@@ -527,7 +527,7 @@ new Elysia()
     .guard(
         {
             beforeHandle({ set, cookie: { session }, status }) {
-                if (!validateSession(session.value)) return status("Unauthorized")
+                if (!validateSession(session.value)) return status('Unauthorized')
             }
         },
         (app) =>

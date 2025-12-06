@@ -308,7 +308,7 @@ new Elysia()
     })
 ```
 
-Here we use `status(418)` which is the "I'm a teapot" status code. You can also use the string name directly: `status("I'm a teapot")`. See [Status and Headers](/tutorial/getting-started/status-and-headers) for more on using status codes.
+Here we use `status(418)` which is the "I'm a teapot" status code. You can also use the string name directly: `status('I\'m a teapot')`. See [Status and Headers](/tutorial/getting-started/status-and-headers) for more on using status codes.
 
 <Playground
     :elysia="demo"
