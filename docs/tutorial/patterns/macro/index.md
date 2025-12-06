@@ -64,7 +64,7 @@ new Elysia()
 		}),
 		// psuedo auth check
 		beforeHandle({ cookie: { session }, status }) {
-			if(!session.value) return status("Unauthorized")
+			if(!session.value) return status('Unauthorized')
 		}
 	})
 	.post('/user', ({ body }) => body, {
@@ -112,7 +112,7 @@ new Elysia()
     .macro('isFibonacci', {
 		body: t.Number(),
         beforeHandle({ body, status }) {
-            if(!isFibonacci(body)) return status("I'm a teapot")
+            if(!isFibonacci(body)) return status('I\'m a teapot')
         }
     })
 	.post('/', ({ body }) => body, {

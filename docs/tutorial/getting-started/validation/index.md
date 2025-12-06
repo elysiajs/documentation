@@ -134,7 +134,7 @@ new Elysia()
 	.get('/', ({ status, set }) => {
 		set.headers['x-powered-by'] = 'Elysia'
 
-		return status("I'm a teapot", 'Hello Elysia!')
+		return status('I\'m a teapot', 'Hello Elysia!')
 	})
 	.get('/docs', ({ redirect }) => redirect('https://elysiajs.com'))
 	.listen(3000)
