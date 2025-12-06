@@ -112,7 +112,7 @@ new Elysia()
     .macro('isFibonacci', {
 		body: t.Number(),
         beforeHandle({ body, status }) {
-            if(!isFibonacci(body)) return status('I\'m a teapot')
+            if(!isFibonacci(body)) return status("I'm a teapot")
         }
     })
 	.post('/', ({ body }) => body, {
