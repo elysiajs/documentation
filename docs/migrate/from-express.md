@@ -521,6 +521,18 @@ const app = new Elysia()
 
 While Express has a `next` function to call the next middleware, Elysia does not has one.
 
+::: tip
+Unlike Express which only accepts numeric status codes, Elysia also supports descriptive string names:
+
+```ts
+// Both are equivalent in Elysia
+return status(401)
+return status('Unauthorized')
+```
+
+String status names provide TypeScript autocompletion for all valid HTTP statuses, making your code more readable and less error-prone.
+:::
+
 ## Sounds type safety
 Elysia is designed to be sounds type safety.
 
