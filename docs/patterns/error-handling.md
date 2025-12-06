@@ -21,6 +21,7 @@ import TutorialBadge from '../components/arona/badge.vue'
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
 import Playground from '../components/nearl/playground.vue'
+import DocLink from '../components/xiao/doc-link/doc-link.vue'
 
 const demo = new Elysia()
 	.onError(({ code }) => {
@@ -307,6 +308,8 @@ new Elysia()
         return status(418)
     })
 ```
+
+Here we use `status(418)` which is the "I'm a teapot" status code. You can also use the string name directly: `status("I'm a teapot")`. See <DocLink href="/tutorial/getting-started/status-and-headers#status">Status</DocLink> for more on using status codes.
 
 <Playground
     :elysia="demo"
