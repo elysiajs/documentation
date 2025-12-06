@@ -30,7 +30,7 @@ import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
     .post('/user', ({ body: { name }, status }) => {
-        if(name === 'Otto') return status(400)
+        if(name === 'Otto') return status('Bad Request')
 
         return name
     }, {
@@ -146,7 +146,7 @@ import { treaty, Treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
 	.post('/user', ({ body: { name }, status }) => {
-		if(name === 'Otto') return status(400)
+		if(name === 'Otto') return status('Bad Request')
 
 		return name
 	}, {

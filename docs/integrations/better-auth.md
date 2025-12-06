@@ -189,7 +189,7 @@ const betterAuth = new Elysia({ name: 'better-auth' })
                     headers
                 })
 
-                if (!session) return status(401)
+                if (!session) return status('Unauthorized')
 
                 return {
                     user: session.user,

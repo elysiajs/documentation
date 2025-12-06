@@ -5,7 +5,7 @@ export const code = `import { Elysia, t } from 'elysia'
 const nameCheck = new Elysia()
 	.onBeforeHandle(
 		({ query: { name }, status }) => {
-			if(!name) return status(401)
+			if(!name) return status('Unauthorized')
 		}
 	)
 
@@ -16,7 +16,7 @@ const ageCheck = new Elysia()
 			name: t.Optional(t.String())
 		}),
 		beforeHandle({ query: { age }, status }) {
-			if(age < 18) return status(403)
+			if(age < 18) return status('Forbidden')
 		}
 	})
 

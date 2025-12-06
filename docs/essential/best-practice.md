@@ -316,7 +316,7 @@ const AuthService = new Elysia({ name: 'Auth.Service' })
     .macro({
         isSignIn: {
             resolve({ cookie, status }) {
-                if (!cookie.session.value) return status(401)
+                if (!cookie.session.value) return status('Unauthorized')
 
                 return {
                 	session: cookie.session.value,
@@ -367,7 +367,7 @@ class AuthService {
 	// ❌ Don't do this
 	isSignIn({ status, cookie: { session } }: Context) {
 		if (session.value)
-			return status(401)
+			return status('Unauthorized')
 	}
 }
 ```
@@ -390,7 +390,7 @@ class AuthService {
 	// ✅ Do
 	isSignIn({ status, cookie: { session } }: InferContext<typeof setup>) {
 		if (session.value)
-			return status(401)
+			return status('Unauthorized')
 	}
 }
 ```
