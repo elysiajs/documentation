@@ -19,8 +19,8 @@ import { Elysia } from 'elysia'
 import Playground from './components/nearl/playground.vue'
 
 const profile1 = new Elysia()
-	.onBeforeHandle(({ status }) => status("Unauthorized"))
-	.get('/profile', ({ status }) => status("Unauthorized"))
+	.onBeforeHandle(({ status }) => status('Unauthorized'))
+	.get('/profile', ({ status }) => status('Unauthorized'))
 
 const demo1 = new Elysia()
 	.use(profile1)
@@ -28,13 +28,13 @@ const demo1 = new Elysia()
 	.patch('/rename', () => 'Updated!')
 
 const profile2 = new Elysia()
-	.onBeforeHandle({ as: 'global' }, ({ status }) => status("Unauthorized"))
-	.get('/profile', ({ status }) => status("Unauthorized"))
+	.onBeforeHandle({ as: 'global' }, ({ status }) => status('Unauthorized'))
+	.get('/profile', ({ status }) => status('Unauthorized'))
 
 const demo2 = new Elysia()
 	.use(profile2)
 	// This will NOT have sign in check
-	.patch('/rename', ({ status }) => status("Unauthorized"))
+	.patch('/rename', ({ status }) => status('Unauthorized'))
 </script>
 
 # Key Concept <Badge type="danger" text="MUST READ" />
