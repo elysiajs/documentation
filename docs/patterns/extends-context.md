@@ -317,7 +317,7 @@ new Elysia()
     .derive(({ headers, status }) => {
         const auth = headers['authorization']
 
-        if(!auth) return status(400)
+        if(!auth) return status("Unauthorized")
 
         return {
             bearer: auth?.startsWith('Bearer ') ? auth.slice(7) : null
