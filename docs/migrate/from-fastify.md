@@ -555,7 +555,7 @@ Unlike Fastify which only accepts numeric status codes, Elysia also supports des
 ```ts
 // Both are equivalent in Elysia
 return status(401)
-return status("Unauthorized")
+return status('Unauthorized')
 ```
 
 String status names provide TypeScript autocompletion for all valid HTTP statuses, making your code more readable and less error-prone.

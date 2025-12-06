@@ -523,7 +523,7 @@ Like tRPC's string error codes (e.g., `"UNAUTHORIZED"`), Elysia supports both nu
 ```ts
 // Both are equivalent in Elysia
 return status(401)
-return status("Unauthorized")
+return status('Unauthorized')
 ```
 
 This gives you the readability of tRPC's string codes while staying compliant with HTTP standards. String status names also provide TypeScript autocompletion for all valid HTTP statuses.
