@@ -37,7 +37,7 @@ import { Elysia, t } from 'elysia'
 
 new Elysia()
 	.onBeforeHandle(({ query: { name }, status }) => { // [!code --]
-		if(!name) return status(401) // [!code --]
+		if(!name) return status("Unauthorized") // [!code --]
 	}) // [!code --]
 	.onBeforeHandle(({ query: { name } }) => { // [!code --]
 		console.log(name) // [!code --]
@@ -48,7 +48,7 @@ new Elysia()
 	.guard({ // [!code ++]
 		beforeHandle: [ // [!code ++]
 			({ query: { name }, status }) => { // [!code ++]
-				if(!name) return status(401) // [!code ++]
+				if(!name) return status("Unauthorized") // [!code ++]
 			}, // [!code ++]
 			({ query: { name } }) => { // [!code ++]
 				console.log(name) // [!code ++]
@@ -88,7 +88,7 @@ new Elysia()
 	.guard({
 		beforeHandle: [
 			({ query: { name }, status }) => {
-				if(!name) return status(401)
+				if(!name) return status("Unauthorized")
 			},
 			({ query: { name } }) => {
 				console.log(name)
@@ -139,7 +139,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
 	.onBeforeHandle(({ query: { name }, status }) => {
-		if(!name) return status(401)
+		if(!name) return status("Unauthorized")
 	})
 	.get('/auth', ({ query: { name = 'anon' } }) => {
 		return `Hello ${name}!`

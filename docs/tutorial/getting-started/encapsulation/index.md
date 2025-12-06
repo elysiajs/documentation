@@ -30,7 +30,7 @@ const profile1 = new Elysia()
 	.onBeforeHandle(
 		({ query: { name }, status }) => {
 			if(!name)
-				return status(401)
+				return status("Unauthorized")
 		}
 	)
 	.get('/profile', () => 'Hi!')
@@ -44,10 +44,10 @@ const profile2 = new Elysia()
 		{ as: 'global' },
 		({ query: { name }, status }) => {
 			if(!name)
-				return status(401)
+				return status("Unauthorized")
 		}
 	)
-	.get('/profile', ({ status }) => status(401))
+	.get('/profile', ({ status }) => status("Unauthorized"))
 
 const demo2 = new Elysia()
 	.use(profile2)
@@ -70,7 +70,7 @@ const profile = new Elysia()
 	.onBeforeHandle(
 		({ query: { name }, status }) => {
 			if(!name)
-				return status(401)
+				return status("Unauthorized")
 		}
 	)
 	.get('/profile', () => 'Hi!')
@@ -143,7 +143,7 @@ const user = new Elysia()
 			name: t.Optional(t.String())
 		}),
 		beforeHandle({ query: { age }, status }) {
-			if(age < 18) return status(403)
+			if(age < 18) return status("Forbidden")
 		}
 	})
 	.get('/profile', () => 'Hi!')
@@ -171,7 +171,7 @@ const nameCheck = new Elysia()
 	.onBeforeHandle(
 		{ as: 'scoped' }, // [!code ++]
 		({ query: { name }, status }) => {
-			if(!name) return status(401)
+			if(!name) return status("Unauthorized")
 		}
 	)
 
@@ -183,7 +183,7 @@ const ageCheck = new Elysia()
 			name: t.Optional(t.String())
 		}),
 		beforeHandle({ query: { age }, status }) {
-			if(age < 18) return status(403)
+			if(age < 18) return status("Forbidden")
 		}
 	})
 
