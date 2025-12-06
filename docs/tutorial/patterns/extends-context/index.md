@@ -161,7 +161,7 @@ new Elysia()
 		)
 	})
 	.resolve(({ query: { age }, status }) => {
-		if(!age) return status("Unauthorized")
+		if(!age) return status('Unauthorized')
 
 		return { age }
 	})

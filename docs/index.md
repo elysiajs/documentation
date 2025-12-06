@@ -112,7 +112,7 @@ const role = new Elysia({ name: 'macro' })
 		role: (type: 'user' | 'staff' | 'admin') => ({
 			beforeHandle({ headers, status }) {
 				if(headers.authorization !== type)
-					return status("Unauthorized")
+					return status('Unauthorized')
 			}
 		})
 	})
@@ -159,7 +159,7 @@ export const auth = new Elysia()
 			ssid: t.String()
 		}),
 		resolve({ cookie, status }) {
-			if(!cookie.ssid.value) return status("Unauthorized")
+			if(!cookie.ssid.value) return status('Unauthorized')
 
 			return {
 				user: cookie.ssid.value
@@ -189,7 +189,7 @@ export const auth = new Elysia()
 			ssid: t.String()
 		}),
 		resolve({ cookie, status }) {
-			if(!cookie.ssid.value) return status("Unauthorized")
+			if(!cookie.ssid.value) return status('Unauthorized')
 
 			return {
 				user: cookie.ssid.value
