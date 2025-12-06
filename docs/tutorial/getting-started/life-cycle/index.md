@@ -62,7 +62,7 @@ new Elysia()
 	.get('/2', () => 'Hello Elysia!')
 ```
 
-Here we use `status(418)` which is the "I'm a teapot" status code. You can also use the string name directly: `status("I'm a teapot")`. See <DocLink href="/tutorial/getting-started/status-and-headers">Status and Headers</DocLink> for more on using status codes.
+Here we use `status(418)` which is the "I'm a teapot" status code. You can also use the string name directly: `status('I\'m a teapot')`. See <DocLink href="/tutorial/getting-started/status-and-headers">Status and Headers</DocLink> for more on using status codes.
 
 When `beforeHandle` returns a value, it will skip the handler and return the value instead.
 
@@ -149,7 +149,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
 	.onBeforeHandle(({ query: { name }, status }) => {
-		if(!name) return status("Unauthorized")
+		if(!name) return status('Unauthorized')
 	})
 	.get('/auth', ({ query: { name = 'anon' } }) => {
 		return `Hello ${name}!`
