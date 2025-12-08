@@ -111,7 +111,7 @@ Elysia also supports an inline value for the response if you don't need to use t
 
 ## Handler
 
-Both Express and Elysia have a simliar property for accessing input parameters like `headers`, `query`, `params`, and `body`.
+Both Express and Elysia have a similar property for accessing input parameters like `headers`, `query`, `params`, and `body`.
 
 <Compare>
 
@@ -845,7 +845,7 @@ const app = new Elysia()
 
 While Express offers error handling using middleware, Elysia provides:
 
-1. Both global and route specific error handler
+1. Both global and route-specific error handler
 2. Shorthand for mapping HTTP status and `toResponse` for mapping error to a response
 3. Custom error code for each error
 
@@ -1150,7 +1150,7 @@ const app = new Elysia()
 
 </Compare>
 
-Elysia will generate an OpenAPI specification based on the schema you provided, and validate the request and response based on the schema, and infer types automatically.
+Based on the schema you provided, Elysia generates an OpenAPI specification, validates requests and responses, and infers types automatically.
 
 Elysia also appends the schema registered in `model` to the OpenAPI spec, allowing you to reference the model in a dedicated section in Swagger or Scalar UI.
 
