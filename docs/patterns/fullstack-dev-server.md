@@ -35,9 +35,15 @@ import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysiajs/static'
 
 new Elysia()
-	.use(staticPlugin())
+	.use(await staticPlugin()) // [!code ++]
 	.listen(3000)
 ```
+
+:::tip
+Notice that we need to add `await` before `staticPlugin()` to enable Fullstack Dev Server.
+
+This is required to setup the necessary HMR hooks.
+:::
 
 2. Create **public/index.html** and **index.tsx**
 
@@ -83,7 +89,17 @@ root.render(<App />)
 
 :::
 
-3. Navigate to `http://localhost:3000/public` and see the result.
+3. Enable JSX in tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+	"jsx": "react-jsx" // [!code ++]
+  }
+}
+```
+
+4. Navigate to `http://localhost:3000/public` and see the result.
 
 This would allows us to develop frontend and backend in a single project without any bundler.
 
@@ -99,7 +115,7 @@ import { staticPlugin } from '@elysiajs/static'
 
 new Elysia()
   	.use(
-  		staticPlugin({
+  		await staticPlugin({
   			prefix: '/' // [!code ++]
    		})
    )
@@ -193,10 +209,10 @@ We can also use path alias in Bun Fullstack Dev Server.
 ```json
 {
   "compilerOptions": {
-	"baseUrl": ".", // [!code +=]
-	"paths": { // [!code +=]
-	  "@public/*": ["public/*"] // [!code +=]
-	} // [!code +=]
+	"baseUrl": ".", // [!code ++]
+	"paths": { // [!code ++]
+	  "@public/*": ["public/*"] // [!code ++]
+	} // [!code ++]
   }
 }
 ```

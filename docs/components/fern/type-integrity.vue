@@ -93,7 +93,7 @@ const labels = [
     'Type Safety',
     'Enforce Input',
     'Recheck Output',
-    'Meta Programming'
+    'Extendability'
 ]
 
 watch(isInView, () => {
@@ -128,6 +128,9 @@ watch(form, (index) => {
 
 #type-integrity {
     @apply relative max-w-5xl w-full mx-auto mt-8 mb-12;
+    :is(& *) {
+    	corner-shape: round;
+    }
 
     & > .showcase {
         @apply flex flex-col justify-center relative mx-auto w-full h-[38rem] lg:rounded-3xl my-4 px-4 bg-center bg-no-repeat;

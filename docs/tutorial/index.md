@@ -25,7 +25,7 @@ import { Bookmark } from 'lucide-vue-next'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/at-glance">
 
 # Welcome to Elysia
 

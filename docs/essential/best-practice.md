@@ -147,36 +147,25 @@ Each file has its own responsibility as follows:
 Feel free to adapt this structure to your needs and use any coding pattern you prefer.
 
 ## Controller
+Due to type soundness of Elysia, it's not recommended to use a traditional controller class that is tightly coupled with Elysia's `Context` because:
+
+1. **Elysia type is complex** and heavily depends on plugin and multiple level of chaining.
+2. **Hard to type**, Elysia type could change at anytime, especially with decorators, and store
+3. **Loss of type integrity**, and inconsistency between types and runtime code.
+
+We recommended one of the following approach to implement a controller in Elysia.
+1. Use Elysia instance as a controller itself
+2. Create a controller that is not tied with HTTP request or Elysia.
+
+---
+
+### 1. Elysia instance as a controller
 > 1 Elysia instance = 1 controller
 
-Elysia does a lot to ensure type integrity, if you pass an entire `Context` type to a controller, these might be the problems:
+Treat an Elysia instance as a controller, and define your routes directly on the Elysia instance.
 
-1. Elysia type is complex and heavily depends on plugin and multiple level of chaining.
-2. Hard to type, Elysia type could change at anytime, especially with decorators, and store
-3. Type casting may lead to a loss of type integrity or an inability to ensure consistency between types and runtime code.
-4. This makes it more challenging for [Sucrose](/blog/elysia-10#sucrose) *(Elysia's "kind of" compiler)* to statically analyze your code
-
-### ❌ Don't: Create a separate controller
-Don't create a separate controller, use Elysia itself as a controller instead:
 ```typescript
-import { Elysia, t, type Context } from 'elysia'
-
-abstract class Controller {
-    static root(context: Context) {
-        return Service.doStuff(context.stuff)
-    }
-}
-
-// ❌ Don't
-new Elysia()
-    .get('/', Controller.hi)
-```
-
-By passing an entire `Controller.method` to Elysia is an equivalent of having 2 controllers passing data back and forth. It's against the design of framework and MVC pattern itself.
-
-### ✅ Do: Use Elysia as a controller
-Instead treat an Elysia instance as a controller itself instead.
-```typescript
+// ✅ Do
 import { Elysia } from 'elysia'
 import { Service } from './service'
 
@@ -186,7 +175,28 @@ new Elysia()
     })
 ```
 
-Otherwise, if you really want to separate the controller, you may create a controller class that is not tied with HTTP request at all.
+This approach allows Elysia to infer the `Context` type automatically, ensuring type integrity and consistency between types and runtime code.
+
+```typescript
+// ❌ Don't
+import { Elysia, t, type Context } from 'elysia'
+
+abstract class Controller {
+    static root(context: Context) {
+        return Service.doStuff(context.stuff)
+    }
+}
+
+new Elysia()
+    .get('/', Controller.root)
+```
+
+This approach makes it hard to type `Context` properly, and may lead to loss of type integrity.
+
+### 2. Controller without HTTP request
+If you want to create a controller class, we recommend creating a class that is not tied to HTTP request or Elysia at all.
+
+This approach allows you to decouple the controller from Elysia, making it easier to test, reuse, and even swap a framework while still follows the MVC pattern.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -201,8 +211,35 @@ new Elysia()
 	.get('/', ({ stuff }) => Controller.doStuff(stuff))
 ```
 
+Tying the controller to Elysia Context may lead to:
+1. Loss of type integrity
+2. Make it harder to test and reuse
+3. Lead to vendor lock-in
+
+We recommended to keep the controller decoupled from Elysia as much as possible.
+
+### ❌ Don't: Pass entire `Context` to a controller
+**Context is a highly dynamic type** that can be inferred from Elysia instance.
+
+Do not pass an entire `Context` to a controller, instead use object destructuring to extract what you need and pass it to the controller.
+
+```typescript
+import type { Context } from 'elysia'
+
+abstract class Controller {
+	constructor() {}
+
+	// ❌ Don't do this
+	static root(context: Context) {
+		return Service.doStuff(context.stuff)
+	}
+}
+```
+
+This approach makes it hard to type `Context` properly, and may lead to loss of type integrity.
+
 ### Testing
-You can test your controller using `handle` to directly call a function (and it's lifecycle)
+If you're using Elysia as a controller, you can test your controller using `handle` to directly call a function (and it's lifecycle)
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -239,7 +276,7 @@ There are 2 types of service in Elysia:
 1. Non-request dependent service
 2. Request dependent service
 
-### ✅ Do: Abstract away non-request dependent service
+### 1. Abstract away Non-request dependent service
 
 We recommend abstracting a service class/function away from Elysia.
 
@@ -267,7 +304,7 @@ new Elysia()
 
 If your service doesn't need to store a property, you may use `abstract class` and `static` instead to avoid allocating class instance.
 
-### ✅ Do: Request dependent service as Elysia instance
+### 2. Request dependent service as Elysia instance
 
 **If the service is a request-dependent service** or needs to process HTTP requests, we recommend abstracting it as an Elysia instance to ensure type integrity and inference:
 
@@ -317,7 +354,7 @@ new Elysia()
 	})
 ```
 
-### ❌ Don't: Pass entire `Context` to a service
+<!--### ❌ Don't: Pass entire `Context` to a service
 **Context is a highly dynamic type** that can be inferred from Elysia instance.
 
 Do not pass an entire `Context` to a service, instead use object destructuring to extract what you need and pass it to the service.
@@ -360,38 +397,18 @@ class AuthService {
 
 However we recommend to avoid this if possible, and use [Elysia as a service](#✅-do-use-elysia-as-a-controller) instead.
 
-You may find more about [InferContext](/essential/handler#infercontext) in [Essential: Handler](/essential/handler).
+You may find more about [InferContext](/essential/handler#infercontext) in [Essential: Handler](/essential/handler).-->
 
 ## Model
 Model or [DTO (Data Transfer Object)](https://en.wikipedia.org/wiki/Data_transfer_object) is handle by [Elysia.t (Validation)](/essential/validation.html#elysia-type).
 
 Elysia has a validation system built-in which can infers type from your code and validate it at runtime.
 
-### ❌ Don't: Declare a class instance as a model
-
-Do not declare a class instance as a model:
-```typescript
-// ❌ Don't
-class CustomBody {
-	username: string
-	password: string
-
-	constructor(username: string, password: string) {
-		this.username = username
-		this.password = password
-	}
-}
-
-// ❌ Don't
-interface ICustomBody {
-	username: string
-	password: string
-}
-```
-
 ### ✅ Do: Use Elysia's validation system
 
-Instead of declaring a class or interface, use Elysia's validation system to define a model:
+Elysia strength is prioritizing a single source of truth for both type and runtime validation.
+
+Instead of declaring an interface, reuse validation's model instead:
 ```typescript twoslash
 // ✅ Do
 import { Elysia, t } from 'elysia'
@@ -431,6 +448,28 @@ new Elysia()
 	}, {
 		body: customBody
 	})
+```
+
+### ❌ Don't: Declare a class instance as a model
+
+Do not declare a class instance as a model:
+```typescript
+// ❌ Don't
+class CustomBody {
+	username: string
+	password: string
+
+	constructor(username: string, password: string) {
+		this.username = username
+		this.password = password
+	}
+}
+
+// ❌ Don't
+interface ICustomBody {
+	username: string
+	password: string
+}
 ```
 
 ### ❌ Don't: Declare type separate from the model
@@ -489,19 +528,20 @@ const customBody = t.Object({
 
 const AuthModel = new Elysia()
     .model({
-        'auth.sign': customBody
+        sign: customBody
     })
 
 const models = AuthModel.models
 
 const UserController = new Elysia({ prefix: '/auth' })
     .use(AuthModel)
+    .prefix('model', 'auth.')
     .post('/sign-in', async ({ body, cookie: { session } }) => {
                              // ^?
 
         return true
     }, {
-        body: 'auth.sign'
+        body: 'auth.Sign'
     })
 ```
 
@@ -510,27 +550,3 @@ This approach provide several benefits:
 2. Modify schema for later usage, or perform a [remap](/essential/handler.html#remap).
 3. Show up as "models" in OpenAPI compliance client, eg. OpenAPI.
 4. Improve TypeScript inference speed as model type will be cached during registration.
-
-## Reuse a plugin
-
-It's ok to reuse plugins multiple time to provide type inference.
-
-Elysia handle plugin deduplication automatically by default, and the performance is negligible.
-
-To create a unique plugin, you may provide a **name** or optional **seed** to an Elysia instance.
-
-```typescript
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia({ name: 'my-plugin' })
-	.decorate("type", "plugin")
-
-const app = new Elysia()
-    .use(plugin)
-    .use(plugin)
-    .use(plugin)
-    .use(plugin)
-    .listen(3000)
-```
-
-This allows Elysia to improve performance by reusing the registered plugins instead of processing the plugin over and over again.

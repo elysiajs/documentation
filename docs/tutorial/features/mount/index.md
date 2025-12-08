@@ -27,7 +27,7 @@ import Playground from '../../../components/nearl/playground.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/patterns/mount">
 
 # Mount
 
@@ -50,10 +50,8 @@ This allows us to gradually migrate our application to Elysia, or use multiple f
 
 ## Assignment
 
-Let's use the preview to **GET '/openapi'**, and see how our API documentation looks like.
+Let's use the preview to **GET '/hono'** to see if our Hono route is working.
 
-This API documentation is reflected from your code.
-
-Try to modify the code and see how the documentation changes!
+Try to modify the code and see how it changes!
 
 </Editor>

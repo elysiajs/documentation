@@ -14,7 +14,11 @@ head:
       content: Elysia supports end-to-end type safety with Elysia Eden from the start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
 ---
 
-# End-to-End Type Safety
+<script setup lang="ts">
+import TutorialBadge from '../components/arona/badge.vue'
+</script>
+
+# End-to-End Type Safety <TutorialBadge href="/tutorial/features/end-to-end-type-safety" />
 Imagine you have a toy train set.
 
 Each piece of the train track has to fit perfectly with the next one, like puzzle pieces.

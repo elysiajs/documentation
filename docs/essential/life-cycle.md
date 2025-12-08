@@ -18,6 +18,7 @@ head:
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
 import Playground from '../components/nearl/playground.vue'
+import TutorialBadge from '../components/arona/badge.vue'
 
 import { Elysia } from 'elysia'
 
@@ -35,7 +36,7 @@ const demo = new Elysia()
 	})
 </script>
 
-# Lifecycle
+# Lifecycle <TutorialBadge href="/tutorial/getting-started/life-cycle" />
 
 Lifecycle events allow you to intercept important events at predefined points, allowing you to customize the behavior of your server as needed.
 

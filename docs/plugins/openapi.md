@@ -14,7 +14,11 @@ head:
         content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
 ---
 
-# OpenAPI Plugin
+<script setup lang="ts">
+import TutorialBadge from '../components/arona/badge.vue'
+</script>
+
+# OpenAPI Plugin <TutorialBadge href="/tutorial/features/openapi" />
 
 Plugin for [elysia](https://github.com/elysiajs/elysia) to auto-generate API documentation page.
 

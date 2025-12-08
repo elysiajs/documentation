@@ -2,6 +2,7 @@
     <header
         class="group relative isolate flex flex-col md:flex-row gap-8 w-full items-center max-w-5xl mx-auto px-4 py-6 md:p-12 md:pr-8 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 border-x-0 lg:border-x lg:rounded-[2.5rem] overflow-hidden"
         :class="props.class"
+        style="corner-shape: round;"
     >
     	<Ray v-if="props.ray" class="-top-36 h-full opacity-50 dark:opacity-85 pointer-none" />
         <div

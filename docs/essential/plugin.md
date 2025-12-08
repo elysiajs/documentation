@@ -16,6 +16,8 @@ head:
 
 <script setup>
 import Playground from '../components/nearl/playground.vue'
+import TutorialBadge from '../components/arona/badge.vue'
+
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
@@ -131,7 +133,7 @@ const scope2 = new Elysia()
 	.patch('/rename', ({ status }) => status(401))
 </script>
 
-# Plugin
+# Plugin <TutorialBadge href="/tutorial/getting-started/plugin" />
 
 Plugin is a pattern that decouples functionality into smaller parts. Creating reusable components for our web server.
 
@@ -155,37 +157,11 @@ We can use the plugin by passing an instance to **Elysia.use**.
 
 <Playground :elysia="demo1" />
 
-The plugin will inherit all properties of the plugin instance like `state`, `decorate` but **WILL NOT inherit  plugin lifecycle** as it's [isolated by default](#scope).
+The plugin will inherit all properties of the plugin instance like `state`, `decorate` but **WILL NOT inherit  plugin lifecycle** as it's [isolated by default](#scope) (mentioned in the next section ↓).
 
 Elysia will also handle the type inference automatically as well.
 
-## Plugin
-
-Every Elysia instance can be a plugin.
-
-We decouple our logic into a separate Elysia instance and reuse it across multiple instances.
-
-To create a plugin, simply define an instance in a separate file:
-```typescript twoslash
-// plugin.ts
-import { Elysia } from 'elysia'
-
-export const plugin = new Elysia()
-    .get('/plugin', () => 'hi')
-```
-
-And then we import the instance into the main file:
-```typescript
-import { Elysia } from 'elysia'
-import { plugin } from './plugin' // [!code ++]
-
-const app = new Elysia()
-    .use(plugin) // [!code ++]
-    .listen(3000)
-```
-
-
-## Scope
+## Scope <TutorialBadge href="/tutorial/getting-started/encapsulation" />
 
 Elysia lifecycle methods are **encapsulated** to its own instance only.
 
@@ -469,7 +445,7 @@ const main = new Elysia()
 
 <Playground :elysia="demo5" />
 
-## Guard
+## Guard <TutorialBadge href="/tutorial/getting-started/guard" />
 
 Guard allows us to apply hook and schema into multiple routes all at once.
 
@@ -607,7 +583,7 @@ To apply hook to parent may use one of the following:
 2. [guard as](#guard-as) apply to all hook in a guard
 3. [instance as](#instance-as) apply to all hook in an instance
 
-### Inline
+### Inline as
 Every event listener will accept `as` parameter to specify the scope of the hook.
 
 ```typescript twoslash

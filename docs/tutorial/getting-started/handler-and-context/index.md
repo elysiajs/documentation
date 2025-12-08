@@ -27,7 +27,7 @@ import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/handler#context">
 
 # Handler and Context
 

@@ -26,7 +26,7 @@ import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/validation">
 
 # Validation
 
@@ -121,7 +121,7 @@ See <DocLink href="/essential/validation#response">Response Validation</DocLink>
 
 ## Assignment
 
-Let's execrise what we have learned.
+Let's exercise what we have learned.
 
 <template #answer>
 

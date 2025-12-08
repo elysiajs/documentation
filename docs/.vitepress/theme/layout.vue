@@ -231,7 +231,7 @@ function toggleAIForCurrentPage() {
                 </button>
 
                 <div
-                    class="relative flex justify-center items-center gap-2.5 *:z-20 [&>a>svg]:size-4.5 sm:[&>a>svg]:size-5 [&>a>svg]:opacity-50 [&>a>svg]:interact:opacity-100 [&>a>svg]:transition-opacity"
+                    class="relative z-10 flex justify-center items-center gap-2.5 *:z-20 [&>a>svg]:size-4.5 sm:[&>a>svg]:size-5 [&>a>svg]:opacity-50 [&>a>svg]:interact:opacity-100 [&>a>svg]:transition-opacity"
                 >
                     Open in
                     <a
@@ -341,7 +341,7 @@ function toggleAIForCurrentPage() {
 
         <template #nav-bar-content-before>
             <button
-                class="clicky block lg:hidden size-10 ml-4 grid place-items-center text-cyan-400 dark:text-cyan-300 font-medium bg-cyan-300/10 dark:bg-cyan-300/5 rounded-xl"
+                class="clicky lg:hidden size-10 ml-4 grid place-items-center text-cyan-400 dark:text-cyan-300 font-medium bg-cyan-300/10 dark:bg-cyan-300/5 !rounded-lg backdrop-blur-md"
                 @click="toggleAIDesktop"
             >
                 <Sparkles :size="21" stroke-width="1.5" />

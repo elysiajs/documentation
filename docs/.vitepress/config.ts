@@ -51,10 +51,7 @@ export default defineConfig({
                 {
                     find: /^.*\/VPNavBarSearch\.vue$/,
                     replacement: fileURLToPath(
-                        new URL(
-                            './theme/navbar-search.vue',
-                            import.meta.url
-                        )
+                        new URL('./theme/navbar-search.vue', import.meta.url)
                     )
                 }
             ]
@@ -172,8 +169,16 @@ export default defineConfig({
         logo: '/assets/elysia.svg',
         nav: [
             {
+                text: 'Docs',
+                link: '/table-of-content'
+            },
+            {
                 text: 'Blog',
                 link: '/blog'
+            },
+            {
+                text: '4koma',
+                link: '/4koma'
             }
         ],
         sidebar: [
@@ -444,6 +449,10 @@ export default defineConfig({
                         link: '/integrations/cloudflare-worker'
                     },
                     {
+                        text: 'Deno',
+                        link: '/integrations/deno'
+                    },
+                    {
                         text: 'Drizzle',
                         link: '/integrations/drizzle'
                     },
@@ -452,8 +461,16 @@ export default defineConfig({
                         link: '/integrations/expo'
                     },
                     {
+                        text: 'Netlify',
+                        link: '/integrations/netlify'
+                    },
+                    {
                         text: 'Nextjs',
                         link: '/integrations/nextjs'
+                    },
+                    {
+                        text: 'Node.js',
+                        link: '/integrations/node'
                     },
                     {
                         text: 'Nuxt',

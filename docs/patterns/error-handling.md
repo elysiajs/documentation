@@ -16,6 +16,7 @@ head:
 
 <script setup>
 import { Elysia, t, ValidationError, validationDetail } from 'elysia'
+import TutorialBadge from '../components/arona/badge.vue'
 
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
@@ -66,7 +67,7 @@ const demo3 = new Elysia()
     })
 </script>
 
-# Error Handling
+# Error Handling <TutorialBadge href="/tutorial/patterns/error-handling" />
 
 This page provide a more advance guide for effectively handling errors with Elysia.
 
@@ -105,7 +106,7 @@ If the validation fails on the `id` field, the response will be return as `id mu
 	:elysia="demo2"
 />
 
-### Validation Detail
+### Validation Detail <TutorialBadge href="/tutorial/patterns/validation-error" />
 
 Returning as value from `schema.error` will return the validation as-is, but sometimes you may also want to return the validation details, such as the field name and the expected type
 
@@ -169,6 +170,8 @@ Elysia will only return that validation failed without any details.
 ```
 
 The `message` property is optional and is omitted by default unless you provide a custom error message in the schema.
+
+This can be overridden by setting `Elysia.allowUnsafeValidationDetails` to `true`, see [Elysia configuration](/patterns/configuration#allow-unsafe-validation-details) for more details.
 
 ## Custom Error
 

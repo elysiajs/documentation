@@ -14,11 +14,13 @@ head:
       content: Macro allows us to define a custom field to the hook.
 ---
 
-# Macro
-
 <script setup>
 import Tab from '../components/fern/tab.vue'
+import TutorialBadge from '../components/arona/badge.vue'
+
 </script>
+
+# Macro <TutorialBadge href="/tutorial/patterns/macro" />
 
 Macro is similar to a function that have a control over the lifecycle event, schema, context with full type safety.
 

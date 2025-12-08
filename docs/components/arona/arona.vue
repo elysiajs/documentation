@@ -516,6 +516,7 @@ const Pow = new ComlinkWorker<typeof import('./pow')>(
 )
 
 import useDark from '../../.vitepress/theme/use-dark'
+import { isParameter } from 'typescript'
 
 const model = defineModel<boolean>()
 const isDark = useDark()
@@ -735,6 +736,7 @@ function regenerate(index?: number) {
 function poweredBy() {
     router.go('/')
     _isExpanded.value = false
+    if (size.width.value < 640) model.value = false
 }
 
 function scrollToMessage(index: number) {
@@ -947,6 +949,7 @@ function reRouteLink(link: HTMLAnchorElement) {
 
         router.go(src)
         _isExpanded.value = false
+        if (size.width.value < 640) model.value = false
     })
 }
 

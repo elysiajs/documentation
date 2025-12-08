@@ -26,7 +26,7 @@ import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/plugin">
 
 # Plugin
 
@@ -77,7 +77,7 @@ Similar to the above example, we can use the `use` method to plug the `user` ins
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia()
+const user = new Elysia()
 	.get('/profile', 'User Profile')
 	.get('/settings', 'User Settings')
 

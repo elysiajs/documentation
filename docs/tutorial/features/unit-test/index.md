@@ -29,7 +29,7 @@ import Playground from '../../../components/nearl/playground.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/patterns/unit-test">
 
 # Unit Test
 

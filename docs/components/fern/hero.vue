@@ -1,5 +1,7 @@
 <template>
     <link rel="preload" as="image" href="/assets/elysia_v.webp" />
+    <link rel="preload" as="image" href="/assets/hero-overlay.svg" />
+
     <Ray
         class="h-[60vh] -top-16 pointer-events-none opacity-[.35] dark:opacity-50"
     />
@@ -7,8 +9,21 @@
         id="splash"
         class="pointer-events-none absolute top-[-70vh] max-w-full justify-center w-full h-screen opacity-15 block gradient"
     />
+    <div
+        class="absolute -top-16 left-0 w-full flex justify-center items-center h-screen object-center animate-pulse overflow-hidden"
+        style="animation-duration: 8s;"
+    >
+        <div
+            class="aspect-square h-full lg:h-auto lg:w-full !bg-right lg:!bg-center md:translate-x-0 lg:animate-spin opacity-90 dark:opacity-12.5"
+            style="
+                background: url('/assets/hero-overlay.svg') no-repeat center /
+                    1420px;
+                animation-duration: 900s;
+            "
+        />
+    </div>
     <header
-        class="relative flex w-full pt-6 md:pt-0 mb-16 md:mb-8 px-6 overflow-hidden transition-all"
+        class="z-10 relative flex w-full pt-6 md:pt-0 mb-16 md:mb-8 px-6 overflow-hidden transition-all"
         :class="
             kawaii
                 ? 'flex-col lg:flex-row justify-center items-around p-0 lg:px-0'
@@ -47,7 +62,7 @@
                 Ergonomic Framework <br v-if="kawaii" />
                 for
                 <a
-                	href="#"
+                    href="#"
                     role="button"
                     class="appearance-none rounded-lg interact:bg-violet-500/7.5 px-0.5 transition-colors duration-100 text-left"
                     @click="toggleKawaii"
@@ -126,12 +141,17 @@
                 class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left w-full max-w-2xl"
                 :class="kawaii ? '' : 'md:text-center'"
             >
-                TypeScript with
+                Backend TypeScript framework with
                 <span
                     class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"
                     >End-to-End Type Safety</span
-                >, type integrity, and exceptional developer experience.
-                Supercharged by Bun.
+                >, formidable speed, and exceptional developer experience.
+                <br />
+                <span
+                    class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400"
+                >
+                    Supercharged by Bun
+                </span>
             </h3>
             <section
                 class="flex flex-col sm:flex-row items-start sm:items-center w-full md:w-auto gap-4 mt-8 mb-12"
@@ -185,9 +205,7 @@
                     </p>
                 </div>
             </section>
-            <p
-                class="flex gap-2 text-gray-400 mr-auto sm:mx-auto"
-            >
+            <p class="flex gap-2 text-gray-400 mr-auto sm:mx-auto">
                 See why developers love Elysia
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
