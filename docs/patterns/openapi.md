@@ -182,6 +182,23 @@ openapi({
 		zod: z.toJSONSchema
 	}
 })
+
+// Zod Mapping Invalid types, dates & more
+openapi({
+	mapJsonSchema: {
+      zod: (schema: z.ZodType) => z.toJSONSchema(schema, {
+        io: 'output',
+        unrepresentable: 'any',
+        override: (ctx) => {
+          const def = ctx.zodSchema._zod.def
+          if (def.type === 'date') {
+            ctx.jsonSchema.type = 'string'
+            ctx.jsonSchema.format = 'date-time'
+          }
+        },
+      })
+    },
+})
 ```
 
 ```typescript [Zod 3]
