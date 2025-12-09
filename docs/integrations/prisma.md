@@ -24,7 +24,7 @@ It provides a way to define your database schema using a Prisma schema file, and
 
 We can use Prismabox to convert Prisma schema into Elysia validation models, which can then be used to ensure type validation in Elysia.
 
-### Here's how it works:
+### How it works:
 1. Define your database schema in Prisma Schema.
 2. Add `prismabox` generator to generate Elysia schema.
 3. Use the converted Elysia validation models to ensure type validation.
@@ -63,7 +63,7 @@ We can add a `prismabox` generator to the Prisma schema file as follows:
 
 ```ts [prisma/schema.prisma]
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
