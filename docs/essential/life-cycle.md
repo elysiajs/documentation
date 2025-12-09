@@ -707,7 +707,7 @@ const encoder = new TextEncoder()
 
 new Elysia()
     .mapResponse(({ responseValue, set }) => {
-        const isJson = typeof response === 'object'
+        const isJson = typeof responseValue === 'object'
 
         const text = isJson
             ? JSON.stringify(responseValue)
