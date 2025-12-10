@@ -39,20 +39,21 @@ head:
     shadow
 >
 
-Named after the song [Φ²](https://youtu.be/b9IkzWO63Fg) from album "At the Fingertip of the Sea" by HoyoMix as used in [**"You and Me"**](https://youtu.be/nz_Ra4G57A4).
+Named after the song [Φ²](https://youtu.be/b9IkzWO63Fg) from the album "At the Fingertip of the Sea" by HoyoMix as used in [**"You and Me"**](https://youtu.be/nz_Ra4G57A4).
 
-Elysia 1.2 focuses on commitment to expand universal runtime support and developer experience:
+Elysia 1.2 focuses on commitment to expand universal runtime support and improving developer experience:
 - [Adapter](#adapter)
 - [Macro with resolve](#macro-with-resolve)
 - [Parser](#parser)
 - [WebSocket](#websocket)
 - [Typebox 0.34](#typebox)
-- [Reduced Memory usage](#reduced-memory-usage)
+- [Reduced memory usage](#reduced-memory-usage)
 
 ## Adapter
+
 One of the most requested features is to support more runtimes.
 
-Elysia 1.2 introduces **adapter** to allow Elysia to run on different runtimes.
+Elysia 1.2 introduces **adapters** to allow Elysia to run on different runtimes.
 
 ```ts
 import { node } from '@elysiajs/node'
@@ -62,38 +63,39 @@ new Elysia({ adapter: node() })
 	.listen(3000)
 ```
 
-Elysia is designed to be run on Bun and will continue to have Bun as the primary runtime and prioritize feature on Bun first.
+Elysia is designed to run on Bun and will continue to have Bun as the primary runtime and prioritize features on Bun first.
 
-However, we are giving you more choice to try Elysia on different environment that fits your need, eg. serverless like AWS Lambda, Supabase Function, etc.
+However, we are giving you more choices to try Elysia on different environments that fit your needs, e.g., serverless like AWS Lambda, Supabase Functions, etc.
 
-The goal of Elysia's adapter is to provide a consistent API across different runtime while maintaining the best performance with the same code or with minimal changes for each runtime.
+The goal of Elysia's adapter is to provide a consistent API across different runtimes while maintaining the best performance with the same code or with minimal changes for each runtime.
 
 ### Performance
 
-Performance is one of Elysia's strength. We do not compromise on performance.
+Performance is one of Elysia's strengths. We do not compromise on performance.
 
-Instead of relying on a bridge to convert Web Standard's request to Node Request/Response. Elysia use the native Node API directly to achieve the best performance while providing Web Standard compatibility if needed.
+Instead of relying on a bridge to convert Web Standard requests to Node Request/Response, Elysia uses the native Node API directly to achieve the best performance while providing Web Standard compatibility if needed.
 
-By utilizing Sucrose static code analysis, it allows Elysia to be faster than most Web-Standard frameworks like Hono, h3, and even native Node framework like Fastify, Express.
+By utilizing Sucrose static code analysis, Elysia can be faster than most Web-Standard frameworks like Hono, h3, and even native Node frameworks like Fastify and Express.
 
 ![Node Benchmark](/blog/elysia-12/node-benchmark.webp)
 
 <small>As usual, you may find the benchmark in [Bun HTTP framework benchmark](https://github.com/saltyaom/bun-http-framework-benchmark).</small>
 
-Elysia now has supports runtime adapter for:
+Elysia now supports runtime adapters for:
 - Bun
-- Web Standard (WinterCG) eg. Deno, Browser
+- Web Standard (WinterCG) e.g., Deno, Browser
 - Node <sup><small>(beta)</small></sup>
 
-Although Node adapter is still in beta, it has the most features you expected from returning Generator Stream to WebSocket. We recommended you to try it out.
+Although the Node adapter is still in beta, it has most of the features you would expect, from returning Generator Streams to WebSocket. We recommend you try it out.
 
 We will continue to expand support for more runtimes in the future starting with:
-- Cloudflare Worker
+- Cloudflare Workers
 - AWS Lambda
 - uWebSocket.js
 
 ### Universal runtime API
-To be compatible with different runtime, Elysia now wraps over a hand-picked utility function to provide a consistent API across different runtime.
+
+To be compatible with different runtimes, Elysia now wraps hand-picked utility functions to provide a consistent API across different runtimes.
 
 For example, in Bun you may use `Bun.file` to return a file response which is not available in Node.
 
@@ -106,14 +108,15 @@ new Elysia()
 	.get('/', () => file('./public/index.html')) // [!code ++]
 ```
 
-These utility functions are a replicated of Bun's utility function designed to be compatible with runtime that Elysia has supports for which will be expanded in the future.
+These utility functions are replications of Bun's utility functions designed to be compatible with runtimes that Elysia supports, which will be expanded in the future.
 
-Currently, Elysia has supports for:
+Currently, Elysia supports:
 - `file` - Return a file response
 - `form` - Return a formdata response
 - `server` - A port of Bun's `Server` type declaration
 
 ## Macro with resolve
+
 Starting with Elysia 1.2, you can now use `resolve` in macro.
 
 ```ts twoslash
@@ -133,9 +136,10 @@ new Elysia()
 	})
 ```
 
-With the new macro object syntax, instead of retriving lifecycle you can now return it instead to reduce boilerplate.
+With the new macro object syntax, instead of retrieving the lifecycle, you can now return it instead to reduce boilerplate.
 
 Here's a comparison between the old and new syntax:
+
 ```ts
 // ✅ Object Macro
 new Elysia()
@@ -158,15 +162,15 @@ new Elysia()
 	})
 ```
 
-Both syntax are supported but the new object syntax is recommended. We don't have plan to remove the previous syntax but we will focus on the new object syntax with new features.
+Both syntaxes are supported, but the new object syntax is recommended. We don't have plans to remove the previous syntax, but we will focus on the new object syntax for new features.
 
 ::: info
-Due to TypeScript limitation, macro's `resolve` only works with the new object syntax but not with previous one.
+Due to TypeScript limitations, macro's `resolve` only works with the new object syntax but not with the previous one.
 :::
 
-## Name Parser
+## Named Parser
 
-Elysia 1.2 introduce a parser with a custom name, allowing you to specify which parser should be used for decoding request body.
+Elysia 1.2 introduces a parser with a custom name, allowing you to specify which parser should be used for decoding the request body.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -198,10 +202,11 @@ new Elysia()
 	})
 ```
 
-Parsers will be call in order, if the parser does not return a value, it will move to the next parser until one of the parser returns a value.
+Parsers will be called in order. If a parser does not return a value, it will move to the next parser until one of the parsers returns a value.
 
 ## WebSocket
-We have rewrite WebSocket to be more performant and match the API and behavior with the latest Bun's WebSocket API while maintaining compatibility with each runtime.
+
+We have rewritten WebSocket to be more performant and match the API and behavior of the latest Bun WebSocket API while maintaining compatibility with each runtime.
 
 ```ts
 new Elysia()
@@ -211,12 +216,13 @@ new Elysia()
 	})
 ```
 
-WebSocket now has a more consistent API with HTTP route and has a similar lifecycle as HTTP route.
+WebSocket now has a more consistent API with HTTP routes and has a similar lifecycle to HTTP routes.
 
 ## TypeBox 0.34
-Elysia 1.2 now has support for TypeBox 0.34.
 
-With this update, Elysia now use TypeBox's `t.Module` to handle reference model to support circular recursive type.
+Elysia 1.2 now supports TypeBox 0.34.
+
+With this update, Elysia now uses TypeBox's `t.Module` to handle reference models to support circular recursive types.
 
 ```ts twoslash
 import { Elysia, t } from 'elysia'
@@ -233,24 +239,28 @@ new Elysia()
 	})
 ```
 
-## Reduced Memory usage
-We have refactor Sucrose's generated code for a swappable code generation process.
+## Reduced memory usage
 
-By refactoring for a better code duplication, router optimization, and unnecessary code removal.
+We have refactored Sucrose's generated code for a swappable code generation process.
 
-This allows Elysia to reuse code from several parts and reduce large portion of memory usage.
+By refactoring for better code deduplication, router optimization, and unnecessary code removal.
 
-For our project, by simply upgrading to Elysia 1.2, we seen up to 2x memory reduction from 1.1.
+This allows Elysia to reuse code from several parts and reduce a large portion of memory usage.
+
+For our project, by simply upgrading to Elysia 1.2, we have seen up to 2x memory reduction from 1.1.
 
 ![Memory comparison between 1.1 and 1.2](/blog/elysia-12/memory.webp)
 
-This memory optimization is scaled with the number of routes and the complexity of the route. So you may see reduced memory usage exponentially.
+This memory optimization scales with the number of routes and the complexity of the routes. So you may see reduced memory usage exponentially.
 
-## Notable update
-Below are some of the notable improvement that are made in Elysia 1.2.
+## Notable updates
+
+Below are some of the notable improvements that were made in Elysia 1.2.
 
 ### Eden validation error
-Eden also now automatically infers `422` status code if validation model is provided.
+
+Eden now automatically infers `422` status code if validation model is provided.
+
 ```ts
 import { treaty } from '@elysiajs/eden'
 import type { App } from './app'
@@ -273,26 +283,32 @@ if(error)
 ```
 
 ### Router
+
 We have updated route registration deduplication to be more optimized.
 
-Previously Elysia will check all of the possible route to prevent route deduplication. Now Elysia use a checksum hash map to check if the route is already registered and merged routing and code generation process loop for static route registration to improve performance.
+Previously, Elysia would check all possible routes to prevent route deduplication.
+
+Now Elysia uses a checksum hash map to check if the route is already registered and merges the routing and code generation process loop for static route registration to improve performance.
 
 ### Changes
-- Event Listener now infers path parameter automatically based on scope
-- Add ‘scoped’ to bulk `as` for casting type to ‘scoped’ similar to ‘plugin’
+
+- Event Listener now infers path parameters automatically based on scope
+- Add 'scoped' to bulk `as` for casting type to 'scoped' similar to 'plugin'
 - Update `cookie` to 1.0.1
 - Update TypeBox to 0.33
-- `content-length` now accept number
-- use 16-degit hexadecimals for `id` in `trace`
-- disable `minify` in production build for better debugging/error reporting
+- `content-length` now accepts numbers
+- Use 16-digit hexadecimals for `id` in `trace`
+- Disable `minify` in production build for better debugging/error reporting
 
-## Breaking Change
-There should be minor required changes to your codebase to adapt to upgrade to Elysia 1.2.
+## Breaking changes
+
+There should be minor required changes to your codebase to adapt to upgrading to Elysia 1.2.
 
 However, these are all the changes that you need to be aware of.
 
 ### parse
-`type` is now merged with `parse` to allow control over order of custom and built-in parser.
+
+`type` is now merged with `parse` to allow control over the order of custom and built-in parsers.
 
 ```ts
 import { Elysia, form, file } from 'elysia'
@@ -304,8 +320,9 @@ new Elysia()
 	})
 ```
 
-### formdata
-Starting from 1.2, you now have to explicitly return `form` if the response is a formdata instead of automatically detect if file is present in 1-level deep object.
+### FormData
+
+Starting from 1.2, you now have to explicitly return `form` if the response is FormData instead of automatically detecting if a File is present in a 1-level deep object.
 
 ```ts
 import { Elysia, form, file } from 'elysia'
@@ -318,11 +335,12 @@ new Elysia()
 ```
 
 ### WebSocket
-WebSocket method now return thier respective value instead of returning `WebSocket`.
 
-Thus removing the ability to do method chaining.
+WebSocket methods now return their respective values instead of returning `WebSocket`.
 
-This is to make WebSocket match the same API with Bun's WebSocket API for better compatibility and migration.
+This removes the ability to do method chaining.
+
+This is to make WebSocket match the same API as Bun's WebSocket API for better compatibility and migration.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -341,7 +359,8 @@ new Elysia()
 ```
 
 ### scoped
-Elysia now removed the `constructor scoped` as it might be confused with `scope's scoped/global`
+
+Elysia has now removed the `constructor scoped` as it might be confused with `scope's scoped/global`.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -355,34 +374,35 @@ const main = new Elysia() // [!code ++]
 ```
 
 ### Internal breaking changes
+
 - Remove router internal property static.http.staticHandlers
-- Router history compile now link with history composed
+- Router history compile now links with history composed
 
 ## Afterword
 
 Elysia 1.2 is an ambitious update that we have been working on for a while.
 
-A gambit to expand Elysia's reach to more developer and more runtime but there are something else I want to say as well.
+A gambit to expand Elysia's reach to more developers and more runtimes, but there is something else I want to say as well.
 
 ### Let's start this again.
 
 Hi, how are you? I hope you are doing well.
 
-I still love doing this, writing blog post about Elysia. It's has been a while since then.
+I still love doing this, writing blog posts about Elysia. It has been a while since then.
 
-You may noticed that it has been a while since the last update, and it's not a long one. I'm sorry for that.
+You may have noticed that it has been a while since the last update, and it's not a long one. I'm sorry for that.
 
-I hope you understand that we also have our own life to take care of. We are not a robot, we are human. Sometime about life, sometime about work, sometime about family, sometime financially.
+I hope you understand that we also have our own lives to take care of. We are not robots, we are human. Sometimes it's about life, sometimes about work, sometimes about family, sometimes about finances.
 
 ### I want to be with you all the time.
 
-Doing what I love, keep updating Elysia, keep writing blog post, keep making art but you know that I have something to take care of too.
+Doing what I love–keeping Elysia updated, writing blog posts, making art–but you know that I have something to take care of too.
 
-I have to bring food to table, I have take care of a lot of things financially. I have to take care of myself too.
+I have to bring food to the table, I have to take care of a lot of things financially. I have to take care of myself too.
 
 I hope you are doing well, I hope you are happy, I hope you are healthy, I hope you are safe.
 
-Even if I'm not here. A part of me known as Elysia will be with you.
+Even if I'm not here, a part of me known as Elysia will be with you.
 
 Thanks for being with me.
 
