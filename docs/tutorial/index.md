@@ -31,7 +31,7 @@ import { code, testcases } from './data'
 
 It's great to have you here! This playground is will help you get started with Elysia interactively.
 
-Unlike traditional backend framework, **Elysia can also run in a browser** as well! Although it doesn't support all features, it's a perfect environment for learning and experimentation.
+Unlike traditional backend frameworks, **Elysia can run in a browser**! Although it doesn't support all features, it's a perfect environment for learning and experimentation.
 
 You can check out the API docs by clicking <Bookmark class="inline" :size="18" stroke-width="2" /> on the left sidebar.
 
