@@ -70,10 +70,10 @@ You don't need a `nodejs_compat` flag as Elysia doesn't use any Node.js built-in
 ## Limitations
 Here are some known limitations of using Elysia on Cloudflare Worker:
 
-1. `Elysia.file`, and [Static Plugin](/plugins/static) doesn't work [due to the lack of `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis)
+1. `Elysia.file`, and [Static Plugin](/plugins/static) doesn't work [due to the lack of `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis), see [static file](#static-file) section for alternative
 2. [OpenAPI Type Gen](/blog/openapi-type-gen) doesn't work [due to the lack of `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis)
-3. You can't define [**Response** before server start](https://x.com/saltyAom/status/1966602691754553832), or use plugin that does so
-4. You can't inline a value
+3. You can't define [**Response** before server start](https://x.com/saltyAom/status/1966602691754553832) or use plugin that does so
+4. You can't inline a value due to 3.
 
 ```typescript
 import { Elysia } from 'elysia'
