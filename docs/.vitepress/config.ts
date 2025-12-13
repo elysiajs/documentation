@@ -36,6 +36,9 @@ export default defineConfig({
             md.use(lightbox, {})
         }
     },
+    buildEnd() {
+        process.exit(0)
+    },
     vite: {
         clearScreen: false,
         server: {
