@@ -41,7 +41,7 @@ export const POST = app.fetch // [!code ++]
 
 :::
 
-Elysia will work normally as expected because of WinterCG compliance.
+Elysia will work normally because of WinterTC compliance.
 
 You can treat the Elysia server as a normal Next.js API route.
 
@@ -58,7 +58,7 @@ For example, if you place Elysia server in **app/user/[[...slugs]]/route.ts**, y
 ```typescript [app/user/[[...slugs]]/route.ts]
 import { Elysia, t } from 'elysia'
 
-export default new Elysia({ prefix: '/user' }) // [!code ++]
+const app = new Elysia({ prefix: '/user' }) // [!code ++]
 	.get('/', 'Hello Nextjs')
     .post('/', ({ body }) => body, {
         body: t.Object({
@@ -78,14 +78,20 @@ This will ensure that Elysia routing will work properly in any location you plac
 
 We can add [Eden](/eden/overview) for **end-to-end type safety** similar to tRPC.
 
-1. Export `type` from the Elysia server
+In this approach, we will use isomorphic fetch pattern to allow Elysia to:
+1. On Server: directly calls Elysia without going through the network layer
+2. On Client: calls Elysia through the network layer
+
+To start, we need to do the following steps:
+
+1. Export Elysia instance
 
 ::: code-group
 
 ```typescript [app/api/[[...slugs]]/route.ts]
 import { Elysia } from 'elysia'
 
-const app = new Elysia({ prefix: '/api' })
+export const app = new Elysia({ prefix: '/api' }) // [!code ++]
 	.get('/', 'Hello Nextjs')
 	.post(
 		'/user',
@@ -97,15 +103,13 @@ const app = new Elysia({ prefix: '/api' })
 		}
 	)
 
-export type app = typeof app // [!code ++]
-
 export const GET = app.fetch
 export const POST = app.fetch
 ```
 
 :::
 
-2. Create a Treaty client
+2. Create a Treaty client with isomorphic approach
 
 ::: code-group
 
@@ -113,8 +117,11 @@ export const POST = app.fetch
 import { treaty } from '@elysiajs/eden'
 import type { app } from '../app/api/[[...slugs]]/route'
 
-// this require .api to enter /api prefix
-export const api = treaty<app>('localhost:3000').api
+// .api to enter /api prefix
+export const api =
+  typeof process !== "undefined"
+    ? treaty(app).api
+    : treaty<typeof app>("localhost:3000").api;
 ```
 
 :::
@@ -134,5 +141,7 @@ export default async function Page() {
 ```
 
 :::
+
+This allows you to have type safety from the frontend to the backend with minimal effort and works with both server, client components and with Incremental Static Regeneration (ISR).
 
 Please refer to [Next.js Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
