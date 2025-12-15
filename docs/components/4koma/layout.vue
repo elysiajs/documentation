@@ -100,6 +100,11 @@ import Panel from './panel.vue'
 import Preview from './preview.vue'
 
 const preview = [
+ 	{
+        title: 'Elysia chan rev.2',
+        description: 'Redesign of Elysia chan 2nd revision, full CG.',
+        src: '/assets/elysia-chan-rev-2.webp'
+    },
     {
         title: 'Elysia chan',
         description: 'Original illustration of Elysia chan.',

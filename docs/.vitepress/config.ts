@@ -116,7 +116,7 @@ export default defineConfig({
             'meta',
             {
                 property: 'og:image',
-                content: 'https://elysiajs.com/assets/cover_2k.jpg'
+                content: 'https://elysiajs.com/assets/cover.webp'
             }
         ],
         [
@@ -144,7 +144,7 @@ export default defineConfig({
             'meta',
             {
                 property: 'twitter:image',
-                content: 'https://elysiajs.com/assets/cover_2k.jpg'
+                content: 'https://elysiajs.com/assets/cover.webp'
             }
         ],
         [

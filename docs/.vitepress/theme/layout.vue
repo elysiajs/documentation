@@ -322,7 +322,7 @@ function toggleAIForCurrentPage() {
                         :src="sponsor.sponsorEntity.avatarUrl"
                         :alt="sponsor.sponsorEntity.login"
                         :class="`aspect-square rounded-lg opacity-70 hover:opacity-100 focus:opacity-100 transition-opacity`"
-                        style="object-position: 0 10%"
+                        style="object-position: 0 6.25%"
                     />
                 </a>
             </aside>
@@ -334,7 +334,7 @@ function toggleAIForCurrentPage() {
                 <img
                     src="/assets/elysia-chan-card.webp"
                     class="aspect-video rounded-lg object-top object-cover"
-                    style="object-position: 0 10%"
+                    style="object-position: 0 6.25%"
                 />
             </button>
         </template>
