@@ -14,6 +14,10 @@ head:
         content: Elysia is a pattern agnostic framework, we leave the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handle types. This page is a guide to use Elysia with MVC pattern.
 ---
 
+<script setup>
+import Tab from '../components/fern/tab.vue'
+</script>
+
 # Best Practice
 
 Elysia is a pattern-agnostic framework, leaving the decision of which coding patterns to use up to you and your team.
@@ -85,10 +89,9 @@ import { status } from 'elysia'
 
 import type { AuthModel } from './model'
 
-// If the class doesn't need to store a property,
-// you may use `abstract class` to avoid class allocation
-export abstract class Auth {
-	static async signIn({ username, password }: AuthModel.signInBody) {
+// Group related functions - see Service section for alternative patterns
+export const Auth = {
+	async signIn({ username, password }: AuthModel.signInBody) {
 		const user = await sql`
 			SELECT password
 			FROM users
@@ -211,6 +214,10 @@ new Elysia()
 	.get('/', ({ stuff }) => Controller.doStuff(stuff))
 ```
 
+::: tip
+This example uses an abstract class, but you can also use plain objects, module exports, or namespaces. See [Service patterns](#1-abstract-away-non-request-dependent-service) for alternatives.
+:::
+
 Tying the controller to Elysia Context may lead to:
 1. Loss of type integrity
 2. Make it harder to test and reuse
@@ -280,16 +287,24 @@ There are 2 types of service in Elysia:
 
 We recommend abstracting a service class/function away from Elysia.
 
-If the service or function isn't tied to an HTTP request or doesn't access a `Context`, it's recommended to implement it as a static class or function.
+If the service or function isn't tied to an HTTP request or doesn't access a `Context`, you can group related functions using several patterns depending on your preference:
+
+<Tab
+	id="service-pattern"
+	:names="['Plain Object', 'Module Exports', 'Namespace', 'Abstract Class']"
+	:tabs="['object', 'module', 'namespace', 'class']"
+>
+
+<template v-slot:object>
+
+The simplest approach is using a plain object. This is idiomatic JavaScript and easy to understand:
 
 ```typescript
 import { Elysia, t } from 'elysia'
 
-abstract class Service {
-    static fibo(number: number): number {
-        if(number < 2)
-            return number
-
+const Service = {
+    fibo(number: number): number {
+        if (number < 2) return number
         return Service.fibo(number - 1) + Service.fibo(number - 2)
     }
 }
@@ -302,7 +317,86 @@ new Elysia()
     })
 ```
 
-If your service doesn't need to store a property, you may use `abstract class` and `static` instead to avoid allocating class instance.
+</template>
+
+<template v-slot:module>
+
+Export functions directly from a module and import with `* as`. This is the most ES module-native approach and enables tree-shaking:
+
+```typescript
+// service.ts
+export function fibo(number: number): number {
+    if (number < 2) return number
+    return fibo(number - 1) + fibo(number - 2)
+}
+```
+
+```typescript
+// index.ts
+import { Elysia, t } from 'elysia'
+import * as Service from './service'
+
+new Elysia()
+    .get('/fibo', ({ body }) => {
+        return Service.fibo(body)
+    }, {
+        body: t.Numeric()
+    })
+```
+
+</template>
+
+<template v-slot:namespace>
+
+TypeScript namespaces can hold both values and types with the same name, which is useful if you want to co-locate types with your service:
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+namespace Service {
+    export function fibo(number: number): number {
+        if (number < 2) return number
+        return Service.fibo(number - 1) + Service.fibo(number - 2)
+    }
+}
+
+new Elysia()
+    .get('/fibo', ({ body }) => {
+        return Service.fibo(body)
+    }, {
+        body: t.Numeric()
+    })
+```
+
+</template>
+
+<template v-slot:class>
+
+If you're coming from Java or C#, you may prefer using an abstract class with static methods:
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+abstract class Service {
+    static fibo(number: number): number {
+        if (number < 2) return number
+        return Service.fibo(number - 1) + Service.fibo(number - 2)
+    }
+}
+
+new Elysia()
+    .get('/fibo', ({ body }) => {
+        return Service.fibo(body)
+    }, {
+        body: t.Numeric()
+    })
+```
+
+</template>
+
+</Tab>
+
+All four patterns produce the same runtime behavior. Choose based on your team's familiarity and whether you need to co-locate types.
 
 ### 2. Request dependent service as Elysia instance
 
