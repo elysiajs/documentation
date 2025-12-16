@@ -230,7 +230,7 @@
         >
 	        <img
 	            src="/assets/elysia-chan-rev-2-preview.webp"
-         		class="w-full md:scale-120 md:-translate-x-[10%] object-contain md:object-cover select-none pointer-events-none"
+         		class="w-full md:scale-105 md:-translate-x-[10%] object-contain md:object-cover select-none pointer-events-none"
          		style="object-position: 50% 2vh;"
 	        />
 
