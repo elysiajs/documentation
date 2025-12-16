@@ -517,6 +517,18 @@ const app = new Elysia()
 
 While tRPC has a `next` function to call the next middleware in the queue, Elysia use specific event interceptor for each point in the request pipeline.
 
+::: tip
+Like tRPC's string error codes (e.g., `"UNAUTHORIZED"`), Elysia supports both numeric and string status names:
+
+```ts
+// Both are equivalent in Elysia
+return status(401)
+return status('Unauthorized')
+```
+
+This gives you the readability of tRPC's string codes while staying compliant with HTTP standards. String status names also provide TypeScript autocompletion for all valid HTTP statuses.
+:::
+
 ## Sounds type safety
 Elysia is designed to be sounds type safety.
 
