@@ -255,7 +255,7 @@ Assume that our monorepo are using Turborepo with structure as follows:
 
 Then we can build our Dockerfile on monorepo root (not app root):
 ```bash
-docker build -t elysia-mono .
+docker build -f apps/server/Dockerfile -t elysia-mono .
 ```
 
 With Dockerfile as follows:
