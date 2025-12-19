@@ -47,7 +47,7 @@ export default () => new Elysia() // [!code ++]
 ```vue
 <template>
     <div>
-        <p>{{ data.message }}</p>
+        <p>{{ data?.message }}</p>
     </div>
 </template>
 <script setup lang="ts">
