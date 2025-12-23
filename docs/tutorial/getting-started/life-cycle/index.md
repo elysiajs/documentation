@@ -147,7 +147,7 @@ import { Elysia } from 'elysia'
 
 new Elysia()
 	.onBeforeHandle(({ query: { name }, status }) => {
-		if(!name) return status(401)
+		if(!name) return status('Unauthorized')
 	})
 	.get('/auth', ({ query: { name = 'anon' } }) => {
 		return `Hello ${name}!`
