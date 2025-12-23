@@ -227,7 +227,7 @@ function toggleAIForCurrentPage() {
                     class="flex items-center gap-1 clicky pl-2 pr-1 py-1 -translate-x-2 rounded-full interact:text-sky-500 interact:bg-sky-300/15 transition duration-500 ease-out-expo"
                 >
                     <Sparkles :size="16" stroke-width="1.25" />
-                    Ask Elysia <sup>(AI)</sup>
+                    Ask about this page
                 </button>
 
                 <div
