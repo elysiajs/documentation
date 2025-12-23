@@ -47,6 +47,12 @@ You can treat the Elysia server as a normal Next.js API route.
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](/eden/overview) with both client-side and server action
 
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
+
 ## Prefix
 
 Because our Elysia server is not in the root directory of the app router, you need to annotate the prefix to the Elysia server.

@@ -67,6 +67,12 @@ This should start a development server at `http://localhost:8787`
 
 You don't need a `nodejs_compat` flag as Elysia doesn't use any Node.js built-in modules (or the ones we use don't support Cloudflare Worker yet).
 
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
+
 ## Limitations
 Here are some known limitations of using Elysia on Cloudflare Worker:
 

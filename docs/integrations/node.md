@@ -111,3 +111,9 @@ Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `t
 ```
 
 This will give the hot reload, JSX support to run Elysia with the similar experience as `bun dev`
+
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```

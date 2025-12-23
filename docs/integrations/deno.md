@@ -43,3 +43,9 @@ You can specify the port number in `Deno.serve`.
 Deno.serve(app.fetch) // [!code --]
 Deno.serve({ port:8787 }, app.fetch) // [!code ++]
 ```
+
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
