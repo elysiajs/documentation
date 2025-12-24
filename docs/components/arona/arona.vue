@@ -72,7 +72,11 @@
                 >
                     <div class="relative isolate flex flex-col w-full h-full">
                         <Ray
-                            class="h-66 !z-10 opacity-20 pointer-events-none"
+                            class="h-66 !z-11 opacity-20 pointer-events-none"
+                        />
+
+                        <div
+                            class="absolute top-0 z-10 left-0 w-full h-24 bg-gradient-to-b from-white/95 dark:from-gray-900/95 to-transparent pointer-events-none"
                         />
 
                         <h3
@@ -410,10 +414,10 @@
                                 @keydown="handleShortcut"
                                 data-gramm="false"
                             />
-                            <div class="flex items-end gap-0.5 w-full px-1.5 pt-1 pb-1.5">
-                                <Tooltip
-                                    tip="Use this page as reference"
-                                >
+                            <div
+                                class="flex items-end gap-0.5 w-full px-1.5 pt-1 pb-1.5"
+                            >
+                                <Tooltip tip="Use this page as reference">
                                     <label
                                         class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-9 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
                                         :class="{
@@ -446,7 +450,10 @@
                                         }"
                                         for="elysia-ai-think-harder"
                                     >
-                                        <Lightbulb stroke-width="1.25" :size="21" />
+                                        <Lightbulb
+                                            stroke-width="1.25"
+                                            :size="21"
+                                        />
                                         <input
                                             id="elysia-ai-think-harder"
                                             type="checkbox"
@@ -1113,12 +1120,12 @@ onUnmounted(() => {
         background-image:
             radial-gradient(
                 closest-side at center,
-                oklch(27.8% 0.033 256.848 / .7) 70%,
+                oklch(27.8% 0.033 256.848 / 0.7) 70%,
                 transparent 150%
             ),
             radial-gradient(
                 closest-side at center,
-                oklch(27.8% 0.033 256.848 / .7) 90%,
+                oklch(27.8% 0.033 256.848 / 0.7) 90%,
                 transparent 150%
             ),
             radial-gradient(
