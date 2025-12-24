@@ -146,7 +146,7 @@
 
                         <article
                             id="elysia-chat-content"
-                            class="relative flex items-start flex-col w-full h-full pt-15 pb-15 px-2 text-base overflow-x-hidden overflow-y-scroll"
+                            class="relative flex items-start flex-col w-full h-full pt-15 pb-23 px-2 text-base overflow-x-hidden overflow-y-scroll"
                             ref="chatbox"
                         >
                             <AnimatePresence>
