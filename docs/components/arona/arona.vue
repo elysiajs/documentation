@@ -49,7 +49,7 @@
                 </div>
 
                 <motion.section
-                    class="h-[calc(100dvh-4rem)] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden"
+                    class="h-[calc(100dvh-4rem)] bg-white/20 dark:bg-gray-900 border-t border-l dark:border-gray-700 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
                     :initial="{ opacity: 0, y: 32, scale: 0.95 }"
                     :animate="{
                         opacity: 1,
@@ -76,7 +76,7 @@
                         />
 
                         <h3
-                            class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 bg-white/80 dark:bg-gray-800/50 rounded-full backdrop-blur-sm"
+                            class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 rounded-full"
                         >
                             <button
                                 class="clicky flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300 ease-out-expo"
@@ -107,32 +107,8 @@
                         </h3>
 
                         <section
-                            class="absolute isolate z-20 top-2 right-2 flex p-0.5 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-full"
+                            class="absolute isolate z-20 top-2 right-2 flex p-0.5 rounded-full"
                         >
-                            <Tooltip
-                                tip="Use current page as primary reference"
-                            >
-                                <label
-                                    class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
-                                    :class="{
-                                        'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
-                                            includeCurrentPage,
-                                        'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
-                                            !includeCurrentPage
-                                    }"
-                                    aria-keyshortcuts="Escape"
-                                    for="elysia-ai-include-current-page"
-                                >
-                                    <Book stroke-width="1.25" />
-                                    <input
-                                        id="elysia-ai-include-current-page"
-                                        type="checkbox"
-                                        class="absolute w-0 h-0 opacity-0 pointer-events-none"
-                                        v-model="includeCurrentPage"
-                                    />
-                                </label>
-                            </Tooltip>
-
                             <Tooltip
                                 :tip="
                                     isExpanded
@@ -421,7 +397,7 @@
                         />
 
                         <form
-                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex items-center min-h-11 pr-1.25 bg-gray-200/50 dark:bg-gray-700/50 backdrop-blur-sm rounded-3xl"
+                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex flex-col min-h-11 bg-white/95 border-r border-b dark:border-gray-600 dark:bg-gray-700/95 rounded-3xl"
                             @submit.prevent="ask()"
                         >
                             <textarea
@@ -429,33 +405,85 @@
                                 ref="textarea"
                                 v-model="question"
                                 placeholder="What's on your mind"
-                                class="w-full h-inherit px-4 py-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                                class="w-full h-inherit px-4 pt-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                 autofocus
                                 @keydown="handleShortcut"
                                 data-gramm="false"
                             />
-                            <button
-                                class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-50 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
-                                :disabled="!token || !powToken"
-                                :title="
-                                    isStreaming
-                                        ? 'Elysia chan is thinking...'
-                                        : token === null || powToken === null
-                                          ? 'Verification failed, please refresh the page.'
-                                          : token === undefined ||
-                                              powToken === undefined
-                                            ? 'Verifying that you are a human...'
-                                            : 'Send message (Cmd/Ctrl + Enter)'
-                                "
-                                @click="cancelRequest()"
-                            >
-                                <Square
-                                    v-if="isStreaming"
-                                    :size="21"
-                                    stroke-width="1.5"
-                                />
-                                <Send v-else :size="21" stroke-width="1.5" />
-                            </button>
+                            <div class="flex items-end gap-0.5 w-full px-1.5 pt-1 pb-1.5">
+                                <Tooltip
+                                    tip="Use this page as reference"
+                                >
+                                    <label
+                                        class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-9 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
+                                        :class="{
+                                            'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
+                                                includeCurrentPage,
+                                            'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
+                                                !includeCurrentPage
+                                        }"
+                                        for="elysia-ai-include-current-page"
+                                    >
+                                        <Book stroke-width="1.25" :size="21" />
+                                        <input
+                                            id="elysia-ai-include-current-page"
+                                            type="checkbox"
+                                            class="absolute w-0 h-0 opacity-0 pointer-events-none"
+                                            v-model="includeCurrentPage"
+                                        />
+                                    </label>
+                                </Tooltip>
+                                <Tooltip
+                                    tip="Think harder for more accurate answers (slower answer)"
+                                >
+                                    <label
+                                        class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-9 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
+                                        :class="{
+                                            'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
+                                                thinkHarder,
+                                            'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
+                                                !thinkHarder
+                                        }"
+                                        for="elysia-ai-think-harder"
+                                    >
+                                        <Lightbulb stroke-width="1.25" :size="21" />
+                                        <input
+                                            id="elysia-ai-think-harder"
+                                            type="checkbox"
+                                            class="absolute w-0 h-0 opacity-0 pointer-events-none"
+                                            v-model="thinkHarder"
+                                        />
+                                    </label>
+                                </Tooltip>
+
+                                <button
+                                    class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-50 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all ml-auto"
+                                    :disabled="!token || !powToken"
+                                    :title="
+                                        isStreaming
+                                            ? 'Elysia chan is thinking...'
+                                            : token === null ||
+                                                powToken === null
+                                              ? 'Verification failed, please refresh the page.'
+                                              : token === undefined ||
+                                                  powToken === undefined
+                                                ? 'Verifying that you are a human...'
+                                                : 'Send message (Cmd/Ctrl + Enter)'
+                                    "
+                                    @click="cancelRequest()"
+                                >
+                                    <Square
+                                        v-if="isStreaming"
+                                        :size="21"
+                                        stroke-width="1.5"
+                                    />
+                                    <Send
+                                        v-else
+                                        :size="21"
+                                        stroke-width="1.5"
+                                    />
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </motion.section>
@@ -506,7 +534,8 @@ import {
     Loader,
     ThumbsUp,
     ThumbsDown,
-    ArrowUp
+    ArrowUp,
+    Lightbulb
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
 import { retry } from './retry'
@@ -542,6 +571,7 @@ const questions = ref<string[]>([
 ])
 
 const includeCurrentPage = ref(false)
+const thinkHarder = ref(false)
 const history = ref<History[]>([])
 const isStreaming = ref(false)
 const feedback = ref<boolean | null>(null)
@@ -1035,12 +1065,12 @@ onUnmounted(() => {
     background-image:
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 1) 70%,
+            rgba(255, 255, 255, 0.7) 70%,
             transparent 150%
         ),
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 1) 90%,
+            rgba(255, 255, 255, 0.7) 90%,
             transparent 150%
         ),
         radial-gradient(
@@ -1083,12 +1113,12 @@ onUnmounted(() => {
         background-image:
             radial-gradient(
                 closest-side at center,
-                var(--color-gray-800) 70%,
+                oklch(27.8% 0.033 256.848 / .7) 70%,
                 transparent 150%
             ),
             radial-gradient(
                 closest-side at center,
-                var(--color-gray-800) 90%,
+                oklch(27.8% 0.033 256.848 / .7) 90%,
                 transparent 150%
             ),
             radial-gradient(
