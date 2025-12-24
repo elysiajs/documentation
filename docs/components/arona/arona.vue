@@ -76,7 +76,7 @@
                         />
 
                         <div
-                            class="absolute top-0 z-10 left-0 w-full h-30 bg-gradient-to-b from-white/95 dark:from-gray-900/95 to-transparent pointer-events-none"
+                            class="absolute top-0 z-10 left-0 w-full h-30 bg-gradient-to-b from-white/95 from-35% dark:from-gray-900/95 to-transparent pointer-events-none"
                         />
 
                         <h3
