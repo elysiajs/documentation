@@ -401,7 +401,7 @@
                         />
 
                         <form
-                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex flex-col min-h-11 bg-white/95 border-r border-b dark:border-gray-600 dark:bg-gray-700/95 rounded-3xl"
+                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex flex-col min-h-11 bg-white/80 border-r border-b dark:border-gray-600 dark:bg-gray-700/80 backdrop-blur-sm rounded-3xl"
                             @submit.prevent="ask()"
                         >
                             <textarea
