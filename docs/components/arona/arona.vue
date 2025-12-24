@@ -875,6 +875,7 @@ async function ask(input?: string, seed?: number) {
                                   }
                         )
                 },
+                thinkHarder.value ? { think: true } : {},
                 seed !== undefined ? { seed } : {},
                 reference ? { reference } : {}
             )
