@@ -87,7 +87,8 @@ export default defineConfig({
             exclude: [
                 '@nolebase/vitepress-plugin-inline-link-preview/client',
                 '.vitepress/cache',
-                '@rollup/browser'
+                '@rollup/browser',
+                'monaco-editor'
             ]
         },
         ssr: {
