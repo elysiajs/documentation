@@ -953,22 +953,25 @@ async function ask(input?: string, seed?: number) {
         const text = decoder.decode(value)
         history.value[index].content += text
     }
+    isStreaming.value = false
 
-    const getId = /- id:([A-Z|0-9]+)$/g
-    const id = getId.exec(history.value[index].content)
-    if (id) {
-        history.value[index].id = id[1]
-        history.value[index].content = history.value[index].content.replace(
-            getId,
-            ''
-        )
-    }
+	try {
+		const getId = /- id:([A-Z|0-9]+)$/g
+		const id = getId.exec(history.value[index].content)
+		if (id) {
+			history.value[index].id = id[1]
+			history.value[index].content = history.value[index].content.replace(
+				getId,
+				''
+			)
+		}
 
-    // Convert 【text】 to [text](text)
-    history.value[index].content = history.value[index].content.replace(
-        /【([^】]+)】/g,
-        '[$1]($1)'
-    )
+		// Convert 【text】 to [text](text)
+		history.value[index].content = history.value[index].content.replace(
+			/【([^】]+)】/g,
+			'[$1]($1)'
+		)
+	} catch { }
 
     resetState()
     auth()
