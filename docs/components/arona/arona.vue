@@ -964,6 +964,12 @@ async function ask(input?: string, seed?: number) {
         )
     }
 
+    // Convert 【text】 to [text](text)
+    history.value[index].content = history.value[index].content.replace(
+        /【([^】]+)】/g,
+        '[$1]($1)'
+    )
+
     resetState()
     auth()
 
