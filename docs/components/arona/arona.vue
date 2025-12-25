@@ -49,7 +49,7 @@
                 </div>
 
                 <motion.section
-                    class="h-[calc(100dvh-4rem)] bg-white/20 dark:bg-gray-900 border-t border-l dark:border-gray-700 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
+                    class="h-[calc(100dvh-4rem)] border-t border-l border-gray-100/50 dark:border-gray-700/50 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
                     :initial="{ opacity: 0, y: 32, scale: 0.95 }"
                     :animate="{
                         opacity: 1,
@@ -401,7 +401,7 @@
                         />
 
                         <form
-                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex flex-col min-h-11 bg-white/80 border-r border-b dark:border-gray-600 dark:bg-gray-700/80 backdrop-blur-sm rounded-3xl"
+                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex flex-col min-h-11 bg-white/70 border-r border-b border-white/95 dark:border-gray-600 dark:bg-gray-700/70 backdrop-blur-md rounded-3xl"
                             @submit.prevent="ask()"
                         >
                             <textarea
@@ -1073,12 +1073,12 @@ onUnmounted(() => {
     background-image:
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 0.7) 70%,
+            rgba(255, 255, 255, 0.6) 70%,
             transparent 150%
         ),
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 0.7) 90%,
+            rgba(255, 255, 255, 0.6) 90%,
             transparent 150%
         ),
         radial-gradient(
@@ -1121,12 +1121,12 @@ onUnmounted(() => {
         background-image:
             radial-gradient(
                 closest-side at center,
-                oklch(27.8% 0.033 256.848 / 0.7) 70%,
+                oklch(27.8% 0.033 256.848 / 0.6) 70%,
                 transparent 150%
             ),
             radial-gradient(
                 closest-side at center,
-                oklch(27.8% 0.033 256.848 / 0.7) 90%,
+                oklch(27.8% 0.033 256.848 / 0.6) 90%,
                 transparent 150%
             ),
             radial-gradient(
