@@ -5,6 +5,8 @@
                 v-if="isExpanded && model"
                 class="fixed top-0 left-0 z-41 w-full h-screen bg-black/15"
                 @click="model = false"
+                tabindex="-1"
+                aria-hidden="true"
                 :initial="{ opacity: 0 }"
                 :animate="{
                     opacity: 1,
