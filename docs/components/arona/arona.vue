@@ -518,7 +518,11 @@ import { motion, AnimatePresence } from 'motion-v'
 
 import { useTextareaAutosize, useWindowSize } from '@vueuse/core'
 
-import { StreamMarkdown } from 'streamdown-vue'
+import {
+    StreamMarkdown,
+    registerDefaultShikiLanguages,
+    registerShikiLanguage
+} from 'streamdown-vue'
 import { vConfetti } from '@neoconfetti/vue'
 
 import Tooltip from './tooltip.vue'
@@ -554,7 +558,6 @@ const Pow = new ComlinkWorker<typeof import('./pow')>(
 )
 
 import useDark from '../../.vitepress/theme/use-dark'
-import { isParameter } from 'typescript'
 
 const model = defineModel<boolean>()
 const isDark = useDark()
@@ -565,6 +568,12 @@ const chatbox = ref<HTMLElement | undefined>()
 const { input: question, textarea } = useTextareaAutosize()
 
 const size = useWindowSize()
+
+registerDefaultShikiLanguages()
+registerShikiLanguage({
+    id: 'prisma',
+    loader: () => import('@shikijs/langs/prisma')
+})
 
 interface History {
     id?: string
@@ -578,7 +587,7 @@ const questions = ref<string[]>([
     'How to add OpenAPI',
     'Can I use Zod with Elysia?',
     'What is OpenAPI type gen',
-    'Elysia compare to Hono',
+    'Elysia compare to Hono'
 ])
 
 const includeCurrentPage = ref(false)
