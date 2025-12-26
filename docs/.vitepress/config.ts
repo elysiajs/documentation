@@ -11,8 +11,6 @@ import { analyzer } from 'vite-bundle-analyzer'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { comlink } from 'vite-plugin-comlink'
 import { fileURLToPath } from 'url'
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
 
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with End - to - End Type Safety, unified type system and outstanding developer experience'
@@ -67,11 +65,6 @@ export default defineConfig({
             }),
             tailwindcss(),
             comlink(),
-            resolve(),
-            commonjs({
-                include: /node_modules/,
-                transformMixedEsModules: true
-            }),
             process.env.NODE_ENV === 'production'
                 ? llmstxt({
                       description: 'Ergonomic Framework for Humans',
@@ -94,8 +87,7 @@ export default defineConfig({
             exclude: [
                 '@nolebase/vitepress-plugin-inline-link-preview/client',
                 '.vitepress/cache',
-                '@rollup/browser',
-                'monaco-editor'
+                '@rollup/browser'
             ]
         },
         ssr: {
