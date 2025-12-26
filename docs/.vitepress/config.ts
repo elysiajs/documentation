@@ -12,7 +12,6 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { comlink } from 'vite-plugin-comlink'
 import { fileURLToPath } from 'url'
 import resolve from '@rollup/plugin-node-resolve'
-// @ts-ignore
 import commonjs from '@rollup/plugin-commonjs'
 
 const description =
@@ -68,9 +67,10 @@ export default defineConfig({
             }),
             tailwindcss(),
             comlink(),
-            resolve(), // Helps Rollup find modules in node_modules
+            resolve(),
             commonjs({
-                include: /node_modules/ // Most common use case: only apply to node_modules
+                include: /node_modules/,
+                transformMixedEsModules: true
             }),
             process.env.NODE_ENV === 'production'
                 ? llmstxt({

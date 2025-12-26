@@ -53,6 +53,7 @@
 		"@hono/zod-validator": "^0.7.6",
 		"@nolebase/vitepress-plugin-inline-link-preview": "^2.18.2",
 		"@rollup/browser": "^4.54.0",
+		"@rollup/plugin-commonjs": "^29.0.0",
 		"@rollup/plugin-node-resolve": "^16.0.3",
 		"@shikijs/vitepress-twoslash": "^3.20.0",
 		"@tailwindcss/postcss": "^4.1.18",
