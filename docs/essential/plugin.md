@@ -161,6 +161,10 @@ The plugin will inherit all properties of the plugin instance like `state`, `dec
 
 Elysia will also handle the type inference automatically as well.
 
+::: warning
+Before you continnue, it's highly recommended that you have read [Key Concept: Dependency](/key-concept.html#dependency) before continuing.
+:::
+
 ## Scope <TutorialBadge href="/tutorial/getting-started/encapsulation" />
 
 Elysia lifecycle methods are **encapsulated** to its own instance only.
