@@ -103,7 +103,35 @@ const app = new Elysia()
 
 <summary>Having issues with type generation?</summary>
 
-### Caveats: Root path
+### Caveat: Explicit types
+OpenAPI Type Gen work best when using implicit types.
+
+Sometime, explicit type may cause an issue to generator unable to resolve properly.
+
+In this case, you can use `Prettify` to inline the type:
+```ts
+import { Elysia, t } from 'elysia'
+
+// Your custom type
+interface User {
+	id: number
+	name: string
+}
+
+// Type helper to inline the type
+type Prettify<T> = { // [!code ++]
+	[K in keyof T]: T[K] // [!code ++]
+} & {} // [!code ++]
+
+// Add Prettify to inline the type
+function getUser(): Prettify<User> { // [!code ++]
+	// Your logic to get user // [!code ++]
+} // [!code ++]
+```
+
+This should fix when type not showing up.
+
+### Caveat: Root path
 As it's unreliable to guess to root of the project, it's recommended to provide the path to the project root to allow generator to run correctly, especially when using monorepo.
 
 ```ts
