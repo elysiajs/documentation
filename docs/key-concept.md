@@ -218,7 +218,7 @@ This approach force you to be explicit about dependencies allowing better tracki
 
 By default, each plugin will be re-executed **every time** applying to another instance.
 
-To prevent this, Elysia can deduplicate lifecycle with **an unique identifier**.
+To prevent this, Elysia can deduplicate lifecycle with **an unique identifier** using `name` and optional `seed` property.
 
 ```ts twoslash
 import { Elysia } from 'elysia'

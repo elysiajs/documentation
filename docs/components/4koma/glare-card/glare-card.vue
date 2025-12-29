@@ -13,7 +13,7 @@
             :exit="{
                 backgroundColor: 'rgba(0, 0, 0, 0)',
                 transition: {
-                    duration: 0.6,
+                    duration: 0.6
                 }
             }"
             :transition="{
@@ -70,11 +70,26 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue'
 import { motion, cubicBezier, AnimatePresence } from 'motion-v'
 
 import Card from './card.vue'
 
 const model = defineModel<boolean>()
+
+function dismiss(event: KeyboardEvent) {
+    if (event.key === 'Escape') setCard(false)
+}
+
+onMounted(() => {
+    document.addEventListener('keydown', dismiss, {
+        passive: true
+    })
+})
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', dismiss)
+})
 
 const setCard = (value: boolean) => {
     model.value = value

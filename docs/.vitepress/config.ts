@@ -46,6 +46,9 @@ export default defineConfig({
                 usePolling: true
             }
         },
+        build: {
+            minify: 'esbuild'
+        },
         experimental: {
             // enableNativePlugin: true
         },
@@ -180,8 +183,8 @@ export default defineConfig({
                 link: '/blog'
             },
             {
-                text: '4koma',
-                link: '/4koma'
+                text: 'Illust',
+                link: '/illust'
             }
         ],
         sidebar: [
@@ -220,16 +223,16 @@ export default defineConfig({
                         link: '/essential/handler'
                     },
                     {
-                        text: 'Validation',
-                        link: '/essential/validation'
+                        text: 'Plugin',
+                        link: '/essential/plugin'
                     },
                     {
                         text: 'Life Cycle',
                         link: '/essential/life-cycle'
                     },
                     {
-                        text: 'Plugin',
-                        link: '/essential/plugin'
+                        text: 'Validation',
+                        link: '/essential/validation'
                     },
                     {
                         text: 'Best Practice',

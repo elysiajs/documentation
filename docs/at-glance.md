@@ -429,11 +429,17 @@ and several more! Checkout `integration` section on sidebar for more support run
 
 ## Our Community
 
-Elysia has been actively developed and maintained since 2022.
+We want to create a friendly and welcoming community for everyone with cute and playful design including our anime mascot, Elysia chan.
 
-With a growing community of developers and contributors, Elysia is a reliable choice for building backend servers.
+We believe that technology can be cute and fun instead of being serious all the time, to brings joy to people's lives.
 
-If you have questions or get stuck on something, feel free to ask our community on GitHub Discussions, Discord, or Twitter.
+But even that, we take Elysia very seriously to make sure it's reliable and production ready high-performance framework that can be trusted for your next project.
+
+Elysia is **used in production by many companies and projects worldwide**, including [X](https://x.com/shlomiatar/status/1822381556142362734), [Bank for Agriculture and Agricultural Co-operatives](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13924470), [Cluely](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-14420139), [CS.Money](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13913513), [Abacate Pay](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13922081) and used by [over 10,000 (open source) projects on GitHub.](https://github.com/elysiajs/elysia/network/dependents) and has been actively developed and maintained since 2022 with many regular contributors from our community.
+
+Elysia is a reliable choice and production ready for building your next backend server.
+
+Here's on of our community resources to get you started:
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
