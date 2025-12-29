@@ -46,9 +46,6 @@ export default defineConfig({
                 usePolling: true
             }
         },
-        build: {
-            minify: 'esbuild'
-        },
         experimental: {
             // enableNativePlugin: true
         },
