@@ -26,7 +26,6 @@ export default defineConfig({
             light: 'github-light',
             dark: 'github-dark'
         },
-        languages: ['js', 'ts'],
         codeTransformers: [
             transformerTwoslash({
                 typesCache: createFileSystemTypesCache()
@@ -38,64 +37,6 @@ export default defineConfig({
     },
     buildEnd() {
         process.exit(0)
-    },
-    vite: {
-        clearScreen: false,
-        server: {
-            watch: {
-                usePolling: true
-            }
-        },
-        experimental: {
-            // enableNativePlugin: true
-        },
-        resolve: {
-            alias: [
-                {
-                    find: /^.*\/VPNavBarSearch\.vue$/,
-                    replacement: fileURLToPath(
-                        new URL('./theme/navbar-search.vue', import.meta.url)
-                    )
-                }
-            ]
-        },
-        plugins: [
-            nodePolyfills({
-                include: ['path', 'crypto']
-            }),
-            tailwindcss(),
-            comlink(),
-            process.env.NODE_ENV === 'production'
-                ? llmstxt({
-                      description: 'Ergonomic Framework for Humans',
-                      details: description,
-                      ignoreFiles: [
-                          'index.md',
-                          'table-of-content.md',
-                          'blog/*',
-                          'public/*'
-                      ],
-                      domain: 'https://elysiajs.com'
-                  })
-                : undefined,
-            process.env.ANALYZE === 'true' ? analyzer() : undefined
-        ],
-        worker: {
-            plugins: () => [comlink()]
-        },
-        optimizeDeps: {
-            exclude: [
-                '@nolebase/vitepress-plugin-inline-link-preview/client',
-                '.vitepress/cache',
-                '@rollup/browser'
-            ]
-        },
-        ssr: {
-            noExternal: [
-                '@nolebase/vitepress-plugin-inline-link-preview',
-                '@nolebase/ui'
-            ]
-        }
     },
     head: [
         [
@@ -160,8 +101,99 @@ export default defineConfig({
                 property: 'og:description',
                 content: description
             }
+        ],
+        [
+            'link',
+            {
+                rel: 'preload',
+                as: 'image',
+                href: '/assets/elysia_v.webp',
+                fetchpriority: 'high'
+            }
+        ],
+        [
+            'link',
+            {
+                rel: 'preload',
+                as: 'image',
+                href: '/assets/elysia.svg',
+                fetchpriority: 'high'
+            }
+        ],
+        [
+            'link',
+            {
+                rel: 'preload',
+                as: 'image',
+                href: '/assets/shigure-ui-smol.gif',
+                fetchpriority: 'low'
+            }
         ]
     ],
+    vite: {
+        // define: {
+        //     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true
+        // },
+        // build: {
+        //     minify: false
+        // },
+        clearScreen: false,
+        server: {
+            watch: {
+                usePolling: true
+            }
+        },
+        experimental: {
+            enableNativePlugin: false
+        },
+        resolve: {
+            alias: [
+                {
+                    find: /^.*\/VPNavBarSearch\.vue$/,
+                    replacement: fileURLToPath(
+                        new URL('./theme/navbar-search.vue', import.meta.url)
+                    )
+                }
+            ]
+        },
+        plugins: [
+            nodePolyfills({
+                include: ['path', 'crypto']
+            }),
+            tailwindcss(),
+            comlink(),
+            process.env.NODE_ENV === 'production'
+                ? llmstxt({
+                      description: 'Ergonomic Framework for Humans',
+                      details: description,
+                      ignoreFiles: [
+                          'index.md',
+                          'table-of-content.md',
+                          'blog/*',
+                          'public/*'
+                      ],
+                      domain: 'https://elysiajs.com'
+                  })
+                : undefined,
+            process.env.ANALYZE === 'true' ? analyzer() : undefined
+        ],
+        worker: {
+            plugins: () => [comlink()]
+        },
+        optimizeDeps: {
+            exclude: [
+                '@nolebase/vitepress-plugin-inline-link-preview/client',
+                '.vitepress/cache',
+                '@rollup/browser'
+            ]
+        },
+        ssr: {
+            noExternal: [
+                '@nolebase/vitepress-plugin-inline-link-preview',
+                '@nolebase/ui'
+            ]
+        }
+    },
     themeConfig: {
         search: {
             provider: 'local',

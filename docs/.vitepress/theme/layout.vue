@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import {
     ref,
-    watch,
     nextTick,
     provide,
     onMounted,
     computed,
     defineAsyncComponent,
-    Teleport,
-    onUnmounted
+    Teleport
 } from 'vue'
 import { useData, useRouter } from 'vitepress'
-import ClientOnly from '../../components/xiao/playground/components/client-only.vue'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
-import { File, Heart, Search, Sparkles, Terminal } from 'lucide-vue-next'
+import { File, Heart, Sparkles, Terminal } from 'lucide-vue-next'
 import mediumZoom from 'medium-zoom'
 
 import useDark from './use-dark'
@@ -26,7 +23,6 @@ const Arona = defineAsyncComponent(
 
 import { data } from '../../components/fern/sponsor.data'
 import { sponsorOverride } from '../../components/fern/sponsor.constant'
-import ElysiaSearch from './search.vue'
 
 const isDark = useDark()
 const { isDark: darkTheme } = useData()
@@ -128,65 +124,6 @@ function toggleAIForCurrentPage() {
 </script>
 
 <template>
-    <Teleport to="head">
-        <link
-            rel="preload"
-            as="image"
-            href="/assets/elysia_v.webp"
-            fetchpriority="high"
-        />
-        <link
-            rel="preload"
-            as="image"
-            href="/assets/elysia.svg"
-            fetchpriority="high"
-        />
-        <link
-            rel="preload"
-            as="image"
-            href="/assets/shigure-ui-smol.gif"
-            fetchpriority="low"
-        />
-        <link
-            rel="preload"
-            as="image"
-            href="/assets/elysia-chan-card.webp"
-            fetchpriority="low"
-        />
-
-        <meta
-            id="theme-color"
-            :content="
-                isInTutorial
-                    ? isDark
-                        ? '#ff0000'
-                        : '#ff0000'
-                    : isDark
-                      ? '#0f172a'
-                      : '#ffffff'
-            "
-            media="(prefers-color-scheme: light)"
-        />
-
-        <meta
-            id="theme-color"
-            :content="
-                isInTutorial
-                    ? isDark
-                        ? '#ff0000'
-                        : '#ff0000'
-                    : isDark
-                      ? '#0f172a'
-                      : '#ffffff'
-            "
-            media="(prefers-color-scheme: dark)"
-        />
-    </Teleport>
-
-    <ClientOnly>
-        <Arona v-model="showArona" />
-    </ClientOnly>
-
     <DefaultTheme.Layout>
         <template #doc-top>
             <Ray
@@ -302,6 +239,11 @@ function toggleAIForCurrentPage() {
             >
                 <Sparkles :size="21" stroke-width="1.5" />
             </button>
+
+            <ClientOnly>
+            	<div />
+                <!-- <Arona v-model="showArona" /> -->
+            </ClientOnly>
         </template>
 
         <template #sidebar-nav-before>
