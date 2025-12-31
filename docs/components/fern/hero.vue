@@ -26,7 +26,7 @@
         class="z-10 relative flex w-full pt-6 md:pt-0 mb-16 md:mb-8 px-6 overflow-hidden transition-all"
         :class="
             kawaii
-                ? 'flex-col lg:flex-row justify-center items-around p-0 lg:px-0'
+                ? 'flex-col lg:flex-row-reverse justify-center items-around mx-auto p-0 md:px-0 2xl-max-w-[2160px]'
                 : 'flex-col justify-center items-center'
         "
         style="min-height: calc(100vh - 64px)"
@@ -35,7 +35,7 @@
             class="flex flex-col justify-center transition-all"
             :class="
                 kawaii
-                    ? 'items-start my-auto lg:max-w-5xl xl:max-w-5xl 2xl:max-w-6xl lg:pl-10 lg:pb-6 lg:pr-6'
+                    ? 'items-start my-auto lg:max-w-5xl xl:max-w-5xl 2xl:max-w-6xl md:pl-10 md:pb-6 md:pr-6'
                     : 'items-center'
             "
             :style="kawaii ? 'zoom: 1.08' : ''"
@@ -225,15 +225,17 @@
             </p>
         </div>
         <div
-            class="overflow-hidden flex-1 transition-all select-none pointer-events-none"
-            :class="kawaii ? 'lg:flex max-w-4xl' : 'hidden'"
-            style="max-height: calc(100vh - 64px)"
+            class="flex-1 transition-all select-none pointer-events-none my-auto"
+            :class="kawaii ? 'md:flex max-w-5xl md:max-h-[min(calc(100vh-64px),2100px)]' : 'hidden'"
         >
-            <img
-                src="/assets/elysia_chan.webp"
-                class="object-cover select-none pointer-events-none"
-                style="object-position: 50% 7.5%"
-            />
+	        <img
+	            src="/assets/elysia-chan-rev-2-preview.webp"
+         		class="w-full md:scale-105 md:-translate-x-[10%] object-contain md:object-cover select-none pointer-events-none"
+         		style="object-position: 50% 2vh;"
+	        />
+
+        	<div
+         	/>
         </div>
     </header>
 </template>

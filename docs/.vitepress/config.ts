@@ -26,7 +26,6 @@ export default defineConfig({
             light: 'github-light',
             dark: 'github-dark'
         },
-        languages: ['js', 'ts'],
         codeTransformers: [
             transformerTwoslash({
                 typesCache: createFileSystemTypesCache()
@@ -36,7 +35,108 @@ export default defineConfig({
             md.use(lightbox, {})
         }
     },
+    buildEnd() {
+        process.exit(0)
+    },
+    head: [
+        [
+            'meta',
+            {
+                name: 'viewport',
+                content: 'width=device-width,initial-scale=1,user-scalable=no'
+            }
+        ],
+        [
+            'link',
+            {
+                rel: 'icon',
+                href: '/assets/elysia.png'
+            }
+        ],
+        [
+            'meta',
+            {
+                property: 'og:image',
+                content: 'https://elysiajs.com/assets/cover.webp'
+            }
+        ],
+        [
+            'meta',
+            {
+                property: 'og:image:width',
+                content: '2560'
+            }
+        ],
+        [
+            'meta',
+            {
+                property: 'og:image:height',
+                content: '1440'
+            }
+        ],
+        [
+            'meta',
+            {
+                property: 'twitter:card',
+                content: 'summary_large_image'
+            }
+        ],
+        [
+            'meta',
+            {
+                property: 'twitter:image',
+                content: 'https://elysiajs.com/assets/cover.webp'
+            }
+        ],
+        [
+            'meta',
+            {
+                property: 'og:title',
+                content: 'ElysiaJS'
+            }
+        ],
+        [
+            'meta',
+            {
+                property: 'og:description',
+                content: description
+            }
+        ],
+        [
+            'link',
+            {
+                rel: 'preload',
+                as: 'image',
+                href: '/assets/elysia_v.webp',
+                fetchpriority: 'high'
+            }
+        ],
+        [
+            'link',
+            {
+                rel: 'preload',
+                as: 'image',
+                href: '/assets/elysia.svg',
+                fetchpriority: 'high'
+            }
+        ],
+        [
+            'link',
+            {
+                rel: 'preload',
+                as: 'image',
+                href: '/assets/shigure-ui-smol.gif',
+                fetchpriority: 'low'
+            }
+        ]
+    ],
     vite: {
+        // define: {
+        //     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true
+        // },
+        // build: {
+        //     minify: false
+        // },
         clearScreen: false,
         server: {
             watch: {
@@ -44,7 +144,7 @@ export default defineConfig({
             }
         },
         experimental: {
-            // enableNativePlugin: true
+            enableNativePlugin: false
         },
         resolve: {
             alias: [
@@ -94,71 +194,6 @@ export default defineConfig({
             ]
         }
     },
-    head: [
-        [
-            'meta',
-            {
-                name: 'viewport',
-                content: 'width=device-width,initial-scale=1,user-scalable=no'
-            }
-        ],
-        [
-            'link',
-            {
-                rel: 'icon',
-                href: '/assets/elysia.png'
-            }
-        ],
-        [
-            'meta',
-            {
-                property: 'og:image',
-                content: 'https://elysiajs.com/assets/cover_2k.jpg'
-            }
-        ],
-        [
-            'meta',
-            {
-                property: 'og:image:width',
-                content: '2560'
-            }
-        ],
-        [
-            'meta',
-            {
-                property: 'og:image:height',
-                content: '1440'
-            }
-        ],
-        [
-            'meta',
-            {
-                property: 'twitter:card',
-                content: 'summary_large_image'
-            }
-        ],
-        [
-            'meta',
-            {
-                property: 'twitter:image',
-                content: 'https://elysiajs.com/assets/cover_2k.jpg'
-            }
-        ],
-        [
-            'meta',
-            {
-                property: 'og:title',
-                content: 'ElysiaJS'
-            }
-        ],
-        [
-            'meta',
-            {
-                property: 'og:description',
-                content: description
-            }
-        ]
-    ],
     themeConfig: {
         search: {
             provider: 'local',
@@ -177,8 +212,8 @@ export default defineConfig({
                 link: '/blog'
             },
             {
-                text: '4koma',
-                link: '/4koma'
+                text: 'Illust',
+                link: '/illust'
             }
         ],
         sidebar: [
@@ -217,16 +252,16 @@ export default defineConfig({
                         link: '/essential/handler'
                     },
                     {
-                        text: 'Validation',
-                        link: '/essential/validation'
+                        text: 'Plugin',
+                        link: '/essential/plugin'
                     },
                     {
                         text: 'Life Cycle',
                         link: '/essential/life-cycle'
                     },
                     {
-                        text: 'Plugin',
-                        link: '/essential/plugin'
+                        text: 'Validation',
+                        link: '/essential/validation'
                     },
                     {
                         text: 'Best Practice',

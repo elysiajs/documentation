@@ -1,10 +1,12 @@
 <template>
-    <Teleport defer to="body">
+    <!-- <Teleport defer to="body"> -->
         <AnimatePresence>
             <motion.div
                 v-if="isExpanded && model"
                 class="fixed top-0 left-0 z-41 w-full h-screen bg-black/15"
                 @click="model = false"
+                tabindex="-1"
+                aria-hidden="true"
                 :initial="{ opacity: 0 }"
                 :animate="{
                     opacity: 1,
@@ -49,7 +51,7 @@
                 </div>
 
                 <motion.section
-                    class="h-[calc(100dvh-4rem)] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden"
+                    class="h-[calc(100dvh-4rem)] border-t border-l border-gray-100/50 dark:border-gray-700/50 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
                     :initial="{ opacity: 0, y: 32, scale: 0.95 }"
                     :animate="{
                         opacity: 1,
@@ -72,11 +74,15 @@
                 >
                     <div class="relative isolate flex flex-col w-full h-full">
                         <Ray
-                            class="h-66 !z-10 opacity-20 pointer-events-none"
+                            class="h-66 !z-11 opacity-20 pointer-events-none"
+                        />
+
+                        <div
+                            class="absolute top-0 z-10 left-0 w-full h-24 bg-gradient-to-b from-white/95 from-35% dark:from-gray-900/95 to-transparent pointer-events-none"
                         />
 
                         <h3
-                            class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 bg-white/80 dark:bg-gray-800/50 rounded-full backdrop-blur-sm"
+                            class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 rounded-full"
                         >
                             <button
                                 class="clicky flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300 ease-out-expo"
@@ -107,32 +113,8 @@
                         </h3>
 
                         <section
-                            class="absolute isolate z-20 top-2 right-2 flex p-0.5 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-full"
+                            class="absolute isolate z-20 top-2 right-2 flex p-0.5 rounded-full"
                         >
-                            <Tooltip
-                                tip="Use current page as primary reference"
-                            >
-                                <label
-                                    class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
-                                    :class="{
-                                        'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
-                                            includeCurrentPage,
-                                        'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
-                                            !includeCurrentPage
-                                    }"
-                                    aria-keyshortcuts="Escape"
-                                    for="elysia-ai-include-current-page"
-                                >
-                                    <Book stroke-width="1.25" />
-                                    <input
-                                        id="elysia-ai-include-current-page"
-                                        type="checkbox"
-                                        class="absolute w-0 h-0 opacity-0 pointer-events-none"
-                                        v-model="includeCurrentPage"
-                                    />
-                                </label>
-                            </Tooltip>
-
                             <Tooltip
                                 :tip="
                                     isExpanded
@@ -170,7 +152,7 @@
 
                         <article
                             id="elysia-chat-content"
-                            class="relative flex items-start flex-col w-full h-full pt-15 pb-15 px-2 text-base overflow-x-hidden overflow-y-scroll"
+                            class="relative flex items-start flex-col w-full h-full pt-15 pb-23 px-2 text-base overflow-x-hidden overflow-y-scroll"
                             ref="chatbox"
                         >
                             <AnimatePresence>
@@ -215,7 +197,7 @@
                                             ) in questions"
                                             :key="index"
                                             @click="ask(example)"
-                                            class="text-sm px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
+                                            class="text-sm px-3 py-1 rounded-full bg-white/85 dark:bg-gray-700/85 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
                                             v-text="example"
                                         />
                                     </div>
@@ -421,7 +403,7 @@
                         />
 
                         <form
-                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex items-center min-h-11 pr-1.25 bg-gray-200/50 dark:bg-gray-700/50 backdrop-blur-sm rounded-3xl"
+                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex flex-col min-h-11 bg-white/70 border-r border-b border-white/95 dark:border-gray-600 dark:bg-gray-700/70 backdrop-blur-md rounded-3xl"
                             @submit.prevent="ask()"
                         >
                             <textarea
@@ -429,38 +411,94 @@
                                 ref="textarea"
                                 v-model="question"
                                 placeholder="What's on your mind"
-                                class="w-full h-inherit px-4 py-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                                class="w-full h-inherit px-4 pt-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                 autofocus
                                 @keydown="handleShortcut"
                                 data-gramm="false"
                             />
-                            <button
-                                class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-50 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all"
-                                :disabled="!token || !powToken"
-                                :title="
-                                    isStreaming
-                                        ? 'Elysia chan is thinking...'
-                                        : token === null || powToken === null
-                                          ? 'Verification failed, please refresh the page.'
-                                          : token === undefined ||
-                                              powToken === undefined
-                                            ? 'Verifying that you are a human...'
-                                            : 'Send message (Cmd/Ctrl + Enter)'
-                                "
-                                @click="cancelRequest()"
+                            <div
+                                class="flex items-end gap-0.5 w-full px-1.5 pt-1 pb-1.5"
                             >
-                                <Square
-                                    v-if="isStreaming"
-                                    :size="21"
-                                    stroke-width="1.5"
-                                />
-                                <Send v-else :size="21" stroke-width="1.5" />
-                            </button>
+                                <Tooltip tip="Use this page as reference">
+                                    <label
+                                        class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-9 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
+                                        :class="{
+                                            'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
+                                                includeCurrentPage,
+                                            'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
+                                                !includeCurrentPage
+                                        }"
+                                        for="elysia-ai-include-current-page"
+                                    >
+                                        <Book stroke-width="1.25" :size="21" />
+                                        <input
+                                            id="elysia-ai-include-current-page"
+                                            type="checkbox"
+                                            class="absolute w-0 h-0 opacity-0 pointer-events-none"
+                                            v-model="includeCurrentPage"
+                                        />
+                                    </label>
+                                </Tooltip>
+                                <Tooltip
+                                    tip="Think harder for more accurate answers (slower answer)"
+                                >
+                                    <label
+                                        class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-9 rounded-full !outline-none focus:ring-1 ring-offset-2 duration-300 cursor-pointer"
+                                        :class="{
+                                            'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
+                                                thinkHarder,
+                                            'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
+                                                !thinkHarder
+                                        }"
+                                        for="elysia-ai-think-harder"
+                                    >
+                                        <Lightbulb
+                                            stroke-width="1.25"
+                                            :size="21"
+                                        />
+                                        <input
+                                            id="elysia-ai-think-harder"
+                                            type="checkbox"
+                                            class="absolute w-0 h-0 opacity-0 pointer-events-none"
+                                            v-model="thinkHarder"
+                                        />
+                                    </label>
+                                </Tooltip>
+
+                                <button
+                                    class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-50 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all ml-auto"
+                                    :disabled="!token || !powToken"
+                                    :title="
+                                        isStreaming
+                                            ? 'Elysia chan is thinking...'
+                                            : token === null ||
+                                                powToken === null
+                                              ? 'Verification failed, please refresh the page.'
+                                              : token === undefined ||
+                                                  powToken === undefined
+                                                ? 'Verifying that you are a human...'
+                                                : 'Send message (Cmd/Ctrl + Enter)'
+                                    "
+                                    @click="cancelRequest()"
+                                >
+                                    <Square
+                                        v-if="isStreaming"
+                                        :size="21"
+                                        stroke-width="1.5"
+                                    />
+                                    <Send
+                                        v-else
+                                        :size="21"
+                                        stroke-width="1.5"
+                                    />
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </motion.section>
             </aside>
         </AnimatePresence>
+
 
         <div
             v-if="init"
@@ -468,7 +506,7 @@
             :data-sitekey="siteKey"
             data-callback="turnstileCallback"
         />
-    </Teleport>
+    <!-- </Teleport> -->
 </template>
 
 <script lang="ts" setup>
@@ -481,7 +519,11 @@ import { motion, AnimatePresence } from 'motion-v'
 
 import { useTextareaAutosize, useWindowSize } from '@vueuse/core'
 
-import { StreamMarkdown } from 'streamdown-vue'
+import {
+    StreamMarkdown,
+    registerDefaultShikiLanguages,
+    registerShikiLanguage
+} from 'streamdown-vue'
 import { vConfetti } from '@neoconfetti/vue'
 
 import Tooltip from './tooltip.vue'
@@ -506,7 +548,8 @@ import {
     Loader,
     ThumbsUp,
     ThumbsDown,
-    ArrowUp
+    ArrowUp,
+    Lightbulb
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
 import { retry } from './retry'
@@ -516,7 +559,6 @@ const Pow = new ComlinkWorker<typeof import('./pow')>(
 )
 
 import useDark from '../../.vitepress/theme/use-dark'
-import { isParameter } from 'typescript'
 
 const model = defineModel<boolean>()
 const isDark = useDark()
@@ -528,6 +570,12 @@ const { input: question, textarea } = useTextareaAutosize()
 
 const size = useWindowSize()
 
+registerDefaultShikiLanguages()
+registerShikiLanguage({
+    id: 'prisma',
+    loader: () => import('@shikijs/langs/prisma')
+})
+
 interface History {
     id?: string
     role: 'user' | 'assistant'
@@ -538,10 +586,13 @@ const questions = ref<string[]>([
     'What is Eden',
     'Explain lifecycle events',
     'How to add OpenAPI',
-    'Can I use Zod with Elysia?'
+    'Can I use Zod with Elysia?',
+    'What is OpenAPI type gen',
+    'Elysia compare to Hono'
 ])
 
 const includeCurrentPage = ref(false)
+const thinkHarder = ref(false)
 const history = ref<History[]>([])
 const isStreaming = ref(false)
 const feedback = ref<boolean | null>(null)
@@ -838,6 +889,7 @@ async function ask(input?: string, seed?: number) {
                                   }
                         )
                 },
+                thinkHarder.value ? { think: true } : {},
                 seed !== undefined ? { seed } : {},
                 reference ? { reference } : {}
             )
@@ -923,6 +975,12 @@ async function ask(input?: string, seed?: number) {
             ''
         )
     }
+
+    // Convert 【text】 to [text](text)
+    history.value[index].content = history.value[index].content.replace(
+        /【([^】]+)】/g,
+        '[$1]($1)'
+    )
 
     resetState()
     auth()
@@ -1035,12 +1093,12 @@ onUnmounted(() => {
     background-image:
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 1) 70%,
+            rgba(255, 255, 255, 0.6) 70%,
             transparent 150%
         ),
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 1) 90%,
+            rgba(255, 255, 255, 0.6) 90%,
             transparent 150%
         ),
         radial-gradient(
@@ -1083,12 +1141,12 @@ onUnmounted(() => {
         background-image:
             radial-gradient(
                 closest-side at center,
-                var(--color-gray-800) 70%,
+                oklch(27.8% 0.033 256.848 / 0.6) 70%,
                 transparent 150%
             ),
             radial-gradient(
                 closest-side at center,
-                var(--color-gray-800) 90%,
+                oklch(27.8% 0.033 256.848 / 0.6) 90%,
                 transparent 150%
             ),
             radial-gradient(
@@ -1157,7 +1215,7 @@ onUnmounted(() => {
                     }
 
                     & > a {
-                        @apply px-2 py-1 text-gray-400 bg-gray-100/80 dark:bg-gray-700/80 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
+                        @apply px-2 py-1 text-gray-400 bg-white/35 dark:bg-gray-700/35 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
                     }
                 }
             }
@@ -1289,8 +1347,7 @@ onUnmounted(() => {
         * > *,
         * > * > * {
             & > div[theme] > .shiki {
-                @apply relative my-4 text-sm -mx-4;
-                background-color: var(--vp-code-copy-code-bg);
+                @apply relative my-4 text-sm -mx-4 bg-[#eff1f590]! dark:bg-[#1e1e2ec3]! border-y dark:border-gray-700/75;
 
                 &:hover {
                     & > .lang {

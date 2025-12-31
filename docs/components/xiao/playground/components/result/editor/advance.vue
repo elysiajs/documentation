@@ -88,7 +88,6 @@ import { usePlaygroundStore } from '../../../store'
 import { AnimatePresence, motion } from 'motion-v'
 import { X } from 'lucide-vue-next'
 
-import ClientOnly from '../../client-only.vue'
 import TableEditor from '../../../../table-editor/table-editor.vue'
 const Body = defineAsyncComponent(() => import('./body.vue'))
 

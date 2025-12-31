@@ -66,6 +66,12 @@ const { data } = await useAsyncData(async () => {
 
 This will automatically setup Elysia to run on Nuxt API route automatically.
 
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
+
 ## Prefix
 
 By default, Elysia will be mounted on **/_api** but we can customize it with `nuxt-elysia` config.

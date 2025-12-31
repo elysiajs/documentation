@@ -48,3 +48,9 @@ netlify dev
 ```
 
 For an additional information, please refers to [Netlify Edge Function documentation](https://docs.netlify.com/build/edge-functions).
+
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```

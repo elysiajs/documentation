@@ -62,7 +62,11 @@ You can run Elysia server without running Astro on Bun thanks to WinterCG suppor
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden.
 
-Please refer to [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/) for more information.
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
 
 ## Prefix
 
@@ -89,3 +93,5 @@ export const POST = handle // [!code ++]
 ```
 
 This will ensure that Elysia routing will work properly in any location you place it.
+
+Please refer to [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/) for more information.

@@ -8,7 +8,7 @@
                 <AnimatePresence>
                     <TooltipContent
                         :side="side ?? 'bottom'"
-                        :side-offset="4"
+                        :side-offset="2"
                         class="z-60"
                     >
                         <motion.p

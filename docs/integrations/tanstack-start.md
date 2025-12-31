@@ -52,6 +52,12 @@ Elysia should now be running on **/api**.
 
 We may add additional methods to **server.handlers** to support other HTTP methods as need.
 
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
+
 ## Eden
 
 We can add [Eden](/eden/overview.html) for **end-to-end type safety** similar to tRPC.
