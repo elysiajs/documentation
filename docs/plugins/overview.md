@@ -125,7 +125,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [elysia-local-https](https://github.com/mrtcmn/elysia-local-https) - Automatic local HTTPS for Elysia — certs generated, managed, and refreshed in one line.
 -   [Eden TanStack Query](https://github.com/xkelxmc/eden-tanstack-query) - type-safe TanStack Query integration for Eden, like
   @trpc/react-query but for Elysia
--   [Modern CSRF](https://github.com/auto-medica-labs/modern-csrf) - A lightweight, token-free CSRF protection middleware for ElysiaJS
+-   [ModernCSRF](https://github.com/auto-medica-labs/modern-csrf) - A lightweight, token-free CSRF protection middleware for ElysiaJS
 
 ## Complementary projects:
 
