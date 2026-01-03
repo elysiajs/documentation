@@ -55,7 +55,9 @@ class Resolver extends UnpkgSourceResolver implements SourceResolver {
         if (packageName === 'bun')
             return super.resolveSourceFile('@types/bun', version, 'index.d.ts')
 
-        if (packageName === 'elysia')
+        if (packageName === 'elysia') {
+        	version = '1.4.19'
+
             switch (path) {
                 case '..d.ts':
                 case 'dist.d.ts':
@@ -90,6 +92,7 @@ class Resolver extends UnpkgSourceResolver implements SourceResolver {
                         `dist/${path}`
                     )
             }
+        }
 
         if (packageName === 'fs')
             return super.resolveSourceFile(
