@@ -457,4 +457,4 @@ Here's on of our community resources to get you started:
 
 <small id="ref-1">1. Measured in requests/second. The benchmark for parsing query, path parameter and set response header on Debian 11, Intel i7-13700K tested on Bun 0.7.2 on 6 Aug 2023. See the benchmark condition [here](https://github.com/SaltyAom/bun-http-framework-benchmark/tree/c7e26fe3f1bfee7ffbd721dbade10ad72a0a14ab#results).</small>
 
-<small id="ref-2">2. Based on [TechEmpower Benchmark round 22](https://www.techempower.com/benchmarks/#section=data-r22&hw=ph&test=composite).</small>
+<small id="ref-2">2. Based on [TechEmpower Benchmark round 23](https://www.techempower.com/benchmarks/#section=data-r23).</small>
