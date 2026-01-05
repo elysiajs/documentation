@@ -130,7 +130,7 @@ If you feels like exploring more Elysia feature, check out:
     <Card title="Eden" href="/eden/overview">
     	Learn more about Eden, and how to use it effectively
     </Card>
-    <Card title="Open Telemetry" href="/eden/opentelemetry">
+    <Card title="Open Telemetry" href="/patterns/opentelemetry">
    		Learn how to monitor your application with Open Telemetry
     </Card>
     <Card title="Deploy to Production" href="/patterns/deploys">
