@@ -125,10 +125,13 @@ import type { app } from '../app/api/[[...slugs]]/route'
 
 // .api to enter /api prefix
 export const api =
+  // process is defined on server side and build time
   typeof process !== 'undefined'
     ? treaty(app).api
     : treaty<typeof app>('localhost:3000').api
 ```
+
+It's important that you should use `typeof process` instead of `typeof window` because `window` is not defined during build time, causing hydration error.
 
 :::
 
@@ -149,5 +152,36 @@ export default async function Page() {
 :::
 
 This allows you to have type safety from the frontend to the backend with minimal effort and works with both server, client components and with Incremental Static Regeneration (ISR).
+
+## React Query
+We can also use React Query to interact with Elysia server on client.
+
+::: code-group
+
+```tsx [src/routes/index.tsx]
+import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+
+import { getTreaty } from './api.$' // [!code ++]
+
+export const Route = createFileRoute('/a')({
+	component: App
+})
+
+function App() {
+	const { data: response } = useQuery({ // [!code ++]
+		queryKey: ['get'], // [!code ++]
+		queryFn: () => getTreaty().get() // [!code ++]
+	}) // [!code ++]
+
+	return response?.data
+}
+```
+
+::: code-group
+
+This can works with any React Query features like caching, pagination, infinite query, etc.
+
+---
 
 Please refer to [Next.js Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
