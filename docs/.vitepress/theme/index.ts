@@ -25,8 +25,6 @@ export default {
         const pinia = createPinia()
 
         app.use(pinia)
-        app.use(head)
-
         app.use(TwoslashFloatingVue)
     },
     setup() {
