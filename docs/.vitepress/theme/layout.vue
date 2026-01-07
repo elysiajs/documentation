@@ -121,6 +121,17 @@ function toggleAIForCurrentPage() {
         defaultValue: 'Summarize this page'
     })
 }
+
+async function copyMarkdownToClipboard() {
+    const mdUrl = `https://elysiajs.com${router.route.path.replace(/.html$/g, '')}.md`
+    try {
+        const response = await fetch(mdUrl)
+        const markdown = await response.text()
+        await navigator.clipboard.writeText(markdown)
+    } catch (error) {
+        console.error('Failed to copy markdown:', error)
+    }
+}
 </script>
 
 <template>
@@ -186,15 +197,13 @@ function toggleAIForCurrentPage() {
                         </svg>
                     </a>
 
-                    <a
-                        :href="`https://elysiajs.com${router.route.path.replace(/.html$/g, '')}.md`"
+                    <button
+                        @click="copyMarkdownToClipboard"
                         class="clicky"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="Open in Markdown"
+                        title="Copy as Markdown"
                     >
                         <File stroke-width="1.5" />
-                    </a>
+                    </button>
                 </div>
             </div>
         </template>
