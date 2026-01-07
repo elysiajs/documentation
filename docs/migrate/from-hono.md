@@ -50,7 +50,7 @@ Here's a TLDR comparison between Hono and Elysia to help you decide:
 
 **Elysia**
 - **Originally built for native Bun**, use most of Bun features to the fullest extent
-- Support multiple runtime with Web Standard, including **Nodejs** and **Cloudflare Worker**
+- Support multiple runtime with Web Standard, including **Node.sjs** and **Cloudflare Worker**
 - **Better performance**. Leans to long running server via JIT.
 - **Better OpenAPI supports** with seamless experience, especially with [OpenAPI Type Gen](/patterns/openapi#openapi-from-types)
 - Prefers event-based lifecycle approach for better control over request pipeline
