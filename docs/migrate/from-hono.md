@@ -57,7 +57,9 @@ Here's a TLDR comparison between Hono and Elysia to help you decide:
 - Sounds type safety across the board, including middleware, and error handling
 - Somewhat similar to Fastify in terms of middleware, encapsulation, and plugin style
 
-There is a huge **different between being compatible and specifically built for** something and Elysia.
+There is a huge **different between being compatible and specifically built for** something.
+
+If you decide to use Elysia on Cloudflare Workers, you might miss some of the Cloudflare specific features that Hono provides out of the box. Similarly, if you use Hono on Bun, you might not get the best performance possible compared to using Elysia.
 
 ## Performance
 Elysia has significant performance improvements over Hono thanks to static code analysis.
