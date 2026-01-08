@@ -82,13 +82,13 @@ Both use a single `Context` parameters to handle request and response, and retur
 import { Hono } from 'hono'
 
 const app = new Hono()
-	.get('/', (c) => {
-	    return c.text('Hello World')
-	})
-	.post('/id/:id', (c) => {
-	    c.status(201)
-	    return c.text(req.params.id)
-	})
+    .get('/', (c) => {
+        return c.text('Hello World')
+    })
+    .post('/id/:id', (c) => {
+        c.status(201)
+        return c.text(req.params.id)
+    })
 
 export default app
 ```
@@ -112,10 +112,10 @@ import { Elysia } from 'elysia'
 const app = new Elysia()
     .get('/', 'Hello World')
     .post(
-    	'/id/:id',
-     	({ status, params: { id } }) => {
-      		return status(201, id)
-      	}
+        '/id/:id',
+         ({ status, params: { id } }) => {
+              return status(201, id)
+          }
     )
     .listen(3000)
 ```
@@ -151,13 +151,13 @@ Hono use a function to parse query, header, and body manually while Elysia autom
 import { Hono } from 'hono'
 
 const app = new Hono()
-	.post('/user', async (c) => {
-		const limit = c.req.query('limit')
-	    const { name } = await c.body()
-	    const auth = c.req.header('authorization')
-	
-	    return c.json({ limit, name, auth })
-	})
+    .post('/user', async (c) => {
+        const limit = c.req.query('limit')
+        const { name } = await c.body()
+        const auth = c.req.header('authorization')
+    
+        return c.json({ limit, name, auth })
+    })
 ```
 
 :::
@@ -177,13 +177,13 @@ const app = new Hono()
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-	.post('/user', (ctx) => {
-	    const limit = ctx.query.limit
-	    const name = ctx.body.name
-	    const auth = ctx.headers.authorization
+    .post('/user', (ctx) => {
+        const limit = ctx.query.limit
+        const name = ctx.body.name
+        const auth = ctx.headers.authorization
 
-	    return { limit, name, auth }
-	})
+        return { limit, name, auth }
+    })
 ```
 
 :::
@@ -215,12 +215,12 @@ Both can inherits another instance as a router, but Elysia treat every instances
 import { Hono } from 'hono'
 
 const subRouter = new Hono()
-	.get('/user', (c) => {
-		return c.text('Hello User')
-	})
+    .get('/user', (c) => {
+        return c.text('Hello User')
+    })
 
 const app = new Hono()
-	.route('/api', subRouter)
+    .route('/api', subRouter)
 ```
 
 :::
@@ -240,10 +240,10 @@ const app = new Hono()
 import { Elysia } from 'elysia'
 
 const subRouter = new Elysia({ prefix: '/api' })
-	.get('/user', 'Hello User')
+    .get('/user', 'Hello User')
 
 const app = new Elysia()
-	.use(subRouter)
+    .use(subRouter)
 ```
 
 :::
@@ -274,27 +274,27 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 
 const app = new Hono()
-	.patch(
-		'/user/:id',
-		zValidator(
-			'param',
-			z.object({
-				id: z.coerce.number()
-			})
-		),
-		zValidator(
-			'json',
-			z.object({
-				name: z.string()
-			})
-		),
-		(c) => {
-			return c.json({
-				params: c.req.param(),
-				body: c.req.json()
-			})
-		}
-	)
+    .patch(
+        '/user/:id',
+        zValidator(
+            'param',
+            z.object({
+                id: z.coerce.number()
+            })
+        ),
+        zValidator(
+            'json',
+            z.object({
+                name: z.string()
+            })
+        ),
+        (c) => {
+            return c.json({
+                params: c.req.param(),
+                body: c.req.json()
+            })
+        }
+    )
 ```
 
 :::
@@ -314,18 +314,18 @@ const app = new Hono()
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
-	.patch('/user/:id', ({ params, body }) => ({
-		params,
-		body
-	}),
-	{
-		params: t.Object({
-			id: t.Number()
-		}),
-		body: t.Object({
-			name: t.String()
-		})
-	})
+    .patch('/user/:id', ({ params, body }) => ({
+        params,
+        body
+    }),
+    {
+        params: t.Object({
+            id: t.Number()
+        }),
+        body: t.Object({
+            name: t.String()
+        })
+    })
 ```
 
 ```ts twoslash [Elysia Zod]
@@ -333,18 +333,18 @@ import { Elysia } from 'elysia'
 import { z } from 'zod'
 
 const app = new Elysia()
-	.patch('/user/:id', ({ params, body }) => ({
-		params,
-		body
-	}),
-	{
-		params: z.object({
-			id: z.number()
-		}),
-		body: z.object({
-			name: z.string()
-		})
-	})
+    .patch('/user/:id', ({ params, body }) => ({
+        params,
+        body
+    }),
+    {
+        params: z.object({
+            id: z.number()
+        }),
+        body: z.object({
+            name: z.string()
+        })
+    })
 ```
 
 ```ts twoslash [Elysia Valibot]
@@ -352,18 +352,18 @@ import { Elysia } from 'elysia'
 import * as v from 'valibot'
 
 const app = new Elysia()
-	.patch('/user/:id', ({ params, body }) => ({
-		params,
-		body
-	}),
-	{
-		params: v.object({
-			id: v.number()
-		}),
-		body: v.object({
-			name: v.string()
-		})
-	})
+    .patch('/user/:id', ({ params, body }) => ({
+        params,
+        body
+    }),
+    {
+        params: v.object({
+            id: v.number()
+        }),
+        body: v.object({
+            name: v.string()
+        })
+    })
 ```
 
 :::
@@ -396,26 +396,26 @@ import { zValidator } from '@hono/zod-validator'
 import { fileTypeFromBlob } from 'file-type'
 
 const app = new Hono()
-	.post(
-		'/upload',
-		zValidator(
-			'form',
-			z.object({
-				file: z.instanceof(File)
-			})
-		),
-		async (c) => {
-			const body = await c.req.parseBody()
-	
-			const type = await fileTypeFromBlob(body.image as File)
-			if (!type || !type.mime.startsWith('image/')) {
-				c.status(422)
-				return c.text('File is not a valid image')
-			}
-	
-			return new Response(body.image)
-		}
-	)
+    .post(
+        '/upload',
+        zValidator(
+            'form',
+            z.object({
+                file: z.instanceof(File)
+            })
+        ),
+        async (c) => {
+            const body = await c.req.parseBody()
+    
+            const type = await fileTypeFromBlob(body.image as File)
+            if (!type || !type.mime.startsWith('image/')) {
+                c.status(422)
+                return c.text('File is not a valid image')
+            }
+    
+            return new Response(body.image)
+        }
+    )
 ```
 
 :::
@@ -435,13 +435,13 @@ const app = new Hono()
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
-	.post('/upload', ({ body }) => body.file, {
-		body: t.Object({
-			file: t.File({
-				type: 'image'
-			})
-		})
-	})
+    .post('/upload', ({ body }) => body.file, {
+        body: t.Object({
+            file: t.File({
+                type: 'image'
+            })
+        })
+    })
 ```
 
 :::
@@ -477,29 +477,29 @@ While Hono has a single flow for request pipeline in order, Elysia can intercept
 import { Hono } from 'hono'
 
 const app = new Hono()
-	// Global middleware
-	.use(async (c, next) => {
-		console.log(`${c.method} ${c.url}`)
-	
-		await next()
-	})
-	.get(
-		'/protected',
-		// Route-specific middleware
-		async (c, next) => {
-		  	const token = c.headers.authorization
-	
-		  	if (!token) {
-				c.status(401)
-		   		return c.text('Unauthorized')
-			}
-	
-		  	await next()
-		},
-		(req, res) => {
-	  		res.send('Protected route')
-		}
-	)
+    // Global middleware
+    .use(async (c, next) => {
+        console.log(`${c.method} ${c.url}`)
+    
+        await next()
+    })
+    .get(
+        '/protected',
+        // Route-specific middleware
+        async (c, next) => {
+              const token = c.headers.authorization
+    
+              if (!token) {
+                c.status(401)
+                   return c.text('Unauthorized')
+            }
+    
+              await next()
+        },
+        (req, res) => {
+              res.send('Protected route')
+        }
+    )
 ```
 
 :::
@@ -519,17 +519,17 @@ const app = new Hono()
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-	// Global middleware
-	.onRequest(({ method, path }) => {
-		console.log(`${method} ${path}`)
-	})
-	// Route-specific middleware
-	.get('/protected', () => 'protected', {
-		beforeHandle({ status, headers }) {
-  			if (!headers.authorizaton)
-     			return status(401)
-		}
-	})
+    // Global middleware
+    .onRequest(({ method, path }) => {
+        console.log(`${method} ${path}`)
+    })
+    // Route-specific middleware
+    .get('/protected', () => 'protected', {
+        beforeHandle({ status, headers }) {
+              if (!headers.authorizaton)
+                 return status(401)
+        }
+    })
 ```
 
 :::
@@ -562,34 +562,34 @@ import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory'
 
 const getVersion = createMiddleware(async (c, next) => {
-	c.set('version', 2)
+    c.set('version', 2)
 
-	await next()
+    await next()
 })
 
 const authenticate = createMiddleware(async (c, next) => {
-	const token = c.req.header('authorization')
+    const token = c.req.header('authorization')
 
-	if (!token) {
-		c.status(401)
-		return c.text('Unauthorized')
-	}
+    if (!token) {
+        c.status(401)
+        return c.text('Unauthorized')
+    }
 
-	c.set('token', token.split(' ')[1])
+    c.set('token', token.split(' ')[1])
 
-	await next()
+    await next()
 })
 
 const app = new Hono()
-	.use(getVersion)
-	.get('/version', getVersion, (c) => {
-		return c.text(c.get('version') + '')
-	})
-	.post('/user', authenticate, async (c) => {
-		c.get('version')
-	
-		return c.text(c.get('token'))
-	})
+    .use(getVersion)
+    .get('/version', getVersion, (c) => {
+        return c.text(c.get('version') + '')
+    })
+    .post('/user', authenticate, async (c) => {
+        c.get('version')
+    
+        return c.text(c.get('token'))
+    })
 ```
 
 :::
@@ -609,24 +609,24 @@ const app = new Hono()
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-	.decorate('version', 2)
-	.get('/version', ({ version }) => version)
-	.resolve(({ status, headers: { authorization } }) => {
-		if(!authorization?.startsWith('Bearer '))
-			return status(401)
+    .decorate('version', 2)
+    .get('/version', ({ version }) => version)
+    .resolve(({ status, headers: { authorization } }) => {
+        if(!authorization?.startsWith('Bearer '))
+            return status(401)
 
-		return {
-			token: authorization.split(' ')[1]
-		}
-	})
-	.get('/token', ({ token, version }) => {
-		version
-		//  ^?
+        return {
+            token: authorization.split(' ')[1]
+        }
+    })
+    .get('/token', ({ token, version }) => {
+        version
+        //  ^?
 
 
-		return token
-		//       ^?
-	})
+        return token
+        //       ^?
+    })
 ```
 
 :::
@@ -644,10 +644,10 @@ While Hono can, use `declare module` to extend the `ContextVariableMap` interfac
 
 ```ts
 declare module 'hono' {
-  	interface ContextVariableMap {
-    	version: number
-  		token: string
-  	}
+      interface ContextVariableMap {
+        version: number
+          token: string
+      }
 }
 ```
 > This is required for the above Hono example to work, which doesn't offers sounds type safety
@@ -663,10 +663,10 @@ Hono use a callback function to define a reusable route-specific middleware, whi
 
 ```ts twoslash [Hono]
 const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
+    return {
+        name: 'Jane Doe',
+        role: 'admin' as const
+    }
 }
 // ---cut---
 // @errors: 2339 2589 2769
@@ -674,22 +674,22 @@ import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory'
 
 const role = (role: 'user' | 'admin') => createMiddleware(async (c, next) => {
-	const user = findUser(c.req.header('Authorization'))
+    const user = findUser(c.req.header('Authorization'))
 
-	if(user.role !== role) {
-		c.status(401)
-		return c.text('Unauthorized')
-	}
+    if(user.role !== role) {
+        c.status(401)
+        return c.text('Unauthorized')
+    }
 
-	c.set('user', user)
+    c.set('user', user)
 
-	await next()
+    await next()
 })
 
 const app = new Hono()
-	.get('/user/:id', role('admin'), (c) => {
-		return c.json(c.get('user'))
-	})
+    .get('/user/:id', role('admin'), (c) => {
+        return c.json(c.get('user'))
+    })
 ```
 
 :::
@@ -707,33 +707,33 @@ const app = new Hono()
 
 ```ts twoslash [Elysia]
 const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
+    return {
+        name: 'Jane Doe',
+        role: 'admin' as const
+    }
 }
 // ---cut---
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-	.macro({
-		role: (role: 'user' | 'admin') => ({
-			resolve({ status, headers: { authorization } }) {
-				const user = findUser(authorization)
+    .macro({
+        role: (role: 'user' | 'admin') => ({
+            resolve({ status, headers: { authorization } }) {
+                const user = findUser(authorization)
 
-				if(user.role !== role)
-					return status(401)
+                if(user.role !== role)
+                    return status(401)
 
-				return {
-					user
-				}
-			}
-		})
-	})
-	.get('/token', ({ user }) => user, {
-	//                 ^?
-		role: 'admin'
-	})
+                return {
+                    user
+                }
+            }
+        })
+    })
+    .get('/token', ({ user }) => user, {
+    //                 ^?
+        role: 'admin'
+    })
 ```
 
 :::
@@ -761,28 +761,28 @@ Hono provide a `onError` function which apply to all routes while Elysia provide
 import { Hono } from 'hono'
 
 class CustomError extends Error {
-	constructor(message: string) {
-		super(message)
-		this.name = 'CustomError'
-	}
+    constructor(message: string) {
+        super(message)
+        this.name = 'CustomError'
+    }
 }
 
 const app = new Hono()
-	// global error handler
-	.onError((error, c) => {
-		if(error instanceof CustomError) {
-			c.status(500)
-	
-			return c.json({
-				message: 'Something went wrong!',
-				error
-			})
-		}
-	})
-	// route-specific error handler
-	.get('/error', (req, res) => {
-		throw new CustomError('oh uh')
-	})
+    // global error handler
+    .onError((error, c) => {
+        if(error instanceof CustomError) {
+            c.status(500)
+    
+            return c.json({
+                message: 'Something went wrong!',
+                error
+            })
+        }
+    })
+    // route-specific error handler
+    .get('/error', (req, res) => {
+        throw new CustomError('oh uh')
+    })
 ```
 
 :::
@@ -802,52 +802,52 @@ const app = new Hono()
 import { Elysia } from 'elysia'
 
 class CustomError extends Error {
-	// Optional: custom HTTP status code
-	status = 500
+    // Optional: custom HTTP status code
+    status = 500
 
-	constructor(message: string) {
-		super(message)
-		this.name = 'CustomError'
-	}
+    constructor(message: string) {
+        super(message)
+        this.name = 'CustomError'
+    }
 
-	// Optional: what should be sent to the client
-	toResponse() {
-		return {
-			message: "If you're seeing this, our dev forgot to handle this error",
-			error: this
-		}
-	}
+    // Optional: what should be sent to the client
+    toResponse() {
+        return {
+            message: "If you're seeing this, our dev forgot to handle this error",
+            error: this
+        }
+    }
 }
 
 const app = new Elysia()
-	// Optional: register custom error class
-	.error({
-		CUSTOM: CustomError,
-	})
-	// Global error handler
-	.onError(({ error, code }) => {
-		if(code === 'CUSTOM')
-		// ^?
+    // Optional: register custom error class
+    .error({
+        CUSTOM: CustomError,
+    })
+    // Global error handler
+    .onError(({ error, code }) => {
+        if(code === 'CUSTOM')
+        // ^?
 
 
 
 
-			return {
-				message: 'Something went wrong!',
-				error
-			}
-	})
-	.get('/error', () => {
-		throw new CustomError('oh uh')
-	}, {
-		// Optional: route specific error handler
-		error({ error }) {
-			return {
-				message: 'Only for this route!',
-				error
-			}
-		}
-	})
+            return {
+                message: 'Something went wrong!',
+                error
+            }
+    })
+    .get('/error', () => {
+        throw new CustomError('oh uh')
+    }, {
+        // Optional: route specific error handler
+        error({ error }) {
+            return {
+                message: 'Only for this route!',
+                error
+            }
+        }
+    })
 ```
 
 :::
@@ -885,12 +885,12 @@ Hono encapsulate plugin side-effect, while Elysia give you a control over side-e
 import { Hono } from 'hono'
 
 const subRouter = new Hono()
-	.get('/user', (c) => {
-		return c.text('Hello User')
-	})
+    .get('/user', (c) => {
+        return c.text('Hello User')
+    })
 
 const app = new Hono()
-	.route('/api', subRouter)
+    .route('/api', subRouter)
 ```
 
 :::
@@ -910,10 +910,10 @@ const app = new Hono()
 import { Elysia } from 'elysia'
 
 const subRouter = new Elysia()
-	.onBeforeHandle(({ status, headers: { authorization } }) => {
-		if(!authorization?.startsWith('Bearer '))
-			return status(401)
-   	})
+    .onBeforeHandle(({ status, headers: { authorization } }) => {
+        if(!authorization?.startsWith('Bearer '))
+            return status(401)
+       })
 
 const app = new Elysia()
     .get('/', 'Hello World')
@@ -941,12 +941,12 @@ However, Elysia can explicitly stated which plugin should have side-effect by de
 import { Elysia } from 'elysia'
 
 const subRouter = new Elysia()
-	.onBeforeHandle(({ status, headers: { authorization } }) => {
-		if(!authorization?.startsWith('Bearer '))
-			return status(401)
-   	})
-	// Scoped to parent instance but not beyond
-	.as('scoped') // [!code ++]
+    .onBeforeHandle(({ status, headers: { authorization } }) => {
+        if(!authorization?.startsWith('Bearer '))
+            return status(401)
+       })
+    // Scoped to parent instance but not beyond
+    .as('scoped') // [!code ++]
 
 const app = new Elysia()
     .get('/', 'Hello World')
@@ -975,20 +975,20 @@ import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory'
 
 const middleware = createMiddleware(async (c, next) => {
-	console.log('called')
+    console.log('called')
 
-	await next()
+    await next()
 })
 
 const subRouter = new Hono()
-	.use(middleware)
-	.get('/main', (c) => c.text('Hello from main!'))
-	.use(middleware)
-	// This would log twice
-	.get('/sub', (c) => c.text('Hello from sub router!'))
+    .use(middleware)
+    .get('/main', (c) => c.text('Hello from main!'))
+    .use(middleware)
+    // This would log twice
+    .get('/sub', (c) => c.text('Hello from sub router!'))
 
 const app = new Hono()
-	.route('/sub', subRouter)
+    .route('/sub', subRouter)
 
 export default app
 ```
@@ -999,20 +999,20 @@ In this scenario, Elysia offers a plugin deduplication mechanism to prevent dupl
 import { Elysia } from 'elysia'
 
 const subRouter = new Elysia({ name: 'subRouter' }) // [!code ++]
-	.onBeforeHandle(({ status, headers: { authorization } }) => {
-		if(!authorization?.startsWith('Bearer '))
-			return status(401)
-   	})
-	.as('scoped')
+    .onBeforeHandle(({ status, headers: { authorization } }) => {
+        if(!authorization?.startsWith('Bearer '))
+            return status(401)
+       })
+    .as('scoped')
 
 const app = new Elysia()
-	.get('/', 'Hello World')
-	.use(subRouter)
-	.use(subRouter) // [!code ++]
-	.use(subRouter) // [!code ++]
-	.use(subRouter) // [!code ++]
-	// side-effect only called once
-	.get('/side-effect', () => 'hi')
+    .get('/', 'Hello World')
+    .use(subRouter)
+    .use(subRouter) // [!code ++]
+    .use(subRouter) // [!code ++]
+    .use(subRouter) // [!code ++]
+    // side-effect only called once
+    .get('/side-effect', () => 'hi')
 ```
 
 By using a unique `name`, Elysia will apply the plugin only once, and will not cause duplicated side-effect.
@@ -1031,19 +1031,19 @@ import { Hono } from 'hono'
 import { getSignedCookie, setSignedCookie } from 'hono/cookie'
 
 const app = new Hono()
-	.get('/', async (c) => {
-		const name = await getSignedCookie(c, 'secret', 'name')
-	
-		await setSignedCookie(
-			c,
-			'name',
-			'value',
-			'secret',
-			{
-				maxAge: 1000,
-			}
-		)
-	})
+    .get('/', async (c) => {
+        const name = await getSignedCookie(c, 'secret', 'name')
+    
+        await setSignedCookie(
+            c,
+            'name',
+            'value',
+            'secret',
+            {
+                maxAge: 1000,
+            }
+        )
+    })
 ```
 
 :::
@@ -1063,18 +1063,18 @@ const app = new Hono()
 import { Elysia } from 'elysia'
 
 const app = new Elysia({
-	cookie: {
-		secret: 'secret'
-	}
+    cookie: {
+        secret: 'secret'
+    }
 })
-	.get('/', ({ cookie: { name } }) => {
-		// signature verification is handle automatically
-		name.value
+    .get('/', ({ cookie: { name } }) => {
+        // signature verification is handle automatically
+        name.value
 
-		// cookie signature is signed automatically
-		name.value = 'value'
-		name.maxAge = 1000 * 60 * 60 * 24
-	})
+        // cookie signature is signed automatically
+        name.value = 'value'
+        name.maxAge = 1000 * 60 * 60 * 24
+    })
 ```
 
 :::
@@ -1106,12 +1106,12 @@ import { swaggerUI } from '@hono/swagger-ui'
 import { z } from '@hono/zod-openapi'
 
 const model = z.array(
-	z.object({
-		name: z.string().openapi({
-			description: 'first name only'
-		}),
-		age: z.number()
-	})
+    z.object({
+        name: z.string().openapi({
+            description: 'first name only'
+        }),
+        age: z.number()
+    })
 )
 
 const detail = await resolver(model).builder()
@@ -1119,47 +1119,47 @@ const detail = await resolver(model).builder()
 console.log(detail)
 
 const app = new Hono()
-	.post(
-		'/',
-		zodValidator('json', model),
-		describeRoute({
-			validateResponse: true,
-			summary: 'Create user',
-			requestBody: {
-				content: {
-					'application/json': { schema: detail.schema }
-				}
-			},
-			responses: {
-				201: {
-					description: 'User created',
-					content: {
-						'application/json': { schema: resolver(model) }
-					}
-				}
-			}
-		}),
-		(c) => {
-			c.status(201)
-			return c.json(c.req.valid('json'))
-		}
-	)
-	.get('/ui', swaggerUI({ url: '/doc' }))
-	.get(
-		'/doc',
-		openAPISpecs(app, {
-			documentation: {
-				info: {
-					title: 'Hono API',
-					version: '1.0.0',
-					description: 'Greeting API'
-				},
-				components: {
-					...detail.components
-				}
-			}
-		})
-	)
+    .post(
+        '/',
+        zodValidator('json', model),
+        describeRoute({
+            validateResponse: true,
+            summary: 'Create user',
+            requestBody: {
+                content: {
+                    'application/json': { schema: detail.schema }
+                }
+            },
+            responses: {
+                201: {
+                    description: 'User created',
+                    content: {
+                        'application/json': { schema: resolver(model) }
+                    }
+                }
+            }
+        }),
+        (c) => {
+            c.status(201)
+            return c.json(c.req.valid('json'))
+        }
+    )
+    .get('/ui', swaggerUI({ url: '/doc' }))
+    .get(
+        '/doc',
+        openAPISpecs(app, {
+            documentation: {
+                info: {
+                    title: 'Hono API',
+                    version: '1.0.0',
+                    description: 'Greeting API'
+                },
+                components: {
+                    ...detail.components
+                }
+            }
+        })
+    )
 
 export default app
 ```
@@ -1182,25 +1182,25 @@ import { Elysia, t } from 'elysia'
 import { openapi } from '@elysiajs/openapi' // [!code ++]
 
 const app = new Elysia()
-	.use(openapi()) // [!code ++]
-	.model({
-		user: t.Array(
-			t.Object({
-				name: t.String(),
-				age: t.Number()
-			})
-		)
-	})
-	.post('/users', ({ body }) => body, {
-	//                  ^?
-		body: 'user',
-		response: {
-			201: 'user'
-		},
-		detail: {
-			summary: 'Create user'
-		}
-	})
+    .use(openapi()) // [!code ++]
+    .model({
+        user: t.Array(
+            t.Object({
+                name: t.String(),
+                age: t.Number()
+            })
+        )
+    })
+    .post('/users', ({ body }) => body, {
+    //                  ^?
+        body: 'user',
+        response: {
+            201: 'user'
+        },
+        detail: {
+            summary: 'Create user'
+        }
+    })
 
 ```
 
@@ -1236,15 +1236,15 @@ import { Hono } from 'hono'
 import { describe, it, expect } from 'vitest'
 
 const app = new Hono()
-	.get('/', (c) => c.text('Hello World'))
+    .get('/', (c) => c.text('Hello World'))
 
 describe('GET /', () => {
-	it('should return Hello World', async () => {
-		const res = await app.request('/')
+    it('should return Hello World', async () => {
+        const res = await app.request('/')
 
-		expect(res.status).toBe(200)
-		expect(await res.text()).toBe('Hello World')
-	})
+        expect(res.status).toBe(200)
+        expect(await res.text()).toBe('Hello World')
+    })
 })
 ```
 
@@ -1266,17 +1266,17 @@ import { Elysia } from 'elysia'
 import { describe, it, expect } from 'vitest'
 
 const app = new Elysia()
-	.get('/', 'Hello World')
+    .get('/', 'Hello World')
 
 describe('GET /', () => {
-	it('should return Hello World', async () => {
-		const res = await app.handle(
-			new Request('http://localhost')
-		)
+    it('should return Hello World', async () => {
+        const res = await app.handle(
+            new Request('http://localhost')
+        )
 
-		expect(res.status).toBe(200)
-		expect(await res.text()).toBe('Hello World')
-	})
+        expect(res.status).toBe(200)
+        expect(await res.text()).toBe('Hello World')
+    })
 })
 ```
 
@@ -1302,13 +1302,13 @@ const app = new Elysia().get('/hello', 'Hello World')
 const api = treaty(app)
 
 describe('GET /', () => {
-	it('should return Hello World', async () => {
-		const { data, error, status } = await api.hello.get()
+    it('should return Hello World', async () => {
+        const { data, error, status } = await api.hello.get()
 
-		expect(status).toBe(200)
-		expect(data).toBe('Hello World')
-		//      ^?
-	})
+        expect(status).toBe(200)
+        expect(data).toBe('Hello World')
+        //      ^?
+    })
 })
 ```
 
@@ -1328,23 +1328,23 @@ import { z } from 'zod'
 import { zValidator } from '@hono/zod-validator'
 
 const app = new Hono()
-	.post(
-		'/mirror',
-		zValidator(
-			'json',
-			z.object({
-				message: z.string()
-			})
-		),
-		(c) => c.json(c.req.valid('json'))
-	)
+    .post(
+        '/mirror',
+        zValidator(
+            'json',
+            z.object({
+                message: z.string()
+            })
+        ),
+        (c) => c.json(c.req.valid('json'))
+    )
 
 const client = hc<typeof app>('/')
 
 const response = await client.mirror.$post({
-	json: {
-		message: 'Hello, world!'
-	}
+    json: {
+        message: 'Hello, world!'
+    }
 })
 
 const data = await response.json()
@@ -1375,21 +1375,21 @@ import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'
 
 const app = new Elysia()
-	.post('/mirror', ({ body }) => body, {
-		body: t.Object({
-			message: t.String()
-		})
-	})
+    .post('/mirror', ({ body }) => body, {
+        body: t.Object({
+            message: t.String()
+        })
+    })
 
 const api = treaty(app)
 
 const { data, error } = await api.mirror.post({
-	message: 'Hello World'
+    message: 'Hello World'
 })
 
 if(error)
-	throw error
-	//     ^?
+    throw error
+    //     ^?
 
 
 
@@ -1460,13 +1460,13 @@ While Hono offers a broad compatibility with multiple runtimes, especially with 
 Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
-	<Card title="From Express" href="/migrate/from-express">
-		Comparison between tRPC and Elysia
-	</Card>
+    <Card title="From Express" href="/migrate/from-express">
+        Comparison between tRPC and Elysia
+    </Card>
     <Card title="From Fastify" href="/migrate/from-fastify">
-  		Comparison between Fastify and Elysia
+          Comparison between Fastify and Elysia
     </Card>
     <Card title="From tRPC" href="/migrate/from-trpc">
-  		Comparison between tRPC and Elysia
+          Comparison between tRPC and Elysia
     </Card>
 </Deck>
