@@ -82,15 +82,13 @@ Both use a single `Context` parameters to handle request and response, and retur
 import { Hono } from 'hono'
 
 const app = new Hono()
-
-app.get('/', (c) => {
-    return c.text('Hello World')
-})
-
-app.post('/id/:id', (c) => {
-	c.status(201)
-    return c.text(req.params.id)
-})
+	.get('/', (c) => {
+	    return c.text('Hello World')
+	})
+	.post('/id/:id', (c) => {
+	    c.status(201)
+	    return c.text(req.params.id)
+	})
 
 export default app
 ```
@@ -153,14 +151,13 @@ Hono use a function to parse query, header, and body manually while Elysia autom
 import { Hono } from 'hono'
 
 const app = new Hono()
-
-app.post('/user', async (c) => {
-	const limit = c.req.query('limit')
-    const { name } = await c.body()
-    const auth = c.req.header('authorization')
-
-    return c.json({ limit, name, auth })
-})
+	.post('/user', async (c) => {
+		const limit = c.req.query('limit')
+	    const { name } = await c.body()
+	    const auth = c.req.header('authorization')
+	
+	    return c.json({ limit, name, auth })
+	})
 ```
 
 :::
@@ -218,14 +215,12 @@ Both can inherits another instance as a router, but Elysia treat every instances
 import { Hono } from 'hono'
 
 const subRouter = new Hono()
-
-subRouter.get('/user', (c) => {
-	return c.text('Hello User')
-})
+	.get('/user', (c) => {
+		return c.text('Hello User')
+	})
 
 const app = new Hono()
-
-app.route('/api', subRouter)
+	.route('/api', subRouter)
 ```
 
 :::
@@ -279,28 +274,27 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 
 const app = new Hono()
-
-app.patch(
-	'/user/:id',
-	zValidator(
-		'param',
-		z.object({
-			id: z.coerce.number()
-		})
-	),
-	zValidator(
-		'json',
-		z.object({
-			name: z.string()
-		})
-	),
-	(c) => {
-		return c.json({
-			params: c.req.param(),
-			body: c.req.json()
-		})
-	}
-)
+	.patch(
+		'/user/:id',
+		zValidator(
+			'param',
+			z.object({
+				id: z.coerce.number()
+			})
+		),
+		zValidator(
+			'json',
+			z.object({
+				name: z.string()
+			})
+		),
+		(c) => {
+			return c.json({
+				params: c.req.param(),
+				body: c.req.json()
+			})
+		}
+	)
 ```
 
 :::
@@ -402,27 +396,26 @@ import { zValidator } from '@hono/zod-validator'
 import { fileTypeFromBlob } from 'file-type'
 
 const app = new Hono()
-
-app.post(
-	'/upload',
-	zValidator(
-		'form',
-		z.object({
-			file: z.instanceof(File)
-		})
-	),
-	async (c) => {
-		const body = await c.req.parseBody()
-
-		const type = await fileTypeFromBlob(body.image as File)
-		if (!type || !type.mime.startsWith('image/')) {
-			c.status(422)
-			return c.text('File is not a valid image')
+	.post(
+		'/upload',
+		zValidator(
+			'form',
+			z.object({
+				file: z.instanceof(File)
+			})
+		),
+		async (c) => {
+			const body = await c.req.parseBody()
+	
+			const type = await fileTypeFromBlob(body.image as File)
+			if (!type || !type.mime.startsWith('image/')) {
+				c.status(422)
+				return c.text('File is not a valid image')
+			}
+	
+			return new Response(body.image)
 		}
-
-		return new Response(body.image)
-	}
-)
+	)
 ```
 
 :::
@@ -484,31 +477,29 @@ While Hono has a single flow for request pipeline in order, Elysia can intercept
 import { Hono } from 'hono'
 
 const app = new Hono()
-
-// Global middleware
-app.use(async (c, next) => {
-	console.log(`${c.method} ${c.url}`)
-
-	await next()
-})
-
-app.get(
-	'/protected',
-	// Route-specific middleware
-	async (c, next) => {
-	  	const token = c.headers.authorization
-
-	  	if (!token) {
-			c.status(401)
-	   		return c.text('Unauthorized')
+	// Global middleware
+	.use(async (c, next) => {
+		console.log(`${c.method} ${c.url}`)
+	
+		await next()
+	})
+	.get(
+		'/protected',
+		// Route-specific middleware
+		async (c, next) => {
+		  	const token = c.headers.authorization
+	
+		  	if (!token) {
+				c.status(401)
+		   		return c.text('Unauthorized')
+			}
+	
+		  	await next()
+		},
+		(req, res) => {
+	  		res.send('Protected route')
 		}
-
-	  	await next()
-	},
-	(req, res) => {
-  		res.send('Protected route')
-	}
-)
+	)
 ```
 
 :::
@@ -570,18 +561,10 @@ For example, you can customize context in a **type safe** manner using [derive](
 import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory'
 
-const app = new Hono()
-
 const getVersion = createMiddleware(async (c, next) => {
 	c.set('version', 2)
 
 	await next()
-})
-
-app.use(getVersion)
-
-app.get('/version', getVersion, (c) => {
-	return c.text(c.get('version') + '')
 })
 
 const authenticate = createMiddleware(async (c, next) => {
@@ -597,11 +580,16 @@ const authenticate = createMiddleware(async (c, next) => {
 	await next()
 })
 
-app.post('/user', authenticate, async (c) => {
-	c.get('version')
-
-	return c.text(c.get('token'))
-})
+const app = new Hono()
+	.use(getVersion)
+	.get('/version', getVersion, (c) => {
+		return c.text(c.get('version') + '')
+	})
+	.post('/user', authenticate, async (c) => {
+		c.get('version')
+	
+		return c.text(c.get('token'))
+	})
 ```
 
 :::
@@ -685,8 +673,6 @@ const findUser = (authorization?: string) => {
 import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory'
 
-const app = new Hono()
-
 const role = (role: 'user' | 'admin') => createMiddleware(async (c, next) => {
 	const user = findUser(c.req.header('Authorization'))
 
@@ -700,9 +686,10 @@ const role = (role: 'user' | 'admin') => createMiddleware(async (c, next) => {
 	await next()
 })
 
-app.get('/user/:id', role('admin'), (c) => {
-	return c.json(c.get('user'))
-})
+const app = new Hono()
+	.get('/user/:id', role('admin'), (c) => {
+		return c.json(c.get('user'))
+	})
 ```
 
 :::
@@ -773,8 +760,6 @@ Hono provide a `onError` function which apply to all routes while Elysia provide
 ```ts
 import { Hono } from 'hono'
 
-const app = new Hono()
-
 class CustomError extends Error {
 	constructor(message: string) {
 		super(message)
@@ -782,22 +767,22 @@ class CustomError extends Error {
 	}
 }
 
-// global error handler
-app.onError((error, c) => {
-	if(error instanceof CustomError) {
-		c.status(500)
-
-		return c.json({
-			message: 'Something went wrong!',
-			error
-		})
-	}
-})
-
-// route-specific error handler
-app.get('/error', (req, res) => {
-	throw new CustomError('oh uh')
-})
+const app = new Hono()
+	// global error handler
+	.onError((error, c) => {
+		if(error instanceof CustomError) {
+			c.status(500)
+	
+			return c.json({
+				message: 'Something went wrong!',
+				error
+			})
+		}
+	})
+	// route-specific error handler
+	.get('/error', (req, res) => {
+		throw new CustomError('oh uh')
+	})
 ```
 
 :::
@@ -900,14 +885,12 @@ Hono encapsulate plugin side-effect, while Elysia give you a control over side-e
 import { Hono } from 'hono'
 
 const subRouter = new Hono()
-
-subRouter.get('/user', (c) => {
-	return c.text('Hello User')
-})
+	.get('/user', (c) => {
+		return c.text('Hello User')
+	})
 
 const app = new Hono()
-
-app.route('/api', subRouter)
+	.route('/api', subRouter)
 ```
 
 :::
@@ -997,18 +980,15 @@ const middleware = createMiddleware(async (c, next) => {
 	await next()
 })
 
-const app = new Hono()
 const subRouter = new Hono()
+	.use(middleware)
+	.get('/main', (c) => c.text('Hello from main!'))
+	.use(middleware)
+	// This would log twice
+	.get('/sub', (c) => c.text('Hello from sub router!'))
 
-app.use(middleware)
-app.get('/main', (c) => c.text('Hello from main!'))
-
-subRouter.use(middleware)
-
-// This would log twice
-subRouter.get('/sub', (c) => c.text('Hello from sub router!'))
-
-app.route('/sub', subRouter)
+const app = new Hono()
+	.route('/sub', subRouter)
 
 export default app
 ```
@@ -1051,20 +1031,19 @@ import { Hono } from 'hono'
 import { getSignedCookie, setSignedCookie } from 'hono/cookie'
 
 const app = new Hono()
-
-app.get('/', async (c) => {
-	const name = await getSignedCookie(c, 'secret', 'name')
-
-	await setSignedCookie(
-		c,
-		'name',
-		'value',
-		'secret',
-		{
-			maxAge: 1000,
-		}
-	)
-})
+	.get('/', async (c) => {
+		const name = await getSignedCookie(c, 'secret', 'name')
+	
+		await setSignedCookie(
+			c,
+			'name',
+			'value',
+			'secret',
+			{
+				maxAge: 1000,
+			}
+		)
+	})
 ```
 
 :::
@@ -1126,8 +1105,6 @@ import { swaggerUI } from '@hono/swagger-ui'
 
 import { z } from '@hono/zod-openapi'
 
-const app = new Hono()
-
 const model = z.array(
 	z.object({
 		name: z.string().openapi({
@@ -1141,49 +1118,48 @@ const detail = await resolver(model).builder()
 
 console.log(detail)
 
-app.post(
-	'/',
-	zodValidator('json', model),
-	describeRoute({
-		validateResponse: true,
-		summary: 'Create user',
-		requestBody: {
-			content: {
-				'application/json': { schema: detail.schema }
-			}
-		},
-		responses: {
-			201: {
-				description: 'User created',
+const app = new Hono()
+	.post(
+		'/',
+		zodValidator('json', model),
+		describeRoute({
+			validateResponse: true,
+			summary: 'Create user',
+			requestBody: {
 				content: {
-					'application/json': { schema: resolver(model) }
+					'application/json': { schema: detail.schema }
+				}
+			},
+			responses: {
+				201: {
+					description: 'User created',
+					content: {
+						'application/json': { schema: resolver(model) }
+					}
 				}
 			}
+		}),
+		(c) => {
+			c.status(201)
+			return c.json(c.req.valid('json'))
 		}
-	}),
-	(c) => {
-		c.status(201)
-		return c.json(c.req.valid('json'))
-	}
-)
-
-app.get('/ui', swaggerUI({ url: '/doc' }))
-
-app.get(
-	'/doc',
-	openAPISpecs(app, {
-		documentation: {
-			info: {
-				title: 'Hono API',
-				version: '1.0.0',
-				description: 'Greeting API'
-			},
-			components: {
-				...detail.components
+	)
+	.get('/ui', swaggerUI({ url: '/doc' }))
+	.get(
+		'/doc',
+		openAPISpecs(app, {
+			documentation: {
+				info: {
+					title: 'Hono API',
+					version: '1.0.0',
+					description: 'Greeting API'
+				},
+				components: {
+					...detail.components
+				}
 			}
-		}
-	})
-)
+		})
+	)
 
 export default app
 ```
