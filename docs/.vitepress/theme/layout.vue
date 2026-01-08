@@ -240,7 +240,9 @@ function toggleAIForCurrentPage() {
                 <Sparkles :size="21" stroke-width="1.5" />
             </button>
 
-            <Arona v-model="showArona" />
+            <ClientOnly>
+                <Arona v-model="showArona" />
+            </ClientOnly>
         </template>
 
         <template #sidebar-nav-before>
