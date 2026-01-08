@@ -87,7 +87,7 @@ const app = new Hono()
     })
     .post('/id/:id', (c) => {
         c.status(201)
-        return c.text(req.params.id)
+        return c.text(c.req.params.id)
     })
 
 export default app
