@@ -68,6 +68,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Elylog](https://github.com/eajr/elylog) - simple stdout logging library with some customization
 -   [Logify for Elysia.js](https://github.com/0xrasla/logify) - a beautiful, fast, and type-safe logging middleware for Elysia.js applications
 -   [Nice Logger](https://github.com/tanishqmanuja/nice-logger) - not the nicest, but a pretty nice and sweet logger for Elysia.
+-   [LogTape for Elysia](https://logtape.org/manual/integrations#elysia) - structured logging middleware with support for multiple sinks (transports) through [LogTape](https://logtape.org/)
 -   [Sentry](https://github.com/johnny-woodtke/elysiajs-sentry) - capture traces and errors with this [Sentry](https://docs.sentry.io/) plugin
 -   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy on AWS Lambda
 -   [Decorators](https://github.com/gaurishhs/elysia-decorators) - use TypeScript decorators
