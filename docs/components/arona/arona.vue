@@ -1,5 +1,5 @@
 <template>
-    <!-- <Teleport defer to="body"> -->
+     <Teleport defer to="body">
         <AnimatePresence>
             <motion.div
                 v-if="isExpanded && model"
@@ -506,7 +506,7 @@
             :data-sitekey="siteKey"
             data-callback="turnstileCallback"
         />
-    <!-- </Teleport> -->
+     </Teleport>
 </template>
 
 <script lang="ts" setup>
