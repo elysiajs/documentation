@@ -1,6 +1,7 @@
 ---
 title: End-to-End Type Safety - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -28,7 +29,7 @@ import Playground from '../../../components/nearl/playground.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/eden/overview">
 
 # End-to-End Type Safety
 

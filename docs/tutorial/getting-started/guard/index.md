@@ -1,6 +1,7 @@
 ---
 title: Guard - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -25,7 +26,7 @@ import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/plugin#guard">
 
 # Guard
 

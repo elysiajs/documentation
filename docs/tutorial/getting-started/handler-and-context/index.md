@@ -1,6 +1,7 @@
 ---
 title: Handler and Context - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -26,7 +27,7 @@ import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/handler#context">
 
 # Handler and Context
 
@@ -41,7 +42,7 @@ new Elysia()
     .listen(3000)
 ```
 
-A handler can also be an literal value, see <DocLink href="/essential/handler">Handler</DocLink>
+A handler can also be a literal value, see <DocLink href="/essential/handler">Handler</DocLink>
 
 ```ts
 import { Elysia } from 'elysia'

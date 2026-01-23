@@ -119,7 +119,7 @@ watch([current], compute)
 			@apply flex justify-start items-center gap-1 w-full max-w-sm px-3 py-0.75 rounded-xl bg-neutral-100 dark:bg-slate-700 overflow-hidden;
 
 			& > .select {
-				@apply text-blue-500 font-bold px-1 py-0.25 bg-blue-500/10 hover:bg-blue-500/20 dark:bg-blue-500/25 dark:hover:bg-blue-500/40 border border-solid border-blue-500/50 dark:border-blue-500/75 rounded-xl cursor-pointer transition-colors
+				@apply text-blue-500 font-bold px-1 py-0.25 bg-blue-500/10 hover:bg-blue-500/20 dark:bg-blue-500/25 dark:hover:bg-blue-500/40 border border-solid border-blue-500/50 dark:border-blue-500/75 rounded-lg cursor-pointer transition-colors
 			}
 		}
 	}

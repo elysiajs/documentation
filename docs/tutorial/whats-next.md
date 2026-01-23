@@ -1,6 +1,7 @@
 ---
 title: What's Next - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -80,13 +81,13 @@ If you have used other popular frameworks like Express, Fastify, or Hono, you wi
 
 <Deck>
 	<Card title="From Express" href="/migrate/from-express">
-		Comparison between tRPC and Elysia
+		Comparison between Express and Elysia
 	</Card>
     <Card title="From Fastify" href="/migrate/from-fastify">
   		Comparison between Fastify and Elysia
     </Card>
     <Card title="From Hono" href="/migrate/from-hono">
-  		Comparison between tRPC and Elysia
+  		Comparison between Hono and Elysia
     </Card>
     <Card title="From tRPC" href="/migrate/from-trpc">
   		Comparison between tRPC and Elysia
@@ -129,7 +130,7 @@ If you feels like exploring more Elysia feature, check out:
     <Card title="Eden" href="/eden/overview">
     	Learn more about Eden, and how to use it effectively
     </Card>
-    <Card title="Open Telemetry" href="/eden/opentelemetry">
+    <Card title="Open Telemetry" href="/patterns/opentelemetry">
    		Learn how to monitor your application with Open Telemetry
     </Card>
     <Card title="Deploy to Production" href="/patterns/deploys">

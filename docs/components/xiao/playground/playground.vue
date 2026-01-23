@@ -45,11 +45,11 @@
                             class="relative flex flex-col bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-700 rounded-2xl overflow-hidden"
                         >
                             <div
-                                class="absolute w-full h-full opacity-3.75 sm:opacity-7.5 sm:dark:opacity-6.25 bg-no-repeat pointer-events-none"
+                                class="absolute w-full h-full opacity-5 sm:opacity-10 sm:dark:opacity-8 bg-no-repeat pointer-events-none -scale-x-100"
                                 style="
-                                    background-image: url('/assets/elysia_chan.webp');
+                                    background-image: url('/assets/elysia-chan-rev-2.webp');
                                     background-size: 640px;
-                                    background-position: top -12px right -220px;
+                                    background-position: top 0 left -272px;
                                 "
                             />
                             <EditorLayout>
@@ -81,8 +81,6 @@ import { watchDebounced, useWindowSize } from '@vueuse/core'
 import { SplitterGroup, SplitterPanel, SplitterResizeHandle } from 'reka-ui'
 import { usePlaygroundStore } from './store'
 
-import ClientOnly from './components/client-only.vue'
-
 import Aside from './components/aside.vue'
 
 const Doc = defineAsyncComponent(() => import('./components/doc.vue'))
@@ -105,6 +103,7 @@ import type { Testcases } from './types'
 const props = defineProps<{
     code?: string | VirtualFS
     testcases?: Testcases
+    doc?: string
 }>()
 
 const store = usePlaygroundStore()
@@ -115,12 +114,11 @@ if (props.code)
             ? ({ 'index.ts': props.code } as VirtualFS)
             : props.code
 
+if (props.doc) store.doc = props.doc
+
 if (props.testcases) store.testcases = props.testcases
 
 store.load()
-
-if (!store.fs['index.ts'] && props.code) store.run()
-else if (store.fs['index.ts']) store.run({ test: true })
 
 onMounted(() => {
     if (!document.documentElement.classList.contains('overscroll-none'))
@@ -129,6 +127,9 @@ onMounted(() => {
     window.addEventListener('beforeunload', store.save, {
         passive: true
     })
+
+    if (!store.fs['index.ts'] && props.code) store.run()
+    else if (store.fs['index.ts']) store.run({ test: true })
 })
 
 onUnmounted(() => {

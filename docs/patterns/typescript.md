@@ -166,7 +166,7 @@ If you are having a slow type inference issue when using [Eden](/eden/overview),
 
 ```ts [backend/src/index.ts]
 import { Elysia } from 'elysia'
-import { plugin1, plugin2, plugin3 } from from './plugin'
+import { plugin1, plugin2, plugin3 } from './plugin'
 
 const app = new Elysia()
 	.use([plugin1, plugin2, plugin3])

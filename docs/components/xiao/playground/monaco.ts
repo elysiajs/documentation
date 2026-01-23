@@ -189,8 +189,8 @@ export function getOrCreateModel(localPath: string, create = () => '') {
 }
 
 export function removeModel(file: string) {
-	const model = monaco.editor.getModel(getPath(file))
-	if (model) model.dispose()
+    const model = monaco.editor.getModel(getPath(file))
+    if (model) model.dispose()
 }
 
 export const createEditor = ({
@@ -203,8 +203,7 @@ export const createEditor = ({
         strict: true,
         target: monaco.languages.typescript.ScriptTarget.ESNext,
         module: monaco.languages.typescript.ModuleKind.ESNext,
-        moduleResolution:
-            monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+        moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
         noEmit: true
     })
 

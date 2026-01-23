@@ -27,6 +27,13 @@ head:
 <Blogs
   :blogs="[
       {
+        title: '2x faster than Encore - 1 year later',
+		href: '/blog/elysia-v-encore',
+		cover: 'elysia-v-encore.webp',
+		detail: 'After 1.5 year of development, Elysia is now 2x faster than Encore. Updated from the original benchmark, and deep dive into how we achieved this performance.',
+		date: '14 Nov 2025'
+      },
+      {
         title: 'Elysia 1.4 - Supersymmetry',
 		href: '/blog/elysia-14',
 		cover: 'elysia-14.webp',

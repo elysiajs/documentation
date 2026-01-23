@@ -17,7 +17,7 @@ const flyIn = useFlyIn(isInView)
             <header class="flex flex-col w-full lg:w-5/12 text-xl gap-6">
                 <div class="flex flex-col gap-3">
                     <h2
-                        class="text-6xl text-gray-600 dark:text-gray-100 font-medium leading-[4.5rem]"
+                        class="text-5xl md:text-6xl text-gray-600 dark:text-gray-100 font-medium leading-[3.75rem] md:leading-[4.5rem]"
                     >
                         <motion.span class="mr-2" v-bind="flyIn()"
                             >Bring your own</motion.span
@@ -35,7 +35,7 @@ const flyIn = useFlyIn(isInView)
                     >
                         With support for
                         <span
-                            class="text-gradient font-semibold from-blue-400 to-pink-400 ml-1 sm:ml-2 mr-1"
+                            class="text-gradient font-bold from-blue-400 to-pink-400 ml-1 sm:ml-2 mr-1"
                         >
                             Standard Schema
                         </span>
@@ -48,17 +48,15 @@ const flyIn = useFlyIn(isInView)
                     Elysia offers a robust built-in validation, but you can also
                     bring your favorite validator, like
                     <span class="text-gray-700 dark:text-gray-200 font-medium"
-                        >Zod, Valibot, ArkType, Effect </span
-                    >, and more
+                        >Zod, Valibot, ArkType, Effect</span
+                    > and more
                 </motion.p>
                 <motion.p
                     class="lg:max-w-md leading-normal"
                     v-bind="flyIn(0.4)"
                 >
                     With seamless support for type inference, and OpenAPI. You
-                    will feel
-                    <span class="text-pink-400 font-medium">right at home</span
-                    >.
+                    will feel right at home .
                 </motion.p>
                 <!-- <slot name="test-script" /> -->
             </header>

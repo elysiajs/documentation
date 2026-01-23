@@ -1,6 +1,7 @@
 ---
 title: Macro - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -26,7 +27,7 @@ import Playground from '../../../components/nearl/playground.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/patterns/macro">
 
 # Macro
 
@@ -114,7 +115,7 @@ new Elysia()
             if(!isFibonacci(body)) return status(418)
         }
     })
-	.post('/fibo', ({ body }) => body, {
+	.post('/', ({ body }) => body, {
 		isFibonacci: true
 	})
     .listen(3000)

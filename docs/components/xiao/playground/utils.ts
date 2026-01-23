@@ -354,13 +354,7 @@ export const execute = <FS extends VirtualFS>(
 
                 if (e.data.log && onLog) return onLog(e.data.log)
 
-                if (e.data.response) {
-                    try {
-                        setTimeout(worker.terminate, 5000)
-                    } catch {}
-
-                    return resolve(e.data.response)
-                }
+                if (e.data.response) return resolve(e.data.response)
             }
 
             worker.onerror = (e) => {

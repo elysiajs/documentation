@@ -14,7 +14,11 @@ head:
       content: Applying WinterCG interoperable code to run with Elysia or vice-versa.
 ---
 
-# Mount
+<script setup lang="ts">
+import TutorialBadge from '../components/arona/badge.vue'
+</script>
+
+# Mount <TutorialBadge href="/tutorial/features/openapi" />
 [WinterTC](https://wintertc.org/) is a standard for building HTTP Server behind Cloudflare, Deno, Vercel, and others.
 
 It allows web servers to run interoperably across runtimes by using [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response).
@@ -69,23 +73,5 @@ const main = new Elysia()
     .mount('/hono', hono.fetch)
     .listen(3000)
 ```
-
-## Reusing Elysia
-Moreover, you can re-use multiple existing Elysia projects on your server.
-
-```ts
-import { Elysia } from 'elysia'
-
-import A from 'project-a/elysia'
-import B from 'project-b/elysia'
-import C from 'project-c/elysia'
-
-new Elysia()
-    .mount(A)
-    .mount(B)
-    .mount(C)
-```
-
-If an instance passed to `mount` is an Elysia instance, it will be resolved with `use` automatically, providing type-safety and support for Eden by default.
 
 This makes the possibility of an interoperable framework and runtime a reality.

@@ -18,6 +18,7 @@ head:
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
 import Playground from '../components/nearl/playground.vue'
+import TutorialBadge from '../components/arona/badge.vue'
 
 import { Elysia } from 'elysia'
 
@@ -35,15 +36,13 @@ const demo = new Elysia()
 	})
 </script>
 
-# Lifecycle
+# Lifecycle <TutorialBadge href="/tutorial/getting-started/life-cycle" />
 
-Lifecycle events allow you to intercept important events at predefined points, allowing you to customize the behavior of your server as needed.
+Instead of a sequential process, Elysia's request handling is divided into multiple stages called **lifecycle events**.
 
-Elysia's lifecycle can be illustrated as the following.
-![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
-> Click on image to enlarge
+It's designed to separate the process into distinct phases based on their responsibility without interfering with each others.
 
-Below are the request lifecycle events available in Elysia:
+Here are the order of lifecycle events in order:
 
 <Deck>
     <Card title="Request" href="#request">
@@ -59,21 +58,27 @@ Below are the request lifecycle events available in Elysia:
         Custom validation before route handler
     </Card>
     <Card title="After Handle" href="#after-handle">
-        Transform returned value into a new value
+    	Tweak returned value from route handler
     </Card>
     <Card title="Map Response" href="#map-response">
-        Map returned value into a response
+        Map returned value into HTTP response
     </Card>
     <Card title="On Error (Error Handling)" href="#on-error-error-handling">
    		Handle errors thrown in the life-cycle
     </Card>
     <Card title="After Response" href="#after-response">
-        Executed after response sent to the client
+    	Clean up after response is sent
     </Card>
     <Card title="Trace" href="/patterns/trace">
         Audit and capture timespan of each event
     </Card>
 </Deck>
+
+---
+
+Elysia's lifecycle can be illustrated as the following.
+![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
+> Click on image to enlarge
 
 ## Why
 
@@ -706,7 +711,7 @@ const encoder = new TextEncoder()
 
 new Elysia()
     .mapResponse(({ responseValue, set }) => {
-        const isJson = typeof response === 'object'
+        const isJson = typeof responseValue === 'object'
 
         const text = isJson
             ? JSON.stringify(responseValue)

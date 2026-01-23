@@ -20,6 +20,7 @@ import { Elysia, t, ValidationError } from 'elysia'
 import Playground from '../components/nearl/playground.vue'
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
+import TutorialBadge from '../components/arona/badge.vue'
 
 const demo1 = new Elysia()
     .get('/none', () => 'hi')
@@ -64,11 +65,9 @@ const demo4 = new Elysia()
     .get('/query?name=rapi&name=anis&name=neon&squad=counter', ({ query: { id } }) => id)
 </script>
 
-# Validation
+# Validation <TutorialBadge href="/tutorial/getting-started/validation" />
 
-The purpose of creating an API server is to take an input and process it.
-
-JavaScript allows any data to be of any type. Elysia provides a tool to validate data out of the box to ensure that the data is in the correct format.
+Elysia provides a schema to validate data out of the box to ensure that the data is in the correct format.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -230,8 +229,7 @@ Override schema if schema is collide with each others.
 
 ![Elysia run with default override guard showing schema gets override](/blog/elysia-13/schema-override.webp)
 
-### **standalone**
-
+### **standalone** <TutorialBadge href="/tutorial/patterns/standalone-schema" />
 
 Separate collided schema, and runs both independently resulting in both being validated.
 
@@ -325,7 +323,7 @@ new Elysia()
 By providing a file type, Elysia will automatically assume that the content-type is `multipart/form-data`.
 
 ### File (Standard Schema)
-If you're using Standard Schema, it's important that Elysia will not be able to valiate content type automatically similar to `t.File`.
+If you're using Standard Schema, it's important that Elysia will not be able to validate content type automatically similar to `t.File`.
 
 But Elysia export a `fileType` that can be used to validate file type by using magic number.
 
@@ -1163,6 +1161,48 @@ const app = new Elysia()
 ```
 
 This approach not only allows us to separate concerns but also enables us to reuse the model in multiple places while integrating the model into OpenAPI documentation.
+
+<!--### Getting type from model
+To get stored models from `Elysia.model`, we can access the `models` property follows by `name.Schema()` to get the schema definition.
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+import * as z from 'zod'
+
+const app = new Elysia()
+	.model({
+		sign: t.Object({
+			username: t.String(),
+			password: t.String()
+		}),
+		zodSign: z.object({
+			username: z.string(),
+			password: z.string()
+		})
+	})
+
+// For TypeBox
+const sign = app.models.sign.schema
+type sign = typeof sign.static
+//     ^?
+
+
+
+
+
+
+// For Zod
+const zodSign = app.models.zodSign.schema
+type zodSign = z.infer<typeof zodSign>
+//     ^?
+
+
+
+
+// ---cut-after---
+```
+
+`models.<name>.Schema()` will return the original schema definition, then you can follows the library's way of getting the type.-->
 
 ### Multiple Models
 `model` accepts an object with the key as a model name and the value as the model definition. Multiple models are supported by default.

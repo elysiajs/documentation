@@ -25,7 +25,6 @@
 
             <Tab
                 tip="Toggle Elysia AI"
-                :active="store.tab.aside === 'docs'"
                 :side="side"
                 @click="toggleAI"
             >

@@ -1,29 +1,29 @@
 <template>
     <div
-        class="relative w-full h-full border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-900"
-        :class="{ border: store.tab.aside !== null }"
+        class="absolute top-0 z-30 flex justify-center items-end w-full h-full pointer-events-none overflow-hidden"
+        v-if="showParticle"
+        :class="{ 'opacity-0': store.tab.aside !== 'task' }"
     >
         <div
-            class="absolute flex justify-center items-end w-full h-full top-0 z-30 pointer-events-none"
-            v-if="showParticle"
-            :class="{ 'opacity-0': store.tab.aside !== 'task' }"
-        >
-            <div
-                v-confetti="{
-                    particleCount: 100,
-                    force: 1.5,
-                    duration: 4500
-                }"
-            />
-        </div>
+            v-confetti="{
+                particleCount: 175,
+                force: 1.75,
+                duration: 5500
+            }"
+        />
+    </div>
+    <div
+        class="relative w-full h-full border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-900 overflow-x-hidden overflow-y-auto"
+        :class="{ border: store.tab.aside !== null }"
+    >
         <iframe
             class="w-full h-full"
             :class="{ hidden: store.tab.aside !== 'docs' }"
             :src="store.doc"
         />
-        <article class="relative w-full h-full overflow-x-hidden overflow-y-auto">
+        <article class="w-full h-full rounded-2xl">
             <Ray
-                class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none"
+                class="top-0 h-42 opacity-40 dark:opacity-100 pointer-events-none rounded-t-2xl"
             />
 
             <main id="elysia-playground-task" v-if="store.tab.aside === 'task'">

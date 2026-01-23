@@ -1,6 +1,7 @@
 ---
 title: Status and Headers - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -25,7 +26,7 @@ import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/handler#status-and-headers">
 
 # Status
 
@@ -48,9 +49,18 @@ You can also return a status code by returning your response using a `status` fu
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.get('/', ({ status }) => status(418, "I'm a teapot'"))
+	.get('/', ({ status }) => status(418, "I'm a teapot"))
 	.listen(3000)
 ```
+
+The status code can be a number or a string status name. Both of these are equivalent:
+
+```typescript
+status(418, "I'm a teapot")
+status("I'm a teapot", "I'm a teapot")
+```
+
+String status names provide TypeScript autocompletion for all valid HTTP statuses.
 
 See <DocLink href="/essential/handler#status">Status</DocLink>.
 
@@ -92,7 +102,7 @@ See <DocLink href="/essential/handler#set-headers">Headers</DocLink>.
 
 ## Assignment
 
-Let's execrise what we have learned.
+Let's exercise what we have learned.
 
 <template #answer>
 

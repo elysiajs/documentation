@@ -23,16 +23,40 @@ export const testcases = [
         title: 'Enforce Body Schema',
         description:
             "Let's enforce a schema as body for POST `/` endpoint that accept a number.",
-        test: {
-            request: {
-                method: 'POST',
-                url: '/',
-                body: 'XD'
+        test: [
+            {
+                request: {
+                    method: 'POST',
+                    url: '/',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: '"XD"',
+                    cookie: {
+                        session: 'valid'
+                    }
+                },
+                response: {
+                    status: (status) => status === 400 || status === 422
+                }
             },
-            response: {
-                status: (status) => status >= 400 && status < 500
+            {
+                request: {
+                    method: 'POST',
+                    url: '/',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: '5',
+                    cookie: {
+                        session: 'valid'
+                    }
+                },
+                response: {
+                    status: 200
+                }
             }
-        }
+        ]
     },
     {
         title: 'Check if body is in Fibonacci Sequence',
