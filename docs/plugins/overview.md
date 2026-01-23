@@ -121,6 +121,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Elysia Remote DTS](https://github.com/rayriffy/elysia-remote-dts) - A plugin that provide .d.ts types remotely for Eden Treaty to consume.
 -   [Cap Checkpoint plugin for Elysia](https://capjs.js.org/guide/middleware/elysia.html) - Cloudflare-like middleware for Cap, a lightweight, modern open-source CAPTCHA alternative designed using SHA-256 PoW.
 -   [Elysia Background](https://github.com/staciax/elysia-background) - A background task processing plugin for Elysia.js
+-   [Elysia External Session - TS only GitHub package](https://github.com/extend-therapy/elysia-external-session) - A sessions package for redis and SQLite that is extensible and uses current Elysia architecture.
 -   [@fedify/elysia](https://github.com/fedify-dev/fedify/tree/main/packages/elysia) - A plugin that provides seamless integration with [Fedify](https://fedify.dev/), the ActivityPub server framework.
 -   [elysia-healthcheck](https://github.com/iam-medvedev/elysia-healthcheck) - Healthcheck plugin for Elysia.js
 -   [elysia-csrf](https://github.com/lauhon/elysia-csrf) - A CSRF plugin, ported from [express-csrf](https://github.com/expressjs/csurf)
