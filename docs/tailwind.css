@@ -932,10 +932,6 @@ button.copy::after {
 }*/
 
 .VPLocalSearchBox {
-    & > .backdrop {
-        @apply !bg-black/7.5;
-    }
-
     & > .shell {
         /* 688px is the max-width of the content (Vitepress default) */
         @apply !gap-0 md:max-w-[688px] !px-0 !pt-0.5 md:translate-x-2 !bg-white md:!bg-white/70 dark:!bg-gray-900 md:dark:!bg-gray-800/80 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-gray-700 md:shadow-xl shadow-black/5;
@@ -1090,22 +1086,26 @@ button.copy::after {
 }
 
 #local-search {
+	@apply max-w-xs;
+
     & > .DocSearch-Button {
-        @apply clicky h-10 rounded-lg backdrop-blur-sm lg:ml-2 sm:bg-red-50;
+        @apply clicky flex items-center max-w-full sm:w-60 h-10 rounded-xl backdrop-blur-sm lg:ml-2 sm:bg-gray-100/75 dark:sm:bg-gray-800/75 sm:border sm:border-gray-200/50 dark:sm:border-gray-700/50;
         color: var(--docsearch-secondary-text-color);
 
-        @media (width >= 40rem /* 640px */) {
-        	background-color: var(--vp-c-bg-alt);
-        }
-
         & > .DocSearch-Button-Container {
+        	@apply flex justify-start items-center w-full;
+
+         	& > svg {
+          		@apply translate-y-0;
+          	}
+
             & > .DocSearch-Button-Placeholder {
                 @apply pl-2 pr-3 hidden sm:inline;
             }
         }
 
         & > .DocSearch-Button-Keys {
-        	@apply py-0.75 -translate-y-1 hidden sm:inline;
+        	@apply py-0.75 hidden sm:inline;
         }
 
         /*@media screen and (min-width: theme('--breakpoint-md')) {
@@ -1312,5 +1312,18 @@ div[class*='language-'] {
 }
 
 .VPNavBarSearch.search {
-    @apply ml-2 !pl-0;
+    @apply lg:justify-center ml-2 pl-0! lg:pl-12!;
+}
+
+.VPNavBar .title {
+	@apply absolute;
+}
+
+.VPNavBarTitle .title .VPImage.logo {
+	@apply min-w-7 min-h-7;
+}
+
+.VPNavBar .content {
+	@apply lg:pr-8;
+	padding-left: var(--vp-sidebar-width);
 }

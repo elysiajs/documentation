@@ -471,7 +471,7 @@ function toggleAI() {
             <AnimatePresence>
                 <motion.div
                     v-if="showSearch"
-                    class="backdrop"
+                    class="absolute top-0 left-0 block w-full h-screen bg-black/7.5"
                     @click="showSearch = false"
                     :initial="{
                         opacity: 0
