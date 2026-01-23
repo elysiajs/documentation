@@ -17,6 +17,8 @@ head:
 <script setup>
 import Playground from '../components/nearl/playground.vue'
 import Tab from '../components/fern/tab.vue'
+import TutorialBadge from '../components/arona/badge.vue'
+
 import { Elysia } from 'elysia'
 
 const handler1 = new Elysia()
@@ -81,7 +83,7 @@ const demo6 = new Elysia()
     .get('/error', ({ store: { counter } }) => counter)
 </script>
 
-# Extends context <Badge type="warning">Advance concept</Badge>
+# Extends context <TutorialBadge href="/tutorial/patterns/extends-context" />
 
 Elysia provides a minimal Context by default, allowing us to extend Context for our specific need using state, decorate, derive, and resolve.
 

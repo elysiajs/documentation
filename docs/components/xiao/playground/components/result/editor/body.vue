@@ -10,7 +10,7 @@ import { usePlaygroundStore } from '../../../store'
 const store = usePlaygroundStore()
 
 onMounted(() => {
-    requestAnimationFrame(() => {
+	requestAnimationFrame(async () => {
         createJSONEditor({
             id: 'elysia-playground-body',
             code: store.input.body,

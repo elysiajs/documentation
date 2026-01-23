@@ -78,17 +78,17 @@ Feel free to ask our community on GitHub Discussions, Discord, and Twitter.
 If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences.
 
 <Deck>
-	<Card title="From Express" href="/migrate/from-express">
-		Comparison between tRPC and Elysia
-	</Card>
+    <Card title="From Express" href="/migrate/from-express">
+        Comparison between Express and Elysia
+    </Card>
     <Card title="From Fastify" href="/migrate/from-fastify">
-  		Comparison between Fastify and Elysia
+        Comparison between Fastify and Elysia
     </Card>
     <Card title="From Hono" href="/migrate/from-hono">
-  		Comparison between tRPC and Elysia
+        Comparison between Hono and Elysia
     </Card>
     <Card title="From tRPC" href="/migrate/from-trpc">
-  		Comparison between tRPC and Elysia
+        Comparison between tRPC and Elysia
     </Card>
 </Deck>
 
@@ -131,7 +131,7 @@ If you feels like exploring more Elysia feature, check out:
     <Card title="Open Telemetry" href="/eden/opentelemetry">
    		Learn how to monitor your application with Open Telemetry
     </Card>
-    <Card title="Deploy to Production" href="/patterns/deploys">
+    <Card title="Deploy to Production" href="/patterns/deploy">
     	Learn how to deploy Elysia to production
     </Card>
 </Deck>

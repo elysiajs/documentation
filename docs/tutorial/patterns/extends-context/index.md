@@ -1,6 +1,7 @@
 ---
 title: Extends Context - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -26,7 +27,7 @@ import Playground from '../../../components/nearl/playground.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/patterns/extends-context">
 
 # Extends Context
 
@@ -69,10 +70,10 @@ import { Elysia } from 'elysia'
 
 new Elysia()
 	.state('count', 0)
-	.get('/', ({ count }) => {
-		count++
+	.get('/', ({ store }) => {
+		store.count++
 
-		return count
+		return store.count
 	})
 ```
 

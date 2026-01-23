@@ -302,14 +302,9 @@ import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                           ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: t.Object({
 			id: t.Number()
@@ -326,14 +321,9 @@ import { z } from 'zod'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                          ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: z.object({
 			id: z.number()
@@ -346,18 +336,13 @@ const app = new Elysia()
 
 ```ts twoslash [Elysia Valibot]
 import { Elysia } from 'elysia'
-import * as v from 'zod'
+import * as v from 'valibot'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                          ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: v.object({
 			id: v.number()
@@ -483,38 +468,7 @@ Elysia's Life Cycle event can be illustrated as the following.
 > Click on image to enlarge
 
 ### Fastify Lifecycle
-Fastify's Life Cycle event can be illustrated as the following.
-```
-Incoming Request
-  │
-  └─▶ Routing
-        │
-        └─▶ Instance Logger
-             │
-   4**/5** ◀─┴─▶ onRequest Hook
-                  │
-        4**/5** ◀─┴─▶ preParsing Hook
-                        │
-              4**/5** ◀─┴─▶ Parsing
-                             │
-                   4**/5** ◀─┴─▶ preValidation Hook
-                                  │
-                            400 ◀─┴─▶ Validation
-                                        │
-                              4**/5** ◀─┴─▶ preHandler Hook
-                                              │
-                                    4**/5** ◀─┴─▶ User Handler
-                                                    │
-                                                    └─▶ Reply
-                                                          │
-                                                4**/5** ◀─┴─▶ preSerialization Hook
-                                                                │
-                                                                └─▶ onSend Hook
-                                                                      │
-                                                            4**/5** ◀─┴─▶ Outgoing Response
-                                                                            │
-                                                                            └─▶ onResponse Hook
-```
+Fastify Life Cycle event also use an event-based approach similar to Elysia.
 
 Both also has somewhat similar syntax for intercepting the request and response lifecycle events, however Elysia doesn't require you to call `done` to continue the lifecycle event.
 
@@ -1461,7 +1415,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 ---
 
-Elysia offers a more ergonomic and developer-friendly experience with a focus on performance, type safety, and simplicity while Fastify is one of the established framework for Node.js, but doesn't has **sounds type safety** and **end-to-end type safety** offers by next generation framework.
+Elysia offers a more ergonomic and developer-friendly experience with a focus on performance, type safety, and simplicity while Fastify is one of the established framework for Node.js, but doesn't have **sounds type safety** and **end-to-end type safety** offered by next generation framework.
 
 If you are looking for a framework that is easy to use, has a great developer experience, and is built on top of Web Standard API, Elysia is the right choice for you.
 

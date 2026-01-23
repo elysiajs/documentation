@@ -1,6 +1,7 @@
 ---
 title: Validation Error - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -26,7 +27,7 @@ import Playground from '../../../components/nearl/playground.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/patterns/error-handling#custom-validation-message">
 
 # Validation Error
 

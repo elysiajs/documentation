@@ -128,6 +128,150 @@ new Elysia()
 
 </template>
 
+<template v-slot:ssot-1>
+
+```typescript twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.put('/', ({ body: { file } }) => file, {
+                                    // ^?
+		body: t.Object({
+			file: t.File({ type: 'image' })
+		})
+	})
+```
+
+</template>
+
+
+<template v-slot:ssot-2>
+
+::: code-group
+
+```typescript twoslash [index.ts]
+// @filename: auth.ts
+import { Elysia, t } from 'elysia'
+
+export const auth = new Elysia()
+	.macro('auth', {
+		cookie: t.Object({
+			ssid: t.String()
+		}),
+		resolve({ cookie, status }) {
+			if(!cookie.ssid.value) return status(401)
+
+			return {
+				user: cookie.ssid.value
+			}
+		}
+	})
+
+// @filename: index.ts
+// ---cut---
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+
+new Elysia()
+	.use(auth)
+	.get('/profile', ({ user }) => user, {
+//                       ^?
+        auth: true
+	})
+```
+
+```typescript twoslash [auth.ts]
+import { Elysia, t } from 'elysia'
+
+export const auth = new Elysia()
+	.macro('auth', {
+		cookie: t.Object({
+			ssid: t.String()
+		}),
+		resolve({ cookie, status }) {
+			if(!cookie.ssid.value) return status(401)
+
+			return {
+				user: cookie.ssid.value
+			}
+		}
+	})
+```
+
+:::
+
+</template>
+
+<template v-slot:ssot-3>
+
+```typescript twoslash
+// @noErrors
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .patch(
+        '/profile',
+        ({ body, status }) => {
+            if(body.age < 18)
+                return status(400, "Oh no")
+
+            return body
+        },
+        {
+            body: t.Object({
+                age: t.Number()
+            })
+        }
+    )
+    .listen(80)
+
+export type App = typeof app
+
+// @filename: client.ts
+// ---cut---
+import { treaty } from '@elysiajs/eden'
+import type { App } from 'server'
+
+const api = treaty<App>('api.elysiajs.com')
+
+const { data } = await api.profile.patch({
+      // ^?
+    age: 21
+})
+```
+
+</template>
+
+<template v-slot:ssot-4>
+
+```typescript twoslash
+import { Elysia } from 'elysia'
+import { openapi } from '@elysiajs/openapi'
+
+new Elysia()
+	.use(openapi())
+```
+
+</template>
+
+<template v-slot:oai-type-gen>
+
+```typescript
+import { Elysia } from 'elysia'
+import { openapi, fromTypes } from '@elysiajs/openapi'
+
+export const app = new Elysia()
+	.use(
+		openapi({
+			// ↓ Where magic happens 
+			references: fromTypes()
+		})
+	)
+```
+
+</template>
+
 <template v-slot:easy>
 
 ```typescript
@@ -293,7 +437,7 @@ export type App = typeof app
 // @filename: client.ts
 // ---cut---
 import { treaty } from '@elysiajs/eden'
-import type { App } from './server'
+import type { App } from 'server'
 
 const api = treaty<App>('api.elysiajs.com')
 

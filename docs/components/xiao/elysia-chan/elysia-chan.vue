@@ -1,11 +1,15 @@
 <template>
-    <div class="absolute left-0 w-full h-0" ref="constraint">
+    <div
+        class="absolute left-0 w-full h-0"
+        ref="constraint"
+        :style="{ width: 'calc(100% - 96px)' }"
+    >
         <motion.div
             id="elysia-chan"
             drag="x"
             :drag-constraints="constraint"
             aria-label="Elysia chan chibi"
-            class="fixed z-30 bottom-0 h-40 select-none"
+            class="fixed z-30 bottom-0 h-32 sm:h-40 select-none"
             style="aspect-ratio: 1251/2036"
             :style="{
                 x,
@@ -47,9 +51,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watch, computed, onUnmounted } from 'vue'
 import { motion, motionValue, useAnimationFrame } from 'motion-v'
-import { onUnmounted } from 'vue'
 
 const constraint = ref<HTMLDivElement>()
 
@@ -198,8 +201,7 @@ watch(
         if (sit.value) {
             sprite.value.body = body.sit
             walkTo.value = x.get()
-        } else
-            sprite.value.body = body.stand
+        } else sprite.value.body = body.stand
     }
 )
 

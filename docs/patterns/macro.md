@@ -7,18 +7,20 @@ head:
 
   - - meta
     - name: 'description'
-      content: Macro allows us to define a custom field to the hook.
+      content: Macro is similar to a function that have a control over the lifecycle event, schema, context with full type safety.
 
   - - meta
     - property: 'og:description'
-      content: Macro allows us to define a custom field to the hook.
+      content: Macro is similar to a function that have a control over the lifecycle event, schema, context with full type safety.
 ---
-
-# Macro
 
 <script setup>
 import Tab from '../components/fern/tab.vue'
+import TutorialBadge from '../components/arona/badge.vue'
+
 </script>
+
+# Macro <TutorialBadge href="/tutorial/patterns/macro" />
 
 Macro is similar to a function that have a control over the lifecycle event, schema, context with full type safety.
 
@@ -55,27 +57,28 @@ import { Elysia } from 'elysia'
 export const auth = new Elysia()
     .macro({
     	// This property shorthand
-    	isAuth: {
-      		resolve: () => ({
-      			user: 'saltyaom'
-      		})
-        },
+    	isAuth: { // [!code ++]
+      		resolve: () => ({ // [!code ++]
+      			user: 'saltyaom' // [!code ++]
+      		}) // [!code ++]
+        }, // [!code ++]
         // is equivalent to
-        isAuth(enabled: boolean) {
-        	if(!enabled) return
+        isAuth(enabled: boolean) { // [!code --]
+        	if(!enabled) return // [!code --]
+// [!code --]
 
-        	return {
-				resolve() {
-					return {
-						user
-					}
-				}
-         	}
-        }
+        	return { // [!code --]
+				resolve() { // [!code --]
+					return { // [!code --]
+						user // [!code --]
+					} // [!code --]
+				} // [!code --]
+         	} // [!code --]
+        } // [!code --]
     })
 ```
 
-## API
+<!--## API
 
 **macro** has the same API as hook.
 
@@ -134,7 +137,40 @@ Macro can also register a new property to the context, allowing us to access the
 
 The field can accept anything ranging from string to function, allowing us to create a custom life cycle event.
 
-**macro** will be executed in order from top-to-bottom according to definition in hook, ensure that the stack is handled in the correct order.
+::: note
+**macro** will execute in order from top-to-bottom according to definition in hook, ensure that the stack is handled in the correct order.
+:::-->
+
+## Error handling
+You can return an error HTTP status by returning a `status`.
+
+```ts
+import { Elysia, status } from 'elysia' // [!code ++]
+
+new Elysia()
+	.macro({
+		auth: {
+			resolve({ headers }) {
+				if(!headers.authorization)
+					return status(401, 'Unauthorized') // [!code ++]
+		
+				return {
+					user: 'SaltyAom'
+				}
+			}
+		}
+	})
+	.get('/', ({ user }) => `Hello ${user}`, {
+	            // ^?
+		auth: true
+	})
+```
+
+It's recommended that you should `return status` instead of `throw new Error()` to annotate correct HTTP status code.
+
+If you throw an error instead, Elysia will convert it to `500 Internal Server Error` by default.
+
+It's also recommend to use `return status` instead of `throw status` to ensure type inference for both [Eden](/eden/overview) and [OpenAPI Type Gen](/patterns/openapi#openapi-from-types).
 
 ## Resolve
 

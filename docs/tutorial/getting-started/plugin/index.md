@@ -1,6 +1,7 @@
 ---
 title: Plugin - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -25,7 +26,7 @@ import DocLink from '../../../components/xiao/doc-link/doc-link.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/plugin">
 
 # Plugin
 
@@ -65,6 +66,8 @@ new Elysia()
 	.listen(3000)
 ```
 
+It's also recommended that you should also read about [Key Concept: Dependency](/key-concept#dependency) to understand how Elysia handles dependencies between plugins.
+
 ## Assignment
 
 Let's apply the `user` instance to the `app` instance.
@@ -76,7 +79,7 @@ Similar to the above example, we can use the `use` method to plug the `user` ins
 ```typescript
 import { Elysia } from 'elysia'
 
-new Elysia()
+const user = new Elysia()
 	.get('/profile', 'User Profile')
 	.get('/settings', 'User Settings')
 

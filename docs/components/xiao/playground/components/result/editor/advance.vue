@@ -88,7 +88,6 @@ import { usePlaygroundStore } from '../../../store'
 import { AnimatePresence, motion } from 'motion-v'
 import { X } from 'lucide-vue-next'
 
-import ClientOnly from '../../client-only.vue'
 import TableEditor from '../../../../table-editor/table-editor.vue'
 const Body = defineAsyncComponent(() => import('./body.vue'))
 
@@ -109,6 +108,8 @@ const variants = {
 #playground-rest-editor {
     @apply top-2 left-2 z-30 flex-col w-md h-72 p-0 border-gray-300/75  dark:bg-gray-700/30 dark:border-gray-500/75 shadow-black/7.5;
     transform-origin: 0.75rem 0.75rem;
+    max-width: calc(100% - 1rem);
+    max-height: calc(100% - 1rem);
 
     & > .type {
         @apply flex gap-1 text-sm p-0.5;

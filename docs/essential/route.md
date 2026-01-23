@@ -16,6 +16,8 @@ head:
 
 <script setup>
 import Playground from '../components/nearl/playground.vue'
+import TutorialBadge from '../components/arona/badge.vue'
+
 import { Elysia } from 'elysia'
 
 const demo1 = new Elysia()
@@ -92,7 +94,7 @@ const demo13 = new Elysia()
     .use(users)
 </script>
 
-# Routing
+# Routing <TutorialBadge href="/tutorial/getting-started/your-first-route" />
 
 Web servers use the request's **path and method** to look up the correct resource, known as **"routing"**.
 

@@ -1,6 +1,7 @@
 ---
 title: Your First Route - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -44,7 +45,7 @@ const demo9 = new Elysia()
     .get('/id/:id/:name', ({ params: { id, name } }) => id + '/' + name)
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/essential/route">
 
 # Your First Route
 

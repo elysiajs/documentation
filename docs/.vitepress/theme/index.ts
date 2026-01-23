@@ -5,7 +5,7 @@ import {
     type EnhanceAppContext,
     type Theme
 } from 'vitepress'
-import pinia, { createPinia } from 'pinia'
+import { createPinia } from 'pinia'
 
 import DefaultTheme from 'vitepress/theme-without-fonts'
 

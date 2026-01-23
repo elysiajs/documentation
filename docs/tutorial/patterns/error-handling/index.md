@@ -1,6 +1,7 @@
 ---
 title: Error Handling - Elysia Tutorial
 layout: false
+search: false
 authors: []
 head:
     - - meta
@@ -26,7 +27,7 @@ import Playground from '../../../components/nearl/playground.vue'
 import { code, testcases } from './data'
 </script>
 
-<Editor :code="code" :testcases="testcases">
+<Editor :code="code" :testcases="testcases" doc="/patterns/error-handling">
 
 # Error Handling
 
@@ -40,11 +41,11 @@ It accept **context** similar to handler but include an additional:
 import { Elysia } from 'elysia'
 
 new Elysia()
-	.onError(({ error, code }) => {
+	.onError(({ code, status }) => {
 		if(code === "NOT_FOUND")
 			return 'uhe~ are you lost?'
 
-		return status(418, "My bad! But I\'m cute so you'll forgive me, right?")
+		return status(418, "My bad! But I'm cute so you'll forgive me, right?")
 	})
 	.get('/', () => 'ok')
 	.listen(3000)
@@ -78,7 +79,7 @@ new Elysia()
 		}
 	})
 	.get('/', () => {
-		throw new CustomError('Custom error message')
+        throw new NicheError('Custom error message')
 	})
 	.listen(3000)
 ```

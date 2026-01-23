@@ -1,6 +1,8 @@
 import { transform } from 'sucrase'
 
-class LRUCache<K = string, V = string> {
+import { rollup, RollupCache } from '@rollup/browser'
+
+export class LRUCache<K = string, V = string> {
     private cache = new Map<K, V>()
     private limit: number
 
@@ -65,14 +67,52 @@ function getBalancedBracketIndex(input: string, startAt = 0) {
     return lastBalancedIndex
 }
 
-const cache = new LRUCache()
+const fileCache = new LRUCache(25)
+const fsCache = new LRUCache()
+let rollupCache: RollupCache
 
 const BANNERS = {
     init: `import { parseCookie as __parseCookie__ } from 'https://esm.sh/elysia/cookies'
 import { handleSet as __handleSet__ } from 'https://esm.sh/elysia/adapter/utils'
 
 self.console.log = self.console.warn = self.console.error = (...log) => {
-    self.postMessage({ id: __playground__, log: JSON.parse(JSON.stringify(log)) })
+	const isNotEmpty = (obj) => {
+		if (!obj) return false
+
+		for (const _ in obj) return true
+
+		return false
+	}
+
+	const isClass = (v) =>
+		(typeof v === 'function' && /^\s*class\s+/.test(v.toString())) ||
+		// Handle Object.create(null)
+		(v.toString &&
+			// Handle import * as Sentry from '@sentry/bun'
+			// This also handle [object Date], [object Array]
+			// and FFI value like [object Prisma]
+			v.toString().startsWith('[object ') &&
+			v.toString() !== '[object Object]') ||
+		// If object prototype is not pure, then probably a class-like object
+		isNotEmpty(Object.getPrototypeOf(v))
+
+    self.postMessage({
+    	id: __playground__,
+     	log: JSON.parse(
+      		JSON.stringify(log, (k, v) => {
+		   		if (v instanceof Error)
+		   			return { message: v.message, stack: v.stack }
+
+				if (isClass(v))
+					return '[class \${v.constructor.name}]'
+
+				if (typeof v === 'function')
+					return '[Function]'
+
+		    	return v
+		    })
+		)
+	})
 }
 
 function __webEnv__(app) {
@@ -150,20 +190,10 @@ function __webEnv__(app) {
     listen: `\n\t.use(__webEnv__)\n`
 }
 
-function parse(code: string) {
-    // if (cache.has(code)) return cache.get(code)!
-
-    if (!code.includes('.listen('))
-        throw new Error(
-            'No Elysia server is running.\nDid you forget to call `.listen()`?'
-        )
-
+function elysiaWebWorker(code: string) {
     let parsed = code.replace(
         /import\s+([^\n]+?)\s+from\s+['"]([^'"]+)['"]/g,
         (match, specifiers, moduleName) => {
-            if (moduleName.startsWith('.') || moduleName.startsWith('/'))
-                return match
-
             return `import ${specifiers} from 'https://esm.sh/${moduleName}'`
         }
     )
@@ -185,22 +215,108 @@ function parse(code: string) {
         )
     }
 
-    parsed = BANNERS.init + parsed
-        .replace('openapi({', 'openapi({embedSpec:true,')
-        .replace('openapi()', 'openapi({embedSpec: true})')
-
-    cache.set(code, parsed)
+    parsed =
+        BANNERS.init +
+        parsed
+            .replace('openapi({', 'openapi({embedSpec:true,')
+            .replace('openapi()', 'openapi({embedSpec: true})')
 
     return parsed
 }
 
-export function randomId() {
-	const uuid = crypto.randomUUID()
-	return uuid.slice(0, 8) + uuid.slice(24, 32)
+export function resolveImport(from: string, to: string): string {
+    const normalize = (p: string) => p.replace(/\\/g, '/').replace(/\/+/g, '/')
+
+    const fromDir = normalize(from).split('/').slice(0, -1).join('/')
+    const joined = normalize(fromDir + '/' + to)
+
+    const parts: string[] = []
+    for (const part of joined.split('/')) {
+        if (part === '' || part === '.') continue
+        if (part === '..') parts.pop()
+        else parts.push(part)
+    }
+
+    return parts.join('/')
 }
 
-export const execute = (
-    code: string,
+async function parse(files: VirtualFS) {
+    const id = randomId()
+    const banner = `const __playground__ = '${id}'\n`
+
+    const key = JSON.stringify(files)
+    if (fsCache.has(key)) return { id, code: banner + fsCache.get(key)! }
+
+    let fs: Record<string, string> = {}
+
+    for (const [path, code] of Object.entries(files)) {
+        if (path === 'index.ts' && !code.includes('.listen('))
+            throw new Error(
+                'No Elysia server is running in index.ts\nDid you forget to call `.listen()`?'
+            )
+
+        const key = path.replace(/\.ts$/, '.js')
+
+        if (fileCache.has(code)) fs[key] = fileCache.get(code)!
+
+        fs[key] = transform(code, {
+            transforms: ['typescript']
+        }).code
+
+        fileCache.set(code, fs[key])
+    }
+
+    const code =
+        Object.keys(fs).length === 1 && fs['index.js']
+            ? elysiaWebWorker(fs['index.js'])
+            : await rollup({
+                  input: 'index.js',
+                  cache: rollupCache,
+                  plugins: [
+                      {
+                          name: 'loader',
+                          resolveId(source, current) {
+                              if (!current) return source
+
+                              let resolved = resolveImport(current, source)
+
+                              if (resolved + '/index.js' in fs)
+                                  return resolved + '/index.js'
+
+                              if (!resolved.endsWith('.js')) resolved += '.js'
+
+                              if (resolved in fs) return resolved
+                          },
+                          load(id) {
+                              if (fs.hasOwnProperty(id)) return fs[id]
+                          }
+                      }
+                  ]
+              })
+                  .then((bundle) => {
+                      if (bundle.cache) rollupCache = bundle.cache
+
+                      return bundle.generate({ format: 'es' })
+                  })
+                  .then(({ output }) => output[0].code)
+                  .then(elysiaWebWorker)
+
+    fsCache.set(key, code)
+
+    return { id, code: banner + code }
+}
+
+export function randomId() {
+    const uuid = crypto.randomUUID()
+    return uuid.slice(0, 8) + uuid.slice(24, 32)
+}
+
+export interface VirtualFS extends Record<string, string> {
+    'index.ts': ''
+}
+
+export const execute = <FS extends VirtualFS>(
+    files: FS,
     url: string,
     options: RequestInit,
     onLog?: (log: unknown[]) => unknown
@@ -213,19 +329,14 @@ export const execute = (
                 status: number
             }
         ]
-    >((resolve, reject) => {
-        const id = randomId()
-
-        const banner = `const __playground__ = '${id}'\n`
-
+    >(async (resolve, reject) => {
         try {
-            const transpiled = transform(banner + parse(code), {
-                transforms: ['typescript']
-            })
+            const { id, code } = await parse(files)
 
-            const blob = new Blob([transpiled.code], {
+            const blob = new Blob([code], {
                 type: 'application/javascript'
             })
+
             const worker = new Worker(URL.createObjectURL(blob), {
                 type: 'module'
             })
@@ -243,17 +354,11 @@ export const execute = (
 
                 if (e.data.log && onLog) return onLog(e.data.log)
 
-                if (e.data.response) {
-                    try {
-                        setTimeout(worker.terminate, 5000)
-                    } catch {}
-
-                    return resolve(e.data.response)
-                }
+                if (e.data.response) return resolve(e.data.response)
             }
 
             worker.onerror = (e) => {
-           		reject(e.message ?? 'Something went wrong')
+                reject(e.message ?? 'Something went wrong')
 
                 setTimeout(worker.terminate, 5000)
                 worker.terminate()

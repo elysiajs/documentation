@@ -46,6 +46,30 @@ new Elysia({
 })
 ```
 
+## allowUnsafeValidationDetails
+
+###### Since 1.4.13
+
+Whether Elysia should include unsafe validation details in the error response on production.
+
+```ts twoslash
+import { Elysia, t } from 'elysia'
+
+new Elysia({
+	allowUnsafeValidationDetails: true
+})
+```
+
+By default, Elysia will omitted all validation detail on production.
+
+This is done to prevent leaking sensitive information about the validation schema, such as field names and expected types, which could be exploited by an attacker.
+
+Ideally, this should only be enabled on a public APIs as it may leak sensitive information about the server implementation.
+
+#### Options - @default `false`
+- `true` - Include unsafe validation details in the error response on production
+- `false` - Exclude unsafe validation details in the error response on production
+
 ## aot
 
 ###### Since 0.4.0
@@ -403,7 +427,7 @@ If the `SO_REUSEPORT` flag should be set
 
 This allows multiple processes to bind to the same port, which is useful for load balancing
 
-This configuration is override and turns on by default by Elysia
+This configuration is overridden and turns on by default by Elysia
 
 ### serve.unix
 If set, the HTTP server will listen on a unix socket instead of a port.
@@ -495,7 +519,7 @@ new Elysia({
 })
 ```
 
-### systemRouter
+## systemRouter
 
 Use runtime/framework provided router if possible.
 

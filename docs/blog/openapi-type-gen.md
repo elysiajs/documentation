@@ -50,7 +50,7 @@ We believe that API documentation should be effortless and automatic, allowing d
 That's why we built around OpenAPI from the ground up with Elysia.
 
 - We make sure that schema can be used for data validation, type inference, and OpenAPI annotation all from a single source of truth.
-- We provide handle a integration with Standard Schema (Zod, Valibot, etc.), and turns it into OpenAPI documentation whenever possible.
+- We provide an integration with Standard Schema (Zod, Valibot, etc.), and turns it into OpenAPI documentation when possible.
 - We have a 1-liner OpenAPI plugin that add a beautiful UI to interact with your API with Scalar.
 
 ![Scalar Preview](/blog/openapi-type-gen/scalar-preview-light.webp)
@@ -67,7 +67,7 @@ We dreams of a world where you just write your code, and the documentation is cr
 
 The closest thing we have is with **Python's FastAPI** that can generate OpenAPI documentation from pydantic model. But it is limited to only pydantic model, and cannot be used with other libraries or types.
 
-Elysia Type Gen brings the similar experience to TypeScript, with out that limitation. Allowing you turns **any TypeScript type** into OpenAPI documentation automatically **from any library** not limited to Elysia.
+Elysia Type Gen brings the similar experience to TypeScript, without that limitation. Allowing you turns **any TypeScript type** into OpenAPI documentation automatically **from any library** not limited to Elysia.
 
 ![Elysia Type Gen](/blog/openapi-type-gen/type-gen.webp)
 
