@@ -17,7 +17,7 @@ head:
 # OpenTelemetry
 
 ::: tip
-This page is a **config reference** for **OpenTelemetry**, if you're looking to setup and integrate with OpenTelemetry, we recommended taking a look at [Integrate with OpenTelemetry](/integrations/opentelemetry) instead.
+This page is a **config reference** for **OpenTelemetry**, if you're looking to setup and integrate with OpenTelemetry, we recommended taking a look at [Integrate with OpenTelemetry](/patterns/opentelemetry) instead.
 :::
 
 To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
@@ -46,7 +46,7 @@ new Elysia()
 Elysia OpenTelemetry is will **collect span of any library compatible OpenTelemetry standard**, and will apply parent and child span automatically.
 
 ## Usage
-See [opentelemetry](/integrations/opentelemetry) for usage and utilities
+See [opentelemetry](/patterns/opentelemetry) for usage and utilities
 
 ## Config
 This plugin extends OpenTelemetry SDK parameters options.

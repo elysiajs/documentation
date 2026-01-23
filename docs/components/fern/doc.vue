@@ -11,13 +11,13 @@ const images = [
         light: '/assets/scalar/scalar-body-light.webp',
         dark: '/assets/scalar/scalar-body-dark.webp',
         content:
-            'Elysia deeply integrate with OpenAPI to generate beautiful API documentation out of the box'
+            'Elysia deeply integrates with OpenAPI to generate beautiful API documentation out of the box'
     },
     {
         light: '/assets/scalar/scalar-status-light.webp',
         dark: '/assets/scalar/scalar-status-dark.webp',
         content:
-            'With Elysia OpenAPI Type Gen. Elysia use TypeScript type, and turn it into OpenAPI schema automatically'
+            'With Elysia OpenAPI Type Gen, Elysia uses TypeScript types and turns them into OpenAPI schema automatically'
     },
     {
         light: '/assets/scalar/scalar-editor-light.webp',
@@ -28,7 +28,7 @@ const images = [
         light: '/assets/scalar/scalar-landing-light.webp',
         dark: '/assets/scalar/scalar-landing-dark.webp',
         content:
-            'Describe your API with a built-in schema, or bring your own validator that support OpenAPI document'
+            'Describe your API with a built-in schema, or bring your own validator that supports OpenAPI documents'
     },
     {
         light: '/assets/scalar/scalar-model-light.webp',
@@ -62,7 +62,7 @@ const flyIn2 = useFlyIn(isInView2)
                 class="flex flex-col gap-2 text-xl text-gray-500 dark:text-gray-400 mb-2"
             >
                 <motion.span v-bind="flyIn()">
-                    Says hello to your actual API with
+                    Say hello to your API with
                 </motion.span>
                 <motion.span
                     v-bind="flyIn(0.1)"
@@ -110,10 +110,10 @@ const flyIn2 = useFlyIn(isInView2)
             </Carousel>
         </motion.div>
 
-        <section class="explain" ref="scope2">
+        <!-- <section class="explain" ref="scope2">
             <div class="flex flex-col gap-4 w-full max-w-sm text-xl leading-8">
-                <motion.h4 class="flex flex-col gap-2 mb-2" v-bind="flyIn2()">
-                    <span class="text-xl">All of these in</span>
+                <motion.h4 class="flex flex-col gap-2 mb-2" v-bind="flyIn2(0.1)">
+                    <span class="text-xl">OpenAPI features, all in</span>
                     <span
                         class="text-8xl font-semibold text-gradient from-violet-400 to-blue-500"
                     >
@@ -121,12 +121,8 @@ const flyIn2 = useFlyIn(isInView2)
                     </span>
                 </motion.h4>
 
-                <motion.p v-bind="flyIn2(0.1)">
-                    Yes, you read that right
-                </motion.p>
-
                 <motion.p v-bind="flyIn2(0.2)">
-                    Just 1 line of code, you get a full-fledge API documentation
+                    Just 1 line of code, you get a full-fledged API documentation
                     effortlessly
                 </motion.p>
 
@@ -140,18 +136,18 @@ const flyIn2 = useFlyIn(isInView2)
                     <span
                         class="font-medium text-gradient from-violet-400 to-blue-500"
                     >
-                        TypeScript type
+                        TypeScript types
                     </span>
                     into an API documentation
                     <small class="block mt-1 text-gray-400/80 dark:text-gray-400/70">
-                        (like FastAPI but from TypeScript type)
+                        (like FastAPI but from TypeScript types)
                     </small>
                 </motion.p>
             </div>
             <motion.div class="showcase" v-bind="flyIn2(0.5)">
                 <slot />
             </motion.div>
-        </section>
+        </section> -->
     </article>
 </template>
 
@@ -173,7 +169,7 @@ const flyIn2 = useFlyIn(isInView2)
 
         & > .showcase {
             @apply max-w-lg rounded-xl border border-y-violet-200/50 border-x-blue-200/50 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-gray-800;
-            box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
+            /*box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);*/
 
             background-image:
                 radial-gradient(
@@ -276,10 +272,10 @@ const flyIn2 = useFlyIn(isInView2)
 
                 & > .tabs {
                     @apply !bg-transparent !translate-x-4 sm:!translate-x-0;
-                    box-shadow: inset 0 -1px theme(--color-gray-200);
+                    /*box-shadow: inset 0 -1px theme(--color-gray-200);*/
 
                     .dark & {
-                        box-shadow: inset 0 -1px theme(--color-gray-700);
+                        /*box-shadow: inset 0 -1px theme(--color-gray-700);*/
                     }
                 }
 
@@ -332,7 +328,7 @@ const flyIn2 = useFlyIn(isInView2)
 
     & > .image {
         @apply rounded-2xl border dark:border-gray-800 w-full sm:w-[97%] bg-gray-50 dark:bg-gray-700 object-cover;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        /*box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);*/
     }
 
     & > .content {

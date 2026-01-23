@@ -63,7 +63,7 @@ bun build \
 	--compile \
 	--minify-whitespace \
 	--minify-syntax \
-	--target bun
+	--target bun \
 	--outfile server \
 	src/index.ts
 ```
@@ -205,7 +205,7 @@ EXPOSE 3000
 ```
 
 ### OpenTelemetry
-If you are using [OpenTelemetry](/integrations/opentelemetry) to deploys production server.
+If you are using [OpenTelemetry](/patterns/opentelemetry) to deploys production server.
 
 As OpenTelemetry rely on monkey-patching `node_modules/<library>`. It's required that make instrumentations works properly, we need to specify that libraries to be instrument is an external module to exclude it from being bundled.
 
@@ -255,7 +255,7 @@ Assume that our monorepo are using Turborepo with structure as follows:
 
 Then we can build our Dockerfile on monorepo root (not app root):
 ```bash
-docker build -t elysia-mono .
+docker build -f apps/server/Dockerfile -t elysia-mono .
 ```
 
 With Dockerfile as follows:

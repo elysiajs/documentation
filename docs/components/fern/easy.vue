@@ -15,7 +15,7 @@ const flyIn = useFlyIn(isInView)
     <article id="made-for-human" class="fern-gap" ref="scope">
         <div class="body">
             <header class="flex flex-col flex-1 text-xl gap-6">
-                <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-1">
                     <motion.h3
                         class="text-2xl font-medium text-700"
                         v-bind="flyIn()"

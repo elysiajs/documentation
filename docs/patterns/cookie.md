@@ -14,7 +14,11 @@ head:
       content: Reactive Cookie takes a more modern approach like signals to handle cookies with an ergonomic API. There's no 'getCookie', 'setCookie', everything is just a cookie object. When you want to use cookies, you just extract the name and value directly.
 ---
 
-# Cookie
+<script setup lang="ts">
+import TutorialBadge from '../components/arona/badge.vue'
+</script>
+
+# Cookie <TutorialBadge href="/tutorial/patterns/cookie" />
 Elysia provides a mutable signal for interacting with Cookie.
 
 There's no get/set, you can extract the cookie name and retrieve or update its value directly.

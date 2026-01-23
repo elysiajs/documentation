@@ -32,11 +32,34 @@ import Benchmark from '../components/fern/benchmark-hono.vue'
 
 This guide is for Hono users who want to see the differences from Elysia including syntax, and how to migrate your application from Hono to Elysia by example.
 
-**Hono** is a fast and lightweight built on Web Standard. It has broad compatibility with multiple runtime like Deno, Bun, Cloudflare Workers, and Node.js.
+**Hono** is a fast and lightweight web framework built on Web Standard. It has broad compatibility with multiple runtimes like Deno, Bun, Cloudflare Workers, and Node.js.
 
-**Elysia** is an ergonomic web framework. Designed to be ergonomic and developer-friendly with a focus on **sound type safety** and performance.
+**Elysia** is an ergonomic web framework. Designed for developer experience with a focus on **sound type safety** and performance. Not limited to Bun, Elysia also supports multiple runtimes like Node.js, and Cloudflare Workers.
 
-Both frameworks are built on top of Web Standard API, and have slightly different syntax. Hono offers more compatibility with multiple runtimes while Elysia focuses on a specific set of runtimes.
+## When to use
+Here's a TLDR comparison between Hono and Elysia to help you decide:
+
+**Hono**
+- **Originally built for Cloudflare Workers**, more integrated with Cloudflare ecosystem
+- Support multiple runtime with Web Standard, including **Node.js** and **Bun**
+- Lightweight and minimalistic, suitable for edge environment
+- Support OpenAPI but require additional effort to describe the specification
+- Prefers simple, linear middleware-based approach
+- Type safety is better than most frameworks, but not sound in some areas
+- Somewhat similar to Express, Koa in terms of middleware, plugin style
+
+**Elysia**
+- **Originally built for native Bun**, use most of Bun features to the fullest extent
+- Support multiple runtime with Web Standard, including **Node.sjs** and **Cloudflare Worker**
+- **Better performance**. Leans to long running server via JIT.
+- **Better OpenAPI supports** with seamless experience, especially with [OpenAPI Type Gen](/patterns/openapi#openapi-from-types)
+- Prefers event-based lifecycle approach for better control over request pipeline
+- Sounds type safety across the board, including middleware, and error handling
+- Somewhat similar to Fastify in terms of middleware, encapsulation, and plugin style
+
+There is a huge **different between being compatible and specifically built for** something.
+
+If you decide to use Elysia on Cloudflare Workers, you might miss some of the Cloudflare specific features that Hono provides out of the box. Similarly, if you use Hono on Bun, you might not get the best performance possible compared to using Elysia.
 
 ## Performance
 Elysia has significant performance improvements over Hono thanks to static code analysis.
@@ -114,7 +137,7 @@ While Hono use a `c.text`, and `c.json` to wrap a response, Elysia map a value t
 
 There is a slight difference in style guide, Elysia recommends usage of method chaining and object destructuring.
 
-Hono port allocation depends on runtime and adapter while Elysia uses a single `listen` method to start the server.
+Hono port allocation depends on runtime, and adapter while Elysia use a single `listen` method to start the server.
 
 ## Handler
 
@@ -298,14 +321,9 @@ import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                           ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: t.Object({
 			id: t.Number()
@@ -322,14 +340,9 @@ import { z } from 'zod'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                          ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: z.object({
 			id: z.number()
@@ -346,14 +359,9 @@ import * as v from 'valibot'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                          ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: v.object({
 			id: v.number()
@@ -944,7 +952,7 @@ const app = new Elysia()
 
 Both have an encapsulation mechanism of a plugin to prevent side-effects.
 
-However, Elysia can explicitly state which plugin should have side-effects by declaring a scoped while Fastify always encapsulates it.
+However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Hono always encapsulate it.
 
 ```ts [Elysia]
 import { Elysia } from 'elysia'
@@ -1469,7 +1477,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 Both are the next generation web framework built on top of Web Standard API with slight differences.
 
-Elysia is designed to be ergonomic and developer-friendly with a focus on **sound type safety**, and has better performance than Hono.
+Elysia is designed to be ergonomic and developer-friendly with a focus on **sounds type safety**, and has better performance than Hono.
 
 While Hono offers a broad compatibility with multiple runtimes, especially with Cloudflare Workers, and a larger user base.
 
