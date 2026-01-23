@@ -50,7 +50,7 @@ export const Route = createFileRoute('/api/$')({
 
 Elysia should now be running on **/api**.
 
-We may add additional methods to **server.handlers** to support other HTTP methods as need.
+We may add additional methods to **server.handlers** to support other HTTP methods as needed.
 
 ### pnpm
 If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
@@ -95,12 +95,12 @@ export const getTreaty = createIsomorphicFn() // [!code ++]
 
 Notice that we use **createIsomorphicFn** to create a separate Eden Treaty instance for both server and client.
 1. On server, Elysia is called directly without HTTP overhead.
-2. On client, we call Elysia server through HTTP.
+2. On client, we call the Elysia server through HTTP.
 
-On React component, we can use `getTreaty` to call Elysia server with type safety.
+In a React component, we can use `getTreaty` to call the Elysia server with type safety.
 
 ## Loader Data
-Tanstack Start support **Loader** to fetch data before rendering the component.
+Tanstack Start supports **Loader** to fetch data before rendering the component.
 
 ::: code-group
 
@@ -123,7 +123,8 @@ function App() {
 
 :::
 
-Calling Elysia is a loader will be executed on server side during SSR, and doesn't have HTTP overhead.
+Calling Elysia in a loader executes it on the server during SSR and doesn’t incur HTTP overhead.
+When navigating from one page to another, the loader will run on the client-side, making an HTTP request to the endpoint.
 
 Eden Treaty will ensure type safety on both server and client.
 
@@ -154,7 +155,7 @@ function App() {
 
 ::: code-group
 
-This can works with any React Query features like caching, pagination, infinite query, etc.
+This can work with any React Query features like caching, pagination, infinite queries, etc.
 
 ---
 
