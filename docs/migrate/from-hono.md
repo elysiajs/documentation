@@ -137,7 +137,7 @@ While Hono use a `c.text`, and `c.json` to warp a response, Elysia map a value t
 
 There is a slight different in style guide, Elysia recommends usage of method chaining and object destructuring.
 
-Hono port allocation is depends on runtime, and adapter while Elysia use a single `listen` method to start the server.
+Hono port allocation depends on runtime, and adapter while Elysia use a single `listen` method to start the server.
 
 ## Handler
 
