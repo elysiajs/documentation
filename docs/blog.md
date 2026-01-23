@@ -86,7 +86,7 @@ head:
         title: 'Introducing Elysia 0.6 - This Game',
         href: '/blog/elysia-06',
         cover: 'this-game.webp',
-        detail: 'Introducing re-imagined plugin model, dynamic mode, better developer experience with declarative custom error, customizable loose and strict path mapping, TypeBox 0.30 and WinterCG framework interlop. Pushing the boundary of what is possible once again'
+        detail: 'Introducing re-imagined plugin model, dynamic mode, better developer experience with declarative custom error, customizable loose and strict path mapping, TypeBox 0.30 and WinterTC framework interlop. Pushing the boundary of what is possible once again'
       },
       {
         title: 'Accelerate your next Prisma server with Elysia',

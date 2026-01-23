@@ -7,7 +7,7 @@ head:
 
     - - meta
       - name: 'description'
-        content: You can run Elysia on Astro. Elysia will work normally as expected because of WinterCG compliance.
+        content: You can run Elysia on Astro. Elysia will work normally as expected because of WinterTC compliance.
 
     - - meta
       - property: 'og:description'
@@ -52,12 +52,12 @@ export const GET = handle // [!code ++]
 export const POST = handle // [!code ++]
 ```
 
-Elysia will work normally as expected because of WinterCG compliance.
+Elysia will work normally as expected because of WinterTC compliance.
 
 We recommend running [Astro on Bun](https://docs.astro.build/en/recipes/bun) as Elysia is designed to be run on Bun.
 
 ::: tip
-You can run Elysia server without running Astro on Bun thanks to WinterCG support.
+You can run Elysia server without running Astro on Bun thanks to WinterTC support.
 :::
 
 With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden.

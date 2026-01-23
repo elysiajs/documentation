@@ -7,7 +7,7 @@ head:
 
     - - meta
       - name: 'description'
-        content: With Next.js App Router, you can run Elysia on Next.js routes. Elysia will work normally as expected because of WinterCG compliance.
+        content: With Next.js App Router, you can run Elysia on Next.js routes. Elysia will work normally as expected because of WinterTC compliance.
 
     - - meta
       - property: 'og:description'

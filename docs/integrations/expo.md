@@ -7,7 +7,7 @@ head:
 
     - - meta
       - name: 'description'
-        content: With Expo App Router, you can run Elysia on Expo route. Elysia will work normally as expected thanks to WinterCG compliance.
+        content: With Expo App Router, you can run Elysia on Expo route. Elysia will work normally as expected thanks to WinterTC compliance.
 
     - - meta
       - property: 'og:description'
