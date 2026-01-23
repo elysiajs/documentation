@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all it needs to do a quick start or get started with ElysiaJS.
+        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all you need to do a quick start or get started with ElysiaJS.
 
     - - meta
       - property: 'og:description'
-        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all it needs to do a quick start or get started with ElysiaJS.
+        content: Elysia is a library built for Bun and the only prerequisite. To start, bootstrap a new project with "bun create elysia hi-elysia" and start the development server with "bun dev". This is all you need to do a quick start or get started with ElysiaJS.
 ---
 
 <script setup>
@@ -171,7 +171,7 @@ pacman -S nodejs npm
 
 ## Setup
 
-We recommended using TypeScript for your Node.js project.
+We recommend using TypeScript for your Node.js project.
 
 <Tab
 	id="language"
@@ -181,7 +181,7 @@ We recommended using TypeScript for your Node.js project.
 
 <template v-slot:ts>
 
-To create a new Elysia app with TypeScript, we recommended install Elysia with `tsx`:
+To create a new Elysia app with TypeScript, we recommend installing Elysia with `tsx`:
 
 ::: code-group
 
@@ -191,7 +191,8 @@ bun add -d tsx @types/node typescript
 ```
 
 ```bash [pnpm]
-pnpm add elysia @elysiajs/node && \
+# pnpm doesn't install peer dependencies
+pnpm add elysia @elysiajs/node @sinclair/typebox openapi-types && \
 pnpm add -D tsx @types/node typescript
 ```
 
@@ -209,7 +210,7 @@ yarn add -D tsx @types/node typescript
 
 This will install Elysia, TypeScript, and `tsx`.
 
-`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more feature you expected from a modern development environment.
+`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more features you'd expect from a modern development environment.
 
 Create a new file `src/index.ts` and add the following code:
 
@@ -267,7 +268,7 @@ Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `t
 If you use Elysia without TypeScript you may miss out on some features like auto-completion, advanced type checking and end-to-end type safety, which are the core features of Elysia.
 :::
 
-To create a new Elysia app with JavaScript, starts by installing Elysia:
+To create a new Elysia app with JavaScript, start by installing Elysia:
 
 ::: code-group
 
@@ -276,7 +277,8 @@ bun add elysia @elysiajs/node
 ```
 
 ```bash [pnpm]
-pnpm add elysia @elysiajs/node
+# pnpm doesn't install peer dependencies
+pnpm add elysia @elysiajs/node @sinclair/typebox openapi-types
 ```
 
 ```bash [npm]
@@ -291,7 +293,7 @@ yarn add elysia @elysiajs/node
 
 This will install Elysia, TypeScript, and `tsx`.
 
-`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more feature you expected from a modern development environment.
+`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more features you'd expect from a modern development environment.
 
 Create a new file `src/index.ts` and add the following code:
 
@@ -348,7 +350,7 @@ Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `t
 
 <template v-slot:web-standard>
 
-Elysia is a WinterCG compliance library, which means if a framework or runtime supports Web Standard Request/Response, it can run Elysia.
+Elysia is a WinterTC compliant library, which means if a framework or runtime supports Web Standard Request/Response, it can run Elysia.
 
 First, install Elysia with the command below:
 
@@ -359,7 +361,8 @@ bun install elysia
 ```
 
 ```bash [pnpm]
-pnpm install elysia
+# pnpm doesn't install peer depepdencies
+pnpm install elysia @sinclair/typebox openapi-types
 ```
 
 ```bash [npm]
@@ -414,18 +417,3 @@ console.log(
 </template>
 
 </Tab>
-
-## Next Steps
-
-We recommend checking out the either one of the following:
-
-<Deck>
-    <Card title="Key Concept (5 minutes)" href="/key-concept">
-    	The core concept of Elysia and how to use it.
-    </Card>
-    <Card title="Tutorial (15 minutes)" href="/tutorial">
-    	A step-by-step guide walkthrough Elysia's features.
-    </Card>
-</Deck>
-
-If you have any questions, feel free to ask in our [Discord](https://discord.gg/eaFJ2KDJck) community.

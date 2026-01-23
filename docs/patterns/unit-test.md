@@ -14,9 +14,13 @@ head:
         content: You can use `bun:test` to create a unit test with Elysia. Elysia instance has a `handle` method that accepts `Request` and will return a `Response`, the same as creating an HTTP request.
 ---
 
-# Unit Test
+<script setup lang="ts">
+import TutorialBadge from '../components/arona/badge.vue'
+</script>
 
-Being WinterCG compliant, we can use Request / Response classes to test an Elysia server.
+# Unit Test <TutorialBadge href="/tutorial/features/openapi" />
+
+Being WinterTC compliant, we can use Request / Response classes to test an Elysia server.
 
 Elysia provides the **Elysia.handle** method, which accepts a Web Standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) and returns [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response), simulating an HTTP Request.
 
@@ -30,7 +34,7 @@ import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
 
 describe('Elysia', () => {
-    it('return a response', async () => {
+    it('returns a response', async () => {
         const app = new Elysia().get('/', () => 'hi')
 
         const response = await app
@@ -74,7 +78,7 @@ const app = new Elysia().get('/hello', 'hi')
 const api = treaty(app)
 
 describe('Elysia', () => {
-    it('return a response', async () => {
+    it('returns a response', async () => {
         const { data, error } = await api.hello.get()
 
         expect(data).toBe('hi')

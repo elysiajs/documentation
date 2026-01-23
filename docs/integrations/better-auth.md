@@ -20,7 +20,7 @@ Better Auth is framework-agnostic authentication (and authorization) framework f
 
 It provides a comprehensive set of features out of the box and includes a plugin ecosystem that simplifies adding advanced functionalities.
 
-We recommended going through [Better Auth basic setup](https://www.better-auth.com/docs/installation) before going through this page.
+We recommend going through the [Better Auth basic setup](https://www.better-auth.com/docs/installation) before going through this page.
 
 Our basic setup will look like this:
 
@@ -56,7 +56,7 @@ Then we can access Better Auth with `http://localhost:3000/api/auth`.
 
 ### Custom endpoint
 
-We recommended setting a prefix path for when using [mount](/patterns/mount.html).
+We recommend setting a prefix path when using [mount](/patterns/mount.html).
 
 ```ts [index.ts]
 import { Elysia } from 'elysia'
@@ -90,11 +90,11 @@ Then we can access Better Auth with `http://localhost:3000/auth/api`.
 
 Unfortunately, we can't set `basePath` of a Better Auth instance to be empty or `/`.
 
-## Swagger / OpenAPI
+## OpenAPI
 
 Better Auth support `openapi` with `better-auth/plugins`.
 
-However if we are using [@elysiajs/swagger](/plugins/swagger), you might want to extract the documentation from Better Auth instance.
+However if we are using [@elysiajs/openapi](/plugins/openapi), you might want to extract the documentation from Better Auth instance.
 
 We may do that with the following code:
 
@@ -126,16 +126,16 @@ export const OpenAPI = {
 } as const
 ```
 
-Then in our Elysia instance that use `@elysiajs/swagger`.
+Then in our Elysia instance that use `@elysiajs/openapi`.
 
 ```ts
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { openapi } from '@elysiajs/openapi'
 
 import { OpenAPI } from './auth'
 
 const app = new Elysia().use(
-    swagger({
+    openapi({
         documentation: {
             components: await OpenAPI.components,
             paths: await OpenAPI.getPaths()

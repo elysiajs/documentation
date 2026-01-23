@@ -3,6 +3,7 @@ title: Elysia 1.3 and Scientific Witchery
 sidebar: false
 editLink: false
 search: false
+comment: false
 head:
     - - meta
       - property: 'og:title'
@@ -102,7 +103,7 @@ When comparing to the same code **without schema**, we see < 2% performance diff
 
 This is huge.
 
-Previously, you have to choose between safety and performance but as we close the performance gap between using and not using validation. But now you don't have to worry about it.
+Previously, you had to choose between safety and performance as we close the performance gap between using and not using validation. But now you don't have to worry about it.
 
 But now, we drop validation overhead from a significant amount to almost near zero without requiring any changes on your side.
 
@@ -150,13 +151,13 @@ We can then override a public schema by providing a schema in a route handler wh
 ![Elysia run with default override guard showing schema gets override](/blog/elysia-13/schema-override.webp)
 > Elysia run with default override guard
 
-But sometime we **don't want to override** a schema.
+But sometimes we **don't want to override** a schema.
 
 Instead we want it to work both allowing us to combine schemas instead of overriding them.
 
 Starting from Elysia 1.3, we can do just that.
 
-We can now tell Elysia to not to override it and instead treat it as its own by providing a schema as **standalone**.
+We can now tell Elysia not to override it and instead treat it as its own by providing a schema as **standalone**.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -170,7 +171,7 @@ new Elysia()
 	})
 ```
 
-As a result, we have a results that like merging a local and global schema together.
+As a result, we have results that are like merging a local and global schema together.
 
 ![Elysia run with standalone merging multiple guard together](/blog/elysia-13/schema-standalone.webp)
 > Elysia run with standalone merging multiple guard together
@@ -181,7 +182,7 @@ Elysia's type inference is already extremely fast.
 
 We are really confident in our optimization of type inference and it's faster than most frameworks that use an express-like syntax.
 
-However, our users with really **really** large scale with multiple routes and complex type inference.
+However, our users with really **really** large scale applications with multiple routes and complex type inference.
 
 We managed to **reduce type instantiation by half** in most cases, and measured up to 60% improvement in inference speed.
 
@@ -195,7 +196,7 @@ This should solve the problem with users who use heavy object/class for example 
 As a result, we should end up with faster IDE auto-completion, suggestion, type checking and Eden Treaty.
 
 ## Performance Improvement
-We have refactored and optimized a lot of internal code which accumulate up to significant improvements.
+We have refactored and optimized a lot of internal code which accumulates up to significant improvements.
 
 ### Route Registration
 

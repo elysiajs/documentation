@@ -7,17 +7,17 @@ head:
 
     - - meta
       - name: 'og:description'
-        content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
+        content: Eden Treaty is an object-like representation of an Elysia server, providing end-to-end type safety and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 
     - - meta
       - name: 'og:description'
-        content: Eden Treaty is an object-like representation of an Elysia server, providing an end-to-end type safety, and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
+        content: Eden Treaty is an object-like representation of an Elysia server, providing end-to-end type safety and a significantly improved developer experience. With Eden, we can fetch an API from Elysia server fully type-safe without code generation.
 ---
 
 # Unit Test
 According to [Eden Treaty config](/eden/treaty/config.html#urlorinstance) and [Unit Test](/patterns/unit-test), we may pass an Elysia instance to Eden Treaty directly to interact with Elysia server directly without sending a network request.
 
-We may use this patterns to create a unit test with end-to-end type safety and type-level test all at once.
+We may use this pattern to create a unit test with end-to-end type safety and type-level test all at once.
 
 ```typescript twoslash
 // test/index.test.ts
@@ -29,7 +29,7 @@ const app = new Elysia().get('/hello', 'hi')
 const api = treaty(app)
 
 describe('Elysia', () => {
-    it('return a response', async () => {
+    it('returns a response', async () => {
         const { data } = await api.hello.get()
 
         expect(data).toBe('hi')
@@ -40,7 +40,7 @@ describe('Elysia', () => {
 ```
 
 ## Type safety test
-To perform a type safety test, simply run **tsc** to test folders.
+To perform a type safety test, simply run **tsc** on test folders.
 
 ```bash
 tsc --noEmit test/**/*.ts

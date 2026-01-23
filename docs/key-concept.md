@@ -14,17 +14,93 @@ head:
         content: Although Elysia is a simple library, it has some key concepts that you need to understand to use it effectively. This page will guide you through the key concepts of ElysiaJS.
 ---
 
-# Key Concept
+<script setup>
+import { Elysia } from 'elysia'
+import Playground from './components/nearl/playground.vue'
 
-Although Elysia is a simple library, it has some key concepts that you need to understand to use it effectively.
+const profile1 = new Elysia()
+	.onBeforeHandle(({ status }) => status(401))
+	.get('/profile', ({ status }) => status(401))
 
-This page covers most important concepts of Elysia that you should know.
+const demo1 = new Elysia()
+	.use(profile1)
+	// This will NOT have sign in check
+	.patch('/rename', () => 'Updated!')
 
-::: tip
-We __highly recommend__ you to read this page before learn more about Elysia.
-:::
+const profile2 = new Elysia()
+	.onBeforeHandle({ as: 'global' }, ({ status }) => status(401))
+	.get('/profile', ({ status }) => status(401))
 
-## Everything is a component
+const demo2 = new Elysia()
+	.use(profile2)
+	// This will NOT have sign in check
+	.patch('/rename', ({ status }) => status(401))
+</script>
+
+# Key Concept <Badge type="danger" text="MUST READ" />
+
+Elysia has a every important concepts that you need to understand to use.
+
+This page covers most concepts that you should know before getting started.
+
+## Encapsulation <Badge type="danger" text="MUST READ" />
+Elysia lifecycle methods are **encapsulated** to its own instance only.
+
+Which means if you create a new instance, it will not share the lifecycle methods with others.
+
+```ts
+import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+	.onBeforeHandle(({ cookie }) => {
+		throwIfNotSignIn(cookie)
+	})
+	.get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+	.use(profile)
+	// ⚠️ This will NOT have sign in check
+	.patch('/rename', ({ body }) => updateProfile(body))
+```
+
+<!-- Do not at 'the' before "profile" and "app" here - @Saltyaom -->
+In this example, the `isSignIn` check will only apply to `profile` but not `app`.
+
+<Playground :elysia="demo1" />
+
+> Try changing the path in the URL bar to **/rename** and see the result
+
+<br>
+
+**Elysia isolate lifecycle by default** unless explicitly stated. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
+
+To **"export"** the lifecycle to other instances, you must add specify the scope.
+
+```ts
+import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+	.onBeforeHandle(
+		{ as: 'global' }, // [!code ++]
+		({ cookie }) => {
+			throwIfNotSignIn(cookie)
+		}
+	)
+	.get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+	.use(profile)
+	// This has sign in check
+	.patch('/rename', ({ body }) => updateProfile(body))
+```
+
+<Playground :elysia="demo2" />
+
+Casting lifecycle to **"global"** will export lifecycle to **every instance**.
+
+Learn more about this in [scope](/essential/plugin.html#scope-level).
+
+<!--## Everything is a component
 
 Every Elysia instance is a component.
 
@@ -50,14 +126,12 @@ const app = new Elysia()
 
 This forces you to break down your application into small pieces, making it easy for you to add or remove features.
 
-Learn more about this in [plugin](/essential/plugin.html).
+Learn more about this in [plugin](/essential/plugin.html).-->
 
-## Method Chaining
-Elysia code should always use **method chaining**.
+## Method Chaining <Badge type="warning" text="Important" />
+Elysia code should **ALWAYS** use method chaining.
 
-As Elysia type system is complex, every methods in Elysia returns a new type reference.
-
-**This is important** to ensure type integrity and inference.
+This is **important to ensure type safety**.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -72,7 +146,9 @@ new Elysia()
 
 In the code above, **state** returns a new **ElysiaInstance** type, adding a typed `build` property.
 
-### Don't use Elysia without method chaining
+### Without method chaining
+As Elysia type system is complex, every method in Elysia returns a new type reference.
+
 Without using method chaining, Elysia doesn't save these new types, leading to no type inference.
 
 ```typescript twoslash
@@ -90,63 +166,64 @@ app.listen(3000)
 
 We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
 
-## Scope
-By default, event/life-cycle in each instance is isolated from each other.
+## Dependency <Badge type="danger" text="MUST READ" />
+Elysia by design, is compose of multiple mini Elysia apps which can run **independently** like a microservice that communicate with each other.
+
+Each Elysia instance is independent and **can run as a standalone server**.
+
+When an instance need to use another instance's service, you **must explicitly declare the dependency**.
 
 ```ts twoslash
 // @errors: 2339
-import { Elysia } from 'elysia'
+import { t } from 'elysia'
 
-const ip = new Elysia()
-	.derive(({ server, request }) => ({
-		ip: server?.requestIP(request)
-	}))
-	.get('/ip', ({ ip }) => ip)
+abstract class Auth {
+	static getProfile() {
+		return {
+			name: 'Elysia User'
+		}
+	}
 
-const server = new Elysia()
-	.use(ip)
-	.get('/ip', ({ ip }) => ip)
-	.listen(3000)
-```
-
-In this example, the `ip` property is only shared in its own instance but not in the `server` instance.
-
-To share the lifecycle, in our case, an `ip` property with `server` instance, we need to **explicitly say** that it could be shared.
-
-```ts twoslash
-import { Elysia } from 'elysia'
-
-const ip = new Elysia()
-	.derive(
-		{ as: 'global' }, // [!code ++]
-		({ server, request }) => ({
-			ip: server?.requestIP(request)
+	static models = {
+		user: t.Object({
+			name: t.String()
 		})
-	)
-	.get('/ip', ({ ip }) => ip)
+	} as const
+}
+// ---cut---
+import { Elysia } from 'elysia'
 
-const server = new Elysia()
-	.use(ip)
-	.get('/ip', ({ ip }) => ip)
-	.listen(3000)
+const auth = new Elysia()
+	.decorate('Auth', Auth)
+	.model(Auth.models)
+
+const main = new Elysia()
+ 	// ❌ 'auth' is missing
+	.get('/', ({ Auth }) => Auth.getProfile())
+	// auth is required to use Auth's service
+	.use(auth) // [!code ++]
+	.get('/profile', ({ Auth }) => Auth.getProfile())
+//                                        ^?
+
+
+
+// ---cut-after---
 ```
 
-In this example, `ip` property is shared between `ip` and `server` instance because we define it as `global`.
+This is similar to **Dependency Injection** where each instance must declare its dependencies.
 
-This forces you to think about the scope of each property, preventing you from accidentally sharing the property between instances.
+This approach force you to be explicit about dependencies allowing better tracking, modularity.
 
-Learn more about this in [scope](/essential/plugin.html#scope).
+### Deduplication <Badge type="warning" text="Important" />
 
-## Dependency
-By default, each instance will be re-executed every time it's applied to another instance.
+By default, each plugin will be re-executed **every time** applying to another instance.
 
-This can cause a duplication of the same method being applied multiple times, whereas some methods, like **lifecycle** or **routes**, should only be called once.
-
-To prevent lifecycle methods from being duplicated, we can add **a unique identifier** to the instance.
+To prevent this, Elysia can deduplicate lifecycle with **an unique identifier** using `name` and optional `seed` property.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
 
+// `name` is an unique identifier
 const ip = new Elysia({ name: 'ip' }) // [!code ++]
 	.derive(
 		{ as: 'global' },
@@ -169,55 +246,38 @@ const server = new Elysia()
 	.use(router2)
 ```
 
-This will prevent the `ip` property from being called multiple times by applying deduplication using a unique name.
-
-This allows us to reuse the same instance multiple times without the performance penalty. Forcing you to think about the dependencies of each instance.
+Adding the `name` and optional `seed` to the instance will make it a unique identifier prevent it from being called multiple times.
 
 Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
 
-### Service Locator
-When you apply a plugin with state/decorators to an instance, the instance will gain type safety.
+### Global vs Explicit Dependency
 
-But if you don't apply the plugin to another instance, it will not be able to infer the type.
+There are some case that global dependency make more sense than an explicit one.
 
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
+**Global** plugin example:
+- **Plugin that doesn't add types** - eg. cors, compress, helmet
+- Plugin that add global lifecycle that no instance should have control over - eg. tracing, logging
 
-const child = new Elysia()
-    // ❌ 'a' is missing
-    .get('/', ({ a }) => a)
+Example use cases:
+- OpenAPI/Open - Global document
+- OpenTelemetry - Global tracer
+- Logging - Global logger
 
-const main = new Elysia()
-    .decorate('a', 'a')
-    .use(child)
-```
+In case like this, it make more sense to create it as global dependency instead of applying it to every instance.
 
-Elysia introduces the **Service Locator** pattern to counteract this.
+However, if your dependency doesn't fit into these categories, it's recommended to use **explicit dependency** instead.
 
-We simply provide the plugin reference for Elysia to find the service to add type safety.
+**Explicit dependency** example:
+- **Plugin that add types** - eg. macro, state, model
+- Plugin that add business logic that instance can interact with - eg. Auth, Database
 
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
+Example use cases:
+- State management - eg. Store, Session
+- Data modeling - eg. ORM, ODM
+- Business logic - eg. Auth, Database
+- Feature module - eg. Chat, Notification
 
-const setup = new Elysia({ name: 'setup' })
-    .decorate('a', 'a')
-
-// Without 'setup', type will be missing
-const error = new Elysia()
-    .get('/', ({ a }) => a)
-
-const main = new Elysia()
-	// With `setup`, type will be inferred
-    .use(setup) // [!code ++]
-    .get('/', ({ a }) => a)
-    //           ^?
-```
-
-As mentioned in [dependencies](#dependencies), we can use the `name` property to deduplicate the instance so it will not have any performance penalty or lifecycle duplication.
-
-## Order of code
+## Order of code <Badge type="warning" text="Important" />
 
 The order of Elysia's life-cycle code is very important.
 
@@ -268,9 +328,9 @@ const app = new Elysia()
 	})
 ```
 
-If possible, **always use an inline function** to provide an accurate type inference.
+You should **always use an inline function** to provide an accurate type inference.
 
-If you need to apply a separate function, eg. MVC's controller pattern, it's recommended to destructure properties from inline function to prevent unnecessary type inference.
+If you need to apply a separate function, eg. MVC's controller pattern, it's recommended to destructure properties from inline function to prevent unnecessary type inference as follows:
 
 ```ts twoslash
 import { Elysia, t } from 'elysia'
@@ -288,6 +348,8 @@ const app = new Elysia()
 		})
 	})
 ```
+
+See [Best practice: MVC Controller](/essential/best-practice.html#controller).
 
 ### TypeScript
 We can get a type definitions of every Elysia/TypeBox's type by accessing `static` property as follows:
@@ -316,5 +378,3 @@ A single Elysia/TypeBox schema can be used for:
 - OpenAPI schema
 
 This allows us to make a schema as a **single source of truth**.
-
-Learn more about this in [Best practice: MVC Controller](/essential/best-practice.html#controller).

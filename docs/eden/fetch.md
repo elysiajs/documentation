@@ -15,9 +15,9 @@ head:
 ---
 
 # Eden Fetch
-A fetch-like alternative to Eden Treaty .
+A fetch-like alternative to Eden Treaty.
 
-With Eden Fetch can interact with Elysia server in a type-safe manner using Fetch API.
+With Eden Fetch, you can interact with Elysia server in a type-safe manner using Fetch API.
 
 ---
 

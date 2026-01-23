@@ -13,7 +13,7 @@ head:
 
     - - meta
       - name: 'description'
-        content: This guide is for Fastify users who want to see a differences from Fastify including syntax, and how to migrate your application from Fastify to Elysia by example.
+        content: This guide is for Fastify users who want to see the differences from Fastify including syntax, and how to migrate your application from Fastify to Elysia by example.
 
     - - meta
       - property: 'og:description'
@@ -34,7 +34,7 @@ This guide is for Fastify users who want to see a differences from Fastify inclu
 
 **Fastify** is a fast and low overhead web framework for Node.js, designed to be simple and easy to use. It is built on top of the HTTP module and provides a set of features that make it easy to build web applications.
 
-**Elysia** is an ergonomic web framework for Bun, Node.js, and runtime that support Web Standard API. Designed to be ergonomic and developer-friendly with a focus on **sounds type safety** and performance.
+**Elysia** is an ergonomic web framework for Bun, Node.js, and runtime that supports Web Standard API. Designed to be ergonomic and developer-friendly with a focus on **sound type safety** and performance.
 
 ## Performance
 Elysia has significant performance improvements over Fastify thanks to native Bun implementation, and static code analysis.
@@ -201,7 +201,7 @@ app.register(subRouter, {
 
 <template v-slot:left-content>
 
-> Fsatify use a function callback to declare a sub router
+> Fastify use a function callback to declare a sub router
 
 </template>
 
@@ -297,19 +297,14 @@ app.patch(
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts twoslash [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                           ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: t.Object({
 			id: t.Number()
@@ -320,12 +315,50 @@ const app = new Elysia()
 	})
 ```
 
+```ts twoslash [Elysia Zod]
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+		params,
+		body
+	}),
+	{
+		params: z.object({
+			id: z.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	})
+```
+
+```ts twoslash [Elysia Valibot]
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', ({ params, body }) => ({
+		params,
+		body
+	}),
+	{
+		params: v.object({
+			id: v.number()
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	})
+```
+
 :::
 </template>
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically
+> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
 
 </template>
 
@@ -333,7 +366,7 @@ const app = new Elysia()
 
 Alternatively, Fastify can also use **TypeBox** or **Zod** for validation using `@fastify/type-provider-typebox` to infer type automatically.
 
-While Elysia **prefers TypeBox** for validation, Elysia also supports **Zod**, and **Valibot** via [TypeMap](https://github.com/sinclairzx81/typemap).
+While Elysia **prefers TypeBox** for validation, Elysia also support for Standard Schema allowing you to use library like Zod, Valibot, ArkType, Effect Schema and so on out of the box.
 
 ## File upload
 Fastify use a `fastify-multipart` to handle file upload which use `Busboy` under the hood while Elysia use Web Standard API for handling formdata, mimetype valiation using declarative API.
@@ -435,38 +468,7 @@ Elysia's Life Cycle event can be illustrated as the following.
 > Click on image to enlarge
 
 ### Fastify Lifecycle
-Fastify's Life Cycle event can be illustrated as the following.
-```
-Incoming Request
-  │
-  └─▶ Routing
-        │
-        └─▶ Instance Logger
-             │
-   4**/5** ◀─┴─▶ onRequest Hook
-                  │
-        4**/5** ◀─┴─▶ preParsing Hook
-                        │
-              4**/5** ◀─┴─▶ Parsing
-                             │
-                   4**/5** ◀─┴─▶ preValidation Hook
-                                  │
-                            400 ◀─┴─▶ Validation
-                                        │
-                              4**/5** ◀─┴─▶ preHandler Hook
-                                              │
-                                    4**/5** ◀─┴─▶ User Handler
-                                                    │
-                                                    └─▶ Reply
-                                                          │
-                                                4**/5** ◀─┴─▶ preSerialization Hook
-                                                                │
-                                                                └─▶ onSend Hook
-                                                                      │
-                                                            4**/5** ◀─┴─▶ Outgoing Response
-                                                                            │
-                                                                            └─▶ onResponse Hook
-```
+Fastify Life Cycle event also use an event-based approach similar to Elysia.
 
 Both also has somewhat similar syntax for intercepting the request and response lifecycle events, however Elysia doesn't require you to call `done` to continue the lifecycle event.
 
@@ -524,7 +526,7 @@ import { Elysia } from 'elysia'
 
 const app = new Elysia()
 	// Global middleware
-	.onRequest('/user', ({ method, path }) => {
+	.onRequest(({ method, path }) => {
 		console.log(`${method} ${path}`)
 	})
 	// Route-specific middleware
@@ -550,7 +552,7 @@ const app = new Elysia()
 ## Sounds type safety
 Elysia is designed to be sounds type safety.
 
-For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Fastify doesn't not.
+For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Fastify doesn't.
 
 <Compare>
 
@@ -895,6 +897,8 @@ While Both offers error handling using lifecycle event, Elysia also provide:
 
 The error code is useful for logging and debugging, and is important when differentiating between different error types extending the same class.
 
+Elysia provides all of this with type safety while Fastify doesn't.
+
 ## Encapsulation
 
 Fastify encapsulate plugin side-effect, while Elysia give you a control over side-effect of a plugin via explicit scoping mechanism, and order-of-code.
@@ -1216,21 +1220,23 @@ fastify.swagger()
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { swagger } from '@elysiajs/swagger' // [!code ++]
+import { openapi } from '@elysiajs/openapi' // [!code ++]
 
 const app = new Elysia()
-	.use(swagger()) // [!code ++]
+	.use(openapi()) // [!code ++]
 	.model({
-		user: t.Object({
-			name: t.String(),
-			age: t.Number()
-		})
+		user: t.Array(
+			t.Object({
+				name: t.String(),
+				age: t.Number()
+			})
+		)
 	})
 	.post('/users', ({ body }) => body, {
 	//                  ^?
-		body: 'user[]',
+		body: 'user',
 		response: {
-			201: 'user[]'
+			201: 'user'
 		},
 		detail: {
 			summary: 'Create user'
@@ -1409,7 +1415,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 ---
 
-Elysia offers a more ergonomic and developer-friendly experience with a focus on performance, type safety, and simplicity while Fastify is one of the established framework for Node.js, but doesn't has **sounds type safety** and **end-to-end type safety** offers by next generation framework.
+Elysia offers a more ergonomic and developer-friendly experience with a focus on performance, type safety, and simplicity while Fastify is one of the established framework for Node.js, but doesn't have **sounds type safety** and **end-to-end type safety** offered by next generation framework.
 
 If you are looking for a framework that is easy to use, has a great developer experience, and is built on top of Web Standard API, Elysia is the right choice for you.
 
@@ -1417,9 +1423,12 @@ Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
     <Card title="From Express" href="/migrate/from-express">
-  		A guide to migrate from Express to Elysia
+  		Comparison between tRPC and Elysia
     </Card>
 	<Card title="From Hono" href="/migrate/from-hono">
-	  	A guide to migrate from Hono to Elysia
+ 		Comparison between tRPC and Elysia
 	</Card>
+	<Card title="From tRPC" href="/migrate/from-trpc">
+  		Comparison between tRPC and Elysia
+    </Card>
 </Deck>

@@ -31,9 +31,16 @@ bun add -d nuxt-elysia
 export default defineNuxtConfig({
     modules: [ // [!code ++]
         'nuxt-elysia' // [!code ++]
-    ] // [!code ++]
+    ], // [!code ++]
+    nitro: { // [!code ++]
+        preset: 'Bun' // [!code ++]
+    } // [!code ++]
 })
 ```
+
+::: tip
+The `nitro.preset: 'Bun'` configuration is required because Elysia runs on Bun runtime. This tells Nuxt's Nitro to use Bun as the server runtime instead of the default Node.js runtime.
+:::
 
 3. Create `api.ts` in the project root:
 
@@ -65,6 +72,12 @@ const { data } = await useAsyncData(async () => {
 ```
 
 This will automatically setup Elysia to run on Nuxt API route automatically.
+
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
 
 ## Prefix
 

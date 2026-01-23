@@ -4,7 +4,7 @@ layout: page
 sidebar: false
 editLink: false
 search: false
-gitChangelog: false
+comments: false
 authors: []
 head:
     - - meta
@@ -26,6 +26,26 @@ head:
 
 <Blogs
   :blogs="[
+      {
+        title: '2x faster than Encore - 1 year later',
+		href: '/blog/elysia-v-encore',
+		cover: 'elysia-v-encore.webp',
+		detail: 'After 1.5 year of development, Elysia is now 2x faster than Encore. Updated from the original benchmark, and deep dive into how we achieved this performance.',
+		date: '14 Nov 2025'
+      },
+      {
+        title: 'Elysia 1.4 - Supersymmetry',
+		href: '/blog/elysia-14',
+		cover: 'elysia-14.webp',
+		detail: 'Support for Standard Validator. Macro with schema, extension, and OpenAPI detail. Lifecycle type soundness. Improve type inference performance by 10%.',
+		date: '13 Sep 2025'
+      },
+      {
+        title: 'Introducing OpenAPI Type Gen for Elysia',
+		href: '/blog/openapi-type-gen',
+		cover: 'cover.webp',
+		detail: 'Elysia now supports OpenAPI Type Gen, a powerful tool that automatically generates OpenAPI documentation from your Elysia routes and types without any manual annotation.'
+      },
       {
         title: 'Elysia 1.3 and Scientific Witchery',
         href: '/blog/elysia-13',
@@ -66,7 +86,7 @@ head:
         title: 'Introducing Elysia 0.6 - This Game',
         href: '/blog/elysia-06',
         cover: 'this-game.webp',
-        detail: 'Introducing re-imagined plugin model, dynamic mode, better developer experience with declarative custom error, customizable loose and strict path mapping, TypeBox 0.30 and WinterCG framework interlop. Pushing the boundary of what is possible once again'
+        detail: 'Introducing re-imagined plugin model, dynamic mode, better developer experience with declarative custom error, customizable loose and strict path mapping, TypeBox 0.30 and WinterTC framework interlop. Pushing the boundary of what is possible once again'
       },
       {
         title: 'Accelerate your next Prisma server with Elysia',

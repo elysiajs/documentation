@@ -1,9 +1,9 @@
 ---
-title: Drizzle - ElysiaJS
+title: Integration with Drizzle - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Drizzle - ElysiaJS
+      content: Integration with Drizzle - ElysiaJS
 
   - - meta
     - name: 'description'
@@ -75,7 +75,6 @@ Assuming we have a `user` table in our codebase as follows:
 ::: code-group
 
 ```ts [src/database/schema.ts]
-import { relations } from 'drizzle-orm'
 import {
     pgTable,
     varchar,
@@ -113,6 +112,7 @@ We may convert the `user` table into TypeBox models by using `drizzle-typebox`:
 ::: code-group
 
 ```ts [src/index.ts]
+import { t } from 'elysia'
 import { createInsertSchema } from 'drizzle-typebox'
 import { table } from './database/schema'
 
@@ -255,8 +255,6 @@ export const spread = <
     return newSchema as any
 }
 
-const a = spread(table.user, 'insert')
-
 /**
  * Spread a Drizzle Table into a plain object
  *
@@ -330,7 +328,7 @@ This will allow us to access the table schema from anywhere in the codebase:
 ::: code-group
 
 ```ts [src/index.ts]
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 import { db } from './database/model'
 
 const { user } = db.insert
@@ -367,7 +365,7 @@ export const db = {
 		user: createInsertSchema(table.user, {
 			email: t.String({ format: 'email' })
 		}),
-	}, 'insert')),
+	}, 'insert'),
 	select: spreads({
 		user: createSelectSchema(table.user, {
 			email: t.String({ format: 'email' })

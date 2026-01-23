@@ -19,32 +19,35 @@ head:
 With SvelteKit, you can run Elysia on server routes.
 
 1. Create **src/routes/[...slugs]/+server.ts**.
-2. In **+server.ts**, create or import an existing Elysia server
-3. Export the handler with the name of method you want to expose
+2. Define an Elysia server.
+3. Export a **fallback** function that calls `app.handle`.
 
 ```typescript
 // src/routes/[...slugs]/+server.ts
 import { Elysia, t } from 'elysia';
 
 const app = new Elysia()
-    .get('/', () => 'hello SvelteKit')
+    .get('/', 'hello SvelteKit')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
 
-type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
+interface WithRequest {
+	request: Request
+}
 
-export const GET: RequestHandler = ({ request }) => app.handle(request)
-export const POST: RequestHandler = ({ request }) => app.handle(request)
+export const fallback = ({ request }: WithRequest) => app.handle(request) // [!code ++]
 ```
 
 You can treat the Elysia server as a normal SvelteKit server route.
 
-With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type-safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
-
-Please refer to [SvelteKit Routing](https://kit.svelte.dev/docs/routing#server) for more information.
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
 
 ## Prefix
 If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
@@ -65,8 +68,9 @@ const app = new Elysia({ prefix: '/api' }) // [!code ++]
 
 type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
 
-export const GET: RequestHandler = ({ request }) => app.handle(request)
-export const POST: RequestHandler = ({ request }) => app.handle(request)
+export const fallback: RequestHandler = ({ request }) => app.handle(request)
 ```
 
 This will ensure that Elysia routing will work properly in any location you place it.
+
+Please refer to [SvelteKit Routing](https://kit.svelte.dev/docs/routing#server) for more information.

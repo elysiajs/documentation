@@ -7,44 +7,51 @@ head:
 
     - - meta
       - name: 'description'
-        content: With Nextjs App Router, you can run Elysia on Nextjs route. Elysia will work normally as expected because of WinterCG compliance.
+        content: With Next.js App Router, you can run Elysia on Next.js routes. Elysia will work normally as expected because of WinterTC compliance.
 
     - - meta
       - property: 'og:description'
-        content: With Nextjs App Router, you can run Elysia on Nextjs route. Elysia will work normally as expected because of WinterCG compliance.
+        content: With Next.js App Router, you can run Elysia on Next.js routes. Elysia will work normally as expected because of WinterCG compliance.
 ---
 
-# Integration with Nextjs
+# Integration with Next.js
 
-With Nextjs App Router, we can run Elysia on Nextjs route.
+With Next.js App Router, we can run Elysia on Next.js routes.
 
-1. Create **api/[[...slugs]]/route.ts** inside app router
-2. In **route.ts**, create or import an existing Elysia server
-3. Export the handler with the name of method you want to expose
+1. Create **app/api/[[...slugs]]/route.ts**
+2. define an Elysia server
+3. Export **Elysia.fetch** name of HTTP methods you want to use
 
-```typescript
-// app/api/[[...slugs]]/route.ts
+::: code-group
+
+```typescript [app/api/[[...slugs]]/route.ts]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia({ prefix: '/api' })
-    .get('/', () => 'hello Next')
+    .get('/', 'Hello Nextjs')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
 
-export const GET = app.handle // [!code ++]
-export const POST = app.handle // [!code ++]
+export const GET = app.fetch // [!code ++]
+export const POST = app.fetch // [!code ++]
 ```
 
-Elysia will work normally as expected because of WinterCG compliance, however, some plugins like **Elysia Static** may not work if you are running Nextjs on Node.
+:::
 
-You can treat the Elysia server as a normal Nextjs API route.
+Elysia will work normally because of WinterTC compliance.
 
-With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](https://elysiajs.com/eden/overview.html) with both client-side and server action
+You can treat the Elysia server as a normal Next.js API route.
 
-Please refer to [Nextjs Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
+With this approach, you can have co-location of both frontend and backend in a single repository and have [End-to-end type safety with Eden](/eden/overview) with both client-side and server action
+
+### pnpm
+If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
 
 ## Prefix
 
@@ -52,20 +59,129 @@ Because our Elysia server is not in the root directory of the app router, you ne
 
 For example, if you place Elysia server in **app/user/[[...slugs]]/route.ts**, you need to annotate prefix as **/user** to Elysia server.
 
-```typescript
-// app/user/[[...slugs]]/route.ts
+::: code-group
+
+```typescript [app/user/[[...slugs]]/route.ts]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia({ prefix: '/user' }) // [!code ++]
-    .get('/', () => 'hi')
+	.get('/', 'Hello Nextjs')
     .post('/', ({ body }) => body, {
         body: t.Object({
             name: t.String()
         })
     })
 
-export const GET = app.handle
-export const POST = app.handle
+export const GET = app.fetch
+export const POST = app.fetch
 ```
 
+:::
+
 This will ensure that Elysia routing will work properly in any location you place it.
+
+## Eden
+
+We can add [Eden](/eden/overview) for **end-to-end type safety** similar to tRPC.
+
+In this approach, we will use isomorphic fetch pattern to allow Elysia to:
+1. On Server: directly calls Elysia without going through the network layer
+2. On Client: calls Elysia through the network layer
+
+To start, we need to do the following steps:
+
+1. Export Elysia instance
+
+::: code-group
+
+```typescript [app/api/[[...slugs]]/route.ts]
+import { Elysia } from 'elysia'
+
+export const app = new Elysia({ prefix: '/api' }) // [!code ++]
+	.get('/', 'Hello Nextjs')
+	.post(
+		'/user',
+		({ body }) => body,
+		{
+			body: treaty.schema('User', {
+				name: 'string'
+			})
+		}
+	)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+:::
+
+2. Create a Treaty client with isomorphic approach
+
+::: code-group
+
+```typescript [lib/eden.ts]
+import { treaty } from '@elysiajs/eden'
+import type { app } from '../app/api/[[...slugs]]/route'
+
+// .api to enter /api prefix
+export const api =
+  // process is defined on server side and build time
+  typeof process !== 'undefined'
+    ? treaty(app).api
+    : treaty<typeof app>('localhost:3000').api
+```
+
+It's important that you should use `typeof process` instead of `typeof window` because `window` is not defined during build time, causing hydration error.
+
+:::
+
+3. Use the client in both server and client components
+
+::: code-group
+
+```tsx [app/page.tsx]
+import { api } from '../lib/eden'
+
+export default async function Page() {
+	const message = await api.get()
+
+	return <h1>Hello, {message}</h1>
+}
+```
+
+:::
+
+This allows you to have type safety from the frontend to the backend with minimal effort and works with both server, client components and with Incremental Static Regeneration (ISR).
+
+## React Query
+We can also use React Query to interact with Elysia server on client.
+
+::: code-group
+
+```tsx [src/routes/index.tsx]
+import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+
+import { getTreaty } from './api.$' // [!code ++]
+
+export const Route = createFileRoute('/a')({
+	component: App
+})
+
+function App() {
+	const { data: response } = useQuery({ // [!code ++]
+		queryKey: ['get'], // [!code ++]
+		queryFn: () => getTreaty().get() // [!code ++]
+	}) // [!code ++]
+
+	return response?.data
+}
+```
+
+::: code-group
+
+This can works with any React Query features like caching, pagination, infinite query, etc.
+
+---
+
+Please refer to [Next.js Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) for more information.
