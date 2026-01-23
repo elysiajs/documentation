@@ -427,7 +427,7 @@ If the `SO_REUSEPORT` flag should be set
 
 This allows multiple processes to bind to the same port, which is useful for load balancing
 
-This configuration is override and turns on by default by Elysia
+This configuration is overridden and turns on by default by Elysia
 
 ### serve.unix
 If set, the HTTP server will listen on a unix socket instead of a port.
