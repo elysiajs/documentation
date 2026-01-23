@@ -6,7 +6,6 @@ import {
     type Theme
 } from 'vitepress'
 import { createPinia } from 'pinia'
-import { createHead } from '@vueuse/head'
 
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
@@ -24,11 +23,8 @@ export default {
     Layout,
     enhanceApp({ app }: EnhanceAppContext) {
         const pinia = createPinia()
-        const head = createHead()
 
         app.use(pinia)
-        app.use(head)
-
         app.use(TwoslashFloatingVue)
     },
     setup() {

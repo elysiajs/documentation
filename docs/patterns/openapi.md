@@ -18,7 +18,7 @@ head:
 import Tab from '../components/fern/tab.vue'
 </script>
 
-# OpenAPI
+# OpenAPI <TutorialBadge href="/tutorial/features/openapi" />
 
 Elysia has first-class support and follows OpenAPI schema by default.
 
@@ -40,7 +40,7 @@ new Elysia()
 	.use(openapi()) // [!code ++]
 ```
 
-By default, Elysia uses OpenAPI V3 schema and [Scalar UI](http://scalar.com)
+Accessing `/openapi` would show you a Scalar UI with the generated endpoint documentation from the Elysia server.
 
 For OpenAPI plugin configuration, see the [OpenAPI plugin page](/plugins/openapi).
 

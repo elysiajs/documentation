@@ -39,7 +39,7 @@
                             :initial="{ opacity: 0, scale: 0.9 }"
                             :animate="{ opacity: 1, scale: 1 }"
                             :exit="{ opacity: 0, scale: 0.9 }"
-                            class="w-xs p-2 bg-white/80 dark:bg-gray-700/65 rounded-2xl border dark:border-gray-600/75 backdrop-blur-xs origin-left shadow-lg"
+                            class="w-xs p-2 bg-white/80 dark:bg-gray-700/65 mr-1.5 rounded-2xl border dark:border-gray-600/75 backdrop-blur-xs origin-top-right shadow-lg"
                         >
                             <h6
                                 class="text-xl text-black dark:text-white font-medium mt-1 px-2"
@@ -54,7 +54,7 @@
                             </p>
                             <PopoverClose as-child>
                                 <button
-                                    class="clicky text-red-500 text-base font-medium mt-2 ml-1 mb-2 px-3 py-1.5 bg-red-500/7.5 dark:bg-red-500/17.5 interact:bg-red-500/12.5 interact:dark:bg-red-500/25 rounded-xl !outline-none"
+                                    class="clicky text-red-500 text-base font-medium mt-2 ml-1 mb-1 px-3 py-1.5 bg-red-500/7.5 dark:bg-red-500/17.5 interact:bg-red-500/12.5 interact:dark:bg-red-500/25 rounded-xl !outline-none"
                                     @click="store.reset()"
                                 >
                                     Reset Playground

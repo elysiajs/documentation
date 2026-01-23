@@ -145,7 +145,7 @@
                 <span
                     class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"
                     >End-to-End Type Safety</span
-                >, formidable speed, and exceptional developer experience.
+                >, formidable speed, and exceptional DX across runtime.
                 <br />
                 <span
                     class="text-transparent font-semibold bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400"

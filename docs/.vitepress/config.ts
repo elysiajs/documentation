@@ -31,6 +31,19 @@ export default defineConfig({
                 typesCache: createFileSystemTypesCache()
             })
         ],
+        languages: [
+            'js',
+            'ts',
+            'javascript',
+            'typescript',
+            'jsx',
+            'tsx',
+            'prisma',
+            'bash',
+            'vue',
+            'json',
+            'yml'
+        ],
         config: (md) => {
             md.use(lightbox, {})
         }
