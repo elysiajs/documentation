@@ -86,43 +86,25 @@ export default defineLoader({
             const data: Sponsor[] =
                 result.data?.user?.sponsorshipsAsMaintainer?.nodes || []
 
-            return [
-                ...data
-                    .filter(
-                        (x) =>
-                            !x.tier.isOneTime &&
-                            !hidden.includes(x.sponsorEntity.login)
-                    )
-                    .sort(
-                        (a, b) =>
-                            b?.tier?.monthlyPriceInDollars -
-                                a?.tier?.monthlyPriceInDollars ||
-                            new Date(a?.createdAt).getTime() -
-                                new Date(b?.createdAt).getTime()
-                    )
-                    .map((sponsor) => ({
-                        ...sponsor,
-                        duration: dayjs()
-                            .from(dayjs(sponsor.createdAt))
-                            .replace('in', 'for')
-                    })),
-                {
-                    createdAt: '2025-10-01T00:00:00Z',
+            return data
+                .filter(
+                    (x) =>
+                        !x.tier.isOneTime &&
+                        !hidden.includes(x.sponsorEntity.login)
+                )
+                .sort(
+                    (a, b) =>
+                        b?.tier?.monthlyPriceInDollars -
+                            a?.tier?.monthlyPriceInDollars ||
+                        new Date(a?.createdAt).getTime() -
+                            new Date(b?.createdAt).getTime()
+                )
+                .map((sponsor) => ({
+                    ...sponsor,
                     duration: dayjs()
-                        .from(dayjs('2025-10-01T00:00:00Z'))
-                        .replace('in', 'for'),
-                    tier: {
-                        isOneTime: false,
-                        isCustomAmount: false,
-                        monthlyPriceInDollars: 200
-                    },
-                    sponsorEntity: {
-                        avatarUrl: '/sponsors/drizzle.webp',
-                        login: 'drizzle-team',
-                        name: 'Drizzle ORM'
-                    }
-                }
-            ] as Sponsor[]
+                        .from(dayjs(sponsor.createdAt))
+                        .replace('in', 'for')
+                }))
         } catch (error) {
             console.warn('Fetch sponsors error')
             console.warn(error)
