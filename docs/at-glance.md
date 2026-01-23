@@ -116,7 +116,7 @@ new Elysia()
 
 <br>
 
-The above code creates a path parameter "id". The value that replaces `:id` will be passed to `params.id` both at runtime and in types, without manual type declaration.
+The above code creates a path parameter **"id"**. The value that replaces `:id` will be passed to `params.id` both at runtime and in types, without manual type declaration.
 
 <Playground
     :elysia="demo2"
@@ -217,18 +217,17 @@ With the OpenAPI plugin, you can seamlessly generate an API documentation page w
 
 ## OpenAPI from types
 
-Elysia has excellent support for OpenAPI with schemas that can be used for data validation, type inference, and OpenAPI annotation from a single source of truth.
+Elysia also supports OpenAPI schema generation with **1 line directly from types**.
 
-Elysia also supports OpenAPI schema generation with **1 line directly from types**, allowing you to have complete and accurate API documentation without any manual annotation.
+This is a **unique feature** of Elysia, allowing you to have complete and accurate API documentation directly from your code without any manual annotation.
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/oepnapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
     .use(openapi({
-    	references: fromTypes('src/index.ts') // [!code ++]
+    	references: fromTypes() // [!code ++]
     }))
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
@@ -238,6 +237,8 @@ export const app = new Elysia()
     .listen(3000)
 ```
 
+This is equivalent to **FastAPI**'s automatic OpenAPI generation from types but in TypeScript.
+
 ## End-to-end Type Safety
 
 With Elysia, type safety is not limited to server-side.
@@ -246,12 +247,11 @@ With Elysia, you can synchronize your types with your frontend team automaticall
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
     .use(openapi({
-    	references: fromTypes('src/index.ts')
+    	references: fromTypes()
     }))
     .get('/user/:id', ({ params: { id } }) => id, {
         params: t.Object({
@@ -260,7 +260,7 @@ export const app = new Elysia()
     })
     .listen(3000)
 
-export type App = typeof app
+export type App = typeof app // [!code ++]
 ```
 
 And on your client-side:
@@ -298,13 +298,148 @@ With Eden, you can use the existing Elysia types to query an Elysia server **wit
 
 Elysia is not only about helping you create a confident backend but for all that is beautiful in this world.
 
+## Type Soundness
+Most frameworks with end-to-end type safety usually assume only a happy part, leaving error handling and edge cases out of the type system.
+
+However, Elysia can infers all of the possible outcomes of your API, from lifecycle events/macro from any part of your codebase.
+
+::: code-group
+
+```typescript twoslash [client.ts]
+// @filename: server.ts
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+	.macro({
+		auth: {
+			cookie: t.Object({
+				session: t.String()
+			}),
+			beforeHandle({ cookie: { session }, status }) {
+				if(session.value !== 'valid')
+					return status(401)
+			}
+		}
+	})
+
+const app = new Elysia()
+	.use(plugin)
+    .get('/user/:id', ({ params: { id }, status }) => {
+    	if(Math.random() > 0.1)
+     		return status(420)
+       
+       return id
+    }, {
+    	auth: true,
+        params: t.Object({
+            id: t.Number()
+        })
+    })
+    .listen(3000)
+
+export type App = typeof app
+
+// @filename: client.ts
+// ---cut---
+// client.ts
+import { treaty } from '@elysiajs/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// Get data from /user/617
+const { data, error } = await app.user({ id: 617 }).get()
+            // ^?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+console.log(data)
+```
+
+```typescript twoslash [server.ts]
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+	.macro({
+		auth: {
+			cookie: t.Object({
+				session: t.String()
+			}),
+			beforeHandle({ cookie: { session }, status }) {
+				if(session.value !== 'valid')
+					return status(401)
+			}
+		}
+	})
+
+const app = new Elysia()
+	.use(plugin)
+    .get('/user/:id', ({ params: { id }, status }) => {
+    	if(Math.random() > 0.1)
+     		return status(420)
+       
+       return id
+    }, {
+    	auth: true,
+        params: t.Object({
+            id: t.Number()
+        })
+    })
+    .listen(3000)
+    
+export type App = typeof app
+```
+
+:::
+
+This is one of the **unfair advantages** that Elysia has from years of investment in type system.
+
 ## Platform Agnostic
 
-Elysia was designed for Bun, but is **not limited to Bun**. Being [WinterTC compliant](https://wintertc.org/) allows you to deploy Elysia servers on Cloudflare Workers, Vercel Edge Functions, and most other runtimes that support Web Standard Requests.
+Elysia is optimized for Bun with native feature but **not limited to Bun**.
+
+Being [WinterTC compliant](https://wintertc.org/) allows you to deploy Elysia servers on:
+- Bun
+- [Node.js](/integrations/node)
+- [Deno](/integrations/deno)
+- [Cloudflare Worker](/integrations/cloudflare-worker)
+- [Vercel](/integrations/vercel)
+- [Expo](/integrations/expo) via API routes
+- [Nextjs](/integrations/nextjs) via API routes
+- [Astro](/integrations/astro) via API routes
+
+and several more! Checkout `integration` section on sidebar for more support runtime.
 
 ## Our Community
 
-If you have questions or get stuck with Elysia, feel free to ask our community on GitHub Discussions, Discord, or Twitter.
+We want to create a friendly and welcoming community for everyone with cute and playful design including our anime mascot, Elysia chan.
+
+We believe that technology can be cute and fun instead of being serious all the time, to brings joy to people's lives.
+
+But even that, we take Elysia very seriously to make sure it's reliable and production ready high-performance framework that can be trusted for your next project.
+
+Elysia is **used in production by many companies and projects worldwide**, including [X](https://x.com/shlomiatar/status/1822381556142362734), [Bank for Agriculture and Agricultural Co-operatives](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13924470), [Cluely](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-14420139), [CS.Money](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13913513), [Abacate Pay](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13922081) and used by [over 10,000 (open source) projects on GitHub.](https://github.com/elysiajs/elysia/network/dependents) and has been actively developed and maintained since 2022 with many regular contributors from our community.
+
+Elysia is a reliable choice and production ready for building your next backend server.
+
+Here's on of our community resources to get you started:
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">

@@ -14,7 +14,11 @@ head:
         content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
 ---
 
-# OpenAPI Plugin
+<script setup lang="ts">
+import TutorialBadge from '../components/arona/badge.vue'
+</script>
+
+# OpenAPI Plugin <TutorialBadge href="/tutorial/features/openapi" />
 
 Plugin for [elysia](https://github.com/elysiajs/elysia) to auto-generate API documentation page.
 
@@ -155,7 +159,7 @@ The endpoint to expose OpenAPI documentation frontend
 OpenAPI documentation frontend between:
 
 - [Scalar](https://github.com/scalar/scalar)
-- [SwaggerUI](https://github.com/openapi-api/openapi-ui)
+- [SwaggerUI](https://github.com/swagger-api/swagger-ui)
 - null: disable frontend
 
 ## references
@@ -165,6 +169,21 @@ Additional OpenAPI reference for each endpoint
 ## scalar
 
 Scalar configuration, refers to [Scalar config](https://github.com/scalar/scalar/blob/main/documentation/configuration.md)
+
+### Self-hosted Scalar bundle
+
+Self-host the Scalar bundle and disable CDN Fonts.
+
+Note: `cdn` is an Elysia OpenAPI plugin option (not part of Scalar’s own config); it overrides the URI to the Scalar bundle.
+
+```typescript
+    openapi({ 
+      scalar: {
+        cdn: "/public/scalar-standalone.min.js", // plugin override for Scalar bundle URI (self-hosted)
+        withDefaultFonts: false, // disable Scalar’s default font CDN
+      },
+    })
+```
 
 ## specPath
 

@@ -16,6 +16,8 @@ head:
 
 <script setup>
 import Playground from '../components/nearl/playground.vue'
+import TutorialBadge from '../components/arona/badge.vue'
+
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
@@ -111,13 +113,31 @@ const _mock3 = {
         'GET': 'outer'
     }
 }
+
+const profile1 = new Elysia()
+	.onBeforeHandle(({ status }) => status(401))
+	.get('/profile', ({ status }) => status(401))
+
+const scope1 = new Elysia()
+	.use(profile1)
+	// This will NOT have sign in check
+	.patch('/rename', () => 'Updated!')
+
+const profile2 = new Elysia()
+	.onBeforeHandle({ as: 'global' }, ({ status }) => status(401))
+	.get('/profile', ({ status }) => status(401))
+
+const scope2 = new Elysia()
+	.use(profile2)
+	// This will NOT have sign in check
+	.patch('/rename', ({ status }) => status(401))
 </script>
 
-# Plugin
+# Plugin <TutorialBadge href="/tutorial/getting-started/plugin" />
 
-Plugin is a pattern that decouples functionality into smaller parts. Creating reusable components for our web server.
+A plugin is a part that is **decoupled** from the main instance into a smaller part.
 
-Defining a plugin is to define a separate instance.
+Every Elysia instance can run independently or use as a part of another instance.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
@@ -137,40 +157,262 @@ We can use the plugin by passing an instance to **Elysia.use**.
 
 <Playground :elysia="demo1" />
 
-The plugin will inherit all properties of the plugin instance, including **state**, **decorate**, **derive**, **route**, **lifecycle**, etc.
+The plugin will inherit all properties of the plugin instance like `state`, `decorate` but **WILL NOT inherit plugin [lifecycle](/essential/life-cycle)** as it's [isolated by default](#scope) (mentioned in the next section ↓).
 
-Elysia will also handle the type inference automatically as well, so you can imagine as if you call all of the other instances on the main one.
+Elysia will also handle the type inference automatically as well.
 
 ::: tip
-Notice that the plugin doesn't contain **.listen**, because **.listen** will allocate a port for the usage, and we only want the main instance to allocate the port.
+It's highly recommended that you have read [Key Concept: Dependency](/key-concept.html#dependency) before continuing.
 :::
 
-## Plugin
 
-Every Elysia instance can be a plugin.
+## Dependency <Badge type="danger" text="MUST READ" />
+Elysia by design, is compose of multiple mini Elysia apps which can run **independently** like a microservice that communicate with each other.
 
-We can decouple our logic into a new separate Elysia instance and use it as a plugin.
+Each Elysia instance is independent and **can run as a standalone server**.
 
-First, we define an instance in a difference file:
-```typescript twoslash
-// plugin.ts
+When an instance need to use another instance's service, you **must explicitly declare the dependency**.
+
+```ts twoslash
+// @errors: 2339
+import { t } from 'elysia'
+
+abstract class Auth {
+	static getProfile() {
+		return {
+			name: 'Elysia User'
+		}
+	}
+
+	static models = {
+		user: t.Object({
+			name: t.String()
+		})
+	} as const
+}
+// ---cut---
 import { Elysia } from 'elysia'
 
-export const plugin = new Elysia()
-    .get('/plugin', () => 'hi')
+const auth = new Elysia()
+	.decorate('Auth', Auth)
+	.model(Auth.models)
+
+const main = new Elysia()
+ 	// ❌ 'auth' is missing
+	.get('/', ({ Auth }) => Auth.getProfile())
+	// auth is required to use Auth's service
+	.use(auth) // [!code ++]
+	.get('/profile', ({ Auth }) => Auth.getProfile())
+//                                        ^?
+
+
+
+// ---cut-after---
 ```
 
-And then we import the instance into the main file:
-```typescript
+This is similar to **Dependency Injection** where each instance must declare its dependencies.
+
+This approach force you to be explicit about dependencies allowing better tracking, modularity.
+
+### Deduplication <Badge type="warning" text="Important" />
+
+By default, each plugin will be re-executed **every time** applying to another instance.
+
+To prevent this, Elysia can deduplicate [lifecycle](/essential/life-cycle) with **an unique identifier** using `name` and optional `seed` property.
+
+```ts twoslash
 import { Elysia } from 'elysia'
-import { plugin } from './plugin'
+
+// `name` is an unique identifier
+const ip = new Elysia({ name: 'ip' }) // [!code ++]
+	.derive(
+		{ as: 'global' },
+		({ server, request }) => ({
+			ip: server?.requestIP(request)
+		})
+	)
+	.get('/ip', ({ ip }) => ip)
+
+const router1 = new Elysia()
+	.use(ip)
+	.get('/ip-1', ({ ip }) => ip)
+
+const router2 = new Elysia()
+	.use(ip)
+	.get('/ip-2', ({ ip }) => ip)
+
+const server = new Elysia()
+	.use(router1)
+	.use(router2)
+```
+
+Adding the `name` and optional `seed` to the instance will make it a unique identifier prevent it from being called multiple times.
+
+Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
+
+### Global vs Explicit Dependency
+
+There are some case that global dependency make more sense than an explicit one.
+
+**Global** plugin example:
+- **Plugin that doesn't add types** - eg. cors, compress, helmet
+- Plugin that add global [lifecycle](/essential/life-cycle) that no instance should have control over - eg. tracing, logging
+
+Example use cases:
+- OpenAPI/Open - Global document
+- OpenTelemetry - Global tracer
+- Logging - Global logger
+
+In case like this, it make more sense to create it as global dependency instead of applying it to every instance.
+
+However, if your dependency doesn't fit into these categories, it's recommended to use **explicit dependency** instead.
+
+**Explicit dependency** example:
+- **Plugin that add types** - eg. macro, state, model
+- Plugin that add business logic that instance can interact with - eg. Auth, Database
+
+Example use cases:
+- State management - eg. Store, Session
+- Data modeling - eg. ORM, ODM
+- Business logic - eg. Auth, Database
+- Feature module - eg. Chat, Notification
+
+## Scope <Badge type="danger" text="MUST READ" /> <TutorialBadge href="/tutorial/getting-started/encapsulation" />
+
+Elysia [lifecycle](/essential/life-cycle) methods are **encapsulated** to its own instance only.
+
+Which means if you create a new instance, it will not share the lifecycle methods with others.
+
+```ts
+import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+	.onBeforeHandle(({ cookie }) => {
+		throwIfNotSignIn(cookie)
+	})
+	.get('/profile', () => 'Hi there!')
 
 const app = new Elysia()
-    .use(plugin)
-    .listen(3000)
+	.use(profile)
+	// ⚠️ This will NOT have sign in check
+	.patch('/rename', ({ body }) => updateProfile(body))
 ```
 
-### Config
+<!-- Do not at 'the' before "profile" and "app" here - @Saltyaom -->
+In this example, the `isSignIn` check will only apply to `profile` but not `app`.
+
+<Playground :elysia="scope1" />
+
+> Try changing the path in the URL bar to **/rename** and see the result
+
+<br>
+
+**Elysia isolate [lifecycle](/essential/life-cycle) by default** unless explicitly stated. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
+
+To **"export"** the lifecycle to other instances, you must add specify the scope.
+
+```ts
+import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+	.onBeforeHandle(
+		{ as: 'global' }, // [!code ++]
+		({ cookie }) => {
+			throwIfNotSignIn(cookie)
+		}
+	)
+	.get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+	.use(profile)
+	// This has sign in check
+	.patch('/rename', ({ body }) => updateProfile(body))
+```
+
+<Playground :elysia="scope2" />
+
+Casting lifecycle to **"global"** will export lifecycle to **every instance**.
+
+### Scope level
+Elysia has 3 levels of scope as the following:
+
+Scope type are as the following:
+1. **local** (default) - apply to only current instance and descendant only
+2. **scoped** - apply to parent, current instance and descendants
+3. **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
+
+Let's review what each scope type does by using the following example:
+```typescript
+import { Elysia } from 'elysia'
+
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+	// ? Value based on table value provided below
+    .onBeforeHandle({ as: 'local' }, () => { // [!code ++]
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')
+```
+
+By changing the `type` value, the result should be as follows:
+
+| type       | child | current | parent | main |
+| ---------- | ----- | ------- | ------ | ---- |
+| local      | ✅    | ✅      | ❌      | ❌   |
+| scoped     | ✅    | ✅      | ✅      | ❌   |
+| global     | ✅    | ✅      | ✅      | ✅   |
+
+### Descendant
+
+By default plugin will **apply hook to itself and descendants** only.
+
+If the hook is registered in a plugin, instances that inherit the plugin will **NOT** inherit hooks and schema.
+
+```typescript
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .onBeforeHandle(() => {
+        console.log('hi')
+    })
+    .get('/child', 'log hi')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', 'not log hi')
+```
+
+To apply hook to globally, we need to specify hook as global.
+```typescript
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .onBeforeHandle(() => {
+        return 'hi'
+    })
+    .get('/child', 'child')
+    .as('scoped')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', 'parent')
+```
+
+<Playground :elysia="_demo2" :mock="_mock2" />
+
+## Config
 
 To make the plugin more useful, allowing customization via config is recommended.
 
@@ -191,7 +433,7 @@ const app = new Elysia()
 
 It's recommended to define a new plugin instance instead of using a function callback.
 
-Functional callback allows us to access the existing property of the main instance. For example, checking if specific routes or stores existed.
+Functional callback allows us to access the existing property of the main instance. For example, checking if specific routes or stores existed but harder to handle encapsulation and scope correctly.
 
 To define a functional callback, create a function that accepts Elysia as a parameter.
 
@@ -218,108 +460,7 @@ You shall not worry about the performance difference between a functional callba
 Elysia can create 10k instances in a matter of milliseconds, the new Elysia instance has even better type inference performance than the functional callback.
 :::
 
-## Plugin Deduplication
-
-By default, Elysia will register any plugin and handle type definitions.
-
-Some plugins may be used multiple times to provide type inference, resulting in duplication of setting initial values or routes.
-
-Elysia avoids this by differentiating the instance by using **name** and **optional seeds** to help Elysia identify instance duplication:
-
-```typescript
-import { Elysia } from 'elysia'
-
-const plugin = <T extends string>(config: { prefix: T }) =>
-    new Elysia({
-        name: 'my-plugin', // [!code ++]
-        seed: config, // [!code ++]
-    })
-    .get(`${config.prefix}/hi`, () => 'Hi')
-
-const app = new Elysia()
-    .use(
-        plugin({
-            prefix: '/v2'
-        })
-    )
-    .listen(3000)
-```
-
-<Playground :elysia="demo4" />
-
-Elysia will use **name** and **seed** to create a checksum to identify if the instance has been registered previously or not, if so, Elysia will skip the registration of the plugin.
-
-If seed is not provided, Elysia will only use **name** to differentiate the instance. This means that the plugin is only registered once even if you registered it multiple times.
-
-```typescript
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia({ name: 'plugin' })
-
-const app = new Elysia()
-    .use(plugin)
-    .use(plugin)
-    .use(plugin)
-    .use(plugin)
-    .listen(3000)
-```
-
-This allows Elysia to improve performance by reusing the registered plugins instead of processing the plugin over and over again.
-
-::: tip
-Seed could be anything, varying from a string to a complex object or class.
-
-If the provided value is class, Elysia will then try to use the `.toString` method to generate a checksum.
-:::
-
-### Service Locator
-When you apply a plugin with state/decorators to an instance, the instance will gain type safety.
-
-But if you don't apply the plugin to another instance, it will not be able to infer the type.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const child = new Elysia()
-    // ❌ 'a' is missing
-    .get('/', ({ a }) => a)
-
-const main = new Elysia()
-    .decorate('a', 'a')
-    .use(child)
-```
-
-Elysia introduces the **Service Locator** pattern to counteract this.
-
-Elysia will lookup the plugin checksum and get the value or register a new one. Infer the type from the plugin.
-
-So we have to provide the plugin reference for Elysia to find the service to add type safety.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const setup = new Elysia({ name: 'setup' })
-    .decorate('a', 'a')
-
-// Without 'setup', type will be missing
-const error = new Elysia()
-    .get('/', ({ a }) => a)
-
-// With `setup`, type will be inferred
-const child = new Elysia()
-    .use(setup) // [!code ++]
-    .get('/', ({ a }) => a)
-    //           ^?
-
-const main = new Elysia()
-    .use(child)
-```
-
-<Playground :elysia="demo5" />
-
-## Guard
+## Guard <TutorialBadge href="/tutorial/getting-started/guard" />
 
 Guard allows us to apply hook and schema into multiple routes all at once.
 
@@ -451,98 +592,13 @@ new Elysia()
 
 <Playground :elysia="_demo1" />
 
-## Scope
-
-By default, hook and schema will apply to **current instance only**.
-
-Elysia has an encapsulation scope for to prevent unintentional side effects.
-
-Scope type is to specify the scope of hook whether is should be encapsulated or global.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .derive(() => {
-        return { hi: 'ok' }
-    })
-    .get('/child', ({ hi }) => hi)
-
-const main = new Elysia()
-    .use(plugin)
-    // ⚠️ Hi is missing
-    .get('/parent', ({ hi }) => hi)
-```
-
-From the above code, we can see that `hi` is missing from the parent instance because the scope is local by default if not specified, and will not apply to parent.
-
-To apply the hook to the parent instance, we can use the `as` to specify scope of the hook.
-
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .derive({ as: 'scoped' }, () => { // [!code ++]
-        return { hi: 'ok' }
-    })
-    .get('/child', ({ hi }) => hi)
-
-const main = new Elysia()
-    .use(plugin)
-    // ✅ Hi is now available
-    .get('/parent', ({ hi }) => hi)
-```
-
-### Scope level
-Elysia has 3 levels of scope as the following:
-Scope type are as the following:
-- **local** (default) - apply to only current instance and descendant only
-- **scoped** - apply to parent, current instance and descendants
-- **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
-
-Let's review what each scope type does by using the following example:
-```typescript
-import { Elysia } from 'elysia'
-
-// ? Value base on table value provided below
-const type = 'local'
-
-const child = new Elysia()
-    .get('/child', 'hi')
-
-const current = new Elysia()
-    .onBeforeHandle({ as: type }, () => { // [!code ++]
-        console.log('hi')
-    })
-    .use(child)
-    .get('/current', 'hi')
-
-const parent = new Elysia()
-    .use(current)
-    .get('/parent', 'hi')
-
-const main = new Elysia()
-    .use(parent)
-    .get('/main', 'hi')
-```
-
-By changing the `type` value, the result should be as follows:
-
-| type       | child | current | parent | main |
-| ---------- | ----- | ------- | ------ | ---- |
-| 'local'    | ✅    | ✅       | ❌     | ❌   |
-| 'scoped'    | ✅    | ✅       | ✅     | ❌   |
-| 'global'   | ✅    | ✅       | ✅     | ✅   |
-
-### Scope cast
+## Scope cast <Badge type="warning">Advanced Concept</Badge>
 To apply hook to parent may use one of the following:
-1. `inline as` apply only to a single hook
-2. `guard as` apply to all hook in a guard
-3. `instance as` apply to all hook in an instance
+1. [inline as](#inline-as) apply only to a single hook
+2. [guard as](#guard-as) apply to all hook in a guard
+3. [instance as](#instance-as) apply to all hook in an instance
 
-### 1. Inline as
+### Inline as
 Every event listener will accept `as` parameter to specify the scope of the hook.
 
 ```typescript twoslash
@@ -562,7 +618,7 @@ const main = new Elysia()
 
 However, this method is apply to only a single hook, and may not be suitable for multiple hooks.
 
-### 2. Guard as
+### Guard as
 Every event listener will accept `as` parameter to specify the scope of the hook.
 
 ```typescript
@@ -587,7 +643,7 @@ Guard alllowing us to apply `schema` and `hook` to multiple routes all at once w
 
 However, it doesn't support `derive` and `resolve` method.
 
-### 3. Instance as
+### Instance as
 `as` will read all hooks and schema scope of the current instance, modify.
 
 ```typescript twoslash
@@ -635,58 +691,14 @@ const parent = new Elysia()
 	.get('/ok', () => 3)
 ```
 
-### Descendant
-
-By default plugin will **apply hook to itself and descendants** only.
-
-If the hook is registered in a plugin, instances that inherit the plugin will **NOT** inherit hooks and schema.
-
-```typescript
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .onBeforeHandle(() => {
-        console.log('hi')
-    })
-    .get('/child', 'log hi')
-
-const main = new Elysia()
-    .use(plugin)
-    .get('/parent', 'not log hi')
-```
-
-To apply hook to globally, we need to specify hook as global.
-```typescript
-import { Elysia } from 'elysia'
-
-const plugin = new Elysia()
-    .onBeforeHandle(() => {
-        return 'hi'
-    })
-    .get('/child', 'child')
-    .as('scoped')
-
-const main = new Elysia()
-    .use(plugin)
-    .get('/parent', 'parent')
-```
-
-<Playground :elysia="_demo2" :mock="_mock2" />
-
 ## Lazy Load
 Modules are eagerly loaded by default.
 
-Elysia loads all modules then registers and indexes all of them before starting the server. This enforces that all the modules have loaded before it starts accepting requests.
+Elysia will make sure that all modules are registered before the server starts.
 
-While this is fine for most applications, it may become a bottleneck for a server running in a serverless environment or an edge function, in which the startup time is important.
+However, some modules may be computationally heavy or blocking, making the server startup slow.
 
-Lazy-loading can help decrease startup time by deferring modules to be gradually indexed after the server start.
-
-Lazy-loading modules are a good option when some modules are heavy and importing startup time is crucial.
-
-By default, any async plugin without await is treated as a deferred module and the import statement as a lazy-loading module.
-
-Both will be registered after the server is started.
+To solve this, Elysia allows you to provide an async plugin that will not block the server startup.
 
 ### Deferred Module
 The deferred module is an async plugin that can be registered after the server is started.
@@ -715,8 +727,6 @@ import { loadStatic } from './plugin'
 const app = new Elysia()
     .use(loadStatic)
 ```
-
-Elysia static plugin is also a deferred module, as it loads files and registers files path asynchronously.
 
 ### Lazy Load Module
 Same as the async plugin, the lazy-load module will be registered after the server is started.

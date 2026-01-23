@@ -1,5 +1,5 @@
 <template>
-    <article id="people-tweets" class="fern-gap" ref="scope">
+    <article id="people-tweets" class="fern-gap relative overflow-hidden" ref="scope">
         <motion.div
             class="flex justify-center flex-wrap gap-y-2 text-center"
             v-bind="flyIn()"
@@ -8,7 +8,7 @@
                 class="text-3xl font-medium text-gray-500 dark:text-gray-300 leading-[3rem]"
                 v-bind="flyIn()"
             >
-                What people says about
+                What people say about
             </h2>
             <div class="flex items-center">
                 <img
@@ -17,13 +17,13 @@
                     class="inline size-11 ml-4 mr-3"
                 />
                 <span
-                    class="text-5xl font-semibold text-neutral-950"
+                    class="text-5xl font-semibold text-neutral-950 dark:text-white"
                 >
                     Elysia
                 </span>
             </div>
         </motion.div>
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-12 pb-8">
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-12 pb-8 max-w-5xl w-full mx-auto">
             <div class="flex flex-col gap-3 lg:mt-12">
                 <motion.div v-bind="flyIn(0.1)">
                     <Tweet
@@ -54,15 +54,20 @@
                 </motion.div>
                 <motion.div v-bind="flyIn(0.4)">
                     <Tweet
-                        id="MarcLaventure"
-                        user="Marc Laventure"
-                        image="/tweets/marc.webp"
-                        content="both engineering+monetary contributions are paramount for OSS
-
-we proudly sponsor dozens of projects: @elysiaJS @LitestarAPI @honojs @daveshanley @kevin_jahns @MarijnJH & help maintain repos+contribute to OSS at blistering cadence.
-
-it's @scalar's ethos to be a catalyst for OSS"
-                        href="https://x.com/MarcLaventure/status/1773751085792174246"
+                        id="nuqs47ng"
+                        user="nuqs"
+                        image="/tweets/nuqs.webp"
+                        content="I’m a Node.js + Fastify diehard, but the Bun + Elysia combo looks very promising 👀"
+                        href="https://x.com/nuqs47ng/status/1991618158583771524"
+                    />
+                </motion.div>
+                <motion.div v-bind="flyIn(0.5)">
+                    <Tweet
+                        id="Erwin_AI"
+                        user="Erwin"
+                        image="/tweets/erwin.webp"
+                        content="Already using Elysia (+Bun) anywhere I can. Wouldn't want to back to node+express even if you'd pay me a mil."
+                        href="https://x.com/Erwin_AI/status/1991740419110269107"
                     />
                 </motion.div>
             </div>
@@ -144,6 +149,82 @@ I have been using it almost exclusively for all my projects"
                 </motion.div>
             </div>
         </section>
+
+        <motion.div
+            v-bind="flyIn(0.2)"
+            class="hidden lg:block absolute w-[333px] top-48 left-[calc(50%-53.5rem)]"
+        >
+            <Tweet
+                id="MarcLaventure"
+                user="Marc Laventure"
+                image="/tweets/marc.webp"
+                content="both engineering+monetary contributions are paramount for OSS
+
+we proudly sponsor dozens of projects: @elysiaJS @LitestarAPI @honojs @daveshanley @kevin_jahns @MarijnJH & help maintain repos+contribute to OSS at blistering cadence.
+
+it's @scalar's ethos to be a catalyst for OSS"
+                href="https://x.com/MarcLaventure/status/1773751085792174246"
+            />
+        </motion.div>
+        <motion.div
+            v-bind="flyIn(0.3)"
+            class="hidden lg:block absolute w-[333px] top-[562px] left-[calc(50%-53.5rem)]"
+        >
+            <Tweet
+                id="Meabed"
+                user="meabed"
+                image="/tweets/meabed.webp"
+                content="I am building something with Bun + ElysiaJS and the speed and ergonomics are way out of this world!!!!
+
+    I can't go back to express + node... Bun Hot reload an HTTP server and test runner is instantaneous!!!
+
+    Elysia is a breath of fresh air + inferred types + openapi + plugins + file handling + ai sdk + typed client....
+
+    The dev experience is 100x - if you try you won't ever go back!!"
+                href="https://x.com/meabed/status/1991531982933631247"
+            />
+        </motion.div>
+        <motion.div
+            v-bind="flyIn(0.2)"
+            class="hidden lg:block absolute w-[333px] top-[160px] right-[calc(50%-53.5rem)]"
+        >
+            <Tweet
+                id="haxiom_io"
+                user="haxiom.io"
+                image="/tweets/haxiom.webp"
+                content="One diff ElysiaJS made in our org is that it makes it easy to refactor fearlessly. You can be pretty certain if things won't work simply because TypeScript will tell you that your types don't match"
+                href="https://x.com/haxiom_io/status/1989357386398900670"
+            />
+        </motion.div>
+        <motion.div
+            v-bind="flyIn(0.3)"
+            class="hidden lg:block absolute w-[333px] top-[386px] right-[calc(50%-53.5rem)]"
+        >
+            <Tweet
+                id="stacia__x"
+                user="ꜱᴛᴀᴄɪᴀ"
+                image="/tweets/stacia.webp"
+                content="ElysiaJS was the first framework that truly sparked my interest in JS/TS. I used to avoid it entirely.
+I usually stick to Python, mostly using FastAPI.
+
+When I tried ElysiaJS for the first time (v1.1), I immediately felt it provides an amazing dev experience.
+
+Love ElysiaJS 😘"
+                href="https://x.com/stacia__x/status/1990837540220465536"
+            />
+        </motion.div>
+        <motion.div
+            v-bind="flyIn(0.4)"
+            class="hidden lg:block absolute w-[333px] top-[756px] right-[calc(50%-53.5rem)]"
+        >
+            <Tweet
+                id="Rasmic"
+                user="Micky"
+                image="/tweets/rasmic.webp"
+                content="I’m ngl we don’t talk about @elysiaJS enough"
+                href="https://x.com/Rasmic/status/1964897923046703399"
+            />
+        </motion.div>
     </article>
 </template>
 
@@ -166,6 +247,6 @@ const flyIn = useFlyIn(isInView)
 @reference "../../tailwind.css";
 
 #people-tweets {
-    @apply flex flex-col max-w-5xl w-full my-8 mx-auto;
+    @apply flex flex-col w-full my-8 mx-auto;
 }
 </style>

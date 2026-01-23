@@ -16,10 +16,12 @@ head:
 
 <script setup>
 import { Elysia, t, ValidationError, validationDetail } from 'elysia'
+import TutorialBadge from '../components/arona/badge.vue'
 
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
 import Playground from '../components/nearl/playground.vue'
+import DocLink from '../components/xiao/doc-link/doc-link.vue'
 
 const demo = new Elysia()
 	.onError(({ code }) => {
@@ -66,7 +68,7 @@ const demo3 = new Elysia()
     })
 </script>
 
-# Error Handling
+# Error Handling <TutorialBadge href="/tutorial/patterns/error-handling" />
 
 This page provide a more advance guide for effectively handling errors with Elysia.
 
@@ -105,7 +107,7 @@ If the validation fails on the `id` field, the response will be return as `id mu
 	:elysia="demo2"
 />
 
-### Validation Detail
+### Validation Detail <TutorialBadge href="/tutorial/patterns/validation-error" />
 
 Returning as value from `schema.error` will return the validation as-is, but sometimes you may also want to return the validation details, such as the field name and the expected type
 
@@ -169,6 +171,8 @@ Elysia will only return that validation failed without any details.
 ```
 
 The `message` property is optional and is omitted by default unless you provide a custom error message in the schema.
+
+This can be overridden by setting `Elysia.allowUnsafeValidationDetails` to `true`, see [Elysia configuration](/patterns/configuration#allow-unsafe-validation-details) for more details.
 
 ## Custom Error
 
@@ -283,8 +287,8 @@ But for `status` it can be a little bit confusing, since it can be used both as 
 
 It could either be **return** or **throw** based on your specific needs.
 
-- If an `status` is **throw**, it will be caught by `onError` middleware.
-- If an `status` is **return**, it will be **NOT** caught by `onError` middleware.
+- If a `status` is **throw**, it will be caught by `onError` middleware.
+- If a `status` is **return**, it will be **NOT** caught by `onError` middleware.
 
 See the following code:
 
@@ -304,6 +308,8 @@ new Elysia()
         return status(418)
     })
 ```
+
+Here we use `status(418)` which is the "I'm a teapot" status code. You can also use the string name directly: `status("I'm a teapot")`. See <DocLink href="/tutorial/getting-started/status-and-headers#status">Status</DocLink> for more on using status codes.
 
 <Playground
     :elysia="demo"

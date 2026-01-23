@@ -17,7 +17,7 @@ const flyIn = useFlyIn(isInView)
             <header class="flex flex-col w-full lg:w-5/12 text-xl gap-6">
                 <div class="flex flex-col gap-3">
                     <h2
-                        class="text-6xl text-gray-700 font-medium leading-[4.5rem] dark:text-gray-400"
+                        class="text-5xl md:text-6xl text-gray-600 dark:text-gray-100 font-medium leading-[3.75rem] md:leading-[4.5rem]"
                     >
                         <motion.span class="mr-2" v-bind="flyIn()"
                             >Bring your own</motion.span
@@ -30,12 +30,12 @@ const flyIn = useFlyIn(isInView)
                         </motion.span>
                     </h2>
                     <motion.h3
-                        class="sm:flex items-center text-2xl"
+                        class="sm:flex items-center mt-2"
                         v-bind="flyIn(0.2)"
                     >
                         With support for
                         <span
-                            class="text-gradient font-semibold from-blue-400 to-pink-400 ml-1 sm:ml-2 mr-1"
+                            class="text-gradient font-bold from-blue-400 to-pink-400 ml-1 sm:ml-2 mr-1"
                         >
                             Standard Schema
                         </span>
@@ -46,19 +46,17 @@ const flyIn = useFlyIn(isInView)
                     v-bind="flyIn(0.3)"
                 >
                     Elysia offers a robust built-in validation, but you can also
-                    bring your favorite validator, lik
-                    <span class="text-gray-700 font-medium"
-                        >Zod, Valibot, ArkType, Effect </span
-                    >, etc.
+                    bring your favorite validator, like
+                    <span class="text-gray-700 dark:text-gray-200 font-medium"
+                        >Zod, Valibot, ArkType, Effect</span
+                    > and more
                 </motion.p>
                 <motion.p
                     class="lg:max-w-md leading-normal"
                     v-bind="flyIn(0.4)"
                 >
                     With seamless support for type inference, and OpenAPI. You
-                    will feels
-                    <span class="text-pink-400 font-medium">right at home</span
-                    >.
+                    will feel right at home .
                 </motion.p>
                 <!-- <slot name="test-script" /> -->
             </header>
@@ -73,7 +71,7 @@ const flyIn = useFlyIn(isInView)
 @reference "../../tailwind.css";
 
 #validator-showcase {
-    @apply flex flex-col max-w-5xl w-full mx-auto gap-8 my-4;
+    @apply flex flex-col max-w-5xl w-full mx-auto gap-8 my-8;
 
     & > .body {
         @apply flex flex-col lg:flex-row justify-between items-center gap-8 w-full mb-6;
@@ -174,6 +172,11 @@ const flyIn = useFlyIn(isInView)
 
                 & > .tabs {
                     @apply !bg-transparent !translate-x-4 sm:!translate-x-0;
+                    box-shadow: inset 0 -1px theme(--color-gray-200);
+
+                    .dark & {
+                        box-shadow: inset 0 -1px theme(--color-gray-700);
+                    }
                 }
 
                 & > .blocks > div {

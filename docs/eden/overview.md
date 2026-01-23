@@ -14,7 +14,11 @@ head:
       content: Elysia supports end-to-end type safety with Elysia Eden from the start. End-to-end type-safety refers to a system in which every component of the system is checked for type consistency, meaning that data is passed between components only if the types of the data are compatible.
 ---
 
-# End-to-End Type Safety
+<script setup lang="ts">
+import TutorialBadge from '../components/arona/badge.vue'
+</script>
+
+# End-to-End Type Safety <TutorialBadge href="/tutorial/features/end-to-end-type-safety" />
 Imagine you have a toy train set.
 
 Each piece of the train track has to fit perfectly with the next one, like puzzle pieces.
@@ -25,7 +29,7 @@ For a framework to have end-to-end type safety means you can connect client and 
 
 Elysia provides end-to-end type safety **without code generation** out of the box with an RPC-like connector, **Eden**
 
-<video mute controls>
+<video mute controls style="aspect-ratio: 16/9;">
   <source src="/eden/eden-treaty.mp4" type="video/mp4" />
   Something went wrong trying to load video
 </video>
@@ -57,7 +61,7 @@ Eden is an RPC-like client to connect Elysia with **end-to-end type safety** usi
 It allows you to sync client and server types effortlessly, weighing less than 2KB.
 
 Eden consists of 2 modules:
-1. Eden Treaty **(recommended)**: an improved version RFC version of Eden Treaty
+1. Eden Treaty **(recommended)**: an improved RPC version of Eden Treaty 1 (edenTreaty)
 2. Eden Fetch: Fetch-like client with type safety
 
 Below is an overview, use-case and comparison for each module.

@@ -15,8 +15,8 @@
             <motion.span class="inline-block" v-bind="flyIn(0.1)">
                 Elysia is
                 <span class="text-gray-700 dark:text-gray-200 font-medium">
-                    not owned by an organization </span
-                >, driven by volunteer, and community.
+                    not owned by an organization</span
+                >, driven by volunteers, and community.
             </motion.span>
             <motion.span class="inline-block mt-2" v-bind="flyIn(0.2)">
                 Elysia is possible by these awesome sponsors.
@@ -243,13 +243,13 @@
         </p>
 
         <p class="inline-block text-center">
-            We can only develop Elysia full-time thanks to your supports.
+            We can only develop Elysia full-time thanks to your support.
         </p>
 
         <div class="flex sm:justify-center my-8">
             <a
                 id="become-sponsor"
-                class="inline-flex items-center mx-auto text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform !ease-out-expo transform hover:scale-110 focus:scale-110"
+                class="inline-flex items-center mx-auto text-white font-semibold bg-gradient-to-br from-rose-400 to-pink-400 rounded-full px-6 py-3 box-shadow shadow-pink-400/40 shadow-lg transition-transform !ease-in-expo transform hover:scale-110 focus:scale-110"
                 href="https://github.com/sponsors/saltyaom"
                 target="_blank"
             >

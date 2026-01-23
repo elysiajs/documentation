@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import Hero from './hero.vue'
 import Note from './note.vue'
+import SSOT from './ssot.vue'
 import Validator from './validator.vue'
 import TrustedBy from './trusted-by.vue'
 import Benchmark from './benchmark.vue'
 import TypeIntegrity from './type-integrity.vue'
+import OpenAPITypeGen from './openapi-type-gen.vue'
 import Easy from './easy.vue'
 import Doc from './doc.vue'
 import Beyond from './beyond.vue'
 import Test from './test.vue'
+import Deploy from './deploy.vue'
 import Tweets from './tweets.vue'
 import Sponsors from './sponsor.vue'
 import Banner from './banner.vue'
 import BuiltWithLove from './built-with-love.vue'
+import AskElysia from './ask-elysia.vue'
 </script>
 
 <template>
@@ -26,12 +30,30 @@ import BuiltWithLove from './built-with-love.vue'
             <Easy>
                 <slot name="easy" />
             </Easy>
-            <Validator>
-	            <template v-slot:validator>
-	                <slot name="validator" />
+            <Benchmark />
+            <SSOT>
+	            <template v-slot:ssot-1>
+	                <slot name="ssot-1" />
 	            </template>
-            </Validator>
-            <TypeIntegrity>
+	            <template v-slot:ssot-2>
+	                <slot name="ssot-2" />
+	            </template>
+	            <template v-slot:ssot-3>
+	                <slot name="ssot-3" />
+	            </template>
+	            <template v-slot:ssot-4>
+	                <slot name="ssot-4" />
+	            </template>
+            </SSOT>
+            <OpenAPITypeGen>
+            	<template v-slot:oai-type-gen>
+	                <slot name="oai-type-gen" />
+	            </template>
+            </OpenAPITypeGen>
+            <!-- <Doc>
+                <slot name="doc" />
+            </Doc> -->
+             <!-- <TypeIntegrity>
                 <template v-slot:type-1>
                     <slot name="type-1" />
                 </template>
@@ -44,14 +66,15 @@ import BuiltWithLove from './built-with-love.vue'
                 <template v-slot:type-4>
                     <slot name="type-4" />
                 </template>
-            </TypeIntegrity>
-            <Doc>
-                <slot name="doc" />
-            </Doc>
+            </TypeIntegrity> -->
+            <Validator>
+	            <template v-slot:validator>
+	                <slot name="validator" />
+	            </template>
+            </Validator>
             <Beyond>
                 <slot name="e2e-type-safety" />
             </Beyond>
-            <Benchmark />
             <Test>
                 <template v-slot:test-code>
                     <slot name="test-code" />
@@ -60,10 +83,13 @@ import BuiltWithLove from './built-with-love.vue'
                     <slot name="test-script" />
                 </template>
             </Test>
+            <Deploy />
             <Tweets />
             <Sponsors />
             <!-- <Features /> -->
             <!-- <Future /> -->
+
+            <AskElysia />
             <Banner class="mt-10" />
             <BuiltWithLove />
         </article>

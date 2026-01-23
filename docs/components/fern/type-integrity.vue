@@ -11,7 +11,7 @@
                 	<span class="inline text-gradient from-cyan-400 to-indigo-400">Best in Class</span>
                 </motion.span>
                 <motion.span
-                    class="leading-[5rem] sm:leading-[5.5rem] text-6xl sm:text-7xl font-semibold text-gradient from-cyan-400 to-indigo-400 -translate-y-2"
+                    class="leading-[5rem] sm:leading-[5.5rem] text-center text-6xl sm:text-7xl font-semibold text-gradient from-cyan-400 to-indigo-400 -translate-y-2"
                     v-bind="flyIn(0.1)"
                 >
                     Type Safety
@@ -90,10 +90,10 @@ const clipPath = ref('inset(0px 75.233645% 0px 0.623053% round 25px)')
 
 const activeElements = useTemplateRef<HTMLElement[]>('active')
 const labels = [
-    'Type Inference',
-    'Enforce Type',
-    'Return Type',
-    'Made it your own'
+    'Type Safety',
+    'Enforce Input',
+    'Recheck Output',
+    'Extendability'
 ]
 
 watch(isInView, () => {
@@ -128,9 +128,12 @@ watch(form, (index) => {
 
 #type-integrity {
     @apply relative max-w-5xl w-full mx-auto mt-8 mb-12;
+    :is(& *) {
+    	corner-shape: round;
+    }
 
     & > .showcase {
-        @apply flex flex-col justify-center relative mx-auto w-full h-[38rem] lg:rounded-2xl my-4 px-4 bg-center bg-no-repeat;
+        @apply flex flex-col justify-center relative mx-auto w-full h-[38rem] lg:rounded-3xl my-4 px-4 bg-center bg-no-repeat;
 
         background-image: url(/assets/tahoe-day.webp);
         background-size: cover;
@@ -140,7 +143,7 @@ watch(form, (index) => {
 		}
 
         & > .window {
-            @apply lg:max-w-3xl w-full mx-auto !bg-white/75 dark:!bg-gray-800/75 border-2 border-white/20  dark:border-gray-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
+            @apply max-w-3xl w-full mx-auto !bg-white/75 dark:!bg-gray-800/75 border-2 border-white/20  dark:border-gray-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
 
             & > .control {
                 @apply flex gap-2 pt-3 px-3;

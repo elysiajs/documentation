@@ -18,7 +18,7 @@ head:
 import Tab from '../components/fern/tab.vue'
 </script>
 
-# OpenAPI
+# OpenAPI <TutorialBadge href="/tutorial/features/openapi" />
 
 Elysia has first-class support and follows OpenAPI schema by default.
 
@@ -40,7 +40,7 @@ new Elysia()
 	.use(openapi()) // [!code ++]
 ```
 
-By default, Elysia uses OpenAPI V3 schema and [Scalar UI](http://scalar.com)
+Accessing `/openapi` would show you a Scalar UI with the generated endpoint documentation from the Elysia server.
 
 For OpenAPI plugin configuration, see the [OpenAPI plugin page](/plugins/openapi).
 
@@ -52,18 +52,17 @@ By default, Elysia relies on runtime schema to generate OpenAPI documentation.
 
 However, you can also generate OpenAPI documentation from types by using a generator from OpenAPI plugin as follows:
 
-1. Specify the root file of your project (usually `src/index.ts`), and export an instance
+1. Specify your Elysia root file (if not specified, Elysia will use `src/index.ts`), and export an instance
 
 2. Import a generator and provide a **file path from project root** to type generator
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen' // [!code ++]
+import { openapi, fromTypes } from '@elysiajs/openapi' // [!code ++]
 
 export const app = new Elysia() // [!code ++]
     .use(
         openapi({
-            references: fromTypes('src/index.ts') // [!code ++]
+            references: fromTypes() // [!code ++]
         })
     )
     .get('/', { test: 'hello' as const })
@@ -86,8 +85,7 @@ It's recommended that you should pre-generate the declaration file (**.d.ts**) t
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 const app = new Elysia()
     .use(
@@ -105,13 +103,40 @@ const app = new Elysia()
 
 <summary>Having issues with type generation?</summary>
 
-### Caveats: Root path
+### Caveat: Explicit types
+OpenAPI Type Gen work best when using implicit types.
+
+Sometime, explicit type may cause an issue to generator unable to resolve properly.
+
+In this case, you can use `Prettify` to inline the type:
+```ts
+import { Elysia, t } from 'elysia'
+
+// Your custom type
+interface User {
+	id: number
+	name: string
+}
+
+// Type helper to inline the type
+type Prettify<T> = { // [!code ++]
+	[K in keyof T]: T[K] // [!code ++]
+} & {} // [!code ++]
+
+// Add Prettify to inline the type
+function getUser(): Prettify<User> { // [!code ++]
+	// Your logic to get user // [!code ++]
+} // [!code ++]
+```
+
+This should fix when type not showing up.
+
+### Caveat: Root path
 As it's unreliable to guess to root of the project, it's recommended to provide the path to the project root to allow generator to run correctly, especially when using monorepo.
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
     .use(
@@ -135,8 +160,7 @@ If you have multiple `tsconfig.json` files, it's important that you must specify
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { fromTypes } from '@elysiajs/openapi/gen'
+import { openapi, fromTypes } from '@elysiajs/openapi'
 
 export const app = new Elysia()
     .use(

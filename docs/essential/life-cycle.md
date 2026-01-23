@@ -18,6 +18,7 @@ head:
 import Card from '../components/nearl/card.vue'
 import Deck from '../components/nearl/card-deck.vue'
 import Playground from '../components/nearl/playground.vue'
+import TutorialBadge from '../components/arona/badge.vue'
 
 import { Elysia } from 'elysia'
 
@@ -25,9 +26,9 @@ const demo = new Elysia()
 	.onError(({ code }) => {
 		if (code === 418) return 'caught'
 	})
-    .get('/throw', ({ error }) => {
+    .get('/throw', ({ status }) => {
 		// This will be caught by onError
-		throw error(418)
+		throw status(418)
 	})
 	.get('/return', ({ status }) => {
 		// This will NOT be caught by onError
@@ -35,15 +36,13 @@ const demo = new Elysia()
 	})
 </script>
 
-# Lifecycle
+# Lifecycle <TutorialBadge href="/tutorial/getting-started/life-cycle" />
 
-Lifecycle events allow you to intercept important events at predefined points, allowing you to customize the behavior of your server as needed.
+Instead of a sequential process, Elysia's request handling is divided into multiple stages called **lifecycle events**.
 
-Elysia's lifecycle can be illustrated as the following.
-![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
-> Click on image to enlarge
+It's designed to separate the process into distinct phases based on their responsibility without interfering with each others.
 
-Below are the request lifecycle events available in Elysia:
+Here are the order of lifecycle events in order:
 
 <Deck>
     <Card title="Request" href="#request">
@@ -59,44 +58,48 @@ Below are the request lifecycle events available in Elysia:
         Custom validation before route handler
     </Card>
     <Card title="After Handle" href="#after-handle">
-        Transform returned value into a new value
+    	Tweak returned value from route handler
     </Card>
     <Card title="Map Response" href="#map-response">
-        Map returned value into a response
+        Map returned value into HTTP response
     </Card>
     <Card title="On Error (Error Handling)" href="#on-error-error-handling">
    		Handle errors thrown in the life-cycle
     </Card>
     <Card title="After Response" href="#after-response">
-        Executed after response sent to the client
+    	Clean up after response is sent
     </Card>
     <Card title="Trace" href="/patterns/trace">
         Audit and capture timespan of each event
     </Card>
 </Deck>
 
+---
+
+Elysia's lifecycle can be illustrated as the following.
+![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
+> Click on image to enlarge
+
 ## Why
 
-Imagine we want to return some HTML.
+Let’s say we want to send back some HTML.
 
-We need to set **"Content-Type"** headers as **"text/html"** for the browser to render HTML.
+Normally, we’d set the **"Content-Type"** header to **"text/html"** so the browser can render it.
 
-Explicitly specifying that the response is HTML could be repetitive if there are a lot of handlers, say ~200 endpoints.
+But manually setting one for each route is tedious.
 
-This can lead to a lot of duplicated code just to specify the **"text/html"** **"Content-Type"**
-
-But what if after we send a response, we could detect that the response is an HTML string and then append the header automatically?
-
-That's when the concept of lifecycle comes into play.
+Instead, what if the framework could detect when a response is HTML and automatically set the header for you? That’s where the idea of a lifecycle comes in.
 
 ## Hook
 
-We refer to each function that intercepts the lifecycle event as **"hook"**, as the function hooks into the lifecycle event.
+Each function that intercepts the **lifecycle event** as **"hook"**.
+
+<small>(as the function **"hooks"** into the lifecycle event)</small>
 
 Hooks can be categorized into 2 types:
 
-1. Local Hook: Execute on a specific route
-2. Interceptor Hook: Execute on every route
+1. [Local Hook](#local-hook): Execute on a specific route
+2. [Interceptor Hook](#interceptor-hook): Execute on every route **after the hook is registered**
 
 ::: tip
 The hook will accept the same Context as a handler; you can imagine adding a route handler but at a specific point.
@@ -114,8 +117,8 @@ import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {
-        afterHandle({ response, set }) {
-            if (isHtml(response))
+        afterHandle({ responseValue, set }) {
+            if (isHtml(responseValue))
                 set.headers['Content-Type'] = 'text/html; charset=utf8'
         }
     })
@@ -142,8 +145,8 @@ import { isHtml } from '@elysiajs/html'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
-    .onAfterHandle(({ response, set }) => {
-        if (isHtml(response))
+    .onAfterHandle(({ responseValue, set }) => {
+        if (isHtml(responseValue))
             set.headers['Content-Type'] = 'text/html; charset=utf8'
     })
     .get('/', () => '<h1>Hello World</h1>')
@@ -155,23 +158,21 @@ The response should be listed as follows:
 
 | Path  | Content-Type             |
 | ----- | ------------------------ |
-| /     | text/html; charset=utf8  |
-| /hi   | text/html; charset=utf8  |
-| /none | text/plain; charset=utf8 |
+| /none | text/**plain**; charset=utf8 |
+| /     | text/**html**; charset=utf8  |
+| /hi   | text/**html**; charset=utf8  |
 
 Events from other plugins are also applied to the route, so the order of code is important.
 
-::: tip
+<!--::: tip
 The code above will only apply to the current instance, not applying to parent.
 
 See [scope](/essential/plugin#scope) to find out why
-:::
+:::-->
 
 ## Order of code
 
-The order of Elysia's lifecycle code is very important.
-
-Because an event will only apply to routes **after** it is registered.
+Event will only apply to routes **after** it is registered.
 
 If you put the `onError` before plugin, plugin will not inherit the `onError` event.
 
@@ -213,11 +214,10 @@ new Elysia()
 	.listen(3000)
 ```
 
-In the code above, only **1** will be logged, because the event is registered after the plugin.
+In this example, only **1** will be logged because the event is registered after the plugin.
 
-This is because each events will be inline into a route handler to create a true encapsulation scope and static code analysis.
-
-The only exception is `onRequest` which is executed before the route handler so it couldn't be inlined and tied to the routing process instead.
+Every events will follows the same rule except is `onRequest`.
+<small>Because onRequest happens on request, it doesn't know which route to applied to so it's a global event</small>
 
 ## Request
 
@@ -450,6 +450,12 @@ new Elysia()
 Because **derive** is assigned once a new request starts, **derive** can access Request properties like **headers**, **query**, **body** where **store**, and **decorate** can't.
 
 Unlike **state**, and **decorate**. Properties which assigned by **derive** is unique and not shared with another request.
+
+::: tip
+You might want to use [resolve](#resolve) instead of derive in most cases.
+
+Resolve is similar to derive but execute after validation. This make resolve more secure as we can validate the incoming data before using it to derive new properties.
+:::
 
 ### Queue
 
@@ -705,7 +711,7 @@ const encoder = new TextEncoder()
 
 new Elysia()
     .mapResponse(({ responseValue, set }) => {
-        const isJson = typeof response === 'object'
+        const isJson = typeof responseValue === 'object'
 
         const text = isJson
             ? JSON.stringify(responseValue)
@@ -748,7 +754,7 @@ Elysia catches all the errors thrown in the handler, classifies the error code, 
 import { Elysia } from 'elysia'
 
 new Elysia()
-    .onError(({ code, error }) => {
+    .onError(({ error }) => {
         return new Response(error.toString())
     })
     .get('/', () => {
@@ -819,7 +825,7 @@ new Elysia()
         beforeHandle({ set, request: { headers }, error }) {
             if (!isSignIn(headers)) throw error(401)
         },
-        error({ error }) {
+        error() {
             return 'Handled'
         }
     })

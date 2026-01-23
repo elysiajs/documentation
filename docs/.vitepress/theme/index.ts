@@ -5,6 +5,7 @@ import {
     type EnhanceAppContext,
     type Theme
 } from 'vitepress'
+import { createPinia } from 'pinia'
 
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
@@ -21,6 +22,9 @@ export default {
     extends: DefaultTheme,
     Layout,
     enhanceApp({ app }: EnhanceAppContext) {
+        const pinia = createPinia()
+
+        app.use(pinia)
         app.use(TwoslashFloatingVue)
     },
     setup() {
