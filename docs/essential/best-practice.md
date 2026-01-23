@@ -95,7 +95,7 @@ export abstract class Auth {
 			WHERE username = ${username}
 			LIMIT 1`
 
-		if (await Bun.password.verify(password, user.password))
+		if (!await Bun.password.verify(password, user.password))
 			// You can throw an HTTP error directly
 			throw status(
 				400,
