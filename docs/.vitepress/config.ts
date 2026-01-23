@@ -21,6 +21,9 @@ export default defineConfig({
     description,
     ignoreDeadLinks: true,
     lastUpdated: true,
+    sitemap: {
+        hostname: 'https://elysiajs.com'
+    },
     markdown: {
         theme: {
             light: 'github-light',
@@ -140,6 +143,13 @@ export default defineConfig({
                 as: 'image',
                 href: '/assets/shigure-ui-smol.gif',
                 fetchpriority: 'low'
+            }
+        ],
+        [
+            'link',
+            {
+                rel: 'canonical',
+                href: 'https://elysiajs.com'
             }
         ]
     ],
