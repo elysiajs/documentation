@@ -210,7 +210,7 @@ yarn add -D tsx @types/node typescript
 
 This will install Elysia, TypeScript, and `tsx`.
 
-`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more feature you expected from a modern development environment.
+`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more features you'd expect from a modern development environment.
 
 Create a new file `src/index.ts` and add the following code:
 
@@ -268,7 +268,7 @@ Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `t
 If you use Elysia without TypeScript you may miss out on some features like auto-completion, advanced type checking and end-to-end type safety, which are the core features of Elysia.
 :::
 
-To create a new Elysia app with JavaScript, starts by installing Elysia:
+To create a new Elysia app with JavaScript, start by installing Elysia:
 
 ::: code-group
 
@@ -293,7 +293,7 @@ yarn add elysia @elysiajs/node
 
 This will install Elysia, TypeScript, and `tsx`.
 
-`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more feature you expected from a modern development environment.
+`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more features you'd expect from a modern development environment.
 
 Create a new file `src/index.ts` and add the following code:
 
