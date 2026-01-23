@@ -1089,12 +1089,8 @@ button.copy::after {
 	@apply max-w-xs;
 
     & > .DocSearch-Button {
-        @apply clicky flex items-center max-w-full sm:w-60 h-10 rounded-xl backdrop-blur-sm lg:ml-2 sm:bg-gray-100/75! dark:sm:bg-gray-800/75! sm:border sm:border-gray-200/50 dark:sm:border-gray-700/50;
+        @apply clicky flex items-center max-w-full sm:w-60 h-10 rounded-xl backdrop-blur-sm lg:ml-2 sm:bg-gray-100/75 dark:sm:bg-gray-800/75 sm:border sm:border-gray-200/50 dark:sm:border-gray-700/50;
         color: var(--docsearch-secondary-text-color);
-
-        @media (width >= 40rem /* 640px */) {
-        	background-color: var(--vp-c-bg-alt);
-        }
 
         & > .DocSearch-Button-Container {
         	@apply flex justify-start items-center w-full;
@@ -1316,5 +1312,18 @@ div[class*='language-'] {
 }
 
 .VPNavBarSearch.search {
-    @apply justify-center ml-2 !pl-0;
+    @apply lg:justify-center ml-2 pl-0! lg:pl-12!;
+}
+
+.VPNavBar .title {
+	@apply absolute;
+}
+
+.VPNavBarTitle .title .VPImage.logo {
+	@apply min-w-7 min-h-7;
+}
+
+.VPNavBar .content {
+	@apply lg:pr-8;
+	padding-left: var(--vp-sidebar-width);
 }
