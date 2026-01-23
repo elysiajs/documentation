@@ -1,55 +1,33 @@
 <script setup lang="ts">
 import {
     ref,
-    watch,
     nextTick,
     provide,
     onMounted,
     computed,
     defineAsyncComponent,
-    Teleport,
-    onUnmounted
+    Teleport
 } from 'vue'
 import { useData, useRouter } from 'vitepress'
-import ClientOnly from '../../components/xiao/playground/components/client-only.vue'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 
-import { File, Heart, Search, Sparkles, Terminal } from 'lucide-vue-next'
+import { File, Heart, Sparkles, Terminal } from 'lucide-vue-next'
 import mediumZoom from 'medium-zoom'
 
 import useDark from './use-dark'
 
 import Ray from '../../components/fern/ray.vue'
-const GlareCard = defineAsyncComponent(
-    () => import('./glare-card/glare-card.vue')
-)
 const Arona = defineAsyncComponent(
     () => import('../../components/arona/arona.vue')
 )
 
 import { data } from '../../components/fern/sponsor.data'
 import { sponsorOverride } from '../../components/fern/sponsor.constant'
-import ElysiaSearch from './search.vue'
 
 const isDark = useDark()
 const { isDark: darkTheme } = useData()
 
-const showCard = ref(false)
 const showArona = ref(false)
-const showSearch = ref(false)
-
-watch(
-    () => showCard.value,
-    (value) => {
-        if (value) {
-            document.documentElement.classList.add('overflow-hidden')
-            document.body.classList.add('overflow-hidden')
-        } else {
-            document.documentElement.classList.remove('overflow-hidden')
-            document.body.classList.remove('overflow-hidden')
-        }
-    }
-)
 
 const enableTransitions = () =>
     'startViewTransition' in document &&
@@ -66,8 +44,6 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         const lastSwitchTime = +lastSwitch
 
         if (Date.now() - lastSwitchTime > 3 * 60 * 1000) {
-        	console.log("A")
-
             if (document.documentElement.classList.contains('-animated'))
                 document.documentElement.classList.remove('-animated')
         } else {
@@ -101,7 +77,7 @@ const onNewPage = () => {
 }
 
 function toggleAIDesktop() {
-    showArona.value = !showArona.value
+    showArona.value = true
 
     const backdrop = document.querySelector(
         '.VPBackdrop.backdrop'
@@ -148,67 +124,6 @@ function toggleAIForCurrentPage() {
 </script>
 
 <template>
-    <Teleport to="head">
-        <link
-            rel="preload"
-            as="image"
-            href="/assets/elysia_v.webp"
-            fetchpriority="high"
-        />
-        <link
-            rel="preload"
-            as="image"
-            href="/assets/elysia.svg"
-            fetchpriority="high"
-        />
-        <link
-            rel="preload"
-            as="image"
-            href="/assets/shigure-ui-smol.gif"
-            fetchpriority="low"
-        />
-        <link
-            rel="preload"
-            as="image"
-            href="/assets/elysia-chan-card.webp"
-            fetchpriority="low"
-        />
-
-        <meta
-            id="theme-color"
-            :content="
-                isInTutorial
-                    ? isDark
-                        ? '#ff0000'
-                        : '#ff0000'
-                    : isDark
-                      ? '#0f172a'
-                      : '#ffffff'
-            "
-            media="(prefers-color-scheme: light)"
-        />
-
-        <meta
-            id="theme-color"
-            :content="
-                isInTutorial
-                    ? isDark
-                        ? '#ff0000'
-                        : '#ff0000'
-                    : isDark
-                      ? '#0f172a'
-                      : '#ffffff'
-            "
-            media="(prefers-color-scheme: dark)"
-        />
-    </Teleport>
-
-    <GlareCard v-model="showCard" />
-
-    <ClientOnly>
-        <Arona v-model="showArona" />
-    </ClientOnly>
-
     <DefaultTheme.Layout>
         <template #doc-top>
             <Ray
@@ -284,17 +199,6 @@ function toggleAIForCurrentPage() {
             </div>
         </template>
 
-        <template #sidebar-nav-after>
-            <div class="mt-auto xl:hidden">
-                <img
-                    src="/assets/elysia-chan-card.webp"
-                    class="clicky aspect-video max-h-24 rounded-lg border object-cover lg:opacity-40 interact:opacity-100 interact:shadow-2xl shadow-gray-700/10 transition-all ease-out duration-200 cursor-pointer"
-                    style="object-position: 0 10%"
-                    @click="showCard = true"
-                />
-            </div>
-        </template>
-
         <template #aside-outline-after>
             <h6
                 class="flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-300 mt-4"
@@ -326,17 +230,6 @@ function toggleAIForCurrentPage() {
                     />
                 </a>
             </aside>
-
-            <button
-                class="clicky w-48 px-2 mt-2 opacity-60 interact:opacity-100 duration-400 ease-out-expo"
-                @click="showCard = true"
-            >
-                <img
-                    src="/assets/elysia-chan-card.webp"
-                    class="aspect-video rounded-lg object-top object-cover"
-                    style="object-position: 0 6.25%"
-                />
-            </button>
         </template>
 
         <template #nav-bar-content-before>
@@ -346,6 +239,10 @@ function toggleAIForCurrentPage() {
             >
                 <Sparkles :size="21" stroke-width="1.5" />
             </button>
+
+            <ClientOnly>
+                <Arona v-model="showArona" />
+            </ClientOnly>
         </template>
 
         <template #sidebar-nav-before>

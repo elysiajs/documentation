@@ -74,22 +74,4 @@ const main = new Elysia()
     .listen(3000)
 ```
 
-## Reusing Elysia
-Moreover, you can re-use multiple existing Elysia projects on your server.
-
-```ts
-import { Elysia } from 'elysia'
-
-import A from 'project-a/elysia'
-import B from 'project-b/elysia'
-import C from 'project-c/elysia'
-
-new Elysia()
-    .mount(A)
-    .mount(B)
-    .mount(C)
-```
-
-If an instance passed to `mount` is an Elysia instance, it will be resolved with `use` automatically, providing type-safety and support for Eden by default.
-
 This makes the possibility of an interoperable framework and runtime a reality.

@@ -167,13 +167,58 @@ app.listen(3000)
 We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
 
 ## Dependency <Badge type="danger" text="MUST READ" />
-Each plugin will be re-executed **EVERY TIME** when apply to another instance.
+Elysia by design, is compose of multiple mini Elysia apps which can run **independently** like a microservice that communicate with each other.
 
-If the plugin is applied multiple time, it will cause an unnecessary duplication.
+Each Elysia instance is independent and **can run as a standalone server**.
 
-It's important that some methods, like **lifecycle** or **routes**, should only be called once.
+When an instance need to use another instance's service, you **must explicitly declare the dependency**.
 
-To prevent this, Elysia can deduplicate lifecycle with **an unique identifier**.
+```ts twoslash
+// @errors: 2339
+import { t } from 'elysia'
+
+abstract class Auth {
+	static getProfile() {
+		return {
+			name: 'Elysia User'
+		}
+	}
+
+	static models = {
+		user: t.Object({
+			name: t.String()
+		})
+	} as const
+}
+// ---cut---
+import { Elysia } from 'elysia'
+
+const auth = new Elysia()
+	.decorate('Auth', Auth)
+	.model(Auth.models)
+
+const main = new Elysia()
+ 	// ❌ 'auth' is missing
+	.get('/', ({ Auth }) => Auth.getProfile())
+	// auth is required to use Auth's service
+	.use(auth) // [!code ++]
+	.get('/profile', ({ Auth }) => Auth.getProfile())
+//                                        ^?
+
+
+
+// ---cut-after---
+```
+
+This is similar to **Dependency Injection** where each instance must declare its dependencies.
+
+This approach force you to be explicit about dependencies allowing better tracking, modularity.
+
+### Deduplication <Badge type="warning" text="Important" />
+
+By default, each plugin will be re-executed **every time** applying to another instance.
+
+To prevent this, Elysia can deduplicate lifecycle with **an unique identifier** using `name` and optional `seed` property.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -201,58 +246,36 @@ const server = new Elysia()
 	.use(router2)
 ```
 
-Adding the `name` property to the instance will make it a unique identifier prevent it from being called multiple times.
+Adding the `name` and optional `seed` to the instance will make it a unique identifier prevent it from being called multiple times.
 
 Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
 
-### Service Locator <Badge type="warning" text="Important" />
-When you apply a plugin with to an instance, the instance will gain type safety.
+### Global vs Explicit Dependency
 
-But if you don't apply the plugin to another instance, it will not be able to infer the type.
+There are some case that global dependency make more sense than an explicit one.
 
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
+**Global** plugin example:
+- **Plugin that doesn't add types** - eg. cors, compress, helmet
+- Plugin that add global lifecycle that no instance should have control over - eg. tracing, logging
 
-const child = new Elysia()
-    // ❌ 'a' is missing
-    .get('/', ({ a }) => a)
+Example use cases:
+- OpenAPI/Open - Global document
+- OpenTelemetry - Global tracer
+- Logging - Global logger
 
-const main = new Elysia()
-    .decorate('a', 'a')
-    .use(child)
-```
+In case like this, it make more sense to create it as global dependency instead of applying it to every instance.
 
-Elysia introduces the **Service Locator** pattern to counteract this.
+However, if your dependency doesn't fit into these categories, it's recommended to use **explicit dependency** instead.
 
-By simply provide the plugin reference for Elysia to find the service to add type safety.
+**Explicit dependency** example:
+- **Plugin that add types** - eg. macro, state, model
+- Plugin that add business logic that instance can interact with - eg. Auth, Database
 
-```typescript twoslash
-// @errors: 2339
-import { Elysia } from 'elysia'
-
-const setup = new Elysia({ name: 'setup' })
-    .decorate('a', 'a')
-
-// Without 'setup', type will be missing
-const error = new Elysia()
-    .get('/', ({ a }) => a)
-
-// With `setup`, type will be inferred
-const child = new Elysia()
-    .use(setup) // [!code ++]
-    .get('/', ({ a }) => a)
-    //           ^?
-
-
-
-// ---cut-after---
-console.log()
-```
-
-This is equivalent to TypeScript's **type import**, where you import the type without actually importing the code to run.
-
-As mentioned in Elysia already handle deduplication, this will not have any performance penalty or lifecycle duplication.
+Example use cases:
+- State management - eg. Store, Session
+- Data modeling - eg. ORM, ODM
+- Business logic - eg. Auth, Database
+- Feature module - eg. Chat, Notification
 
 ## Order of code <Badge type="warning" text="Important" />
 

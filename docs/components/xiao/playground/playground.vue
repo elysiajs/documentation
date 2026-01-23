@@ -81,8 +81,6 @@ import { watchDebounced, useWindowSize } from '@vueuse/core'
 import { SplitterGroup, SplitterPanel, SplitterResizeHandle } from 'reka-ui'
 import { usePlaygroundStore } from './store'
 
-import ClientOnly from './components/client-only.vue'
-
 import Aside from './components/aside.vue'
 
 const Doc = defineAsyncComponent(() => import('./components/doc.vue'))

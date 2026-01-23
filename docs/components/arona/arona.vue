@@ -5,6 +5,8 @@
                 v-if="isExpanded && model"
                 class="fixed top-0 left-0 z-41 w-full h-screen bg-black/15"
                 @click="model = false"
+                tabindex="-1"
+                aria-hidden="true"
                 :initial="{ opacity: 0 }"
                 :animate="{
                     opacity: 1,
@@ -195,7 +197,7 @@
                                             ) in questions"
                                             :key="index"
                                             @click="ask(example)"
-                                            class="text-sm px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
+                                            class="text-sm px-3 py-1 rounded-full bg-white/85 dark:bg-gray-700/85 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
                                             v-text="example"
                                         />
                                     </div>
@@ -516,7 +518,11 @@ import { motion, AnimatePresence } from 'motion-v'
 
 import { useTextareaAutosize, useWindowSize } from '@vueuse/core'
 
-import { StreamMarkdown } from 'streamdown-vue'
+import {
+    StreamMarkdown,
+    registerDefaultShikiLanguages,
+    registerShikiLanguage
+} from 'streamdown-vue'
 import { vConfetti } from '@neoconfetti/vue'
 
 import Tooltip from './tooltip.vue'
@@ -552,7 +558,6 @@ const Pow = new ComlinkWorker<typeof import('./pow')>(
 )
 
 import useDark from '../../.vitepress/theme/use-dark'
-import { isParameter } from 'typescript'
 
 const model = defineModel<boolean>()
 const isDark = useDark()
@@ -564,6 +569,12 @@ const { input: question, textarea } = useTextareaAutosize()
 
 const size = useWindowSize()
 
+registerDefaultShikiLanguages()
+registerShikiLanguage({
+    id: 'prisma',
+    loader: () => import('@shikijs/langs/prisma')
+})
+
 interface History {
     id?: string
     role: 'user' | 'assistant'
@@ -574,7 +585,9 @@ const questions = ref<string[]>([
     'What is Eden',
     'Explain lifecycle events',
     'How to add OpenAPI',
-    'Can I use Zod with Elysia?'
+    'Can I use Zod with Elysia?',
+    'What is OpenAPI type gen',
+    'Elysia compare to Hono'
 ])
 
 const includeCurrentPage = ref(false)
@@ -962,6 +975,12 @@ async function ask(input?: string, seed?: number) {
         )
     }
 
+    // Convert 【text】 to [text](text)
+    history.value[index].content = history.value[index].content.replace(
+        /【([^】]+)】/g,
+        '[$1]($1)'
+    )
+
     resetState()
     auth()
 
@@ -1195,7 +1214,7 @@ onUnmounted(() => {
                     }
 
                     & > a {
-                        @apply px-2 py-1 text-gray-400 bg-gray-100/80 dark:bg-gray-700/80 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
+                        @apply px-2 py-1 text-gray-400 bg-white/35 dark:bg-gray-700/35 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
                     }
                 }
             }
@@ -1327,8 +1346,7 @@ onUnmounted(() => {
         * > *,
         * > * > * {
             & > div[theme] > .shiki {
-                @apply relative my-4 text-sm -mx-4;
-                background-color: var(--vp-code-copy-code-bg);
+                @apply relative my-4 text-sm -mx-4 bg-[#eff1f590]! dark:bg-[#1e1e2ec3]! border-y dark:border-gray-700/75;
 
                 &:hover {
                     & > .lang {
