@@ -1324,6 +1324,5 @@ div[class*='language-'] {
 }
 
 .VPNavBar .content {
-	@apply lg:pr-8;
-	padding-left: var(--vp-sidebar-width);
+	@apply lg:pr-8 md:pl-[var(--vp-sidebar-width)];
 }
