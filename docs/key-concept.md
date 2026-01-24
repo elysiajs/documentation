@@ -72,7 +72,7 @@ In this example, the `isSignIn` check will only apply to `profile` but not `app`
 
 <br>
 
-**Elysia isolate lifecycle by default** unless explicitly stated. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
+**Elysia isolates lifecycle by default** unless explicitly stated. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
 
 To **"export"** the lifecycle to other instances, you must add specify the scope.
 
@@ -167,11 +167,11 @@ app.listen(3000)
 We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
 
 ## Dependency <Badge type="danger" text="MUST READ" />
-Elysia by design, is compose of multiple mini Elysia apps which can run **independently** like a microservice that communicate with each other.
+Elysia by design, is composed of multiple mini Elysia apps which can run **independently** like microservices that communicate with one another.
 
 Each Elysia instance is independent and **can run as a standalone server**.
 
-When an instance need to use another instance's service, you **must explicitly declare the dependency**.
+When an instance needs to use another instance's service, you **must explicitly declare the dependency**.
 
 ```ts twoslash
 // @errors: 2339
@@ -212,7 +212,7 @@ const main = new Elysia()
 
 This is similar to **Dependency Injection** where each instance must declare its dependencies.
 
-This approach force you to be explicit about dependencies allowing better tracking, modularity.
+This approach forces you to be explicit about dependencies allowing better tracking, modularity.
 
 ### Deduplication <Badge type="warning" text="Important" />
 
@@ -246,13 +246,13 @@ const server = new Elysia()
 	.use(router2)
 ```
 
-Adding the `name` and optional `seed` to the instance will make it a unique identifier prevent it from being called multiple times.
+Adding the `name` and optional `seed` to the instance will make it a unique identifier which prevents it from being called multiple times.
 
 Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
 
 ### Global vs Explicit Dependency
 
-There are some case that global dependency make more sense than an explicit one.
+There are some cases where global dependency makes more sense than an explicit one.
 
 **Global** plugin example:
 - **Plugin that doesn't add types** - eg. cors, compress, helmet
@@ -263,13 +263,13 @@ Example use cases:
 - OpenTelemetry - Global tracer
 - Logging - Global logger
 
-In case like this, it make more sense to create it as global dependency instead of applying it to every instance.
+In case like this, it makes more sense to create it as global dependency instead of applying it to every instance.
 
 However, if your dependency doesn't fit into these categories, it's recommended to use **explicit dependency** instead.
 
 **Explicit dependency** example:
-- **Plugin that add types** - eg. macro, state, model
-- Plugin that add business logic that instance can interact with - eg. Auth, Database
+- **Plugin that adds types** - eg. macro, state, model
+- Plugin that adds business logic that instance can interact with - eg. Auth, Database
 
 Example use cases:
 - State management - eg. Store, Session
