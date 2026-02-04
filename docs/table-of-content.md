@@ -44,9 +44,13 @@ We highly recommended you to check out these 2 pages first before getting starte
     </Card>
 </Deck>
 
-### llms.txt
+### AI Skills / For LLMS
 
-Alternatively, you can download <a href="/llms.txt" download>llms.txt</a> or <a href="/llms-full.txt" download>llms-full.txt</a> and feed it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience.
+Elysia offers `llms.txt` and `skills` for AI agent like **Claude Code** and **OpenCode** to help your agent understand Elysia better.
+
+```bash
+bunx skills add elysiajs/skills
+```
 
 <Deck>
     <Card title="llms.txt" href="/llms.txt" download>
@@ -54,22 +58,6 @@ Alternatively, you can download <a href="/llms.txt" download>llms.txt</a> or <a 
     </Card>
     <Card title="llms-full.txt" href="/llms-full.txt" download>
   		Download full Elysia doc in Markdown format in a single file for prompting LLMs
-    </Card>
-</Deck>
-
-### If you are stuck
-
-Feel free to ask our community on GitHub Discussions, Discord, and Twitter.
-
-<Deck>
-    <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
-        Official ElysiaJS discord community server
-    </Card>
-    <Card title="Twitter" href="https://twitter.com/elysiajs">
-        Track updates and status of Elysia
-    </Card>
-    <Card title="GitHub" href="https://github.com/elysiajs">
-        Source code and development
     </Card>
 </Deck>
 
@@ -179,6 +167,23 @@ We have some integration with popular tools:
   		We can use JSX to create email template
     </Card>
 </Deck>
+
+## Community & Support
+
+If you are stuck, feel free to ask our community on GitHub Discussions, Discord, and Twitter.
+
+<Deck>
+    <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
+        Official ElysiaJS discord community server
+    </Card>
+    <Card title="Twitter" href="https://twitter.com/elysiajs">
+        Track updates and status of Elysia
+    </Card>
+    <Card title="GitHub" href="https://github.com/elysiajs">
+        Source code and development
+    </Card>
+</Deck>
+
 
 ---
 

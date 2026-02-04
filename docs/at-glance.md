@@ -429,11 +429,11 @@ and several more! Checkout `integration` section on sidebar for more support run
 
 ## Our Community
 
-We want to create a friendly and welcoming community for everyone with cute and playful design including our anime mascot, Elysia chan.
+We want to create a friendly and welcoming community for everyone with bright, cute, friendly and playful design including our hand drawn anime girl mascot, *"Elysia chan"*.
 
-We believe that technology can be cute and fun instead of being serious all the time, to brings joy to people's lives.
+We believe that technology should be friendly and approachable instead of being serious all the time, to brings joy to people's lives.
 
-But even that, we take Elysia very seriously to make sure it's reliable and production ready high-performance framework that can be trusted for your next project.
+But even that, **we take Elysia very seriously** to make sure it's reliable and production ready high-performance framework that can be trusted for your next project.
 
 Elysia is **used in production by many companies and projects worldwide**, including [X](https://x.com/shlomiatar/status/1822381556142362734), [Bank for Agriculture and Agricultural Co-operatives](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13924470), [Cluely](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-14420139), [CS.Money](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13913513), [Abacate Pay](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13922081) and used by [over 10,000 (open source) projects on GitHub.](https://github.com/elysiajs/elysia/network/dependents) and has been actively developed and maintained since 2022 with many regular contributors from our community.
 
