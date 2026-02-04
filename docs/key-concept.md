@@ -349,6 +349,10 @@ const app = new Elysia()
 	})
 ```
 
+::: tip
+This example uses an abstract class, but you can also use plain objects, module exports, or namespaces. See [Best Practice: Service patterns](/essential/best-practice.html#1-abstract-away-non-request-dependent-service) for alternatives.
+:::
+
 See [Best practice: MVC Controller](/essential/best-practice.html#controller).
 
 ### TypeScript
