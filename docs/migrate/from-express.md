@@ -174,7 +174,7 @@ const app = new Elysia()
 
 ## Subrouter
 
-Express uses a dedicated `express.Router()` for declaring a sub-router while Elysia treats every instance as a plug-and-play component. that can be plug and play together.
+Express uses a dedicated `express.Router()` for declaring a sub-router while Elysia treats every instance as a plug-and-play component that can be plug and play together.
 
 <Compare>
 
