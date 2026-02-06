@@ -189,12 +189,7 @@ export default defineConfig({
                 ? llmstxt({
                       description: 'Ergonomic Framework for Humans',
                       details: description,
-                      ignoreFiles: [
-                          'index.md',
-                          'table-of-content.md',
-                          'blog/*',
-                          'public/*'
-                      ],
+                      ignoreFiles: ['index.md', 'table-of-contents.md', 'blog/*', 'public/*'],
                       domain: 'https://elysiajs.com'
                   })
                 : undefined,
@@ -211,10 +206,7 @@ export default defineConfig({
             ]
         },
         ssr: {
-            noExternal: [
-                '@nolebase/vitepress-plugin-inline-link-preview',
-                '@nolebase/ui'
-            ]
+            noExternal: ['@nolebase/vitepress-plugin-inline-link-preview', '@nolebase/ui']
         }
     },
     themeConfig: {
@@ -228,7 +220,7 @@ export default defineConfig({
         nav: [
             {
                 text: 'Docs',
-                link: '/table-of-content'
+                link: '/table-of-contents'
             },
             {
                 text: 'Blog',
@@ -245,7 +237,7 @@ export default defineConfig({
                 collapsed: true,
                 items: [
                     {
-                        text: 'At Glance',
+                        text: 'At a Glance',
                         link: '/at-glance'
                     },
                     {
@@ -253,12 +245,12 @@ export default defineConfig({
                         link: '/quick-start'
                     },
                     {
-                        text: 'Table of Content',
-                        link: '/table-of-content'
+                        text: 'Table of Contents',
+                        link: '/table-of-contents'
                     },
                     {
-                        text: 'Key Concept',
-                        link: '/key-concept'
+                        text: 'Key Concepts',
+                        link: '/key-concepts'
                     }
                 ]
             },
@@ -568,8 +560,7 @@ export default defineConfig({
         ],
         editLink: {
             text: 'Edit this page on GitHub',
-            pattern:
-                'https://github.com/elysiajs/documentation/edit/main/docs/:path'
+            pattern: 'https://github.com/elysiajs/documentation/edit/main/docs/:path'
         }
     }
 })

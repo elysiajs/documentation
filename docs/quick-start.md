@@ -272,7 +272,7 @@ To create a new Elysia app with JavaScript, start by installing Elysia:
 
 ::: code-group
 
-```bash [pnpm]
+```bash [bun]
 bun add elysia @elysiajs/node
 ```
 
