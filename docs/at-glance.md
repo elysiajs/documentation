@@ -439,7 +439,7 @@ Elysia is **used in production by many companies and projects worldwide**, inclu
 
 Elysia is a reliable choice and production ready for building your next backend server.
 
-Here's some of our community resources to get you started:
+Here are some of our community resources to get you started:
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">

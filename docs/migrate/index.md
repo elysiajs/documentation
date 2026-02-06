@@ -4,7 +4,7 @@ import Deck from '../components/nearl/card-deck.vue'
 </script>
 
 <Deck>
-    <Card title="Key Concept (5 minutes)" href="/key-concepts">
+    <Card title="Key Concepts (5 minutes)" href="/key-concepts">
     	The core concept of Elysia and how to use it.
     </Card>
 </Deck>

@@ -82,7 +82,7 @@ If you have used other popular frameworks like Express, Fastify, or Hono, you wi
 
 ## Essential Chapter
 
-These are the core features of Elysia, we highly recommended you to go through these pages before jumping to other topics:
+These are the core features of Elysia; we highly recommended you go through these pages before jumping to other topics:
 
 <Deck>
 	<Card title="Route" href="/essential/route">
@@ -104,7 +104,7 @@ These are the core features of Elysia, we highly recommended you to go through t
 
 ## More Patterns
 
-If you feels like exploring more Elysia features, check out:
+If you feel like exploring more Elysia features, check out:
 
 <Deck>
     <Card title="Handler" href="/essential/handler">

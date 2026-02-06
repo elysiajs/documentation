@@ -108,7 +108,7 @@ Here are the foundation of Elysia, we highly recommended you to go through these
 	<Card title="Validation" href="/essential/validation">
 		How to enforce type safety with Elysia
 	</Card>
-	<Card title="Lifecycle" href="/essential/lifecycle">
+	<Card title="Lifecycle" href="/essential/life-cycle">
 		Learn different type of lifecycle
 	</Card>
 	<Card title="Plugin" href="/essential/plugin">
