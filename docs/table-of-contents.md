@@ -1,9 +1,9 @@
 ---
-title: Table of Content - ElysiaJS
+title: Table of Contents - ElysiaJS
 head:
   - - meta
     - property: 'og:title'
-      content: Table of Content - ElysiaJS
+      content: Table of Contents - ElysiaJS
 
   - - meta
     - name: 'description'
@@ -21,7 +21,7 @@ head:
 	import TutorialLink from './components/xiao/tutorial-link.vue'
 </script>
 
-# Table of Content
+# Table of Contents
 
 There's no correct way to learn Elysia, but we **highly recommended** you checkout the an **Interactive Tutorial** first to get familiar with Elysia:
 
@@ -33,11 +33,11 @@ Although Elysia's documentation is designed to be beginner-friendly, we need to 
 To get the most out of our documentation, it's recommended that you have a basic understanding of Node.js and basic HTTP.-->
 
 ## First up
-We highly recommended you to check out these 2 pages first before getting started with Elysia:
+We highly recommended you check out these 2 pages first before getting started with Elysia:
 
 <Deck>
-	<Card title="Key Concept" href="/key-concept">
-		Core concept of Elysia and how to effectively
+	<Card title="Key Concepts" href="/key-concepts">
+		Core concepts of Elysia and how to use it
     </Card>
     <Card title="Best Practice" href="/essential/best-practice">
         Understand best practice to write Elysia code
@@ -54,14 +54,14 @@ bunx skills add elysiajs/skills
 
 <Deck>
     <Card title="llms.txt" href="/llms.txt" download>
-   		Download summarized Elysia doc in Markdown format with reference for prompting LLMs
+   		Download summarized Elysia docs in Markdown format with reference for prompting LLMs
     </Card>
     <Card title="llms-full.txt" href="/llms-full.txt" download>
-  		Download full Elysia doc in Markdown format in a single file for prompting LLMs
+  		Download full Elysia docs in Markdown format in a single file for prompting LLMs
     </Card>
 </Deck>
 
-## From other Framework?
+## From another Framework?
 
 If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences.
 
@@ -82,41 +82,41 @@ If you have used other popular frameworks like Express, Fastify, or Hono, you wi
 
 ## Essential Chapter
 
-Here are the foundation of Elysia, we highly recommended you to go through these pages before jumping to other topics:
+These are the core features of Elysia; we highly recommended you go through these pages before jumping to other topics:
 
 <Deck>
 	<Card title="Route" href="/essential/route">
   Understand how routing works in Elysia
 	</Card>
 	<Card title="Handler" href="/essential/handler">
-  		Learn about how to handle request
+  		Learn about handling requests
 	</Card>
-	<Card title="Validation" href="/essential/plugin">
+	<Card title="Validation" href="/essential/validation">
 		How to enforce type safety with Elysia
 	</Card>
-	<Card title="Lifecycle" href="/essential/plugin">
-		Learn different type of lifecycle
+	<Card title="Lifecycle" href="/essential/life-cycle">
+		Learn the lifecycle events of requests
 	</Card>
 	<Card title="Plugin" href="/essential/plugin">
-	  	Learn how to extend Elysia with Plugin
+	  	Learn how to extend Elysia with Plugins
 	</Card>
 </Deck>
 
 ## More Patterns
 
-If you feels like exploring more Elysia feature, check out:
+If you feel like exploring more Elysia features, check out:
 
 <Deck>
-    <Card title="Handler" href="/eden/overview">
-    	More pattern on how to send a file, Server Sent Event, etc.
+    <Card title="Handler" href="/essential/handler">
+    	More patterns on how to send a file, Server Sent Events, etc.
     </Card>
     <Card title="Web Socket" href="/patterns/websocket">
-   		See how to create Real Time application with Elysia
+   		See how to create Real Time applications with Elysia
     </Card>
     <Card title="Eden" href="/eden/overview">
-    	Learn more about Eden, and how to use it effectively
+    	Learn more about Eden, Elysia's RPC-like client
     </Card>
-    <Card title="Open Telemetry" href="/eden/opentelemetry">
+    <Card title="Open Telemetry" href="/patterns/opentelemetry">
    		Learn how to monitor your application with Open Telemetry
     </Card>
     <Card title="Deploy to Production" href="/patterns/deploy">
@@ -124,9 +124,9 @@ If you feels like exploring more Elysia feature, check out:
     </Card>
 </Deck>
 
-## Integration with Meta Framework
+## Integration with Meta Frameworks
 
-We can also use Elysia with Meta Framework like Nextjs, Nuxt, Astro, etc.
+We can also use Elysia with Meta Frameworks like Nextjs, Nuxt, Astro, etc.
 
 <Deck>
 	<Card title="Astro" href="/integrations/astro">

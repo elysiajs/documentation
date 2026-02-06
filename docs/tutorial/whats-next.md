@@ -38,8 +38,8 @@ Now you're ready to build your own application with Elysia!
 We highly recommended you to check out these 2 pages first before getting started with Elysia:
 
 <Deck>
-	<Card title="Key Concept" href="/key-concept">
-		Core concept of Elysia and how to effectively
+	<Card title="Key Concepts" href="/key-concepts">
+		Core concepts of Elysia and how to use them
     </Card>
     <Card title="Best Practice" href="/essential/best-practice">
         Understand best practice to write Elysia code
@@ -52,10 +52,10 @@ Alternatively, you can download <a href="/llms.txt" download>llms.txt</a> or <a 
 
 <Deck>
     <Card title="llms.txt" href="/llms.txt" download>
-   		Download summarized Elysia doc in Markdown format with reference for prompting LLMs
+   		Download summarized Elysia docs in Markdown format with reference for prompting LLMs
     </Card>
     <Card title="llms-full.txt" href="/llms-full.txt" download>
-  		Download full Elysia doc in Markdown format in a single file for prompting LLMs
+  		Download full Elysia docs in Markdown format in a single file for prompting LLMs
     </Card>
 </Deck>
 
@@ -105,10 +105,10 @@ Here are the foundation of Elysia, we highly recommended you to go through these
 	<Card title="Handler" href="/essential/handler">
   		Learn about how to handle request
 	</Card>
-	<Card title="Validation" href="/essential/plugin">
+	<Card title="Validation" href="/essential/validation">
 		How to enforce type safety with Elysia
 	</Card>
-	<Card title="Lifecycle" href="/essential/plugin">
+	<Card title="Lifecycle" href="/essential/life-cycle">
 		Learn different type of lifecycle
 	</Card>
 	<Card title="Plugin" href="/essential/plugin">
@@ -121,14 +121,14 @@ Here are the foundation of Elysia, we highly recommended you to go through these
 If you feels like exploring more Elysia feature, check out:
 
 <Deck>
-    <Card title="Handler" href="/eden/overview">
-    	More pattern on how to send a file, Server Sent Event, etc.
+    <Card title="Handler" href="/essential/handler">
+    	More patterns on how to send a file, Server Sent Events, etc.
     </Card>
     <Card title="Web Socket" href="/patterns/websocket">
    		See how to create Real Time application with Elysia
     </Card>
     <Card title="Eden" href="/eden/overview">
-    	Learn more about Eden, and how to use it effectively
+    	Learn more about Eden, Elysia's RPC-like client
     </Card>
     <Card title="Open Telemetry" href="/patterns/opentelemetry">
    		Learn how to monitor your application with Open Telemetry
