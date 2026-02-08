@@ -46,7 +46,7 @@ const expand = useExpandWidth(isInView)
                 <li>
                     <motion.h6 v-bind="flyIn(0.3)">
                         <span
-                            class="!text-xl !font-semibold !text-transparent !ml-0 text-gradient from-violet-500 to-sky-500"
+                            class="text-lg! sm:text-xl! font-semibold! text-transparent! ml-0! text-gradient from-violet-500 to-sky-500"
                         >
                             Elysia
                         </span>
@@ -54,9 +54,9 @@ const expand = useExpandWidth(isInView)
                     </motion.h6>
                     <motion.div
                         v-bind="expand(72, 0.4)"
-                        class="bg-gradient-to-r from-violet-500 to-fuchsia-400 !text-white"
+                        class="text-xs sm:text-sm bg-linear-to-r from-violet-500 to-fuchsia-400 text-white!"
                     >
-                        <span>2,454,631 reqs/s</span>
+                        <span>2,454,631 <span id="benchmark-req-sec">reqs/s</span></span>
                     </motion.div>
                 </li>
                 <li>
@@ -169,10 +169,10 @@ const expand = useExpandWidth(isInView)
         @apply flex justify-start items-center gap-4 w-full h-6;
 
         & > h6 {
-            @apply w-36 min-w-36 font-mono text-lg font-medium text-gray-500 dark:text-gray-400;
+            @apply w-32 min-w-32 font-mono text-lg font-medium text-gray-500 dark:text-gray-400;
 
             & > span {
-                @apply text-sm text-gray-400 font-normal;
+                @apply text-xs sm:text-sm text-gray-400 font-normal;
             }
         }
 
@@ -181,8 +181,14 @@ const expand = useExpandWidth(isInView)
         }
 
         & > p {
-            @apply font-medium font-mono text-gray-400 text-sm -translate-x-2;
+            @apply font-medium font-mono text-gray-400 text-xs sm:text-sm -translate-x-2;
         }
     }
+}
+
+@media (max-width: 320px) {
+	#benchmark-req-sec {
+		@apply hidden;
+	}
 }
 </style>

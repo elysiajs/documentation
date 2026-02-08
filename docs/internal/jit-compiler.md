@@ -22,7 +22,9 @@ import Benchmark from '../components/fern/benchmark.vue'
 
 Elysia is fast and will likely remain *one of the fastest web frameworks for JavaScript* only limited by the speed of the underlying JavaScript engine.
 
-<Benchmark />
+<section class="[&>*]:px-0!">
+	<Benchmark />
+</section>
 
 Elysia speed is not only acheived by optimization for specific runtime eg. Bun native features like `Bun.serve.routes`. But also the way Elysia handles route registration and request handling.
 
@@ -163,6 +165,24 @@ Using `new Function(...)` or `eval(...)` can introduce security risks **if not h
 But that's only "if not handled properly" part.
 
 Elysia takes precautions to ensure that the generated code is safe and does not expose vulnerabilities by make sure that only trusted code is executed. The **input is almost never user-controlled** and produced by Elysia (sucrose) itself.
+
+## Libraries that `eval`
+Elysia is not the only framework that use `new Function` and `eval`.
+
+[ajv](https://www.npmjs.com/package/ajv) and [TypeBox](https://www.npmjs.com/package/@sinclair/typebox) are an **industry standard** validation library since the early days of Node.js with 895m and 332m downloads/months respectively.
+
+Both of these libraries are using `eval` internally to optimize the performance of their validation code making it [faster its competitors](https://moltar.github.io/typescript-runtime-type-benchmarks/).
+
+Elysia basically expands this beyond input validation into a whole backend framework for maximum performance. In fact, Elysia also use TypeBox for input validation, so every corner of the libraries is entirely runs on `eval`.
+
+## Opts out
+Elysia JIT compilation is enabled by default but can be opt out entirely by running in a dynamic mode:
+
+```ts
+new Elysia({ aot: false })
+```
+
+Although, it's not recommended because there are some features missing without JIT compilation, eg. `trace`.
 
 ## Afterword
 
