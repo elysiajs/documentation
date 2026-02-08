@@ -38,9 +38,9 @@ When request is made to Elysia application for the first time for each route, El
 
 To generate this optimized code, the compiler needs a deep understanding of how the route handlers interact with the request and what parts of the request are actually needed.
 
-Sucrose is basically that.
+That's Sucrose's job.
 
-It reads the structure of the code without executing it by using `Function.toString()` then perform our custom pattern-matching (Sucrose) to extract useful information about what parts of the request are actually needed by the route handler.
+Sucrose read the code without executing it by using `Function.toString()` then perform our own custom pattern-matching to extract useful information about what parts of the request are actually needed by the route handler.
 
 Let's take a look at a simple example:
 
@@ -95,6 +95,14 @@ function centralHandler(request) {
 :::
 
 This make Elysia extremely fast as it only does the minimum work required for each route.
+
+### Why not acorn, esprima, or other traditional static analysis tools?
+
+Traditional tools are designed for general-purpose static code analysis and may introduce unnecessary overhead for Elysia's specific use case.
+
+For our purpose, our parser only need to understand a subset of JavaScript syntax specifically *function*. When we think about it, it's only a small part of JavaScript language that is already *parsed and formatted by JavaScript Engine*.
+
+So instead of pulling a general purpose tool, we treat this part as a DSL (that looks like JavaScript) and build specifically for just this part for maximum performance and low-memory usage (compared to AST-based tools).
 
 ## Compiler Optimizations
 
