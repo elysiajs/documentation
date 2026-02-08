@@ -309,6 +309,10 @@ button.copy::after {
 }
 
 #VPSidebarNav > .group:nth-child(10) > .VPSidebarItem > .item > .text::before {
+    background-image: url(/assets/cook.svg);
+}
+
+#VPSidebarNav > .group:nth-child(11) > .VPSidebarItem > .item > .text::before {
     background-image: url(/assets/book.svg);
 }
 

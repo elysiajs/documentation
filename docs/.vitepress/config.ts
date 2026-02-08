@@ -555,7 +555,17 @@ export default defineConfig({
                         link: '/integrations/vercel'
                     }
                 ]
-            }
+			},
+			{
+                text: 'Internal',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'JIT Compiler',
+                        link: '/internal/jit-compiler'
+                    }
+				]
+			}
         ],
         outline: {
             level: [2, 3],
