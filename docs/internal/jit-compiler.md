@@ -15,6 +15,7 @@ head:
 ---
 
 <script setup>
+import JIT from './jit-compiler/jit.vue'
 import Benchmark from '../components/fern/benchmark.vue'
 </script>
 
@@ -146,7 +147,9 @@ Elysia JIT *"compiler"* is designed for peak performance in mind. However, the d
 ### Initial Request Overhead
 The first time a request is made to a specific route, Elysia needs to analyze the route handler code and generate the optimized code.
 
-This process is relatively **very fast** and usually takes < 0.05ms in most cases on a modern CPU and happend only **once per route**. But it is still an overhead.
+This process is relatively **very fast** and usually takes < 0.005ms per route in most cases on a modern CPU and happend only **once per route**. But it is still an overhead.
+
+<JIT />
 
 This process can be moved to the startup phase by settings `precompile: true` to Elysia constructor to eliminate this overhead during the first request in exchange for a slower startup time.
 
