@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Sparkles, Send, Sparkle } from 'lucide-vue-next'
+import { Send, Sparkle } from 'lucide-vue-next'
 
 import { useInView, motion } from 'motion-v'
 import { useFlyIn } from './animate'
@@ -58,7 +58,6 @@ function handleShortcut(event: KeyboardEvent) {
                     v-model="question"
                     placeholder="Ask anything"
                     class="flex flex-1 my-auto px-4 resize-none"
-                    autofocus
                     @keydown="handleShortcut"
                     data-gramm="false"
                 />
