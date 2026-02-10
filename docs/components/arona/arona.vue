@@ -157,7 +157,7 @@
                         >
                             <AnimatePresence>
                                 <motion.div
-                                    v-if="!history.length"
+                                    v-if="!history.length && !requestSubmit"
                                     :initial="{ opacity: 0, y: 8, scale: 0.95 }"
                                     :animate="{
                                         opacity: 1,
