@@ -380,6 +380,9 @@ Next, select a runtime that supports Web Standard Request/Response.
 We have a few recommendations:
 
 <Deck>
+	<Card title="Cloudflare Worker" href="/integrations/cloudflare-worker">
+		Run Elysia on Cloudflare Worker
+    </Card>
     <Card title="Next.js" href="/integrations/nextjs">
    		Elysia as Next.js API routes.
     </Card>
@@ -394,6 +397,9 @@ We have a few recommendations:
     </Card>
 	<Card title="SvelteKit" href="/integrations/sveltekit">
 		Elysia as SvelteKit API routes.
+	</Card>
+	<Card title="Tanstack Start" href="/integrations/tanstack-start">
+		Elysia as Tanstack Start API routes.
 	</Card>
 </Deck>
 

@@ -254,11 +254,13 @@ function toggleAIForCurrentPage() {
                 <div
                     class="flex items-center gap-1.5 px-3 py-2 rounded-xl interact:bg-cyan-400/7.5 interact:dark:bg-cyan-300/10 transition-colors"
                 >
-                    <Sparkles
-                        :size="21"
-                        class="text-sky-400"
-                        stroke-width="1.5"
-                    />
+                    <div class="bg-linear-to-br from-sky-400 to-teal-400 p-1.5 rounded-lg">
+                        <Sparkles
+                            :size="15"
+                            class="text-white fill-white"
+                            stroke-width="0.5"
+                        />
+                    </div>
 
                     Ask Elysia
                     <span
@@ -281,7 +283,9 @@ function toggleAIForCurrentPage() {
                 <div
                     class="flex items-center gap-1.5 px-3 py-2 rounded-xl interact:bg-pink-400/7.5 interact:dark:bg-pink-300/10 transition-colors"
                 >
-                    <Terminal :size="21" class="text-pink-400" />
+                    <div class="bg-linear-to-br from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 p-1.5 rounded-lg">
+                        <Terminal :size="15" class="text-white" />
+                    </div>
 
                     Interactive Tutorial
                 </div>

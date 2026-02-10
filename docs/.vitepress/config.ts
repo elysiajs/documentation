@@ -242,7 +242,7 @@ export default defineConfig({
         sidebar: [
             {
                 text: 'Getting Started',
-                collapsed: true,
+                collapsed: false,
                 items: [
                     {
                         text: 'At Glance',
@@ -264,7 +264,7 @@ export default defineConfig({
             },
             {
                 text: 'Essential',
-                collapsed: true,
+                collapsed: false,
                 items: [
                     {
                         text: 'Route',
@@ -294,7 +294,7 @@ export default defineConfig({
             },
             {
                 text: 'Patterns',
-                collapsed: true,
+                collapsed: false,
                 items: [
                     {
                         text: 'Configuration',
@@ -360,7 +360,7 @@ export default defineConfig({
             },
             {
                 text: 'Eden',
-                collapsed: true,
+                collapsed: false,
                 items: [
                     {
                         text: 'Overview',
@@ -412,7 +412,7 @@ export default defineConfig({
             },
             {
                 text: 'Plugins',
-                collapsed: true,
+                collapsed: false,
                 items: [
                     {
                         text: 'Overview',
@@ -466,7 +466,7 @@ export default defineConfig({
             },
             {
                 text: 'Comparison',
-                collapsed: true,
+                collapsed: false,
                 items: [
                     {
                         text: 'Express',
@@ -488,7 +488,7 @@ export default defineConfig({
             },
             {
                 text: 'Integration',
-                collapsed: true,
+                collapsed: false,
                 items: [
                     {
                         text: 'AI SDK',
@@ -558,7 +558,7 @@ export default defineConfig({
 			},
 			{
                 text: 'Internal',
-                collapsed: true,
+                collapsed: false,
                 items: [
                     {
                         text: 'JIT Compiler',

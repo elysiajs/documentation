@@ -178,23 +178,23 @@ pre.vp-code > code {
 }
 
 @utility rounded-full {
-	corner-shape: round;
+    corner-shape: round;
 }
 
 @supports (corner-shape: squircle) {
-	* {
-		corner-shape: superellipse(1.2);
-	}
+    * {
+        corner-shape: superellipse(1.2);
+    }
 
-	:root {
-		--radius-xs: 0.171875rem;
-		--radius-sm: 0.34375rem;
-		--radius-md: 0.515625rem;
-		--radius-lg: 0.6765rem;
-		--radius-xl: 1.03125rem;
-		--radius-2xl: 1.375rem;
-		--radius-3xl: 2.0625rem;
-	}
+    :root {
+        --radius-xs: 0.171875rem;
+        --radius-sm: 0.34375rem;
+        --radius-md: 0.515625rem;
+        --radius-lg: 0.6765rem;
+        --radius-xl: 1.03125rem;
+        --radius-2xl: 1.375rem;
+        --radius-3xl: 2.0625rem;
+    }
 }
 
 html,
@@ -284,36 +284,131 @@ button.copy::after {
     content: '';
 }
 
-#VPSidebarNav > .group:nth-child(4) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/getting-start.svg);
-}
+#VPSidebarNav > .group {
+    &:nth-child(n + 4) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                @apply z-20 brightness-0 invert-100 mr-3;
 
-#VPSidebarNav > .group:nth-child(5) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/essential.svg);
-}
+                margin-left: calc(var(--spacing) * 1.375);
+            }
 
-#VPSidebarNav > .group:nth-child(6) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/pattern.svg);
-}
+            &::after {
+                @apply absolute z-10 size-6.75 left-0 block bg-linear-to-br p-1.5 rounded-lg opacity-100;
 
-#VPSidebarNav > .group:nth-child(7) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/eden.svg);
-}
+                content: '';
+            }
+        }
 
-#VPSidebarNav > .group:nth-child(8) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/blocks.svg);
-}
+        /*& > .VPSidebarItem::after {
+        	@apply w-full mt-2 translate-y-0.5 bg-gray-200;
 
-#VPSidebarNav > .group:nth-child(9) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/search.svg);
-}
+         	height: 1px;
+        	content: "";
+        }*/
+    }
 
-#VPSidebarNav > .group:nth-child(10) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/cook.svg);
-}
+    /*&:last-child {
+    	& > .VPSidebarItem::after {
+     		@apply hidden;
+     	}
+    }*/
 
-#VPSidebarNav > .group:nth-child(11) > .VPSidebarItem > .item > .text::before {
-    background-image: url(/assets/book.svg);
+    &:nth-child(4) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                background-image: url(/assets/getting-start.svg);
+            }
+
+            &::after {
+                @apply from-green-500 to-cyan-500;
+            }
+        }
+    }
+
+    &:nth-child(5) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                background-image: url(/assets/essential.svg);
+            }
+
+            &::after {
+                @apply from-teal-400 to-blue-400 dark:from-teal-500 dark:to-blue-500;
+            }
+        }
+    }
+
+    &:nth-child(6) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                background-image: url(/assets/pattern.svg);
+            }
+
+            &::after {
+                @apply from-sky-400 to-violet-400 dark:from-sky-500 dark:to-violet-500;
+            }
+        }
+    }
+
+    &:nth-child(7) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                background-image: url(/assets/eden.svg);
+            }
+
+            &::after {
+                @apply from-indigo-400 to-fuchsia-400 dark:from-indigo-500 dark:to-fuchsia-500;
+            }
+        }
+    }
+
+    &:nth-child(8) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                background-image: url(/assets/blocks.svg);
+            }
+
+            &::after {
+                @apply from-purple-400 to-rose-400 dark:from-purple-500 dark:to-rose-500;
+            }
+        }
+    }
+
+    &:nth-child(9) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                background-image: url(/assets/search.svg);
+            }
+
+            &::after {
+                @apply from-pink-400 to-orange-400 dark:from-pink-500 dark:to-orange-500;
+            }
+        }
+    }
+
+    &:nth-child(10) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                background-image: url(/assets/cook.svg);
+            }
+
+            &::after {
+                @apply from-red-400 to-yellow-400 dark:from-red-500 dark:to-yellow-500;
+            }
+        }
+    }
+
+    &:nth-child(11) {
+        & > .VPSidebarItem > .item > .text {
+            &::before {
+                background-image: url(/assets/book.svg);
+            }
+
+            &::after {
+                @apply from-orange-400 to-amber-400 dark:from-orange-500 dark:to-amber-500;
+            }
+        }
+    }
 }
 
 .dark
@@ -410,13 +505,6 @@ button.copy::after {
 
             & > .text {
                 @apply flex items-center text-base font-medium py-1.5;
-
-                &::before {
-                    @apply mr-2.5 opacity-70;
-
-                    --tw-translate-y: calc(var(--spacing) * 0.175);
-                    translate: var(--tw-translate-x) var(--tw-translate-y);
-                }
             }
 
             & > .caret {
@@ -972,14 +1060,14 @@ button.copy::after {
                 @apply z-10 scroll-pt-2;
 
                 &:first-child {
-                	@apply mt-2;
+                    @apply mt-2;
                 }
 
                 & > .result {
                     @apply !rounded-xl py-0.5 border-0;
 
                     &.selected {
-                    	@apply !bg-pink-500/5 dark:!bg-pink-300/5;
+                        @apply !bg-pink-500/5 dark:!bg-pink-300/5;
                     }
                 }
             }
@@ -1090,18 +1178,18 @@ button.copy::after {
 }
 
 #local-search {
-	@apply max-w-xs;
+    @apply max-w-xs;
 
     & > .DocSearch-Button {
         @apply clicky flex items-center max-w-full sm:w-60 h-10 rounded-xl backdrop-blur-sm lg:ml-2 sm:bg-gray-100/75 dark:sm:bg-gray-800/75 sm:border sm:border-gray-200/50 dark:sm:border-gray-700/50;
         color: var(--docsearch-secondary-text-color);
 
         & > .DocSearch-Button-Container {
-        	@apply flex justify-start items-center w-full;
+            @apply flex justify-start items-center w-full;
 
-         	& > svg {
-          		@apply translate-y-0;
-          	}
+            & > svg {
+                @apply translate-y-0;
+            }
 
             & > .DocSearch-Button-Placeholder {
                 @apply pl-2 pr-3 hidden sm:inline;
@@ -1109,7 +1197,7 @@ button.copy::after {
         }
 
         & > .DocSearch-Button-Keys {
-        	@apply py-0.75 hidden sm:inline;
+            @apply py-0.75 hidden sm:inline;
         }
 
         /*@media screen and (min-width: theme('--breakpoint-md')) {
@@ -1320,13 +1408,13 @@ div[class*='language-'] {
 }
 
 .VPNavBar .title {
-	@apply absolute;
+    @apply absolute;
 }
 
 .VPNavBarTitle .title .VPImage.logo {
-	@apply min-w-7 min-h-7;
+    @apply min-w-7 min-h-7;
 }
 
 .VPNavBar .content {
-	@apply lg:pr-8 md:pl-[var(--vp-sidebar-width)];
+    @apply lg:pr-8 md:pl-[var(--vp-sidebar-width)];
 }
