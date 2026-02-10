@@ -17,7 +17,7 @@ import { useTextareaAutosize } from '@vueuse/core'
 const { input: question, textarea } = useTextareaAutosize()
 
 function ask(value?: string) {
-    if (question.value)
+    if (value ?? question.value)
         // @ts-ignore
         window.toggleAI({
             value: value ?? question.value,
