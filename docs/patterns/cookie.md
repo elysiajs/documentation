@@ -228,6 +228,25 @@ new Elysia({
 })
 ```
 
+### Unsigned Cookie Transition
+Elysia support graceful transition from unsigned to signed cookie.
+
+By setting `null` in an array of `cookie.secrets`, Elysia will allows unsigned cookie to passthrough while checking invalid cookie signature when available.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+    cookie: {
+        secrets: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort', null]
+    }
+})
+```
+
+Elysia will then use the first `secrets` to sign the new cookie allowing graceful transition.
+
+It's recommended to only allow unsign cookie during the transition period to prevent unsafe cookie from occuring.
+
 ## Config
 Below is a cookie config accepted by Elysia.
 
