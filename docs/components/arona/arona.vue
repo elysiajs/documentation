@@ -544,7 +544,6 @@ import {
     RefreshCw,
     Copy,
     Check,
-    Loader,
     ThumbsUp,
     ThumbsDown,
     ArrowUp,
@@ -658,11 +657,13 @@ if (typeof window !== 'undefined')
     window.toggleAI = ({
         shouldIncludeCurrentPage,
         value,
-        defaultValue
+        defaultValue,
+        submit
     }: {
         shouldIncludeCurrentPage?: boolean
         value?: string
         defaultValue?: string
+        submit?: boolean
     } = {}) => {
         model.value = !model.value
 
@@ -671,6 +672,8 @@ if (typeof window !== 'undefined')
 
         if (!question.value) question.value = defaultValue || ''
         if (value) question.value = value
+
+        if (submit) ask()
     }
 
 function cancelRequest() {
