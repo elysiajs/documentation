@@ -4,7 +4,7 @@ import { cubicBezier } from 'motion-v'
 const easeOutExpo = cubicBezier(0.16, 1, 0.3, 1)
 
 export function useFlyIn(isInView: Ref<boolean>) {
-    return computed(() => (delay = 0) => ({
+    return computed(() => (delay = 0, duration = 1.6) => ({
         initial: { translateY: '1.75rem', opacity: 0 },
         animate: isInView.value ? 'inView' : 'initial',
         variants: {
@@ -15,7 +15,7 @@ export function useFlyIn(isInView: Ref<boolean>) {
         },
         transition: {
             ease: easeOutExpo,
-            duration: 1.6,
+            duration,
             delay
         }
     }))

@@ -580,14 +580,14 @@ interface History {
     content: string
 }
 
-const questions = ref<string[]>([
+const questions = [
     'What is Eden',
     'Explain lifecycle events',
     'How to add OpenAPI',
     'Can I use Zod with Elysia?',
     'What is OpenAPI type gen',
     'Elysia compare to Hono'
-])
+] as const
 
 const includeCurrentPage = ref(false)
 const thinkHarder = ref(false)
@@ -631,6 +631,8 @@ watch(
                 Pow.request(url)
                     .then((x) => {
                         powToken.value = x
+
+                        if(requestSubmit.value) ask()
                     })
                     .catch(() => {
                         powToken.value = null
@@ -652,6 +654,8 @@ function handleShortcut(event: KeyboardEvent) {
     if (metaKey && event.key === 'Enter') return ask()
 }
 
+let requestSubmit = ref(false)
+
 if (typeof window !== 'undefined')
     // @ts-ignore
     window.toggleAI = ({
@@ -672,6 +676,8 @@ if (typeof window !== 'undefined')
 
         if (!question.value) question.value = defaultValue || ''
         if (value) question.value = value
+
+        requestSubmit.value = true
 
         if (submit) ask()
     }
@@ -844,6 +850,7 @@ async function ask(input?: string, seed?: number) {
     if (isStreaming.value || !token.value || !powToken.value) return
 
     isStreaming.value = true
+    requestSubmit.value = false
 
     if (latest?.role === 'user')
         question.value = question.value.trim() ? question.value : latest.content
@@ -1017,6 +1024,8 @@ function turnstileCallback(turnstileToken: string) {
     if (!turnstileToken) token.value = null
 
     token.value = turnstileToken
+
+    if(requestSubmit.value) ask()
 }
 
 if (typeof window !== 'undefined')
