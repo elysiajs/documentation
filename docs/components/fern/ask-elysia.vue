@@ -48,7 +48,7 @@ const questions = [
         ref="scope"
     >
         <motion.section
-            class="group relative isolate flex flex-col justify-center items-center gap-10 w-full max-w-7xl aspect-video h-full p-8 md:py-16 border border-gray-200 dark:border-gray-800 lg:rounded-[2.5rem] overflow-hidden rounded-2xl"
+            class="group relative isolate flex flex-col justify-center items-center gap-10 w-full max-w-7xl px-5 py-24 md:aspect-video h-full border border-gray-200 dark:border-gray-800 lg:rounded-[2.5rem] overflow-hidden rounded-2xl"
             id="ask-elysia-landing"
             v-bind="flyIn()"
         >
@@ -87,7 +87,7 @@ const questions = [
                     v-for="(example, index) in questions"
                     :key="index"
                     @click="ask(example)"
-                    class="clicky text-sm px-3 py-1 rounded-full text-gray-600 dark:text-gray-200 resize-none bg-gray-50/50 dark:bg-gray-700/50 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors border border-gray-200/65 dark:border-gray-700"
+                    class="clicky text-xs sm:text-sm px-3 py-1 rounded-full text-gray-600 dark:text-gray-200 resize-none bg-gray-50/50 dark:bg-gray-700/50 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors border border-gray-200/65 dark:border-gray-700"
                     v-text="example"
                     v-bind="flyIn(0.3 + 0.05 * index, 1)"
                 />
