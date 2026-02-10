@@ -17,11 +17,12 @@ import { useTextareaAutosize } from '@vueuse/core'
 const { input: question, textarea } = useTextareaAutosize()
 
 function askAI() {
-    // @ts-ignore
-    window.toggleAI({
-    	value: question.value,
-     	submit: true
-    })
+    if (question.value)
+        // @ts-ignore
+        window.toggleAI({
+            value: question.value,
+            submit: true
+        })
 }
 
 function handleShortcut(event: KeyboardEvent) {
@@ -48,7 +49,7 @@ function handleShortcut(event: KeyboardEvent) {
                 <Sparkle :size="32" stroke-width="1.25" class="text-cyan-400" />
             </div>
             <form
-            	@submit.prevent="askAI"
+                @submit.prevent="askAI"
                 class="flex items-end w-full max-w-xl text-gray-600 dark:text-gray-200 resize-none py-2 pr-2 bg-gray-50/50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-3xl shadow-xl shadow-black/2.5"
             >
                 <textarea
