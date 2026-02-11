@@ -698,9 +698,10 @@ if (typeof window !== 'undefined')
         if (!question.value) question.value = defaultValue || ''
         if (value) question.value = value
 
-        requestSubmit.value = true
-
-        if (submit) ask()
+        if (submit) {
+            requestSubmit.value = true
+            ask()
+        }
     }
 
 function cancelRequest() {
