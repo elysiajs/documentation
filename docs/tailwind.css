@@ -1174,7 +1174,7 @@ button.copy::after {
 }
 
 @utility clicky {
-    @apply hover:scale-[1.03] focus:scale-[1.03] active:scale-[0.98] !transition-all;
+    @apply hover:scale-[1.03] focus:scale-[1.03] active:scale-[0.98] transition-all!;
 }
 
 #local-search {

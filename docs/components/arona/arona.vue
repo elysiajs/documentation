@@ -204,6 +204,19 @@
                                 </motion.div>
                             </AnimatePresence>
 
+                            <motion.p
+                                v-if="requestSubmit"
+                                class="user"
+                                :initial="{ opacity: 0, y: 8, scale: 0.7 }"
+                                :animate="{ opacity: 1, y: 0, scale: 1 }"
+                                :transition="{
+                                    duration: 0.65,
+                                    ease: easeOutExpo
+                                }"
+                            >
+                                {{ question }}
+                            </motion.p>
+
                             <template
                                 v-for="(
                                     { id, role, content }, index
@@ -407,6 +420,7 @@
                             @submit.prevent="ask()"
                         >
                             <textarea
+                                v-if="!requestSubmit"
                                 id="elysia-chan-question"
                                 ref="textarea"
                                 v-model="question"
@@ -414,6 +428,16 @@
                                 class="w-full h-inherit px-4 pt-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                 autofocus
                                 @keydown="handleShortcut"
+                                data-gramm="false"
+                            />
+                            <textarea
+                                v-else
+                                id="elysia-chan-question"
+                                ref="textarea"
+                                disabled
+                                value=""
+                                placeholder="What's on your mind"
+                                class="w-full h-inherit px-4 pt-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                 data-gramm="false"
                             />
                             <div
@@ -632,7 +656,7 @@ watch(
                     .then((x) => {
                         powToken.value = x
 
-                        if(requestSubmit.value) ask()
+                        if (requestSubmit.value) ask()
                     })
                     .catch(() => {
                         powToken.value = null
@@ -1025,7 +1049,7 @@ function turnstileCallback(turnstileToken: string) {
 
     token.value = turnstileToken
 
-    if(requestSubmit.value) ask()
+    if (requestSubmit.value) ask()
 }
 
 if (typeof window !== 'undefined')
