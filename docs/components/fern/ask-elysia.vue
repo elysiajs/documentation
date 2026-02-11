@@ -18,16 +18,22 @@ import { useTextareaAutosize } from '@vueuse/core'
 const { input: question, textarea } = useTextareaAutosize()
 
 function ask(value?: string) {
-    if (value ?? question.value)
+    if (value ?? question.value) {
         // @ts-ignore
         window.toggleAI({
             value: value ?? question.value,
             submit: true
         })
+
+        question.value = ''
+    }
 }
 
 function handleShortcut(event: KeyboardEvent) {
-    if (event.shiftKey && event.key === 'Enter') return ask()
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault()
+        return ask()
+    }
 }
 
 const questions = [
