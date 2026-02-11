@@ -673,9 +673,7 @@ const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
 const easeOutExpo = [0.16, 1, 0.3, 1] as const
 
 function handleShortcut(event: KeyboardEvent) {
-    const metaKey = event.ctrlKey || event.metaKey
-
-    if (metaKey && event.key === 'Enter') return ask()
+    if (event.shiftKey && event.key === 'Enter') return ask()
 }
 
 let requestSubmit = ref(false)

@@ -27,9 +27,7 @@ function ask(value?: string) {
 }
 
 function handleShortcut(event: KeyboardEvent) {
-    const metaKey = event.ctrlKey || event.metaKey
-
-    if (metaKey && event.key === 'Enter') return ask()
+    if (event.shiftKey && event.key === 'Enter') return ask()
 }
 
 const questions = [
