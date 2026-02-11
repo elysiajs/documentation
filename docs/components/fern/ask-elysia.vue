@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { Send, Sparkle } from 'lucide-vue-next'
 
 import { useInView, motion } from 'motion-v'
-import { useFlyIn } from './animate'
+import { useFlyIn, useFadeIn } from './animate'
 
 const scope = ref(null)
 const isInView = useInView(scope, {
@@ -11,6 +11,7 @@ const isInView = useInView(scope, {
     margin: '0px 0px -35% 0px'
 })
 const flyIn = useFlyIn(isInView)
+const fadeIn = useFadeIn(isInView)
 
 import { useTextareaAutosize } from '@vueuse/core'
 
@@ -83,14 +84,17 @@ const questions = [
                 </button>
             </motion.form>
             <div class="flex flex-wrap justify-center gap-1.5 max-w-xl px-2">
-                <motion.button
+                <motion.div
                     v-for="(example, index) in questions"
-                    :key="index"
-                    @click="ask(example)"
-                    class="clicky text-xs sm:text-sm px-3 py-1 rounded-full text-gray-600 dark:text-gray-200 resize-none bg-gray-50/50 dark:bg-gray-700/50 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors border border-gray-200/65 dark:border-gray-700"
-                    v-text="example"
-                    v-bind="flyIn(0.3 + 0.05 * index, 1)"
-                />
+                    v-bind="fadeIn(0.3 + 0.05 * index)"
+                >
+                    <button
+                        :key="index"
+                        @click="ask(example)"
+                        class="clicky text-xs sm:text-sm px-3 py-1 rounded-full text-gray-600 dark:text-gray-200 resize-none bg-gray-50/50 dark:bg-gray-700/50 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-all border border-gray-200/65 dark:border-gray-700"
+                        v-text="example"
+                    />
+                </motion.div>
             </div>
         </motion.section>
     </div>
