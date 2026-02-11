@@ -204,23 +204,19 @@
                                 </motion.div>
                             </AnimatePresence>
 
-                            <motion.p
-                                v-if="requestSubmit"
-                                class="user"
-                                :initial="{ opacity: 0, y: 8, scale: 0.7 }"
-                                :animate="{ opacity: 1, y: 0, scale: 1 }"
-                                :transition="{
-                                    duration: 0.65,
-                                    ease: easeOutExpo
-                                }"
-                            >
-                                {{ question }}
-                            </motion.p>
-
                             <template
                                 v-for="(
                                     { id, role, content }, index
-                                ) in history"
+                                ) in requestSubmit
+                                    ? [
+                                          {
+                                              id: '',
+                                              role: 'user',
+                                              content: question
+                                          },
+                                          ...history
+                                      ]
+                                    : history"
                                 :key="index"
                             >
                                 <motion.p
