@@ -259,7 +259,11 @@ export default defineConfig({
                     {
                         text: 'Key Concept',
                         link: '/key-concept'
-                    }
+                  },
+                  {
+                        text: 'Cheat Sheet',
+                        link: '/cheat-sheet'
+                  }
                 ]
             },
             {
