@@ -692,6 +692,8 @@ if (typeof window !== 'undefined')
     } = {}) => {
         model.value = !model.value
 
+        if(requestSubmit.value) return
+
         if (shouldIncludeCurrentPage !== undefined)
             includeCurrentPage.value = shouldIncludeCurrentPage
 
@@ -1034,13 +1036,11 @@ function reRouteLink(link: HTMLAnchorElement) {
     const src = link.href.slice(link.href.indexOf('/', 11))
 
     link.addEventListener('click', (e) => {
-	    if(link.href.startsWith('https://elysiajs.com')) {
-	        e.preventDefault()
+        e.preventDefault()
 
-	        router.go(src)
-	        _isExpanded.value = false
-	        if (size.width.value < 640) model.value = false
-	    }
+        router.go(src)
+        _isExpanded.value = false
+        if (size.width.value < 640) model.value = false
     })
 }
 
