@@ -248,11 +248,11 @@ function toggleAIForCurrentPage() {
         <template #sidebar-nav-before>
             <button
                 href="/tutorial/"
-                class="clicky font-semibold text-gradient from-25% to-65% from-sky-400 to-teal-400 -translate-x-3"
+                class="clicky font-semibold text-gradient from-25% to-65% from-sky-400 to-teal-400 -mx-3"
                 @click="toggleAIDesktop"
             >
                 <div
-                    class="flex items-center gap-1.5 px-3 py-2 rounded-xl interact:bg-cyan-400/7.5 interact:dark:bg-cyan-300/10 transition-colors"
+                    class="flex items-center gap-2 px-3 py-2 rounded-xl interact:bg-cyan-400/7.5 interact:dark:bg-cyan-300/10 transition-colors"
                 >
                     <div class="bg-linear-to-br from-sky-400 to-teal-400 p-1.5 rounded-lg">
                         <Sparkles
@@ -278,10 +278,10 @@ function toggleAIForCurrentPage() {
 
             <a
                 href="/tutorial/"
-                class="clicky font-semibold text-gradient from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 -translate-x-3"
+                class="clicky font-semibold text-gradient from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 -mx-3"
             >
                 <div
-                    class="flex items-center gap-1.5 px-3 py-2 rounded-xl interact:bg-pink-400/7.5 interact:dark:bg-pink-300/10 transition-colors"
+                    class="flex items-center gap-2 px-3 py-2 rounded-xl interact:bg-pink-400/7.5 interact:dark:bg-pink-300/10 transition-colors"
                 >
                     <div class="bg-linear-to-br from-fuchsia-400 to-orange-400 dark:from-fuchsia-500 dark:to-orange-500 p-1.5 rounded-lg">
                         <Terminal :size="15" class="text-white" />

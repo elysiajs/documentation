@@ -288,7 +288,7 @@ button.copy::after {
     &:nth-child(n + 4) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                @apply z-20 brightness-0 invert-100 mr-3;
+                @apply z-20 brightness-0 invert-100 mr-3.5;
 
                 margin-left: calc(var(--spacing) * 1.375);
             }
@@ -495,7 +495,7 @@ button.copy::after {
 }
 
 #VPSidebarNav > .group {
-    @apply border-t-0 min-h-11 pt-2.25;
+    @apply border-t-0 min-h-11 pt-1;
 
     & > .VPSidebarItem {
         @apply pb-1;
