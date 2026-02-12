@@ -1034,7 +1034,7 @@ function reRouteLink(link: HTMLAnchorElement) {
     const src = link.href.slice(link.href.indexOf('/', 11))
 
     link.addEventListener('click', (e) => {
-	    if(src.startsWith('https://elysiajs.com')) {
+	    if(link.href.startsWith('https://elysiajs.com')) {
 	        e.preventDefault()
 
 	        router.go(src)
