@@ -702,6 +702,7 @@ if (typeof window !== 'undefined')
         if (value) question.value = value
 
         if (submit) {
+            history.value = []
             requestSubmit.value = true
             ask()
         }
