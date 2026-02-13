@@ -1000,15 +1000,15 @@ async function ask(input?: string, seed?: number) {
         history.value[index].content += text
     }
 
-    const getId = /- id:([A-Z|0-9]+)$/g
-    const id = getId.exec(history.value[index].content)
-    if (id) {
-        history.value[index].id = id[1]
-        history.value[index].content = history.value[index].content.replace(
-            getId,
-            ''
-        )
-    }
+    // const getId = /- id:([A-Z|0-9]+)$/g
+    // const id = getId.exec(history.value[index].content)
+    // if (id) {
+    //     history.value[index].id = id[1]
+    //     history.value[index].content = history.value[index].content.replace(
+    //         getId,
+    //         ''
+    //     )
+    // }
 
     // Convert 【text】 to [text](text)
     history.value[index].content = history.value[index].content.replace(
