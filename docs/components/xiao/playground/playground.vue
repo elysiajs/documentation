@@ -1,6 +1,9 @@
 <template>
     <ElysiaChan />
-    <Arona />
+
+    <ClientOnly>
+        <Arona />
+    </ClientOnly>
 
     <div
         class="flex flex-col sm:flex-row gap-0.5 w-full h-dvh py-1.5 bg-gray-50 dark:bg-gray-950 pr-0.5"
@@ -95,14 +98,13 @@ const EditorLayout = defineAsyncComponent(
     () => import('./components/editor-layout/editor-layout.vue')
 )
 const Editor = defineAsyncComponent(() => import('./components/editor.vue'))
-const Arona = defineAsyncComponent(
-    () => import('../../arona/arona.vue')
-)
+const Arona = defineAsyncComponent(() => import('../../arona/arona.vue'))
 
 const size = useWindowSize()
 
 import type { VirtualFS } from './utils'
 import type { Testcases } from './types'
+import ClientOnly from './components/client-only.vue'
 
 const props = defineProps<{
     code?: string | VirtualFS
