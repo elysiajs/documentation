@@ -390,8 +390,9 @@
 
                             <Typing
                                 v-if="
-                                    isStreaming &&
-                                    history.at(-1)?.role !== 'assistant'
+                                    requestSubmit ||
+                                    (isStreaming &&
+                                        history.at(-1)?.role !== 'assistant')
                                 "
                             />
                         </article>
@@ -692,7 +693,7 @@ if (typeof window !== 'undefined')
     } = {}) => {
         model.value = !model.value
 
-        if(requestSubmit.value) return
+        if (requestSubmit.value) return
 
         if (shouldIncludeCurrentPage !== undefined)
             includeCurrentPage.value = shouldIncludeCurrentPage
