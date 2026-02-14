@@ -65,6 +65,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Logysia](https://github.com/tristanisham/logysia) - classic logging middleware
 -   [Logestic](https://github.com/cybercoder-naj/logestic) - an advanced and customisable logging library for ElysiaJS
 -   [Logger](https://github.com/bogeychan/elysia-logger) - [pino](https://github.com/pinojs/pino)-based logging middleware
+-   [LogLayer](https://loglayer.dev/integrations/elysia.html) - integrates [LogLayer](https://loglayer.dev), which is a logging abstraction that supports popular logging libraries and cloud services
 -   [Elysia Line](https://github.com/KrataiB/elysia-line) - LINE Messaging API and LINE Login integration for Elysia (wrapper around the official [@line/bot-sdk](https://github.com/line/line-bot-sdk-nodejs))
 -   [Elylog](https://github.com/eajr/elylog) - simple stdout logging library with some customization
 -   [Logify for Elysia.js](https://github.com/0xrasla/logify) - a beautiful, fast, and type-safe logging middleware for Elysia.js applications
