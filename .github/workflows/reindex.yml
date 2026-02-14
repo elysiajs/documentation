@@ -13,9 +13,9 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: send webhook
+            - name: Send webhook
               env:
                 URL: ${{ secrets.REINDEX_URL }}
                 SECRET: ${{ secrets.REINDEX_SECRET }}
               run: |
-                curl -X POST "$URL" -H "reindex_secret: $SECRET"
+                curl -X PATCH "$URL" -H "reindex_secret: $SECRET"
