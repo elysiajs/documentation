@@ -1,4 +1,4 @@
-name: Build and Test
+name: Reindex Arona
 
 on:
     push:
@@ -13,7 +13,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Reindex Arona
+            - name: send webhook
               env:
                 URL: ${{ secrets.REINDEX_URL }}
                 SECRET: ${{ secrets.REINDEX_SECRET }}
