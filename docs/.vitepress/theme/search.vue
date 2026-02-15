@@ -359,7 +359,7 @@ onKeyStroke('Enter', (e) => {
 
     if (index === -1) {
         // @ts-ignore
-        window.toggleAI({ value: filterText.value, requestSubmit: true })
+        window.toggleAI({ value: filterText.value, submit: true })
 
         filterText.value = ''
 		showSearch.value = false
