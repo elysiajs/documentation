@@ -39,7 +39,14 @@ import Ray from '../../components/fern/ray.vue'
 import { LRUCache } from './search/lru-cache'
 import { useData } from './search/use-data'
 import { createSearchTranslate } from './search/translation'
-import { ArrowRight, TextAlignStart, Delete, File, Hash, Sparkles } from 'lucide-vue-next'
+import {
+    ArrowRight,
+    TextAlignStart,
+    Delete,
+    File,
+    Hash,
+    Sparkles
+} from 'lucide-vue-next'
 
 export interface FooterTranslations {
     selectText?: string
@@ -352,8 +359,11 @@ onKeyStroke('Enter', (e) => {
 
     if (index === -1) {
         // @ts-ignore
-        window.toggleAI({ value: filterText.value })
-        showSearch.value = false
+        window.toggleAI({ value: filterText.value, requestSubmit: true })
+
+        filterText.value = ''
+		showSearch.value = false
+
         return
     }
 
@@ -581,7 +591,10 @@ function toggleAI() {
                                     (showDetailedList = !showDetailedList)
                                 "
                             >
-                            	<TextAlignStart :size="19" stroke-width="1.25" />
+                                <TextAlignStart
+                                    :size="19"
+                                    stroke-width="1.25"
+                                />
                             </button>
 
                             <button
@@ -827,18 +840,18 @@ function toggleAI() {
                                                 class="excerpt"
                                                 inert
                                                 :initial="{
-													height: 0
-												}"
-												:animate="{
-													height: '84px'
-												}"
-												:exit="{
-													height: 0
-												}"
-												:transition="{
-													duration: 0.4,
-													ease: [0.16, 1, 0.3, 1]
-												}"
+                                                    height: 0
+                                                }"
+                                                :animate="{
+                                                    height: '84px'
+                                                }"
+                                                :exit="{
+                                                    height: 0
+                                                }"
+                                                :transition="{
+                                                    duration: 0.4,
+                                                    ease: [0.16, 1, 0.3, 1]
+                                                }"
                                             >
                                                 <div
                                                     class="vp-doc"
