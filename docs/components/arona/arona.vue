@@ -599,6 +599,7 @@ interface History {
     id?: string
     role: 'user' | 'assistant'
     content: string
+    checksum: string
 }
 
 const questions = [
@@ -916,11 +917,11 @@ async function ask(input?: string, seed?: number) {
                         .slice(-9)
                         .slice(0, -1)
                         .map(({ id, ...x }) =>
-                            x.content.length < 4096
+                            x.content.length < 1536
                                 ? x
                                 : {
                                       ...x,
-                                      content: x.content.slice(-4096)
+                                      content: x.content.slice(-1536)
                                   }
                         )
                 },
@@ -1001,15 +1002,23 @@ async function ask(input?: string, seed?: number) {
         history.value[index].content += text
     }
 
-    // const getId = /- id:([A-Z|0-9]+)$/g
-    // const id = getId.exec(history.value[index].content)
-    // if (id) {
-    //     history.value[index].id = id[1]
-    //     history.value[index].content = history.value[index].content.replace(
-    //         getId,
-    //         ''
-    //     )
-    // }
+    const separator = '---Elysia-Metadata---'
+    const separatorIndex = history.value[index].content.indexOf(separator)
+    if (separatorIndex !== -1) {
+        history.value[index].content = history.value[index].content
+            .slice(0, separatorIndex)
+            .trimEnd()
+
+        const metadata = history.value[index].content
+            .slice(separatorIndex + separator.length)
+            .trimStart()
+
+        const id = /id:(\w+)/g.exec(metadata)?.[1]?.trim()
+        if (id) history.value[index].id = id
+
+        const checksum = /checksum:(\w+)/g.exec(metadata)?.[1]?.trim()
+        if (checksum) history.value[index].checksum = checksum
+    }
 
     // Convert 【text】 to [text](text)
     history.value[index].content = history.value[index].content.replace(
