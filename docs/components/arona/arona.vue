@@ -884,7 +884,8 @@ async function ask(input?: string, seed?: number) {
     else
         history.value.push({
             role: 'user',
-            content: question.value
+            content: question.value,
+            checksum: ''
         })
 
     const message = question.value
@@ -912,7 +913,10 @@ async function ask(input?: string, seed?: number) {
                     pow: {
                         suffix: powToken.value
                     },
-                    message,
+                    message:
+                        message.length > 4096
+                            ? message.slice(0, 4096)
+                            : message,
                     history: history.value
                         .slice(-9)
                         .slice(0, -1)
@@ -921,7 +925,7 @@ async function ask(input?: string, seed?: number) {
                                 ? x
                                 : {
                                       ...x,
-                                      content: x.content.slice(-1536)
+                                      content: x.content.slice(0, 1536)
                                   }
                         )
                 },
@@ -971,7 +975,8 @@ async function ask(input?: string, seed?: number) {
     const index = history.value.length
     history.value.push({
         role: 'assistant',
-        content: ''
+        content: '',
+        checksum: ''
     })
 
     const decoder = new TextDecoder()
