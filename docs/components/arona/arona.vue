@@ -923,14 +923,7 @@ async function ask(input?: string, seed?: number) {
                     history: history.value
                         .slice(-9)
                         .slice(0, -1)
-                        .map(({ id, ...x }) =>
-                            x.content.length < 1536
-                                ? x
-                                : {
-                                      ...x,
-                                      content: x.content.slice(0, 1536)
-                                  }
-                        )
+                        .map(({ id, ...x }) => x)
                 },
                 thinkHarder.value ? { think: true } : {},
                 seed !== undefined ? { seed } : {},
