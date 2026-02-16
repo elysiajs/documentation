@@ -86,13 +86,13 @@
                         >
                             <button
                                 class="clicky flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300 ease-out-expo"
-                                @click="history = []"
+                                @click="startNewChat"
                                 :class="{
                                     '!w-0 pointer-events-none mr-0':
                                         isStreaming || !history.length
                                 }"
                                 :disabled="isStreaming || !history.length"
-                                title="Clear chat history"
+                                title="Start new chat"
                             >
                                 <RotateCcw stroke-width="1.25" />
                             </button>
@@ -723,6 +723,13 @@ function cancelRequest() {
     feedback.value = null
 }
 
+function startNewChat() {
+	cancelRequest()
+	history.value = []
+	error.value = undefined
+	includeCurrentPage.value = false
+}
+
 watch(
     () => isExpanded.value,
     (isExpanded) => {
@@ -897,11 +904,13 @@ async function ask(input?: string, seed?: number) {
     controller = new AbortController()
 
     error.value = undefined
+    includeCurrentPage.value = false
 
     requestAnimationFrame(() => {
         const box = chatbox.value
         if (box) box.scrollTo(0, box.scrollHeight)
     })
+
 
     const response = await fetch(`${url}/ask`, {
         method: 'POST',
