@@ -982,6 +982,8 @@ async function ask(input?: string, seed?: number) {
     const decoder = new TextDecoder()
     const reader = response.body.getReader()
 
+    let content =
+
     let scroll = false
     while (true) {
         const { done, value } = await reader.read()
@@ -1004,19 +1006,17 @@ async function ask(input?: string, seed?: number) {
         }
 
         const text = decoder.decode(value)
-        history.value[index].content += text
+        content = history.value[index].content += text
     }
 
-    const separator = '---Elysia-Metadata---'
-    const separatorIndex = history.value[index].content.indexOf(separator)
+    const separator = '\n---Elysia-Metadata---\n'
+    const separatorIndex = content.indexOf(separator)
     if (separatorIndex !== -1) {
-        history.value[index].content = history.value[index].content
+        history.value[index].content = content
             .slice(0, separatorIndex)
-            .trimEnd()
 
-        const metadata = history.value[index].content
+        const metadata = content
             .slice(separatorIndex + separator.length)
-            .trimStart()
 
         const id = /id:(\w+)/g.exec(metadata)?.[1]?.trim()
         if (id) history.value[index].id = id
@@ -1026,7 +1026,7 @@ async function ask(input?: string, seed?: number) {
     }
 
     // Convert 【text】 to [text](text)
-    history.value[index].content = history.value[index].content.replace(
+    history.value[index].content = content.replace(
         /【([^】]+)】/g,
         '[$1]($1)'
     )
