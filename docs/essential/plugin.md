@@ -162,7 +162,7 @@ The plugin will inherit all properties of the plugin instance like `state`, `dec
 Elysia will also handle the type inference automatically as well.
 
 ::: tip
-It's highly recommended that you have read [Key Concept: Dependency](/key-concept.html#dependency) before continuing.
+It's highly recommended that you have read [Key Concept: Dependency](/key-concepts.html#dependency) before continuing.
 :::
 
 
@@ -218,12 +218,12 @@ This approach force you to be explicit about dependencies allowing better tracki
 
 By default, each plugin will be re-executed **every time** applying to another instance.
 
-To prevent this, Elysia can deduplicate [lifecycle](/essential/life-cycle) with **an unique identifier** using `name` and optional `seed` property.
+To prevent this, Elysia can deduplicate [lifecycle](/essential/life-cycle) with **a unique identifier** using `name` and an optional `seed` property.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
 
-// `name` is an unique identifier
+// `name` is a unique identifier
 const ip = new Elysia({ name: 'ip' }) // [!code ++]
 	.derive(
 		{ as: 'global' },

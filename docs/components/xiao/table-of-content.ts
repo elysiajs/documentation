@@ -108,8 +108,8 @@ export const tableOfContents: TableOfContentGroup[] = [
                 href: '/tutorial/whats-next'
             },
             {
-            	title: 'Documentation',
-				href: '/table-of-content'
+                title: 'Documentation',
+                href: '/table-of-contents'
             }
         ]
     }

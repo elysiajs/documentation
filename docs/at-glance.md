@@ -1,9 +1,9 @@
 ---
-title: At glance - ElysiaJS
+title: At a glance - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: At glance - ElysiaJS
+        content: At a glance - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -299,7 +299,7 @@ With Eden, you can use the existing Elysia types to query an Elysia server **wit
 Elysia is not only about helping you create a confident backend but for all that is beautiful in this world.
 
 ## Type Soundness
-Most frameworks with end-to-end type safety usually assume only a happy part, leaving error handling and edge cases out of the type system.
+Most frameworks with end-to-end type safety usually assume only a happy path, leaving error handling and edge cases out of the type system.
 
 However, Elysia can infers all of the possible outcomes of your API, from lifecycle events/macro from any part of your codebase.
 
@@ -439,7 +439,7 @@ Elysia is **used in production by many companies and projects worldwide**, inclu
 
 Elysia is a reliable choice and production ready for building your next backend server.
 
-Here's on of our community resources to get you started:
+Here are some of our community resources to get you started:
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">

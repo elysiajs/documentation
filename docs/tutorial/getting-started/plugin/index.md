@@ -66,7 +66,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-It's also recommended that you should also read about [Key Concept: Dependency](/key-concept#dependency) to understand how Elysia handles dependencies between plugins.
+It's recommended that you should also read about [Key Concept: Dependency](/key-concepts#dependency) to understand how Elysia handles dependencies between plugins.
 
 ## Assignment
 
