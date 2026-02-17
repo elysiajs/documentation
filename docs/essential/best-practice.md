@@ -153,7 +153,7 @@ Due to type soundness of Elysia, it's not recommended to use a traditional contr
 2. **Hard to type**, Elysia type could change at anytime, especially with decorators, and store
 3. **Loss of type integrity**, and inconsistency between types and runtime code.
 
-We recommended one of the following approach to implement a controller in Elysia.
+We recommended one of the following approaches to implement a controller in Elysia.
 1. Use Elysia instance as a controller itself
 2. Create a controller that is not tied with HTTP request or Elysia.
 
@@ -545,7 +545,7 @@ const UserController = new Elysia({ prefix: '/auth' })
     })
 ```
 
-This approach provide several benefits:
+This approach provides several benefits:
 1. Allow us to name a model and provide auto-completion.
 2. Modify schema for later usage, or perform a [remap](/essential/handler.html#remap).
 3. Show up as "models" in OpenAPI compliance client, eg. OpenAPI.
