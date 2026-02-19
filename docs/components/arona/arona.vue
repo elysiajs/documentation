@@ -606,7 +606,7 @@ interface History {
 
 const questions = [
     'What is Eden',
-    'Explain lifecycle events',
+    'Elysia with Node.js',
     'How to add OpenAPI',
     'Can I use Zod with Elysia?',
     'What is OpenAPI type gen',
