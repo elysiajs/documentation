@@ -563,7 +563,6 @@ import {
     Maximize2,
     Minimize2,
     RotateCcw,
-    File,
     Book,
     RefreshCw,
     Copy,
@@ -688,14 +687,21 @@ if (typeof window !== 'undefined')
         shouldIncludeCurrentPage,
         value,
         defaultValue,
-        submit
+        submit,
+        clearHistory
     }: {
         shouldIncludeCurrentPage?: boolean
         value?: string
         defaultValue?: string
         submit?: boolean
+        clearHistory?: boolean
     } = {}) => {
         model.value = !model.value
+
+        if (clearHistory) {
+            history.value = []
+            includeCurrentPage.value = false
+        }
 
         if (requestSubmit.value) return
 
@@ -724,10 +730,10 @@ function cancelRequest() {
 }
 
 function startNewChat() {
-	cancelRequest()
-	history.value = []
-	error.value = undefined
-	includeCurrentPage.value = false
+    cancelRequest()
+    history.value = []
+    error.value = undefined
+    includeCurrentPage.value = false
 }
 
 watch(
@@ -910,7 +916,6 @@ async function ask(input?: string, seed?: number) {
         const box = chatbox.value
         if (box) box.scrollTo(0, box.scrollHeight)
     })
-
 
     const response = await fetch(`${url}/ask`, {
         method: 'POST',
