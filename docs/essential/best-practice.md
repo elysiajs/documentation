@@ -26,10 +26,6 @@ However, there are several concerns when trying to adapt an MVC pattern [(Model-
 
 This page is a guide on how to follow Elysia structure best practices combined with the MVC pattern, but it can be adapted to any coding pattern you prefer.
 
-::: tip
-Check out [key concept](/key-concept) to understand core concept of Elysia before reading this page
-:::
-
 <AronaBanner />
 
 ## Folder Structure
