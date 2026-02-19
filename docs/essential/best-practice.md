@@ -58,8 +58,50 @@ Here's an example code of how to distribute your code into a feature-based folde
 
 ::: code-group
 
-```typescript [auth/index.ts]
-// Controller handle HTTP related eg. routing, request validation
+```typescript [auth/index.ts] twoslash
+// @filename: model.ts
+import { t, type UnwrapSchema } from 'elysia'
+
+export const AuthModel = {
+	signInBody: t.Object({
+		username: t.String(),
+		password: t.String(),
+	}),
+	signInResponse: t.Object({
+		username: t.String(),
+		token: t.String(),
+	}),
+	signInInvalid: t.Literal('Invalid username or password')
+} as const
+
+// Optional, cast all model to TypeScript type
+export type AuthModel = {
+	[k in keyof typeof AuthModel]: UnwrapSchema<typeof AuthModel[k]>
+}
+
+// @filename: service.ts
+import { status } from 'elysia'
+import type { AuthModel } from './model'
+
+export abstract class Auth {
+	static async signIn({ username, password }: AuthModel['signInBody']) {
+		if (Math.random() > 0.5)
+			throw status(
+				400,
+				'Invalid username or password' satisfies AuthModel['signInInvalid']
+			)
+
+		return {
+			username: 'saltyaom',
+			token: 'token'
+		}
+	}	
+}
+
+// @filename: index.ts
+// ---cut---
+// Controller (HTTP adapter) eg. routing, request validation
+// You can define another Controller that is not tied with Elysia
 import { Elysia } from 'elysia'
 
 import { Auth } from './service'
@@ -118,7 +160,7 @@ export abstract class Auth {
 }
 ```
 
-```typescript [auth/model.ts]
+```typescript [auth/model.ts] twoslash
 // Model define the data structure and validation for the request and response
 import { t, type UnwrapSchema } from 'elysia'
 
@@ -136,7 +178,7 @@ const AuthModel = {
 
 // Optional, cast all model to TypeScript type
 export type AuthModel = {
-	[k in keyof typeof AuthModel]: UnwrapSchema<AuthModel[k]>
+	[k in keyof typeof AuthModel]: UnwrapSchema<typeof AuthModel[k]>
 }
 ```
 
@@ -423,21 +465,34 @@ Elysia strength is prioritizing a single source of truth for both type and runti
 Instead of declaring an interface, reuse validation's model instead:
 ```typescript twoslash
 // ✅ Do
-import { Elysia, t } from 'elysia'
+import { Elysia, t, type UnwrapSchema } from 'elysia'
 
-const customBody = t.Object({
-	username: t.String(),
-	password: t.String()
-})
+export const models = {
+	customBody: t.Object({
+		username: t.String(),
+		password: t.String()
+	})
+}
 
 // Optional if you want to get the type of the model
-// Usually if we didn't use the type, as it's already inferred by Elysia
-type CustomBody = typeof customBody.static
-    // ^?
+type CustomBody = UnwrapSchema<typeof models.customBody>
+//    ^?
 
 
 
-export { customBody }
+
+
+
+// Or make the entire object as type
+type Models = {
+	[k in keyof typeof models]: UnwrapSchema<typeof models[k]>
+}
+
+// ❌ Don't: declare model and type separately
+interface ICustomBody {
+	username: string
+	password: string
+}
 ```
 
 We can get type of model by using `typeof` with `.static` property from the model.
@@ -447,10 +502,12 @@ Then you can use the `CustomBody` type to infer the type of the request body.
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
 
-const customBody = t.Object({
-	username: t.String(),
-	password: t.String()
-})
+const models = {
+	customBody: t.Object({
+		username: t.String(),
+		password: t.String()
+	})	
+}
 // ---cut---
 // ✅ Do
 new Elysia()
@@ -458,7 +515,7 @@ new Elysia()
 	                 // ^?
 		return body
 	}, {
-		body: customBody
+		body: models.customBody
 	})
 ```
 
@@ -482,32 +539,6 @@ interface ICustomBody {
 	username: string
 	password: string
 }
-```
-
-### ❌ Don't: Declare type separate from the model
-Do not declare a type separate from the model, instead use `typeof` with `.static` property to get the type of the model.
-
-```typescript
-// ❌ Don't
-import { Elysia, t } from 'elysia'
-
-const customBody = t.Object({
-	username: t.String(),
-	password: t.String()
-})
-
-type CustomBody = {
-	username: string
-	password: string
-}
-
-// ✅ Do
-const customBody = t.Object({
-	username: t.String(),
-	password: t.String()
-})
-
-type CustomBody = typeof customBody.static
 ```
 
 ### Group
