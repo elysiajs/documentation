@@ -37,6 +37,14 @@ new Elysia()
 
 By default, Reactive Cookie can encode/decode object types automatically allowing us to treat cookies as objects without worrying about the encoding/decoding. **It just works**.
 
+::: warning
+You may get warning when using cookie.name might be `undefined`
+
+Elysia cookie can never be `undefined` because it's a Proxy object. `cookie` is always defined, only its value (via cookie.value) can be undefined.
+
+This can be fixed by using a [cookie schema] or disable [strictNullChecks](https://www.typescriptlang.org/tsconfig/#strictNullChecks) in `tsconfig.json`
+:::
+
 ## Reactivity
 The Elysia cookie is reactive. This means that when you change the cookie value, the cookie will be updated automatically based on an approach like signals.
 

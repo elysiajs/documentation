@@ -17,6 +17,7 @@ head:
 <script setup>
 import { Elysia } from 'elysia'
 import Playground from './components/nearl/playground.vue'
+import AronaBanner from './components/arona/arona-banner.vue'
 
 const profile1 = new Elysia()
 	.onBeforeHandle(({ status }) => status(401))
@@ -42,6 +43,8 @@ const demo2 = new Elysia()
 Elysia has a every important concepts that you need to understand to use.
 
 This page covers most concepts that you should know before getting started.
+
+<AronaBanner />
 
 ## Encapsulation <Badge type="danger" text="MUST READ" />
 Elysia lifecycle methods are **encapsulated** to its own instance only.

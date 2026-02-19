@@ -14,6 +14,10 @@ head:
         content: Elysia is a pattern agnostic framework, we leave the decision up to you and your team for coding patterns to use. However, we found that there are several who are using MVC pattern (Model-View-Controller) on Elysia, and found it's hard to decouple and handle types. This page is a guide to use Elysia with MVC pattern.
 ---
 
+<script setup>
+import AronaBanner from '../components/arona/arona-banner.vue'
+</script>
+
 # Best Practice
 
 Elysia is a pattern-agnostic framework, leaving the decision of which coding patterns to use up to you and your team.
@@ -21,6 +25,12 @@ Elysia is a pattern-agnostic framework, leaving the decision of which coding pat
 However, there are several concerns when trying to adapt an MVC pattern [(Model-View-Controller)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) with Elysia, and we found it hard to decouple and handle types.
 
 This page is a guide on how to follow Elysia structure best practices combined with the MVC pattern, but it can be adapted to any coding pattern you prefer.
+
+::: tip
+Check out [key concept](/key-concept) to understand core concept of Elysia before reading this page
+:::
+
+<AronaBanner />
 
 ## Folder Structure
 
@@ -66,11 +76,13 @@ export const auth = new Elysia({ prefix: '/auth' })
 			const response = await Auth.signIn(body)
 
 			// Set session cookie
-			session.value = response.token
+			// (Elysia cookie is proxy, it can never be null/undefined)
+			session!.value = response.token
 
 			return response
 		}, {
 			body: AuthModel.signInBody,
+			// response is optional, use to enforce return type
 			response: {
 				200: AuthModel.signInResponse,
 				400: AuthModel.signInInvalid
@@ -85,7 +97,7 @@ import { status } from 'elysia'
 
 import type { AuthModel } from './model'
 
-// If the class doesn't need to store a property,
+// If a class doesn't need to store a property,
 // you may use `abstract class` to avoid class allocation
 export abstract class Auth {
 	static async signIn({ username, password }: AuthModel.signInBody) {
@@ -112,28 +124,23 @@ export abstract class Auth {
 
 ```typescript [auth/model.ts]
 // Model define the data structure and validation for the request and response
-import { t } from 'elysia'
+import { t, type UnwrapSchema } from 'elysia'
 
-export namespace AuthModel {
-	// Define a DTO for Elysia validation
-	export const signInBody = t.Object({
+const AuthModel = {
+	signInBody: t.Object({
 		username: t.String(),
 		password: t.String(),
-	})
-
-	// Define it as TypeScript type
-	export type signInBody = typeof signInBody.static
-
-	// Repeat for other models
-	export const signInResponse = t.Object({
+	}),
+	signInResponse: t.Object({
 		username: t.String(),
 		token: t.String(),
-	})
+	}),
+	signInInvalid: t.Literal('Invalid username or password')
+} as const
 
-	export type signInResponse = typeof signInResponse.static
-
-	export const signInInvalid = t.Literal('Invalid username or password')
-	export type signInInvalid = typeof signInInvalid.static
+// Optional, cast all model to TypeScript type
+export type AuthModel = {
+	[k in keyof typeof AuthModel]: UnwrapSchema<AuthModel[k]>
 }
 ```
 
@@ -145,6 +152,14 @@ Each file has its own responsibility as follows:
 - **Model**: Define the data structure and validation for the request and response.
 
 Feel free to adapt this structure to your needs and use any coding pattern you prefer.
+
+::: note
+You may get warning when using cookie.name might be `undefined` depends on your TypeScript configuration.
+
+Elysia cookie can never be `undefined` because it's a Proxy object. `cookie` is always defined, only its value (via cookie.value) can be undefined.
+
+This can be fixed by using a [cookie schema] or disable [strictNullChecks](https://www.typescriptlang.org/tsconfig/#strictNullChecks) in `tsconfig.json`
+:::
 
 ## Controller
 Due to type soundness of Elysia, it's not recommended to use a traditional controller class that is tightly coupled with Elysia's `Context` because:
@@ -316,7 +331,8 @@ const AuthService = new Elysia({ name: 'Auth.Service' })
     .macro({
         isSignIn: {
             resolve({ cookie, status }) {
-                if (!cookie.session.value) return status(401)
+                if (!cookie.session.value)
+                	return status(401, 'Unauthorized')
 
                 return {
                 	session: cookie.session.value,

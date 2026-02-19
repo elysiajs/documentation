@@ -1,14 +1,11 @@
 <template>
     <a
         href="/tutorial/"
-        class="clicky isolate group relative flex flex-col justify-start items-start w-full p-4 pr-16 sm:p-6 border rounded-xl !no-underline bg-white dark:bg-gray-800 overflow-hidden duration-750 ease-out-expo interact:shadow-xl interact:shadow-gray-700/5"
+        class="clicky isolate group relative flex flex-col justify-start items-start w-full min-h-32 p-4 pr-16 sm:p-6 border border-gray-200 dark:border-gray-600 rounded-xl !no-underline bg-white dark:bg-gray-800 overflow-hidden duration-750 ease-out-expo interact:shadow-xl interact:shadow-gray-700/5"
     >
-        <Ray class="absolute z-30 -top-4 left-0 h-13 opacity-60" />
+        <!-- <Ray class="absolute z-30 -top-4 left-0 h-13 opacity-60" /> -->
 
-        <img
-            class="absolute z-20 bottom-0 right-1 sm:right-2 h-10/12 sm:h-11/12 object-contain"
-            src="/elysia/sprite/sit.webp"
-        />
+        <div class="absolute bottom-0 left-0 -translate-x-26 translate-y-42 size-72 bg-radial from-pink-500/7.5 dark:from-pink-500/15 to-80% to-transparent" />
 
         <div
             class="absolute top-0 right-0 w-[50%] sm:w-[calc(100%-320px+2rem)] h-full overflow-hidden"
