@@ -931,8 +931,8 @@ async function ask(input?: string, seed?: number) {
                         suffix: powToken.value
                     },
                     message:
-                        message.length > 4096
-                            ? message.slice(0, 4096)
+                        message.length > 8192
+                            ? message.slice(0, 8192)
                             : message,
                     history: history.value
                         .slice(-9)
