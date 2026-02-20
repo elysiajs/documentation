@@ -84,24 +84,8 @@
                         <h3
                             class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 rounded-full"
                         >
-                            <button
-                                class="clicky flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300 ease-out-expo"
-                                @click="startNewChat"
-                                :class="{
-                                    '!w-0 pointer-events-none mr-0':
-                                        isStreaming || !history.length
-                                }"
-                                :disabled="isStreaming || !history.length"
-                                title="Start new chat"
-                            >
-                                <RotateCcw stroke-width="1.25" />
-                            </button>
-
                             <span
-                                class="transition-transform duration-300 ease-out-expo"
-                                :class="{
-                                    'ml-3': isStreaming || !history.length
-                                }"
+                                class="transition-transform duration-300 ease-out-expo ml-3"
                             >
                                 Elysia chan
                                 <sup
@@ -115,6 +99,20 @@
                         <section
                             class="absolute isolate z-20 top-2 right-2 flex p-0.5 rounded-full"
                         >
+                            <Tooltip tip="Start new chat">
+                                <button
+                                    class="clicky flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300 ease-out-expo origin-right"
+                                    @click="startNewChat"
+                                    :class="{
+                                        '!w-0 pointer-events-none mr-0':
+                                            isStreaming || !history.length
+                                    }"
+                                    :disabled="isStreaming || !history.length"
+                                >
+                                    <Trash stroke-width="1.25" />
+                                </button>
+                            </Tooltip>
+
                             <Tooltip
                                 :tip="
                                     isExpanded
@@ -570,7 +568,8 @@ import {
     ThumbsUp,
     ThumbsDown,
     ArrowUp,
-    Lightbulb
+    Lightbulb,
+    Trash
 } from 'lucide-vue-next'
 import Typing from './typing.vue'
 import { retry } from './retry'
