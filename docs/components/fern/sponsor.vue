@@ -10,11 +10,11 @@
         	Because of You
         </motion.h2>
         <p
-            class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto mb-8 dark:text-gray-400 dark:font-medium"
+            class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto mb-8 dark:text-mauve-400 dark:font-medium"
         >
             <motion.span class="inline-block" v-bind="flyIn(0.1)">
                 Elysia is
-                <span class="text-gray-700 dark:text-gray-200 font-medium">
+                <span class="text-mauve-700 dark:text-mauve-200 font-medium">
                     not owned by an organization</span
                 >, driven by volunteers, and community.
             </motion.span>
@@ -322,10 +322,10 @@ const smolSponsors = sponsors.filter(
     @apply grid gap-0.5 grid-cols-3;
 
     & > li > .sponsor {
-        @apply flex flex-col justify-center items-center text-xs text-center hover:bg-pink-500/10 focus:bg-pink-500/10 dark:hover:bg-pink-500/25 dark:focus:bg-pink-500/25 px-0.5 py-4 rounded-xl transition-colors text-gray-500 hover:text-pink-500 dark:text-gray-400 dark:hover:text-pink-400;
+        @apply flex flex-col justify-center items-center text-xs text-center hover:bg-pink-500/10 focus:bg-pink-500/10 dark:hover:bg-pink-500/25 dark:focus:bg-pink-500/25 px-0.5 py-4 rounded-xl transition-colors text-mauve-500 hover:text-pink-500 dark:text-mauve-400 dark:hover:text-pink-400;
 
         & > div {
-            @apply w-16 h-16 bg-gray-100 overflow-hidden rounded-full mb-3;
+            @apply w-16 h-16 bg-mauve-100 overflow-hidden rounded-full mb-3;
 
             & > img {
                 @apply w-16 h-16 rounded-full object-cover object-center;
@@ -374,7 +374,7 @@ const smolSponsors = sponsors.filter(
         @apply flex justify-center items-center gap-3 text-xs text-center py-2;
 
         & > div {
-            @apply min-w-16 min-h-16 bg-gray-100 overflow-hidden rounded-full;
+            @apply min-w-16 min-h-16 bg-mauve-100 overflow-hidden rounded-full;
 
             & > img {
                 @apply w-16 h-16 rounded-full object-cover object-center;
@@ -406,7 +406,7 @@ const smolSponsors = sponsors.filter(
         @apply flex flex-col justify-center items-center text-xs text-center;
 
         & > div {
-            @apply w-full h-full aspect-square bg-gray-100 overflow-hidden rounded-full;
+            @apply w-full h-full aspect-square bg-mauve-100 overflow-hidden rounded-full;
 
             & > img {
                 @apply w-full h-full rounded-full object-cover object-center;

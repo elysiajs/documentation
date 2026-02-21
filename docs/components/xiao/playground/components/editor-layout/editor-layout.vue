@@ -39,7 +39,7 @@
                             :initial="{ opacity: 0, scale: 0.9 }"
                             :animate="{ opacity: 1, scale: 1 }"
                             :exit="{ opacity: 0, scale: 0.9 }"
-                            class="w-xs p-2 bg-white/80 dark:bg-gray-700/65 mr-1.5 rounded-2xl border dark:border-gray-600/75 backdrop-blur-xs origin-top-right shadow-lg"
+                            class="w-xs p-2 bg-white/80 dark:bg-mauve-700/65 mr-1.5 rounded-2xl border dark:border-mauve-600/75 backdrop-blur-xs origin-top-right shadow-lg"
                         >
                             <h6
                                 class="text-xl text-black dark:text-white font-medium mt-1 px-2"
@@ -47,7 +47,7 @@
                                 Reset Playground
                             </h6>
                             <p
-                                class="text-gray-600 dark:text-gray-300 mt-2 text-sm leading-normal px-2"
+                                class="text-mauve-600 dark:text-mauve-300 mt-2 text-sm leading-normal px-2"
                             >
                                 You are going to reset the playground to its
                                 default state. This action cannot be undone.
@@ -61,7 +61,7 @@
                                 </button>
                             </PopoverClose>
                             <PopoverClose
-                                class="absolute clicky top-2 right-2 p-2 text-gray-400 interact:bg-gray-100 interact:dark:bg-gray-600/50 rounded-full"
+                                class="absolute clicky top-2 right-2 p-2 text-mauve-400 interact:bg-mauve-100 interact:dark:bg-mauve-600/50 rounded-full"
                                 aria-label="Close"
                             >
                                 <X :size="18" stroke-width="2" />

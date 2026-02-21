@@ -41,11 +41,11 @@ const roundness = useTransform(() => 48 - scrollYProgress.get() * 48 + 'px')
     <article id="openapi-type-gen" class="flex flex-col items-center max-w-6xl mx-auto w-full md:text-center mb-12 px-4 md:px-0" ref="scope">
         <div class="flex flex-col items-center gap-3 mb-5 max-w-3xl mx-auto">
             <motion.div class="flex sm:justify-center items-center md:gap-4 w-full" v-bind="flyIn()">
-                <div class="hidden md:flex flex-1 h-0.25 bg-gray-300 dark:bg-gray-500" />
-                <h3 class="text-lg sm:text-xl text-gray-400">
+                <div class="hidden md:flex flex-1 h-0.25 bg-mauve-300 dark:bg-mauve-500" />
+                <h3 class="text-lg sm:text-xl text-mauve-400">
                     Introducing our most powerful feature yet
                 </h3>
-                <div class="hidden md:flex flex-1 h-0.25 bg-gray-300 dark:bg-gray-500" />
+                <div class="hidden md:flex flex-1 h-0.25 bg-mauve-300 dark:bg-mauve-500" />
             </motion.div>
             <motion.h2
                 class="text-5xl md:text-7xl font-semibold text-gradient from-teal-300 to-indigo-400 leading-tight"
@@ -80,7 +80,7 @@ const roundness = useTransform(() => 48 - scrollYProgress.get() * 48 + 'px')
 @reference '../../tailwind.css';
 
 #openapi-type-gen > .showcase {
-    @apply rounded-xl border border-y-violet-200/50 border-x-blue-200/50 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-gray-800;
+    @apply rounded-xl border border-y-violet-200/50 border-x-blue-200/50 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-mauve-800;
     /*box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);*/
 
     background-image:
@@ -134,12 +134,12 @@ const roundness = useTransform(() => 48 - scrollYProgress.get() * 48 + 'px')
         background-image:
             radial-gradient(
                 closest-side at center,
-                var(--color-gray-800) 70%,
+                var(--color-mauve-800) 70%,
                 transparent 150%
             ),
             radial-gradient(
                 closest-side at center,
-                var(--color-gray-800) 90%,
+                var(--color-mauve-800) 90%,
                 transparent 150%
             ),
             radial-gradient(

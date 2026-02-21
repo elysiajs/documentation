@@ -17,7 +17,7 @@ const flyIn = useFlyIn(isInView)
             <header class="flex flex-col w-full lg:w-5/12 text-xl gap-6">
                 <div class="flex flex-col gap-3">
                     <h2
-                        class="text-5xl md:text-6xl text-gray-700 dark:text-gray-200 font-medium leading-[3.75rem] md:leading-[4.5rem]"
+                        class="text-5xl md:text-6xl text-mauve-700 dark:text-mauve-200 font-medium leading-[3.75rem] md:leading-[4.5rem]"
                     >
                         <motion.span class="mr-2" v-bind="flyIn()">Test with</motion.span>
                         <motion.span
@@ -108,7 +108,7 @@ const flyIn = useFlyIn(isInView)
         @apply flex flex-col lg:flex-row justify-between items-center gap-8 w-full mb-6;
 
         & > .showcase {
-            @apply flex flex-col w-full lg:w-7/12 rounded-2xl overflow-hidden border dark:border-gray-700 bg-white dark:bg-gray-800;
+            @apply flex flex-col w-full lg:w-7/12 rounded-2xl overflow-hidden border dark:border-mauve-700 bg-white dark:bg-mauve-800;
 
             box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
             background-image: radial-gradient(
@@ -156,7 +156,7 @@ const flyIn = useFlyIn(isInView)
                 box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
                 background-image: radial-gradient(
                         closest-side at center,
-                        var(--color-gray-800) 0%,
+                        var(--color-mauve-800) 0%,
                         transparent 120%
                     ),
                     radial-gradient(

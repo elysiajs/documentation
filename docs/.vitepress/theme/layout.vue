@@ -135,7 +135,7 @@ function toggleAIForCurrentPage() {
         <template #doc-before>
             <div
                 id="open-elysia-in"
-                class="flex gap-2.5 justify-between items-center pt-0.5 pr-2 text-gray-400 dark:text-gray-500 text-xs mb-1"
+                class="flex gap-2.5 justify-between items-center pt-0.5 pr-2 text-mauve-400 dark:text-mauve-500 text-xs mb-1"
             >
                 <button
                     @click="toggleAIForCurrentPage"
@@ -201,7 +201,7 @@ function toggleAIForCurrentPage() {
 
         <template #aside-outline-after>
             <h6
-                class="flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-300 mt-4"
+                class="flex items-center gap-1.5 text-sm font-semibold text-mauve-500 dark:text-mauve-300 mt-4"
             >
                 <Heart :size="16" />
                 Our Sponsors

@@ -1,7 +1,7 @@
 <template>
     <AnimatePresence>
         <motion.div
-            class="absolute bottom-26 flex items-center gap-1.5 pl-2 text-gray-400/65 text-xs origin-bottom-left"
+            class="absolute bottom-26 flex items-center gap-1.5 pl-2 text-mauve-400/65 text-xs origin-bottom-left"
             :initial="{ opacity: 0, y: 8, scale: 0.8 }"
             :animate="{
                 opacity: 1,
@@ -23,7 +23,7 @@
 
     <AnimatePresence>
         <motion.div
-            class="absolute bottom-32 pl-2 text-gray-400/65 text-xs origin-bottom-left"
+            class="absolute bottom-32 pl-2 text-mauve-400/65 text-xs origin-bottom-left"
             :initial="{ opacity: 0, y: 8, scale: 0.8 }"
             :animate="{
                 opacity: 1,

@@ -33,7 +33,7 @@
 		"shiki-transformer-copy-button": "^0.0.5",
 		"streamdown-vue": "^1.0.29",
 		"sucrase": "^3.35.1",
-		"tailwindcss": "^4.1.18",
+		"tailwindcss": "^4.2.0",
 		"valibot": "^1.2.0",
 		"vue-renderer-markdown": "^0.0.63-beta.4",
 		"vue3-carousel": "^0.17.0",

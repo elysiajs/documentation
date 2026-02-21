@@ -28,14 +28,14 @@
         class="relative flex flex-col flex-1 text-xl gap-12 max-w-6xl w-full mx-auto pl-4 md:pl-16 mt-6 pb-8 pr-2 md:pr-0"
     >
         <div
-            class="absolute hidden md:block left-4 h-full w-[1px] bg-gray-300 dark:bg-gray-500"
+            class="absolute hidden md:block left-4 h-full w-[1px] bg-mauve-300 dark:bg-mauve-500"
         />
         <article class="relative flex flex-col md:flex-row w-full gap-8 text-lg mt-14 pr-4">
             <div
-                class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
+                class="z-10 absolute -left-16.5 size-9 rounded-full border border-mauve-300 dark:border-mauve-500 bg-white dark:bg-mauve-900"
             />
             <div
-                class="z-9 absolute -left-19 -top-2.5 size-14 rotate-45 rounded-full border-l border-gray-300 dark:border-gray-500 animate-spin"
+                class="z-9 absolute -left-19 -top-2.5 size-14 rotate-45 rounded-full border-l border-mauve-300 dark:border-mauve-500 animate-spin"
                 style="animation-duration: 24s;"
             />
             <header class="flex flex-col flex-1">
@@ -65,10 +65,10 @@
         </article>
         <article class="relative flex flex-col md:flex-row w-full gap-8 text-lg pr-4">
             <div
-                class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
+                class="z-10 absolute -left-16.5 size-9 rounded-full border border-mauve-300 dark:border-mauve-500 bg-white dark:bg-mauve-900"
             />
             <div
-                class="z-9 absolute -left-19 -top-2.5 size-14 rounded-full border-l border-b border-gray-300 dark:border-gray-500 animate-spin"
+                class="z-9 absolute -left-19 -top-2.5 size-14 rounded-full border-l border-b border-mauve-300 dark:border-mauve-500 animate-spin"
                 style="animation-duration: 24s;"
             />
             <header class="flex flex-col flex-1">
@@ -95,10 +95,10 @@
         </article>
         <article class="relative flex flex-col md:flex-row w-full gap-8 text-lg pr-4">
 	        <div
-	            class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
+	            class="z-10 absolute -left-16.5 size-9 rounded-full border border-mauve-300 dark:border-mauve-500 bg-white dark:bg-mauve-900"
 	        />
 	        <div
-	            class="z-9 absolute -left-19 -top-2.5 size-14 rotate-45 rounded-full border-r border-gray-300 dark:border-gray-500 animate-spin"
+	            class="z-9 absolute -left-19 -top-2.5 size-14 rotate-45 rounded-full border-r border-mauve-300 dark:border-mauve-500 animate-spin"
 				style="animation-duration: 24s;"
 	        />
             <header class="flex flex-col flex-1">
@@ -131,10 +131,10 @@
         </article>
         <article class="relative flex flex-col md:flex-row w-full gap-8 text-lg pr-4">
 	        <div
-	            class="z-10 absolute -left-16.5 size-9 rounded-full border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900"
+	            class="z-10 absolute -left-16.5 size-9 rounded-full border border-mauve-300 dark:border-mauve-500 bg-white dark:bg-mauve-900"
 	        />
 	        <div
-	            class="z-9 absolute -left-19 -top-2.5 size-14 rotate-180 rounded-full border-l border-b border-gray-300 dark:border-gray-500 animate-spin"
+	            class="z-9 absolute -left-19 -top-2.5 size-14 rotate-180 rounded-full border-l border-b border-mauve-300 dark:border-mauve-500 animate-spin"
 				style="animation-duration: 24s;"
 	        />
             <header class="flex flex-col flex-1">
@@ -169,7 +169,7 @@
     scroll-margin-top: 6rem;
 
     & > article > div > .showcase {
-        @apply max-w-lg w-full flex flex-col rounded-2xl overflow-hidden border dark:border-gray-700 bg-white dark:bg-gray-800;
+        @apply max-w-lg w-full flex flex-col rounded-2xl overflow-hidden border dark:border-mauve-700 bg-white dark:bg-mauve-800;
 
         /*box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);*/
         background-image:
@@ -219,7 +219,7 @@
             background-image:
                 radial-gradient(
                     closest-side at center,
-                    var(--color-gray-800) 0%,
+                    var(--color-mauve-800) 0%,
                     transparent 120%
                 ),
                 radial-gradient(
@@ -269,7 +269,7 @@
     }
 
     & > article > div > .showcase-tab {
-        @apply max-w-lg w-full rounded-xl border border-y-violet-200/50 border-x-blue-200/50 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-gray-800;
+        @apply max-w-lg w-full rounded-xl border border-y-violet-200/50 border-x-blue-200/50 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-mauve-800;
         /*box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);*/
 
         background-image:
@@ -323,12 +323,12 @@
             background-image:
                 radial-gradient(
                     closest-side at center,
-                    var(--color-gray-800) 70%,
+                    var(--color-mauve-800) 70%,
                     transparent 150%
                 ),
                 radial-gradient(
                     closest-side at center,
-                    var(--color-gray-800) 90%,
+                    var(--color-mauve-800) 90%,
                     transparent 150%
                 ),
                 radial-gradient(
@@ -373,10 +373,10 @@
 
             & > .tabs {
                 @apply !bg-transparent !translate-x-4 sm:!translate-x-0;
-                /*box-shadow: inset 0 -1px theme(--color-gray-200);*/
+                /*box-shadow: inset 0 -1px theme(--color-mauve-200);*/
 
                 .dark & {
-                    /*box-shadow: inset 0 -1px theme(--color-gray-700);*/
+                    /*box-shadow: inset 0 -1px theme(--color-mauve-700);*/
                 }
             }
 

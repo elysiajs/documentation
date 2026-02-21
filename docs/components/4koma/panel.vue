@@ -1,7 +1,7 @@
 <template>
     <DialogRoot>
         <DialogTrigger>
-            <div class="clicky aspect-1/1.414 bg-gray-50 rounded-md overflow-hidden">
+            <div class="clicky aspect-1/1.414 bg-mauve-50 rounded-md overflow-hidden">
                 <img
                     :src="cover"
                     alt="Elysia chan cover"
@@ -32,7 +32,7 @@
                 </template>
 
                 <motion.section
-                    class="lg:absolute lg:top-1/2 lg:-translate-y-1/2 -translate-y-2.5 right-4 flex flex-col w-66 p-2 pb-1 mx-auto mb-4 lg:mb-0 lg:mx-0 text-sm text-gray-500 dark:text-gray-400 -translte-y-8 bg-white/80 dark:bg-gray-800/80 border rounded-3xl backdrop-blur-md shadow-xl lg:shadow-transparent"
+                    class="lg:absolute lg:top-1/2 lg:-translate-y-1/2 -translate-y-2.5 right-4 flex flex-col w-66 p-2 pb-1 mx-auto mb-4 lg:mb-0 lg:mx-0 text-sm text-mauve-500 dark:text-mauve-400 -translte-y-8 bg-white/80 dark:bg-mauve-800/80 border rounded-3xl backdrop-blur-md shadow-xl lg:shadow-transparent"
                     :initial="{ opacity: 0, y: 24 }"
                     :animate="{ opacity: 1, y: 0 }"
                     :exit="{ opacity: 0, y: 24 }"
@@ -40,7 +40,7 @@
                 >
                     <header class="flex justify-between items-center w-full">
                         <DialogTitle
-                            class="text-gray-800 dark:text-white text-base font-medium pl-2"
+                            class="text-mauve-800 dark:text-white text-base font-medium pl-2"
                         >
                             {{ page[current].title }}
                         </DialogTitle>
@@ -49,7 +49,7 @@
                             class="size-8 flex items-center justify-center"
                             aria-label="Close"
                         >
-                            <XIcon class="size-5 text-gray-600 dark:text-gray-500" />
+                            <XIcon class="size-5 text-mauve-600 dark:text-mauve-500" />
                         </DialogClose>
                     </header>
 

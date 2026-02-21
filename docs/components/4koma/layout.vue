@@ -6,13 +6,13 @@
     <GlareCard v-model="showCard" />
 
     <main
-        class="flex flex-col gap-4 max-w-6xl w-full mx-auto py-12 text-gray-600 dark:text-gray-300/80 px-4 lg:px-0"
+        class="flex flex-col gap-4 max-w-6xl w-full mx-auto py-12 text-mauve-600 dark:text-mauve-300/80 px-4 lg:px-0"
     >
         <header
             class="flex flex-col-reverse md:flex-row items-center w-full mb-4 gap-4 md:gap-6 xl:gap-12"
         >
             <button
-                class="border border-gray-200 dark:border-gray-600 clicky duration-275 interact:shadow-2xl shadow-black/7.5 rounded-3xl w-full overflow-hidden bg-gray-50 aspect-video"
+                class="border border-mauve-200 dark:border-mauve-600 clicky duration-275 interact:shadow-2xl shadow-black/7.5 rounded-3xl w-full overflow-hidden bg-mauve-50 aspect-video"
                 aria-label="Interact to show Elysia chan card"
                 title="Interact to show Elysia chan card"
                 @click="showCard = true"
@@ -49,7 +49,7 @@
         </header>
 
         <section class="flex flex-col w-full max-w-xs sm:max-w-sm">
-            <h1 class="text-md font-medium text-gray-400 dark:text-gray-500">
+            <h1 class="text-md font-medium text-mauve-400 dark:text-mauve-500">
                 エリシアちゃんの日常
             </h1>
             <h1 class="text-3xl font-medium text-black dark:text-white mb-2">
@@ -72,7 +72,7 @@
         </div>
 
         <section class="flex flex-col w-full max-w-xs sm:max-w-sm mt-6">
-            <h1 class="text-md font-medium text-gray-400 dark:text-gray-500">
+            <h1 class="text-md font-medium text-mauve-400 dark:text-mauve-500">
                 イラスト
             </h1>
             <h1 class="text-3xl font-medium text-black dark:text-white mb-2">

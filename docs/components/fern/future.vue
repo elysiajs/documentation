@@ -25,7 +25,7 @@
 }
 
 #future-title {
-	@apply flex flex-col text-5xl md:text-6xl font-semibold text-gray-700 dark:text-gray-300 leading-[3.5rem] md:leading-[4.5rem];
+	@apply flex flex-col text-5xl md:text-6xl font-semibold text-mauve-700 dark:text-mauve-300 leading-[3.5rem] md:leading-[4.5rem];
 }
 
 #future-tutorial {

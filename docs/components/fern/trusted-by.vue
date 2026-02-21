@@ -1,5 +1,5 @@
 <template>
-    <h3 class="text-center text-gray-400 mx-auto mt-16">
+    <h3 class="text-center text-mauve-400 mx-auto mt-16">
         Trusted by team at
     </h3>
     <section

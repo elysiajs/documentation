@@ -55,7 +55,7 @@ const props = defineProps<{
     }
 
     & > div {
-        @apply mt-2 p-4 border dark:border-gray-700 rounded-2xl;
+        @apply mt-2 p-4 border dark:border-mauve-700 rounded-2xl;
 
         & > *:first-child {
 			@apply !mt-0;

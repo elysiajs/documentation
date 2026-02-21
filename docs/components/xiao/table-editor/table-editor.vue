@@ -2,7 +2,7 @@
     <table ref="table" :class="classBinding">
         <thead>
             <tr
-                class="text-left text-xs text-gray-400 dark:text-gray-500 *:px-1 *:py-0.5"
+                class="text-left text-xs text-mauve-400 dark:text-mauve-500 *:px-1 *:py-0.5"
             >
                 <th v-for="(header, index) in headers" :key="index">
                     {{ header }}
@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody
-            class="text-left text-sm text-gray-700 dark:text-gray-300 [&>tr>td]:border [&>tr>td]:border-gray-300/75 dark:[&>tr>td]:border-gray-600/75 [&>tr>td:first-child]:border-l-0 [&>tr>td:last-child]:border-r-0 [&>tr>td]:pl-1 [&>tr>td]:py-0.5"
+            class="text-left text-sm text-mauve-700 dark:text-mauve-300 [&>tr>td]:border [&>tr>td]:border-mauve-300/75 dark:[&>tr>td]:border-mauve-600/75 [&>tr>td:first-child]:border-l-0 [&>tr>td:last-child]:border-r-0 [&>tr>td]:pl-1 [&>tr>td]:py-0.5"
         >
             <tr v-for="(row, y) in data" :key="y">
                 <td

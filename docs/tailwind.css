@@ -14,7 +14,7 @@
 }
 
 * {
-    @apply border-gray-200 dark:border-gray-800;
+    @apply border-mauve-200 dark:border-mauve-800;
 }
 
 .link {
@@ -108,10 +108,10 @@ pre.vp-code > code {
     --vp-c-brand-1: #f06292;
     --vp-c-brand-2: #f06292;
     --vp-c-brand-light: #ff94c2;
-    --vp-c-bg-alt: theme(--color-slate-100);
+    --vp-c-bg-alt: theme(--color-mauve-100);
     --vp-c-brand-dark: #ba2d65;
-    --vp-c-border: theme(--color-slate-100);
-    --twoslash-border-color: theme(--color-slate-100);
+    --vp-c-border: theme(--color-mauve-100);
+    --twoslash-border-color: theme(--color-mauve-100);
     --vp-code-block-bg: #f6f8fa;
     --vp-code-copy-code-bg: #dedede;
     --vp-code-copy-code-hover-bg: #dedede;
@@ -130,30 +130,31 @@ pre.vp-code > code {
         var(--vp-c-brand-light) 15%,
         transparent 100%
     );
+    --vp-code-tab-divider: theme(--color-mauve-200);
     --vp-nav-logo-height: 28px;
 
-    --twoslash-border-color: theme(--color-slate-200);
-    --vp-c-bg-elv: theme(--color-slate-100);
+    --twoslash-border-color: theme(--color-mauve-200);
+    --vp-c-bg-elv: theme(--color-mauve-100);
 
-    --vp-code-copy-code-bg: theme(--color-slate-50);
+    --vp-code-copy-code-bg: theme(--color-mauve-50);
     --vp-code-copy-code-hover-bg: #fff;
-    --vp-code-copy-code-border-color: theme(--color-slate-200);
+    --vp-code-copy-code-border-color: theme(--color-mauve-200);
 
     --vp-icon-copy: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(128,128,128)%22%20stroke-width=%221.5%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20width=%2214%22%20height=%2214%22%20x=%228%22%20y=%228%22%20rx=%222%22%20ry=%222%22/%3E%3Cpath%20d=%22M4%2016c-1.1%200-2-.9-2-2V4c0-1.1.9-2%202-2h10c1.1%200%202%20.9%202%202%22/%3E%3C/svg%3E');
     --vp-icon-copied: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(128,128,128)%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%206%209%2017l-5-5%22/%3E%3C/svg%3E');
 }
 
 .dark {
-    --vp-c-bg: theme(--color-slate-900);
-    --vp-c-border: theme(--color-slate-100);
-    --twoslash-border-color: theme(--color-slate-100);
-    --vp-c-bg-alt: theme(--color-slate-800);
-    --vp-c-bg-soft: theme(--color-slate-800);
-    --vp-c-divider: theme(--color-slate-700);
-    --vp-code-block-bg: theme(--color-slate-800);
+    --vp-c-bg: theme(--color-mauve-900);
+    --vp-c-border: theme(--color-mauve-100);
+    --twoslash-border-color: theme(--color-mauve-100);
+    --vp-c-bg-alt: theme(--color-mauve-800);
+    --vp-c-bg-soft: theme(--color-mauve-800);
+    --vp-c-divider: theme(--color-mauve-700);
+    --vp-code-block-bg: theme(--color-mauve-800);
     --vp-c-bg-alpha-with-backdrop: #1f2937bf;
-    --vp-code-copy-code-bg: theme(--color-slate-800);
-    --vp-code-copy-code-hover-bg: theme(--color-slate-800);
+    --vp-code-copy-code-bg: theme(--color-mauve-800);
+    --vp-code-copy-code-hover-bg: theme(--color-mauve-800);
     --vp-c-text-dark-2: #8a8a8a;
     --vp-c-text-dark-3: #8a8a8a;
     --vp-custom-block-tip-bg: #064e3b;
@@ -165,13 +166,15 @@ pre.vp-code > code {
         transparent 100%
     );
 
-    --twoslash-border-color: var(--color-slate-800);
-    --vp-c-bg-elv: theme(--color-slate-800);
-    --vp-c-neutral-inverse: theme(--color-slate-800);
+    --vp-code-tab-divider: theme(--color-mauve-700);
 
-    --vp-code-copy-code-bg: theme(--color-slate-800);
-    --vp-code-copy-code-hover-bg: theme(--color-slate-700);
-    --vp-code-copy-code-border-color: theme(--color-slate-600);
+    --twoslash-border-color: var(--color-mauve-800);
+    --vp-c-bg-elv: theme(--color-mauve-800);
+    --vp-c-neutral-inverse: theme(--color-mauve-800);
+
+    --vp-code-copy-code-bg: theme(--color-mauve-800);
+    --vp-code-copy-code-hover-bg: theme(--color-mauve-700);
+    --vp-code-copy-code-border-color: theme(--color-mauve-600);
 
     --vp-icon-copy: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(160,160,160)%22%20stroke-width=%221.5%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20width=%2214%22%20height=%2214%22%20x=%228%22%20y=%228%22%20rx=%222%22%20ry=%222%22/%3E%3Cpath%20d=%22M4%2016c-1.1%200-2-.9-2-2V4c0-1.1.9-2%202-2h10c1.1%200%202%20.9%202%202%22/%3E%3C/svg%3E');
     --vp-icon-copied: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22rgb(160,160,160)%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%206%209%2017l-5-5%22/%3E%3C/svg%3E');
@@ -301,7 +304,7 @@ button.copy::after {
         }
 
         /*& > .VPSidebarItem::after {
-        	@apply w-full mt-2 translate-y-0.5 bg-gray-200;
+        	@apply w-full mt-2 translate-y-0.5 bg-mauve-200;
 
          	height: 1px;
         	content: "";
@@ -514,7 +517,7 @@ button.copy::after {
 
         & > .items {
             & > .VPSidebarItem {
-                @apply pl-4 border-l dark:border-l-gray-600 rounded-none transition-all duration-100 ease-out;
+                @apply pl-4 border-l dark:border-l-mauve-600 rounded-none transition-all duration-100 ease-out;
 
                 /* Separation between nested table of content */
                 &:not(.collapsible),
@@ -609,7 +612,7 @@ button.copy::after {
                         @apply grid border-0 pl-0;
 
                         & > .VPSidebarItem {
-                            @apply border-l pl-4 dark:border-l-gray-600;
+                            @apply border-l pl-4 dark:border-l-mauve-600;
                         }
 
                         & > .caret {
@@ -642,14 +645,14 @@ button.copy::after {
 
         & > .menu,
         & > .VPLocalNavOutlineDropdown > button {
-            @apply !bg-white/80 dark:!bg-slate-800/80 px-2 py-0.75 rounded-xl border border-slate-700/10 dark:border-slate-300/10 backdrop-blur-md;
+            @apply !bg-white/80 dark:!bg-mauve-800/80 px-2 py-0.75 rounded-xl border border-mauve-700/10 dark:border-mauve-300/10 backdrop-blur-md;
         }
 
         & > .VPLocalNavOutlineDropdown {
             @apply p-0 ml-auto;
 
             & > .items {
-                @apply top-10 right-4 md:right-0 max-w-[calc(100%-32px)] sm:max-w-sm !bg-white/75 dark:!bg-slate-800/75 p-1 rounded-2xl border border-slate-700/10 dark:border-slate-300/10 backdrop-blur-md shadow-2xl shadow-black/5;
+                @apply top-10 right-4 md:right-0 max-w-[calc(100%-32px)] sm:max-w-sm !bg-white/75 dark:!bg-mauve-800/75 p-1 rounded-2xl border border-mauve-700/10 dark:border-mauve-300/10 backdrop-blur-md shadow-2xl shadow-black/5;
                 left: unset;
                 transition-duration: 0.5s;
                 transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
@@ -723,7 +726,7 @@ button.copy::after {
     &:focus-within {
         /* Landing */
         & > .VPNavBar {
-            /* @apply !bg-white/60 dark:!bg-slate-900/60; */
+            /* @apply !bg-white/60 dark:!bg-mauve-900/60; */
         }
     }
 
@@ -753,7 +756,7 @@ button.copy::after {
 }
 
 .VPNavBar {
-    @apply border-0 bg-white/60 dark:bg-slate-900/60 transition-colors;
+    @apply border-0 bg-white/60 dark:bg-mauve-900/60 transition-colors;
 
     & > .container {
         & > .content,
@@ -919,7 +922,7 @@ button.copy::after {
 }
 
 .vp-nolebase-git-changelog-history-list {
-    @apply bg-slate-50 dark:bg-slate-800;
+    @apply bg-mauve-50 dark:bg-mauve-800;
 }
 
 .VPSwitchAppearance {
@@ -943,7 +946,7 @@ button.copy::after {
 }
 
 .VPLink.link.pager-link {
-    @apply dark:bg-slate-800 dark:border-transparent;
+    @apply dark:bg-mauve-800 dark:border-transparent;
 }
 
 .VPDoc {
@@ -993,7 +996,7 @@ button.copy::after {
 
     /* Vitepress breakpoint */
     @media (max-width: 959.9px) {
-        @apply max-w-68 translate-x-2 translate-y-2 !p-1 bg-white/85 dark:bg-gray-800/85 border dark:border-gray-700 border-gray-200 rounded-3xl backdrop-blur shadow-lg overflow-x-hidden overflow-y-auto max-h-dvh;
+        @apply max-w-68 translate-x-2 translate-y-2 !p-1 bg-white/85 dark:bg-mauve-800/85 border dark:border-mauve-700 border-mauve-200 rounded-3xl backdrop-blur shadow-lg overflow-x-hidden overflow-y-auto max-h-dvh;
         height: calc(100dvh - 1rem);
 
         & > .nav {
@@ -1026,10 +1029,10 @@ button.copy::after {
 .VPLocalSearchBox {
     & > .shell {
         /* 688px is the max-width of the content (Vitepress default) */
-        @apply !gap-0 md:max-w-[688px] !px-0 !pt-0.5 md:translate-x-2 !bg-white md:!bg-white/70 dark:!bg-gray-900 md:dark:!bg-gray-800/80 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-gray-700 md:shadow-xl shadow-black/5;
+        @apply !gap-0 md:max-w-[688px] !px-0 !pt-0.5 md:translate-x-2 !bg-white md:!bg-white/70 dark:!bg-mauve-900 md:dark:!bg-mauve-800/80 md:backdrop-blur-md md:!rounded-2xl md:border dark:border-mauve-700 md:shadow-xl shadow-black/5;
 
         & > .search-bar {
-            @apply w-full py-1.5 px-2 border-0 border-b !border-gray-400/25 dark:!border-gray-600/65 rounded-none;
+            @apply w-full py-1.5 px-2 border-0 border-b !border-mauve-400/25 dark:!border-mauve-600/65 rounded-none;
 
             & > #localsearch-label {
                 @apply !opacity-50;
@@ -1052,7 +1055,7 @@ button.copy::after {
             }
 
             &::after {
-                @apply fixed hidden md:block left-0 bottom-11 w-full h-0.25 bg-gray-400/25 dark:bg-gray-600/65;
+                @apply fixed hidden md:block left-0 bottom-11 w-full h-0.25 bg-mauve-400/25 dark:bg-mauve-600/65;
                 content: '';
             }
 
@@ -1077,7 +1080,7 @@ button.copy::after {
             @apply z-30 pt-2.5 px-3;
 
             & > span > kbd {
-                @apply rounded-lg dark:!bg-gray-700;
+                @apply rounded-lg dark:!bg-mauve-700;
             }
         }
     }
@@ -1101,7 +1104,7 @@ button.copy::after {
     will-change: opacity;
 
     & > .VPMenu {
-        @apply !bg-white/80 dark:!bg-gray-700/80 p-1 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl shadow-black/5;
+        @apply !bg-white/80 dark:!bg-mauve-700/80 p-1 border border-mauve-100 dark:border-mauve-700 rounded-2xl shadow-2xl shadow-black/5;
 
         & > .items {
             & > .VPMenuLink > .VPLink {
@@ -1116,7 +1119,7 @@ button.copy::after {
     will-change: opacity;
 
     & > .VPMenu {
-        @apply !bg-white/80 dark:!bg-gray-700/80 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl shadow-black/5;
+        @apply !bg-white/80 dark:!bg-mauve-700/80 border border-mauve-100 dark:border-mauve-700 rounded-2xl shadow-2xl shadow-black/5;
     }
 }
 
@@ -1132,7 +1135,7 @@ button.copy::after {
 
     & > .VPFlyout.VPNavBarMenuGroup > .button,
     & > a {
-        @apply backdrop-blur-lg bg-white/80 dark:bg-gray-900/70;
+        @apply backdrop-blur-lg bg-white/80 dark:bg-mauve-900/70;
     }
 
     /* Skip screen reader content */
@@ -1143,7 +1146,7 @@ button.copy::after {
 }
 
 .VPNavBarAppearance.appearance {
-    @apply h-11 bg-white/80 dark:bg-gray-900/70 backdrop-blur-lg;
+    @apply h-11 bg-white/80 dark:bg-mauve-900/70 backdrop-blur-lg;
 
     &::before {
         @apply hidden;
@@ -1151,12 +1154,12 @@ button.copy::after {
 }
 
 .VPSocialLinks.VPNavBarSocialLinks.social-links {
-    @apply h-11 !pr-0 !pl-1.5 bg-white/80 dark:bg-gray-900/70 backdrop-blur-lg rounded-r-3xl;
+    @apply h-11 !pr-0 !pl-1.5 bg-white/80 dark:bg-mauve-900/70 backdrop-blur-lg rounded-r-3xl;
 }
 
 /* ... mobile */
 .VPFlyout.VPNavBarExtra.extra {
-    @apply h-11 bg-white/80 dark:bg-gray-900/70;
+    @apply h-11 bg-white/80 dark:bg-mauve-900/70;
 
     & > .button {
         @apply h-10.5 backdrop-blur-lg !rounded-r-3xl;
@@ -1166,7 +1169,7 @@ button.copy::after {
 /* end navbar leftside group */
 
 .vp-adaptive-theme > .copy {
-    @apply !bg-gray-50 dark:!bg-gray-700;
+    @apply !bg-mauve-50 dark:!bg-mauve-700;
 
     &::before {
         background-color: inherit;
@@ -1181,7 +1184,7 @@ button.copy::after {
     @apply max-w-xs;
 
     & > .DocSearch-Button {
-        @apply clicky flex items-center max-w-full sm:w-60 h-10 rounded-xl backdrop-blur-sm lg:ml-2 sm:bg-gray-100/75 dark:sm:bg-gray-800/75 sm:border sm:border-gray-200/50 dark:sm:border-gray-700/50;
+        @apply clicky flex items-center max-w-full sm:w-60 h-10 rounded-xl backdrop-blur-sm lg:ml-2 sm:bg-mauve-100/75 dark:sm:bg-mauve-800/75 sm:border sm:border-mauve-200/50 dark:sm:border-mauve-700/50;
         color: var(--docsearch-secondary-text-color);
 
         & > .DocSearch-Button-Container {
@@ -1251,7 +1254,7 @@ div[class*='language-'] {
         }
 
         & > .outline-title {
-            @apply flex items-center font-medium text-gray-700 dark:text-gray-100;
+            @apply flex items-center font-medium text-mauve-700 dark:text-mauve-100;
 
             &::before {
                 @apply inline-block size-3.5 bg-cover mr-1.5;
@@ -1266,7 +1269,7 @@ div[class*='language-'] {
 
         .VPDocOutlineItem.root > li {
             & > .outline-link {
-                @apply text-gray-600/80 dark:text-gray-300/80 transition-all dark:interact:text-pink-300;
+                @apply text-mauve-600/80 dark:text-mauve-300/80 transition-all dark:interact:text-pink-300;
 
                 &:hover,
                 &:focus,
@@ -1298,7 +1301,7 @@ div[class*='language-'] {
         }
 
         & > .VPDocOutlineItem {
-            @apply border-l-2 border-gray-100 dark:border-gray-700 pl-4;
+            @apply border-l-2 border-mauve-100 dark:border-mauve-700 pl-4;
         }
     }
 }
@@ -1328,7 +1331,7 @@ div[class*='language-'] {
             }
 
             & > p {
-                @apply text-gray-400 dark:text-gray-500;
+                @apply text-mauve-400 dark:text-mauve-500;
             }
 
             & > a {
@@ -1376,11 +1379,11 @@ div[class*='language-'] {
                 }
 
                 & > .desc {
-                    @apply !text-xs text-gray-400/75 font-normal transition-colors ease-out-expo duration-400;
+                    @apply !text-xs text-mauve-400/75 font-normal transition-colors ease-out-expo duration-400;
                 }
 
                 & > .title {
-                    @apply text-base font-normal text-gray-700 dark:text-gray-200 mt-0.5 transition-colors ease-out-expo duration-400;
+                    @apply text-base font-normal text-mauve-700 dark:text-mauve-200 mt-0.5 transition-colors ease-out-expo duration-400;
                 }
             }
         }

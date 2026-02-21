@@ -1,6 +1,6 @@
 <template>
     <div
-        class="relative flex-1 w-full h-full overflow-auto font-mono text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl"
+        class="relative flex-1 w-full h-full overflow-auto font-mono text-sm bg-white dark:bg-mauve-900 border border-mauve-200 dark:border-mauve-700 rounded-2xl"
         :class="{
             'overflow-y-hidden':
                 store.tab.result === 'preview' && store.result.isHTML
@@ -62,7 +62,7 @@
             id="preview-sandbox"
             ref="iframe"
             :key="store.response.body ?? ''"
-            class="block w-full h-full pt-10 bg-white dark:bg-gray-900"
+            class="block w-full h-full pt-10 bg-white dark:bg-mauve-900"
             :srcdoc="store.response.body ?? ''"
             :class="{
                 hidden: store.tab.result !== 'preview' || !store.result.isHTML
@@ -83,7 +83,7 @@
             }"
         >
             <p
-                class="font-mono !text-sm px-1.5 py-1 text-gray-400 dark:text-gray-500 whitespace-nowrap"
+                class="font-mono !text-sm px-1.5 py-1 text-mauve-400 dark:text-mauve-500 whitespace-nowrap"
             >
                 Console
             </p>
@@ -94,7 +94,7 @@
             <div
                 v-else
                 v-for="{ data, time } in store.result.console"
-                class="flex px-1.5 py-0.5 opacity-75 interact:opacity-100 interact:bg-gray-50 interact:dark:bg-gray-700/50 rounded-lg"
+                class="flex px-1.5 py-0.5 opacity-75 interact:opacity-100 interact:bg-mauve-50 interact:dark:bg-mauve-700/50 rounded-lg"
             >
                 <p class="inline-flex flex-1 whitespace-pre-wrap">{{ data }}</p>
                 <time class="text-xs opacity-60 translate-y-0.5">{{
@@ -113,7 +113,7 @@
             }"
         >
             <h6
-                class="font-mono !text-sm text-gray-400 dark:text-gray-500 py-1 whitespace-nowrap"
+                class="font-mono !text-sm text-mauve-400 dark:text-mauve-500 py-1 whitespace-nowrap"
             >
                 Network
             </h6>
@@ -145,11 +145,11 @@ const iframe = ref<HTMLIFrameElement | null>(null)
 @reference '../../../../../tailwind.css';
 
 .playground-floating-menu {
-    @apply absolute z-20 flex bg-gray-200/40 dark:bg-gray-600/30 border dark:border-gray-700/40 rounded-2xl p-0.5 backdrop-blur-md shadow-2xl;
+    @apply absolute z-20 flex bg-mauve-200/40 dark:bg-mauve-600/30 border dark:border-mauve-700/40 rounded-2xl p-0.5 backdrop-blur-md shadow-2xl;
 
     & > .button,
     & > .type > .button {
-        @apply clicky flex justify-center items-center size-7 text-gray-500 dark:text-gray-400 border border-transparent rounded-full interact:bg-pink-400/10 interact:dark:bg-pink-500/30 interact:text-pink-400 active:border-pink-400/20 dark:active:border-pink-500/40 transition-colors;
+        @apply clicky flex justify-center items-center size-7 text-mauve-500 dark:text-mauve-400 border border-transparent rounded-full interact:bg-pink-400/10 interact:dark:bg-pink-500/30 interact:text-pink-400 active:border-pink-400/20 dark:active:border-pink-500/40 transition-colors;
 
         &.-active {
             @apply bg-pink-400/10 dark:bg-pink-500/30 text-pink-400 border-pink-400/20 dark:border-pink-500/40;

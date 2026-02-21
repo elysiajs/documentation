@@ -138,7 +138,7 @@
                 </a>
             </h2>
             <h3
-                class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 !leading-normal text-left w-full max-w-2xl"
+                class="text-xl md:text-2xl text-mauve-500 dark:text-mauve-400 !leading-normal text-left w-full max-w-2xl"
                 :class="kawaii ? '' : 'md:text-center'"
             >
                 Backend TypeScript framework with
@@ -205,7 +205,7 @@
                     </p>
                 </div>
             </section>
-            <p class="flex gap-2 text-gray-400 mr-auto sm:mx-auto">
+            <p class="flex gap-2 text-mauve-400 mr-auto sm:mx-auto">
                 See why developers love Elysia
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

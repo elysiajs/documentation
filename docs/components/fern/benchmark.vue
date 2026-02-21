@@ -95,7 +95,7 @@ const expand = useExpandWidth(isInView)
                     <motion.p v-bind="flyIn(1)">105,064</motion.p>
                 </li>
             </ol>
-            <motion.p class="text-sm mt-3 text-gray-400" v-bind="flyIn(1.1)">
+            <motion.p class="text-sm mt-3 text-mauve-400" v-bind="flyIn(1.1)">
                 Measured in requests/second. Result from
                 <a
                     href="https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22"
@@ -128,7 +128,7 @@ const expand = useExpandWidth(isInView)
         background-image: radial-gradient(
             closest-side at center,
             transparent 0%,
-            var(--color-gray-900) 100%
+            var(--color-mauve-900) 100%
         );
     }
 }
@@ -147,7 +147,7 @@ const expand = useExpandWidth(isInView)
 }
 
 .title {
-    @apply flex flex-col justify-start items-start gap-0.5 text-gray-400;
+    @apply flex flex-col justify-start items-start gap-0.5 text-mauve-400;
 
     & > h3 {
         @apply text-7xl sm:text-8xl font-bold;
@@ -169,19 +169,19 @@ const expand = useExpandWidth(isInView)
         @apply flex justify-start items-center gap-4 w-full h-6;
 
         & > h6 {
-            @apply w-32 min-w-32 font-mono text-lg font-medium text-gray-500 dark:text-gray-400;
+            @apply w-32 min-w-32 font-mono text-lg font-medium text-mauve-500 dark:text-mauve-400;
 
             & > span {
-                @apply text-xs sm:text-sm text-gray-400 font-normal;
+                @apply text-xs sm:text-sm text-mauve-400 font-normal;
             }
         }
 
         & > div {
-            @apply flex justify-end items-center w-full h-6 font-bold font-mono text-gray-500 dark:text-gray-400 text-sm pr-3 bg-gray-200 dark:bg-gray-600 rounded-2xl;
+            @apply flex justify-end items-center w-full h-6 font-bold font-mono text-mauve-500 dark:text-mauve-400 text-sm pr-3 bg-mauve-200 dark:bg-mauve-600 rounded-2xl;
         }
 
         & > p {
-            @apply font-medium font-mono text-gray-400 text-xs sm:text-sm -translate-x-2;
+            @apply font-medium font-mono text-mauve-400 text-xs sm:text-sm -translate-x-2;
         }
     }
 }

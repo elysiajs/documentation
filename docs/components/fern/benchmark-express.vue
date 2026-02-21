@@ -22,7 +22,7 @@
                     <p>113,117</p>
                 </li>
             </ol>
-            <p class="text-sm !m-0 text-gray-400 !leading-normal">
+            <p class="text-sm !m-0 text-mauve-400 !leading-normal">
                 Measured in requests/second. Result from
                 <a
                     href="https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22"
@@ -44,7 +44,7 @@
     padding: 1.5px;
 
     & > article {
-    	@apply flex flex-col gap-3 p-5 bg-white dark:bg-slate-800;
+    	@apply flex flex-col gap-3 p-5 bg-white dark:bg-mauve-800;
      	border-radius: calc(var(--radius-2xl) - 1.5px);
     }
 }
@@ -56,19 +56,19 @@
         @apply flex justify-start items-center gap-4 w-full h-6;
 
         & > h6 {
-            @apply w-26 min-w-26 font-mono text-lg font-medium text-gray-500 dark:text-gray-400;
+            @apply w-26 min-w-26 font-mono text-lg font-medium text-mauve-500 dark:text-mauve-400;
 
             & > span {
-                @apply text-sm text-gray-400 font-normal;
+                @apply text-sm text-mauve-400 font-normal;
             }
         }
 
         & > div {
-            @apply flex justify-end items-center w-full h-6 font-bold font-mono text-gray-500 dark:text-gray-400 text-sm pr-3 bg-gray-200 dark:bg-gray-600 rounded-2xl;
+            @apply flex justify-end items-center w-full h-6 font-bold font-mono text-mauve-500 dark:text-mauve-400 text-sm pr-3 bg-mauve-200 dark:bg-mauve-600 rounded-2xl;
         }
 
         & > p {
-            @apply font-medium font-mono text-gray-400 text-sm -translate-x-2;
+            @apply font-medium font-mono text-mauve-400 text-sm -translate-x-2;
         }
     }
 }

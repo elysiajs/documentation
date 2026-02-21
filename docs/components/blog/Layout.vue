@@ -2,7 +2,7 @@
     <article id="blog" class="flex flex-col max-w-3xl w-full mx-auto mt-8">
         <a
             href="/blog"
-            class="inline-flex items-center gap-2 text-base !text-gray-500 dark:!text-gray-400 !no-underline hover:!text-pink-500 focus:!text-pink-500 my-2 mr-auto"
+            class="inline-flex items-center gap-2 text-base !text-mauve-500 dark:!text-mauve-400 !no-underline hover:!text-pink-500 focus:!text-pink-500 my-2 mr-auto"
         >
             <span>←</span>
             Blog
@@ -39,7 +39,7 @@
 
         <a
             href="/"
-            class="inline-flex items-center gap-2 text-base !text-gray-500 dark:!text-gray-400 !no-underline hover:!text-pink-500 focus:!text-pink-500 mt-2 mr-auto"
+            class="inline-flex items-center gap-2 text-base !text-mauve-500 dark:!text-mauve-400 !no-underline hover:!text-pink-500 focus:!text-pink-500 mt-2 mr-auto"
         >
             <span>←</span>
             Elysia: Ergonomic Framework for Humans

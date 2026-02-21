@@ -1,6 +1,6 @@
 <template>
     <button
-        class="clicky isolate group relative flex flex-col justify-center items-start w-full min-h-32 p-4 mt-4 pr-16 sm:p-6 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 overflow-hidden duration-750 ease-out-expo interact:shadow-xl interact:shadow-gray-700/5 text-left"
+        class="clicky isolate group relative flex flex-col justify-center items-start w-full min-h-32 p-4 mt-4 pr-16 sm:p-6 border border-mauve-200 dark:border-mauve-600 rounded-xl bg-white dark:bg-mauve-800 overflow-hidden duration-750 ease-out-expo interact:shadow-xl interact:shadow-mauve-700/5 text-left"
         @click="toggleAI"
     >
         <!-- <Ray class="absolute z-30 -top-4 left-0 h-13 opacity-60" /> -->
@@ -19,7 +19,7 @@
         >
             <div class="relative w-full h-full">
                 <div
-                    class="absolute z-10 w-full h-full bg-gradient-to-r from-white dark:from-gray-800 to-transparent"
+                    class="absolute z-10 w-full h-full bg-gradient-to-r from-white dark:from-mauve-800 to-transparent"
                 />
                 <img
                     class="dark:hidden scale-130 group-hover:scale-140 translate-x-[-13.75%] group-hover:translate-x-[-16.75%] translate-y-[10%] group-hover:translate-y-[12.5%] transition-transform duration-750 ease-out-expo"
@@ -33,7 +33,7 @@
         </div>
 
         <p
-            class="text-gray-500 dark:text-gray-400 z-10 !text-sm font-normal !max-w-xs mt-0! mb-1!"
+            class="text-mauve-500 dark:text-mauve-400 z-10 !text-sm font-normal !max-w-xs mt-0! mb-1!"
         >
        		Not sure what you are looking for?
         </p>

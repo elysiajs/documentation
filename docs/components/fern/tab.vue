@@ -9,7 +9,7 @@
                 :class="
                     index === activeTab
                         ? 'text-pink-400 dark:text-pink-300 bg-pink-50 dark:bg-pink-300/25 border-pink-300'
-                        : 'text-gray-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 border-transparent border-b-slate-200 dark:border-b-slate-600 interact:bg-pink-50 interact:dark:bg-pink-300/25 dark:focus:bg-pink-500/25 interact:text-pink-400/80 interact:dark:text-pink-300 focus:bg-pink-50/75 interact:border-pink-300/75'
+                        : 'text-mauve-500 dark:text-mauve-400 bg-mauve-50 dark:bg-mauve-800 border-transparent border-b-mauve-200 dark:border-b-mauve-600 interact:bg-pink-50 interact:dark:bg-pink-300/25 dark:focus:bg-pink-500/25 interact:text-pink-400/80 interact:dark:text-pink-300 focus:bg-pink-50/75 interact:border-pink-300/75'
                 "
                 :title="`Switch to ${name}`"
             >

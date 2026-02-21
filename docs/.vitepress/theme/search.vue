@@ -711,7 +711,7 @@ function toggleAI() {
 
                         <AnimatePresence>
                             <motion.div
-                                class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-gray-500 dark:text-gray-300 m-auto md:mt-10 md:mb-6 opacity-90"
+                                class="flex flex-col justify-center items-center h-47.5 gap-2 font-medium text-sm text-mauve-500 dark:text-mauve-300 m-auto md:mt-10 md:mb-6 opacity-90"
                                 v-if="
                                     !filterText ||
                                     (filterText && !results.length)

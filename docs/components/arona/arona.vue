@@ -51,7 +51,7 @@
                 </div>
 
                 <motion.section
-                    class="h-[calc(100dvh-4rem)] border-t border-l border-gray-100/50 dark:border-gray-700/50 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
+                    class="h-[calc(100dvh-4rem)] border-t border-l border-mauve-100/50 dark:border-mauve-700/50 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
                     :initial="{ opacity: 0, y: 32, scale: 0.95 }"
                     :animate="{
                         opacity: 1,
@@ -78,18 +78,18 @@
                         />
 
                         <div
-                            class="absolute top-0 z-10 left-0 w-full h-24 bg-gradient-to-b from-white/95 from-35% dark:from-gray-900/95 to-transparent pointer-events-none"
+                            class="absolute top-0 z-10 left-0 w-full h-24 bg-gradient-to-b from-white/95 from-35% dark:from-mauve-900/95 to-transparent pointer-events-none"
                         />
 
                         <h3
-                            class="absolute z-20 top-2 left-2 flex items-center text-gray-500 font-mono text-lg font-medium h-11 pl-0.5 rounded-full"
+                            class="absolute z-20 top-2 left-2 flex items-center text-mauve-500 font-mono text-lg font-medium h-11 pl-0.5 rounded-full"
                         >
                             <span
                                 class="transition-transform duration-300 ease-out-expo ml-3"
                             >
                                 Elysia chan
                                 <sup
-                                    class="inline-block text-xs scale-75 text-gray-400/60 dark:text-gray-500/60 font-light -translate-x-3"
+                                    class="inline-block text-xs scale-75 text-mauve-400/60 dark:text-mauve-500/60 font-light -translate-x-3"
                                 >
                                     (AI)
                                 </sup>
@@ -101,7 +101,7 @@
                         >
                             <Tooltip tip="Start new chat">
                                 <button
-                                    class="clicky flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-gray-300 duration-300 ease-out-expo origin-right"
+                                    class="clicky flex justify-center items-center size-10 text-mauve-400/60 interact:text-mauve-500 interact:bg-mauve-200/80 dark:interact:bg-mauve-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 transition-all ring-mauve-300 duration-300 ease-out-expo origin-right"
                                     @click="startNewChat"
                                     :class="{
                                         '!w-0 pointer-events-none mr-0':
@@ -121,7 +121,7 @@
                                 "
                             >
                                 <button
-                                    class="clicky z-20 interact:z-30 top-2 right-9 hidden sm:flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
+                                    class="clicky z-20 interact:z-30 top-2 right-9 hidden sm:flex justify-center items-center size-10 text-mauve-400/60 interact:text-mauve-500 interact:bg-mauve-200/80 dark:interact:bg-mauve-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-mauve-300 duration-300"
                                     @click="_isExpanded = !_isExpanded"
                                     :aria-keyshortcuts="
                                         isExpanded
@@ -139,7 +139,7 @@
 
                             <Tooltip tip="Close chat window (Escape)">
                                 <button
-                                    class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300"
+                                    class="clicky z-20 interact:z-30 top-2 right-1 flex justify-center items-center size-10 text-mauve-400/60 interact:text-mauve-500 interact:bg-mauve-200/80 dark:interact:bg-mauve-700/50 rounded-full !outline-none focus:ring-1 ring-offset-2 ring-mauve-300 duration-300"
                                     @click="model = false"
                                     aria-keyshortcuts="Escape"
                                 >
@@ -173,7 +173,7 @@
                                             ease: easeOutExpo
                                         }
                                     }"
-                                    class="absolute flex flex-col justify-center items-center w-full h-[calc(100dvh-8.5rem)] pb-24 text-gray-500 dark:text-gray-400 text-center"
+                                    class="absolute flex flex-col justify-center items-center w-full h-[calc(100dvh-8.5rem)] pb-24 text-mauve-500 dark:text-mauve-400 text-center"
                                 >
                                     <img
                                         class="h-48 mb-3 mt-16"
@@ -195,7 +195,7 @@
                                             ) in questions"
                                             :key="index"
                                             @click="ask(example)"
-                                            class="text-sm px-3 py-1 rounded-full bg-white/85 dark:bg-gray-700/85 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
+                                            class="clicky text-sm px-3 py-1 rounded-full bg-white/85 dark:bg-mauve-700/85 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
                                             v-text="example"
                                         />
                                     </div>
@@ -414,7 +414,7 @@
                         />
 
                         <form
-                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex flex-col min-h-11 bg-white/70 border-r border-b border-white/95 dark:border-gray-600 dark:bg-gray-700/70 backdrop-blur-md rounded-3xl"
+                            class="absolute z-20 bottom-2 left-2 w-[calc(100%-1rem)] flex flex-col min-h-11 bg-white/70 border-r border-b border-white/95 dark:border-mauve-600 dark:bg-mauve-700/70 backdrop-blur-md rounded-3xl"
                             @submit.prevent="ask()"
                         >
                             <textarea
@@ -423,7 +423,7 @@
                                 ref="textarea"
                                 v-model="question"
                                 placeholder="What's on your mind"
-                                class="w-full h-inherit px-4 pt-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                                class="w-full h-inherit px-4 pt-3 resize-none focus:outline-none placeholder:text-mauve-400 dark:placeholder:text-mauve-500"
                                 autofocus
                                 @keydown="handleShortcut"
                                 data-gramm="false"
@@ -435,7 +435,7 @@
                                 disabled
                                 value=""
                                 placeholder="What's on your mind"
-                                class="w-full h-inherit px-4 pt-3 resize-none focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                                class="w-full h-inherit px-4 pt-3 resize-none focus:outline-none placeholder:text-mauve-400 dark:placeholder:text-mauve-500"
                                 data-gramm="false"
                             />
                             <div
@@ -447,7 +447,7 @@
                                         :class="{
                                             'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
                                                 includeCurrentPage,
-                                            'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
+                                            'text-mauve-400/60 interact:text-mauve-500 interact:bg-mauve-200/80 dark:interact:bg-mauve-700/50 ring-mauve-300':
                                                 !includeCurrentPage
                                         }"
                                         for="elysia-ai-include-current-page"
@@ -469,7 +469,7 @@
                                         :class="{
                                             'text-pink-500 dark:text-pink-300 bg-pink-300/15 dark:bg-pink-200/15 ring-pink-500 dark:ring-pink-300':
                                                 thinkHarder,
-                                            'text-gray-400/60 interact:text-gray-500 interact:bg-gray-200/80 dark:interact:bg-gray-700/50 ring-gray-300':
+                                            'text-mauve-400/60 interact:text-mauve-500 interact:bg-mauve-200/80 dark:interact:bg-mauve-700/50 ring-mauve-300':
                                                 !thinkHarder
                                         }"
                                         for="elysia-ai-think-harder"
@@ -488,7 +488,7 @@
                                 </Tooltip>
 
                                 <button
-                                    class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-50 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-gray-400 dark:text-gray-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all ml-auto"
+                                    class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-50 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-mauve-400 dark:text-mauve-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all ml-auto"
                                     :disabled="!turnstileToken || !powToken"
                                     :title="
                                         isStreaming
@@ -1201,12 +1201,12 @@ onUnmounted(() => {
         background-image:
             radial-gradient(
                 closest-side at center,
-                oklch(27.8% 0.033 256.848 / 0.6) 70%,
+                theme('--color-mauve-800') 10%,
                 transparent 150%
             ),
             radial-gradient(
                 closest-side at center,
-                oklch(27.8% 0.033 256.848 / 0.6) 90%,
+                theme('--color-mauve-800') 10%,
                 transparent 150%
             ),
             radial-gradient(
@@ -1216,7 +1216,7 @@ onUnmounted(() => {
             ),
             radial-gradient(
                 at 22% 0%,
-                hsla(210, 100%, 69%, 0.29) 0px,
+                theme('--color-mauve-600') 0px,
                 transparent 50%
             ),
             radial-gradient(
@@ -1247,7 +1247,7 @@ onUnmounted(() => {
     }
 
     & > .user {
-        @apply px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-top-right;
+        @apply px-3 py-1.5 bg-mauve-100 dark:bg-mauve-700 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-top-right;
     }
 
     & > .elysia-chan {
@@ -1275,7 +1275,7 @@ onUnmounted(() => {
                     }
 
                     & > a {
-                        @apply px-2 py-1 text-gray-400 bg-white/35 dark:bg-gray-700/35 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
+                        @apply px-2 py-1 text-mauve-400 bg-white/35 dark:bg-mauve-700/35 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
                     }
                 }
             }
@@ -1310,7 +1310,7 @@ onUnmounted(() => {
                 & > tr,
                 & > tr > th,
                 & > tr > td {
-                    @apply border border-gray-200 dark:border-gray-700;
+                    @apply border border-mauve-200 dark:border-mauve-700;
                 }
             }
         }
@@ -1376,7 +1376,7 @@ onUnmounted(() => {
         }
 
         & > hr {
-            @apply my-4 border-gray-200 dark:border-gray-600;
+            @apply my-4 border-mauve-200 dark:border-mauve-600;
         }
 
         & > p > code,
@@ -1407,7 +1407,7 @@ onUnmounted(() => {
         * > *,
         * > * > * {
             & > div[theme] > .shiki {
-                @apply relative my-4 text-sm -mx-4 bg-[#eff1f590]! dark:bg-[#1e1e2ec3]! border-y dark:border-gray-700/75;
+                @apply relative my-4 text-sm -mx-4 bg-[#eff1f590]! dark:bg-mauve-800/50! border-y dark:border-mauve-700/75;
 
                 &:hover {
                     & > .lang {
@@ -1420,15 +1420,15 @@ onUnmounted(() => {
                 }
 
                 & > .lang {
-                    @apply absolute top-2 right-2 text-xs text-gray-400 dark:text-gray-500 transition-opacity;
+                    @apply absolute top-2 right-2 text-xs text-mauve-400 dark:text-mauve-500 transition-opacity;
                 }
 
                 & > .copy {
-                    @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-gray-50 dark:!bg-gray-800 interact:!bg-white dark:interact:!bg-gray-700 transition-opacity opacity-0;
+                    @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-mauve-50 dark:!bg-mauve-800 interact:!bg-white dark:interact:!bg-mauve-700 transition-opacity opacity-0;
                     border: 1px solid var(--vp-code-copy-code-border-color);
 
                     &::before {
-                        @apply absolute flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500 !pr-1 !rounded-l-xl;
+                        @apply absolute flex justify-center items-center translate-y-0.25 size-10 text-mauve-400 dark:text-mauve-500 !pr-1 !rounded-l-xl;
 
                         content: '';
                         top: -2.5px;
@@ -1440,17 +1440,17 @@ onUnmounted(() => {
                     }
 
                     &::after {
-                        @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-l-xl -translate-y-0.25 translate-x-4 text-gray-500 !bg-white !border-r-0 opacity-0 transition-opacity pointer-events-none;
+                        @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-l-xl -translate-y-0.25 translate-x-4 text-mauve-500 !bg-white !border-r-0 opacity-0 transition-opacity pointer-events-none;
                         border: inherit;
                         content: 'Copied';
                     }
 
                     .dark &::after {
-                        @apply text-gray-400 !bg-gray-700;
+                        @apply text-mauve-400 !bg-mauve-700;
                     }
 
                     &.copied {
-                        @apply !bg-white dark:!bg-gray-700 !pr-1;
+                        @apply !bg-white dark:!bg-mauve-700 !pr-1;
 
                         &::before {
                             background-image: var(--vp-icon-copied);
@@ -1488,15 +1488,15 @@ onUnmounted(() => {
     }
 
     & > .elysia-chan-tools {
-        @apply flex items-end w-full px-1 -translate-y-3 mt-2 text-sm text-gray-400 *:interact:text-pink-500 *:interact:dark:text-pink-300 *:interact:bg-pink-300/15 *:dark:interact:bg-pink-200/15 origin-top-left;
+        @apply flex items-end w-full px-1 -translate-y-3 mt-2 text-sm text-mauve-400 *:interact:text-pink-500 *:interact:dark:text-pink-300 *:interact:bg-pink-300/15 *:dark:interact:bg-pink-200/15 origin-top-left;
         animation: spring-in 0.6s var(--ease-out-expo);
 
         & > button,
         & > a {
-            @apply clicky z-20 interact:z-30 flex justify-center items-center rounded-lg !outline-none focus:ring-1 ring-offset-2 ring-gray-300 duration-300 cursor-pointer;
+            @apply clicky z-20 interact:z-30 flex justify-center items-center rounded-lg !outline-none focus:ring-1 ring-offset-2 ring-mauve-300 duration-300 cursor-pointer;
 
             &:disabled {
-                @apply opacity-60 interact:!bg-transparent !text-gray-400 cursor-progress;
+                @apply opacity-60 interact:!bg-transparent !text-mauve-400 cursor-progress;
             }
         }
 

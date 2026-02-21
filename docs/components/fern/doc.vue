@@ -59,7 +59,7 @@ const flyIn2 = useFlyIn(isInView2)
             class="flex flex-col md:flex-row gap-6 justify-between md:items-end max-w-5xl w-full mx-auto px-4 xl:px-0"
         >
             <h2
-                class="flex flex-col gap-2 text-xl text-gray-500 dark:text-gray-400 mb-2"
+                class="flex flex-col gap-2 text-xl text-mauve-500 dark:text-mauve-400 mb-2"
             >
                 <motion.span v-bind="flyIn()">
                     Say hello to your API with
@@ -72,7 +72,7 @@ const flyIn2 = useFlyIn(isInView2)
                 </motion.span>
             </h2>
             <div
-                class="flex flex-col gap-2 max-w-md md:text-base md:pr-4 text-gray-400 dark:text-gray-500"
+                class="flex flex-col gap-2 max-w-md md:text-base md:pr-4 text-mauve-400 dark:text-mauve-500"
             >
                 <motion.p v-bind="flyIn(0.2)"
                     >We take OpenAPI documentation seriously</motion.p
@@ -139,7 +139,7 @@ const flyIn2 = useFlyIn(isInView2)
                         TypeScript types
                     </span>
                     into an API documentation
-                    <small class="block mt-1 text-gray-400/80 dark:text-gray-400/70">
+                    <small class="block mt-1 text-mauve-400/80 dark:text-mauve-400/70">
                         (like FastAPI but from TypeScript types)
                     </small>
                 </motion.p>
@@ -168,7 +168,7 @@ const flyIn2 = useFlyIn(isInView2)
         }
 
         & > .showcase {
-            @apply max-w-lg rounded-xl border border-y-violet-200/50 border-x-blue-200/50 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-gray-800;
+            @apply max-w-lg rounded-xl border border-y-violet-200/50 border-x-blue-200/50 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-mauve-800;
             /*box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);*/
 
             background-image:
@@ -222,12 +222,12 @@ const flyIn2 = useFlyIn(isInView2)
                 background-image:
                     radial-gradient(
                         closest-side at center,
-                        var(--color-gray-800) 70%,
+                        var(--color-mauve-800) 70%,
                         transparent 150%
                     ),
                     radial-gradient(
                         closest-side at center,
-                        var(--color-gray-800) 90%,
+                        var(--color-mauve-800) 90%,
                         transparent 150%
                     ),
                     radial-gradient(
@@ -272,10 +272,10 @@ const flyIn2 = useFlyIn(isInView2)
 
                 & > .tabs {
                     @apply !bg-transparent !translate-x-4 sm:!translate-x-0;
-                    /*box-shadow: inset 0 -1px theme(--color-gray-200);*/
+                    /*box-shadow: inset 0 -1px theme(--color-mauve-200);*/
 
                     .dark & {
-                        /*box-shadow: inset 0 -1px theme(--color-gray-700);*/
+                        /*box-shadow: inset 0 -1px theme(--color-mauve-700);*/
                     }
                 }
 
@@ -298,14 +298,14 @@ const flyIn2 = useFlyIn(isInView2)
     & > .carousel {
     	@apply pt-4;
 
-        --vc-pgn-background-color: theme(--color-slate-200);
+        --vc-pgn-background-color: theme(--color-mauve-200);
         --vc-pgn-active-color: var(--vp-c-brand-light);
         --vc-pgn-border-radius: 0.25rem;
         --vc-pgn-height: 0.25rem;
         --vc-pgn-width: 3.5rem;
 
         .dark & {
-            --vc-pgn-background-color: theme(--color-gray-600);
+            --vc-pgn-background-color: theme(--color-mauve-600);
             --vc-pgn-active-color: var(--vp-c-brand);
         }
 
@@ -327,12 +327,12 @@ const flyIn2 = useFlyIn(isInView2)
     @apply flex flex-col gap-6 pb-12 mb-auto px-4 xl:px-0;
 
     & > .image {
-        @apply rounded-2xl border dark:border-gray-800 w-full sm:w-[97%] bg-gray-50 dark:bg-gray-700 object-cover;
+        @apply rounded-2xl border dark:border-mauve-800 w-full sm:w-[97%] bg-mauve-50 dark:bg-mauve-700 object-cover;
         /*box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);*/
     }
 
     & > .content {
-        @apply max-w-md text-lg text-gray-400;
+        @apply max-w-md text-lg text-mauve-400;
     }
 }
 </style>

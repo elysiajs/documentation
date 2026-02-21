@@ -53,7 +53,7 @@ const questions = [
         ref="scope"
     >
         <motion.section
-            class="group relative isolate flex flex-col justify-center items-center gap-10 w-full max-w-7xl px-5 py-24 md:aspect-video h-full border border-gray-200 dark:border-gray-800 lg:rounded-[2.5rem] overflow-hidden rounded-2xl"
+            class="group relative isolate flex flex-col justify-center items-center gap-10 w-full max-w-7xl px-5 py-24 md:aspect-video h-full border border-mauve-200 dark:border-mauve-800 lg:rounded-[2.5rem] overflow-hidden rounded-2xl"
             id="ask-elysia-landing"
             v-bind="flyIn()"
         >
@@ -69,7 +69,7 @@ const questions = [
             </motion.div>
             <motion.form
                 @submit.prevent="ask()"
-                class="flex items-end w-full max-w-xl text-gray-600 dark:text-gray-200 resize-none py-2 pr-2 bg-gray-50/50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-3xl shadow-xl shadow-black/2.5"
+                class="flex items-end w-full max-w-xl text-mauve-600 dark:text-mauve-200 resize-none py-2 pr-2 bg-mauve-50/50 dark:bg-mauve-700/50 border border-mauve-200 dark:border-mauve-700 rounded-3xl shadow-xl shadow-black/2.5"
                 v-bind="flyIn(0.2)"
             >
                 <textarea
@@ -77,7 +77,7 @@ const questions = [
                     ref="textarea"
                     v-model="question"
                     placeholder="Anything you want to know"
-                    class="flex flex-1 my-auto px-4 resize-none dark:placeholder:text-gray-400"
+                    class="flex flex-1 my-auto px-4 resize-none dark:placeholder:text-mauve-400"
                     @keydown="handleShortcut"
                     data-gramm="false"
                 />
@@ -95,7 +95,7 @@ const questions = [
                     <button
                         :key="index"
                         @click="ask(example)"
-                        class="clicky text-xs sm:text-sm px-3 py-1 rounded-full text-gray-600 dark:text-gray-200 resize-none bg-gray-50/50 dark:bg-gray-700/50 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-all border border-gray-200/65 dark:border-gray-700"
+                        class="clicky text-xs sm:text-sm px-3 py-1 rounded-full text-mauve-600 dark:text-mauve-200 resize-none bg-mauve-50/50 dark:bg-mauve-700/50 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-all border border-mauve-200/65 dark:border-mauve-700"
                         v-text="example"
                     />
                 </motion.div>
@@ -154,7 +154,7 @@ const questions = [
         background-image:
             radial-gradient(
                 closest-side at center,
-                var(--color-gray-800) 0%,
+                var(--color-mauve-800) 0%,
                 transparent 120%
             ),
             radial-gradient(

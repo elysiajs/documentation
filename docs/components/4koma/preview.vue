@@ -29,14 +29,14 @@
                 />
 
                 <motion.section
-                    class="lg:absolute lg:top-1/2 lg:-translate-y-1/2 -translate-y-2.5 right-4 flex flex-col w-72 p-2 pb-1 mx-auto mb-4 lg:mb-0 lg:mx-0 text-sm text-gray-500 dark:text-gray-400 -translte-y-8 bg-white/80 dark:bg-gray-800/80 border rounded-3xl backdrop-blur-md shadow-xl lg:shadow-transparent"
+                    class="lg:absolute lg:top-1/2 lg:-translate-y-1/2 -translate-y-2.5 right-4 flex flex-col w-72 p-2 pb-1 mx-auto mb-4 lg:mb-0 lg:mx-0 text-sm text-mauve-500 dark:text-mauve-400 -translte-y-8 bg-white/80 dark:bg-mauve-800/80 border rounded-3xl backdrop-blur-md shadow-xl lg:shadow-transparent"
                     :initial="{ opacity: 0, y: 24 }"
                     :animate="{ opacity: 1, y: 0 }"
                     :exit="{ opacity: 0, y: 24 }"
                     :transition="{ ease: [0.16, 1, 0.3, 1], delay: 0.15 }"
                 >
                     <header class="flex justify-between items-center w-full">
-                        <DialogTitle class="text-gray-800 dark:text-white text-base font-medium pl-2">
+                        <DialogTitle class="text-mauve-800 dark:text-white text-base font-medium pl-2">
                             {{ title }}
                         </DialogTitle>
 
@@ -44,7 +44,7 @@
                             class="size-8 flex items-center justify-center"
                             aria-label="Close"
                         >
-                            <XIcon class="size-5 text-gray-600 dark:text-gray-500" />
+                            <XIcon class="size-5 text-mauve-600 dark:text-mauve-500" />
                         </DialogClose>
                     </header>
 

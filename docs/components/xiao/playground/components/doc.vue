@@ -13,7 +13,7 @@
         />
     </div>
     <div
-        class="relative w-full h-full border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-900 overflow-x-hidden overflow-y-auto"
+        class="relative w-full h-full border-mauve-200 dark:border-mauve-700 rounded-2xl bg-white dark:bg-mauve-900 overflow-x-hidden overflow-y-auto"
         :class="{ border: store.tab.aside !== null }"
     >
         <iframe
@@ -28,7 +28,7 @@
 
             <main id="elysia-playground-task" v-if="store.tab.aside === 'task'">
                 <div
-                    className="group text-xs mt-4 !mb-1.5 text-gray-400 transition-colors"
+                    className="group text-xs mt-4 !mb-1.5 text-mauve-400 transition-colors"
                 >
                     <label
                         for="elysia-playground-table-of-contents"
@@ -68,11 +68,11 @@
                         <li
                             v-for="(testcase, i) in store.testcases"
                             :key="testcase.title"
-                            class="group flex gap-3 text-gray-500"
+                            class="group flex gap-3 text-mauve-500"
                         >
                             <div class="flex flex-col gap-2 mt-0.75 w-6">
                                 <div
-                                    class="min-w-6 min-h-6 text-gray-400/80 *:absolute *:transition-all *:duration-250"
+                                    class="min-w-6 min-h-6 text-mauve-400/80 *:absolute *:transition-all *:duration-250"
                                     :class="{
                                         'text-green-600 dark:text-green-500':
                                             store.testcasesResult[i]
@@ -110,7 +110,7 @@
 
                                 <div
                                     :size="24"
-                                    class="w-0.5 h-full mx-auto bg-gray-300/80 dark:bg-gray-500/80 rounded"
+                                    class="w-0.5 h-full mx-auto bg-mauve-300/80 dark:bg-mauve-500/80 rounded"
                                 >
                                     <div
                                         class="w-full h-0 bg-green-600/75 dark:bg-green-500/75 transition-all duration-500 ease-in-expo"
@@ -128,7 +128,7 @@
                             </div>
                             <div class="pb-2">
                                 <h4
-                                    class="text-xl font-semibold text-gray-700 dark:text-gray-200 duration-250"
+                                    class="text-xl font-semibold text-mauve-700 dark:text-mauve-200 duration-250"
                                     :class="{
                                         'text-green-600 dark:text-green-500':
                                             store.testcasesResult[i]
@@ -144,7 +144,7 @@
                                     {{ testcase.title }}
                                 </h4>
                                 <p
-                                    class="text-sm mt-2 text-gray-500/80 dark:text-gray-300/80 group-hover:text-gray-600 dark:group-hover:text-gray-200 transition-colors duration-250"
+                                    class="text-sm mt-2 text-mauve-500/80 dark:text-mauve-300/80 group-hover:text-mauve-600 dark:group-hover:text-mauve-200 transition-colors duration-250"
                                     :style="{
                                         transitionDelay: store.testcasesResult[
                                             i
@@ -258,7 +258,7 @@ watchDebounced(
 @reference '../../../../tailwind.css';
 
 #elysia-playground-task {
-    @apply p-4 pt-0 text-gray-800/85 dark:text-gray-200/85;
+    @apply p-4 pt-0 text-mauve-800/85 dark:text-mauve-200/85;
 
     font-size: 15px;
 
@@ -277,7 +277,7 @@ watchDebounced(
     }
 
     & > h2 {
-        @apply text-xl sm:text-2xl font-bold pt-4 my-4 border-t dark:border-gray-700;
+        @apply text-xl sm:text-2xl font-bold pt-4 my-4 border-t dark:border-mauve-700;
     }
 
     & > h3 {
@@ -364,15 +364,15 @@ watchDebounced(
         }
 
         & > .lang {
-            @apply absolute top-2 right-2 text-xs text-gray-400 dark:text-gray-500 transition-opacity;
+            @apply absolute top-2 right-2 text-xs text-mauve-400 dark:text-mauve-500 transition-opacity;
         }
 
         & > .copy {
-            @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-gray-50 dark:!bg-gray-800 interact:!bg-white dark:interact:!bg-gray-700 transition-opacity opacity-0;
+            @apply absolute z-20 top-2 right-2 size-10 rounded-xl !bg-mauve-50 dark:!bg-mauve-800 interact:!bg-white dark:interact:!bg-mauve-700 transition-opacity opacity-0;
             border: 1px solid var(--vp-code-copy-code-border-color);
 
             &::before {
-                @apply absolute flex justify-center items-center translate-y-0.25 size-10 text-gray-400 dark:text-gray-500 !pr-1 !rounded-l-xl;
+                @apply absolute flex justify-center items-center translate-y-0.25 size-10 text-mauve-400 dark:text-mauve-500 !pr-1 !rounded-l-xl;
 
                 content: "";
                 top: -2.5px;
@@ -384,17 +384,17 @@ watchDebounced(
             }
 
             &::after {
-                @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-l-xl -translate-y-0.25 translate-x-4 text-gray-500 !bg-white !border-r-0 opacity-0 transition-opacity pointer-events-none;
+                @apply absolute flex justify-center items-center right-11 w-auto h-10 px-2 text-xs font-medium rounded-l-xl -translate-y-0.25 translate-x-4 text-mauve-500 !bg-white !border-r-0 opacity-0 transition-opacity pointer-events-none;
                 border: inherit;
                 content: 'Copied';
             }
 
             .dark &::after {
-            	@apply text-gray-400 !bg-gray-700
+            	@apply text-mauve-400 !bg-mauve-700
             }
 
             &.copied {
-                @apply !bg-white dark:!bg-gray-700 !pr-1;
+                @apply !bg-white dark:!bg-mauve-700 !pr-1;
 
                 &::before {
                 	background-image: var(--vp-icon-copied);

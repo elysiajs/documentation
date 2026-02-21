@@ -514,7 +514,7 @@ I could just move on as I could avoid loose contract like this in the future, an
 
 There's a my favorite part, [a quote in the animated short](https://youtu.be/v1sd5CzR504?t=128) where Mei is against Kiana of the idea that she would sacrifice herself for the world, and Mei replies:
 
-<div class="font-mono text-gray-500 dark:text-gray-400 text-base">
+<div class="font-mono text-mauve-500 dark:text-mauve-400 text-base">
 
 \> Yet you shoulder everything alone, at the cost of your life.
 

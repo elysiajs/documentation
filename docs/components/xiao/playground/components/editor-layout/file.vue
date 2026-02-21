@@ -55,7 +55,7 @@
                     :initial="{ opacity: 0, scale: 0.9, translateY: 4 }"
                     :animate="{ opacity: 1, scale: 1, translateY: 0 }"
                     :exit="{ opacity: 0, scale: 0.9, translateY: 4 }"
-                    class="flex flex-col gap-0.5 w-36 text-xs p-1 bg-white/65 dark:bg-gray-700/55 rounded-lg border dark:border-gray-600/75 backdrop-blur-xs origin-top shadow-lg"
+                    class="flex flex-col gap-0.5 w-36 text-xs p-1 bg-white/65 dark:bg-mauve-700/55 rounded-lg border dark:border-mauve-600/75 backdrop-blur-xs origin-top shadow-lg"
                 >
                     <ContextMenuItem
                         value="rename"

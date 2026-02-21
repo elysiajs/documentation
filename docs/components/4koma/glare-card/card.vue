@@ -12,7 +12,7 @@
             <div
                 class="grid size-full mix-blend-soft-light [clip-path:inset(0_0_0_0_round_var(--radius))] [grid-area:1/1]"
             >
-                <div :class="cn('size-full bg-slate-950', props.class)">
+                <div :class="cn('size-full bg-mauve-950', props.class)">
                     <slot />
                 </div>
             </div>

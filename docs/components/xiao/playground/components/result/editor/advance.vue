@@ -49,7 +49,7 @@
                 <Body
                     :class="{
                         hidden: tab !== 'body',
-                        'w-full h-full overflow-hidden border-t border-gray-200 dark:border-gray-600 rounded-br-2xl': true
+                        'w-full h-full overflow-hidden border-t border-mauve-200 dark:border-mauve-600 rounded-br-2xl': true
                     }"
                 />
             </ClientOnly>
@@ -106,7 +106,7 @@ const variants = {
 @reference '../../../../../../tailwind.css';
 
 #playground-rest-editor {
-    @apply top-2 left-2 z-30 flex-col w-md h-72 p-0 border-gray-300/75  dark:bg-gray-700/30 dark:border-gray-500/75 shadow-black/7.5;
+    @apply top-2 left-2 z-30 flex-col w-md h-72 p-0 border-mauve-300/75  dark:bg-mauve-700/30 dark:border-mauve-500/75 shadow-black/7.5;
     transform-origin: 0.75rem 0.75rem;
     max-width: calc(100% - 1rem);
     max-height: calc(100% - 1rem);

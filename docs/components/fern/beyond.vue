@@ -15,7 +15,7 @@
                     </p>
                 </div>
                 <p
-                    class="absolute z-10 top-2 right-2 text-xs border dark:border-gray-600 px-2 py-1 rounded-full bg-gray-50/40 dark:bg-gray-700/40 backdrop-blur-sm pointer-events-none"
+                    class="absolute z-10 top-2 right-2 text-xs border dark:border-mauve-600 px-2 py-1 rounded-full bg-mauve-50/40 dark:bg-mauve-700/40 backdrop-blur-sm pointer-events-none"
                 >
                     POST /character/:id/chat
                 </p>
@@ -193,7 +193,7 @@ function move(event: MouseEvent) {
             }
 
             & > h5 {
-                @apply flex items-center text-sm font-semibold text-gray-400 mt-5 mb-2 gap-0.5;
+                @apply flex items-center text-sm font-semibold text-mauve-400 mt-5 mb-2 gap-0.5;
 
                 & > svg {
                     transform: scale(0.6);
@@ -210,7 +210,7 @@ function move(event: MouseEvent) {
 
 #opentelemetry {
     & > section {
-        @apply relative flex flex-col pl-4 justify-center gap-1.5 bg-gray-50 dark:bg-gray-800 rounded-3xl border dark:border-gray-700 overflow-hidden;
+        @apply relative flex flex-col pl-4 justify-center gap-1.5 bg-mauve-50 dark:bg-mauve-800 rounded-3xl border dark:border-mauve-700 overflow-hidden;
 
         background-image: linear-gradient(to right, #ddd 1px, transparent 1px);
         background-size: 6rem 6em;
@@ -243,7 +243,7 @@ function move(event: MouseEvent) {
 
 #e2e-type-safety {
     & > section {
-        @apply rounded-xl border border-y-violet-200 border-x-blue-200 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-gray-800;
+        @apply rounded-xl border border-y-violet-200 border-x-blue-200 dark:border-y-violet-500/20 dark:border-x-blue-500/20 overflow-hidden bg-white dark:bg-mauve-800;
 
         background-image: radial-gradient(
                 closest-side at center,
@@ -294,12 +294,12 @@ function move(event: MouseEvent) {
         html.dark & {
             background-image: radial-gradient(
                     closest-side at center,
-                    var(--color-gray-800) 70%,
+                    var(--color-mauve-800) 70%,
                     transparent 150%
                 ),
                 radial-gradient(
                     closest-side at center,
-                    var(--color-gray-800) 90%,
+                    var(--color-mauve-800) 90%,
                     transparent 150%
                 ),
                 radial-gradient(

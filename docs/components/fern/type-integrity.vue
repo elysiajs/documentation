@@ -143,13 +143,13 @@ watch(form, (index) => {
 		}
 
         & > .window {
-            @apply max-w-3xl w-full mx-auto !bg-white/75 dark:!bg-gray-800/75 border-2 border-white/20  dark:border-gray-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
+            @apply max-w-3xl w-full mx-auto !bg-white/75 dark:!bg-mauve-800/75 border-2 border-white/20  dark:border-mauve-700 rounded-2xl overflow-auto backdrop-blur-sm shadow-xl;
 
             & > .control {
                 @apply flex gap-2 pt-3 px-3;
 
                 & > div {
-                    @apply rounded-full bg-gray-400 border;
+                    @apply rounded-full bg-mauve-400 border;
                     width: 0.825rem;
                     height: 0.825rem;
 
@@ -198,7 +198,7 @@ watch(form, (index) => {
         }
 
         & > form {
-            @apply grid grid-cols-2 md:grid-cols-4 items-center justify-center gap-1 h-full px-1 py-1 mx-auto bg-white/75 dark:bg-gray-800/75 backdrop-blur-lg rounded-3xl border dark:border-gray-700 dark:border-t-gray-600 dark:border-l-gray-600;
+            @apply grid grid-cols-2 md:grid-cols-4 items-center justify-center gap-1 h-full px-1 py-1 mx-auto bg-white/75 dark:bg-mauve-800/75 backdrop-blur-lg rounded-3xl border dark:border-mauve-700 dark:border-t-mauve-600 dark:border-l-mauve-600;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.075);
 
             html.dark & {
@@ -206,7 +206,7 @@ watch(form, (index) => {
             }
 
             & > div {
-                @apply flex justify-center items-center min-h-10 h-full font-medium text-gray-500 dark:text-gray-300 rounded-full hover:text-blue-500 md:has-[:checked]:bg-transparent md:has-[:checked]:dark:bg-transparent has-[:checked]:bg-gray-400/20 has-[:checked]:dark:bg-white/15 transition-colors ease-out duration-200 cursor-pointer;
+                @apply flex justify-center items-center min-h-10 h-full font-medium text-mauve-500 dark:text-mauve-300 rounded-full hover:text-blue-500 md:has-[:checked]:bg-transparent md:has-[:checked]:dark:bg-transparent has-[:checked]:bg-mauve-400/20 has-[:checked]:dark:bg-white/15 transition-colors ease-out duration-200 cursor-pointer;
 
                 & > input[type='radio'] {
                     @apply appearance-none w-0 h-0 hidden;

@@ -21,7 +21,7 @@ function jit() {
 
 <template>
     <section
-        class="flex flex-col items-start max-w-md w-full p-2 bg-gray-50 dark:bg-gray-800 rounded-xl border dark:border-gray-700 text-gray-500/80 dark:text-gray-400"
+        class="flex flex-col items-start max-w-md w-full p-2 bg-mauve-50 dark:bg-mauve-800 rounded-xl border dark:border-mauve-700 text-mauve-500/80 dark:text-mauve-400"
     >
         <button
             @click="jit"

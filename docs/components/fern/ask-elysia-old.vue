@@ -24,7 +24,7 @@ function askAI() {
         ref="scope"
     >
         <motion.section
-            class="group relative isolate flex flex-col md:flex-row justify-center items-center gap-10 w-full max-w-5xl h-full p-8 md:py-16 border border-gray-200 dark:border-gray-700 lg:rounded-[2.5rem] overflow-hidden rounded-2xl"
+            class="group relative isolate flex flex-col md:flex-row justify-center items-center gap-10 w-full max-w-5xl h-full p-8 md:py-16 border border-mauve-200 dark:border-mauve-700 lg:rounded-[2.5rem] overflow-hidden rounded-2xl"
             id="ask-elysia-landing"
             v-bind="flyIn()"
         >
@@ -54,13 +54,13 @@ function askAI() {
                 class="relative flex flex-col justify-start gap-2 text-base max-w-md w-full mb-auto"
             >
                 <motion.p
-                    class="absolute top-0 md:-top-6 right-0 flex justify-center items-center px-4 py-2 dark:text-gray-400 bg-gray-200/70 dark:bg-gray-800 rounded-3xl"
+                    class="absolute top-0 md:-top-6 right-0 flex justify-center items-center px-4 py-2 dark:text-mauve-400 bg-mauve-200/70 dark:bg-mauve-800 rounded-3xl"
                     v-bind="flyIn(0.4)"
                 >
                     Can I use Zod with Elysia?
                 </motion.p>
                 <motion.p
-                    class="absolute top-12 md:top-6 left-0 flex justify-center items-center px-4 py-2 dark:text-gray-400"
+                    class="absolute top-12 md:top-6 left-0 flex justify-center items-center px-4 py-2 dark:text-mauve-400"
                     v-bind="flyIn(0.5)"
                 >
                     Elysia validates incoming request data (params, query, body,
@@ -73,7 +73,7 @@ function askAI() {
                     Effect‑Schema, and many more.
                 </motion.p>
                 <div
-                    class="absolute top-12 md:top-12 left-0 w-full h-46 bg-gradient-to-b from-transparent to-white dark:to-gray-900 pointer-events-none"
+                    class="absolute top-12 md:top-12 left-0 w-full h-46 bg-gradient-to-b from-transparent to-white dark:to-mauve-900 pointer-events-none"
                 />
             </div>
         </motion.section>

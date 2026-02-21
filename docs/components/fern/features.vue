@@ -17,11 +17,11 @@ const flyIn = useFlyIn(isInView)
             class="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-4 w-full mb-6 sm:mb-12"
         >
             <motion.h2
-                class="text-5xl sm:text-6xl text-left text-gray-700 dark:text-gray-300 font-medium leading-[3.5rem] sm:leading-[4.5rem]"
+                class="text-5xl sm:text-6xl text-left text-mauve-700 dark:text-mauve-300 font-medium leading-[3.5rem] sm:leading-[4.5rem]"
                 v-bind="flyIn()"
             >
                 <span
-                    class="text-gray-500 dark:text-gray-400 font-medium text-xl"
+                    class="text-mauve-500 dark:text-mauve-400 font-medium text-xl"
                 >
                     To summarize
                 </span>
@@ -36,7 +36,7 @@ const flyIn = useFlyIn(isInView)
                 for the bold
             </motion.h2>
             <p
-                class="w-full sm:w-1/2 lg:max-w-lg lg:w-full lg:pr-24 dark:text-gray-400 dark:font-medium"
+                class="w-full sm:w-1/2 lg:max-w-lg lg:w-full lg:pr-24 dark:text-mauve-400 dark:font-medium"
                 v-bind="flyIn(0.1)"
             >
                 <motion.span class="inline-block mb-2" v-bind="flyIn(0.2)">
@@ -76,7 +76,7 @@ const flyIn = useFlyIn(isInView)
             </motion.section>
         </div>
         <motion.h5
-            class="text-right text-base mt-6 text-gray-400/75"
+            class="text-right text-base mt-6 text-mauve-400/75"
             v-bind="flyIn(0.5)"
         >
             These are the pillars we built Elysia upon,<br />to deliver the best
@@ -95,7 +95,7 @@ const flyIn = useFlyIn(isInView)
         @apply grid sm:grid-cols-2 lg:grid-cols-3 gap-4 z-10;
 
         & > section {
-            @apply relative flex flex-col w-full rounded-3xl p-6 border border-r-blue-100 border-b-purple-100 border-t-purple-200 border-l-blue-200 dark:border-r-blue-300/40 dark:border-b-purple-300/40 dark:border-t-purple-400/50 dark:border-l-blue-400/40 transform hover:-translate-y-2 transition-all ease-out duration-200 dark:text-gray-400;
+            @apply relative flex flex-col w-full rounded-3xl p-6 border border-r-blue-100 border-b-purple-100 border-t-purple-200 border-l-blue-200 dark:border-r-blue-300/40 dark:border-b-purple-300/40 dark:border-t-purple-400/50 dark:border-l-blue-400/40 transform hover:-translate-y-2 transition-all ease-out duration-200 dark:text-mauve-400;
             box-shadow: 0 7px 40px rgba(48, 160, 255, 0.075);
 
             &:hover {
@@ -111,15 +111,15 @@ const flyIn = useFlyIn(isInView)
             }
 
             & > h3 {
-                @apply text-2xl font-medium text-gray-700 dark:text-gray-300;
+                @apply text-2xl font-medium text-mauve-700 dark:text-mauve-300;
             }
 
             & > h4 {
-                @apply inline-block text-base font-medium mt-0.5 mb-3 dark:text-gray-400/90;
+                @apply inline-block text-base font-medium mt-0.5 mb-3 dark:text-mauve-400/90;
             }
 
             &:nth-child(1) {
-                @apply bg-white dark:bg-gray-900;
+                @apply bg-white dark:bg-mauve-900;
                 background-image: radial-gradient(
                         closest-side at center,
                         rgba(255, 255, 255, 1) 70%,
@@ -169,7 +169,7 @@ const flyIn = useFlyIn(isInView)
                 html.dark & {
                     background-image: radial-gradient(
                             closest-side at center,
-                            var(--color-gray-800) 70%,
+                            var(--color-mauve-800) 70%,
                             transparent 150%
                         ),
                         radial-gradient(
@@ -211,7 +211,7 @@ const flyIn = useFlyIn(isInView)
             }
 
             &:nth-child(2) {
-                @apply bg-white dark:bg-gray-900;
+                @apply bg-white dark:bg-mauve-900;
                 background-image: radial-gradient(
                         closest-side at center,
                         rgba(255, 255, 255, 1) 70%,
@@ -261,7 +261,7 @@ const flyIn = useFlyIn(isInView)
                 html.dark & {
                     background-image: radial-gradient(
                             closest-side at center,
-                            var(--color-gray-800) 70%,
+                            var(--color-mauve-800) 70%,
                             transparent 150%
                         ),
                         radial-gradient(
@@ -303,7 +303,7 @@ const flyIn = useFlyIn(isInView)
             }
 
             &:nth-child(3) {
-                @apply bg-white dark:bg-gray-900;
+                @apply bg-white dark:bg-mauve-900;
                 background-image: radial-gradient(
                         closest-side at center,
                         rgba(255, 255, 255, 0.8) 70%,
@@ -353,7 +353,7 @@ const flyIn = useFlyIn(isInView)
                 html.dark & {
                     background-image: radial-gradient(
                             closest-side at center,
-                            var(--color-gray-800) 50%,
+                            var(--color-mauve-800) 50%,
                             transparent 120%
                         ),
                         radial-gradient(

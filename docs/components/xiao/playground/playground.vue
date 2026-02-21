@@ -6,7 +6,7 @@
     </ClientOnly>
 
     <div
-        class="flex flex-col sm:flex-row gap-0.5 w-full h-dvh py-1.5 bg-gray-50 dark:bg-gray-950 pr-0.5"
+        class="flex flex-col sm:flex-row gap-0.5 w-full h-dvh py-1.5 bg-mauve-50 dark:bg-mauve-950 pr-0.5"
     >
         <Aside />
 
@@ -46,7 +46,7 @@
                             :collapsible="true"
                             :collapsed-size="0"
                             :min-size="10"
-                            class="relative flex flex-col bg-[#eff1f5] dark:bg-[#1e1e2e] border dark:border-gray-700 rounded-2xl overflow-hidden"
+                            class="relative flex flex-col bg-[#eff1f5] dark:bg-mauve-800 border dark:border-mauve-700 rounded-2xl overflow-hidden"
                         >
                             <div
                                 class="absolute w-full h-full opacity-5 sm:opacity-10 sm:dark:opacity-8 bg-no-repeat pointer-events-none -scale-x-100"

@@ -5,7 +5,7 @@
             v-bind="flyIn()"
         >
             <h2
-                class="text-3xl font-medium text-gray-500 dark:text-gray-300 leading-[3rem]"
+                class="text-3xl font-medium text-mauve-500 dark:text-mauve-300 leading-[3rem]"
                 v-bind="flyIn()"
             >
                 What people say about

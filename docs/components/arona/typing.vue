@@ -17,7 +17,7 @@
             }"
         >
             <img src="/assets/elysia.svg" alt="Elysia logo" class="size-4" />
-            <p class="text-sm text-gray-400">{{ word }}{{ suffix }}</p>
+            <p class="text-sm text-mauve-400">{{ word }}{{ suffix }}</p>
         </motion.div>
     </AnimatePresence>
 </template>

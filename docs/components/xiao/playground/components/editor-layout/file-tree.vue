@@ -1,7 +1,7 @@
 <template>
     <TreeRoot
         v-slot="{ flattenItems }"
-        class="flex flex-col gap-0.25 h-full text-xs sm:text-sm text-gray-500 dark:text-gray-400 list-none select-none px-0.75 font-mono overflow-auto"
+        class="flex flex-col gap-0.25 h-full text-xs sm:text-sm text-mauve-500 dark:text-mauve-400 list-none select-none px-0.75 font-mono overflow-auto"
         :items="tree"
         :get-key="(item) => item.path"
         :default-expanded="['components']"
