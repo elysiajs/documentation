@@ -992,11 +992,11 @@ button.copy::after {
 }
 
 .VPSidebar {
-    @apply !pb-6;
+    @apply pb-6!;
 
     /* Vitepress breakpoint */
     @media (max-width: 959.9px) {
-        @apply max-w-68 translate-x-2 translate-y-2 !p-1 bg-white/85 dark:bg-mauve-800/85 border dark:border-mauve-700 border-mauve-200 rounded-3xl backdrop-blur shadow-lg overflow-x-hidden overflow-y-auto max-h-dvh;
+        @apply max-w-68 translate-x-2 translate-y-2 !p-1 bg-white/85 dark:bg-mauve-800/75! border dark:border-mauve-700! border-mauve-200! rounded-3xl backdrop-blur shadow-lg overflow-x-hidden overflow-y-auto max-h-dvh;
         height: calc(100dvh - 1rem);
 
         & > .nav {
