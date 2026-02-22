@@ -42,7 +42,7 @@ We need to mount the handler to Elysia endpoint.
 :::note
 Using `all` can prevent unwanted response interception by Better Auth and keep the integrity of OAuth callback URLs.
 
-The `all` method does not auth rewrite the path headers, so we have to manually set the URL here.
+The `all` method does not rewrite the path headers, so we have to manually set the URL here.
 :::
 
 ```ts [index.ts]
@@ -86,7 +86,7 @@ import { Pool } from 'pg'
 
 // MUST MATCH! Or social login may break with 404 errors.
 export const auth = betterAuth({
-    basePath: '/v1/auth*' // [!code ++]
+    basePath: '/v1/auth' // [!code ++]
 })
 ```
 
