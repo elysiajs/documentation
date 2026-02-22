@@ -10,7 +10,7 @@
         	Because of You
         </motion.h2>
         <p
-            class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto mb-8 dark:text-mauve-400 dark:font-medium"
+            class="flex flex-col text-lg md:text-xl !leading-[2rem] sm:text-center w-full max-w-2xl mx-auto mb-8 dark:text-mauve-400"
         >
             <motion.span class="inline-block" v-bind="flyIn(0.1)">
                 Elysia is
