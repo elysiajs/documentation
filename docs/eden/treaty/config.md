@@ -79,7 +79,7 @@ Default parameters append to 2nd parameters of fetch extends type of **Fetch.Req
 ```typescript
 export type App = typeof app // [!code ++]
 import { treaty } from '@elysiajs/eden'
-// ---cut---
+
 treaty<App>('localhost:3000', {
     fetch: {
         credentials: 'include'
