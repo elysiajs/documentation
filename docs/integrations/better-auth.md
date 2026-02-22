@@ -35,17 +35,24 @@ export const auth = betterAuth({
 
 ## Handler
 
-After setting up Better Auth instance, we can mount to Elysia via [mount](/patterns/mount.html).
+After setting up Better Auth instance, we can mount to Elysia via [all](/essential/route.html#all-method).
 
 We need to mount the handler to Elysia endpoint.
+
+:::note
+Using `all` can prevent unwanted response interception by Better Auth and keep the integrity of OAuth callback URLs.
+
+The `all` method does not auth rewrite the path headers, so we have to manually set the URL here.
+:::
 
 ```ts [index.ts]
 import { Elysia } from 'elysia'
 import { auth } from './auth'
 
+// The default better-auth Base URL is "/api/auth"
 const app = new Elysia()
-	.mount(auth.handler) // [!code ++]
-	.listen(3000)
+    .all("/api/auth*", ({ request }) => auth.handler(request)) // [!code ++]
+    .listen(3000)
 
 console.log(
     `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
@@ -56,23 +63,19 @@ Then we can access Better Auth with `http://localhost:3000/api/auth`.
 
 ### Custom endpoint
 
-We recommend setting a prefix path when using [mount](/patterns/mount.html).
-
 ```ts [index.ts]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
-	.mount('/auth', auth.handler) // [!code ++]
-	.listen(3000)
+    .all("/v1/auth*", ({ request }) => auth.handler(request)) // [!code ++]
+    .listen(3000)
 
 console.log(
     `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
 )
 ```
 
-Then we can access Better Auth with `http://localhost:3000/auth/api/auth`.
-
-But the URL looks redundant, we can customize the `/api/auth` prefix to something else in Better Auth instance.
+Then modify the `basePath` in our Better Auth file.
 
 ```ts
 import { betterAuth } from 'better-auth'
@@ -81,14 +84,13 @@ import { passkey } from 'better-auth/plugins/passkey'
 
 import { Pool } from 'pg'
 
+// MUST MATCH! Or social login may break with 404 errors.
 export const auth = betterAuth({
-    basePath: '/api' // [!code ++]
+    basePath: '/v1/auth*' // [!code ++]
 })
 ```
 
-Then we can access Better Auth with `http://localhost:3000/auth/api`.
-
-Unfortunately, we can't set `basePath` of a Better Auth instance to be empty or `/`.
+Then we can access Better Auth with `http://localhost:3000/v1/auth`.
 
 ## OpenAPI
 
