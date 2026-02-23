@@ -123,7 +123,7 @@ const flyIn = useFlyIn(isInView)
                 );
 
             html.dark & {
-                box-shadow: 0 16px 40px rgba(0, 123, 255, 0.075);
+                box-shadow: 0 16px 40px oklch(36.4% 0.029 323.89 / .375);
                 background-image:
                     radial-gradient(
                         closest-side at center,
