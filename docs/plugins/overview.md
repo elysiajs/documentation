@@ -133,7 +133,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [ModernCSRF](https://github.com/auto-medica-labs/modern-csrf) - A lightweight, token-free CSRF protection middleware for ElysiaJS
 -   [elysia-wide-event](https://github.com/choiexe1/elysia-wide-event) - Wide event logging plugin for structured request-level observability.
 - [elysia-beta-headers](https://github.com/P0u4a/elysia-beta-headers) - Elysia plugin for gating your app's beta/experimental features via type-safe API headers
--   [elysia-better-session](https://github.com/0x0arash/elysia-better-session) - Elysia plugin for server side session management with different store adapters.
+-   [elysia-better-session](https://github.com/0x0arash/elysia-better-session) - Elysia plugin for server-side session management with different store adapters.
 
 ## Complementary projects:
 
