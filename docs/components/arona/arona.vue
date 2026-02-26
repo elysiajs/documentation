@@ -30,9 +30,10 @@
             <aside
                 id="arona"
                 v-if="model"
-                class="fixed isolate z-31 bottom-0 sm:bottom-2 right-2 max-w-sm w-full transition-all duration-700 ease-out-expo"
+                class="fixed isolate z-31 bottom-0 sm:bottom-2 w-full transition-all duration-700 ease-out-expo rounded-t-4xl sm:rounded-4xl border border-mauve-200/75 dark:border-mauve-700/65"
                 :class="{
-                    'z-42 !max-w-3xl !right-1/2 translate-x-1/2': isExpanded
+                    'z-42 max-w-3xl right-1/2 translate-x-1/2': isExpanded,
+                    'max-w-[26rem] right-2': !isExpanded
                 }"
                 style="will-change: transform, width, right"
                 aria-keyshortcuts="Meta+i"
@@ -51,7 +52,7 @@
                 </div>
 
                 <motion.section
-                    class="h-[calc(100dvh-4rem)] border-t border-l border-mauve-100/50 dark:border-mauve-700/50 rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
+                    class="h-[calc(100dvh-4rem)] rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
                     :initial="{ opacity: 0, y: 32, scale: 0.95 }"
                     :animate="{
                         opacity: 1,
