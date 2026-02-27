@@ -18,7 +18,7 @@ head:
 import TutorialBadge from '../components/arona/badge.vue'
 </script>
 
-# Mount <TutorialBadge href="/tutorial/features/openapi" />
+# Mount <TutorialBadge href="/tutorial/features/mount" />
 [WinterTC](https://wintertc.org/) is a standard for building HTTP Server behind Cloudflare, Deno, Vercel, and others.
 
 It allows web servers to run interoperably across runtimes by using [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response).
@@ -26,6 +26,10 @@ It allows web servers to run interoperably across runtimes by using [Request](ht
 Elysia is WinterTC compliant. Optimized to run on Bun, but also support other runtimes if possible.
 
 This allows any framework or code that is WinterTC compliant to be run together, allowing frameworks like Elysia, Hono, Remix, Itty Router to run together in a simple function.
+
+::: tip
+To compose Elysia instances with full type safety, Eden Treaty support, and OpenAPI documentation, use [**.use()**](/essential/plugin) instead. **.mount** does not preserve type inference or OpenAPI schemas.
+:::
 
 ## Mount
 To use **.mount**, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
