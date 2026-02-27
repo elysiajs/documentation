@@ -92,6 +92,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - integrate HTTP status codes
 -   [NoCache](https://github.com/gaurishhs/elysia-nocache) - disable caching
 -   [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - compile [Tailwindcss](https://tailwindcss.com/) in a plugin.
+-   [tailwind-serve](https://github.com/Moshyfawn/tailwind-serve) - compile and serve [Tailwind CSS v4](https://tailwindcss.com/) at runtime with no build step, works with any server framework
 -   [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - compress response
 -   [Elysia IP](https://github.com/gaurishhs/elysia-ip) - get the IP Address
 -   [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - developing an OAuth2 Server with Elysia
