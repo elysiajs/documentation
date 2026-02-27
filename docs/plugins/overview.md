@@ -79,6 +79,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - filesystem routes
 -   [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - filesystem and folder-based router for groups
 -   [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic HTTP authentication
+-   [Body Limit](https://github.com/hexadecimal233/elysia-body-limit) - limit body sizes in Elysia
 -   [ETag](https://github.com/bogeychan/elysia-etag) - automatic HTTP [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) generation
 -   [CDN Cache](https://github.com/johnny-woodtke/elysiajs-cdn-cache) - Cache-Control plugin for Elysia - no more manually setting HTTP headers
 -   [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - basic HTTP authentication (using `request` event)
