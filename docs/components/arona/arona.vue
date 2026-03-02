@@ -30,7 +30,7 @@
             <aside
                 id="arona"
                 v-if="model"
-                class="fixed isolate z-31 bottom-0 sm:bottom-2 w-full transition-all duration-700 ease-out-expo rounded-t-4xl sm:rounded-4xl border border-mauve-200/75 dark:border-mauve-700/65"
+                class="fixed isolate z-31 bottom-0 sm:bottom-2 w-full transition-all duration-700 ease-out-expo rounded-t-4xl sm:rounded-4xl"
                 :class="{
                     'z-42 max-w-3xl right-1/2 translate-x-1/2': isExpanded,
                     'max-w-[26rem] right-2': !isExpanded
@@ -52,7 +52,7 @@
                 </div>
 
                 <motion.section
-                    class="h-[calc(100dvh-4rem)] rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm"
+                    class="w-full h-[calc(100dvh-4rem)] rounded-t-4xl sm:rounded-4xl shadow-2xl shadow-black/10 overflow-hidden backdrop-blur-sm border border-mauve-200/75 dark:border-mauve-700/65"
                     :initial="{ opacity: 0, y: 32, scale: 0.95 }"
                     :animate="{
                         opacity: 1,
@@ -265,6 +265,19 @@
                                         "
                                     />
                                 </motion.div>
+
+                                <p
+                                    class="flex items-center my-2 px-2 text-xs text-mauve-400/75"
+                                    v-if="
+                                        !isStreaming &&
+                                        !error &&
+                                        index === history.length - 1
+                                    "
+                                >
+                                    *AI can make a mistake, please verify with
+                                    included references
+                                    <ArrowUp class="ml-1" :size="16" :stroke-width="1" />
+                                </p>
 
                                 <aside
                                     class="elysia-chan-tools"
