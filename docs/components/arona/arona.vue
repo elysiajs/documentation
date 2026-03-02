@@ -1167,12 +1167,12 @@ onUnmounted(() => {
     background-image:
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 0.6) 70%,
+            rgba(255, 255, 255, 0.3) 70%,
             transparent 150%
         ),
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 0.6) 90%,
+            rgba(255, 255, 255, 0.3) 90%,
             transparent 150%
         ),
         radial-gradient(
@@ -1421,7 +1421,7 @@ onUnmounted(() => {
         * > *,
         * > * > * {
             & > div[theme] > .shiki {
-                @apply relative my-4 text-sm -mx-4 bg-[#eff1f590]! dark:bg-mauve-800/50! border-y dark:border-mauve-700/75;
+                @apply relative my-4 text-sm -mx-4 bg-mauve-100/35! dark:bg-mauve-900/50! border-y dark:border-mauve-700/75;
 
                 &:hover {
                     & > .lang {
