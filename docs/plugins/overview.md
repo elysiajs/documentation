@@ -133,6 +133,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [ModernCSRF](https://github.com/auto-medica-labs/modern-csrf) - A lightweight, token-free CSRF protection middleware for ElysiaJS
 -   [elysia-wide-event](https://github.com/choiexe1/elysia-wide-event) - Wide event logging plugin for structured request-level observability.
 - [elysia-beta-headers](https://github.com/P0u4a/elysia-beta-headers) - Elysia plugin for gating your app's beta/experimental features via type-safe API headers
+- [Elysia SvelteKit](https://github.com/pyoner/elysia-sveltekit) - adapter for bridging Elysia with SvelteKit hooks
 
 ## Complementary projects:
 
