@@ -15,7 +15,7 @@ head:
 ---
 
 # WebSocket
-Eden Treaty supports WebSocket using `subscribe` method.
+Eden Treaty supports WebSocket using the `subscribe` method.
 
 ```typescript twoslash
 import { Elysia, t } from "elysia";
@@ -44,9 +44,9 @@ chat.on("open", () => {
 });
 ```
 
-**.subscribe** accepts the same parameter as `get` and `head`.
+**.subscribe** accepts the same parameters as `get` and `head`.
 
 ## Response
-**Eden.subscribe** returns **EdenWS** which extends the [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket) results in identical syntax.
+**Eden.subscribe** returns **EdenWS** which extends the [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket), resulting in identical syntax.
 
-If more control is need, **EdenWebSocket.raw** can be accessed to interact with the native WebSocket API.
+If more control is needed, **EdenWebSocket.raw** can be accessed to interact with the native WebSocket API.

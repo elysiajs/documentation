@@ -104,9 +104,9 @@ const app = new Elysia()
 <summary>Having issues with type generation?</summary>
 
 ### Caveat: Explicit types
-OpenAPI Type Gen work best when using implicit types.
+OpenAPI Type Gen works best when using implicit types.
 
-Sometime, explicit type may cause an issue to generator unable to resolve properly.
+Sometimes, explicit types may cause an issue for the generator being unable to resolve properly.
 
 In this case, you can use `Prettify` to inline the type:
 ```ts
@@ -265,7 +265,7 @@ openapi({
 
 </Tab>
 
-## Describing route
+## Describing routes
 
 We can add route information by providing a schema type.
 
@@ -304,7 +304,7 @@ The detail fields follows an OpenAPI V3 definition with auto-completion and type
 Detail is then passed to OpenAPI to put the description to OpenAPI route.
 
 ## Response headers
-We can add a response headers by wrapping a schema with `withHeader`:
+We can add response headers by wrapping a schema with `withHeader`:
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -364,9 +364,9 @@ new Elysia()
 
 ## Tags
 
-Elysia can separate the endpoints into groups by using the Swaggers tag system
+Elysia can separate the endpoints into groups by using the Swagger tag system
 
-Firstly define the available tags in the swagger config object
+Firstly define the available tags in the Swagger config object
 
 ```typescript
 new Elysia().use(
@@ -381,7 +381,7 @@ new Elysia().use(
 )
 ```
 
-Then use the details property of the endpoint configuration section to assign that endpoint to the group
+Then use the detail property of the endpoint configuration section to assign that endpoint to the group
 
 ```typescript
 new Elysia()
@@ -410,7 +410,7 @@ new Elysia()
     )
 ```
 
-Which will produce a swagger page like the following
+This will produce a Swagger page as follows
 <img width="1446" alt="image" src="/assets/swagger-demo.webp">
 
 ### Tags group
@@ -510,7 +510,7 @@ new Elysia()
 This can be useful for
 
 - adding a title
-- settings an API version
+- setting an API version
 - adding a description explaining what our API is about
 - explaining what tags are available, what each tag means
 
@@ -548,4 +548,4 @@ export const addressController = new Elysia({
 })
 ```
 
-This will ensures that all endpoints under the `/address` prefix require a valid JWT token for access.
+This will ensure that all endpoints under the `/address` prefix require a valid JWT token for access.

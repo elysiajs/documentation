@@ -23,9 +23,9 @@ import TutorialBadge from '../components/arona/badge.vue'
 
 It allows web servers to run interoperably across runtimes by using [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response).
 
-Elysia is WinterTC compliant. Optimized to run on Bun, but also support other runtimes if possible.
+Elysia is WinterTC compliant. Optimized to run on Bun, but also supports other runtimes if possible.
 
-This allows any framework or code that is WinterTC compliant to be run together, allowing frameworks like Elysia, Hono, Remix, Itty Router to run together in a simple function.
+This allows any WinterTC-compliant framework or code to run together, allowing frameworks like Elysia, Hono, Remix, Itty Router to run together in a simple function.
 
 ## Mount
 To use **.mount**, [simply pass a `fetch` function](https://twitter.com/saltyAom/status/1684786233594290176):
@@ -41,7 +41,7 @@ const app = new Elysia()
     .mount('/hono', hono.fetch)
 ```
 
-Any framework that use `Request`, and `Response` can be interoperable with Elysia like
+Any framework that uses `Request` and `Response` can interoperate with Elysia like
 - Hono
 - Nitro
 - H3
@@ -56,7 +56,7 @@ And these can be use on multiple runtimes like:
 - Cloudflare Worker
 - Netlify Edge Function
 
-If the framework supports a **.mount** function, you can also mount Elysia inside another framework:
+If the framework supports the **.mount** function, you can also mount Elysia inside another framework:
 ```ts
 import { Elysia } from 'elysia'
 import { Hono } from 'hono'

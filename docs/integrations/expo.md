@@ -20,7 +20,7 @@ Starting from Expo SDK 50, and App Router v3, Expo allows us to create API route
 
 1. Create **app/[...slugs]+api.ts**
 2. Define an Elysia server
-3. Export **Elysia.fetch** name of HTTP methods you want to use
+3. Export **Elysia.fetch** with the name of the HTTP methods you want to use
 
 ::: code-group
 
@@ -41,7 +41,7 @@ export const POST = app.fetch // [!code ++]
 
 :::
 
-You can treat the Elysia server as if normal Expo API route.
+You can treat the Elysia server as if it were a normal Expo API route.
 
 ### pnpm
 If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
@@ -50,9 +50,9 @@ pnpm add @sinclair/typebox openapi-types
 ```
 
 ## Prefix
-If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
+If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix on the Elysia server.
 
-For example, if you place Elysia server in **app/api/[...slugs]+api.ts**, you need to annotate prefix as **/api** to Elysia server.
+For example, if you place the Elysia server in **app/api/[...slugs]+api.ts**, you need to annotate the prefix as **/api** on the Elysia server.
 
 ::: code-group
 
@@ -73,7 +73,7 @@ export const POST = app.fetch
 
 :::
 
-This will ensure that Elysia routing will work properly in any location you place it in.
+This will ensure that Elysia routing works properly wherever you place it.
 
 ## Eden
 
@@ -136,17 +136,17 @@ export default async function Page() {
 :::
 
 ## Deployment
-You can either directly use API route using Elysia and deploy as normal Elysia app normally if need or using [experimental Expo server runtime](https://docs.expo.dev/router/reference/api-routes/#deployment).
+You can either directly use the API route with Elysia and deploy as a normal Elysia app if needed, or use the [experimental Expo server runtime](https://docs.expo.dev/router/reference/api-routes/#deployment).
 
-If you are using Expo server runtime, you may use `expo export` command to create optimized build for your expo app, this will include an Expo function which is using Elysia at **dist/server/_expo/functions/[...slugs\]+api.js**
+If you are using the Expo server runtime, you may use the `expo export` command to create an optimized build for your Expo app. This will include an Expo function that uses Elysia at **dist/server/_expo/functions/[...slugs\]+api.js**
 
 ::: tip
-Please note that Expo Functions are treated as Edge functions instead of normal server, so running the Edge function directly will not allocate any port.
+Please note that Expo Functions are treated as Edge functions instead of normal servers, so running the Edge function directly will not allocate any port.
 :::
 
 You may use the Expo function adapter provided by Expo to deploy your Edge Function.
 
-Currently Expo support the following adapter:
+Currently, Expo supports the following adapters:
 - [Express](https://docs.expo.dev/router/reference/api-routes/#express)
 - [Netlify](https://docs.expo.dev/router/reference/api-routes/#netlify)
 - [Vercel](https://docs.expo.dev/router/reference/api-routes/#vercel)

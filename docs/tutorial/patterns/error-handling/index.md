@@ -33,7 +33,7 @@ import { code, testcases } from './data'
 
 <DocLink href="/essential/life-cycle#on-error-error-handling">onError</DocLink> is called when an **error is thrown**.
 
-It accept **context** similar to handler but include an additional:
+It accepts **context** similar to a handler but includes an additional:
 - error - a thrown error
 - <DocLink href="/essential/life-cycle#error-code">code</DocLink> - error code
 
@@ -84,9 +84,9 @@ new Elysia()
 	.listen(3000)
 ```
 
-Elysia use <DocLink href="/essential/life-cycle#error-code">error code</DocLink> to narrow down type of error.
+Elysia uses <DocLink href="/essential/life-cycle#error-code">error codes</DocLink> to narrow down the type of error.
 
-It's recommended to register a custom error as Elysia can narrow down the type.
+It's recommended to register custom errors as Elysia can narrow down the type.
 
 ### Error Status Code
 You can also provide a custom status code by adding a **status** property to class:
@@ -128,10 +128,10 @@ Elysia will use this response if the error is thrown, see <DocLink href="/error-
 
 ## Assignment
 
-Let's try to extends Elysia's context.
+Let's try to extend Elysia's context.
 
 <template #answer>
-1. You can narrow down error by "NOT_FOUND" to override 404 response.
+1. You can narrow down the error by "NOT_FOUND" to override 404 response.
 2. Provide your error to `.error()` method with status property of 418.
 
 ```typescript

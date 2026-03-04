@@ -17,7 +17,7 @@ head:
 # OpenTelemetry
 
 ::: tip
-This page is a **config reference** for **OpenTelemetry**, if you're looking to setup and integrate with OpenTelemetry, we recommended taking a look at [Integrate with OpenTelemetry](/patterns/opentelemetry) instead.
+This page is a **config reference** for **OpenTelemetry**. If you're looking to set up and integrate with OpenTelemetry, we recommend taking a look at [Integrate with OpenTelemetry](/patterns/opentelemetry) instead.
 :::
 
 To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
@@ -43,7 +43,7 @@ new Elysia()
 
 ![jaeger showing collected trace automatically](/blog/elysia-11/jaeger.webp)
 
-Elysia OpenTelemetry is will **collect span of any library compatible OpenTelemetry standard**, and will apply parent and child span automatically.
+Elysia OpenTelemetry will **collect spans from any library compatible with the OpenTelemetry standard**, and will apply parent and child span automatically.
 
 ## Usage
 See [opentelemetry](/patterns/opentelemetry) for usage and utilities
@@ -111,7 +111,7 @@ export OTEL_NODE_RESOURCE_DETECTORS="env,host"
 Configure a custom sampler. By default, all traces will be sampled.
 
 ### serviceName - string
-Namespace to be identify as.
+Namespace to be identified as.
 
 ### spanProcessors - SpanProcessor[]
 An array of span processors to register to the tracer provider.

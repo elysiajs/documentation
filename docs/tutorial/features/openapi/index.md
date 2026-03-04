@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia is built around OpenAPI, and support OpenAPI documentation out of the box.
+        content: Elysia is built around OpenAPI, and supports OpenAPI documentation out of the box.
 
     - - meta
       - property: 'og:description'
-        content: Elysia is built around OpenAPI, and support OpenAPI documentation out of the box.
+        content: Elysia is built around OpenAPI, and supports OpenAPI documentation out of the box.
 ---
 
 <script setup lang="ts">
@@ -31,7 +31,7 @@ import { code, testcases } from './data'
 
 # OpenAPI
 
-Elysia is built around OpenAPI, and support OpenAPI documentation out of the box.
+Elysia is built around OpenAPI, and supports OpenAPI documentation out of the box.
 
 We can use <DocLink href="/patterns/openapi">OpenAPI plugin</DocLink> to show an API documentation.
 
@@ -56,7 +56,7 @@ new Elysia()
 Once added, we can access our API documentation at <a href="/playground/preview" target="_blank">**/openapi**</a>.
 
 ## Detail
-We can provide document API by with a `detail` field which follows OpenAPI 3.0 specification (with auto-completion):
+We can provide API documentation with a `detail` field which follows OpenAPI 3.0 specification (with auto-completion):
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -118,15 +118,15 @@ When we defined a reference model, it will be shown in the **Components** sectio
 ## Type Gen
 <DocLink href="/blog/openapi-type-gen.html">OpenAPI Type Gen</DocLink> can document your API **without manual annotation** infers directly from TypeScript type. <small>No Zod, TypeBox, manual interface declaraiont, etc.</small>
 
-**This features is unique to Elysia**, and is not available in other JavaScript frameworks.
+**This feature is unique to Elysia**, and is not available in other JavaScript frameworks.
 
-For example, if you use Drizzle ORM or Prisma, Elysia can infer the schema directly from the query directly.
+For example, if you use Drizzle ORM or Prisma, Elysia can infer the schema directly from the query.
 
 ![Drizzle](/blog/openapi-type-gen/drizzle-typegen.webp)
 
 > Returning Drizzle query from Elysia route handler will be automatically inferred into OpenAPI schema.
 
-To use <DocLink href="/blog/openapi-type-gen.html">OpenAPI Type Gen</DocLink>, simply add apply `fromTypes` plugin before `openapi` plugin.
+To use <DocLink href="/blog/openapi-type-gen.html">OpenAPI Type Gen</DocLink>, simply apply the `fromTypes` plugin before `openapi` plugin.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -143,7 +143,7 @@ new Elysia()
 
 ### Browser Environment
 
-Unfortunately, this feature require a **fs** module to read your source code, and is not available this web playground. As Elysia is running directly in your browser (not a separated server).
+Unfortunately, this feature requires the **fs** module to read your source code, and is not available in this web playground. As Elysia is running directly in your browser (not a separated server).
 
 You can try this feature locally with <a href="https://github.com/SaltyAom/elysia-typegen-example" target="_blank">Type Gen Example repository</a>:
 
@@ -156,7 +156,7 @@ bun run dev
 
 ## Assignment
 
-Let's use the preview to **GET '/openapi'**, and see how our API documentation looks like.
+Let's use the preview to **GET '/openapi'** and see how our API documentation looks.
 
 This API documentation is reflected from your code.
 

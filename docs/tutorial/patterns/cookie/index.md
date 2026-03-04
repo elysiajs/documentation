@@ -31,7 +31,7 @@ import { code, testcases } from './data'
 
 # Cookie
 
-You interact with cookie by using <DocLink href="/patterns/cookie">cookie</DocLink> from context.
+You interact with cookies by using <DocLink href="/patterns/cookie">cookie</DocLink> from context.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -122,8 +122,8 @@ new Elysia()
 
 ## Cookie Signature
 
-Elysia can sign cookie to prevent tampering by:
-1. Provide cookie secret to Elysia constructor.
+Elysia can sign cookies to prevent tampering by:
+1. Provide a cookie secret to the Elysia constructor.
 2. Use `t.Cookie` to provide secret for each cookie.
 
 ```typescript
@@ -150,7 +150,7 @@ new Elysia({
 	.listen(3000)
 ```
 
-If multiple secrets are provided, Elysia will use the first secret to sign cookie, and try to verify with the rest.
+If multiple secrets are provided, Elysia will use the first secret to sign cookies, and try to verify with the rest.
 
 See <DocLink href="/patterns/cookie.html#cookie-signature">Cookie Signature</DocLink>, <DocLink href="/patterns/cookie.html#cookie-rotation">Cookie Rotation</DocLink>.
 

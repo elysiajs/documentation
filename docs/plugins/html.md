@@ -145,7 +145,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-However, when are building a large-scale app, it's best to have a type reminder to detect possible XSS vulnerabilities in your codebase.
+However, when building a large-scale app, it's best to have a type reminder to detect possible XSS vulnerabilities in your codebase.
 
 To add a type-safe reminder, please install:
 
@@ -205,6 +205,6 @@ app.get('/', ({ html }) => html('<html></html>'))
 - Type: `(value: string) => boolean`
 - Default: `isHtml` (exported function)
 
-The function is used to detect if a string is a html or not. Default implementation if length is greater than 7, starts with `<` and ends with `>`.
+The function is used to detect if a string is HTML or not. Default implementation if length is greater than 7, starts with `<` and ends with `>`.
 
 Keep in mind there's no real way to validate HTML, so the default implementation is a best guess.

@@ -53,7 +53,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Using an inline value can be useful for static resource like **file**.
+Using an inline value can be useful for static resources like **files**.
 
 ## Context
 
@@ -91,7 +91,7 @@ Let's try extracting context parameters:
 
 <template #answer>
 
-1. We can extract `body`, `query`, and `headers` from the first value of a callback function.
+1. We can extract `body`, `query`, and `headers` from the first parameter of a callback function.
 2. We can then return them like `{ body, query, headers }`.
 
 ```typescript

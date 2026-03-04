@@ -7,20 +7,20 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia provides a support for response streaming with ease, allowing you to integrate with vercel AI SDKs seamlessly.
+        content: Elysia provides support for response streaming with ease, allowing you to integrate with Vercel AI SDKs seamlessly.
 
     - - meta
       - property: 'og:description'
-        content: Elysia provides a support for response streaming with ease, allowing you to integrate with vercel AI SDKs seamlessly.
+        content: Elysia provides support for response streaming with ease, allowing you to integrate with Vercel AI SDKs seamlessly.
 ---
 
 # Integration with AI SDK
 
-Elysia provides a support for response streaming with ease, allowing you to integrate with [Vercel AI SDKs](https://vercel.com/docs/ai) seamlessly.
+Elysia provides support for response streaming with ease, allowing you to integrate with [Vercel AI SDKs](https://vercel.com/docs/ai) seamlessly.
 
 ## Response Streaming
 
-Elysia support continous streaming of a `ReadableStream` and `Response` allowing you to return stream directly from the AI SDKs.
+Elysia supports continuous streaming of a `ReadableStream` and `Response`, allowing you to return streams directly from the AI SDKs.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -44,9 +44,9 @@ new Elysia().get('/', () => {
 
 Elysia will handle the stream automatically, allowing you to use it in various ways.
 
-## Server Sent Event
+## Server-Sent Events
 
-Elysia also supports Server Sent Event for streaming response by simply wrap a `ReadableStream` with `sse` function.
+Elysia also supports Server-Sent Events for streaming responses by simply wrapping a `ReadableStream` with the `sse` function.
 
 ```ts
 import { Elysia, sse } from 'elysia' // [!code ++]
@@ -70,7 +70,7 @@ new Elysia().get('/', () => {
 
 ## As Response
 
-If you don't need a type-safety of the stream for further usage with [Eden](/eden/overview), you can return the stream directly as a response.
+If you don't need type safety from the stream for further usage with [Eden](/eden/overview), you can return the stream directly as a response.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -121,7 +121,7 @@ new Elysia().get('/', async function* () {
 
 ## Fetch
 
-If AI SDK doesn't support model you're using, you can still use the `fetch` function to make requests to the AI SDKs and stream the response directly.
+If the AI SDK doesn't support the model you're using, you can still use the `fetch` function to make requests to the AI SDKs and stream the response directly.
 
 ```ts
 import { Elysia, fetch } from 'elysia'
@@ -148,8 +148,8 @@ new Elysia().get('/', () => {
 })
 ```
 
-Elysia will proxy fetch response with streaming support automatically.
+Elysia will proxy the fetch response with streaming support automatically.
 
 ---
 
-For additional information, please refer to [AI SDK documentation](https://ai-sdk.dev/docs/introduction)
+For additional information, please refer to the [AI SDK documentation](https://ai-sdk.dev/docs/introduction)

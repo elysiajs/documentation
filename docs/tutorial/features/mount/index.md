@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia provides a Elysia.mount to interlop between backend frameworks that is built on Web Standard like Hono, H3, etc.
+        content: Elysia provides Elysia.mount to interoperate between backend frameworks that is built on Web Standard like Hono, H3, etc.
 
     - - meta
       - property: 'og:description'
-        content: Elysia provides a Elysia.mount to interlop between backend frameworks that is built on Web Standard like Hono, H3, etc.
+        content: Elysia provides Elysia.mount to interoperate between backend frameworks that is built on Web Standard like Hono, H3, etc.
 ---
 
 <script setup lang="ts">
@@ -31,14 +31,14 @@ import { code, testcases } from './data'
 
 # Mount
 
-Elysia provides a <DocLink href="/patterns/mount">Elysia.mount</DocLink> to interlop between backend frameworks that is built on Web Standard like Hono, H3, etc.
+Elysia provides a <DocLink href="/patterns/mount">Elysia.mount</DocLink> to interoperate between backend frameworks that is built on Web Standard like Hono, H3, etc.
 
 ```typescript
 import { Elysia, t } from 'elysia'
 import { Hono } from 'hono'
 
 const hono = new Hono()
-	.get('/', (c) => c.text('Hello from Hono')
+	.get('/', (c) => c.text('Hello from Hono'))
 
 new Elysia()
 	.get('/', 'Hello from Elysia')

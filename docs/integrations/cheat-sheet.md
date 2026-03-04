@@ -7,15 +7,15 @@ head:
 
   - - meta
     - name: 'description'
-      content: Elysia's cheat sheet in summary and how it work with "Elysia by example"
+      content: Elysia's cheat sheet in summary and how it works with "Elysia by example"
 
   - - meta
     - property: 'og:description'
-      content: Elysia's cheat sheet in summary and how it work with "Elysia by example"
+      content: Elysia's cheat sheet in summary and how it works with "Elysia by example"
 ---
 
 # Cheat Sheet
-Here are a quick overview for a common Elysia patterns
+Here is a quick overview of common Elysia patterns
 
 ## Hello World
 A simple hello world
@@ -29,7 +29,7 @@ new Elysia()
 ```
 
 ## Custom HTTP Method
-Define route using custom HTTP methods/verbs
+Define routes using custom HTTP methods/verbs
 
 See [Route](/essential/route.html#custom-method)
 
@@ -45,7 +45,7 @@ new Elysia()
 ```
 
 ## Path Parameter
-Using dynamic path parameter
+Using dynamic path parameters
 
 See [Path](/essential/route.html#path-type)
 
@@ -76,7 +76,7 @@ new Elysia()
 ```
 
 ## Return a file
-A file can be return in as formdata response
+A file can be returned as a formdata response
 
 The response must be a 1-level deep object
 
@@ -111,7 +111,7 @@ new Elysia()
 ```
 
 ## Group
-Define a prefix once for sub routes
+Define a prefix once for subroutes
 
 See [Group](/essential/route.html#group)
 
@@ -130,7 +130,7 @@ new Elysia()
 ```
 
 ## Schema
-Enforce a data type of a route
+Enforce a data type on a route
 
 See [Validation](/essential/validation)
 
@@ -170,7 +170,7 @@ new Elysia()
 ```
 
 ## Lifecycle Hook
-Intercept an Elysia event in order
+Intercept Elysia events in order
 
 See [Lifecycle](/essential/life-cycle.html)
 
@@ -197,7 +197,7 @@ new Elysia()
 ```
 
 ## Guard
-Enforce a data type of sub routes
+Enforce a data type on subroutes
 
 See [Scope](/essential/plugin.html#scope)
 
@@ -217,7 +217,7 @@ new Elysia()
 ```
 
 ## Custom context
-Add custom variable to route context
+Add custom variables to route context
 
 See [Context](/essential/handler.html#context)
 
@@ -235,7 +235,7 @@ new Elysia()
 ```
 
 ## Redirect
-Redirect a response
+Redirect responses
 
 See [Handler](/essential/handler.html#redirect)
 
@@ -268,8 +268,8 @@ new Elysia()
     .listen(3000)
 ```
 
-## Web Socket
-Create a realtime connection using Web Socket
+## WebSocket
+Create a realtime connection using WebSocket
 
 See [Web Socket](/patterns/websocket)
 
@@ -302,7 +302,7 @@ console.log(`View documentation at "${app.server!.url}openapi" in your browser`)
 ```
 
 ## Unit Test
-Write a unit test of your Elysia app
+Write a unit test for your Elysia app
 
 See [Unit Test](/patterns/unit-test)
 
@@ -325,7 +325,7 @@ describe('Elysia', () => {
 ```
 
 ## Custom body parser
-Create custom logic for parsing body
+Create custom logic for parsing bodies
 
 See [Parse](/essential/life-cycle.html#parse)
 

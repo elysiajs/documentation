@@ -76,10 +76,10 @@ Start a development server by:
 bun dev
 ```
 
-Navigate to [localhost:3000](http://localhost:3000) should greet you with "Hello Elysia".
+Navigate to [localhost:3000](http://localhost:3000), which should greet you with "Hello Elysia".
 
 ::: tip
-Elysia ships you with `dev` command to automatically reload your server on file change.
+Elysia provides a `dev` command to automatically reload your server on file changes.
 :::
 
 </template>
@@ -265,14 +265,14 @@ Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `t
 <template v-slot:js>
 
 ::: warning
-If you use Elysia without TypeScript you may miss out on some features like auto-completion, advanced type checking and end-to-end type safety, which are the core features of Elysia.
+If you use Elysia without TypeScript, you may miss out on some features like auto-completion, advanced type checking, and end-to-end type safety, which are core features of Elysia.
 :::
 
 To create a new Elysia app with JavaScript, start by installing Elysia:
 
 ::: code-group
 
-```bash [pnpm]
+```bash [bun]
 bun add elysia @elysiajs/node
 ```
 
@@ -291,11 +291,9 @@ yarn add elysia @elysiajs/node
 
 :::
 
-This will install Elysia, TypeScript, and `tsx`.
+This will install Elysia.
 
-`tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more features you'd expect from a modern development environment.
-
-Create a new file `src/index.ts` and add the following code:
+Create a new file `src/index.js` and add the following code:
 
 ```javascript
 import { Elysia } from 'elysia'
@@ -314,9 +312,9 @@ Open your `package.json` file and add the following scripts:
 
 ```json
 {
-	"type", "module",
+	"type": "module",
    	"scripts": {
-  		"dev": "node src/index.ts",
+  		"dev": "node src/index.js",
   		"start": "NODE_ENV=production node src/index.js"
    	}
 }
@@ -324,23 +322,12 @@ Open your `package.json` file and add the following scripts:
 
 These scripts refer to the different stages of developing an application:
 
-- **dev** - Start Elysia in development mode with auto-reload on code change.
+- **dev** - Start Elysia in development mode.
 - **start** - Start an Elysia production server.
 
-Make sure to create `tsconfig.json`
-
-```bash
-npx tsc --init
-```
-
-Don't forget to update `tsconfig.json` to include `compilerOptions.strict` to `true`:
-```json
-{
-   	"compilerOptions": {
-  		"strict": true
-   	}
-}
-```
+::: warning
+If you use Elysia without TypeScript, you may miss out on some features like auto-completion, advanced type checking, and end-to-end type safety, which are core features of Elysia.
+:::
 
 </template>
 
@@ -361,7 +348,7 @@ bun install elysia
 ```
 
 ```bash [pnpm]
-# pnpm doesn't install peer depepdencies
+# pnpm doesn't install peer dependencies
 pnpm install elysia @sinclair/typebox openapi-types
 ```
 

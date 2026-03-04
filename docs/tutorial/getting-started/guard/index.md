@@ -30,7 +30,7 @@ import { code, testcases } from './data'
 
 # Guard
 
-When you need to apply multiple hook to your application, instead of repeating hook multiple time, you can use `guard` to bulk add hooks to your application.
+When you need to apply multiple hooks to your application, instead of repeating hooks multiple times, you can use `guard` to bulk add hooks to your application.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -122,7 +122,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-This will apply hooks and schema to every routes **after .guard** is called in the same instance.
+This will apply hooks and schema to every route **after .guard** is called in the same instance.
 
 See <DocLink href="/essential/plugin#guard">Guard</DocLink> for more information.
 

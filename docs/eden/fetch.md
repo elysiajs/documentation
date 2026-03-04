@@ -108,13 +108,13 @@ const { id, name } = nendoroid
 ## When should I use Eden Fetch over Eden Treaty
 Unlike Elysia < 1.0, Eden Fetch is not faster than Eden Treaty anymore.
 
-The preference is base on you and your team agreement, however we recommend to use [Eden Treaty](/eden/treaty/overview) instead.
+The preference is based on you and your team's agreement; however, we recommend using [Eden Treaty](/eden/treaty/overview) instead.
 
 For Elysia < 1.0:
 
-Using Eden Treaty requires a lot of down-level iteration to map all possible types in a single go, while in contrast, Eden Fetch can be lazily executed until you pick a route.
+Using Eden Treaty required a lot of down-level iteration to map all possible types in a single go, while in contrast, Eden Fetch could be lazily executed until you pick a route.
 
-With complex types and a lot of server routes, using Eden Treaty on a low-end development device can lead to slow type inference and auto-completion.
+With complex types and many server routes, using Eden Treaty on a low-end development device could lead to slow type inference and auto-completion.
 
 But as Elysia has tweaked and optimized a lot of types and inference, Eden Treaty can perform very well in the considerable amount of routes.
 

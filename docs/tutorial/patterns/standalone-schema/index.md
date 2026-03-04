@@ -31,7 +31,7 @@ import { code, testcases } from './data'
 
 # Standalone Schema
 
-When we define a schema using <DocLink href="/essential/validation.html#guard">Guard</DocLink>, the schema will be added to a route. But it will be **override** if the route provide a schema:
+When we define a schema using <DocLink href="/essential/validation.html#guard">Guard</DocLink>, the schema will be added to a route. But it will be **overridden** if the route provides a schema:
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -82,13 +82,13 @@ new Elysia()
 
 ## Schema Library Interoperability
 
-Schema between standalone schema can be from a different validation library.
+Schemas between standalone schemas can be from different validation libraries.
 
 For example you can define a standalone schema using **zod**, and a local schema using **Elysia.t**, and both will works interchangeably.
 
 ## Assignment
 
-Let's make both `age` and `name` property required in the request body by using standalone schema.
+Let's make both `age` and `name` properties required in the request body by using standalone schema.
 
 <template #answer>
 

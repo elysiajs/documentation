@@ -13,11 +13,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: This guide is for tRPC users who want to see a differences from Elysia including syntax, and how to migrate your application from tRPC to Elysia by example.
+        content: This guide is for tRPC users who want to see the differences from Elysia including syntax, and how to migrate your application from tRPC to Elysia by example.
 
     - - meta
       - property: 'og:description'
-        content: This guide is for tRPC users who want to see a differences from Elysia including syntax, and how to migrate your application from tRPC to Elysia by example.
+        content: This guide is for tRPC users who want to see the differences from Elysia including syntax, and how to migrate your application from tRPC to Elysia by example.
 ---
 
 <script setup>
@@ -30,24 +30,24 @@ import Benchmark from '../components/fern/benchmark-hono.vue'
 
 # From tRPC to Elysia
 
-This guide is for tRPC users who want to see a differences from Elysia including syntax, and how to migrate your application from tRPC to Elysia by example.
+This guide is for tRPC users who want to see the differences from Elysia including syntax, and how to migrate your application from tRPC to Elysia by example.
 
-**tRPC** is a typesafe RPC framework for building APIs using TypeScript. It provides a way to create end-to-end type-safe APIs with type-safe contract between frontend and backend.
+**tRPC** is a typesafe RPC framework for building APIs using TypeScript. It provides a way to create end-to-end type-safe APIs with a type-safe contract between frontend and backend.
 
 **Elysia** is an ergonomic web framework. Designed to be ergonomic and developer-friendly with a focus on **sound type safety** and performance.
 
 ## Overview
 tRPC is primarily designed as RPC communication with proprietary abstraction over RESTful API, while Elysia is focused on RESTful API.
 
-Main feature of tRPC is end-to-end type safety contract between frontend and backend which Elysia also offers via [Eden](/eden/overview).
+The main feature of tRPC is end-to-end type safety contract between frontend and backend which Elysia also offers via [Eden](/eden/overview).
 
 Making Elysia a better fit for building a universal API with RESTful standard that developers already know instead of learning a new proprietary abstraction while having the end-to-end type safety that tRPC offers.
 
 ## Routing
 
-Elysia use a syntax similar to Express, and Hono like `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
+Elysia uses a syntax similar to Express, and Hono like `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
 
-While tRPC use a nested router approach to define routes.
+While tRPC uses a nested router approach to define routes.
 
 <Compare>
 
@@ -84,7 +84,7 @@ server.listen(3000)
 
 <template v-slot:left-content>
 
-> tRPC use nested router and procedure to define routes
+> tRPC uses nested router and procedure to define routes
 
 </template>
 
@@ -111,19 +111,19 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use HTTP method, and path parameters to define routes
+> Elysia uses HTTP method, and path parameters to define routes
 
 </template>
 
 </Compare>
 
-While tRPC use proprietary abstraction over RESTful API with procedure and router, Elysia use a syntax similar to Express, and Hono like `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
+While tRPC use proprietary abstraction over RESTful API with procedure and router, Elysia uses a syntax similar to Express, and Hono like `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
 
 ## Handler
 
-tRPC handler is called `procedure` which can be either `query` or `mutation`, while Elysia use HTTP method like `get`, `post`, `put`, `delete` and so on.
+tRPC handler is called `procedure` which can be either `query` or `mutation`, while Elysia uses HTTP method like `get`, `post`, `put`, `delete` and so on.
 
-tRPC is doesn't have a concept of HTTP property like query, headers, status code, and so on, only `input` and `output`.
+tRPC doesn't have a concept of HTTP property like query, headers, status code, and so on, only `input` and `output`.
 
 <Compare>
 
@@ -154,7 +154,7 @@ const appRouter = t.router({
 
 <template v-slot:left-content>
 
-> tRPC use single `input` for all properties
+> tRPC uses single `input` for all properties
 
 </template>
 
@@ -180,13 +180,13 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use specific property for each HTTP property
+> Elysia uses specific property for each HTTP property
 
 </template>
 
 </Compare>
 
-Elysia use **static code analysis** to determine what to parse, and only parse the required properties.
+Elysia uses **static code analysis** to determine what to parse, and only parses the required properties.
 
 This is useful for performance and type safety.
 
@@ -219,7 +219,7 @@ const appRouter = t.router({
 
 <template v-slot:left-content>
 
-> tRPC use nested router to define subrouter
+> tRPC uses nested router to define subrouter
 
 </template>
 
@@ -242,7 +242,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use a `.use()` method to define a subrouter
+> Elysia uses a `.use()` method to define a subrouter
 
 </template>
 
@@ -352,16 +352,16 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use specific property to define validation schema
+> Elysia uses specific property to define validation schema
 
 </template>
 
 </Compare>
 
-Both offers type inference from schema to context automatically.
+Both offer type inference from schema to context automatically.
 
 ## File upload
-tRPC doesn't support file upload out-of-the-box and require you to use `base64` string as input which is inefficient, and doesn't support mimetype validation.
+tRPC doesn't support file upload out-of-the-box and requires you to use `base64` string as input which is inefficient, and doesn't support mimetype validation.
 
 While Elysia has built-in support for file upload using Web Standard API.
 
@@ -434,11 +434,11 @@ const app = new Elysia()
 
 </Compare>
 
-As doesn't validate mimetype out-of-the-box, you need to use a third-party library like `file-type` to validate an actual type.
+As tRPC doesn't validate mimetype out-of-the-box, you need to use a third-party library like `file-type` to validate an actual type.
 
 ## Middleware
 
-tRPC middleware use a single queue-based order with `next` similar to Express, while Elysia give you a more granular control using an **event-based** lifecycle.
+tRPC middleware uses a single queue-based order with `next` similar to Express, while Elysia gives you more granular control using an **event-based** lifecycle.
 
 Elysia's Life Cycle event can be illustrated as the following.
 ![Elysia Life Cycle Graph](/assets/lifecycle-chart.svg)
@@ -479,7 +479,7 @@ const appRouter = t.router({
 
 <template v-slot:left-content>
 
-> tRPC use a single middleware queue defined as a procedure
+> tRPC uses a single middleware queue defined as a procedure
 
 </template>
 
@@ -509,18 +509,18 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use a specific event interceptor for each point in the request pipeline
+> Elysia uses a specific event interceptor for each point in the request pipeline
 
 </template>
 
 </Compare>
 
-While tRPC has a `next` function to call the next middleware in the queue, Elysia use specific event interceptor for each point in the request pipeline.
+While tRPC has a `next` function to call the next middleware in the queue, Elysia uses specific event interceptor for each point in the request pipeline.
 
-## Sounds type safety
-Elysia is designed to be sounds type safety.
+## Sound type safety
+Elysia is designed to provide sound type safety.
 
-For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while tRPC offers one by using `context` by type case which is doesn't ensure 100% type safety, making it unsounds.
+For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while tRPC offers one by using `context` by type casting which doesn't ensure 100% type safety, making it unsound.
 
 <Compare>
 
@@ -556,7 +556,7 @@ const appRouter = t.router({
 
 <template v-slot:left-content>
 
-> tRPC use `context` to extend context but doesn't have sounds type safety
+> tRPC uses `context` to extend context but doesn't have sound type safety
 
 </template>
 
@@ -593,7 +593,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use a specific event interceptor for each point in the request pipeline
+> Elysia uses a specific event interceptor for each point in the request pipeline
 
 </template>
 
@@ -701,7 +701,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use macro to pass custom argument to custom middleware
+> Elysia uses macro to pass custom arguments to custom middleware
 
 </template>
 
@@ -709,7 +709,7 @@ const app = new Elysia()
 
 ## Error handling
 
-tRPC use middleware-like to handle error, while Elysia provide custom error with type safety, and error interceptor for both global and route specific error handler.
+tRPC uses middleware-like to handle error, while Elysia provides custom error with type safety, and error interceptor for both global and route-specific error handler.
 
 <Compare>
 
@@ -752,7 +752,7 @@ const appRouter = t.router()
 
 <template v-slot:left-content>
 
-> tRPC use middleware-like to handle error
+> tRPC uses middleware-like to handle error
 
 </template>
 
@@ -817,17 +817,17 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia provide more granular control over error handling, and scoping mechanism
+> Elysia provides more granular control over error handling, and scoping mechanism
 
 </template>
 
 </Compare>
 
-While tRPC offers error handling using middleware-like, Elysia provide:
+While tRPC offers error handling using middleware-like, Elysia provides:
 
-1. Both global and route specific error handler
+1. Both global and route-specific error handler
 2. Shorthand for mapping HTTP status and `toResponse` for mapping error to a response
-3. Provide a custom error code for each error
+3. Provides a custom error code for each error
 
 The error code is useful for logging and debugging, and is important when differentiating between different error types extending the same class.
 
@@ -835,7 +835,7 @@ Elysia provides all of this with type safety while tRPC doesn't.
 
 ## Encapsulation
 
-tRPC encapsulate side-effect of a by procedure or router making it always isolated, while Elysia give you a control over side-effect of a plugin via explicit scoping mechanism, and order-of-code.
+tRPC encapsulates side-effects of a procedure or router making it always isolated, while Elysia gives you control over side-effects of a plugin via explicit scoping mechanism, and order-of-code.
 
 <Compare>
 
@@ -872,7 +872,7 @@ const appRouter = t.router({
 
 <template v-slot:left-content>
 
-> tRPC encapsulate side-effect of a plugin into the procedure or router
+> tRPC encapsulates side-effects of a plugin into the procedure or router
 
 </template>
 
@@ -901,15 +901,15 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia encapsulate side-effect of a plugin unless explicitly stated
+> Elysia encapsulates side-effects of a plugin unless explicitly stated
 
 </template>
 
 </Compare>
 
-Both has a encapsulate mechanism of a plugin to prevent side-effect.
+Both have an encapsulation mechanism of a plugin to prevent side-effects.
 
-However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Fastify always encapsulate it.
+However, Elysia can explicitly state which plugin should have side-effects by declaring a scoped while tRPC always encapsulates it.
 
 ```ts [Elysia]
 import { Elysia } from 'elysia'
@@ -930,13 +930,13 @@ const app = new Elysia()
     .get('/side-effect', () => 'hi')
 ```
 
-Elysia offers 3 type of scoping mechanism:
+Elysia offers 3 types of scoping mechanism:
 1. **local** - Apply to current instance only, no side-effect (default)
 2. **scoped** - Scoped side-effect to the parent instance but not beyond
-3. **global** - Affects every instances
+3. **global** - Affects every instance
 
 ## OpenAPI
-tRPC doesn't offers OpenAPI first party, and relying on third-party library like `trpc-to-openapi` which is not a streamlined solution.
+tRPC doesn't offer OpenAPI first-party, and relies on third-party library like `trpc-to-openapi` which is not a streamlined solution.
 
 While Elysia has built-in support for OpenAPI using [@elysiajs/openapi](/plugins/openapi) from a single line of code.
 
@@ -995,7 +995,7 @@ export const openApiDocument = generateOpenApiDocument(appRouter, {
 
 <template v-slot:left-content>
 
-> tRPC rely on third-party library to generate OpenAPI spec
+> tRPC relies on third-party library to generate OpenAPI spec
 
 </template>
 
@@ -1035,21 +1035,21 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia seamlessly integrate the specification into the schema
+> Elysia seamlessly integrates the specification into the schema
 
 </template>
 
 </Compare>
 
-tRPC rely on third-party library to generate OpenAPI spec, and **MUST** require you to define a correct path name and HTTP method in the metadata which is force you to be **consistently aware** of how you place a router, and procedure.
+tRPC relies on third-party library to generate OpenAPI spec, and **MUST** require you to define a correct path name and HTTP method in the metadata which forces you to be **consistently aware** of how you place a router, and procedure.
 
-While Elysia use schema you provide to generate the OpenAPI specification, and validate the request/response, and infer type automatically all from a **single source of truth**.
+While Elysia uses schema you provide to generate the OpenAPI specification, and validates the request/response, and infers types automatically all from a **single source of truth**.
 
 Elysia also appends the schema registered in `model` to the OpenAPI spec, allowing you to reference the model in a dedicated section in Swagger or Scalar UI while this is missing on tRPC inline the schema to the route.
 
 ## Testing
 
-Elysia use Web Standard API to handle request and response while tRPC require a lot of ceremony to run the request using `createCallerFactory`.
+Elysia uses Web Standard API to handle request and response while tRPC requires a lot of ceremony to run the request using `createCallerFactory`.
 
 <Compare>
 
@@ -1102,7 +1102,7 @@ describe('GET /', () => {
 
 <template v-slot:left-content>
 
-> tRPC require `createCallerFactory`, and a lot of ceremony to run the request
+> tRPC requires `createCallerFactory`, and a lot of ceremony to run the request
 
 </template>
 
@@ -1146,7 +1146,7 @@ describe('GET /', () => {
 
 <template v-slot:right-content>
 
-> Elysia use Web Standard API to handle request and response
+> Elysia uses Web Standard API to handle request and response
 
 </template>
 
@@ -1174,7 +1174,7 @@ describe('GET /', () => {
 ```
 
 ## End-to-end type safety
-Both offers end-to-end type safety for client-server communication.
+Both offer end-to-end type safety for client-server communication.
 
 <Compare>
 
@@ -1239,7 +1239,7 @@ console.log('ok')
 
 <template v-slot:left-content>
 
-> tRPC use `createTRPCProxyClient` to create a client with end-to-end type safety
+> tRPC uses `createTRPCProxyClient` to create a client with end-to-end type safety
 
 </template>
 
@@ -1296,13 +1296,13 @@ console.log('ok')
 
 <template v-slot:right-content>
 
-> Elysia use `treaty` to run the request, and offers end-to-end type safety
+> Elysia uses `treaty` to run the request, and offers end-to-end type safety
 
 </template>
 
 </Compare>
 
-While both offers end-to-end type safety, tRPC only handle **happy path** where the request is successful, and doesn't have a type soundness of error handling, making it unsound.
+While both offer end-to-end type safety, tRPC only handles **happy path** where the request is successful, and doesn't have a type soundness of error handling, making it unsound.
 
 If type soundness is important for you, then Elysia is the right choice.
 
@@ -1310,18 +1310,18 @@ If type soundness is important for you, then Elysia is the right choice.
 
 While tRPC is a great framework for building type-safe APIs, it has its limitations in terms of RESTful compliance, and type soundness.
 
-Elysia is designed to be ergonomic and developer-friendly with a focus on developer experience, and **type soundness** complying with RESTful, OpenAPI, and WinterTC Standard making it a better fit for building a universal API.
+Elysia is designed to be ergonomic and developer-friendly with a focus on developer experience, and **type soundness**, complying with RESTful, OpenAPI, and WinterCG standards, making it a better fit for building a universal API.
 
 Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
 	<Card title="From Express" href="/migrate/from-express">
-		Comparison between tRPC and Elysia
+		Comparison between Express and Elysia
 	</Card>
     <Card title="From Fastify" href="/migrate/from-fastify">
   		Comparison between Fastify and Elysia
     </Card>
     <Card title="From Hono" href="/migrate/from-hono">
-  		Comparison between tRPC and Elysia
+  		Comparison between Hono and Elysia
 	</Card>
 </Deck>

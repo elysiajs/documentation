@@ -15,12 +15,12 @@ head:
 ---
 
 # Deploy to production
-This page is a guide on how to deploy Elysia to production.
+This page provides a guide on how to deploy Elysia to production.
 
 ## Cluster mode
-Elysia is a single-threaded by default. To take advantage of multi-core CPU, we can run Elysia in cluster mode.
+Elysia is single-threaded by default. To take advantage of multi-core CPU, we can run Elysia in cluster mode.
 
-Let's create a **index.ts** file that import our main server from **server.ts** and fork multiple workers based on the number of CPU cores available.
+Let's create an **index.ts** file that imports our main server from **server.ts** and fork multiple workers based on the number of CPU cores available.
 
 ::: code-group
 
@@ -48,14 +48,14 @@ new Elysia()
 
 :::
 
-This will make sure that Elysia is running on multiple CPU cores.
+This will ensure that Elysia is running on multiple CPU cores.
 
 ::: tip
-Elysia on Bun use SO_REUSEPORT by default, which allows multiple instances to listen on the same port. This only works on Linux.
+Elysia on Bun uses SO_REUSEPORT by default, which allows multiple instances to listen on the same port. This only works on Linux.
 :::
 
 ## Compile to binary
-We recommend running a build command before deploying to production as it could potentially reduce memory usage and file size significantly.
+We recommend running the build command before deploying to production as it could potentially reduce memory usage and file size significantly.
 
 We recommend compiling Elysia into a single binary using the command as follows:
 ```bash
@@ -115,11 +115,11 @@ Here's a list of available targets:
 | bun-linux-arm64-musl    | Linux            | arm64        | ✅      | N/A      | musl  |
 
 ### Why not --minify
-Bun does have `--minify` flag that will minify the binary.
+Bun has a `--minify` flag that will minify the binary.
 
-However if we are using [OpenTelemetry](/plugins/opentelemetry), it's going to reduce a function name to a single character.
+However if we are using [OpenTelemetry](/plugins/opentelemetry), it will reduce a function name to a single character.
 
-This makes tracing harder than it should as OpenTelemetry relies on a function name.
+This makes tracing harder than it should as OpenTelemetry relies on function names.
 
 However, if you're not using OpenTelemetry, you may opt in for `--minify` instead
 ```bash
@@ -131,7 +131,7 @@ bun build \
 ```
 
 ### Permission
-Some Linux distros might not be able to run the binary, we suggest enabling executable permission to a binary if you're on Linux:
+Some Linux distributions might not be able to run the binary, we suggest enabling execute permissions on the binary if you're on Linux:
 ```bash
 chmod +x ./server
 
@@ -139,16 +139,16 @@ chmod +x ./server
 ```
 
 ### Unknown random Chinese error
-If you're trying to deploy a binary to your server but unable to run with random chinese character error.
+If you're trying to deploy a binary to your server but are unable to run it and are receiving random Chinese character errors.
 
 It means that the machine you're running on **doesn't support AVX2**.
 
 Unfortunately, Bun requires a machine that has `AVX2` hardware support.
 
-There's no workaround as far as we know.
+There's no known workaround.
 
 ## Compile to JavaScript
-If you are unable to compile to binary or you are deploying on a Windows server.
+If you are unable to compile to a binary or you are deploying on a Windows server.
 
 You may bundle your server to a JavaScript file instead.
 
@@ -166,9 +166,9 @@ NODE_ENV=production bun ./dist/index.js
 ```
 
 ## Docker
-On Docker, we recommended to always compile to binary to reduce base image overhead.
+On Docker, we recommend always compiling to a binary to reduce base image overhead.
 
-Here's an example image using Distroless image using binary.
+Here's an example image using the Distroless image with a binary.
 ```dockerfile [Dockerfile]
 FROM oven/bun AS build
 
@@ -205,18 +205,18 @@ EXPOSE 3000
 ```
 
 ### OpenTelemetry
-If you are using [OpenTelemetry](/patterns/opentelemetry) to deploys production server.
+If you are using [OpenTelemetry](/patterns/opentelemetry) to deploy production server.
 
-As OpenTelemetry rely on monkey-patching `node_modules/<library>`. It's required that make instrumentations works properly, we need to specify that libraries to be instrument is an external module to exclude it from being bundled.
+As OpenTelemetry relies on monkey-patching `node_modules/<library>`. It's required to make instrumentations work properly, we need to specify libraries to be instrumented as an external module to exclude it from being bundled.
 
-For example, if you are using `@opentelemetry/instrumentation-pg` to instrument `pg` library. We need to exclude `pg` from being bundled and make sure that it is importing `node_modules/pg`.
+For example, if you are using `@opentelemetry/instrumentation-pg` to instrument the `pg` library. We need to exclude `pg` from being bundled and make sure that it is importing `node_modules/pg`.
 
-To make this works, we may specified `pg` as an external module with `--external pg`
+To make this work, we may specify `pg` as an external module with `--external pg`
 ```bash
 bun build --compile --external pg --outfile server src/index.ts
 ```
 
-This tells bun to not `pg` bundled into the final output file, and will be imported from the `node_modules` directory at runtime. So on a production server, you must also keeps the `node_modules` directory.
+This tells bun not to bundle `pg` into the final output file, and will be imported from the `node_modules` directory at runtime. So on a production server, you must also keep the `node_modules` directory.
 
 It's recommended to specify packages that should be available in a production server as `dependencies` in `package.json` and use `bun install --production` to install only production dependencies.
 
@@ -244,9 +244,9 @@ If the node_modules directory still includes development dependencies, you may r
 ### Monorepo
 If you are using Elysia with Monorepo, you may need to include dependent `packages`.
 
-If you are using Turborepo, you may place a Dockerfile inside an your apps directory like **apps/server/Dockerfile**. This may apply to other monorepo manager such as Lerna, etc.
+If you are using Turborepo, you may place a Dockerfile inside your apps directory like **apps/server/Dockerfile**. This also applies to other monorepo managers such as Lerna, etc.
 
-Assume that our monorepo are using Turborepo with structure as follows:
+Assuming that our monorepo uses Turborepo with structure as follows:
 - apps
 	- server
 		- **Dockerfile (place a Dockerfile here)**
@@ -299,7 +299,7 @@ EXPOSE 3000
 ```
 
 ## Railway
-[Railway](https://railway.app) is one of the popular deployment platform.
+[Railway](https://railway.app) is one of the popular deployment platforms.
 
 Railway assigns a **random port** to expose for each deployment, which can be accessed via the `PORT` environment variable.
 
@@ -312,8 +312,8 @@ new Elysia()
 	.listen(process.env.PORT ?? 3000) // [!code ++]
 ```
 
-This should allows Elysia to intercept port provided by Railway.
+This should allow Elysia to intercept port provided by Railway.
 
 ::: tip
-Elysia assign hostname to `0.0.0.0` automatically, which works with Railway
+Elysia assigns the hostname to `0.0.0.0` automatically, which works with Railway
 :::

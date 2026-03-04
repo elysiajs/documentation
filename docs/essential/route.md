@@ -98,7 +98,7 @@ const demo13 = new Elysia()
 
 Web servers use the request's **path and method** to look up the correct resource, known as **"routing"**.
 
-We can define a route with **HTTP verb method**, a path and a function to execute when matched.
+We can define a route with **an HTTP verb method**, a path and a function to execute when matched.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -121,10 +121,10 @@ Using the interactive browser above, hover on the blue highlight area to see dif
 
 ## Path type
 
-Path in Elysia can be grouped into 3 types:
+Paths in Elysia can be grouped into 3 types:
 
--   **static paths** - static string to locate the resource
--   **dynamic paths** - segment can be any value
+-   **static paths** - static strings to locate the resource
+-   **dynamic paths** - segments can be any value
 -   **wildcards** - path until a specific point can be anything
 
 You can use all of the path types together to compose a behavior for your web server.
@@ -221,7 +221,7 @@ new Elysia()
 
 <br>
 
-Here, a dynamic path is created with `/id/:id`. Which tells Elysia to capture the value `:id` segment with value like **/id/1**, **/id/123**, **/id/anything**.
+Here, a dynamic path is created with `/id/:id`, which tells Elysia to capture the value `:id` segment with values like **/id/1**, **/id/123**, **/id/anything**.
 
 <Playground
   :elysia="demo6"
@@ -315,7 +315,7 @@ The server will respond as follows:
 | /id/anything/rest      | anything rest |
 
 ## Optional path parameters
-Sometime we might want a static and dynamic path to resolve the same handler.
+Sometimes we might want a static and dynamic path to resolve the same handler.
 
 We can make a path parameter optional by adding a question mark `?` after the parameter name.
 
@@ -394,13 +394,13 @@ new Elysia()
 | /id/anything/rest      | anything/rest |-->
 
 ## Path priority
-Elysia has a path priorities as follows:
+Elysia has path priorities as follows:
 
 1. static paths
 2. dynamic paths
 3. wildcards
 
-If the path is resolved as the static wild dynamic path is presented, Elysia will resolve the static path rather than the dynamic path
+If both a static and a dynamic path are present, Elysia will resolve the static path rather than the dynamic path.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -437,7 +437,7 @@ Requests using GET should only retrieve data.
 
 ### POST
 
-Submits a payload to the specified resource, often causing state change or side effect.
+Submits a payload to the specified resource, often causing state changes or side effects.
 
 ### PUT
 
@@ -466,7 +466,7 @@ new Elysia()
 
 <Playground :elysia="demo2" />
 
-Elysia HTTP methods accepts the following parameters:
+The Elysia HTTP method accepts the following parameters:
 
 -   **path**: Pathname
 -   **function**: Function to respond to the client
@@ -494,7 +494,7 @@ const app = new Elysia()
 
 -   **method**: HTTP Verb
 -   **path**: Pathname
--   **function**: Function to response to the client
+-   **function**: Function to respond to the client
 -   **hook**: Additional metadata
 
 <!--When navigating to each method, you should see the results as the following:
@@ -535,7 +535,7 @@ Any HTTP method that matches the path, will be handled as follows:
 
 Most developers use REST clients like Postman, Insomnia or Hoppscotch to test their API.
 
-However, Elysia can be programmatically test using `Elysia.handle`.
+However, Elysia can be programmatically tested using `Elysia.handle`.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -595,7 +595,7 @@ If the server fails to find any route to handle, like in this case, then the ser
 
 ## Group
 
-When creating a web server, you would often have multiple routes sharing the same prefix:
+When creating a web server, you will often have multiple routes sharing the same prefix:
 
 ```typescript
 import { Elysia } from 'elysia'

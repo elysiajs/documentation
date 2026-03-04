@@ -16,11 +16,11 @@ head:
 
 # Parameters
 
-We need to send a payload to server eventually.
+We need to send a payload to the server eventually.
 
-To handle this, Eden Treaty's methods accept 2 parameters to send data to server.
+To handle this, Eden Treaty's methods accept 2 parameters to send data to the server.
 
-Both parameters are type safe and will be guided by TypeScript automatically:
+Both parameters are type-safe and will be guided by TypeScript automatically:
 
 1. body
 2. additional parameters
@@ -61,9 +61,9 @@ api.user.post({
 })
 ```
 
-Unless if the method doesn't accept body, then body will be omitted and left with single parameter only.
+Unless the method doesn't accept a body, then the body will be omitted and left with a single parameter only.
 
-If the method **"GET"** or **"HEAD"**:
+If the method is **"GET"** or **"HEAD"**:
 
 1. Additional parameters
     -   query
@@ -90,7 +90,7 @@ api.hello.get({
 ```
 
 ## Empty body
-If body is optional or not need but query or headers is required, you may pass the body as `null` or `undefined` instead.
+If the body is optional or not needed, but query or headers are required, you may pass the body as `null` or `undefined` instead.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -115,7 +115,7 @@ api.user.post(null, {
 
 ## Fetch parameters
 
-Eden Treaty is a fetch wrapper, we may add any valid [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) parameters to Eden by passing it to `$fetch`:
+Eden Treaty is a fetch wrapper; we may add any valid [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) parameters to Eden by passing them to `$fetch`:
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -143,15 +143,15 @@ clearTimeout(cancelRequest)
 ```
 
 ## File Upload
-We may either pass one of the following to attach file(s):
+We may pass any of the following to attach file(s):
 - **File**
 - **File[]**
 - **FileList**
 - **Blob**
 
-Attaching a file will results **content-type** to be **multipart/form-data**
+Attaching a file will result in **content-type** being **multipart/form-data**
 
-Suppose we have the server as the following:
+Suppose we have the server as follows:
 ```typescript
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysiajs/eden'

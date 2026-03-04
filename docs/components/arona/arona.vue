@@ -196,7 +196,7 @@
                                             ) in questions"
                                             :key="index"
                                             @click="ask(example)"
-                                            class="clicky text-sm px-3 py-1 rounded-full bg-white/85 dark:bg-mauve-700/85 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
+                                            class="clicky text-sm px-3 py-1 rounded-full bg-white/40 dark:bg-mauve-700/40 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-400/15 dark:interact:bg-pink-300/15 transition-colors"
                                             v-text="example"
                                         />
                                     </div>
@@ -228,7 +228,12 @@
                                         ease: easeOutExpo
                                     }"
                                 >
-                                    {{ content }}
+                                    {{
+                                        content.replace(
+                                            /【([^】]+)】/g,
+                                            '[$1]($1)'
+                                        )
+                                    }}
                                 </motion.p>
 
                                 <motion.div
@@ -274,9 +279,8 @@
                                         index === history.length - 1
                                     "
                                 >
-                                    *AI can make a mistake, please verify with
+                                    *AI can make mistakes, verify with
                                     included references
-                                    <ArrowUp class="ml-1" :size="16" :stroke-width="1" />
                                 </p>
 
                                 <aside
@@ -1040,9 +1044,10 @@ async function ask(input?: string, seed?: number) {
             .slice(separatorIndex + separator.length)
             .trimStart()
 
-        content = history.value[index].content = content
-            .slice(0, separatorIndex)
-            .trimEnd()
+        content = history.value[index].content = content.slice(
+            0,
+            separatorIndex
+        )
 
         const id = /id:(\w+)/g.exec(metadata)?.[1]?.trim()
         if (id) history.value[index].id = id
@@ -1050,9 +1055,6 @@ async function ask(input?: string, seed?: number) {
         const checksum = /checksum:(\w+)/g.exec(metadata)?.[1]?.trim()
         if (checksum) history.value[index].checksum = checksum
     }
-
-    // Convert 【text】 to [text](text)
-    history.value[index].content = content.replace(/【([^】]+)】/g, '[$1]($1)')
 
     resetState()
     auth()
@@ -1167,12 +1169,12 @@ onUnmounted(() => {
     background-image:
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 0.3) 70%,
+            rgba(255, 255, 255, 0.35) 70%,
             transparent 150%
         ),
         radial-gradient(
             closest-side at center,
-            rgba(255, 255, 255, 0.3) 90%,
+            rgba(255, 255, 255, 0.35) 90%,
             transparent 150%
         ),
         radial-gradient(
@@ -1216,12 +1218,12 @@ onUnmounted(() => {
             radial-gradient(
                 closest-side at center,
                 theme('--color-mauve-800') 10%,
-                transparent 150%
+                transparent 120%
             ),
             radial-gradient(
                 closest-side at center,
                 theme('--color-mauve-800') 10%,
-                transparent 150%
+                transparent 120%
             ),
             radial-gradient(
                 at 9% 67%,
@@ -1230,17 +1232,17 @@ onUnmounted(() => {
             ),
             radial-gradient(
                 at 22% 0%,
-                theme('--color-mauve-600') 0px,
+                theme('--color-mauve-700') 0px,
                 transparent 50%
             ),
             radial-gradient(
                 at 97% 49%,
-                hsla(240, 100%, 87%, 0.35) 0px,
+                hsla(240, 100%, 87%, 0.175) 0px,
                 transparent 50%
             ),
             radial-gradient(
                 at 100% 75%,
-                hsla(280, 100%, 75%, 0.26) 0px,
+                hsla(280, 100%, 75%, 0.2) 0px,
                 transparent 50%
             ),
             radial-gradient(
@@ -1262,6 +1264,10 @@ onUnmounted(() => {
 
     & > .user {
         @apply px-3 py-1.5 bg-mauve-100 dark:bg-mauve-700 rounded-2xl self-end max-w-[80%] whitespace-pre-wrap origin-top-right;
+
+        &:last-child {
+            @apply mb-4;
+        }
     }
 
     & > .elysia-chan {
@@ -1280,6 +1286,7 @@ onUnmounted(() => {
 
             &:is(ul) {
                 @apply flex flex-wrap gap-x-1 gap-y-2.5 list-none -mx-2;
+                font-size: 0px;
 
                 & > li {
                     @apply text-xs my-0 w-auto;
@@ -1289,7 +1296,11 @@ onUnmounted(() => {
                     }
 
                     & > a {
-                        @apply px-2 py-1 text-mauve-400 bg-white/35 dark:bg-mauve-700/35 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
+                        @apply text-sm px-2 py-1 text-mauve-400 bg-white/35 dark:bg-mauve-700/35 interact:text-pink-500 dark:interact:text-pink-300 interact:bg-pink-300/15 interact:dark:bg-pink-300/15 no-underline cursor-pointer rounded-full transition-colors;
+
+                        & > * {
+                            @apply text-sm font-normal font-sans;
+                        }
                     }
                 }
             }

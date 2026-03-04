@@ -35,9 +35,9 @@ export const auth = betterAuth({
 
 ## Handler
 
-After setting up Better Auth instance, we can mount to Elysia via [mount](/patterns/mount.html).
+After setting up the Better Auth instance, we can mount it to Elysia via [mount](/patterns/mount.html).
 
-We need to mount the handler to Elysia endpoint.
+We need to mount the handler to an Elysia endpoint.
 
 ```ts [index.ts]
 import { Elysia } from 'elysia'
@@ -52,7 +52,7 @@ console.log(
 )
 ```
 
-Then we can access Better Auth with `http://localhost:3000/api/auth`.
+Then we can access Better Auth at `http://localhost:3000/api/auth`.
 
 ### Custom endpoint
 
@@ -70,9 +70,9 @@ console.log(
 )
 ```
 
-Then we can access Better Auth with `http://localhost:3000/auth/api/auth`.
+Then we can access Better Auth at `http://localhost:3000/auth/api/auth`.
 
-But the URL looks redundant, we can customize the `/api/auth` prefix to something else in Better Auth instance.
+But the URL looks redundant, so we can customize the `/api/auth` prefix to something else in the Better Auth instance.
 
 ```ts
 import { betterAuth } from 'better-auth'
@@ -86,15 +86,15 @@ export const auth = betterAuth({
 })
 ```
 
-Then we can access Better Auth with `http://localhost:3000/auth/api`.
+Then we can access Better Auth at `http://localhost:3000/auth/api`.
 
-Unfortunately, we can't set `basePath` of a Better Auth instance to be empty or `/`.
+Unfortunately, we can't set the `basePath` of a Better Auth instance to be empty or `/`.
 
 ## OpenAPI
 
-Better Auth support `openapi` with `better-auth/plugins`.
+Better Auth supports `openapi` with `better-auth/plugins`.
 
-However if we are using [@elysiajs/openapi](/plugins/openapi), you might want to extract the documentation from Better Auth instance.
+However, if we are using [@elysiajs/openapi](/plugins/openapi), you might want to extract the documentation from the Better Auth instance.
 
 We may do that with the following code:
 
@@ -126,7 +126,7 @@ export const OpenAPI = {
 } as const
 ```
 
-Then in our Elysia instance that use `@elysiajs/openapi`.
+Then in our Elysia instance that uses `@elysiajs/openapi`.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -146,7 +146,7 @@ const app = new Elysia().use(
 
 ## CORS
 
-To configure cors, you can use the `cors` plugin from `@elysiajs/cors`.
+To configure CORS, you can use the `cors` plugin from `@elysiajs/cors`.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -173,7 +173,7 @@ console.log(
 
 ## Macro
 
-You can use [macro](https://elysiajs.com/patterns/macro.html#macro) with [resolve](https://elysiajs.com/essential/handler.html#resolve) to provide session and user information before pass to view.
+You can use [macro](https://elysiajs.com/patterns/macro.html#macro) with [resolve](https://elysiajs.com/essential/handler.html#resolve) to provide session and user information before passing to the view.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -211,4 +211,4 @@ console.log(
 )
 ```
 
-This will allow you to access the `user` and `session` object in all of your routes.
+This will allow you to access the `user` and `session` objects in all of your routes.

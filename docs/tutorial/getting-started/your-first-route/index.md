@@ -53,7 +53,7 @@ When we enter a website, it takes
 1. **path** like `/`, `/about`, or `/contact`
 2. **method** like `GET`, `POST`, or `DELETE`
 
-To determine what a resource to show, simply called **"route"**.
+To determine which resource to show, simply called **"route"**.
 
 In Elysia, we can define a route by:
 1. Call method named after HTTP method
@@ -106,7 +106,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Here, a dynamic path is created with `/id/:id`. Which tells Elysia to capture the value `:id` segment with value like **/id/1**, **/id/123**, **/id/anything**.
+Here, a dynamic path is created with `/id/:id`, which tells Elysia to capture the value `:id` segment with value like **/id/1**, **/id/123**, **/id/anything**.
 
 <Playground
   :elysia="demo6"

@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia hooks are encapsulated to its own instance only. If you create a new instance, it will not share hook with other instances.
+        content: Elysia hooks are encapsulated to its own instance only. If you create a new instance, it will not share hooks with other instances.
 
     - - meta
       - property: 'og:description'
-        content: Elysia hooks are encapsulated to its own instance only. If you create a new instance, it will not share hook with other instances.
+        content: Elysia hooks are encapsulated to its own instance only. If you create a new instance, it will not share hooks with other instances.
 ---
 
 <script setup lang="ts">
@@ -61,7 +61,7 @@ const demo2 = new Elysia()
 
 Elysia hooks are **encapsulated** to its own instance only.
 
-If you create a new instance, it will not share hook with other instances.
+If you create a new instance, it will not share hooks with other instances.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -87,11 +87,11 @@ new Elysia()
 
 <br>
 
-**Elysia isolate lifecycle** unless explicitly stated.
+**Elysia isolates lifecycle** unless explicitly stated.
 
 This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
 
-To **"export"** the lifecycle to other instances, you must add specify the scope.
+To **"export"** the lifecycle to other instances, you must specify the scope.
 
 ### Scope
 
@@ -161,7 +161,7 @@ Let's define a scope for `nameCheck`, and `ageCheck` to make our app works.
 <template #answer>
 
 We can modify scope as follows:
-1. modify `nameCheck` scope to **scope**
+1. modify `nameCheck` scope to **scoped**
 2. modify `ageCheck` scope to **global**
 
 ```typescript

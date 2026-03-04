@@ -15,11 +15,11 @@ head:
 ---
 
 # Integration with Netlify Edge Function
-[Netlify Edge Function](https://docs.netlify.com/build/edge-functions/overview/) is run on [Deno](/integrations/deno) which is one of Elysia support runtime, as Elysia is built on top of Web Standard.
+[Netlify Edge Functions](https://docs.netlify.com/build/edge-functions/overview/) run on [Deno](/integrations/deno), which is one of Elysia's supported runtimes, as Elysia is built on top of Web Standards.
 
-Netlify Edge Functions requires a special directory to run a function, the default is **\<directory\>/netlify/edge-functions**.
+Netlify Edge Functions require a special directory to run a function; the default is **\<directory\>/netlify/edge-functions**.
 
-To create a function at **/hello**, you would need to create file at `netlify/edge-functions/hello.ts`, then simply `export default` an Elysia instance.
+To create a function at **/hello**, you would need to create a file at `netlify/edge-functions/hello.ts`, then simply `export default` an Elysia instance.
 
 ::: code-group
 
@@ -35,7 +35,7 @@ export default new Elysia({ prefix: '/hello' }) // [!code ++]
 :::
 
 ### Running locally
-To test your Elysia server on Netlify Edge Function locally, you can install [Netlify CLI](https://docs.netlify.com/build/edge-functions/get-started/#test-locally) to simluate function invokation.
+To test your Elysia server on Netlify Edge Functions locally, you can install the [Netlify CLI](https://docs.netlify.com/build/edge-functions/get-started/#test-locally) to simulate function invocation.
 
 To install Netlify CLI:
 ```bash
@@ -47,7 +47,7 @@ To run the development environment:
 netlify dev
 ```
 
-For an additional information, please refers to [Netlify Edge Function documentation](https://docs.netlify.com/build/edge-functions).
+For additional information, please refer to the [Netlify Edge Functions documentation](https://docs.netlify.com/build/edge-functions).
 
 ### pnpm
 If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.

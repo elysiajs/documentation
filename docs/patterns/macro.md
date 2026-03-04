@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Macro is similar to a function that have a control over the lifecycle event, schema, context with full type safety.
+      content: Macro is similar to a function that has control over the lifecycle event, schema, context with full type safety.
 
   - - meta
     - property: 'og:description'
-      content: Macro is similar to a function that have a control over the lifecycle event, schema, context with full type safety.
+      content: Macro is similar to a function that has control over the lifecycle event, schema, context with full type safety.
 ---
 
 <script setup>
@@ -45,7 +45,7 @@ const app = new Elysia()
     })
 ```
 
-Accessing the path should log **"Elysia"** as the results.
+Accessing the path should log **"Elysia"** as a result.
 
 ## Property shorthand
 Starting from Elysia 1.2.10, each property in the macro object can be a function or an object.
@@ -166,15 +166,15 @@ new Elysia()
 	})
 ```
 
-It's recommended that you should `return status` instead of `throw new Error()` to annotate correct HTTP status code.
+It's recommended that you `return status` instead of `throw new Error()` to annotate correct HTTP status code.
 
 If you throw an error instead, Elysia will convert it to `500 Internal Server Error` by default.
 
-It's also recommend to use `return status` instead of `throw status` to ensure type inference for both [Eden](/eden/overview) and [OpenAPI Type Gen](/patterns/openapi#openapi-from-types).
+It's also recommended to use `return status` instead of `throw status` to ensure type inference for both [Eden](/eden/overview) and [OpenAPI Type Gen](/patterns/openapi#openapi-from-types).
 
 ## Resolve
 
-You add a property to the context by returning an object with a [**resolve**](/essential/life-cycle.html#resolve) function.
+You can add a property to the context by returning an object with a [**resolve**](/essential/life-cycle.html#resolve) function.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -223,7 +223,7 @@ new Elysia()
 ```
 
 ## Schema
-You can define a custom schema for your macro to make sure that the route using the macro is passing the correct type.
+You can define a custom schema for your macro to ensure that the route using the macro is passing the correct types.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -246,7 +246,7 @@ new Elysia()
 	})
 ```
 
-Macro with schema will automatically validate and infer type to ensure type safety, and it can co-exist with existing schema as well.
+Macro with schema will automatically validate and infer types to ensure type safety, and it can co-exist with existing schema as well.
 
 You can also stack multiple schemas from different macros, or even from the Standard Validator, and it will work together seamlessly.
 
@@ -274,7 +274,7 @@ If you want to use lifecycle type inference within the same macro, you might wan
 > Not to be confused with using macro schema to infer type into the route's lifecycle event. That works just fine. This limitation only applies to using lifecycle within the same macro.
 
 ## Extension
-Macro can extends other macro, allowing you to build upon existing one.
+Macro can extend other macros, allowing you to build upon an existing one.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -310,7 +310,7 @@ new Elysia()
 //
 ```
 
-This allow you to build upon existing macro, and add more functionality to it.
+This allows you to build upon existing macro, and add more functionality to it.
 
 ## Deduplication
 Macro will automatically deduplicate the lifecycle event, ensuring that each lifecycle event is only executed once.
@@ -334,4 +334,4 @@ new Elysia()
 
 However, if you ever accidentally create a circular dependency, Elysia has a limited stack of 16 to prevent an infinite loop in both runtime and type inference.
 
-If the route already has OpenAPI detail, it will merge the detail together but prefers the route detail over macro detail.
+If the route already has OpenAPI detail, it will merge the details together but prefers the route detail over macro detail.

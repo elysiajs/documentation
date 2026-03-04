@@ -7,16 +7,16 @@ head:
 
     - - meta
       - name: 'description'
-        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws". WebSocket is a realtime protocol for communication between your client and server.
+        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws". WebSocket is a real-time protocol for communication between your client and server.
 
     - - meta
       - name: 'og:description'
-        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws". WebSocket is a realtime protocol for communication between your client and server.
+        content: Elysia's WebSocket implementation. Start by declaring WebSocket route with "ws". WebSocket is a real-time protocol for communication between your client and server.
 ---
 
 # WebSocket
 
-WebSocket is a realtime protocol for communication between your client and server.
+WebSocket is a real-time protocol for communication between your client and server.
 
 Unlike HTTP where our client repeatedly asks the website for information and waits for a reply each time, WebSocket sets up a direct line where our client and server can send messages back and forth directly, making the conversation quicker and smoother without having to start over with each message.
 
@@ -92,7 +92,7 @@ new Elysia({
 
 Elysia's WebSocket implementation extends Bun's WebSocket configuration, please refer to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) for more information.
 
-The following are a brief configuration from [Bun WebSocket](https://bun.sh/docs/api/websockets#create-a-websocket-server)
+The following is a brief configuration from [Bun WebSocket](https://bun.sh/docs/api/websockets#create-a-websocket-server)
 
 ### perMessageDeflate
 
@@ -152,7 +152,7 @@ Type:
 .ws(endpoint: path, options: Partial<WebSocketHandler<Context>>): this
 ```
 
-* **endpoint** - A path to exposed as websocket handler
+* **endpoint** - A path to be exposed as websocket handler
 * **options** - Customize WebSocket handler behavior
 
 ## WebSocketHandler
@@ -246,4 +246,4 @@ Like `transform`, but execute before validation of WebSocket message
 
 ## header
 
-Additional headers to add before upgrade connection to WebSocket.
+Additional headers to add before upgrading connection to WebSocket.

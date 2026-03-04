@@ -22,9 +22,9 @@ bun add -d elysia
 ```
 
 ::: tip
-Eden needs Elysia to infer utilities type.
+Eden needs Elysia to infer utility types.
 
-Make sure to install Elysia with the version matching on the server.
+Make sure to install Elysia with the version matching the server.
 :::
 
 First, export your existing Elysia server type:
@@ -90,7 +90,7 @@ client.
 ```
 
 ## Gotcha
-Sometimes, Eden may not infer types from Elysia correctly, the following are the most common workarounds to fix Eden type inference.
+Sometimes, Eden may not infer types from Elysia correctly. The following are the most common workarounds to fix Eden type inference.
 
 ### Type Strict
 Make sure to enable strict mode in **tsconfig.json**
@@ -102,10 +102,10 @@ Make sure to enable strict mode in **tsconfig.json**
 }
 ```
 
-### Unmatch Elysia version
-Eden depends on Elysia class to import Elysia instance and infer types correctly.
+### Mismatched Elysia version
+Eden depends on the Elysia class to import the Elysia instance and infer types correctly.
 
-Make sure that both client and server have the matching Elysia version.
+Make sure that both the client and server have matching Elysia versions.
 
 You can check it with [`npm why`](https://docs.npmjs.com/cli/v10/commands/npm-explain) command:
 
@@ -113,7 +113,7 @@ You can check it with [`npm why`](https://docs.npmjs.com/cli/v10/commands/npm-ex
 npm why elysia
 ```
 
-And output should contain only one elysia version on top-level:
+The output should contain only one elysia version at the top level:
 
 ```
 elysia@1.1.12
@@ -135,9 +135,9 @@ node_modules/elysia
 
 
 ### TypeScript version
-Elysia uses newer features and syntax of TypeScript to infer types in the most performant way. Features like Const Generic and Template Literal are heavily used.
+Elysia uses newer features and syntax of TypeScript to infer types in the most performant way. Features like Const Generics and Template Literals are heavily used.
 
-Make sure your client has a **minimum TypeScript version if >= 5.0**
+Make sure your client has a **minimum TypeScript version of >= 5.0**
 
 ### Method Chaining
 To make Eden work, Elysia must use **method chaining**
@@ -180,10 +180,10 @@ bun add -d @types/bun
 ```
 
 ### Path alias (monorepo)
-If you are using path alias in your monorepo, make sure that frontend is able to resolve the path as same as backend.
+If you are using path aliases in your monorepo, make sure that the frontend is able to resolve the path the same way as the backend.
 
 ::: tip
-Setting up path alias in monorepo is a bit tricky, you can fork our example template: [Kozeki Template](https://github.com/SaltyAom/kozeki-template) and modify it to your needs.
+Setting up path aliases in a monorepo can be tricky. You can fork our example template: [Kozeki Template](https://github.com/SaltyAom/kozeki-template) and modify it to your needs.
 :::
 
 For example, if you have the following path alias for your backend in **tsconfig.json**:
@@ -219,11 +219,11 @@ import type { app } from '@/index'
 
 const client = treaty<app>('localhost:3000')
 
-// This should be able to resolve the same module both frontend and backend, and not `any`
+// This should be able to resolve the same module in both frontend and backend, and not `any`
 import { a, b } from '@/controllers' // [!code ++]
 ```
 
-To fix this, you must make sure that path alias is resolved to the same file in both frontend and backend.
+To fix this, you must make sure that the path alias is resolved to the same file in both the frontend and backend.
 
 So, you must change the path alias in **tsconfig.json** to:
 ```json
@@ -237,14 +237,14 @@ So, you must change the path alias in **tsconfig.json** to:
 }
 ```
 
-If configured correctly, you should be able to resolve the same module in both frontend and backend.
+If configured correctly, you should be able to resolve the same module in both the frontend and backend.
 ```typescript
-// This should be able to resolve the same module both frontend and backend, and not `any`
+// This should be able to resolve the same module in both frontend and backend, and not `any`
 import { a, b } from '@/controllers'
 ```
 
 #### Namespace
-We recommended adding a **namespace** prefix for each module in your monorepo to avoid any confusion and conflict that may happen.
+We recommend adding a **namespace** prefix for each module in your monorepo to avoid any confusion and conflicts that may occur.
 
 ```json
 {
@@ -264,6 +264,6 @@ Then, you can import the module like this:
 import { a, b } from '@backend/controllers'
 ```
 
-We recommend creating a **single tsconfig.json** that defines a `baseUrl` as the root of your repo, provide a path according to the module location, and create a **tsconfig.json** for each module that inherits the root **tsconfig.json** which has the path alias.
+We recommend creating a **single tsconfig.json** that defines a `baseUrl` as the root of your repo, provides a path according to the module location, and creates a **tsconfig.json** for each module that inherits the root **tsconfig.json** which has the path alias.
 
-You may find a working example of in this [path alias example repo](https://github.com/SaltyAom/elysia-monorepo-path-alias) or [Kozeki Template](https://github.com/SaltyAom/kozeki-template).
+You may find a working example in this [path alias example repo](https://github.com/SaltyAom/elysia-monorepo-path-alias) or [Kozeki Template](https://github.com/SaltyAom/kozeki-template).

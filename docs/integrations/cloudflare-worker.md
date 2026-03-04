@@ -74,12 +74,12 @@ pnpm add @sinclair/typebox openapi-types
 ```
 
 ## Limitations
-Here are some known limitations of using Elysia on Cloudflare Worker:
+Here are some known limitations of using Elysia on Cloudflare Workers:
 
-1. `Elysia.file`, and [Static Plugin](/plugins/static) doesn't work [due to the lack of `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis), see [static file](#static-file) section for alternative
-2. [OpenAPI Type Gen](/blog/openapi-type-gen) doesn't work [due to the lack of `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis)
-3. You can't define [**Response** before server start](https://x.com/saltyAom/status/1966602691754553832) or use plugin that does so
-4. You can't inline a value due to 3.
+1. `Elysia.file`, and [Static Plugin](/plugins/static) don't work [due to the lack of the `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis); see the [Static File](#static-file) section for alternatives
+2. [OpenAPI Type Gen](/blog/openapi-type-gen) doesn't work [due to the lack of the `fs` module](https://developers.cloudflare.com/workers/runtime-apis/nodejs/#supported-nodejs-apis)
+3. You can't define [**Response** before server start](https://x.com/saltyAom/status/1966602691754553832) or use a plugin that does so
+4. You can't inline a value due to #3.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -90,7 +90,7 @@ new Elysia()
     .listen(3000)
 ```
 
-## Static File
+## Static Files
 [Static Plugin](/plugins/static) doesn't work, but you can still serve static files with [Cloudflare's built-in static file serving](https://developers.cloudflare.com/workers/static-assets/).
 
 Add the following to your wrangler config:
@@ -130,12 +130,12 @@ For example, if you have a folder structure like this:
 └─ wrangler.toml
 ```
 
-Then you should be able to access your static file from the following path:
+Then you should be able to access your static files from the following paths:
 - **http://localhost:8787/kyuukurarin.mp4**
 - **http://localhost:8787/static/mika.webp**
 
-## Binding
-You can use a Cloudflare Workers binding by importing env from `cloudflare:workers`.
+## Bindings
+You can use Cloudflare Workers bindings by importing env from `cloudflare:workers`.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -149,7 +149,7 @@ export default new Elysia({
 	.compile()
 ```
 
-See [Cloudflare Workers: Binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global) for more information about binding.
+See [Cloudflare Workers: Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global) for more information about bindings.
 
 ## AoT compilation
 Previously, to use Elysia on Cloudflare Worker, you have to pass `aot: false` to the Elysia constructor.
@@ -168,4 +168,4 @@ export default new Elysia({
 })
 ```
 
-Otherwise, you can still use `aot: false` if you don't want Ahead of Time Compilation but we recommend you to use it for better performance, and accurate plugin encapsulation.
+Otherwise, you can still use `aot: false` if you don't want Ahead of Time Compilation, but we recommend using it for better performance and accurate plugin encapsulation.

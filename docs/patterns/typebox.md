@@ -21,7 +21,7 @@ import Deck from '../components/nearl/card-deck.vue'
 
 # TypeBox (Elysia.t)
 
-Here's a common patterns for writing validation types using `Elysia.t`.
+Here's common patterns for writing validation types using `Elysia.t`.
 
 <Deck>
     <Card title="Primitive Type" href="#primitive-type">
@@ -617,7 +617,7 @@ For additional information, you can find the full source code of the type system
 
 ### Form
 
-A syntax sugar our `t.Object` with support for verifying return value of [form](/essential/handler.html#formdata) (FormData).
+A syntax sugar for our `t.Object` with support for verifying return value of [form](/essential/handler.html#formdata) (FormData).
 
 ```typescript
 t.Form({
@@ -674,16 +674,16 @@ Numeric accepts the same attributes as [Numeric Instance](https://json-schema.or
 
 ## Elysia behavior
 
-Elysia use TypeBox by default.
+Elysia uses TypeBox by default.
 
-However, to help making handling with HTTP easier. Elysia has some dedicated type and have some behavior difference from TypeBox.
+However, to help make handling HTTP easier. Elysia has some dedicated types and has some behavioral differences from TypeBox.
 
 ## Optional
 To make a field optional, use `t.Optional`.
 
-This will allows client to optionally provide a query parameter. This behavior also applied to `body`, `headers`.
+This will allow clients to optionally provide a query parameter. This behavior also applies to `body`, `headers`.
 
-This is different from TypeBox where optional is to mark a field of object as optional.
+This is different from TypeBox where optional is to mark a field of an object as optional.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -706,9 +706,9 @@ new Elysia()
 ## Number to Numeric
 By default, Elysia will convert a `t.Number` to [t.Numeric](#numeric) when provided as route schema.
 
-Because parsed HTTP headers, query, url parameter is always a string. This means that even if a value is number, it will be treated as string.
+Because parsed HTTP headers, query, and URL parameters are always strings. This means that even if a value is a number, it will be treated as a string.
 
-Elysia override this behavior by checking if a string value looks like a number then convert it even appropriate.
+Elysia overrides this behavior by checking if a string value looks like a number then converting it appropriately.
 
 This is only applied when it is used as a route schema and not in a nested `t.Object`.
 

@@ -14,9 +14,9 @@ head:
         content: Elysia can run inside Tanstack Start API server routes, and both works in Data Loader or with Tanstack React Query with type safety using Eden.
 ---
 
-# Integration with Tanstack Start
+# Integration with TanStack Start
 
-Elysia can run inside Tanstack Start server routes.
+Elysia can run inside TanStack Start server routes.
 
 1. Create **src/routes/api.$.ts**
 2. Define an Elysia server
@@ -93,9 +93,9 @@ export const getTreaty = createIsomorphicFn() // [!code ++]
 
 :::
 
-Notice that we use **createIsomorphicFn** to create a separate Eden Treaty instance for both server and client.
-1. On server, Elysia is called directly without HTTP overhead.
-2. On client, we call the Elysia server through HTTP.
+Notice that we use **createIsomorphicFn** to create a separate Eden Treaty instance for both the server and client:
+1. On the server, Elysia is called directly without HTTP overhead.
+2. On the client, we call the Elysia server through HTTP.
 
 In a React component, we can use `getTreaty` to call the Elysia server with type safety.
 
@@ -159,4 +159,4 @@ This can work with any React Query features like caching, pagination, infinite q
 
 ---
 
-Please visit [Tanstack Start Documentation](https://tanstack.com/start) for more information about Tanstack Start.
+Please visit [TanStack Start Documentation](https://tanstack.com/start) for more information about TanStack Start.

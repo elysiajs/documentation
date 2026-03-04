@@ -15,12 +15,12 @@ head:
 ---
 
 # Eden Test
-Using Eden, we can create an integration test with end-to-end type safety and auto-completion.
+Using Eden, we can create integration tests with end-to-end type safety and auto-completion.
 
 ## Setup
 We can use [Bun test](https://bun.sh/guides/test/watch-mode) to create tests.
 
-Create **test/index.test.ts** in the root of project directory with the following:
+Create **test/index.test.ts** in the root of the project directory with the following:
 
 ```typescript
 // test/index.test.ts
@@ -49,4 +49,4 @@ Then we can perform tests by running **bun test**
 bun test
 ```
 
-This allows us to perform integration tests programmatically instead of manual fetch while supporting type checking automatically.
+This allows us to perform integration tests programmatically instead of manual fetch, while supporting type checking automatically.

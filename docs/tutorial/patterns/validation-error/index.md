@@ -57,7 +57,7 @@ Elysia will override the default error message with the custom one you provide, 
 
 ## Validation Detail
 
-By default Elysia also provide a <DocLink href="/patterns/error-handling.html#validation-detail">Validation Detail</DocLink> to explain what's wrong with the validation as follows:
+By default Elysia also provides a <DocLink href="/patterns/error-handling.html#validation-detail">Validation Detail</DocLink> to explain what's wrong with the validation as follows:
 
 ```json
 {
@@ -114,7 +114,7 @@ new Elysia()
 
 ## Assignment
 
-Let's try to extends Elysia's context.
+Let's try to extend Elysia's context.
 
 <template #answer>
 

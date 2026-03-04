@@ -16,9 +16,9 @@ head:
 
 # Eden Treaty
 
-Eden Treaty is an object representation to interact with a server and features type safety, auto-completion, and error handling.
+Eden Treaty is an object representation used to interact with a server and features type safety, auto-completion, and error handling.
 
-To use Eden Treaty, first export your existing Elysia server type:
+To use Eden Treaty, first export your existing Elysia server's type:
 
 ```typescript
 // server.ts
@@ -70,11 +70,11 @@ const { data, error } = await app.hi.get()
       // ^?
 ```
 
-## Tree like syntax
+## Tree-like syntax
 
 HTTP Path is a resource indicator for a file system tree.
 
-File system consists of multiple levels of folders, for example:
+A file system consists of multiple levels of folders, for example:
 
 -   /documents/elysia
 -   /documents/kalpas
@@ -82,9 +82,9 @@ File system consists of multiple levels of folders, for example:
 
 Each level is separated by **/** (slash) and a name.
 
-However in JavaScript, instead of using **"/"** (slash) we use **"."** (dot) to access deeper resources.
+However, in JavaScript, instead of using **"/"** (slash), we use **"."** (dot) to access deeper resources.
 
-Eden Treaty turns an Elysia server into a tree-like file system that can be accessed in the JavaScript frontend instead.
+Eden Treaty turns an Elysia server into a tree-like file system that can be accessed from the JavaScript frontend instead.
 
 | Path         | Treaty       |
 | ------------ | ------------ |
@@ -103,7 +103,7 @@ Combined with the HTTP method, we can interact with the Elysia server.
 
 ## Dynamic path
 
-However, dynamic path parameters cannot be expressed using notation. If they are fully replaced, we don't know what the parameter name is supposed to be.
+However, dynamic path parameters cannot be expressed using notation alone. If they are fully replaced, we don't know what the parameter name is supposed to be.
 
 ```typescript
 // ❌ Unclear what the value is supposed to represent?
@@ -113,7 +113,7 @@ treaty.item['skadi'].get()
 To handle this, we can specify a dynamic path using a function to provide a key value instead.
 
 ```typescript
-// ✅ Clear that value is dynamic path is 'name'
+// ✅ Clear that the value is dynamic and the path is 'name'
 treaty.item({ name: 'Skadi' }).get()
 ```
 

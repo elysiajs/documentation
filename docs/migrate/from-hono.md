@@ -49,15 +49,15 @@ Here's a TLDR comparison between Hono and Elysia to help you decide:
 - Somewhat similar to Express, Koa in terms of middleware, plugin style
 
 **Elysia**
-- **Originally built for native Bun**, use most of Bun features to the fullest extent
-- Support multiple runtime with Web Standard, including **Node.js** and **Cloudflare Worker**
-- **Better performance**. Leans to long running server via JIT.
-- **Better OpenAPI supports** with seamless experience, especially with [OpenAPI Type Gen](/patterns/openapi#openapi-from-types)
+- **Originally built for native Bun**, uses most of Bun features to the fullest extent
+- Supports multiple runtimes with Web Standard, including **Node.js** and **Cloudflare Workers**
+- **Better performance**. Geared toward long-running server via JIT.
+- **Better OpenAPI support** with seamless experience, especially with [OpenAPI Type Gen](/patterns/openapi#openapi-from-types)
 - Prefers event-based lifecycle approach for better control over request pipeline
-- Sounds type safety across the board, including middleware, and error handling
+- Sound type safety across the board, including middleware, and error handling
 - Somewhat similar to Fastify in terms of middleware, encapsulation, and plugin style
 
-There is a huge **different between being compatible and specifically built for** something.
+There is a huge **difference between being compatible and specifically built for** something.
 
 If you decide to use Elysia on Cloudflare Workers, you might miss some of the Cloudflare specific features that Hono provides out of the box. Similarly, if you use Hono on Bun, you might not get the best performance possible compared to using Elysia.
 
@@ -70,7 +70,7 @@ Elysia has significant performance improvements over Hono thanks to static code 
 
 Hono and Elysia have similar routing syntax, using `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
 
-Both use a single `Context` parameters to handle request and response, and return a response directly.
+Both use a single `Context` parameter to handle request and response, and return a response directly.
 
 <Compare>
 
@@ -100,7 +100,7 @@ export default app
 
 <template v-slot:left-content>
 
-> Hono use helper `c.text`, `c.json` to return a response
+> Hono uses helper `c.text`, `c.json` to return a response
 
 </template>
 
@@ -127,17 +127,17 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use a single `context` and returns the response directly
+> Elysia uses a single `context` and returns the response directly
 
 </template>
 
 </Compare>
 
-While Hono use a `c.text`, and `c.json` to wrap a response, Elysia map a value to a response automatically.
+While Hono uses a `c.text`, and `c.json` to wrap a response, Elysia maps a value to a response automatically.
 
 There is a slight difference in style guide, Elysia recommends usage of method chaining and object destructuring.
 
-Hono port allocation depends on runtime, and adapter while Elysia use a single `listen` method to start the server.
+Hono port allocation depends on runtime and adapter while Elysia uses a single `listen` method to start the server.
 
 ## Handler
 
@@ -308,7 +308,7 @@ app.patch(
 
 <template v-slot:left-content>
 
-> Hono use pipe based
+> Hono uses pipe-based approach
 
 </template>
 
@@ -383,7 +383,7 @@ const app = new Elysia()
 
 </Compare>
 
-Both offers type inference from schema to context automatically.
+Both offer type inference from schema to context automatically.
 
 ## File upload
 Both Hono and Elysia use Web Standard API to handle file upload, but Elysia has built-in declarative support for file validation using **file-type** to validate mimetype.
@@ -456,7 +456,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia handles file and mimetype validation declaratively
+> Elysia handles files and mimetype validation declaratively
 
 </template>
 
@@ -516,7 +516,7 @@ app.get(
 
 <template v-slot:left-content>
 
-> Hono use a single queue-based order for middleware which execute in order
+> Hono uses a single queue-based order for middleware which executes in order
 
 </template>
 
@@ -535,7 +535,7 @@ const app = new Elysia()
 	// Route-specific middleware
 	.get('/protected', () => 'protected', {
 		beforeHandle({ status, headers }) {
-  			if (!headers.authorizaton)
+  			if (!headers.authorization)
      			return status(401)
 		}
 	})
@@ -554,7 +554,7 @@ const app = new Elysia()
 
 While Hono has a `next` function to call the next middleware, Elysia does not have one.
 
-## Sounds type safety
+## Sound type safety
 Elysia is designed to provide sound type safety.
 
 For example, you can customize context in a **type-safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Hono doesn't.
@@ -609,7 +609,7 @@ app.post('/user', authenticate, async (c) => {
 
 <template v-slot:left-content>
 
-> Hono use a middleware to extend the context, but is not type safe
+> Hono uses a middleware to extend the context, but is not type safe
 
 </template>
 
@@ -710,7 +710,7 @@ app.get('/user/:id', role('admin'), (c) => {
 
 <template v-slot:left-content>
 
-> Hono use callback to return `createMiddleware` to create a reusable middleware, but is not type safe
+> Hono uses callback to return `createMiddleware` to create a reusable middleware, but is not type safe
 
 </template>
 
@@ -876,11 +876,11 @@ const app = new Elysia()
 
 </Compare>
 
-While Hono offers error handling using middleware-like approach, Elysia provides:
+While Hono offers error handling using a middleware-like approach, Elysia provides:
 
-1. Both global and route specific error handler
+1. Both global and route-specific error handler
 2. Shorthand for mapping HTTP status and `toResponse` for mapping error to a response
-3. Provide a custom error code for each error
+3. Provides a custom error code for each error
 
 The error code is useful for logging and debugging, and is important when differentiating between different error types extending the same class.
 
@@ -950,9 +950,9 @@ const app = new Elysia()
 
 </Compare>
 
-Both have an encapsulation mechanism of a plugin to prevent side-effects.
+Both have an encapsulation mechanism for plugins to prevent side-effects.
 
-However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Hono always encapsulate it.
+However, Elysia can explicitly state which plugin should have side-effects by declaring a scoped plugin, while Hono always encapsulates it.
 
 ```ts [Elysia]
 import { Elysia } from 'elysia'
@@ -974,9 +974,9 @@ const app = new Elysia()
 ```
 
 Elysia offers 3 types of scoping mechanism:
-1. **local** - Apply to current instance only, no side-effect (default)
-2. **scoped** - Scoped side-effect to the parent instance but not beyond
-3. **global** - Affects every instances
+1. **local** - Apply to current instance only, no side-effects (default)
+2. **scoped** - Scoped side-effects to the parent instance but not beyond
+3. **global** - Affects every instance
 
 ---
 
@@ -985,7 +985,7 @@ As Hono doesn't offer a scoping mechanism, we need to either:
 1. Create a function for each hooks and append them manually
 2. Use higher-order-function, and apply it to instance that need the effect
 
-However, this can cause duplicated side-effects if not handled carefully.
+However, this can cause duplicated side-effectss if not handled carefully.
 
 ```ts [Hono]
 import { Hono } from 'hono'
@@ -1013,7 +1013,7 @@ app.route('/sub', subRouter)
 export default app
 ```
 
-In this scenario, Elysia offers a plugin deduplication mechanism to prevent duplicated side-effects.
+In this scenario, Elysia offers a plugin deduplication mechanism to prevent duplicated side-effectss.
 
 ```ts [Elysia]
 import { Elysia } from 'elysia'
@@ -1035,7 +1035,7 @@ const app = new Elysia()
 	.get('/side-effect', () => 'hi')
 ```
 
-By using a unique `name`, Elysia will apply the plugin only once, and will not cause duplicated side-effects.
+By using a unique `name`, Elysia will apply the plugin only once, and will not cause duplicated side-effectss.
 
 ## Cookie
 Hono has built-in cookie utility functions under `hono/cookie`, while Elysia uses a signal-based approach to handle cookies.
@@ -1089,7 +1089,7 @@ const app = new Elysia({
 	}
 })
 	.get('/', ({ cookie: { name } }) => {
-		// signature verification is handle automatically
+		// signature verification is handled automatically
 		name.value
 
 		// cookie signature is signed automatically
@@ -1103,7 +1103,7 @@ const app = new Elysia({
 
 <template v-slot:right-content>
 
-> Elysia uses signal-based approach to handle cookies
+> Elysia uses a signal-based approach to handle cookies
 
 </template>
 
@@ -1239,9 +1239,9 @@ const app = new Elysia()
 
 </Compare>
 
-Hono has separate function to describe route specification, validation, and require some effort to setup properly.
+Hono has a separate function to describe route specification, validation, and requires some effort to setup properly.
 
-Elysia uses schema you provide to generate the OpenAPI specification, and validates the request/response, and infers types automatically all from a **single source of truth**.
+Elysia uses the schema you provide to generate the OpenAPI specification, and validates the request/response, and infers types automatically all from a **single source of truth**.
 
 Elysia also appends the schema registered in `model` to the OpenAPI spec, allowing you to reference the model in a dedicated section in Swagger or Scalar UI while Hono inlines the schema to the route.
 
@@ -1449,15 +1449,15 @@ console.log('ok')
 
 </Compare>
 
-While both offer end-to-end type safety, Elysia offers more type-safe error handling based on status code while Hono doesn't.
+While both offer end-to-end type safety, Elysia offers more type-safe error handling based on status code, while Hono doesn't.
 
 Using the same purpose code for each framework to measure type inference speed, Elysia is 2.3x faster than Hono for type checking.
 
 ![Elysia eden type inference performance](/migrate/elysia-type-infer.webp)
-> Elysia take 536ms to infer both Elysia, and Eden (click to enlarge)
+> Elysia takes 536ms to infer both Elysia, and Eden (click to enlarge)
 
 ![Hono HC type inference performance](/migrate/hono-type-infer.webp)
-> Hono take 1.27s to infer both Hono, and HC with error (aborted) (click to enlarge)
+> Hono takes 1.27s to infer both Hono, and HC with error (aborted) (click to enlarge)
 
 The 1.27 seconds doesn't reflect the entire duration of the inference, but a duration from start to aborted by error **"Type instantiation is excessively deep and possibly infinite."** which happens when there are too large schema.
 
@@ -1477,7 +1477,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 Both are the next generation web framework built on top of Web Standard API with slight differences.
 
-Elysia is designed to be ergonomic and developer-friendly with a focus on **sounds type safety**, and has better performance than Hono.
+Elysia is designed to be ergonomic and developer-friendly with a focus on **sound type safety**, and has better performance than Hono.
 
 While Hono offers a broad compatibility with multiple runtimes, especially with Cloudflare Workers, and a larger user base.
 
@@ -1485,7 +1485,7 @@ Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
 	<Card title="From Express" href="/migrate/from-express">
-		Comparison between tRPC and Elysia
+		Comparison between Express and Elysia
 	</Card>
     <Card title="From Fastify" href="/migrate/from-fastify">
   		Comparison between Fastify and Elysia
