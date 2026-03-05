@@ -68,10 +68,12 @@ This pattern is recommended for performing unit tests, or creating a type-safe r
 ## Options
 2nd optional parameter for Eden Treaty to customize fetch behavior, accepting parameters as follows:
 - [fetch](#fetch) - add default parameters to fetch initialization (RequestInit)
-- [headers](#headers) - define default headers
 - [fetcher](#fetcher) - custom fetch function (e.g., Axios, unfetch)
-- [onRequest](#onrequest) - Intercept and modify fetch request before firing
-- [onResponse](#onresponse) - Intercept and modify fetch's response
+- [headers](#headers) - define default headers
+- [onRequest](#onrequest) - intercept and modify fetch request before firing
+- [onResponse](#onresponse) - intercept and modify fetch's response
+- [parseDate](#parsedate) - automatically parse date string to Date object
+- [throwHttpError](#throwhttperror) - automatically throw an error if the response status is not ok (2xx)
 
 ## Fetch
 Default parameters appended to the 2nd parameter of fetch extend the type of **Fetch.RequestInit**.
@@ -93,6 +95,19 @@ fetch('http://localhost:3000', {
     credentials: 'include'
 })
 ```
+
+## Fetcher
+Provide a custom fetcher function instead of using an environment's default fetch.
+
+```typescript
+treaty<App>('localhost:3000', {
+    fetcher(url, options) {
+        return fetch(url, options)
+    }
+})
+```
+
+It's recommended to replace fetch if you want to use other client other than fetch, eg. Axios, unfetch.
 
 ## Headers
 Provide additional default headers to fetch; this is a shorthand for `options.fetch.headers`.
@@ -201,19 +216,6 @@ fetch('http://localhost:3000', {
 
 If the inline function doesn't specify headers, then the result will be "**Bearer Aponia**" instead.
 
-## Fetcher
-Provide a custom fetcher function instead of using an environment's default fetch.
-
-```typescript
-treaty<App>('localhost:3000', {
-    fetcher(url, options) {
-        return fetch(url, options)
-    }
-})
-```
-
-It's recommended to replace fetch if you want to use other client other than fetch, eg. Axios, unfetch.
-
 ## OnRequest
 Intercept and modify the fetch request before firing.
 
@@ -288,3 +290,40 @@ treaty<App>('localhost:3000', {
 })
 ```
 Unlike [headers](#headers) and [onRequest](#onrequest), Eden Treaty will loop through functions until a returned value is found or error thrown, the returned value will be use as a new response.
+
+## parseDate
+
+- default: `true`
+
+Automatically parse date string to Date object.
+
+```typescript
+treaty<App>('localhost:3000', {
+	parseDate: true
+})
+```
+
+## throwHttpError
+
+- default: `false`
+
+Automatically throw an error if the response status is not ok (2xx).
+
+```typescript
+treaty<App>('localhost:3000', {
+	throwHttpError: true
+})
+```
+
+By default, Eden will not throw an error and return as `{ error }` instead if the response status is not ok (2xx).
+
+You can also specify a custom error handler as follows:
+```typescript
+treaty<App>('localhost:3000', {
+	throwHttpError: (response) => {
+		return response.status === 418
+	}
+})
+```
+
+If `throwHttpError` return `true`, Eden will throw an error, otherwise it will return as `{ error }` instead.
