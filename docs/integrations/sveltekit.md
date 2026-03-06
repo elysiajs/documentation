@@ -74,3 +74,58 @@ export const fallback: RequestHandler = ({ request }) => app.handle(request)
 This will ensure that Elysia routing will work properly in any location you place it.
 
 Please refer to [SvelteKit Routing](https://kit.svelte.dev/docs/routing#server) for more information.
+
+## Using SvelteKit Hooks
+
+You can also integrate Elysia with SvelteKit using the `elysia-sveltekit` adapter, which allows you to bridge Elysia directly into SvelteKit's server hooks.
+
+### Installation
+
+```bash
+bun add elysia-sveltekit
+```
+
+### 1. Initialize the Adapter & Define your API
+
+Create your Elysia application and define the context mapping. The `sveltekit` adapter returns both the Elysia `app` and the SvelteKit `hook`.
+
+```typescript
+// src/lib/server/api.ts
+import { sveltekit } from "elysia-sveltekit";
+
+// 1. Define the context you want to inject
+interface MyContext {
+  locals: App.Locals;
+  platform: App.Platform;
+}
+
+// 2. Initialize the adapter
+export const { app, hook: handleApi } = sveltekit<MyContext, "/api">(
+    // Context mapping: maps SvelteKit's RequestEvent to Elysia's context
+    (event) => ({
+        locals: event.locals,
+        platform: event.platform,
+    }),
+    { prefix: "/api" }, // The path prefix your Elysia app will listen on
+);
+
+// 3. Build your API endpoints
+export const api = app.get("/hello", ({ locals, platform }) => {
+  return {
+    message: "Hello from Elysia!",
+    user: locals.user, // Strongly typed!
+  };
+});
+```
+
+### 2. Connect the SvelteKit Hook
+
+In your SvelteKit `hooks.server.ts`, simply export the generated `hook`.
+
+```typescript
+// src/hooks.server.ts
+import { handleApi } from "$lib/server/api";
+import type { Handle } from "@sveltejs/kit";
+
+export const handle: Handle = handleApi;
+```
