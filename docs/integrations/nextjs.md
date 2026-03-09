@@ -19,8 +19,8 @@ head:
 With Next.js App Router, we can run Elysia on Next.js routes.
 
 1. Create **app/api/[[...slugs]]/route.ts**
-2. define an Elysia server
-3. Export **Elysia.fetch** name of HTTP methods you want to use
+2. Define an Elysia server
+3. Export **Elysia.fetch** with the name of the HTTP methods you want to use
 
 ::: code-group
 
@@ -55,9 +55,9 @@ pnpm add @sinclair/typebox openapi-types
 
 ## Prefix
 
-Because our Elysia server is not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
+Because our Elysia server is not in the root directory of the app router, you need to annotate the prefix on the Elysia server.
 
-For example, if you place Elysia server in **app/user/[[...slugs]]/route.ts**, you need to annotate prefix as **/user** to Elysia server.
+For example, if you place the Elysia server in **app/user/[[...slugs]]/route.ts**, you need to annotate the prefix as **/user** on the Elysia server.
 
 ::: code-group
 
@@ -78,15 +78,15 @@ export const POST = app.fetch
 
 :::
 
-This will ensure that Elysia routing will work properly in any location you place it.
+This will ensure that Elysia routing works properly wherever you place it.
 
 ## Eden
 
 We can add [Eden](/eden/overview) for **end-to-end type safety** similar to tRPC.
 
-In this approach, we will use isomorphic fetch pattern to allow Elysia to:
-1. On Server: directly calls Elysia without going through the network layer
-2. On Client: calls Elysia through the network layer
+In this approach, we will use the isomorphic fetch pattern to allow Elysia to:
+1. On Server: directly call Elysia without going through the network layer
+2. On Client: call Elysia through the network layer
 
 To start, we need to do the following steps:
 
@@ -151,10 +151,10 @@ export default async function Page() {
 
 :::
 
-This allows you to have type safety from the frontend to the backend with minimal effort and works with both server, client components and with Incremental Static Regeneration (ISR).
+This allows you to have type safety from the frontend to the backend with minimal effort and works with both server and client components, as well as with Incremental Static Regeneration (ISR).
 
 ## React Query
-We can also use React Query to interact with Elysia server on client.
+We can also use React Query to interact with the Elysia server on the client.
 
 ::: code-group
 
@@ -180,7 +180,7 @@ function App() {
 
 ::: code-group
 
-This can works with any React Query features like caching, pagination, infinite query, etc.
+This can work with any React Query features like caching, pagination, infinite queries, etc.
 
 ---
 

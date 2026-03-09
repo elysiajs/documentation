@@ -20,12 +20,12 @@ Eden Treaty accepts 2 parameters:
 - **options** (optional) - Customize fetch behavior
 
 ## urlOrInstance
-Accept either URL endpoint as string or a literal Elysia instance.
+Accepts either a URL endpoint as a string or a literal Elysia instance.
 
-Eden will change the behavior based on type as follows:
+Eden will change the behavior based on the type as follows:
 
 ### URL Endpoint (string)
-If URL endpoint is passed, Eden Treaty will use `fetch` or `config.fetcher` to create a network request to an Elysia instance.
+If a URL endpoint is passed, Eden Treaty will use `fetch` or `config.fetcher` to create a network request to an Elysia instance.
 
 ```typescript
 import { treaty } from '@elysiajs/eden'
@@ -34,21 +34,21 @@ import type { App } from './server'
 const api = treaty<App>('localhost:3000')
 ```
 
-You may or may not specify a protocol for URL endpoint.
+You may or may not specify a protocol for the URL endpoint.
 
 Elysia will append the endpoints automatically as follows:
-1. If protocol is specified, use the URL directly
+1. If a protocol is specified, use the URL directly
 2. If the URL is localhost and ENV is not production, use http
-3. Otherwise use https
+3. Otherwise, use https
 
-This also applies to Web Socket as well for determining between **ws://** or **wss://**.
+This also applies to WebSocket for determining between **ws://** or **wss://**.
 
 ---
 
 ### Elysia Instance
-If Elysia instance is passed, Eden Treaty will create a `Request` class and pass to `Elysia.handle` directly without creating a network request.
+If an Elysia instance is passed, Eden Treaty will create a `Request` class and pass it to `Elysia.handle` directly without creating a network request.
 
-This allows us to interact with Elysia server directly without request overhead, or the need to start a server.
+This allows us to interact with the Elysia server directly without request overhead, or the need to start a server.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -61,20 +61,22 @@ const app = new Elysia()
 const api = treaty(app)
 ```
 
-If an instance is passed, generic is not needed to be passed as Eden Treaty can infer the type from a parameter directly.
+If an instance is passed, a generic is not needed as Eden Treaty can infer the type from the parameter directly.
 
-This pattern is recommended for performing unit tests, or creating a type-safe reverse proxy server or micro-services.
+This pattern is recommended for performing unit tests, or creating a type-safe reverse proxy server or microservices.
 
 ## Options
 2nd optional parameter for Eden Treaty to customize fetch behavior, accepting parameters as follows:
 - [fetch](#fetch) - add default parameters to fetch initialization (RequestInit)
+- [fetcher](#fetcher) - custom fetch function (e.g., Axios, unfetch)
 - [headers](#headers) - define default headers
-- [fetcher](#fetcher) - custom fetch function eg. Axios, unfetch
-- [onRequest](#onrequest) - Intercept and modify fetch request before firing
-- [onResponse](#onresponse) - Intercept and modify fetch's response
+- [onRequest](#onrequest) - intercept and modify fetch request before firing
+- [onResponse](#onresponse) - intercept and modify fetch's response
+- [parseDate](#parsedate) - automatically parse date string to Date object
+- [throwHttpError](#throwhttperror) - automatically throw an error if the response status is not ok (2xx)
 
 ## Fetch
-Default parameters append to 2nd parameters of fetch extends type of **Fetch.RequestInit**.
+Default parameters appended to the 2nd parameter of fetch extend the type of **Fetch.RequestInit**.
 
 ```typescript
 export type App = typeof app // [!code ++]
@@ -87,15 +89,28 @@ treaty<App>('localhost:3000', {
 })
 ```
 
-All parameters that are passed to fetch will be passed to fetcher, which is equivalent to:
+All parameters that are passed to fetch will be passed to the fetcher, which is equivalent to:
 ```typescript
 fetch('http://localhost:3000', {
     credentials: 'include'
 })
 ```
 
+## Fetcher
+Provide a custom fetcher function instead of using an environment's default fetch.
+
+```typescript
+treaty<App>('localhost:3000', {
+    fetcher(url, options) {
+        return fetch(url, options)
+    }
+})
+```
+
+It's recommended to replace fetch if you want to use other client other than fetch, eg. Axios, unfetch.
+
 ## Headers
-Provide an additional default headers to fetch, a shorthand of `options.fetch.headers`.
+Provide additional default headers to fetch; this is a shorthand for `options.fetch.headers`.
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -105,7 +120,7 @@ treaty<App>('localhost:3000', {
 })
 ```
 
-All parameters that passed to fetch, will be passed to fetcher, which is an equivalent to:
+All parameters that are passed to fetch will be passed to the fetcher, which is equivalent to:
 ```typescript twoslash
 fetch('localhost:3000', {
     headers: {
@@ -119,7 +134,7 @@ headers may accept the following as parameters:
 - Function
 
 ### Headers Object
-If object is passed, then it will be passed to fetch directly
+If an object is passed, then it will be passed to fetch directly
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -130,7 +145,7 @@ treaty<App>('localhost:3000', {
 ```
 
 ### Function
-You may specify headers as a function to return custom headers based on condition
+You may specify headers as a function to return custom headers based on conditions
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -143,12 +158,12 @@ treaty<App>('localhost:3000', {
 })
 ```
 
-You may return object to append its value to fetch headers.
+You may return an object to append its value to fetch headers.
 
-headers function accepts 2 parameters:
-- path `string` - path which will be sent to parameter
-  - note: hostname will be **exclude** eg. (/user/griseo)
-- options `RequestInit`: Parameters that passed through 2nd parameter of fetch
+The headers function accepts 2 parameters:
+- path `string` - path which will be sent to the parameter
+  - note: hostname will be **excluded**, e.g., (/user/griseo)
+- options `RequestInit`: Parameters passed through the 2nd parameter of fetch
 
 ### Array
 You may define a headers function as an array if multiple conditions are needed.
@@ -175,7 +190,7 @@ Eden Treaty will prioritize the order headers if duplicated as follows:
   - If `config.headers` is array, parameters that come after will be prioritized
 3. fetch - Passed in `config.fetch.headers`
 
-For example, for the following example:
+For example:
 ```typescript
 const api = treaty<App>('localhost:3000', {
     headers: {
@@ -199,25 +214,12 @@ fetch('http://localhost:3000', {
 })
 ```
 
-If inline function doesn't specified headers, then the result will be "**Bearer Aponia**" instead.
-
-## Fetcher
-Provide a custom fetcher function instead of using an environment's default fetch.
-
-```typescript
-treaty<App>('localhost:3000', {
-    fetcher(url, options) {
-        return fetch(url, options)
-    }
-})
-```
-
-It's recommended to replace fetch if you want to use other client other than fetch, eg. Axios, unfetch.
+If the inline function doesn't specify headers, then the result will be "**Bearer Aponia**" instead.
 
 ## OnRequest
-Intercept and modify fetch request before firing.
+Intercept and modify the fetch request before firing.
 
-You may return object to append the value to **RequestInit**.
+You may return an object to append the value to **RequestInit**.
 
 ```typescript
 treaty<App>('localhost:3000', {
@@ -288,3 +290,40 @@ treaty<App>('localhost:3000', {
 })
 ```
 Unlike [headers](#headers) and [onRequest](#onrequest), Eden Treaty will loop through functions until a returned value is found or error thrown, the returned value will be use as a new response.
+
+## parseDate
+
+- default: `true`
+
+Automatically parse date string to Date object.
+
+```typescript
+treaty<App>('localhost:3000', {
+	parseDate: true
+})
+```
+
+## throwHttpError
+
+- default: `false`
+
+Automatically throw an error if the response status is not ok (2xx).
+
+```typescript
+treaty<App>('localhost:3000', {
+	throwHttpError: true
+})
+```
+
+By default, Eden will not throw an error and return as `{ error }` instead if the response status is not ok (2xx).
+
+You can also specify a custom error handler as follows:
+```typescript
+treaty<App>('localhost:3000', {
+	throwHttpError: (response) => {
+		return response.status === 418
+	}
+})
+```
+
+If `throwHttpError` return `true`, Eden will throw an error, otherwise it will return as `{ error }` instead.

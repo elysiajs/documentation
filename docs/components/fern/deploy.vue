@@ -108,7 +108,7 @@ const items = [
     'svelte.svg',
     ['expo-light.svg', 'expo-dark.svg'],
     'next-dark.svg',
-    'tanstack.svg',
+    'tanstack.webp',
     'nuxt.svg',
     'netlify.svg',
     'cloudflare-workers.svg',

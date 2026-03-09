@@ -17,7 +17,7 @@ head:
 
     - - meta
       - property: 'og:description'
-        content: This guide is for Fastify users who want to see a differences from Fastify including syntax, and how to migrate your application from Fastify to Elysia by example.
+        content: This guide is for Fastify users who want to see the differences from Fastify including syntax, and how to migrate your application from Fastify to Elysia by example.
 ---
 
 <script setup>
@@ -30,7 +30,7 @@ import Benchmark from '../components/fern/benchmark-fastify.vue'
 
 # From Fastify to Elysia
 
-This guide is for Fastify users who want to see a differences from Fastify including syntax, and how to migrate your application from Fastify to Elysia by example.
+This guide is for Fastify users who want to see the differences from Fastify including syntax, and how to migrate your application from Fastify to Elysia by example.
 
 **Fastify** is a fast and low overhead web framework for Node.js, designed to be simple and easy to use. It is built on top of the HTTP module and provides a set of features that make it easy to build web applications.
 
@@ -43,7 +43,7 @@ Elysia has significant performance improvements over Fastify thanks to native Bu
 
 ## Routing
 
-Fastify and Elysia has similar routing syntax, using `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
+Fastify and Elysia have similar routing syntax, using `app.get()` and `app.post()` methods to define routes and similar path parameters syntax.
 
 <Compare>
 
@@ -57,11 +57,11 @@ import fastify from 'fastify'
 const app = fastify()
 
 app.get('/', (request, reply) => {
-    res.send('Hello World')
+    reply.send('Hello World')
 })
 
 app.post('/id/:id', (request, reply) => {
-    reply.status(201).send(req.params.id)
+    reply.status(201).send(request.params.id)
 })
 
 app.listen({ port: 3000 })
@@ -72,7 +72,7 @@ app.listen({ port: 3000 })
 
 <template v-slot:left-content>
 
-> Fastify use `request` and `reply` as request and response objects
+> Fastify uses `request` and `reply` as request and response objects
 
 </template>
 
@@ -99,19 +99,19 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use a single `context` and returns the response directly
+> Elysia uses a single `context` and returns the response directly
 
 </template>
 
 </Compare>
 
-There is a slight different in style guide, Elysia recommends usage of method chaining and object destructuring.
+There is a slight difference in style guide, Elysia recommends usage of method chaining and object destructuring.
 
 Elysia also supports an inline value for the response if you don't need to use the context.
 
 ## Handler
 
-Both has a simliar property for accessing input parameters like `headers`, `query`, `params`, and `body`, and automatically parse the request body to JSON, URL-encoded data, and formdata.
+Both have similar properties for accessing input parameters like `headers`, `query`, `params`, and `body`, and automatically parse the request body to JSON, URL-encoded data, and formdata.
 
 <Compare>
 
@@ -138,7 +138,7 @@ app.post('/user', (request, reply) => {
 
 <template v-slot:left-content>
 
-> Fastify parse data and put it into `request` object
+> Fastify parses data and puts it into `request` object
 
 </template>
 
@@ -164,7 +164,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia parse data and put it into `context` object
+> Elysia parses data and puts it into `context` object
 
 </template>
 
@@ -201,7 +201,7 @@ app.register(subRouter, {
 
 <template v-slot:left-content>
 
-> Fastify use a function callback to declare a sub router
+> Fastify uses a function callback to declare a sub router
 
 </template>
 
@@ -224,7 +224,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia treat every instances as a component
+> Elysia treats every instance as a component
 
 </template>
 
@@ -233,9 +233,9 @@ const app = new Elysia()
 While Elysia set the prefix in the constructor, Fastify requires you to set the prefix in the options.
 
 ## Validation
-Elysia has a built-in support for request validation with sounds type safety out of the box using **TypeBox** while Fastify use JSON Schema for declaring schema, and **ajv** for validation.
+Elysia has built-in support for request validation with sound type safety out of the box using **TypeBox** while Fastify uses JSON Schema for declaring schema, and **ajv** for validation.
 
-However, doesn't infer type automatically, and you need to use a type provider like `@fastify/type-provider-json-schema-to-ts` to infer type.
+However, it doesn't infer types automatically, and you need to use a type provider like `@fastify/type-provider-json-schema-to-ts` to infer types.
 
 <Compare>
 
@@ -358,7 +358,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use TypeBox for validation, and coerce type automatically. While supporting various validation library like Zod, Valibot with the same syntax as well.
+> Elysia uses TypeBox for validation, and coerces types automatically. While supporting various validation libraries like Zod, Valibot with the same syntax as well.
 
 </template>
 
@@ -366,12 +366,12 @@ const app = new Elysia()
 
 Alternatively, Fastify can also use **TypeBox** or **Zod** for validation using `@fastify/type-provider-typebox` to infer type automatically.
 
-While Elysia **prefers TypeBox** for validation, Elysia also support for Standard Schema allowing you to use library like Zod, Valibot, ArkType, Effect Schema and so on out of the box.
+While Elysia **prefers TypeBox** for validation, Elysia also supports Standard Schema allowing you to use libraries like Zod, Valibot, ArkType, Effect Schema and so on out of the box.
 
 ## File upload
-Fastify use a `fastify-multipart` to handle file upload which use `Busboy` under the hood while Elysia use Web Standard API for handling formdata, mimetype valiation using declarative API.
+Fastify uses `fastify-multipart` to handle file upload which uses `Busboy` under the hood while Elysia uses Web Standard API for handling formdata, mimetype validation using declarative API.
 
-However, Fastify doesn't offers a straight forward way for file validation, eg. file size and mimetype, and required some workarounds to validate the file.
+However, Fastify doesn't offer a straightforward way for file validation, eg. file size and mimetype, and requires some workarounds to validate the file.
 
 <Compare>
 
@@ -422,7 +422,7 @@ app.post(
 
 <template v-slot:left-content>
 
-> Fastift use `fastify-multipart` to handle file upload, and fake `type: object` to allow Buffer
+> Fastify uses `fastify-multipart` to handle file upload, and fake `type: object` to allow Buffer
 
 </template>
 
@@ -448,7 +448,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia handle file, and mimetype validation using `t.File`
+> Elysia handles files and mimetype validation using `t.File`
 
 </template>
 
@@ -468,9 +468,9 @@ Elysia's Life Cycle event can be illustrated as the following.
 > Click on image to enlarge
 
 ### Fastify Lifecycle
-Fastify Life Cycle event also use an event-based approach similar to Elysia.
+Fastify Life Cycle event also uses an event-based approach similar to Elysia.
 
-Both also has somewhat similar syntax for intercepting the request and response lifecycle events, however Elysia doesn't require you to call `done` to continue the lifecycle event.
+Both also have somewhat similar syntax for intercepting the request and response lifecycle events, however Elysia doesn't require you to call `done` to continue the lifecycle event.
 
 <Compare>
 
@@ -513,7 +513,7 @@ app.get(
 
 <template v-slot:left-content>
 
-> Fastify use `addHook` to register a middleware, and requires you to call `done` to continue the lifecycle event
+> Fastify uses `addHook` to register a middleware, and requires you to call `done` to continue the lifecycle event
 
 </template>
 
@@ -532,7 +532,7 @@ const app = new Elysia()
 	// Route-specific middleware
 	.get('/protected', () => 'protected', {
 		beforeHandle({ status, headers }) {
-  			if (!headers.authorizaton)
+  			if (!headers.authorization)
      			return status(401)
 		}
 	})
@@ -550,7 +550,7 @@ const app = new Elysia()
 </Compare>
 
 ## Sounds type safety
-Elysia is designed to be sounds type safety.
+Elysia is designed to be sound type safety.
 
 For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Fastify doesn't.
 
@@ -606,7 +606,7 @@ app.listen({
 
 <template v-slot:left-content>
 
-> Fastify use `decorateRequest` but doesn't offers sounds type safety
+> Fastify use `decorateRequest` but doesn't offer sound type safety
 
 </template>
 
@@ -649,7 +649,7 @@ const app = new Elysia()
 
 </Compare>
 
-While Fastify can, use `declare module` to extend the `FastifyRequest` interface, it is globally available and doesn't have sounds type safety, and doesn't garantee that the property is available in all request handlers.
+While Fastify can use `declare module` to extend the `FastifyRequest` interface, it is globally available and doesn't have sound type safety, and doesn't guarantee that the property is available in all request handlers.
 
 ```ts
 declare module 'fastify' {
@@ -659,7 +659,7 @@ declare module 'fastify' {
   	}
 }
 ```
-> This is required for the above Fastify example to work, which doesn't offers sounds type safety
+> This is required for the above Fastify example to work, which doesn't offer sound type safety
 
 ## Middleware parameter
 Fastify use a function to return Fastify plugin to define a named middleware, while Elysia use [macro](/patterns/macro) to define a custom hook.
@@ -714,7 +714,7 @@ app.get(
 
 <template v-slot:left-content>
 
-> Fastify use a function callback to accept custom argument for middleware
+> Fastify uses a function callback to accept custom arguments for middleware
 
 </template>
 
@@ -758,7 +758,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use macro to pass custom argument to custom middleware
+> Elysia uses macro to pass custom arguments to custom middleware
 
 </template>
 
@@ -768,7 +768,7 @@ While Fastify use a function callback, it needs to return a function to be place
 
 ## Error handling
 
-Both Fastify and Elysia offers a lifecycle event to handle error.
+Both Fastify and Elysia offer a lifecycle event to handle errors.
 
 <Compare>
 
@@ -819,7 +819,7 @@ app.get(
 
 <template v-slot:left-content>
 
-> Fastify use `setErrorHandler` for global error handler, and `errorHandler` for route-specific error handler
+> Fastify uses `setErrorHandler` for global error handler, and `errorHandler` for route-specific error handler
 
 </template>
 
@@ -884,13 +884,13 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia offers a custom error code, a shorthand for status and `toResponse` for mapping error to a response.
+> Elysia offers custom error codes, a shorthand for status and `toResponse` for mapping error to a response.
 
 </template>
 
 </Compare>
 
-While Both offers error handling using lifecycle event, Elysia also provide:
+While Both offer error handling using lifecycle event, Elysia also provide:
 
 1. Custom error code
 2. Shorthand for mapping HTTP status and `toResponse` for mapping error to a response
@@ -901,7 +901,7 @@ Elysia provides all of this with type safety while Fastify doesn't.
 
 ## Encapsulation
 
-Fastify encapsulate plugin side-effect, while Elysia give you a control over side-effect of a plugin via explicit scoping mechanism, and order-of-code.
+Fastify encapsulates plugin side-effects, while Elysia gives you control over side-effects of a plugin via explicit scoping mechanism, and order-of-code.
 
 <Compare>
 
@@ -936,7 +936,7 @@ const app = fastify()
 
 <template v-slot:left-content>
 
-> Fastify encapsulate side-effect of a plugin
+> Fastify encapsulates side-effects of a plugin
 
 </template>
 
@@ -965,13 +965,13 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia encapsulate side-effect of a plugin unless explicitly stated
+> Elysia encapsulates side-effects of a plugin unless explicitly stated
 
 </template>
 
 </Compare>
 
-Both has a encapsulate mechanism of a plugin to prevent side-effect.
+Both have an encapsulation mechanism of a plugin to prevent side-effects.
 
 However, Elysia can explicitly stated which plugin should have side-effect by declaring a scoped while Fastify always encapsulate it.
 
@@ -994,14 +994,14 @@ const app = new Elysia()
     .get('/side-effect', () => 'hi')
 ```
 
-Elysia offers 3 type of scoping mechanism:
+Elysia offers 3 types of scoping mechanism:
 1. **local** - Apply to current instance only, no side-effect (default)
 2. **scoped** - Scoped side-effect to the parent instance but not beyond
-3. **global** - Affects every instances
+3. **global** - Affects every instance
 
 ---
 
-As Fastify doesn't offers a scoping mechanism, we need to either:
+As Fastify doesn't offer a scoping mechanism, we need to either:
 
 1. Create a function for each hooks and append them manually
 2. Use higher-order-function, and apply it to instance that need the effect
@@ -1139,7 +1139,7 @@ const app = new Elysia({
 
 <template v-slot:right-content>
 
-> Elysia use a signal-based approach to handle cookies, and signature verification is handle automatically
+> Elysia uses a signal-based approach to handle cookies, and signature verification is handled automatically
 
 </template>
 
@@ -1147,7 +1147,7 @@ const app = new Elysia({
 
 
 ## OpenAPI
-Both offers OpenAPI documentation using Swagger, however Elysia default to Scalar UI which is a more modern and user-friendly interface for OpenAPI documentation.
+Both offer OpenAPI documentation using Swagger, however Elysia default to Scalar UI which is a more modern and user-friendly interface for OpenAPI documentation.
 
 <Compare>
 
@@ -1255,7 +1255,7 @@ const app = new Elysia()
 
 </Compare>
 
-Both offers model reference using `$ref` for OpenAPI documentation, however Fastify doesn't offers type-safety, and auto-completion for specifying model name while Elysia does.
+Both offer model reference using `$ref` for OpenAPI documentation, however Fastify doesn't offer type-safety, and auto-completion for specifying model name while Elysia does.
 
 ## Testing
 
@@ -1362,7 +1362,7 @@ describe('GET /', () => {
 ```
 
 ## End-to-end type safety
-Elysia offers a built-in support for **end-to-end type safety** without code generation using [Eden](/eden/overview), while Fastify doesn't offers one.
+Elysia offers a built-in support for **end-to-end type safety** without code generation using [Eden](/eden/overview), while Fastify doesn't offer one.
 
 ::: code-group
 
@@ -1415,7 +1415,7 @@ If end-to-end type safety is important for you then Elysia is the right choice.
 
 ---
 
-Elysia offers a more ergonomic and developer-friendly experience with a focus on performance, type safety, and simplicity while Fastify is one of the established framework for Node.js, but doesn't have **sounds type safety** and **end-to-end type safety** offered by next generation framework.
+Elysia offers a more ergonomic and developer-friendly experience with a focus on performance, type safety, and simplicity while Fastify is one of the established framework for Node.js, but doesn't have **sound type safety** and **end-to-end type safety** offered by next generation framework.
 
 If you are looking for a framework that is easy to use, has a great developer experience, and is built on top of Web Standard API, Elysia is the right choice for you.
 
@@ -1423,10 +1423,10 @@ Alternatively, if you are coming from a different framework, you can check out:
 
 <Deck>
     <Card title="From Express" href="/migrate/from-express">
-  		Comparison between tRPC and Elysia
+  		Comparison between Express and Elysia
     </Card>
 	<Card title="From Hono" href="/migrate/from-hono">
- 		Comparison between tRPC and Elysia
+ 		Comparison between Hono and Elysia
 	</Card>
 	<Card title="From tRPC" href="/migrate/from-trpc">
   		Comparison between tRPC and Elysia

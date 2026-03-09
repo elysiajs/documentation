@@ -30,7 +30,7 @@ import { code, testcases } from './data'
 
 # Status
 
-Status code is an indicator of how the server handles the request.
+A status code is an indicator of how the server handles the request.
 
 You must have heard of the infamous **404 Not Found** when you visit a non-existing page.
 
@@ -43,7 +43,7 @@ Elysia also returns many other status codes depending on the situation like:
 - 422 Unprocessable Entity
 - 500 Internal Server Error
 
-You can also return a status code by returning your response using a `status` function.
+You can also return a status code by returning your response using the `status` function.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -53,7 +53,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-The status code can be a number or a string status name. Both of these are equivalent:
+The status code can be a number or a string status name. These are equivalent:
 
 ```typescript
 status(418, "I'm a teapot")
@@ -66,7 +66,7 @@ See <DocLink href="/essential/handler#status">Status</DocLink>.
 
 ## Redirect
 
-Similarly, you can also redirect the request to another URL by returning a `redirect` function.
+Similarly, you can also redirect the request to another URL by returning the `redirect` function.
 
 ```typescript
 import { Elysia } from 'elysia'

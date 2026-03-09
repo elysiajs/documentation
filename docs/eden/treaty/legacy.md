@@ -18,18 +18,18 @@ head:
 # Eden Treaty Legacy
 
 ::: tip NOTE
-This is a documentation for Eden Treaty 1 or (edenTreaty)
+This is the documentation for Eden Treaty 1 (edenTreaty).
 
-For a new project, we recommended starting with Eden Treaty 2 (treaty) instead.
+For a new project, we recommend starting with Eden Treaty 2 (treaty) instead.
 :::
 
 Eden Treaty is an object-like representation of an Elysia server.
 
-Providing accessor like a normal object with type directly from the server, helping us to move faster, and make sure that nothing break
+It provides accessors like a normal object with types directly from the server, helping us to move faster and ensuring that nothing breaks.
 
 ---
 
-To use Eden Treaty, first export your existing Elysia server type:
+To use Eden Treaty, first export your existing Elysia server's type:
 ```typescript
 // server.ts
 import { Elysia, t } from 'elysia'
@@ -74,7 +74,7 @@ Eden Treaty is fully type-safe with auto-completion support.
 :::
 
 ## Anatomy
-Eden Treaty will transform all existing paths to object-like representation, that can be described as:
+Eden Treaty will transform all existing paths to an object-like representation that can be described as:
 ```typescript
 EdenTreaty.<1>.<2>.<n>.<method>({
     ...body,
@@ -154,16 +154,16 @@ if(error) {
 const { id, name } = nendoroid
 ```
 
-Both **data**, and **error** will be typed as nullable until you can confirm their statuses with a type guard.
+Both **data** and **error** will be typed as nullable until you can confirm their statuses with a type guard.
 
-To put it simply, if fetch is successful, data will have a value and error will be null, and vice-versa.
+To put it simply, if the fetch is successful, data will have a value and error will be null, and vice versa.
 
 ::: tip
-Error is wrapped with an `Error` with its value return from the server can be retrieve from `Error.value`
+The error is wrapped with an `Error`, and its value returned from the server can be retrieved from `Error.value`
 :::
 
 ### Error type based on status
-Both Eden Treaty and Eden Fetch can narrow down an error type based on status code if you explicitly provided an error type in the Elysia server.
+Both Eden Treaty and Eden Fetch can narrow down an error type based on status code if you explicitly provide an error type in the Elysia server.
 
 ```typescript
 // server.ts
@@ -194,7 +194,7 @@ const app = new Elysia()
 export type App = typeof app
 ```
 
-An on the client side:
+And on the client side:
 ```typescript
 const { data: nendoroid, error } = app.mirror.post({
     id: 1895,
@@ -257,19 +257,19 @@ We can use [schema](/integrations/cheat-sheet#schema) to enforce type-safety on 
 
 ---
 
-**Eden.subscribe** returns **EdenWebSocket** which extends the [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket) class with type-safety. The syntax is identical with the WebSocket
+**Eden.subscribe** returns **EdenWebSocket** which extends the [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket) class with type-safety. The syntax is identical to WebSocket.
 
-If more control is need, **EdenWebSocket.raw** can be accessed to interact with the native WebSocket API.
+If more control is needed, **EdenWebSocket.raw** can be accessed to interact with the native WebSocket API.
 
 ## File Upload
-You may either pass one of the following to the field to attach file:
+You may pass any of the following to the field to attach a file:
 - **File**
 - **FileList**
 - **Blob**
 
-Attaching a file will results **content-type** to be **multipart/form-data**
+Attaching a file will result in **content-type** being **multipart/form-data**
 
-Suppose we have the server as the following:
+Suppose we have the server as follows:
 ```typescript
 // server.ts
 import { Elysia } from 'elysia'
@@ -286,7 +286,7 @@ const app = new Elysia()
 export type App = typeof app
 ```
 
-We may use the client as follows:
+We can use the client as follows:
 ```typescript
 // client.ts
 import { edenTreaty } from '@elysia/eden'

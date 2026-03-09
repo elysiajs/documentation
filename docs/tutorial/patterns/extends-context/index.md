@@ -33,14 +33,14 @@ import { code, testcases } from './data'
 
 Elysia provides a context with small utilities to help you get started.
 
-You can extends Elysia's context with:
+You can extend Elysia's context with:
 1. <DocLink href="/essential/handler.html#decorate">Decorate</DocLink>
 2. <DocLink href="/essential/handler.html#state">State</DocLink>
 3. <DocLink href="/essential/handler.html#resolve">Resolve</DocLink>
 4. <DocLink href="/essential/handler.html#derive">Derive</DocLink>
 
 ## Decorate
-**Singleton**, and **immutable** that shared across all requests.
+**Singleton**, and **immutable** properties that are shared across all requests.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -63,7 +63,7 @@ new Elysia()
 Decorated value it will be available in the context as a read-only property, see <DocLink href="/essential/handler.html#decorate">Decorate</DocLink>.
 
 ## State
-A **mutable** reference that shared across all requests.
+A **mutable** reference that is shared across all requests.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -95,7 +95,7 @@ new Elysia()
 	.get('/', ({ authorization }) => authorization)
 ```
 
-Any **returned value will available in context** except status, which will be send to client directly, and abort the subsequent handlers.
+Any **returned value will be available in context** except status, which will be send to client directly, and abort the subsequent handlers.
 
 Syntax for both <DocLink href="/essential/handler.html#resolve">resolve</DocLink>, <DocLink href="/essential/handler.html#derive">derive</DocLink> is similar but they have different use cases.
 
@@ -103,14 +103,14 @@ Under the hood, both is a syntax sugar <small>(with type safety)</small> of a li
 - <DocLink href="/essential/handler.html#derive">derive</DocLink> is based on <DocLink href="/essential/life-cycle.html#transform">transform</DocLink>
 - <DocLink href="/essential/handler.html#resolve">resolve</DocLink> is based on <DocLink href="/essential/life-cycle.html#before-handle">before handle</DocLink>
 
-Since <DocLink href="/essential/handler.html#resolve">derive</DocLink> is based on <DocLink href="/essential/life-cycle.html#transform">transform</DocLink> means that data isn't validated, and coerce/transform yet. It's better to use <DocLink href="/essential/handler.html#resolve">resolve</DocLink> if you need a validated data.
+Since <DocLink href="/essential/handler.html#resolve">derive</DocLink> is based on <DocLink href="/essential/life-cycle.html#transform">transform</DocLink>, which means that data isn't validated, and coerce/transform yet. It's better to use <DocLink href="/essential/handler.html#resolve">resolve</DocLink> if you need validated data.
 
 ## Scope
 <DocLink href="/essential/handler.html#state">State</DocLink>, and <DocLink href="/essential/handler.html#decorate">Decorate</DocLink> are shared across all requests, and instances.
 
 <br />
 
-<DocLink href="/essential/handler.html#resolve">Resolve</DocLink>, and <DocLink href="/essential/handler.html#derive">Derive</DocLink> are per request, and has a encapulation scope <small>(as they're based on life-cycle event)</small>.
+<DocLink href="/essential/handler.html#resolve">Resolve</DocLink>, and <DocLink href="/essential/handler.html#derive">Derive</DocLink> are per request, and have an encapsulation scope <small>(as they're based on life-cycle event)</small>.
 
 If you want to use a resolved/derived value from a plugin, you would have to declare a <DocLink href="/essential/plugin.html#scope">Scope</DocLink>.
 
@@ -133,7 +133,7 @@ new Elysia()
 
 ## Assignment
 
-Let's try to extends Elysia's context.
+Let's try to extend Elysia's context.
 
 <template #answer>
 

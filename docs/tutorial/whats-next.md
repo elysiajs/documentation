@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Congratulations! You have completed the tutorial. Now you're ready to build your own application with Elysia! We highly recommended you to check out these 2 pages first before getting started with Elysia. Key Concept and Best Practice. Alternatively, you can download llms.txt or llms-full.txt and feed it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience. If you are stuck, feel free to ask our community on GitHub Discussions, Discord, and Twitter. If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences. We also have essential chapters, more patterns, integration with Meta Framework and your favorite tool.
+        content: Congratulations! You have completed the tutorial. Now you're ready to build your own application with Elysia! We highly recommend that you check out these 2 pages first before getting started with Elysia. Key Concept and Best Practice. Alternatively, you can download llms.txt or llms-full.txt and feed it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience. If you are stuck, feel free to ask our community on GitHub Discussions, Discord, and Twitter. If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences. We also have essential chapters, more patterns, integration with Meta Framework and your favorite tool.
 
     - - meta
       - property: 'og:description'
-        content: Congratulations! You have completed the tutorial. Now you're ready to build your own application with Elysia! We highly recommended you to check out these 2 pages first before getting started with Elysia. Key Concept and Best Practice. Alternatively, you can download llms.txt or llms-full.txt and feed it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience. If you are stuck, feel free to ask our community on GitHub Discussions, Discord, and Twitter. If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences. We also have essential chapters, more patterns, integration with Meta Framework and your favorite tool.
+        content: Congratulations! You have completed the tutorial. Now you're ready to build your own application with Elysia! We highly recommend that you check out these 2 pages first before getting started with Elysia. Key Concept and Best Practice. Alternatively, you can download llms.txt or llms-full.txt and feed it to your favorite LLMs like ChatGPT, Claude or Gemini to get a more interactive experience. If you are stuck, feel free to ask our community on GitHub Discussions, Discord, and Twitter. If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences. We also have essential chapters, more patterns, integration with Meta Framework and your favorite tool.
 ---
 
 <script setup lang="ts">
@@ -35,14 +35,14 @@ You have completed the tutorial.
 Now you're ready to build your own application with Elysia!
 
 ## First up
-We highly recommended you to check out these 2 pages first before getting started with Elysia:
+We highly recommend that you check out these 2 pages first before getting started with Elysia:
 
 <Deck>
 	<Card title="Key Concept" href="/key-concept">
-		Core concept of Elysia and how to effectively
+		Core concepts of Elysia and how to use them effectively
     </Card>
     <Card title="Best Practice" href="/essential/best-practice">
-        Understand best practice to write Elysia code
+        Understand best practices for writing Elysia code
     </Card>
 </Deck>
 
@@ -52,10 +52,10 @@ Alternatively, you can download <a href="/llms.txt" download>llms.txt</a> or <a 
 
 <Deck>
     <Card title="llms.txt" href="/llms.txt" download>
-   		Download summarized Elysia doc in Markdown format with reference for prompting LLMs
+   		Download summarized Elysia documentation in Markdown format with reference for prompting LLMs
     </Card>
     <Card title="llms-full.txt" href="/llms-full.txt" download>
-  		Download full Elysia doc in Markdown format in a single file for prompting LLMs
+  		Download full Elysia documentation in Markdown format in a single file for prompting LLMs
     </Card>
 </Deck>
 
@@ -75,7 +75,7 @@ Feel free to ask our community on GitHub Discussions, Discord, and Twitter.
     </Card>
 </Deck>
 
-## From other Framework?
+## From another Framework?
 
 If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences.
 
@@ -96,7 +96,7 @@ If you have used other popular frameworks like Express, Fastify, or Hono, you wi
 
 ## Essential Chapter
 
-Here are the foundation of Elysia, we highly recommended you to go through these pages before jumping to other topics:
+Here are the foundations of Elysia, we highly recommend that you go through these pages before jumping to other topics:
 
 <Deck>
 	<Card title="Route" href="/essential/route">
@@ -118,14 +118,14 @@ Here are the foundation of Elysia, we highly recommended you to go through these
 
 ## More Patterns
 
-If you feels like exploring more Elysia feature, check out:
+If you feel like exploring more Elysia features, check out:
 
 <Deck>
     <Card title="Handler" href="/eden/overview">
-    	More pattern on how to send a file, Server Sent Event, etc.
+    	More patterns on how to send files, Server Sent Events, etc.
     </Card>
     <Card title="Web Socket" href="/patterns/websocket">
-   		See how to create Real Time application with Elysia
+   		See how to create Real-Time applications with Elysia
     </Card>
     <Card title="Eden" href="/eden/overview">
     	Learn more about Eden, and how to use it effectively

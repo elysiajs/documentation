@@ -33,7 +33,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Server Timing then will append header 'Server-Timing' with log duration, function name, and detail for each life-cycle function.
+Server Timing will then append the 'Server-Timing' header with log duration, function name, and detail for each life-cycle function.
 
 To inspect, open browser developer tools > Network > [Request made through Elysia server] > Timing.
 
@@ -52,7 +52,7 @@ Determine whether or not Server Timing should be enabled
 ### allow
 @default `undefined`
 
-A condition whether server timing should be log
+A condition for whether server timing should be logged
 
 ### trace
 @default `undefined`

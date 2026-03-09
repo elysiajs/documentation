@@ -112,6 +112,6 @@ See <DocLink href="/patterns/unit-test.html">Unit Test</DocLink>.
 
 ## Assignment
 
-Let's tab the <Code size="18" class="inline -translate-y-0.5" /> icon in the preview to see how's the request is logged.
+Let's click the <Code size="18" class="inline -translate-y-0.5" /> icon in the preview to see how's the request is logged.
 
 </Editor>

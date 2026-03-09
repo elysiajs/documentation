@@ -1,9 +1,9 @@
 ---
-title: Extends Context - ElysiaJS
+title: Extend Context - ElysiaJS
 head:
     - - meta
       - property: 'og:title'
-        content: Extends Context - ElysiaJS
+        content: Extend Context - ElysiaJS
 
     - - meta
       - name: 'description'
@@ -83,14 +83,14 @@ const demo6 = new Elysia()
     .get('/error', ({ store: { counter } }) => counter)
 </script>
 
-# Extends context <TutorialBadge href="/tutorial/patterns/extends-context" />
+# Extend context <TutorialBadge href="/tutorial/patterns/extends-context" />
 
 Elysia provides a minimal Context by default, allowing us to extend Context for our specific need using state, decorate, derive, and resolve.
 
 Elysia allows us to extend Context for various use cases like:
 - extracting user ID as variable
-- inject a common pattern repository
-- add a database connection
+- injecting a common repository pattern
+- adding a database connection
 
 We may extend Elysia's context by using the following APIs to customize the Context:
 
@@ -101,7 +101,7 @@ We may extend Elysia's context by using the following APIs to customize the Cont
 ### When to extend context
 You should only extend context when:
 - A property is a global mutable state, and shared across multiple routes using [state](#state)
-- A property is associated with a request or response using [decorate](#decorate)
+- If a property is associated with a request or response using [decorate](#decorate)
 - A property is derived from an existing property using [derive](#derive) / [resolve](#resolve)
 
 Otherwise, we recommend defining a value or function separately than extending the context.
@@ -233,8 +233,8 @@ new Elysia()
 
 ### When to use
 - A constant or readonly value object to **Context**
-- Non primitive value or class that may contain internal mutable state
-- Additional functions, singleton, or immutable property to all handlers.
+- Non-primitive value or class that may contain internal mutable state
+- Additional functions, singletons, or immutable property to all handlers.
 
 ### Key takeaway
 - Unlike **state**, decorated value **SHOULD NOT** be mutated although it's possible
@@ -271,8 +271,8 @@ Because **derive** is assigned once a new request starts, **derive** can access 
 - When you need to access request properties like **headers**, **query**, **body** without validation
 
 ### Key takeaway
-- Unlike **state** and **decorate** instead of assign **at call time**, **derive** is assigned once a new request starts.
-- **derive is called at transform, or before validation** happens, Elysia cannot safely confirm the type of request property resulting in as **unknown**. If you want to assign a new value from typed request properties, you may want to use [resolve](#resolve) instead.
+- Unlike **state** and **decorate** instead of assigning **at call time**, **derive** is assigned once a new request starts.
+- **derive is called at transform, or before validation** occurs, Elysia cannot safely confirm the type of request property resulting in as **unknown**. If you want to assign a new value from typed request properties, you may want to use [resolve](#resolve) instead.
 
 ## Resolve
 Similar as [derive](#derive) but ensure type integrity.
@@ -326,9 +326,9 @@ new Elysia()
     .get('/', ({ bearer }) => bearer)
 ```
 
-## Pattern <Badge type="info">Advance Concept</Badge>
+## Pattern <Badge type="info">Advanced Concept</Badge>
 
-**state**, **decorate** offers a similar APIs pattern for assigning property to Context as the following:
+**state**, **decorate** offers a similar API pattern for assigning property to Context as the following:
 
 -   key-value
 -   object
@@ -377,7 +377,7 @@ The object offers a less repetitive API for setting multiple values.
 
 Remap is a function reassignment.
 
-Allowing us to create a new value from existing value like renaming or removing a property.
+Allowing us to create a new value from existing value like renaming or removing a property by providing a function and returning an entirely new object to reassign the value.
 
 By providing a function, and returning an entirely new object to reassign the value.
 
@@ -412,7 +412,7 @@ Using remap, Elysia will treat a returned object as a new property, removing any
 
 To provide a smoother experience, some plugins might have a lot of property value which can be overwhelming to remap one-by-one.
 
-The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all property of an instance.
+The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all properties of an instance.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -436,7 +436,7 @@ Allowing us to bulk remap a property of the plugin effortlessly, preventing the 
 
 By default, **affix** will handle both runtime, type-level code automatically, remapping the property to camelCase as naming convention.
 
-In some condition, we can also remap `all` property of the plugin:
+In some cases, we can also remap all properties of the plugin:
 
 ```ts twoslash
 import { Elysia } from 'elysia'

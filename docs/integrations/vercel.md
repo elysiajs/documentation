@@ -18,7 +18,7 @@ head:
 
 # Deploy Elysia on Vercel
 
-Elysia can deploys on Vercel with zero configuration using either Bun or Node runtime.
+Elysia can be deployed on Vercel with zero configuration using either Bun or Node runtime.
 
 1. In **src/index.ts**, create or import an existing Elysia server
 2. Export the Elysia server as default export
@@ -83,4 +83,4 @@ To deploy with Bun, make sure to set the runtime to Bun in your `vercel.json`
 ```
 
 ## If this doesn't work
-Vercel has zero configuration for Elysia, for additional configuration, please refers to [Vercel documentation](https://vercel.com/docs/frameworks/backend/elysia)
+Vercel has zero-configuration support for Elysia. For additional configuration, please refer to the [Vercel documentation](https://vercel.com/docs/frameworks/backend/elysia)

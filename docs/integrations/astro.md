@@ -32,7 +32,7 @@ export default defineConfig({
 
 2. Create **pages/[...slugs].ts**
 3. Create or import an existing Elysia server in **[...slugs].ts**
-4. Export the handler with the name of method you want to expose
+4. Export the handler with the name of the method you want to expose
 
 ```typescript
 // pages/[...slugs].ts
@@ -70,9 +70,9 @@ pnpm add @sinclair/typebox openapi-types
 
 ## Prefix
 
-If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix to the Elysia server.
+If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix on the Elysia server.
 
-For example, if you place Elysia server in **pages/api/[...slugs].ts**, you need to annotate prefix as **/api** to Elysia server.
+For example, if you place the Elysia server in **pages/api/[...slugs].ts**, you need to annotate the prefix as **/api** on the Elysia server.
 
 ```typescript
 // pages/api/[...slugs].ts
@@ -92,6 +92,6 @@ export const GET = handle // [!code ++]
 export const POST = handle // [!code ++]
 ```
 
-This will ensure that Elysia routing will work properly in any location you place it.
+This will ensure that Elysia routing works properly wherever you place it.
 
-Please refer to [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/) for more information.
+Please refer to [Astro Endpoints](https://docs.astro.build/en/core-concepts/endpoints/) for more information.

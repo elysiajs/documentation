@@ -24,7 +24,7 @@ head:
 
 # Table of Content
 
-There's no correct way to learn Elysia, but we **highly recommended** you checkout the an **Interactive Tutorial** first to get familiar with Elysia:
+There's no correct way to learn Elysia, but we **highly recommend** you check out the **Interactive Tutorial** first to get familiar with Elysia:
 
 <TutorialLink />
 <AronaBanner />
@@ -35,7 +35,7 @@ Although Elysia's documentation is designed to be beginner-friendly, we need to 
 To get the most out of our documentation, it's recommended that you have a basic understanding of Node.js and basic HTTP.-->
 
 ## First up
-We highly recommended you to check out these 2 pages first before getting started with Elysia:
+We highly recommend you check out these 2 pages first before getting started with Elysia:
 
 <Deck>
 	<Card title="Key Concept" href="/key-concept">
@@ -63,7 +63,7 @@ bunx skills add elysiajs/skills
     </Card>
 </Deck>
 
-## From other Framework?
+## From Other Frameworks?
 
 If you have used other popular frameworks like Express, Fastify, or Hono, you will find Elysia right at home with just a few differences.
 
@@ -84,7 +84,7 @@ If you have used other popular frameworks like Express, Fastify, or Hono, you wi
 
 ## Essential Chapter
 
-Here are the foundation of Elysia, we highly recommended you to go through these pages before jumping to other topics:
+Here are the foundations of Elysia. We highly recommend you go through these pages before jumping to other topics:
 
 <Deck>
 	<Card title="Route" href="/essential/route">
@@ -106,19 +106,19 @@ Here are the foundation of Elysia, we highly recommended you to go through these
 
 ## More Patterns
 
-If you feels like exploring more Elysia feature, check out:
+If you feel like exploring more Elysia features, check out:
 
 <Deck>
     <Card title="Handler" href="/eden/overview">
-    	More pattern on how to send a file, Server Sent Event, etc.
+    	More patterns on how to send a file, use Server Sent Events, etc.
     </Card>
     <Card title="Web Socket" href="/patterns/websocket">
-   		See how to create Real Time application with Elysia
+   		See how to create Real Time applications with Elysia
     </Card>
     <Card title="Eden" href="/eden/overview">
-    	Learn more about Eden, and how to use it effectively
+    	Learn more about Eden and how to use it effectively
     </Card>
-    <Card title="Open Telemetry" href="/eden/opentelemetry">
+    <Card title="Open Telemetry" href="/patterns/opentelemetry">
    		Learn how to monitor your application with Open Telemetry
     </Card>
     <Card title="Deploy to Production" href="/patterns/deploy">
@@ -126,9 +126,9 @@ If you feels like exploring more Elysia feature, check out:
     </Card>
 </Deck>
 
-## Integration with Meta Framework
+## Integration with Meta Frameworks
 
-We can also use Elysia with Meta Framework like Nextjs, Nuxt, Astro, etc.
+You can also use Elysia with Meta Frameworks like Next.js, Nuxt, Astro, etc.
 
 <Deck>
 	<Card title="Astro" href="/integrations/astro">
@@ -148,9 +148,9 @@ We can also use Elysia with Meta Framework like Nextjs, Nuxt, Astro, etc.
 	</Card>
 </Deck>
 
-## Integration with your favorite tool
+## Integration with Your Favorite Tools
 
-We have some integration with popular tools:
+We have some integrations with popular tools:
 
 <Deck>
 	<Card title="AI SDK" href="/integrations/ai-sdk">
@@ -160,13 +160,13 @@ We have some integration with popular tools:
    		Learn how to use Better Auth with Elysia
     </Card>
     <Card title="Drizzle" href="/integrations/drizzle">
-  		Elysia provides a type safe utility with Drizzle
+  		Elysia provides type-safe utilities with Drizzle
     </Card>
     <Card title="Prisma" href="/integrations/prisma">
   		Learn how to use Prisma with Elysia
     </Card>
     <Card title="React Email" href="/integrations/react-email">
-  		We can use JSX to create email template
+  		Use JSX to create email templates
     </Card>
 </Deck>
 
@@ -176,7 +176,7 @@ If you are stuck, feel free to ask our community on GitHub Discussions, Discord,
 
 <Deck>
     <Card title="Discord" href="https://discord.gg/eaFJ2KDJck">
-        Official ElysiaJS discord community server
+        Official ElysiaJS Discord community server
     </Card>
     <Card title="Twitter" href="https://twitter.com/elysiajs">
         Track updates and status of Elysia

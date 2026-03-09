@@ -18,18 +18,18 @@ head:
 
 Performance is an important aspect for Elysia.
 
-We don't want to be fast for benchmarking purposes, we want you to have a real fast server in real-world scenario.
+We don't want to be fast for benchmarking purposes, we want you to have a really fast server in a real-world scenario.
 
 There are many factors that can slow down our app - and it's hard to identify them, but **trace** can help solve that problem by injecting start and stop code to each life-cycle.
 
-Trace allows us to inject code to before and after of each life-cycle event, block and interact with the execution of the function.
+Trace allows us to inject code before and after each life-cycle event, block and interact with the execution of the function.
 
 ::: warning
 trace doesn't work with dynamic mode `aot: false`, as it requires the function to be static and known at compile time otherwise it will have a large performance impact.
 :::
 
 ## Trace
-Trace use a callback listener to ensure that callback function is finished before moving on to the next lifecycle event.
+Trace uses a callback listener to ensure that callback function is finished before moving on to the next lifecycle event.
 
 To use `trace`, you need to call `trace` method on the Elysia instance, and pass a callback function that will be executed for each life-cycle event.
 
@@ -107,10 +107,10 @@ const app = new Elysia()
 	.listen(3000)
 ```
 
-`trace` accept the following parameters:
+`trace` accepts the following parameters:
 
 ### id - `number`
-Randomly generated unique id for each request
+Randomly generated unique ID for each request
 
 ### context - `Context`
 Elysia's [Context](/essential/handler.html#context), eg. `set`, `store`, `query`, `params`
@@ -156,7 +156,7 @@ const app = new Elysia()
 	.listen(3000)
 ```
 
-Each lifecycle listener accept the following
+Each lifecycle listener accepts the following
 
 ### name - `string`
 The name of the function, if the function is anonymous, the name will be `anonymous`
@@ -188,7 +188,7 @@ const app = new Elysia()
 	.listen(3000)
 ```
 
-It's recommended to mutate context in this function as there's a lock mechanism to ensure the context is mutate successfully before moving on to the next lifecycle event
+It's recommended to mutate context in this function as there's a lock mechanism to ensure the context is mutated successfully before moving on to the next lifecycle event
 
 ## TraceEndDetail
 A parameter that passed to `onStop` callback

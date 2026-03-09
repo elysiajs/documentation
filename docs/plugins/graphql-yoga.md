@@ -50,7 +50,7 @@ const app = new Elysia()
 
 Accessing `/graphql` in the browser (GET request) would show you a GraphiQL instance for the GraphQL-enabled Elysia server.
 
-optional: you can install a custom version of optional peer dependencies as well:
+Optionally, you can install a custom version of optional peer dependencies as well:
 
 ```bash
 bun add graphql graphql-yoga

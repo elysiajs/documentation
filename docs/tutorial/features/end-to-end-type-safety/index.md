@@ -52,12 +52,12 @@ const { data, error } = await client.get()
 console.log(data) // Hello World
 ```
 
-This works by inferring the types from the Elysia instance, and use type hints to provide type safety for the client.
+This works by inferring the types from the Elysia instance, and uses type hints to provide type safety for the client.
 
 See <DocLink href="/eden/treaty/overview">Eden Treaty</DocLink>.
 
 ## Assignment
 
-Let's tab the <Code size="18" class="inline -translate-y-0.5" /> icon in the preview to see how's the request is logged.
+Let's click the <Code size="18" class="inline -translate-y-0.5" /> icon in the preview to see how's the request is logged.
 
 </Editor>

@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Macro is a reusable route options. Learn how to create and use macros in Elysia to enhance your application.
+        content: Macro is a reusable route option. Learn how to create and use macros in Elysia to enhance your application.
 
     - - meta
       - property: 'og:description'
-        content: Macro is a reusable route options. Learn how to create and use macros in Elysia to enhance your application.
+        content: Macro is a reusable route option. Learn how to create and use macros in Elysia to enhance your application.
 ---
 
 <script setup lang="ts">
@@ -31,7 +31,7 @@ import { code, testcases } from './data'
 
 # Macro
 
-A reusable route options.
+Reusable route options.
 
 Imagine we have an authentication check like this:
 
@@ -75,11 +75,11 @@ new Elysia()
 
 **auth** will then inline both **cookie**, and **beforeHandle** to the route.
 
-Simply put, <DocLink href="/patterns/macro">Macro</DocLink> **is a reusable route options**, similar to function but as a route options with **type soundness**.
+Simply put, <DocLink href="/patterns/macro">Macro</DocLink> **is a reusable route option**, similar to function but as a route option with **type soundness**.
 
 ## Assignment
 
-Let's define a macro to check if a body is a fibonacci number:
+Let's define a macro to check if a body is a Fibonacci number:
 
 ```typescript
 function isFibonacci(n: number) {

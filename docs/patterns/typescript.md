@@ -22,7 +22,7 @@ import Tab from '../components/fern/tab.vue'
 
 # TypeScript
 
-Elysia has a first-class support for TypeScript out of the box.
+Elysia has first-class support for TypeScript out of the box.
 
 Most of the time, you wouldn't need to add any TypeScript annotations manually.
 
@@ -45,7 +45,7 @@ const app = new Elysia()
    	})
 ```
 
-Elysia can automatically infers type from schema like TypeBox and [your favorite validation library](/essential/validation#standard-schema) like:
+Elysia can automatically infer types from schema like TypeBox and [your favorite validation library](/essential/validation#standard-schema) like:
 - Zod
 - Valibot
 - ArkType
@@ -141,9 +141,9 @@ Before every release, we have a local benchmark to ensure that type inference is
 
 Most of the time writing Elysia, you wouldn't encounter any type performance issue.
 
-However, if you do, here are how to break down what's slowing down your type inference:
+However, if you do, here is how to break down what's slowing down your type inference:
 
-1. Navigate to the root of your project and runs
+1. Navigate to the root of your project and run
 ```
 tsc --generateTrace trace --noEmit --incremental false
 ```
@@ -187,6 +187,6 @@ import type { subApp } from 'backend/src'
 const api = treaty<subApp>('localhost:3000') // [!code ++]
 ```
 
-This should make your type inference faster it doesn't need to evaluate the whole app.
+This should make your type inference faster as it doesn't need to evaluate the whole app.
 
 See [Eden Treaty](/eden/overview) to learn more about Eden.

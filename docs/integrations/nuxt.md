@@ -16,7 +16,7 @@ head:
 
 # Integration with Nuxt
 
-We can use [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia), a community plugin for Nuxt, to setup Elysia on Nuxt API route with Eden Treaty.
+We can use [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia), a community plugin for Nuxt, to set up Elysia on Nuxt API routes with Eden Treaty.
 
 1. Install the plugin with the following command:
 
@@ -71,7 +71,7 @@ const { data } = await useAsyncData(async () => {
 </script>
 ```
 
-This will automatically setup Elysia to run on Nuxt API route automatically.
+This will automatically set up Elysia to run on Nuxt API routes.
 
 ### pnpm
 If you use pnpm, [pnpm doesn't auto install peer dependencies by default](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230) forcing you to install additional dependencies manually.
@@ -81,7 +81,7 @@ pnpm add @sinclair/typebox openapi-types
 
 ## Prefix
 
-By default, Elysia will be mounted on **/_api** but we can customize it with `nuxt-elysia` config.
+By default, Elysia will be mounted on **/_api**, but we can customize it with the `nuxt-elysia` config.
 ```ts
 export default defineNuxtConfig({
 	nuxtElysia: {
@@ -92,4 +92,4 @@ export default defineNuxtConfig({
 
 This will mount Elysia on **/api** instead of **/_api**.
 
-For more configuration, please refer to [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia)
+For more configuration options, please refer to [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia)

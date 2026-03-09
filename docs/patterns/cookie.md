@@ -35,14 +35,14 @@ new Elysia()
     })
 ```
 
-By default, Reactive Cookie can encode/decode object types automatically allowing us to treat cookies as objects without worrying about the encoding/decoding. **It just works**.
+By default, Reactive Cookie can automatically encode/decode object types allowing us to treat cookies as objects without worrying about the encoding/decoding. **It just works**.
 
 ::: warning
-You may get warning when using cookie.name might be `undefined`
+You may get a warning when using cookie.name as it might be `undefined`
 
 Elysia cookie can never be `undefined` because it's a Proxy object. `cookie` is always defined, only its value (via cookie.value) can be undefined.
 
-This can be fixed by using a [cookie schema] or disable [strictNullChecks](https://www.typescriptlang.org/tsconfig/#strictNullChecks) in `tsconfig.json`
+This can be fixed by using [a cookie schema] or disabling [strictNullChecks](https://www.typescriptlang.org/tsconfig/#strictNullChecks) in `tsconfig.json`
 :::
 
 ## Reactivity
@@ -55,15 +55,15 @@ Since cookies are Proxy-dependent objects by default, the extract value can neve
 We can treat the cookie jar as a regular object, iteration over it will only iterate over an already-existing cookie value.
 
 ## Cookie Attribute
-To use Cookie attribute, you can either use one of the following:
+To use Cookie attributes, you can use one of the following:
 
 1. Setting the property directly
-2. Using `set` or `add` to update cookie property.
+2. Using `set` or `add` to update cookie properties.
 
 See [cookie attribute config](/patterns/cookie.html#config) for more information.
 
 ### Assign Property
-You can get/set the property of a cookie like any normal object, the reactivity model synchronizes the cookie value automatically.
+You can get/set properties of a cookie like any normal object, the reactivity model synchronizes the cookie value automatically.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -95,7 +95,7 @@ new Elysia()
 ```
 
 ## add
-Like **set**, **add** allow us to update multiple cookie properties at once, but instead, will only overwrite the property defined instead of resetting.
+Like **set**, **add** allows us to update multiple cookie properties at once, but instead will only overwrite the properties defined instead of resetting.
 
 ## remove
 To remove a cookie, you can use either:
@@ -114,7 +114,7 @@ new Elysia()
 ```
 
 ## Cookie Schema
-You can strictly validate cookie type and providing type inference for cookie by using cookie schema with `t.Cookie`.
+You can strictly validate cookie type and provide type inference for cookies by using cookie schema with `t.Cookie`.
 
 ```ts twoslash
 import { Elysia, t } from 'elysia'
@@ -162,14 +162,14 @@ new Elysia()
 ```
 
 ## Cookie Signature
-With an introduction of Cookie Schema, and `t.Cookie` type, we can create a unified type for handling sign/verify cookie signature automatically.
+With the introduction of Cookie Schema and `t.Cookie` type, we can create a unified type for handling sign/verify cookie signature automatically.
 
 Cookie signature is a cryptographic hash appended to a cookie's value, generated using a secret key and the content of the cookie to enhance security by adding a signature to the cookie.
 
-This make sure that the cookie value is not modified by malicious actor, helps in verifying the authenticity and integrity of the cookie data.
+This makes sure that the cookie value is not modified by malicious actors, helping verify the authenticity and integrity of the cookie data.
 
 ## Using Cookie Signature
-By provide a cookie secret, and `sign` property to indicate which cookie should have a signature verification.
+By providing a cookie secret and `sign` property to indicate which cookie should have signature verification.
 ```ts twoslash
 import { Elysia, t } from 'elysia'
 
@@ -195,7 +195,7 @@ new Elysia()
 Elysia then sign and unsign cookie value automatically.
 
 ## Constructor
-You can use Elysia constructor to set global cookie `secret`, and `sign` value to apply to all route globally instead of inlining to every route you need.
+You can use Elysia constructor to set global cookie `secret` and `sign` values to apply to all routes globally instead of inlining to every route you need.
 
 ```ts twoslash
 import { Elysia, t } from 'elysia'
@@ -222,7 +222,7 @@ new Elysia({
 ```
 
 ## Cookie Rotation
-Elysia handle Cookie's secret rotation automatically.
+Elysia handles cookie secret rotation automatically.
 
 Cookie Rotation is a migration technique to sign a cookie with a newer secret, while also be able to verify the old signature of the cookie.
 
@@ -237,9 +237,9 @@ new Elysia({
 ```
 
 ### Unsigned Cookie Transition
-Elysia support graceful transition from unsigned to signed cookie.
+Elysia supports graceful transition from unsigned to signed cookies.
 
-By setting `null` in an array of `cookie.secrets`, Elysia will allows unsigned cookie to passthrough while checking invalid cookie signature when available.
+By setting `null` in an array of `cookie.secrets`, Elysia will allow unsigned cookies to pass through while checking invalid cookie signatures when available.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -253,15 +253,15 @@ new Elysia({
 
 Elysia will then use the first `secrets` to sign the new cookie allowing graceful transition.
 
-It's recommended to only allow unsign cookie during the transition period to prevent unsafe cookie from occuring.
+It's recommended to only allow unsigned cookies during the transition period to prevent unsafe cookies from occurring.
 
 ## Config
 Below is a cookie config accepted by Elysia.
 
 ### secret
-The secret key for signing/un-signing cookies.
+The secret key for signing/verifying cookies.
 
-If an array is passed, will use Key Rotation.
+If an array is passed, it will use Key Rotation.
 
 Key rotation is when an encryption key is retired and replaced by generating a new cryptographic key.
 
@@ -277,16 +277,16 @@ By default, no domain is set, and most clients will consider the cookie to apply
 ### encode
 @default `encodeURIComponent`
 
-Specifies a function that will be used to encode a cookie's value.
+Specifies a function that will be used to encode a cookie value.
 
-Since the value of a cookie has a limited character set (and must be a simple string), this function can be used to encode a value into a string suited for a cookie's value.
+Since the value of a cookie has a limited character set (and must be a simple string), this function can be used to encode a value into a string suited for a cookie value.
 
 The default function is the global `encodeURIComponent`, which will encode a JavaScript string into UTF-8 byte sequences and then URL-encode any that fall outside of the cookie range.
 
 ### expires
 Specifies the Date object to be the value for the [Expires Set-Cookie attribute](https://tools.ietf.org/html/rfc6265#section-5.2.1).
 
-By default, no expiration is set, and most clients will consider this a "non-persistent cookie" and will delete it on a condition like exiting a web browser application.
+By default, no expiration is set, and most clients will consider this a "non-persistent cookie" and will delete it on conditions like exiting a web browser application.
 
 ::: tip
 The [cookie storage model specification](https://tools.ietf.org/html/rfc6265#section-5.3) states that if both `expires` and `maxAge` are set, then `maxAge` takes precedence, but not all clients may obey this, so if both are set, they should point to the same date and time.

@@ -46,7 +46,7 @@ Accessing `/openapi` would show you a Scalar UI with the generated endpoint docu
 ::: tip
 This page is the plugin configuration reference.
 
-If you're looking for a common patterns or an advanced usage of OpenAPI, check out [Patterns: OpenAPI](/patterns/openapi)
+If you're looking for common patterns or advanced usage of OpenAPI, check out [Patterns: OpenAPI](/patterns/openapi)
 :::
 
 ## Detail
@@ -96,7 +96,7 @@ A short summary of what the operation does.
 
 ## Config
 
-Below is a config which is accepted by the plugin
+Below is the config that is accepted by the plugin
 
 ## enabled
 
@@ -132,7 +132,7 @@ Exclude static file routes from documentation
 List of tags to exclude from documentation
 
 ## mapJsonSchema
-A custom mapping function from Standard schema to OpenAPI schema
+A custom mapping function from standard schema to OpenAPI schema
 
 ### Example
 ```typescript
@@ -156,7 +156,7 @@ The endpoint to expose OpenAPI documentation frontend
 
 @default 'scalar'
 
-OpenAPI documentation frontend between:
+OpenAPI documentation frontend provider between:
 
 - [Scalar](https://github.com/scalar/scalar)
 - [SwaggerUI](https://github.com/swagger-api/swagger-ui)
@@ -195,4 +195,4 @@ The endpoint to expose OpenAPI specification in JSON format
 
 Swagger config, refers to [Swagger config](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/)
 
-Below you can find the common patterns to use the plugin.
+Below you can find common patterns to use the plugin.

@@ -32,7 +32,7 @@ Why use OpenTelemetry with Elysia?
 - 1 line config
 - Span name is the function name
 - Grouping relevant lifecycle together
-- Wrap a code to record a specific part
+- Wrap code to record a specific part
 - Support Server-Sent Event, and response streaming
 - Compatible with any OpenTelemetry compatible library
 
@@ -72,7 +72,7 @@ new Elysia().use(
 
 Elysia OpenTelemetry is for applying OpenTelemetry to Elysia server only.
 
-You may use OpenTelemetry SDK normally, and the span is run under Elysia's request span, it will be automatically appear in Elysia trace.
+You may use OpenTelemetry SDK normally, and the span is run under Elysia's request span, it will automatically appear in Elysia trace.
 
 However, we also provide a `getTracer`, and `record` utility to collect span from any part of your application.
 
@@ -89,7 +89,7 @@ export const plugin = new Elysia().get('', () => {
 
 ## Record utility
 
-`record` is an equivalent to OpenTelemetry's `startActiveSpan` but it will handle auto-closing and capture exception automatically.
+`record` is equivalent to OpenTelemetry's `startActiveSpan` but it will handle auto-closing and capture exception automatically.
 
 You may think of `record` as a label for your code that will be shown in trace.
 
@@ -134,7 +134,7 @@ function utility() {
 }
 ```
 
-This works outside of the handler by retriving current span from `AsyncLocalStorage`
+This works outside of the handler by retrieving current span from `AsyncLocalStorage`
 
 ## setAttributes
 
@@ -198,16 +198,16 @@ This will tell Bun to load and setup `instrumentation` before running the `src/i
 ### Deploying to production <Badge type="warning">Advanced Concept</Badge>
 If you are using `bun build` or other bundlers.
 
-As OpenTelemetry rely on monkey-patching `node_modules/<library>`. It's required that make instrumentations works properly, we need to specify that libraries to be instrument is an external module to exclude it from being bundled.
+As OpenTelemetry relies on monkey-patching `node_modules/<library>`. It's required to make instrumentations work properly, we need to specify libraries to be instrumented as an external module to exclude it from being bundled.
 
 For example, if you are using `@opentelemetry/instrumentation-pg` to instrument `pg` library. We need to exclude `pg` from being bundled and make sure that it is importing `node_modules/pg`.
 
-To make this works, we may specified `pg` as an external module with `--external pg`
+To make this work, we may specify `pg` as an external module with `--external pg`
 ```bash
 bun build --compile --external pg --outfile server src/index.ts
 ```
 
-This tells bun to not `pg` bundled into the final output file, and will be imported from the **node_modules** directory at runtime. So on a production server, you must also keeps the **node_modules** directory.
+This tells bun not to bundle `pg` into the final output file, and will be imported from the **node_modules** directory at runtime. So on a production server, you must also keep the **node_modules** directory.
 
 It's recommended to specify packages that should be available in a production server as **dependencies** in **package.json** and use `bun install --production` to install only production dependencies.
 

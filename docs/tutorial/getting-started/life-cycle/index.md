@@ -10,11 +10,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Lifecycle hook is function that executed on a specific event during the request-response cycle.
+        content: Lifecycle hooks are functions that are executed on a specific event during the request-response cycle.
 
     - - meta
       - property: 'og:description'
-        content: Lifecycle hook is function that executed on a specific event during the request-response cycle.
+        content: Lifecycle hooks are functions that are executed on a specific event during the request-response cycle.
 ---
 
 <script setup lang="ts">
@@ -30,9 +30,9 @@ import { code, testcases } from './data'
 
 # Lifecycle
 
-Lifecycle **hook** is function that executed on a specific event during the request-response cycle.
+Lifecycle **hooks** are functions that are executed on a specific event during the request-response cycle.
 
-They allow you to run custom logic at the certain point
+They allow you to run custom logic at a certain point
 - <DocLink href="/essential/life-cycle#request">request</DocLink> - when a request is received
 - <DocLink href="/essential/life-cycle#before-handle">beforeHandle</DocLink> - before executing a handler
 - <DocLink href="/essential/life-cycle#after-response">afterResponse</DocLink> - after a response is sent, etc.
@@ -40,7 +40,7 @@ They allow you to run custom logic at the certain point
 
 This can be useful for tasks like logging, authentication, etc.
 
-To register a lifecycle hook, you can pass it to 3rd argument of a route method:
+To register a lifecycle hook, you can pass it as the 3rd argument of a route method:
 
 ```typescript
 import { Elysia } from 'elysia'

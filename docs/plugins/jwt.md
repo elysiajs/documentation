@@ -115,7 +115,7 @@ Because some might need to use multiple `jwt` with different configs in a single
 The private key to sign JWT payload with.
 
 ### schema
-Type strict validation for JWT payload.
+Strict type validation for JWT payload.
 
 ---
 Below is a config that extends from [cookie](https://npmjs.com/package/cookie)
@@ -203,7 +203,7 @@ Content-Type parameter is used by JWS applications to declare the media type [IA
 This is intended for use by the application when more than one kind of object could be present in the JWS Payload as per [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9)
 
 ## Handler
-Below are the value added to the handler.
+Below are the values added to the handler.
 
 ### jwt.sign
 A dynamic object of collection related to use with JWT registered by the JWT plugin.

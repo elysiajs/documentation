@@ -174,7 +174,7 @@ const app = new Elysia()
 
 ## Subrouter
 
-Express uses a dedicated `express.Router()` for declaring a sub-router while Elysia treats every instance as a plug-and-play component. that can be plug and play together.
+Express uses a dedicated `express.Router()` for declaring a sub-router while Elysia treats every instance as a component that can be plugged and played together.
 
 <Compare>
 
@@ -224,7 +224,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia treat every instances as a component
+> Elysia treats every instance as a component
 
 </template>
 
@@ -258,14 +258,14 @@ const bodySchema = z.object({
 app.patch('/user/:id', (req, res) => {
 	const params = paramSchema.safeParse(req.params)
 	if (!params.success)
-		return res.status(422).json(result.error)
+		return res.status(422).json(params.error)
 
 	const body = bodySchema.safeParse(req.body)
 	if (!body.success)
-		return res.status(422).json(result.error)
+		return res.status(422).json(body.error)
 
 	res.json({
-		params: params.id.data,
+		params: params.data.id,
 		body: body.data
 	})
 })
@@ -350,7 +350,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia uses TypeBox for validation and coerce types automatically, while supporting various validation libraries like Zod and Valibot with the same syntax as well.
+> Elysia uses TypeBox for validation and coerces types automatically, while supporting various validation libraries like Zod and Valibot with the same syntax as well.
 
 </template>
 
@@ -398,7 +398,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 
 <template v-slot:left-content>
 
-> Express needs `express.json()` middleware to parse JSON body
+> Express needs `multer` for file upload and manual mimetype validation
 
 </template>
 
@@ -502,7 +502,7 @@ const app = new Elysia()
 	// Route-specific middleware
 	.get('/protected', () => 'protected', {
 		beforeHandle({ status, headers }) {
-  			if (!headers.authorizaton)
+  			if (!headers.authorization)
      			return status(401)
 		}
 	})
@@ -522,7 +522,7 @@ const app = new Elysia()
 While Express has a `next` function to call the next middleware, Elysia does not have one.
 
 ## Sound type safety
-Elysia is designed to be provide sound type safety.
+Elysia is designed to provide sound type safety.
 
 For example, you can customize context in a **type safe** manner using [derive](/essential/life-cycle.html#derive) and [resolve](/essential/life-cycle.html#resolve) while Express doesn't.
 
@@ -1017,7 +1017,7 @@ const app = new Elysia({
 	}
 })
 	.get('/', ({ cookie: { name } }) => {
-		// signature verification is handle automatically
+		// signature verification is handled automatically
 		name.value
 
 		// cookie signature is signed automatically
@@ -1031,7 +1031,7 @@ const app = new Elysia({
 
 <template v-slot:right-content>
 
-> Elysia uses signal-based approach to handle cookies
+> Elysia uses a signal-based approach to handle cookies
 
 </template>
 
@@ -1271,7 +1271,7 @@ const { data, error } = await api.mirror.post({
 	message: 'Hello World'
 })
 
-if(error)
+if (error)
 	throw error
 	//     ^?
 
@@ -1314,7 +1314,7 @@ Alternatively, if you are coming from a different framework, you can check out:
   		Comparison between Fastify and Elysia
     </Card>
 	<Card title="From Hono" href="/migrate/from-hono">
-		Comparison between tRPC and Elysia
+		Comparison between Hono and Elysia
 	</Card>
 	<Card title="From tRPC" href="/migrate/from-trpc">
   		Comparison between tRPC and Elysia

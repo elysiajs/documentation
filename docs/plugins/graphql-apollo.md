@@ -60,7 +60,7 @@ const app = new Elysia()
 	.listen(3000)
 ```
 
-Accessing `/graphql` should show Apollo GraphQL playground work with.
+Accessing `/graphql` should show the Apollo GraphQL playground to work with.
 
 ## Context
 
@@ -102,4 +102,4 @@ Path to expose Apollo Server.
 
 @default `process.env.ENV !== 'production'`
 
-Determine whether should Apollo should provide Apollo Playground.
+Determine whether Apollo should provide Apollo Playground.

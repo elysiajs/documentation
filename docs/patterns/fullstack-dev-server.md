@@ -16,7 +16,7 @@ head:
 
 # Elysia with Bun Fullstack Dev Server
 
-Bun 1.3 introduce a [Fullstack Dev Server](https://bun.com/docs/bundler/fullstack) with HMR support.
+Bun 1.3 introduces a [Fullstack Dev Server](https://bun.com/docs/bundler/fullstack) with HMR support.
 
 This allows us to directly use React without any bundler like Vite or Webpack.
 
@@ -101,7 +101,7 @@ root.render(<App />)
 
 4. Navigate to `http://localhost:3000/public` and see the result.
 
-This would allows us to develop frontend and backend in a single project without any bundler.
+This allows us to develop frontend and backend in a single project without any bundler.
 
 We have verified that Fullstack Dev Server works with HMR, [Tailwind](#tailwind), Tanstack Query, [Eden Treaty](/eden/overview), and path alias.
 
@@ -243,7 +243,7 @@ const root = createRoot(document.getElementById('root')!)
 root.render(<App />)
 ```
 
-This would works out of the box without any additional configuration.
+This will work out of the box without any additional configuration.
 
 ## Build for Production
 

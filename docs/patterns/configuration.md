@@ -35,7 +35,7 @@ new Elysia({
 
 Runtime adapter for using Elysia in different environments.
 
-Default to appropriate adapter based on the environment.
+Defaults to appropriate adapter based on the environment.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -60,11 +60,11 @@ new Elysia({
 })
 ```
 
-By default, Elysia will omitted all validation detail on production.
+By default, Elysia will omit all validation detail on production.
 
 This is done to prevent leaking sensitive information about the validation schema, such as field names and expected types, which could be exploited by an attacker.
 
-Ideally, this should only be enabled on a public APIs as it may leak sensitive information about the server implementation.
+Ideally, this should only be enabled on public APIs as it may leak sensitive information about the server implementation.
 
 #### Options - @default `false`
 - `true` - Include unsafe validation details in the error response on production
@@ -112,9 +112,9 @@ new Elysia({
 
 ## encodeSchema
 
-Handle custom `t.Transform` schema with custom `Encode` before returning the response to client.
+Handle custom `t.Transform` schemas with custom `Encode` before returning the response to client.
 
-This allows us to create custom encode function for your data before sending response to the client.
+This allows us to create custom encode functions for your data before sending response to the client.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -129,7 +129,7 @@ new Elysia({ encodeSchema: true })
 
 ## name
 
-Define a name of an instance which is used for debugging and [Plugin Deduplication](/essential/plugin.html#plugin-deduplication)
+Define the name of an instance which is used for debugging and [Plugin Deduplication](/essential/plugin.html#plugin-deduplication)
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -142,7 +142,7 @@ new Elysia({
 ## nativeStaticResponse
 ###### Since 1.1.11
 
-Use an optimized function for handling inline value for each respective runtime.
+Use optimized functions for handling inline values for each respective runtime.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -176,7 +176,7 @@ Bun.serve({
 
 ###### Since 1.1.0
 
-Whether Elysia should coerce field into a specified schema.
+Whether Elysia should coerce fields into a specified schema.
 
 ```ts twoslash
 import { Elysia, t } from 'elysia'
@@ -242,9 +242,9 @@ new Elysia({ prefix: '/v1' }).get('/name', 'elysia') // Path is /v1/name
 
 ## sanitize
 
-A function or an array of function that calls and intercepts on every `t.String` while validation.
+A function or an array of functions that calls and intercepts on every `t.String` while validation.
 
-Allowing us to read and transform a string into a new value.
+Allowing us to read and transform strings into new values.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -256,7 +256,7 @@ new Elysia({
 
 ## seed
 
-Define a value which will be used to generate checksum of an instance, used for [Plugin Deduplication](/essential/plugin.html#plugin-deduplication)
+Define a value that will be used to generate checksum of an instance, used for [Plugin Deduplication](/essential/plugin.html#plugin-deduplication)
 
 ```ts twoslash
 import { Elysia } from 'elysia'
@@ -272,7 +272,7 @@ The value could be any type not limited to string, number, or object.
 
 ## strictPath
 
-Whether should Elysia handle path strictly.
+Whether Elysia should handle paths strictly.
 
 According to [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3), a path should be strictly equal to the path defined in the route.
 
@@ -403,7 +403,7 @@ This string will be used to hot reload the server without interrupting pending r
 ### serve.idleTimeout
 @default `10` (10 seconds)
 
-By default, Bun set idle timeout to 10 seconds, which means that if a request is not completed within 10 seconds, it will be aborted.
+By default, Bun sets idle timeout to 10 seconds, which means that if a request is not completed within 10 seconds, it will be aborted.
 
 ### serve.maxRequestBodySize
 @default `1024 * 1024 * 128` (128MB)
@@ -509,7 +509,7 @@ Explicitly set a server name
 
 ## tags
 
-Define an tags for OpenAPI schema for all routes of an instance similar to [detail](#detail)
+Define tags for OpenAPI schema for all routes of an instance similar to [detail](#detail)
 
 ```ts twoslash
 import { Elysia } from 'elysia'

@@ -22,7 +22,7 @@ Once the fetch method is called, Eden Treaty returns a `Promise` containing an o
 - status `number` - HTTP status code
 - headers `FetchRequestInit['headers']` - response headers
 
-Once returned, you must provide error handling to ensure that the response data value is unwrapped, otherwise the value will be nullable. Elysia provides a `error()` helper function to handle the error, and Eden will provide type narrowing for the error value.
+Once returned, you must provide error handling to ensure that the response data value is unwrapped; otherwise, the value will be nullable. Elysia provides an `error()` helper function to handle the error, and Eden will provide type narrowing for the error value.
 
 ```typescript
 import { Elysia, t } from 'elysia'
@@ -75,7 +75,7 @@ Otherwise, response will be passed to `data`.
 :::
 
 ## Stream response
-Eden will interpret a stream response or [Server-Sent Events](/essential/handler.html#server-sent-events-sse) as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
+Eden will interpret a stream response or [Server-Sent Events](/essential/handler.html#server-sent-events-sse) as an `AsyncGenerator`, allowing us to use a `for await` loop to consume the stream.
 
 ::: code-group
 
@@ -136,8 +136,8 @@ for await (const chunk of data)
 :::
 
 
-## Utility type
-Eden Treaty provides a utility type `Treaty.Data<T>` and `Treaty.Error<T>` to extract the `data` and `error` type from the response.
+## Utility types
+Eden Treaty provides utility types `Treaty.Data<T>` and `Treaty.Error<T>` to extract the `data` and `error` types from the response.
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
@@ -163,7 +163,7 @@ type UserData = Treaty.Data<typeof api.user.post>
 //     ^?
 
 
-// Alternatively you can also pass a response
+// Alternatively, you can also pass a response
 const response = await api.user.post({
 	name: 'Saltyaom'
 })

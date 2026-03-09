@@ -16,7 +16,7 @@ head:
 ---
 
 ::: warning
-Swagger plugin is deprecated and is no longer be maintained. Please use [OpenAPI plugin](/plugins/openapi) instead.
+Swagger plugin is deprecated and is no longer maintained. Please use [OpenAPI plugin](/plugins/openapi) instead.
 :::
 
 # Swagger Plugin
@@ -52,7 +52,7 @@ Below is a config which is accepted by the plugin
 
 @default `scalar`
 
-UI Provider for documentation. Default to Scalar.
+UI Provider for documentation. Defaults to Scalar.
 
 ### scalar
 
@@ -131,9 +131,9 @@ new Elysia()
 
 ## Using Tags
 
-Elysia can separate the endpoints into groups by using the Swaggers tag system
+Elysia can separate the endpoints into groups by using the Swagger tag system
 
-Firstly define the available tags in the swagger config object
+First, define the available tags in the Swagger config object
 
 ```typescript
 app.use(
@@ -148,7 +148,7 @@ app.use(
 )
 ```
 
-Then use the details property of the endpoint configuration section to assign that endpoint to the group
+Then use the detail property of the endpoint configuration section to assign that endpoint to the group
 
 ```typescript
 app.get('/', () => 'Hello Elysia', {
@@ -177,7 +177,7 @@ app.group('/auth', (app) =>
 )
 ```
 
-Which will produce a swagger page like the following
+This will produce a Swagger page as follows
 <img width="1446" alt="image" src="/assets/swagger-demo.webp">
 
 ## Security Configuration

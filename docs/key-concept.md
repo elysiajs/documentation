@@ -40,7 +40,7 @@ const demo2 = new Elysia()
 
 # Key Concept <Badge type="danger" text="MUST READ" />
 
-Elysia has a every important concepts that you need to understand to use.
+Elysia has every important concept that you need to understand.
 
 This page covers most concepts that you should know before getting started.
 
@@ -75,7 +75,7 @@ In this example, the `isSignIn` check will only apply to `profile` but not `app`
 
 <br>
 
-**Elysia isolate lifecycle by default** unless explicitly stated. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
+**Elysia isolates lifecycle by default** unless explicitly stated. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
 
 To **"export"** the lifecycle to other instances, you must add specify the scope.
 
@@ -170,11 +170,11 @@ app.listen(3000)
 We recommend to <u>**always use method chaining**</u> to provide an accurate type inference.
 
 ## Dependency <Badge type="danger" text="MUST READ" />
-Elysia by design, is compose of multiple mini Elysia apps which can run **independently** like a microservice that communicate with each other.
+Elysia, by design, is composed of multiple mini Elysia apps which can run **independently** like microservices that communicate with each other.
 
 Each Elysia instance is independent and **can run as a standalone server**.
 
-When an instance need to use another instance's service, you **must explicitly declare the dependency**.
+When an instance needs to use another instance's service, you **must explicitly declare the dependency**.
 
 ```ts twoslash
 // @errors: 2339
@@ -215,18 +215,18 @@ const main = new Elysia()
 
 This is similar to **Dependency Injection** where each instance must declare its dependencies.
 
-This approach force you to be explicit about dependencies allowing better tracking, modularity.
+This approach forces you to be explicit about dependencies, allowing better tracking and modularity.
 
 ### Deduplication <Badge type="warning" text="Important" />
 
 By default, each plugin will be re-executed **every time** applying to another instance.
 
-To prevent this, Elysia can deduplicate lifecycle with **an unique identifier** using `name` and optional `seed` property.
+To prevent this, Elysia can deduplicate lifecycle with **a unique identifier** using `name` and optional `seed` property.
 
 ```ts twoslash
 import { Elysia } from 'elysia'
 
-// `name` is an unique identifier
+// `name` is a unique identifier
 const ip = new Elysia({ name: 'ip' }) // [!code ++]
 	.derive(
 		{ as: 'global' },
@@ -249,30 +249,30 @@ const server = new Elysia()
 	.use(router2)
 ```
 
-Adding the `name` and optional `seed` to the instance will make it a unique identifier prevent it from being called multiple times.
+Adding the `name` and optional `seed` to the instance will make it a unique identifier, preventing it from being called multiple times.
 
 Learn more about this in [plugin deduplication](/essential/plugin.html#plugin-deduplication).
 
 ### Global vs Explicit Dependency
 
-There are some case that global dependency make more sense than an explicit one.
+There are some cases where global dependency makes more sense than an explicit one.
 
 **Global** plugin example:
-- **Plugin that doesn't add types** - eg. cors, compress, helmet
-- Plugin that add global lifecycle that no instance should have control over - eg. tracing, logging
+- **Plugins that don't add types** - eg. cors, compress, helmet
+- Plugins that add global lifecycle that no instance should have control over - eg. tracing, logging
 
 Example use cases:
 - OpenAPI/Open - Global document
 - OpenTelemetry - Global tracer
 - Logging - Global logger
 
-In case like this, it make more sense to create it as global dependency instead of applying it to every instance.
+In cases like this, it makes more sense to create it as global dependency instead of applying it to every instance.
 
 However, if your dependency doesn't fit into these categories, it's recommended to use **explicit dependency** instead.
 
 **Explicit dependency** example:
-- **Plugin that add types** - eg. macro, state, model
-- Plugin that add business logic that instance can interact with - eg. Auth, Database
+- **Plugins that add types** - eg. macro, state, model
+- Plugins that add business logic that an instance can interact with - eg. Auth, Database
 
 Example use cases:
 - State management - eg. Store, Session
@@ -284,7 +284,7 @@ Example use cases:
 
 The order of Elysia's life-cycle code is very important.
 
-Because event will only apply to routes **after** it is registered.
+Because events will only apply to routes **after** they are registered.
 
 If you put the onError before plugin, plugin will not inherit the onError event.
 
@@ -355,7 +355,7 @@ const app = new Elysia()
 See [Best practice: MVC Controller](/essential/best-practice.html#controller).
 
 ### TypeScript
-We can get a type definitions of every Elysia/TypeBox's type by accessing `static` property as follows:
+We can get type definitions for every Elysia/TypeBox type by accessing the `static` property as follows:
 
 ```ts twoslash
 import { t } from 'elysia'
@@ -366,13 +366,13 @@ const MyType = t.Object({
 
 type MyType = typeof MyType.static
 //    ^?
-````
+```
 
 <br>
 <br>
 <br>
 
-This allows Elysia to infer and provide type automatically, reducing the need to declare duplicate schema
+This allows Elysia to infer and provide types automatically, reducing the need to declare duplicate schemas.
 
 A single Elysia/TypeBox schema can be used for:
 - Runtime validation
