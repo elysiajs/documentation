@@ -71,6 +71,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Nice Logger](https://github.com/tanishqmanuja/nice-logger) - not the nicest, but a pretty nice and sweet logger for Elysia
 -   [LogTape for Elysia](https://logtape.org/manual/integrations#elysia) - structured logging middleware with support for multiple sinks (transports) through [LogTape](https://logtape.org/)
 -   [Sentry](https://github.com/johnny-woodtke/elysiajs-sentry) - capture traces and errors with this [Sentry](https://docs.sentry.io/) plugin
+-   [Apitally](https://github.com/apitally/apitally-js) - capture metrics, logs, and traces in [Apitally](https://apitally.io/elysia), a simple API monitoring and analytics tool
 -   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy on AWS Lambda
 -   [Decorators](https://github.com/gaurishhs/elysia-decorators) - use TypeScript decorators
 -   [Autoload](https://github.com/kravetsone/elysia-autoload) - filesystem router based on a directory structure that generates types for [Eden](/eden/overview) with [`Bun.build`](https://github.com/kravetsone/elysia-autoload?tab=readme-ov-file#bun-build-usage) support
