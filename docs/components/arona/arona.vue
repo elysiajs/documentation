@@ -507,7 +507,10 @@
 
                                 <button
                                     class="clicky flex justify-center items-center min-w-10 size-10 disabled:opacity-50 disabled:interact:bg-transparent disabled:interact:scale-100 disabled:cursor-progress rounded-full text-mauve-400 dark:text-mauve-400/70 interact:bg-pink-300/15 dark:interact:bg-pink-200/15 not-disabled:interact:text-pink-500 not-disabled:dark:interact:text-pink-300 focus:ring ring-offset-2 ring-pink-500 !outline-none transition-all ml-auto"
-                                    :disabled="!turnstileToken || !powToken"
+                                    :disabled="
+                                        !isStreaming &&
+                                        (!turnstileToken || !powToken)
+                                    "
                                     :title="
                                         isStreaming
                                             ? 'Elysia chan is thinking...'
@@ -519,7 +522,9 @@
                                                 ? 'Verifying that you are a human...'
                                                 : 'Send message (Cmd/Ctrl + Enter)'
                                     "
-                                    @click="cancelRequest()"
+                                    @click="
+                                        isStreaming ? cancelRequest() : ask()
+                                    "
                                 >
                                     <Square
                                         v-if="isStreaming"
@@ -760,6 +765,11 @@ function startNewChat() {
     history.value = []
     error.value = undefined
     includeCurrentPage.value = false
+
+    trigger([
+        { duration: 80, intensity: 0.8 },
+        { delay: 80, duration: 50, intensity: 0.3 }
+    ])
 }
 
 watch(
@@ -910,6 +920,17 @@ function copyContent(index: number) {
 }
 
 async function ask(input?: string, seed?: number) {
+    if (isStreaming.value || !turnstileToken.value || !powToken.value) return
+
+    const latest = history.value.at(-1)
+    if (input) question.value = input
+    if (!question.value.trim() && latest?.role !== 'user') return
+
+    trigger([{ duration: 30 }, { delay: 60, duration: 40, intensity: 1 }])
+
+    isStreaming.value = true
+    requestSubmit.value = false
+
     let reference = includeCurrentPage.value
         ? 'docs/' +
           location.pathname
@@ -919,20 +940,11 @@ async function ask(input?: string, seed?: number) {
           '.md'
         : undefined
 
-    if (input) question.value = input
     if (
         !reference &&
         (input?.includes('lifecycle') || input?.includes('middleware'))
     )
         reference = 'docs/essential/life-cycle.md'
-
-    const latest = history.value.at(-1)
-
-    if (!question.value.trim() && latest?.role !== 'user') return
-    if (isStreaming.value || !turnstileToken.value || !powToken.value) return
-
-    isStreaming.value = true
-    requestSubmit.value = false
 
     if (latest?.role === 'user')
         question.value = question.value.trim() ? question.value : latest.content
@@ -1034,7 +1046,11 @@ async function ask(input?: string, seed?: number) {
     let content = ''
 
     let scroll = false
-    let isVibrating = false
+    let allowHaptic = true
+    const hapticInterval = setInterval(() => {
+        allowHaptic = true
+    }, 30)
+
     while (true) {
         const { done, value } = await reader.read()
 
@@ -1058,17 +1074,14 @@ async function ask(input?: string, seed?: number) {
         const text = decoder.decode(value)
         content = history.value[index].content += text
 
-        if (!isVibrating) {
-            isVibrating = true
+        if (allowHaptic) {
+            allowHaptic = false
             trigger([{ duration: 15 }], { intensity: 0.4 })
         }
-
-        setTimeout(() => {
-            isVibrating = false
-        }, 20)
     }
 
-    isVibrating = false
+    clearInterval(hapticInterval)
+
     setTimeout(() => {
         trigger([{ duration: 30 }, { delay: 60, duration: 40, intensity: 1 }])
     }, 30)
