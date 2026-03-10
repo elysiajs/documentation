@@ -37,6 +37,7 @@
 		"valibot": "^1.2.0",
 		"vue-renderer-markdown": "^0.0.63-beta.4",
 		"vue3-carousel": "^0.17.0",
+		"web-haptics": "^0.0.6",
 		"zod": "^4.2.1"
 	},
 	"devDependencies": {

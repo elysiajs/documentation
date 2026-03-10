@@ -35,6 +35,7 @@
         "valibot": "^1.2.0",
         "vue-renderer-markdown": "^0.0.63-beta.4",
         "vue3-carousel": "^0.17.0",
+        "web-haptics": "^0.0.6",
         "zod": "^4.2.1",
       },
       "devDependencies": {
@@ -2064,6 +2065,8 @@
     "vue-resize": ["vue-resize@2.0.0-alpha.1", "", { "peerDependencies": { "vue": "^3.0.0" } }, "sha512-7+iqOueLU7uc9NrMfrzbG8hwMqchfVfSzpVlCMeJQe4pyibqyoifDNbKTZvwxZKDvGkB+PdFeKvnGZMoEb8esg=="],
 
     "vue3-carousel": ["vue3-carousel@0.17.0", "", { "peerDependencies": { "vue": "^3.5.0" } }, "sha512-kvb2CRpsEtLGSbiOq/fXfayMJeiwMMjnNSbqWI/Ee7tgfY/ofNanRuhpd7WRVtDdzJY1HvygdLawlBhIyJTM2w=="],
+
+    "web-haptics": ["web-haptics@0.0.6", "", { "peerDependencies": { "react": ">=18", "react-dom": ">=18", "svelte": ">=4", "vue": ">=3" }, "optionalPeers": ["react", "react-dom", "svelte", "vue"] }, "sha512-eCzcf1LDi20+Fr0x9V3OkX92k0gxEQXaHajmhXHitsnk6SxPeshv8TBtBRqxyst8HI1uf2FyFVE7QS3jo1gkrw=="],
 
     "web-namespaces": ["web-namespaces@2.0.1", "", {}, "sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ=="],
 

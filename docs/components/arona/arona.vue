@@ -279,8 +279,8 @@
                                         index === history.length - 1
                                     "
                                 >
-                                    *AI can make mistakes, verify with
-                                    included references
+                                    *AI can make mistakes, verify with included
+                                    references
                                 </p>
 
                                 <aside
@@ -564,13 +564,15 @@ import {
     registerShikiLanguage
 } from 'streamdown-vue'
 import { vConfetti } from '@neoconfetti/vue'
+import { useWebHaptics } from 'web-haptics/vue'
 
 import Tooltip from './tooltip.vue'
-import A from './a.vue'
 import Code from './code.vue'
 import Verifying from './verifying.vue'
 import ErrorMessage from './error-message.vue'
 import Ray from '../fern/ray.vue'
+
+const { trigger } = useWebHaptics()
 
 import {
     X,
@@ -744,6 +746,13 @@ function cancelRequest() {
     controller.abort()
     controller = undefined
     feedback.value = null
+
+    trigger([
+        { duration: 40, intensity: 0.7 },
+        { delay: 40, duration: 40, intensity: 0.7 },
+        { delay: 40, duration: 40, intensity: 0.9 },
+        { delay: 40, duration: 50, intensity: 0.6 }
+    ])
 }
 
 function startNewChat() {
@@ -849,6 +858,11 @@ function regenerate(index?: number) {
     const latestQuestion = history.value[index - 1].content
     history.value.splice(index, 2)
 
+    trigger([
+        { duration: 80, intensity: 0.8 },
+        { delay: 80, duration: 50, intensity: 0.3 }
+    ])
+
     ask(latestQuestion, ~~(Math.random() * 2_000_000))
 }
 
@@ -865,11 +879,17 @@ function scrollToMessage(index: number) {
             `.elysia-chan-${index}`
         ) as HTMLElement | null
 
-        if (box && message)
+        if (box && message) {
+            trigger([
+                { duration: 30 },
+                { delay: 60, duration: 40, intensity: 1 }
+            ])
+
             box.scrollTo({
                 top: message.offsetTop - box.clientHeight / 3,
                 behavior: 'smooth'
             })
+        }
     })
 }
 
@@ -882,6 +902,8 @@ function copyContent(index: number) {
 
     navigator.clipboard.writeText(content)
     copied.value = true
+    trigger([{ duration: 30 }, { delay: 60, duration: 40, intensity: 1 }])
+
     setTimeout(() => {
         copied.value = false
     }, 2000)
@@ -1012,6 +1034,7 @@ async function ask(input?: string, seed?: number) {
     let content = ''
 
     let scroll = false
+    let isVibrating = false
     while (true) {
         const { done, value } = await reader.read()
 
@@ -1034,7 +1057,21 @@ async function ask(input?: string, seed?: number) {
 
         const text = decoder.decode(value)
         content = history.value[index].content += text
+
+        if (!isVibrating) {
+            isVibrating = true
+            trigger([{ duration: 15 }], { intensity: 0.4 })
+        }
+
+        setTimeout(() => {
+            isVibrating = false
+        }, 20)
     }
+
+    isVibrating = false
+    setTimeout(() => {
+        trigger([{ duration: 30 }, { delay: 60, duration: 40, intensity: 1 }])
+    }, 30)
 
     const separator = '---Elysia-Metadata---'
     const separatorIndex = content.indexOf(separator)
