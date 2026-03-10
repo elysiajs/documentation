@@ -123,6 +123,48 @@ Constructing a `new Response` object can be relatively expensive but for `new Re
 
 When `set` or `status` is not used, Elysia will use `mapCompactResponse` to map a value directly to a `Response` object without the overhead of additional properties.
 
+### Example: Specialized Response Mapping
+
+Both `mapResponse` and `mapCompactResponse` are generic functions that handle every possible return type — String, Object, Array, Response, Blob, File, ReadableStream, Error, Promise, Generator, FormData, Cookie, ElysiaCustomStatusResponse, and more. That's 10+ type checks on every single response.
+
+When a route declares a response schema, the return type is already known at compile time:
+
+```ts
+app.get('/user', () => ({ name: 'Elysia' }), {
+    response: t.Object({ name: t.String() })
+})
+```
+
+After validation passes, we **know** the response is a plain Object. There's no reason to check if it's a Blob, a ReadableStream, or an Error.
+
+The compiler detects the TypeBox schema `Kind` and generates a specialized fast path that skips the generic dispatch entirely:
+
+::: code-group
+
+```ts [Generic (before)]
+// Every response goes through 10+ type checks
+return mapResponse(r, c.set)
+```
+
+```ts [Specialized (after)]
+// Direct construction — zero type checks for the expected case
+return r !== null && r !== undefined && r.constructor === Object
+    ? Response.json(r, c.set)  // fast path
+    : mapResponse(r, c.set)    // fallback for edge cases
+```
+
+:::
+
+The type guard ensures correctness: if a `mapResponse` hook or `afterHandle` changes the return type unexpectedly, the guard fails and falls through to the generic path. Zero behavioral regression risk.
+
+This matters because of how JavaScript engines optimize code. V8 and JavaScriptCore use **inline caches** to speed up property access and function calls. When the same type always flows through a call site (monomorphic), the engine can optimize it aggressively. The generic `mapResponse` receives every possible type (megamorphic) which prevents this optimization. Specialized code creates monomorphic sites that the engine can optimize.
+
+Each adapter generates the appropriate code for its platform:
+- **Bun** uses `Response.json()` for Object/Array which is a native fast path
+- **Web Standard** uses `new Response(JSON.stringify(...))` with appropriate content-type headers
+
+Specialization is only applied when it's safe to do so — it's disabled for streams, when `mapResponse` hooks are present, for Union/Intersect types, for multiple status codes, and for Standard Schema validators.
+
 ## Platform Specific Optimization
 
 Elysia is originally made specifically for Bun but also works on [Node.js](/integrations/node), [Deno](/integrations/deno), [Cloudflare Workers](/integrations/cloudflare-workers) and more.
