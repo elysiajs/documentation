@@ -138,7 +138,7 @@ import type { AuthModel } from './model'
 // If a class doesn't need to store a property,
 // you can use an `abstract class` to avoid class allocation
 export abstract class Auth {
-	static async signIn({ username, password }: AuthModel.signInBody) {
+	static async signIn({ username, password }: AuthModel['signInBody']) {
 		const user = await sql`
 			SELECT password
 			FROM users
@@ -149,7 +149,7 @@ export abstract class Auth {
 			// You can throw an HTTP error directly
 			throw status(
 				400,
-				'Invalid username or password' satisfies AuthModel.signInInvalid
+				'Invalid username or password' satisfies AuthModel['signInInvalid']
 			)
 
 		return {
@@ -164,7 +164,7 @@ export abstract class Auth {
 // Model define the data structure and validation for the request and response
 import { t, type UnwrapSchema } from 'elysia'
 
-const AuthModel = {
+export const AuthModel = {
 	signInBody: t.Object({
 		username: t.String(),
 		password: t.String(),
