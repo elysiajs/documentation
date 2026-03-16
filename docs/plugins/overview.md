@@ -138,6 +138,10 @@ Here are some of the official plugins maintained by the Elysia team:
 
 -   [prismabox](https://github.com/m1212e/prismabox) - Generator for TypeBox schemas based on your database models, works well with Elysia
 
+## Project templates:
+
+-   [ElysiaTemplate](https://github.com/QLing-yes/ElysiaTemplate) - MVC backend, auto route & middleware, more coming.
+
 ---
 
 If you have a plugin written for Elysia, feel free to add your plugin to the list by **clicking <i>Edit this page on GitHub</i>** below 👇
