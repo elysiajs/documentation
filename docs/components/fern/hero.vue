@@ -229,7 +229,7 @@
             :class="kawaii ? 'md:flex max-w-5xl md:max-h-[min(calc(100vh-64px),2100px)]' : 'hidden'"
         >
 	        <img
-	            src="/assets/elysia-chan-rev-2-preview.webp"
+	            src="/illust/ely/rev2/elysia-chan-rev-2-preview.webp"
          		class="w-full md:scale-105 md:-translate-x-[10%] object-contain md:object-cover select-none pointer-events-none"
          		style="object-position: 50% 2vh;"
 	        />

@@ -62,7 +62,7 @@
                 }"
             >
                 <Card>
-                    <img src="/assets/elysia-chan-card.webp" />
+                    <img src="/illust/ely/rev2/elysia-chan-card.webp" />
                 </Card>
             </motion.div>
         </div>

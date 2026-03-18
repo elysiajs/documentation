@@ -51,7 +51,7 @@
                             <div
                                 class="absolute w-full h-full opacity-5 sm:opacity-10 sm:dark:opacity-8 bg-no-repeat pointer-events-none -scale-x-100"
                                 style="
-                                    background-image: url('/assets/elysia-chan-rev-2.webp');
+                                    background-image: url('/illust/ely/rev2/elysia-chan-rev-2.webp');
                                     background-size: 640px;
                                     background-position: top 0 left -272px;
                                 "
