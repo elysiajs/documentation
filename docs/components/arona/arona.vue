@@ -1086,7 +1086,7 @@ async function ask(input?: string, seed?: number) {
         trigger([{ duration: 30 }, { delay: 60, duration: 40, intensity: 1 }])
     }, 30)
 
-    const separator = '---Elysia-Metadata---'
+    const separator = '\n---Elysia-Metadata---'
     const separatorIndex = content.indexOf(separator)
 
     if (separatorIndex !== -1) {
