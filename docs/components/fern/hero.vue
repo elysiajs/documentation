@@ -252,21 +252,21 @@ const toggleKawaii = () => {
     // localStorage.setItem('kawaii', kawaii.value + '')
 }
 
-onMounted(() => {
-    const search = window.location.search
+// onMounted(() => {
+//     const search = window.location.search
 
-    if (search.includes('kawaii=true') || search.includes('uwu=true')) {
-        localStorage.setItem('kawaii', 'true')
-        return (kawaii.value = true)
-    }
+//     if (search.includes('kawaii=true') || search.includes('uwu=true')) {
+//         localStorage.setItem('kawaii', 'true')
+//         return (kawaii.value = true)
+//     }
 
-    if (search.includes('kawaii=false') || search.includes('uwu=false')) {
-        localStorage.setItem('kawaii', 'false')
-        return (kawaii.value = false)
-    }
+//     if (search.includes('kawaii=false') || search.includes('uwu=false')) {
+//         localStorage.setItem('kawaii', 'false')
+//         return (kawaii.value = false)
+//     }
 
-    if (localStorage.getItem('kawaii') === 'true') return (kawaii.value = true)
-})
+//     if (localStorage.getItem('kawaii') === 'true') return (kawaii.value = true)
+// })
 
 const copied = ref(false)
 watch(copied, (value) => {
