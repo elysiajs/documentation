@@ -67,7 +67,7 @@
                     class="appearance-none rounded-lg interact:bg-violet-500/7.5 px-0.5 transition-colors duration-100 text-left"
                     @click="toggleKawaii"
                 >
-                    {{ kawaii ? 'Humans & Fox Girls' : 'Humans' }}
+                    {{ kawaii ? 'Fox Girls' : 'Fox Girls' }}
                     <span
                         class="absolute w-10 md:w-12 h-10 md:h-12 bottom-0 mb-4 ml-2 md:ml-0 md:mb-10 text-indigo-400 transition-all"
                         :class="
@@ -245,11 +245,11 @@ import { onMounted, ref, watch } from 'vue'
 
 import Ray from './ray.vue'
 
-const kawaii = ref(false)
+const kawaii = ref(true)
 const toggleKawaii = () => {
-    kawaii.value = !kawaii.value
+    // kawaii.value = !kawaii.value
 
-    localStorage.setItem('kawaii', kawaii.value + '')
+    // localStorage.setItem('kawaii', kawaii.value + '')
 }
 
 onMounted(() => {
