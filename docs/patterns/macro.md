@@ -137,7 +137,7 @@ Macro can also register a new property to the context, allowing us to access the
 
 The field can accept anything ranging from string to function, allowing us to create a custom life cycle event.
 
-::: note
+::: tip NOTE
 **macro** will be executed in order from top-to-bottom according to the definition in the hook, ensuring that the stack is handled in the correct order.
 :::-->
 
