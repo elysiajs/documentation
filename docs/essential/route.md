@@ -394,11 +394,11 @@ new Elysia()
 | /id/anything/rest      | anything/rest |-->
 
 ## Path priority
-Elysia has path priorities as follows:
+Elysia resolves routes **segment by segment**, applying the following priority at each segment:
 
-1. static paths
-2. dynamic paths
-3. wildcards
+1. **static** segments — exact string matches
+2. **dynamic** segments — parameter matches (`:name`)
+3. **wildcards** — catch-all matches (`*`)
 
 If both a static and a dynamic path are present, Elysia will resolve the static path rather than the dynamic path.
 
@@ -424,6 +424,61 @@ new Elysia()
     }
   }"
 />
+
+Because resolution is per-segment, a route with more specific segments wins even if another route has fewer segments. A wildcard only matches when no dynamic or static segment can:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/api/:a/:b', () => 'multi dynamic')
+    .get('/api/*', () => 'wildcard')
+    .listen(3000)
+```
+
+| Path       | Result        |
+| ---------- | ------------- |
+| /api/x/y   | multi dynamic |
+| /api/x/y/z | wildcard      |
+| /api/x     | wildcard      |
+
+Here `/api/x/y` matches the two-segment dynamic route because `:a` and `:b` are each more specific than `*`. But `/api/x/y/z` has three segments after `/api`, which the two-parameter route can't match, so the wildcard catches it.
+
+Similarly, a route with a static prefix beats a dynamic one at that segment:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/api/v1/:id', () => 'static+dynamic')
+    .get('/api/:version/:id', () => 'double dynamic')
+    .listen(3000)
+```
+
+| Path         | Result          |
+| ------------ | --------------- |
+| /api/v1/123  | static+dynamic  |
+| /api/v2/123  | double dynamic  |
+
+Because segments are resolved **left to right**, an earlier segment's match determines the route before later segments are considered:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/api/hello/*', () => 'static+wildcard')
+    .get('/api/:id/hello', () => 'dynamic+static')
+    .listen(3000)
+```
+
+| Path              | Result           |
+| ----------------- | ---------------- |
+| /api/hello/hello   | static+wildcard  |
+| /api/hello/other   | static+wildcard  |
+| /api/other/hello   | dynamic+static   |
+| /api/hello/a/b     | static+wildcard  |
+
+At the second segment, `hello` (static) beats `:id` (dynamic), so `/api/hello/...` always resolves to the first route — even though the second route has a more specific static segment at position 3. The router commits to the static match at segment 2 and never considers later segments of alternative routes.
 
 ## HTTP Verb
 
@@ -532,9 +587,56 @@ Any HTTP method that matches the path, will be handled as follows:
 | / | DELETE | hi |
 
 #### Method priority
-Elysia always resolves routes registered with a specific HTTP method (GET, POST, etc.) before routes registered with `all`, even if the `all` route has a more specific path.
+When both specific HTTP methods (GET, POST, etc.) and `all` are registered, Elysia resolves routes in three steps:
 
-Internally, Elysia looks up routes by the request's exact method first. Only when no matching route is found for that method does it fall back to routes registered with `all`. This means **method specificity takes precedence over path specificity** when comparing specific methods against `all`.
+1. **Static routes are checked first**, across all methods. If a static route matches the request path, it is used — regardless of whether it was registered with a specific method or `all`. Within the same static path, specific methods take priority over `all`.
+
+2. **For non-static routes, the router looks up the request's exact method first**, applying [path priority](#path-priority) (per-segment: static > dynamic > wildcard) among only routes registered with that method. If any route matches, it is used.
+
+3. **Only if no specific-method route matched**, the router falls back to `all` routes and applies path priority among them.
+
+This means registration order does not matter — the same route wins regardless of which was registered first.
+
+##### Step 1: Static routes win across methods
+
+A static `all` route will match before a dynamic or wildcard specific-method route:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .all('/api/users', () => 'all handler')
+    .get('/api/:resource', () => 'GET dynamic')
+    .get('/*', () => 'GET wildcard')
+    .listen(3000)
+```
+
+| Path       | Method | Result       |
+| ---------- | ------ | ------------ |
+| /api/users | GET    | all handler  |
+| /api/users | POST   | all handler  |
+| /api/other | GET    | GET dynamic  |
+| /other     | GET    | GET wildcard |
+
+But if a specific method is registered on the **same static path**, it takes priority:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .all('/api', () => 'all handler')
+    .get('/api', () => 'GET handler')
+    .listen(3000)
+```
+
+| Path | Method | Result      |
+| ---- | ------ | ----------- |
+| /api | GET    | GET handler |
+| /api | POST   | all handler |
+
+##### Step 2: Specific method lookup with path priority
+
+For non-static routes, the router searches for a match using only routes registered with the request's exact method. Path priority applies normally within this lookup:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -551,9 +653,9 @@ new Elysia()
 | /api/x | POST   | all handler |
 | /api/x | PUT    | all handler |
 
-This applies regardless of registration order — even if `all` is registered before `get`, the GET request still resolves to the specific handler.
+##### Step 3: Fallback to ALL
 
-Because `all` routes are only consulted as a fallback, a broad specific-method route will match before a narrow `all` route:
+Because `all` routes are only consulted as a fallback, a broad specific-method route will match before a narrower `all` route:
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -564,16 +666,37 @@ new Elysia()
     .listen(3000)
 ```
 
-| Path    | Method | Result       |
-| ------- | ------ | ------------ |
-| /api/x  | GET    | SPA fallback |
-| /api/x  | POST   | API proxy    |
-| /other  | GET    | SPA fallback |
+| Path   | Method | Result       |
+| ------ | ------ | ------------ |
+| /api/x | GET    | SPA fallback |
+| /api/x | POST   | API proxy    |
+| /other | GET    | SPA fallback |
 
-Here `GET /api/x` matches `GET /*` rather than `ALL /api/*`, because the router finds a match for the GET method and never falls back to `all`. This behavior is the same on both the Bun and Node.js runtimes.
+Here `GET /api/x` matches `GET /*` rather than `ALL /api/*`, because step 2 finds a match for the GET method and the router never reaches step 3.
 
-#### Mount uses ALL
-[`.mount()`](/patterns/mount) registers its routes using the ALL method internally. This means mounted routes follow the same method priority rules — any specific-method route will take precedence over a mounted handler.
+This applies regardless of how specific the `all` route is — multi-segment dynamic or mixed dynamic+wildcard `all` routes are still only checked as a fallback:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .all('/api/:group/:id', () => 'all handler')
+    .all('/api/:group/*', () => 'all wildcard')
+    .get('/*', () => 'GET wildcard')
+    .listen(3000)
+```
+
+| Path       | Method | Result       |
+| ---------- | ------ | ------------ |
+| /api/a/b   | GET    | GET wildcard |
+| /api/a/b   | POST   | all handler  |
+| /api/a/b/c | GET    | GET wildcard |
+| /api/a/b/c | POST   | all wildcard |
+
+This behavior is the same on both the Bun and Node.js runtimes.
+
+#### Mount routes are included in the ALL fallback
+[`.mount()`](/patterns/mount) registers its routes using the ALL method internally, with a wildcard path. This means mounted routes are only consulted in step 3 — the ALL fallback — and any specific-method route that matches in step 2 will take precedence.
 
 ```typescript
 import { Elysia } from 'elysia'
@@ -588,13 +711,13 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-| Path       | Method | Result       |
-| ---------- | ------ | ------------ |
-| /api/hello | GET    | SPA fallback |
+| Path       | Method | Result          |
+| ---------- | ------ | --------------- |
+| /api/hello | GET    | SPA fallback    |
 | /api/hello | POST   | Hello from Hono |
-| /other     | GET    | SPA fallback |
+| /other     | GET    | SPA fallback    |
 
-Even though the Hono handler defines a GET route for `/api/hello`, the mount registers it as ALL from Elysia's perspective. The `GET /*` route matches first for GET requests, and the mounted handler is never consulted.
+Even though the Hono handler defines a GET route for `/api/hello`, the mount registers it as an ALL wildcard from Elysia's perspective. In step 2, the router finds `GET /*` and returns it — the mounted handler in step 3 is never consulted for GET requests.
 
 #### Instance hierarchy does not affect priority
 Method priority is determined by the router at request time, not by how Elysia instances are composed. Routes from child instances registered with `.use()`, `.group()`, or `prefix` are merged into the same router as the parent. The nesting structure does not change which route wins.
