@@ -531,6 +531,99 @@ Any HTTP method that matches the path, will be handled as follows:
 | / | POST | hi |
 | / | DELETE | hi |
 
+#### Method priority
+Elysia always resolves routes registered with a specific HTTP method (GET, POST, etc.) before routes registered with `all`, even if the `all` route has a more specific path.
+
+Internally, Elysia looks up routes by the request's exact method first. Only when no matching route is found for that method does it fall back to routes registered with `all`. This means **method specificity takes precedence over path specificity** when comparing specific methods against `all`.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .all('/api/*', () => 'all handler')
+    .get('/api/*', () => 'GET handler')
+    .listen(3000)
+```
+
+| Path   | Method | Result      |
+| ------ | ------ | ----------- |
+| /api/x | GET    | GET handler |
+| /api/x | POST   | all handler |
+| /api/x | PUT    | all handler |
+
+This applies regardless of registration order — even if `all` is registered before `get`, the GET request still resolves to the specific handler.
+
+Because `all` routes are only consulted as a fallback, a broad specific-method route will match before a narrow `all` route:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .all('/api/*', () => 'API proxy')
+    .get('/*', () => 'SPA fallback')
+    .listen(3000)
+```
+
+| Path    | Method | Result       |
+| ------- | ------ | ------------ |
+| /api/x  | GET    | SPA fallback |
+| /api/x  | POST   | API proxy    |
+| /other  | GET    | SPA fallback |
+
+Here `GET /api/x` matches `GET /*` rather than `ALL /api/*`, because the router finds a match for the GET method and never falls back to `all`. This behavior is the same on both the Bun and Node.js runtimes.
+
+#### Mount uses ALL
+[`.mount()`](/patterns/mount) registers its routes using the ALL method internally. This means mounted routes follow the same method priority rules — any specific-method route will take precedence over a mounted handler.
+
+```typescript
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const hono = new Hono()
+    .get('/hello', (c) => c.text('Hello from Hono'))
+
+const app = new Elysia()
+    .mount('/api', hono.fetch)
+    .get('/*', () => 'SPA fallback')
+    .listen(3000)
+```
+
+| Path       | Method | Result       |
+| ---------- | ------ | ------------ |
+| /api/hello | GET    | SPA fallback |
+| /api/hello | POST   | Hello from Hono |
+| /other     | GET    | SPA fallback |
+
+Even though the Hono handler defines a GET route for `/api/hello`, the mount registers it as ALL from Elysia's perspective. The `GET /*` route matches first for GET requests, and the mounted handler is never consulted.
+
+#### Instance hierarchy does not affect priority
+Method priority is determined by the router at request time, not by how Elysia instances are composed. Routes from child instances registered with `.use()`, `.group()`, or `prefix` are merged into the same router as the parent. The nesting structure does not change which route wins.
+
+```typescript
+import { Elysia } from 'elysia'
+
+const api = new Elysia({ prefix: '/api' })
+    .all('/*', () => 'API proxy')
+
+const app = new Elysia()
+    .use(api)
+    .get('/*', () => 'SPA fallback')
+    .listen(3000)
+```
+
+| Path   | Method | Result       |
+| ------ | ------ | ------------ |
+| /api/x | GET    | SPA fallback |
+| /api/x | POST   | API proxy    |
+
+The `ALL /api/*` route from the child plugin does not gain any precedence by being in a separate instance. The same priority rules apply as if all routes were registered on a single Elysia instance.
+
+::: tip
+Be mindful of this when combining SPA fallback patterns with API routes or mounted frameworks. If you register `app.get('/*', spaHandler)` alongside `app.all('/api/*', proxyHandler)` or `app.mount('/api', handler)`, GET requests to `/api/*` will be handled by the SPA fallback, not the proxy — which is likely not what you intended.
+
+To avoid this, register API routes with specific methods instead of `all`, or use lifecycle hooks and guards to control routing.
+:::
+
 ## Handle
 
 Most developers use REST clients like Postman, Insomnia or Hoppscotch to test their API.
