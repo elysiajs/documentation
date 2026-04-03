@@ -69,7 +69,8 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  // Note: In Prisma 7+, the URL is passed via adapter in PrismaClient constructor
+  // Note: In Prisma 7+, datasource URL is configured in prisma.config.ts (for Prisma CLI),
+  // and when using driver adapters you also pass the runtime URL in adapter setup.
 }
 
 generator prismabox { // [!code ++]
