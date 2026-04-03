@@ -120,7 +120,7 @@ import { PrismaBunSqlite } from 'prisma-adapter-bun-sqlite';
 import { PrismaClient } from '../generated/prisma/client' // [!code ++]
 import { UserPlain, UserPlainInputCreate } from '../generated/prismabox/User' // [!code ++]
 
-const adapter = new PrismaBunSqlite({ url: process.env.DATABASE_URL || "file:./dev.db" });
+const adapter = new PrismaBunSqlite({ url: process.env.DATABASE_URL });
 export const prisma = new PrismaClient({ adapter });
 
 const app = new Elysia()
