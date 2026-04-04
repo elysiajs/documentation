@@ -373,13 +373,13 @@ import { Elysia } from 'elysia'
 
 new Elysia({
 	serve: {
-		// Increase idle timeout to 30 seconds
-		idleTimeout: 30
+		// Increase idle timeout to 60 seconds
+		idleTimeout: 60
 	}
 })
 ```
 
-By default the idle timeout is 10 seconds (on Bun).
+By default the idle timeout is 30 seconds.
 
 ---
 
@@ -401,9 +401,9 @@ Uniquely identify a server instance with an ID
 This string will be used to hot reload the server without interrupting pending requests or websockets. If not provided, a value will be generated. To disable hot reloading, set this value to `null`.
 
 ### serve.idleTimeout
-@default `10` (10 seconds)
+@default `30` (30 seconds)
 
-By default, Bun sets idle timeout to 10 seconds, which means that if a request is not completed within 10 seconds, it will be aborted.
+By default, Elysia sets idle timeout to 30 seconds, which means that if a request is not completed within 30 seconds, it will be aborted.
 
 ### serve.maxRequestBodySize
 @default `1024 * 1024 * 128` (128MB)
