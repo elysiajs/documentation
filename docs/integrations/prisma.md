@@ -50,7 +50,7 @@ We can use Prismabox to convert Prisma schema into Elysia validation models, whi
 To install Prisma, run the following command:
 
 ```bash
-bun add @prisma/client prismabox && \
+bun add @prisma/client prismabox prisma-adapter-bun-sqlite && \
 bun add -d prisma
 ```
 
@@ -69,7 +69,8 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  // Note: In Prisma 7+, datasource URL is configured in prisma.config.ts (for Prisma CLI),
+  // and when using driver adapters you also pass the runtime URL in adapter setup.
 }
 
 generator prismabox { // [!code ++]
@@ -115,10 +116,12 @@ Then we can import the generated models in our Elysia application:
 ```ts [src/index.ts]
 import { Elysia, t } from 'elysia'
 
-import { PrismaClient } from '../generated/prisma' // [!code ++]
+import { PrismaBunSqlite } from 'prisma-adapter-bun-sqlite';
+import { PrismaClient } from '../generated/prisma/client' // [!code ++]
 import { UserPlain, UserPlainInputCreate } from '../generated/prismabox/User' // [!code ++]
 
-const prisma = new PrismaClient()
+const adapter = new PrismaBunSqlite({ url: process.env.DATABASE_URL });
+export const prisma = new PrismaClient({ adapter });
 
 const app = new Elysia()
     .put(
