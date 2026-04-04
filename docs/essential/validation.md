@@ -48,7 +48,7 @@ const demo2 = new Elysia()
 const demo3 = new Elysia()
  	.guard({
         query: t.Object({
-            name: t.Number()
+            id: t.Number()
         })
     })
     .get('/query?id=1', ({ query: { id } }) => id)
@@ -402,7 +402,7 @@ new Elysia()
 
 
 		query: t.Object({ // [!code ++]
-			name: t.Number() // [!code ++]
+			id: t.Number() // [!code ++]
 		}) // [!code ++]
 	})
 	.listen(3000)
