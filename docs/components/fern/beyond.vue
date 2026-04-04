@@ -168,7 +168,7 @@ function move(event: MouseEvent) {
 
     const _left = (mouseX / rect.width) * 100
 
-    left.value = _left
+    left.value = Math.max(0, Math.min(100, _left))
 }
 </script>
 
