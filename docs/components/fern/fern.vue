@@ -17,13 +17,10 @@ import Sponsors from './sponsor.vue'
 import Banner from './banner.vue'
 import BuiltWithLove from './built-with-love.vue'
 import AskElysia from './ask-elysia.vue'
-import Teapot from './teapot.vue'
-import ElysiaChan from '../xiao/elysia-chan/elysia-chan.vue'
+// import Teapot from './teapot.vue'
 </script>
 
 <template>
-	<ElysiaChan />
-
     <div id="landing" class="dark:bg-mauve-900/60">
         <Hero />
         <Note />
@@ -94,7 +91,7 @@ import ElysiaChan from '../xiao/elysia-chan/elysia-chan.vue'
             <!-- <Future /> -->
 
             <AskElysia />
-            <Teapot />
+            <!-- <Teapot /> -->
             <Banner class="mt-10" />
             <BuiltWithLove />
         </article>

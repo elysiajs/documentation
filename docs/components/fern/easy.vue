@@ -26,7 +26,7 @@ const flyIn = useFlyIn(isInView)
                         class="text-6xl font-semibold text-gradient from-rose-400 to-pink-300 leading-[4.25rem]"
                         v-bind="flyIn(0.1)"
                     >
-                        Design for Vixens
+                        Design for Humans
                     </motion.h2>
                 </div>
                 <motion.p class="max-w-md leading-normal" v-bind="flyIn(0.2)">

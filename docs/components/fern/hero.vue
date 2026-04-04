@@ -67,7 +67,7 @@
                     class="appearance-none rounded-lg interact:bg-violet-500/7.5 px-0.5 transition-colors duration-100 text-left"
                     @click="toggleKawaii"
                 >
-                    {{ kawaii ? 'Fox Girls' : 'Fox Girls' }}
+                    {{ kawaii ? 'Humans & Fox Girls' : 'Humans' }}
                     <span
                         class="absolute w-10 md:w-12 h-10 md:h-12 bottom-0 mb-4 ml-2 md:ml-0 md:mb-10 text-indigo-400 transition-all"
                         :class="
@@ -245,28 +245,28 @@ import { onMounted, ref, watch } from 'vue'
 
 import Ray from './ray.vue'
 
-const kawaii = ref(true)
+const kawaii = ref(false)
 const toggleKawaii = () => {
-    // kawaii.value = !kawaii.value
+    kawaii.value = !kawaii.value
 
-    // localStorage.setItem('kawaii', kawaii.value + '')
+    localStorage.setItem('kawaii', kawaii.value + '')
 }
 
-// onMounted(() => {
-//     const search = window.location.search
+onMounted(() => {
+    const search = window.location.search
 
-//     if (search.includes('kawaii=true') || search.includes('uwu=true')) {
-//         localStorage.setItem('kawaii', 'true')
-//         return (kawaii.value = true)
-//     }
+     if (search.includes('kawaii=true') || search.includes('uwu=true')) {
+         localStorage.setItem('kawaii', 'true')
+         return (kawaii.value = true)
+     }
 
-//     if (search.includes('kawaii=false') || search.includes('uwu=false')) {
-//         localStorage.setItem('kawaii', 'false')
-//         return (kawaii.value = false)
-//     }
+     if (search.includes('kawaii=false') || search.includes('uwu=false')) {
+         localStorage.setItem('kawaii', 'false')
+         return (kawaii.value = false)
+     }
 
-//     if (localStorage.getItem('kawaii') === 'true') return (kawaii.value = true)
-// })
+    if (localStorage.getItem('kawaii') === 'true') return (kawaii.value = true)
+})
 
 const copied = ref(false)
 watch(copied, (value) => {
