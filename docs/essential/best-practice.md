@@ -191,7 +191,7 @@ Each file has its own responsibility:
 
 Feel free to adapt this structure to your needs and use any coding pattern you prefer.
 
-::: note
+::: tip
 You may get a warning when using `cookie.name` as it might be `undefined` depending on your TypeScript configuration.
 
 Elysia cookie can never be `undefined` because it's a Proxy object. `cookie` is always defined, only its value (via cookie.value) can be undefined.
