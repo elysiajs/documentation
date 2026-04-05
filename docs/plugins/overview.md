@@ -79,6 +79,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [XML](https://github.com/kravetsone/elysia-xml) - allows you to work with XML
 -   [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - filesystem routes
 -   [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - filesystem and folder-based router for groups
+-   [Atlas](https://github.com/elcharitas/elysia-atlas) - Deep folder-based routes
 -   [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - basic HTTP authentication
 -   [Body Limit](https://github.com/hexadecimal233/elysia-body-limit) - limit body sizes in Elysia
 -   [ETag](https://github.com/bogeychan/elysia-etag) - automatic HTTP [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) generation
