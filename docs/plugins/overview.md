@@ -44,6 +44,7 @@ Here are some of the official plugins maintained by the Elysia team:
 ## Community plugins
 
 -   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - scaffold your Elysia project with the environment easily (help with ORM, Linters and Plugins)!
+-   [@8monkey/elysia-mcp](https://github.com/8monkey-ai/elysia-mcp) - turn existing Elysia routes into MCP tools without duplicating schemas or handlers.
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication that is simple and clean
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
 -   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node.js and Deno
