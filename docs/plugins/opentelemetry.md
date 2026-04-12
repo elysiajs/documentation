@@ -205,10 +205,3 @@ opentelemetry({
 	recordBody: { request: true }
 })
 ```
-
-## Always-on attributes
-
-The following standard [OpenTelemetry HTTP semantic convention](https://opentelemetry.io/docs/specs/semconv/http/http-spans/) attributes are **always emitted** when their respective headers are present, and do not require any configuration:
-
-- `user_agent.original` — from the `User-Agent` request header
-- `http.request_content_length` — from the `Content-Length` request header
