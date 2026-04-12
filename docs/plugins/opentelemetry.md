@@ -123,3 +123,114 @@ If an exporter OR span processor is not configured programmatically, this packag
 
 ### spanLimits - SpanLimits
 Configure tracing parameters. These are the same trace parameters used to configure a tracer.
+
+### checkIfShouldTrace - (req: Request) => boolean
+Optional function to determine whether a given request should be traced.
+
+```typescript
+opentelemetry({
+	checkIfShouldTrace: (req) => !req.url.includes('/health')
+})
+```
+
+### headersToSpanAttributes
+HTTP header names (case-insensitive) to capture as span attributes.
+
+```typescript
+headersToSpanAttributes?: {
+	requestHeaders?: string[]
+	responseHeaders?: string[]
+}
+```
+
+- Header names are **case-insensitive**.
+- Use `"*"` in either list to capture **all** headers — useful for development but may include sensitive values.
+- Including `"cookie"` in `requestHeaders` also emits `http.request.cookie` when `context.cookie` is present.
+
+default: `undefined` (no headers recorded)
+
+::: warning
+This is a **breaking change** from previous versions where all headers were recorded by default. To restore the old behavior, use:
+
+```typescript
+opentelemetry({
+	headersToSpanAttributes: {
+		requestHeaders: ['*'],
+		responseHeaders: ['*']
+	}
+})
+```
+:::
+
+**Example: capture specific headers**
+
+```typescript
+opentelemetry({
+	headersToSpanAttributes: {
+		requestHeaders: ['content-type', 'accept', 'x-request-id'],
+		responseHeaders: ['content-type']
+	}
+})
+```
+
+### spanUrlRedaction
+Redact credentials and sensitive query parameter values from `url.full` and `url.query` span attributes.
+
+```typescript
+spanUrlRedaction?: false | {
+	stripCredentials?: boolean
+	sensitiveQueryParams?: string[]
+}
+```
+
+- **Default (omitted):** redacts values of known sensitive query keys (`token`, `password`, `secret`, `api_key`, etc.) to `[REDACTED]`, and strips `user:pass@` credentials from `url.full`.
+- `false`: disables all URL redaction (raw URLs recorded as-is).
+- `{ stripCredentials: false }`: keeps credentials in URLs while still redacting sensitive query params.
+- `{ sensitiveQueryParams: ['my-key'] }`: adds custom keys to the builtin set.
+
+default: enabled (redacts sensitive query params and strips credentials)
+
+**Example: add custom sensitive params**
+
+```typescript
+opentelemetry({
+	spanUrlRedaction: {
+		sensitiveQueryParams: ['session_token', 'private_key']
+	}
+})
+```
+
+### recordBody
+Record request and/or response body content on spans.
+
+```typescript
+recordBody?: boolean | {
+	request?: boolean
+	response?: boolean
+}
+```
+
+- `true`: record both request and response bodies (`http.request.body`, `http.response.body`, and their `.size` counterparts).
+- `{ request: true }` or `{ response: true }`: record only one side.
+- `false` / omitted: no body content recorded.
+
+default: `false`
+
+::: warning
+Body recording can produce large span attributes. Use selectively, especially in production environments.
+:::
+
+**Example: record request bodies only**
+
+```typescript
+opentelemetry({
+	recordBody: { request: true }
+})
+```
+
+## Always-on attributes
+
+The following standard [OpenTelemetry HTTP semantic convention](https://opentelemetry.io/docs/specs/semconv/http/http-spans/) attributes are **always emitted** when their respective headers are present, and do not require any configuration:
+
+- `user_agent.original` — from the `User-Agent` request header
+- `http.request_content_length` — from the `Content-Length` request header

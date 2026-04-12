@@ -152,6 +152,90 @@ function utility() {
 
 This is a syntax sugar for `getCurrentSpan().setAttributes`
 
+## Privacy and span attributes
+
+By default the plugin follows the [OpenTelemetry HTTP semantic conventions](https://opentelemetry.io/docs/specs/semconv/http/http-spans/) guidance: no request or response headers are recorded, sensitive query parameters and URL credentials are redacted, and body content is omitted.
+
+### Controlling which headers appear in spans
+
+Pass `headersToSpanAttributes` to opt-in to recording specific request or response headers:
+
+```typescript
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysiajs/opentelemetry'
+
+new Elysia().use(
+	opentelemetry({
+		headersToSpanAttributes: {
+			requestHeaders: ['content-type', 'x-request-id'],
+			responseHeaders: ['content-type']
+		}
+	})
+)
+```
+
+Use `['*']` to capture all headers (handy during development):
+
+```typescript
+opentelemetry({
+	headersToSpanAttributes: {
+		requestHeaders: ['*']
+	}
+})
+```
+
+::: tip Migration
+Previous versions recorded every header by default. If you are upgrading and need the old behavior, set `requestHeaders: ['*']` and `responseHeaders: ['*']`.
+:::
+
+### URL redaction
+
+URL redaction is enabled by default. Known sensitive query keys such as `token`, `password`, `secret`, `api_key` and others are replaced with `[REDACTED]`, and `user:pass@` credentials are stripped from `url.full`.
+
+You can add your own keys or disable redaction entirely:
+
+```typescript
+// Add custom sensitive keys
+opentelemetry({
+	spanUrlRedaction: {
+		sensitiveQueryParams: ['session_token']
+	}
+})
+
+// Disable redaction (not recommended in production)
+opentelemetry({
+	spanUrlRedaction: false
+})
+```
+
+### Recording request and response bodies
+
+Body content is not recorded by default. Opt in with `recordBody`:
+
+```typescript
+// Record both request and response bodies
+opentelemetry({
+	recordBody: true
+})
+
+// Record only request bodies
+opentelemetry({
+	recordBody: { request: true }
+})
+```
+
+Body serialization is wrapped in a try/catch so circular structures or BigInt values produce `[Unserializable]` instead of crashing the tracing path.
+
+### Skipping traces for specific requests
+
+Use `checkIfShouldTrace` to skip tracing for health checks, readiness probes, or other endpoints you don't want to trace:
+
+```typescript
+opentelemetry({
+	checkIfShouldTrace: (req) => !req.url.includes('/health')
+})
+```
+
 ## Configuration
 
 See [opentelemetry plugin](/plugins/opentelemetry) for configuration option and definition.
