@@ -154,7 +154,7 @@ This is a syntax sugar for `getCurrentSpan().setAttributes`
 
 ## Configuration
 
-See [opentelemetry plugin](/plugins/opentelemetry) for all configuration options.
+See [opentelemetry plugin](/plugins/opentelemetry) for configuration option and definition.
 
 By default the plugin follows the [OpenTelemetry HTTP semantic conventions](https://opentelemetry.io/docs/specs/semconv/http/http-spans/) guidance: no request or response headers are recorded, sensitive query parameters and URL credentials are redacted, and body content is omitted.
 
