@@ -140,19 +140,6 @@ headersToSpanAttributes?: {
 
 default: `undefined` (no headers recorded)
 
-::: warning
-This is a **breaking change** from previous versions where all headers were recorded by default. To restore the old behavior, use:
-
-```typescript
-opentelemetry({
-	headersToSpanAttributes: {
-		requestHeaders: ['*'],
-		responseHeaders: ['*']
-	}
-})
-```
-:::
-
 **Example: capture specific headers**
 
 ```typescript
