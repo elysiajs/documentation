@@ -224,8 +224,6 @@ opentelemetry({
 })
 ```
 
-Body serialization is wrapped in a try/catch so circular structures or BigInt values produce `[Unserializable]` instead of crashing the tracing path.
-
 ### Skipping traces for specific requests
 
 Use `checkIfShouldTrace` to skip tracing for health checks, readiness probes, or other endpoints you don't want to trace:
