@@ -124,15 +124,6 @@ If an exporter OR span processor is not configured programmatically, this packag
 ### spanLimits - SpanLimits
 Configure tracing parameters. These are the same trace parameters used to configure a tracer.
 
-### checkIfShouldTrace - (req: Request) => boolean
-Optional function to determine whether a given request should be traced.
-
-```typescript
-opentelemetry({
-	checkIfShouldTrace: (req) => !req.url.includes('/health')
-})
-```
-
 ### headersToSpanAttributes
 HTTP header names (case-insensitive) to capture as span attributes.
 

@@ -152,7 +152,9 @@ function utility() {
 
 This is a syntax sugar for `getCurrentSpan().setAttributes`
 
-## Privacy and span attributes
+## Configuration
+
+See [opentelemetry plugin](/plugins/opentelemetry) for all configuration options.
 
 By default the plugin follows the [OpenTelemetry HTTP semantic conventions](https://opentelemetry.io/docs/specs/semconv/http/http-spans/) guidance: no request or response headers are recorded, sensitive query parameters and URL credentials are redacted, and body content is omitted.
 
@@ -223,20 +225,6 @@ opentelemetry({
 	recordBody: { request: true }
 })
 ```
-
-### Skipping traces for specific requests
-
-Use `checkIfShouldTrace` to skip tracing for health checks, readiness probes, or other endpoints you don't want to trace:
-
-```typescript
-opentelemetry({
-	checkIfShouldTrace: (req) => !req.url.includes('/health')
-})
-```
-
-## Configuration
-
-See [opentelemetry plugin](/plugins/opentelemetry) for configuration option and definition.
 
 ## Instrumentations <Badge type="warning">Advanced Concept</Badge>
 
