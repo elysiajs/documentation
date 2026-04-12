@@ -164,7 +164,7 @@ spanUrlRedaction?: false | {
 - **Default (omitted):** redacts values of known sensitive query keys (`token`, `password`, `secret`, `api_key`, etc.) to `[REDACTED]`, and strips `user:pass@` credentials from `url.full`.
 - `false`: disables all URL redaction (raw URLs recorded as-is).
 - `{ stripCredentials: false }`: keeps credentials in URLs while still redacting sensitive query params.
-- `{ sensitiveQueryParams: ['my-key'] }`: adds custom keys to the builtin set.
+- `{ sensitiveQueryParams: ['my-key'] }`: adds custom keys to the built-in set.
 
 default: enabled (redacts sensitive query params and strips credentials)
 
