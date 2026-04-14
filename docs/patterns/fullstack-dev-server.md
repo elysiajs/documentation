@@ -35,7 +35,9 @@ import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysiajs/static'
 
 new Elysia()
-	.use(await staticPlugin()) // [!code ++]
+	.use(await staticPlugin({ // [!code ++]
+		bunFullstack: true // [!code ++]
+	})) // [!code ++]
 	.listen(3000)
 ```
 
@@ -43,6 +45,12 @@ new Elysia()
 Notice that we need to add `await` before `staticPlugin()` to enable Fullstack Dev Server.
 
 This is required to setup the necessary HMR hooks.
+:::
+
+:::warning
+You also need to pass `bunFullstack: true` option to `staticPlugin()` to enable Bun's HTML bundler.
+
+Without it, `.tsx` files referenced in your HTML are served as raw text, causing the browser to throw `SyntaxError`.
 :::
 
 2. Create **public/index.html** and **index.tsx**
@@ -116,7 +124,8 @@ import { staticPlugin } from '@elysiajs/static'
 new Elysia()
   	.use(
   		await staticPlugin({
-  			prefix: '/' // [!code ++]
+  			prefix: '/', // [!code ++]
+  			bunFullstack: true
    		})
    )
   .listen(3000)
