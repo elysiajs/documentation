@@ -381,7 +381,7 @@ const AuthService = new Elysia({ name: 'Auth.Service' })
 
 const UserController = new Elysia()
     .use(AuthService)
-    .get('/profile', ({ Auth: { user } }) => user, {
+    .get('/profile', ({ session }) => session, {
     	isSignIn: true
     })
 ```
