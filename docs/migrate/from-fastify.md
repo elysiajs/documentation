@@ -561,7 +561,7 @@ For example, you can customize context in a **type safe** manner using [derive](
 ::: code-group
 
 ```ts twoslash [Fastify]
-// @errors: 2339
+// @errors: 2339 2322
 import fastify from 'fastify'
 
 const app = fastify()
@@ -678,7 +678,7 @@ const findUser = (authorization?: string) => {
 	}
 }
 // ---cut---
-// @errors: 2339
+// @errors: 2339 2322
 import fastify from 'fastify'
 import type { FastifyRequest, FastifyReply } from 'fastify'
 
