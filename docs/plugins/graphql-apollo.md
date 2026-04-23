@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for using GraphQL Apollo on the Elysia server. Start by installing the plugin with "bun add graphql @elysiajs/apollo @apollo/server".
+        content: Plugin for Elysia that adds support for using GraphQL Apollo on the Elysia server. Start by installing the plugin with "bun add graphql @elysia/apollo @apollo/server".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for using GraphQL Apollo on the Elysia server. Start by installing the plugin with "bun add graphql @elysiajs/apollo @apollo/server".
+        content: Plugin for Elysia that adds support for using GraphQL Apollo on the Elysia server. Start by installing the plugin with "bun add graphql @elysia/apollo @apollo/server".
 ---
 
 # GraphQL Apollo Plugin
@@ -21,14 +21,14 @@ Plugin for [elysia](https://github.com/elysiajs/elysia) for using GraphQL Apollo
 Install with:
 
 ```bash
-bun add graphql @elysiajs/apollo @apollo/server
+bun add graphql @elysia/apollo @apollo/server
 ```
 
 Then use it:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { apollo, gql } from '@elysiajs/apollo'
+import { apollo, gql } from '@elysia/apollo'
 
 const app = new Elysia()
 	.use(

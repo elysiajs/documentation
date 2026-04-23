@@ -1,7 +1,7 @@
 import { Testcases } from '../../../components/xiao/playground/types'
 
 export const code = `import { Elysia, t } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
 	.get('/', 'Hello Elysia!')

@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysiajs/static".
+        content: Plugin for Elysia that adds support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysia/static".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysiajs/static".
+        content: Plugin for Elysia that adds support for serving static files/folders for Elysia Server. Start by installing the plugin with "bun add @elysia/static".
 ---
 
 # Static Plugin
@@ -19,13 +19,13 @@ This plugin can serve static files/folders for Elysia Server
 
 Install with:
 ```bash
-bun add @elysiajs/static
+bun add @elysia/static
 ```
 
 Then use it:
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { staticPlugin } from '@elysiajs/static'
+import { staticPlugin } from '@elysia/static'
 
 new Elysia()
     .use(staticPlugin())

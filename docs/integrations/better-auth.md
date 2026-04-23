@@ -61,7 +61,7 @@ Then we can access Better Auth at `http://localhost:3000/auth/api`.
 Unfortunately, we can't set the `basePath` of a Better Auth instance to be empty or `/`.
 ## OpenAPI
 Better Auth supports `openapi` with `better-auth/plugins`.
-However, if we are using [@elysiajs/openapi](/plugins/openapi), you might want to extract the documentation from the Better Auth instance.
+However, if we are using [@elysia/openapi](/plugins/openapi), you might want to extract the documentation from the Better Auth instance.
 First, we need to add the `openAPI` plugin to our Better Auth instance:
 ```ts [auth.ts]
 import { betterAuth } from 'better-auth'
@@ -96,10 +96,10 @@ export const OpenAPI = {
     components: getSchema().then(({ components }) => components) as Promise<any>
 } as const
 ```
-Then in our Elysia instance that uses `@elysiajs/openapi`.
+Then in our Elysia instance that uses `@elysia/openapi`.
 ```ts
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 import { OpenAPI } from './auth'
 const app = new Elysia().use(
     openapi({
@@ -111,10 +111,10 @@ const app = new Elysia().use(
 )
 ```
 ## CORS
-To configure CORS, you can use the `cors` plugin from `@elysiajs/cors`.
+To configure CORS, you can use the `cors` plugin from `@elysia/cors`.
 ```ts
 import { Elysia } from 'elysia'
-import { cors } from '@elysiajs/cors'
+import { cors } from '@elysia/cors'
 import { auth } from './auth'
 const app = new Elysia()
     .use(

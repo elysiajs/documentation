@@ -938,7 +938,7 @@ Elysia offers 3 types of scoping mechanism:
 ## OpenAPI
 tRPC doesn't offer OpenAPI first-party, and relies on third-party library like `trpc-to-openapi` which is not a streamlined solution.
 
-While Elysia has built-in support for OpenAPI using [@elysiajs/openapi](/plugins/openapi) from a single line of code.
+While Elysia has built-in support for OpenAPI using [@elysia/openapi](/plugins/openapi) from a single line of code.
 
 <Compare>
 
@@ -1005,7 +1005,7 @@ export const openApiDocument = generateOpenApiDocument(appRouter, {
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi' // [!code ++]
+import { openapi } from '@elysia/openapi' // [!code ++]
 
 const app = new Elysia()
 	.use(openapi()) // [!code ++]
@@ -1156,7 +1156,7 @@ Alternatively, Elysia also offers a helper library called [Eden](/eden/overview)
 
 ```ts twoslash [Elysia]
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import { describe, expect, it } from 'bun:test'
 
 const app = new Elysia().get('/hello', 'Hello World')
@@ -1249,7 +1249,7 @@ console.log('ok')
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
 	.post('/mirror', ({ body }) => body, {

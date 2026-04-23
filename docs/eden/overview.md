@@ -92,7 +92,7 @@ export type App = typeof app
 
 // @filename: index.ts
 // ---cut---
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from './server'
 
 const app = treaty<App>('localhost:3000')
@@ -117,7 +117,7 @@ const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
 ## Eden Fetch
 A fetch-like alternative to Eden Treaty for developers who prefer fetch syntax.
 ```typescript
-import { edenFetch } from '@elysiajs/eden'
+import { edenFetch } from '@elysia/eden'
 import type { App } from './server'
 
 const fetch = edenFetch<App>('http://localhost:3000')

@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysiajs/opentelemetry".
+      content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysia/opentelemetry".
 
   - - meta
     - name: 'og:description'
-      content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysiajs/opentelemetry".
+      content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysia/opentelemetry".
 ---
 
 # OpenTelemetry
@@ -20,11 +20,11 @@ head:
 This page is a **config reference** for **OpenTelemetry**. If you're looking to set up and integrate with OpenTelemetry, we recommend taking a look at [Integrate with OpenTelemetry](/patterns/opentelemetry) instead.
 :::
 
-To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
+To start using OpenTelemetry, install `@elysia/opentelemetry` and apply plugin to any instance.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { opentelemetry } from '@elysiajs/opentelemetry'
+import { opentelemetry } from '@elysia/opentelemetry'
 
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'

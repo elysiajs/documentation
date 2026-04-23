@@ -22,19 +22,19 @@ To run Elysia on Node.js, simply install Node adapter.
 ::: code-group
 
 ```bash [bun]
-bun add elysia @elysiajs/node
+bun add elysia @elysia/node
 ```
 
 ```bash [pnpm]
-pnpm add elysia @elysiajs/node
+pnpm add elysia @elysia/node
 ```
 
 ```bash [npm]
-npm install elysia @elysiajs/node
+npm install elysia @elysia/node
 ```
 
 ```bash [yarn]
-yarn add elysia @elysiajs/node
+yarn add elysia @elysia/node
 ```
 
 :::
@@ -43,7 +43,7 @@ Then apply the Node adapter to your main Elysia instance.
 
 ```typescript
 import { Elysia } from 'elysia'
-import { node } from '@elysiajs/node' // [!code ++]
+import { node } from '@elysia/node' // [!code ++]
 
 const app = new Elysia({ adapter: node() }) // [!code ++]
 	.get('/', () => 'Hello Elysia')

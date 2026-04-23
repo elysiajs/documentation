@@ -48,7 +48,7 @@
                         id="htmx_org"
                         user="htmx.org"
                         image="/tweets/htmx.webp"
-                        content="htmx works great w/ @bunjavascript, @elysiaJS and @tursodatabase btw"
+                        content="htmx works great w/ @bunjavascript, @elysia and @tursodatabase btw"
                         href="https://x.com/htmx_org/status/1792949584769224897"
                     />
                 </motion.div>
@@ -86,7 +86,7 @@
                         id="runyasak"
                         user="Runyasak Ch. 💚"
                         image="/tweets/runyasak.webp"
-                        content="Started using @elysiaJS to create a Discord Bot and found the type system beautifully easy. DX is fantastic and coding is fun!
+                        content="Started using @elysia to create a Discord Bot and found the type system beautifully easy. DX is fantastic and coding is fun!
 
 Use @DrizzleORM with PostgreSQL. So much easier than I've used before.
 
@@ -99,7 +99,7 @@ ElysiaJS has proved to me that great performance and DX can live together. 😎"
                         id="hd_nvim"
                         user="Herrington Darkholme"
                         image="/tweets/herrington.webp"
-                        content="Was introduced to @elysiaJS today and it looks pretty solid. end-to-end type safety/guard/swapper are killer features of the modern web! (and it's fast)"
+                        content="Was introduced to @elysia today and it looks pretty solid. end-to-end type safety/guard/swapper are killer features of the modern web! (and it's fast)"
                         href="https://x.com/hd_nvim/status/1735182378036027650"
                     />
                 </motion.div>
@@ -108,7 +108,7 @@ ElysiaJS has proved to me that great performance and DX can live together. 😎"
                         id="scalar"
                         user="scalar.com"
                         image="/tweets/scalar.webp"
-                        content="so excited to be part of the amazing @elysiaJS community!"
+                        content="so excited to be part of the amazing @elysia community!"
                         href="https://x.com/scalar/status/1744024831014920403"
                     />
                 </motion.div>
@@ -123,7 +123,7 @@ ElysiaJS has proved to me that great performance and DX can live together. 😎"
 
 Working on allowing @ag_grid server side row model when connecting a custom backend to @openbb_finance Terminal Pro.
 
-Backend in @elysiaJS + @bunjsproject."
+Backend in @elysia + @bunjsproject."
                         href="https://x.com/josedonato__/status/1815706393367703890"
                     />
                 </motion.div>
@@ -143,7 +143,7 @@ I have been using it almost exclusively for all my projects"
                         id="MikroORM"
                         user="MikroORM"
                         image="/tweets/mikroorm.webp"
-                        content="I've been playing a bit with @bunjavascript and @elysiaJS, need to do a few more tweaks before the release, but next version should work more natively with bun when it comes to TS support detection, e.g. the CLI works without ts-node installed."
+                        content="I've been playing a bit with @bunjavascript and @elysia, need to do a few more tweaks before the release, but next version should work more natively with bun when it comes to TS support detection, e.g. the CLI works without ts-node installed."
                         href="https://x.com/MikroORM/status/1821993062114967711"
                     />
                 </motion.div>
@@ -160,7 +160,7 @@ I have been using it almost exclusively for all my projects"
                 image="/tweets/marc.webp"
                 content="both engineering+monetary contributions are paramount for OSS
 
-we proudly sponsor dozens of projects: @elysiaJS @LitestarAPI @honojs @daveshanley @kevin_jahns @MarijnJH & help maintain repos+contribute to OSS at blistering cadence.
+we proudly sponsor dozens of projects: @elysia @LitestarAPI @honojs @daveshanley @kevin_jahns @MarijnJH & help maintain repos+contribute to OSS at blistering cadence.
 
 it's @scalar's ethos to be a catalyst for OSS"
                 href="https://x.com/MarcLaventure/status/1773751085792174246"
@@ -221,7 +221,7 @@ Love ElysiaJS 😘"
                 id="Rasmic"
                 user="Micky"
                 image="/tweets/rasmic.webp"
-                content="I’m ngl we don’t talk about @elysiaJS enough"
+                content="I’m ngl we don’t talk about @elysia enough"
                 href="https://x.com/Rasmic/status/1964897923046703399"
             />
         </motion.div>

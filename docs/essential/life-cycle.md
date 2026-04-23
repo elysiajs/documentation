@@ -113,7 +113,7 @@ To use a local hook, you can inline hook into a route handler:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { isHtml } from '@elysiajs/html'
+import { isHtml } from '@elysia/html'
 
 new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {
@@ -141,7 +141,7 @@ To add an interceptor hook, you can use `.on` followed by a lifecycle event in c
 
 ```typescript
 import { Elysia } from 'elysia'
-import { isHtml } from '@elysiajs/html'
+import { isHtml } from '@elysia/html'
 
 new Elysia()
     .get('/none', () => '<h1>Hello World</h1>')
@@ -640,7 +640,7 @@ Below is an example of using the after handle to add HTML content type to respon
 
 ```typescript
 import { Elysia } from 'elysia'
-import { isHtml } from '@elysiajs/html'
+import { isHtml } from '@elysia/html'
 
 new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {
@@ -668,7 +668,7 @@ The above example could be rewritten as the following:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { isHtml } from '@elysiajs/html'
+import { isHtml } from '@elysia/html'
 
 new Elysia()
     .get('/', () => '<h1>Hello World</h1>', {

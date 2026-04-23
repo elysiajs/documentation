@@ -109,7 +109,7 @@ To add OpenAPI Type Gen to your codebase, simply:
 
 ```ts
 import { Elysia } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi' // [!code ++]
+import { openapi, fromTypes } from '@elysia/openapi' // [!code ++]
 
 export const app = new Elysia() // [!code ++]
 	.use(
@@ -135,5 +135,5 @@ This is only possible thanks to **Elysia's spectacular support for end-to-end ty
 
 We are excited to see how it will help you to create and maintain high-quality API documentation with minimal effort with Elysia.
 
-You can try it out today by updating `@elysiajs/openapi` to latest or experiment our example setup from [GitHub repository](https://github.com/saltyaom/elysia-typegen-example).
+You can try it out today by updating `@elysia/openapi` to latest or experiment our example setup from [GitHub repository](https://github.com/saltyaom/elysia-typegen-example).
 </Blog>

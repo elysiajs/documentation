@@ -51,7 +51,7 @@ export type App = typeof app // [!code ++]
 Then import the server type, and consume the Elysia API on client:
 ```typescript
 // client.ts
-import { edenTreaty } from '@elysiajs/eden'
+import { edenTreaty } from '@elysia/eden'
 import type { App } from './server' // [!code ++]
 
 const app = edenTreaty<App>('http://localhost:')
@@ -241,7 +241,7 @@ type App = typeof app
 To start listening to real-time data, call the `.subscribe` method:
 ```typescript
 // Client
-import { edenTreaty } from '@elysiajs/eden'
+import { edenTreaty } from '@elysia/eden'
 const app = edenTreaty<App>('http://localhost:')
 
 const chat = app.chat.subscribe()

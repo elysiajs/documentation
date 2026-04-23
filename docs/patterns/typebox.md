@@ -229,7 +229,7 @@ t.String({
 <td>
 
 ```typescript
-saltyaom@elysiajs.com
+saltyaom@elysia.com
 ```
 
 </td>

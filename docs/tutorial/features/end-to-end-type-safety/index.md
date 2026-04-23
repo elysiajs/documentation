@@ -37,7 +37,7 @@ Elysia provides an end-to-end type safety between backend and frontend **without
 
 ```typescript
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 // Backend
 export const app = new Elysia()

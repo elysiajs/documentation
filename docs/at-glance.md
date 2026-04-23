@@ -201,7 +201,7 @@ For instance, because Elysia adopts OpenAPI by default, generating API documenta
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
     .use(openapi()) // [!code ++]
@@ -223,7 +223,7 @@ This is a **unique feature** of Elysia, allowing you to have complete and accura
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
     .use(openapi({
@@ -247,7 +247,7 @@ With Elysia, you can synchronize your types with your frontend team automaticall
 
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
     .use(openapi({
@@ -282,7 +282,7 @@ export type App = typeof app
 // @filename: client.ts
 // ---cut---
 // client.ts
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from './server'
 
 const app = treaty<App>('localhost:3000')
@@ -342,7 +342,7 @@ export type App = typeof app
 // @filename: client.ts
 // ---cut---
 // client.ts
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from './server'
 
 const app = treaty<App>('localhost:3000')

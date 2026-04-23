@@ -7,11 +7,11 @@ head:
 
   - - meta
     - name: 'description'
-      content: Plugin for Elysia for retrieving Bearer token as specified in RFC6750. Start by installing the plugin with "bun add @elysiajs/bearer".
+      content: Plugin for Elysia for retrieving Bearer token as specified in RFC6750. Start by installing the plugin with "bun add @elysia/bearer".
 
   - - meta
     - name: 'og:description'
-      content: Plugin for Elysia for retrieving Bearer token as specified in RFC6750. Start by installing the plugin with "bun add @elysiajs/bearer".
+      content: Plugin for Elysia for retrieving Bearer token as specified in RFC6750. Start by installing the plugin with "bun add @elysia/bearer".
 ---
 
 # Bearer Plugin
@@ -19,13 +19,13 @@ Plugin for [elysia](https://github.com/elysiajs/elysia) for retrieving the Beare
 
 Install with:
 ```bash
-bun add @elysiajs/bearer
+bun add @elysia/bearer
 ```
 
 Then use it:
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { bearer } from '@elysiajs/bearer'
+import { bearer } from '@elysia/bearer'
 
 const app = new Elysia()
     .use(bearer())

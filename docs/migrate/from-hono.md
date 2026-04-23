@@ -1203,7 +1203,7 @@ export default app
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi' // [!code ++]
+import { openapi } from '@elysia/openapi' // [!code ++]
 
 const app = new Elysia()
 	.use(openapi()) // [!code ++]
@@ -1319,7 +1319,7 @@ Alternatively, Elysia also offers a helper library called [Eden](/eden/overview)
 
 ```ts twoslash [Elysia]
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import { describe, expect, it } from 'bun:test'
 
 const app = new Elysia().get('/hello', 'Hello World')
@@ -1396,7 +1396,7 @@ console.log(data)
 
 ```ts twoslash [Elysia]
 import { Elysia, t } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
 	.post('/mirror', ({ body }) => body, {

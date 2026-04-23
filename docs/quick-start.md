@@ -186,23 +186,23 @@ To create a new Elysia app with TypeScript, we recommend installing Elysia with 
 ::: code-group
 
 ```bash [bun]
-bun add elysia @elysiajs/node && \
+bun add elysia @elysia/node && \
 bun add -d tsx @types/node typescript
 ```
 
 ```bash [pnpm]
 # pnpm doesn't install peer dependencies
-pnpm add elysia @elysiajs/node @sinclair/typebox openapi-types && \
+pnpm add elysia @elysia/node @sinclair/typebox openapi-types && \
 pnpm add -D tsx @types/node typescript
 ```
 
 ```bash [npm]
-npm install elysia @elysiajs/node && \
+npm install elysia @elysia/node && \
 npm install --save-dev tsx @types/node typescript
 ```
 
 ```bash [yarn]
-yarn add elysia @elysiajs/node && \
+yarn add elysia @elysia/node && \
 yarn add -D tsx @types/node typescript
 ```
 
@@ -216,7 +216,7 @@ Create a new file `src/index.ts` and add the following code:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { node } from '@elysiajs/node'
+import { node } from '@elysia/node'
 
 const app = new Elysia({ adapter: node() })
 	.get('/', () => 'Hello Elysia')
@@ -273,20 +273,20 @@ To create a new Elysia app with JavaScript, start by installing Elysia:
 ::: code-group
 
 ```bash [bun]
-bun add elysia @elysiajs/node
+bun add elysia @elysia/node
 ```
 
 ```bash [pnpm]
 # pnpm doesn't install peer dependencies
-pnpm add elysia @elysiajs/node @sinclair/typebox openapi-types
+pnpm add elysia @elysia/node @sinclair/typebox openapi-types
 ```
 
 ```bash [npm]
-npm install elysia @elysiajs/node
+npm install elysia @elysia/node
 ```
 
 ```bash [yarn]
-yarn add elysia @elysiajs/node
+yarn add elysia @elysia/node
 ```
 
 :::
@@ -297,7 +297,7 @@ Create a new file `src/index.js` and add the following code:
 
 ```javascript
 import { Elysia } from 'elysia'
-import { node } from '@elysiajs/node'
+import { node } from '@elysia/node'
 
 const app = new Elysia({ adapter: node() })
 	.get('/', () => 'Hello Elysia')

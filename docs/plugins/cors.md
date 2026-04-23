@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysiajs/cors".
+        content: Plugin for Elysia that adds support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysia/cors".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysiajs/cors".
+        content: Plugin for Elysia that adds support for customizing Cross-Origin Resource Sharing behavior. Start by installing the plugin with "bun add @elysia/cors".
 ---
 
 # CORS Plugin
@@ -21,14 +21,14 @@ This plugin adds support for customizing [Cross-Origin Resource Sharing](https:/
 Install with:
 
 ```bash
-bun add @elysiajs/cors
+bun add @elysia/cors
 ```
 
 Then use it:
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { cors } from '@elysiajs/cors'
+import { cors } from '@elysia/cors'
 
 new Elysia().use(cors()).listen(3000)
 ```
@@ -156,7 +156,7 @@ Below you can find the common patterns to use the plugin.
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { cors } from '@elysiajs/cors'
+import { cors } from '@elysia/cors'
 
 const app = new Elysia()
 	.use(

@@ -7,20 +7,20 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysiajs/opentelemetry".
+        content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysia/opentelemetry".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysiajs/opentelemetry".
+        content: Plugin for Elysia that adds support for OpenTelemetry. Start by installing the plugin with "bun add @elysia/opentelemetry".
 ---
 
 # OpenTelemetry
 
-To start using OpenTelemetry, install `@elysiajs/opentelemetry` and apply plugin to any instance.
+To start using OpenTelemetry, install `@elysia/opentelemetry` and apply plugin to any instance.
 
 ```typescript
 import { Elysia } from 'elysia'
-import { opentelemetry } from '@elysiajs/opentelemetry'
+import { opentelemetry } from '@elysia/opentelemetry'
 
 new Elysia()
 	.use(opentelemetry())
@@ -45,7 +45,7 @@ Here's an example of exporting telemetry to [Axiom](https://axiom.co)
 
 ```typescript
 import { Elysia } from 'elysia'
-import { opentelemetry } from '@elysiajs/opentelemetry'
+import { opentelemetry } from '@elysia/opentelemetry'
 
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
@@ -78,7 +78,7 @@ However, we also provide a `getTracer`, and `record` utility to collect span fro
 
 ```typescript
 import { Elysia } from 'elysia'
-import { record } from '@elysiajs/opentelemetry'
+import { record } from '@elysia/opentelemetry'
 
 export const plugin = new Elysia().get('', () => {
 	return record('database.query', () => {
@@ -124,7 +124,7 @@ const good = new Elysia()
 `getCurrentSpan` is a utility to get the current span of the current request when you are outside of the handler.
 
 ```typescript
-import { getCurrentSpan } from '@elysiajs/opentelemetry'
+import { getCurrentSpan } from '@elysia/opentelemetry'
 
 function utility() {
 	const span = getCurrentSpan()
@@ -141,7 +141,7 @@ This works outside of the handler by retrieving current span from `AsyncLocalSto
 `setAttributes` is a utility to set attributes to the current span.
 
 ```typescript
-import { setAttributes } from '@elysiajs/opentelemetry'
+import { setAttributes } from '@elysia/opentelemetry'
 
 function utility() {
 	setAttributes({
@@ -170,7 +170,7 @@ To achieve this in Bun, we can
 Let's create a new file in `src/instrumentation.ts`
 
 ```ts [src/instrumentation.ts]
-import { opentelemetry } from '@elysiajs/opentelemetry'
+import { opentelemetry } from '@elysia/opentelemetry'
 import { PgInstrumentation } from '@opentelemetry/instrumentation-pg'
 
 export const instrumentation = opentelemetry({
@@ -217,7 +217,7 @@ It's recommended to specify packages that should be available in a production se
 		"pg": "^8.15.6"
 	},
 	"devDependencies": {
-		"@elysiajs/opentelemetry": "^1.2.0",
+		"@elysia/opentelemetry": "^1.2.0",
 		"@opentelemetry/instrumentation-pg": "^0.52.0",
 		"@types/pg": "^8.11.14",
 		"elysia": "^1.2.25"

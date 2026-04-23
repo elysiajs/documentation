@@ -181,7 +181,7 @@ export type subApp = typeof plugin1 // [!code ++]
 And on your frontend, you can import the sub app instead of the whole app.
 
 ```ts [frontend/src/index.ts]
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { subApp } from 'backend/src'
 
 const api = treaty<subApp>('localhost:3000') // [!code ++]

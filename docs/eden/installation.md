@@ -7,17 +7,17 @@ head:
 
   - - meta
     - name: 'description'
-      content: Start by installing Eden on your frontend with "bun add elysia @elysiajs/eden", then expose your Elysia server type and then start using Eden Treaty or Eden Fetch.
+      content: Start by installing Eden on your frontend with "bun add elysia @elysia/eden", then expose your Elysia server type and then start using Eden Treaty or Eden Fetch.
 
   - - meta
     - name: 'og:description'
-      content: Start by installing Eden on your frontend with "bun add elysia @elysiajs/eden", then expose your Elysia server type and then start using Eden Treaty or Eden Fetch.
+      content: Start by installing Eden on your frontend with "bun add elysia @elysia/eden", then expose your Elysia server type and then start using Eden Treaty or Eden Fetch.
 ---
 
 # Eden Installation
 Start by installing Eden on your frontend:
 ```bash
-bun add @elysiajs/eden
+bun add @elysia/eden
 bun add -d elysia
 ```
 
@@ -67,7 +67,7 @@ export type App = typeof app // [!code ++]
 // @filename: index.ts
 // ---cut---
 // client.ts
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from './server' // [!code ++]
 
 const client = treaty<App>('localhost:3000') // [!code ++]
@@ -119,18 +119,18 @@ The output should contain only one elysia version at the top level:
 elysia@1.1.12
 node_modules/elysia
   elysia@"1.1.25" from the root project
-  peer elysia@">= 1.1.0" from @elysiajs/html@1.1.0
-  node_modules/@elysiajs/html
-    dev @elysiajs/html@"1.1.1" from the root project
-  peer elysia@">= 1.1.0" from @elysiajs/opentelemetry@1.1.2
-  node_modules/@elysiajs/opentelemetry
-    dev @elysiajs/opentelemetry@"1.1.7" from the root project
-  peer elysia@">= 1.1.0" from @elysiajs/swagger@1.1.0
-  node_modules/@elysiajs/swagger
-    dev @elysiajs/swagger@"1.1.6" from the root project
-  peer elysia@">= 1.1.0" from @elysiajs/eden@1.1.2
-  node_modules/@elysiajs/eden
-    dev @elysiajs/eden@"1.1.3" from the root project
+  peer elysia@">= 1.1.0" from @elysia/html@1.1.0
+  node_modules/@elysia/html
+    dev @elysia/html@"1.1.1" from the root project
+  peer elysia@">= 1.1.0" from @elysia/opentelemetry@1.1.2
+  node_modules/@elysia/opentelemetry
+    dev @elysia/opentelemetry@"1.1.7" from the root project
+  peer elysia@">= 1.1.0" from @elysia/swagger@1.1.0
+  node_modules/@elysia/swagger
+    dev @elysia/swagger@"1.1.6" from the root project
+  peer elysia@">= 1.1.0" from @elysia/eden@1.1.2
+  node_modules/@elysia/eden
+    dev @elysia/eden@"1.1.3" from the root project
 ```
 
 
@@ -214,7 +214,7 @@ export type app = typeof app
 You **must** make sure that your frontend code is able to resolve the same path alias. Otherwise, type inference will be resolved as any.
 
 ```typescript
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { app } from '@/index'
 
 const client = treaty<app>('localhost:3000')

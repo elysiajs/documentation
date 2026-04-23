@@ -196,14 +196,14 @@ Luckily, Elysia comes with a **OpenAPI Schema** with [Scalar](https://scalar.com
 
 ```bash
 # Install the OpenAPI plugin
-bun add @elysiajs/openapi
+bun add @elysia/openapi
 ```
 
 Then apply the plugin to the Elysia instance.
 
 ```typescript
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 const app = new Elysia()
     // Apply the openapi plugin
@@ -231,7 +231,7 @@ Now, let's create a singleton class to store our notes.
 
 ```typescript
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 class Note { // [!code ++]
     constructor(public data: string[] = ['Moonhalo']) {} // [!code ++]
@@ -260,7 +260,7 @@ We can define a path parameter by prefixing it with a colon.
 ```typescript twoslash
 // @errors: 7015
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
@@ -292,7 +292,7 @@ We can enforce and validate type by declaring a schema:
 
 ```typescript
 import { Elysia, t } from 'elysia' // [!code ++]
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
@@ -349,7 +349,7 @@ We can change the status code by returning an **status**:
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
@@ -379,7 +379,7 @@ We can also return a custom message by passing a string to the error function.
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 class Note {
     constructor(public data: string[] = ['Moonhalo']) {}
@@ -441,7 +441,7 @@ Then on the **index.ts**, apply **note** into the main instance:
 
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 import { note } from './note' // [!code ++]
 
@@ -1270,7 +1270,7 @@ But first, don't forget to import the `user` in the `index.ts` file:
 
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 import { note } from './note'
 import { user } from './user' // [!code ++]
@@ -1498,7 +1498,7 @@ We use use the `onError` lifecycle to catch any error that is thrown in the serv
 
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 import { note } from './note'
 import { user } from './user'
@@ -1531,7 +1531,7 @@ Returning a truthy value will override a default error response, so we can retur
 
 ```typescript [index.ts]
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 import { note } from './note'
 
@@ -1552,10 +1552,10 @@ const app = new Elysia()
 
 Now we have a working API, a final touch is to make sure everything is working after we deployed our server.
 
-Elysia supports OpenTelemetry by default with the `@elysiajs/opentelemetry` plugin.
+Elysia supports OpenTelemetry by default with the `@elysia/opentelemetry` plugin.
 
 ```bash
-bun add @elysiajs/opentelemetry
+bun add @elysia/opentelemetry
 ```
 
 Make sure to have an OpenTelemetry collector running otherwise we will be using Jaeger from docker.
@@ -1582,8 +1582,8 @@ Now let's apply the OpenTelemetry plugin to our server.
 
 ```typescript [index.ts]
 import { Elysia } from 'elysia'
-import { opentelemetry } from '@elysiajs/opentelemetry' // [!code ++]
-import { openapi } from '@elysiajs/openapi'
+import { opentelemetry } from '@elysia/opentelemetry' // [!code ++]
+import { openapi } from '@elysia/openapi'
 
 import { note } from './note'
 import { user } from './user'
@@ -1854,8 +1854,8 @@ export const note = new Elysia({ prefix: '/note' })
 // @filename: index.ts
 // ---cut---
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
-import { opentelemetry } from '@elysiajs/opentelemetry'
+import { openapi } from '@elysia/openapi'
+import { opentelemetry } from '@elysia/opentelemetry'
 
 import { note } from './note'
 import { user } from './user'

@@ -28,7 +28,7 @@ Eden will change the behavior based on the type as follows:
 If a URL endpoint is passed, Eden Treaty will use `fetch` or `config.fetcher` to create a network request to an Elysia instance.
 
 ```typescript
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from './server'
 
 const api = treaty<App>('localhost:3000')
@@ -52,7 +52,7 @@ This allows us to interact with the Elysia server directly without request overh
 
 ```typescript
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
     .get('/hi', 'Hi Elysia')
@@ -80,7 +80,7 @@ Default parameters appended to the 2nd parameter of fetch extend the type of **F
 
 ```typescript
 export type App = typeof app // [!code ++]
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 treaty<App>('localhost:3000', {
     fetch: {

@@ -1,7 +1,7 @@
 import { Testcases } from '../../../components/xiao/playground/types'
 
 export const code = `import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())

@@ -42,7 +42,7 @@ export type App = typeof app
 
 Then import the server type, and consume the Elysia API on client:
 ```typescript
-import { edenFetch } from '@elysiajs/eden'
+import { edenFetch } from '@elysia/eden'
 import type { App } from './server'
 
 const fetch = edenFetch<App>('http://localhost:3000')
@@ -70,7 +70,7 @@ const nendoroid = await fetch('/mirror', {
 ## Error Handling
 You can handle errors the same way as Eden Treaty:
 ```typescript
-import { edenFetch } from '@elysiajs/eden'
+import { edenFetch } from '@elysia/eden'
 import type { App } from './server'
 
 const fetch = edenFetch<App>('http://localhost:3000')

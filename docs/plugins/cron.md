@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for running cronjob in Elysia server. Start by installing the plugin with "bun add @elysiajs/cron".
+        content: Plugin for Elysia that adds support for running cronjob in Elysia server. Start by installing the plugin with "bun add @elysia/cron".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for running cron jobs in Elysia server. Start by installing the plugin with "bun add @elysiajs/cron".
+        content: Plugin for Elysia that adds support for running cron jobs in Elysia server. Start by installing the plugin with "bun add @elysia/cron".
 ---
 
 # Cron Plugin
@@ -21,14 +21,14 @@ This plugin adds support for running cron jobs in the Elysia server.
 Install with:
 
 ```bash
-bun add @elysiajs/cron
+bun add @elysia/cron
 ```
 
 Then use it:
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { cron } from '@elysiajs/cron'
+import { cron } from '@elysia/cron'
 
 new Elysia()
 	.use(
@@ -120,7 +120,7 @@ You can stop the cron job manually by accessing the cron job name registered to 
 
 ```typescript
 import { Elysia } from 'elysia'
-import { cron } from '@elysiajs/cron'
+import { cron } from '@elysia/cron'
 
 const app = new Elysia()
 	.use(
@@ -149,11 +149,11 @@ const app = new Elysia()
 
 ## Predefined patterns
 
-You can use predefined patterns from `@elysiajs/cron/schedule`
+You can use predefined patterns from `@elysia/cron/schedule`
 
 ```typescript
 import { Elysia } from 'elysia'
-import { cron, Patterns } from '@elysiajs/cron'
+import { cron, Patterns } from '@elysia/cron'
 
 const app = new Elysia()
 	.use(

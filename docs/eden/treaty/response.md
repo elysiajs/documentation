@@ -26,7 +26,7 @@ Once returned, you must provide error handling to ensure that the response data 
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
     .post('/user', ({ body: { name }, status }) => {
@@ -81,7 +81,7 @@ Eden will interpret a stream response or [Server-Sent Events](/essential/handler
 
 ```typescript twoslash [Stream]
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
 	.get('/ok', function* () {
@@ -100,7 +100,7 @@ for await (const chunk of data)
 
 ```typescript twoslash [Server-Sent Events]
 import { Elysia, sse } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
 	.get('/ok', function* () {
@@ -142,7 +142,7 @@ Eden Treaty provides utility types `Treaty.Data<T>` and `Treaty.Error<T>` to ext
 ```typescript twoslash
 import { Elysia, t } from 'elysia'
 
-import { treaty, Treaty } from '@elysiajs/eden'
+import { treaty, Treaty } from '@elysia/eden'
 
 const app = new Elysia()
 	.post('/user', ({ body: { name }, status }) => {

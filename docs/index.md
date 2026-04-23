@@ -230,7 +230,7 @@ export type App = typeof app
 
 // @filename: client.ts
 // ---cut---
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from 'server'
 
 const api = treaty<App>('api.elysiajs.com')
@@ -247,7 +247,7 @@ const { data } = await api.profile.patch({
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())
@@ -259,7 +259,7 @@ new Elysia()
 
 ```typescript
 import { Elysia } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
 	.use(
@@ -385,7 +385,7 @@ new Elysia()
 
 ```typescript [OpenAPI]
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())
@@ -394,7 +394,7 @@ new Elysia()
 
 ```typescript [With Type Gen]
 import { Elysia } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
 	.use(
@@ -436,7 +436,7 @@ export type App = typeof app
 
 // @filename: client.ts
 // ---cut---
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from 'server'
 
 const api = treaty<App>('api.elysiajs.com')
@@ -481,7 +481,7 @@ export const app = new Elysia()
 
 // @filename: client.ts
 // ---cut---
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import { app } from './index'
 import { test, expect } from 'bun:test'
 

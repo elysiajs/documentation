@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
+        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysia/swagger".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
+        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysia/swagger".
 ---
 
 <script setup lang="ts">
@@ -25,14 +25,14 @@ Plugin for [elysia](https://github.com/elysiajs/elysia) to auto-generate API doc
 Install with:
 
 ```bash
-bun add @elysiajs/openapi
+bun add @elysia/openapi
 ```
 
 Then use it:
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
     .use(openapi())
@@ -63,7 +63,7 @@ You can hide the route from the Swagger page by setting `detail.hide` to `true`
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia().use(openapi()).post('/sign-in', ({ body }) => body, {
     body: t.Object(
@@ -136,7 +136,7 @@ A custom mapping function from standard schema to OpenAPI schema
 
 ### Example
 ```typescript
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 import { toJsonSchema } from '@valibot/to-json-schema'
 
 openapi({

@@ -71,7 +71,7 @@ We may use Eden Treaty to create an end-to-end type safety test for Elysia serve
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia().get('/hello', 'hi')
 

@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia for performance audit via Server Timing API. Start by installing the plugin with "bun add @elysiajs/server-timing".
+        content: Plugin for Elysia for performance audit via Server Timing API. Start by installing the plugin with "bun add @elysia/server-timing".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia for performance audit via Server Timing API. Start by installing the plugin with "bun add @elysiajs/server-timing".
+        content: Plugin for Elysia for performance audit via Server Timing API. Start by installing the plugin with "bun add @elysia/server-timing".
 ---
 
 # Server Timing Plugin
@@ -19,13 +19,13 @@ This plugin adds support for auditing performance bottlenecks with Server Timing
 
 Install with:
 ```bash
-bun add @elysiajs/server-timing
+bun add @elysia/server-timing
 ```
 
 Then use it:
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { serverTiming } from '@elysiajs/server-timing'
+import { serverTiming } from '@elysia/server-timing'
 
 new Elysia()
     .use(serverTiming())
@@ -78,7 +78,7 @@ You may disable Server Timing on specific routes via `allow` property
 
 ```ts twoslash
 import { Elysia } from 'elysia'
-import { serverTiming } from '@elysiajs/server-timing'
+import { serverTiming } from '@elysia/server-timing'
 
 new Elysia()
     .use(

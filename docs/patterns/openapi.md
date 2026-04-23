@@ -27,14 +27,14 @@ Elysia can automatically generate an API documentation page by using an OpenAPI 
 To generate the Swagger page, install the plugin:
 
 ```bash
-bun add @elysiajs/openapi
+bun add @elysia/openapi
 ```
 
 And register the plugin to the server:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi' // [!code ++]
+import { openapi } from '@elysia/openapi' // [!code ++]
 
 new Elysia()
 	.use(openapi()) // [!code ++]
@@ -57,7 +57,7 @@ However, you can also generate OpenAPI documentation from types by using a gener
 2. Import a generator and provide a **file path from project root** to type generator
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi' // [!code ++]
+import { openapi, fromTypes } from '@elysia/openapi' // [!code ++]
 
 export const app = new Elysia() // [!code ++]
     .use(
@@ -85,7 +85,7 @@ It's recommended that you should pre-generate the declaration file (**.d.ts**) t
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 const app = new Elysia()
     .use(
@@ -136,7 +136,7 @@ As it's unreliable to guess to root of the project, it's recommended to provide 
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
     .use(
@@ -160,7 +160,7 @@ If you have multiple `tsconfig.json` files, it's important that you must specify
 
 ```ts
 import { Elysia, t } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
     .use(
@@ -202,7 +202,7 @@ As Zod doesn't have a `toJSONSchema` method on the schema, we need to provide a 
 ::: code-group
 
 ```typescript [Zod 4]
-import openapi from '@elysiajs/openapi'
+import openapi from '@elysia/openapi'
 import * as z from 'zod'
 
 openapi({
@@ -213,7 +213,7 @@ openapi({
 ```
 
 ```typescript [Zod 3]
-import openapi from '@elysiajs/openapi'
+import openapi from '@elysia/openapi'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 
 openapi({
@@ -233,7 +233,7 @@ openapi({
 Valibot use a separate package (`@valibot/to-json-schema`) to convert Valibot schema to JSON Schema.
 
 ```typescript
-import openapi from '@elysiajs/openapi'
+import openapi from '@elysia/openapi'
 import { toJsonSchema } from '@valibot/to-json-schema'
 
 openapi({
@@ -251,7 +251,7 @@ openapi({
 As Effect doesn't have a `toJSONSchema` method on the schema, we need to provide a custom mapper to convert Effect schema to OpenAPI schema.
 
 ```typescript
-import openapi from '@elysiajs/openapi'
+import openapi from '@elysia/openapi'
 import { JSONSchema } from 'effect'
 
 openapi({
@@ -273,7 +273,7 @@ However, sometimes defining only a type does not make it clear what the route mi
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())
@@ -308,7 +308,7 @@ We can add response headers by wrapping a schema with `withHeader`:
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi, withHeader } from '@elysiajs/openapi' // [!code ++]
+import { openapi, withHeader } from '@elysia/openapi' // [!code ++]
 
 new Elysia()
 	.use(openapi())
@@ -338,7 +338,7 @@ You can hide the route from the Swagger page by setting `detail.hide` to `true`
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())
@@ -474,7 +474,7 @@ You can change the OpenAPI endpoint by setting [path](#path) in the plugin confi
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
     .use(
@@ -491,7 +491,7 @@ We can customize the OpenAPI information by setting [documentation.info](#docume
 
 ```typescript twoslash
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
     .use(

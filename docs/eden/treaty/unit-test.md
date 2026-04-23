@@ -23,7 +23,7 @@ We may use this pattern to create a unit test with end-to-end type safety and ty
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia().get('/hello', 'hi')
 const api = treaty(app)
