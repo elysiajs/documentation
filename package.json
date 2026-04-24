@@ -29,6 +29,7 @@
 		"shiki": "^4.0.2",
 		"shiki-transformer-copy-button": "^0.0.6",
 		"streamdown-vue": "^1.0.29",
+		"sucrase": "^3.35.1",
 		"tailwindcss": "^4.2.4",
 		"valibot": "^1.2.0",
 		"vue3-carousel": "^0.17.0",
