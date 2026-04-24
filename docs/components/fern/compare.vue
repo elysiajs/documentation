@@ -1,17 +1,19 @@
 <template>
 	<section class="code-compare">
-		<article>
-			<section>
-				<slot name="left" />
-			</section>
-			<slot name="left-content" />
-		</article>
-		<article>
-			<section>
-				<slot name="right" />
-			</section>
-			<slot name="right-content" />
-		</article>
+		<ClientOnly>
+			<article>
+				<section>
+					<slot name="left" />
+				</section>
+				<slot name="left-content" />
+			</article>
+			<article>
+				<section>
+					<slot name="right" />
+				</section>
+				<slot name="right-content" />
+			</article>
+		</ClientOnly>
 	</section>
 </template>
 
