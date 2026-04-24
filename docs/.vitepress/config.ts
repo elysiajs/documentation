@@ -24,6 +24,7 @@ export default defineConfig({
 	sitemap: {
 		hostname: 'https://elysiajs.com'
 	},
+	"srcExclude": ["migrate/*"],
 	markdown: {
 		theme: {
 			light: 'github-light',
@@ -458,28 +459,28 @@ export default defineConfig({
 					}
 				]
 			},
-			{
-				text: 'Comparison',
-				collapsed: false,
-				items: [
-					{
-						text: 'Express',
-						link: '/migrate/from-express'
-					},
-					{
-						text: 'Fastify',
-						link: '/migrate/from-fastify'
-					},
-					{
-						text: 'Hono',
-						link: '/migrate/from-hono'
-					},
-					{
-						text: 'tRPC',
-						link: '/migrate/from-trpc'
-					}
-				]
-			},
+			// {
+			// 	text: 'Comparison',
+			// 	collapsed: false,
+			// 	items: [
+			// 		{
+			// 			text: 'Express',
+			// 			link: '/migrate/from-express'
+			// 		},
+			// 		{
+			// 			text: 'Fastify',
+			// 			link: '/migrate/from-fastify'
+			// 		},
+			// 		{
+			// 			text: 'Hono',
+			// 			link: '/migrate/from-hono'
+			// 		},
+			// 		{
+			// 			text: 'tRPC',
+			// 			link: '/migrate/from-trpc'
+			// 		}
+			// 	]
+			// },
 			{
 				text: 'Integration',
 				collapsed: false,

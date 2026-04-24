@@ -380,7 +380,7 @@ button.copy::after {
     &:nth-child(9) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/search.svg);
+                background-image: url(/assets/cook.svg);
             }
 
             &::after {
@@ -392,7 +392,7 @@ button.copy::after {
     &:nth-child(10) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/cook.svg);
+                background-image: url(/assets/book.svg);
             }
 
             &::after {

@@ -634,7 +634,7 @@ const questions = [
     'How to add OpenAPI',
     'Can I use Zod with Elysia?',
     'What is OpenAPI type gen',
-    'Elysia compare to Hono'
+    'How to separate route file'
 ] as const
 
 const includeCurrentPage = ref(false)
