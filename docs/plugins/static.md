@@ -23,7 +23,7 @@ bun add @elysia/static
 ```
 
 Then use it:
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysia/static'
 

@@ -220,7 +220,7 @@ By default, each plugin will be re-executed **every time** applying to another i
 
 To prevent this, Elysia can deduplicate [lifecycle](/essential/life-cycle) with **a unique identifier** using `name` and optional `seed` property.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 // `name` is an unique identifier
@@ -437,7 +437,7 @@ Functional callbacks allow access to existing properties of the main instance. F
 
 To define a functional callback, create a function that accepts Elysia as a parameter.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = (app: Elysia) => app
@@ -504,11 +504,7 @@ Guard accepts the same parameters as inline hooks; the only difference is that y
 
 This means that the code above is translated into:
 
-```typescript twoslash
-const signUp = <T>(a: T) => a
-const signIn = <T>(a: T) => a
-const isUserExists = (a: any) => a
-// ---cut---
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -558,7 +554,7 @@ new Elysia()
 
 
 From nested grouped guards, we can merge group and guard together by providing guard scope to the 2nd parameter of group:
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -601,7 +597,7 @@ To apply a hook to a parent, you may use one of the following:
 ### Inline as
 Every event listener will accept `as` parameter to specify the scope of the hook.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()
@@ -646,7 +642,7 @@ However, it doesn't support `derive` and `resolve` method.
 ### Instance as
 `as` reads all hooks and schema scopes of the current instance, modifying them.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia()

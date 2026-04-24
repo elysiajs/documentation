@@ -180,7 +180,7 @@ new Elysia()
 	})
 ```
 
-```typescript twoslash [auth.ts]
+```typescript [auth.ts]
 import { Elysia, t } from 'elysia'
 
 export const auth = new Elysia()
@@ -245,7 +245,7 @@ const { data } = await api.profile.patch({
 
 <template v-slot:ssot-4>
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { openapi } from '@elysia/openapi'
 
@@ -298,7 +298,7 @@ new Elysia()
 
 ::: code-group
 
-```ts twoslash [TypeBox]
+```ts [TypeBox]
 import { Elysia, t } from 'elysia'
 
 
@@ -313,7 +313,7 @@ new Elysia()
 	})
 ```
 
-```ts twoslash [Zod]
+```ts [Zod]
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 
@@ -328,7 +328,7 @@ new Elysia()
 	})
 ```
 
-```ts twoslash [Valibot]
+```ts [Valibot]
 import { Elysia } from 'elysia'
 import * as v from 'valibot'
 
@@ -343,7 +343,7 @@ new Elysia()
 	})
 ```
 
-```ts twoslash [ArkType]
+```ts [ArkType]
 import { Elysia } from 'elysia'
 import { type } from 'arktype'
 
@@ -358,7 +358,7 @@ new Elysia()
 	})
 ```
 
-```ts twoslash [Effect]
+```ts [Effect]
 import { Elysia } from 'elysia'
 import { Schema } from 'effect'
 

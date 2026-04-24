@@ -45,7 +45,7 @@ If you are familiar with TypeScript, creating a TypeBox schema behaves the same 
 
 To create your first schema, import **Elysia.t** from Elysia and start with the most basic type:
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -685,16 +685,11 @@ This will allow clients to optionally provide a query parameter. This behavior a
 
 This is different from TypeBox where optional is to mark a field of an object as optional.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
 	.get('/optional', ({ query }) => query, {
-                       // ^?
-
-
-
-
 		query: t.Optional(
 			t.Object({
 				name: t.String()

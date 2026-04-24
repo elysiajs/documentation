@@ -26,7 +26,7 @@ bun add @elysia/cors
 
 Then use it:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { cors } from '@elysia/cors'
 
@@ -154,7 +154,7 @@ Below you can find the common patterns to use the plugin.
 
 ## Allow CORS by top-level domain
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { cors } from '@elysia/cors'
 

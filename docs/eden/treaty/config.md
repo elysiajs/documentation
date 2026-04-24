@@ -121,7 +121,7 @@ treaty<App>('localhost:3000', {
 ```
 
 All parameters that are passed to fetch will be passed to the fetcher, which is equivalent to:
-```typescript twoslash
+```typescript
 fetch('localhost:3000', {
     headers: {
         'X-Custom': 'Griseo'

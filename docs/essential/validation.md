@@ -69,7 +69,7 @@ const demo4 = new Elysia()
 
 Elysia provides a schema to validate data out of the box to ensure that the data is in the correct format.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -327,7 +327,7 @@ If you're using Standard Schema, it's important to note that Elysia will not be 
 
 But Elysia export a `fileType` that can be used to validate file type by using magic number.
 
-```typescript twoslash
+```typescript
 import { Elysia, fileType } from 'elysia'
 import { z } from 'zod'
 
@@ -994,7 +994,7 @@ Expected value to be an object
 
 We can customize the behavior of validation based on the [onError](/essential/life-cycle.html#on-error) event by narrowing down the error code to "**VALIDATION**".
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -1063,7 +1063,7 @@ Let's start with a simple scenario.
 
 Suppose we have a controller that handles sign-in with the same model.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -1080,7 +1080,7 @@ const app = new Elysia()
 ```
 
 We can refactor the code by extracting the model as a variable and referencing it.
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 // Maybe in a different file eg. models.ts
@@ -1100,7 +1100,7 @@ This method of separating concerns is an effective approach, but we might find o
 
 We can resolve that by creating a "reference model", allowing us to name the model and use auto-completion to reference it directly in `schema` by registering the models with `model`.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()

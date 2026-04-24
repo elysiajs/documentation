@@ -150,17 +150,11 @@ new Elysia()
 ## File upload
 See [Validation#file](/essential/validation#file)
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
 	.post('/body', ({ body }) => body, {
-                    // ^?
-
-
-
-
-
 		body: t.Object({
 			file: t.File({ format: 'image/*' }),
 			multipleFiles: t.Files()

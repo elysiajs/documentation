@@ -35,7 +35,7 @@ To use `trace`, you need to call `trace` method on the Elysia instance, and pass
 
 You may listen to each lifecycle by adding `on` prefix followed by the lifecycle name, for example `onHandle` to listen to the `handle` event.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -59,7 +59,7 @@ Every event except `handle` has children, which is an array of events that are e
 
 You can use `onEvent` to listen to each child event in order
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 const sleep = (time = 1000) =>
@@ -95,7 +95,7 @@ Then we listen to each child event by using `onEvent` and print the duration of 
 ## Trace Parameter
 When each lifecycle is called
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -141,7 +141,7 @@ You may listen to the following life-cycle:
 ## Trace Listener
 A listener for each life-cycle event
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -173,7 +173,7 @@ Error that was thrown in the lifecycle, will be resolved when the function is en
 ### onStop - `callback?: (detail: TraceEndDetail) => any`
 A callback that will be executed when the lifecycle is ended
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 const app = new Elysia()

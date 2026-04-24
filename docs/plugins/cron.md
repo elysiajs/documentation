@@ -26,7 +26,7 @@ bun add @elysia/cron
 
 Then use it:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { cron } from '@elysia/cron'
 

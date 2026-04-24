@@ -30,7 +30,7 @@ bun add @elysia/openapi
 
 Then use it:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { openapi } from '@elysia/openapi'
 

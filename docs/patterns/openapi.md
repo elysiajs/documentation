@@ -472,7 +472,7 @@ new Elysia()
 
 You can change the OpenAPI endpoint by setting [path](#path) in the plugin config.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { openapi } from '@elysia/openapi'
 
@@ -489,7 +489,7 @@ new Elysia()
 
 We can customize the OpenAPI information by setting [documentation.info](#documentationinfo) in the plugin config.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { openapi } from '@elysia/openapi'
 

@@ -291,7 +291,7 @@ const appRouter = t.router({
 
 ::: code-group
 
-```ts twoslash [Elysia TypeBox]
+```ts [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -309,7 +309,7 @@ const app = new Elysia()
 	})
 ```
 
-```ts twoslash [Elysia Zod]
+```ts [Elysia Zod]
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 
@@ -328,7 +328,7 @@ const app = new Elysia()
 	})
 ```
 
-```ts twoslash [Elysia Valibot]
+```ts [Elysia Valibot]
 import { Elysia } from 'elysia'
 import * as v from 'valibot'
 
@@ -528,7 +528,7 @@ For example, you can customize context in a **type safe** manner using [derive](
 
 ::: code-group
 
-```ts twoslash [tRPC]
+```ts [tRPC]
 import { initTRPC } from '@trpc/server'
 
 const t = initTRPC.context<{
@@ -538,15 +538,8 @@ const t = initTRPC.context<{
 
 const appRouter = t.router({
 	version: t.procedure.query(({ ctx: { version } }) => version),
-	//                                                     ^?
-
-
 	token: t.procedure.query(({ ctx: { token, version } }) => {
-		version
-		//  ^?
-
 		return token
-		//       ^?
 	})
 })
 ```
@@ -564,7 +557,7 @@ const appRouter = t.router({
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -578,13 +571,9 @@ const app = new Elysia()
 			token: authorization.split(' ')[1]
 		}
 	})
+	// {  token: string, version: number }
 	.get('/token', ({ token, version }) => {
-		version
-		//  ^?
-
-
 		return token
-		//       ^?
 	})
 ```
 
@@ -608,7 +597,7 @@ Both support custom middleware, but Elysia use macro to pass custom argument to 
 
 ::: code-group
 
-```ts twoslash [tRPC]
+```ts [tRPC]
 import { initTRPC, TRPCError } from '@trpc/server'
 
 const t = initTRPC.create()
@@ -623,8 +612,6 @@ const findUser = (authorization?: string) => {
 const role = (role: 'user' | 'admin') =>
 	t.middleware(({ next, input }) => {
 		const user = findUser(input as string)
-		//                      ^?
-
 
 		if(user.role !== role)
 			throw new TRPCError({
@@ -643,13 +630,7 @@ const appRouter = t.router({
 	token: t.procedure
 		.use(role('admin'))
 		.query(({ ctx: { user } }) => user)
-		//                 ^?
 })
-
-
-
-// ---cut-after---
-// Unused
 ```
 
 :::
@@ -665,14 +646,7 @@ const appRouter = t.router({
 
 ::: code-group
 
-```ts twoslash [Elysia]
-const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
-}
-// ---cut---
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -690,8 +664,8 @@ const app = new Elysia()
 			}
 		})
 	})
+	// {  token: string, version: number }
 	.get('/token', ({ user }) => user, {
-	//                 ^?
 		role: 'admin'
 	})
 ```
@@ -760,7 +734,7 @@ const appRouter = t.router()
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 class CustomError extends Error {
@@ -789,11 +763,6 @@ const app = new Elysia()
 	// Global error handler
 	.onError(({ error, code }) => {
 		if(code === 'CUSTOM')
-		// ^?
-
-
-
-
 			return {
 				message: 'Something went wrong!',
 				error
@@ -1003,7 +972,7 @@ export const openApiDocument = generateOpenApiDocument(appRouter, {
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia, t } from 'elysia'
 import { openapi } from '@elysia/openapi' // [!code ++]
 
@@ -1018,7 +987,6 @@ const app = new Elysia()
 		)
 	})
 	.post('/users', ({ body }) => body, {
-	//                  ^?
 		body: 'user',
 		response: {
 			201: 'user'
@@ -1027,7 +995,6 @@ const app = new Elysia()
 			summary: 'Create user'
 		}
 	})
-
 ```
 
 :::
@@ -1154,7 +1121,7 @@ describe('GET /', () => {
 
 Alternatively, Elysia also offers a helper library called [Eden](/eden/overview) for End-to-end type safety which is similar to `tRPC.createCallerFactory`, allowing us to test with auto-completion, and full type safety like tRPC without the ceremony.
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 import { treaty } from '@elysia/eden'
 import { describe, expect, it } from 'bun:test'
@@ -1168,7 +1135,6 @@ describe('GET /', () => {
 
 		expect(status).toBe(200)
 		expect(data).toBe('Hello World')
-		//      ^?
 	})
 })
 ```
@@ -1182,7 +1148,7 @@ Both offer end-to-end type safety for client-server communication.
 
 ::: code-group
 
-```ts twoslash [tRPC]
+```ts [tRPC]
 import { initTRPC } from '@trpc/server'
 import { createHTTPServer } from '@trpc/server/adapters/standalone'
 import { z }  from 'zod'
@@ -1225,13 +1191,6 @@ const { message } = await client.mirror.mutate({
 })
 
 message
-// ^?
-
-
-
-
-// ---cut-after---
-console.log('ok')
 ```
 
 :::
@@ -1247,7 +1206,7 @@ console.log('ok')
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysia/eden'
 
@@ -1264,31 +1223,12 @@ const { data, error } = await api.mirror.post({
 	message: 'Hello World'
 })
 
-if(error)
+if (error)
+	// { status: 422, body: { message: 'Invalid request body', details: [...] } }
 	throw error
-	//     ^?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// { message: 'Hello World' }
 console.log(data)
-//          ^?
-
-
-
-// ---cut-after---
-console.log('ok')
 ```
 
 :::

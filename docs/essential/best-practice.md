@@ -58,50 +58,7 @@ Here's an example code of how to distribute your code into a feature-based folde
 
 ::: code-group
 
-```typescript [auth/index.ts] twoslash
-// @filename: model.ts
-import { t, type UnwrapSchema } from 'elysia'
-
-export const AuthModel = {
-	signInBody: t.Object({
-		username: t.String(),
-		password: t.String(),
-	}),
-	signInResponse: t.Object({
-		username: t.String(),
-		token: t.String(),
-	}),
-	signInInvalid: t.Literal('Invalid username or password')
-} as const
-
-// Optional, cast all model to TypeScript type
-export type AuthModel = {
-	[k in keyof typeof AuthModel]: UnwrapSchema<typeof AuthModel[k]>
-}
-
-// @filename: service.ts
-import { status } from 'elysia'
-import type { AuthModel } from './model'
-
-export abstract class Auth {
-	static async signIn({ username, password }: AuthModel['signInBody']) {
-		if (Math.random() > 0.5)
-			throw status(
-				400,
-				'Invalid username or password' satisfies AuthModel['signInInvalid']
-			)
-
-		return {
-			username: 'saltyaom',
-			token: 'token'
-		}
-	}	
-}
-
-// @filename: index.ts
-// ---cut---
-// Controller (HTTP adapter) eg. routing, request validation
-// You can define another Controller that is not tied with Elysia
+```typescript [auth/index.ts]
 import { Elysia } from 'elysia'
 
 import { Auth } from './service'
@@ -160,7 +117,7 @@ export abstract class Auth {
 }
 ```
 
-```typescript [auth/model.ts] twoslash
+```typescript [auth/model.ts]
 // Model define the data structure and validation for the request and response
 import { t, type UnwrapSchema } from 'elysia'
 

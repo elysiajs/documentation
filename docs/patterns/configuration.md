@@ -20,7 +20,7 @@ Elysia comes with a configurable behavior, allowing us to customize various aspe
 
 We can define a configuration by using a constructor.
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia({
@@ -52,7 +52,7 @@ new Elysia({
 
 Whether Elysia should include unsafe validation details in the error response on production.
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia({
@@ -78,7 +78,7 @@ Ahead of Time compilation.
 
 Elysia has a built-in JIT _"compiler"_ that can [optimize performance](/blog/elysia-04.html#ahead-of-time-complie).
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia({
@@ -99,7 +99,7 @@ Define an OpenAPI schema for all routes of an instance.
 
 This schema will be used to generate OpenAPI documentation for all routes of an instance.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia({
@@ -131,7 +131,7 @@ new Elysia({ encodeSchema: true })
 
 Define the name of an instance which is used for debugging and [Plugin Deduplication](/essential/plugin.html#plugin-deduplication)
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia({
@@ -144,7 +144,7 @@ new Elysia({
 
 Use optimized functions for handling inline values for each respective runtime.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia({
@@ -178,7 +178,7 @@ Bun.serve({
 
 Whether Elysia should coerce fields into a specified schema.
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia({
@@ -202,7 +202,7 @@ Options - @default `true`
 
 Whether Elysia should [precompile all routes](/blog/elysia-10.html#improved-startup-time) ahead of time before starting the server.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia({
@@ -222,7 +222,7 @@ It's recommended to leave it as `false`.
 
 Define a prefix for all routes of an instance
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia({
@@ -234,7 +234,7 @@ When prefix is defined, all routes will be prefixed with the given value.
 
 #### Example
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia({ prefix: '/v1' }).get('/name', 'elysia') // Path is /v1/name
@@ -258,7 +258,7 @@ new Elysia({
 
 Define a value that will be used to generate checksum of an instance, used for [Plugin Deduplication](/essential/plugin.html#plugin-deduplication)
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia({
@@ -276,7 +276,7 @@ Whether Elysia should handle paths strictly.
 
 According to [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3), a path should be strictly equal to the path defined in the route.
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia({ strictPath: true })
@@ -289,7 +289,7 @@ new Elysia({ strictPath: true })
 
 #### Example
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 // Path can be either /name or /name/
@@ -511,7 +511,7 @@ Explicitly set a server name
 
 Define tags for OpenAPI schema for all routes of an instance similar to [detail](#detail)
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia({

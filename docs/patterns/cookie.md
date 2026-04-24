@@ -116,7 +116,7 @@ new Elysia()
 ## Cookie Schema
 You can strictly validate cookie type and provide type inference for cookies by using cookie schema with `t.Cookie`.
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -139,7 +139,7 @@ new Elysia()
 ## Nullable Cookie
 To handle nullable cookie value, you can use `t.Optional` on the cookie name you want to be nullable.
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -170,7 +170,7 @@ This makes sure that the cookie value is not modified by malicious actors, helpi
 
 ## Using Cookie Signature
 By providing a cookie secret and `sign` property to indicate which cookie should have signature verification.
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -197,7 +197,7 @@ Elysia then sign and unsign cookie value automatically.
 ## Constructor
 You can use Elysia constructor to set global cookie `secret` and `sign` values to apply to all routes globally instead of inlining to every route you need.
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 new Elysia({

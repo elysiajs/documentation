@@ -23,7 +23,7 @@ bun add @elysia/bearer
 ```
 
 Then use it:
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { bearer } from '@elysia/bearer'
 

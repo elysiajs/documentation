@@ -59,7 +59,7 @@ Using an inline value can be useful for static resources like **files**.
 
 Contains information about each request. It is passed as the only argument of a handler.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()

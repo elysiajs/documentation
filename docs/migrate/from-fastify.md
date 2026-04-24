@@ -297,7 +297,7 @@ app.patch(
 
 ::: code-group
 
-```ts twoslash [Elysia TypeBox]
+```ts [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -315,7 +315,7 @@ const app = new Elysia()
 	})
 ```
 
-```ts twoslash [Elysia Zod]
+```ts [Elysia Zod]
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 
@@ -334,7 +334,7 @@ const app = new Elysia()
 	})
 ```
 
-```ts twoslash [Elysia Valibot]
+```ts [Elysia Valibot]
 import { Elysia } from 'elysia'
 import * as v from 'valibot'
 
@@ -560,8 +560,7 @@ For example, you can customize context in a **type safe** manner using [derive](
 
 ::: code-group
 
-```ts twoslash [Fastify]
-// @errors: 2339 2322
+```ts [Fastify]
 import fastify from 'fastify'
 
 const app = fastify()
@@ -569,8 +568,8 @@ const app = fastify()
 app.decorateRequest('version', 2)
 
 app.get('/version', (req, res) => {
+	// Error: Property 'version' does not exist on type 'FastifyRequest'
 	res.send(req.version)
-	//            ^?
 })
 
 app.get(
@@ -588,11 +587,11 @@ app.get(
 		}
 	},
 	(req, res) => {
+		// Error: Property 'token' does not exist on type 'FastifyRequest'
 		req.version
-		//  ^?
 
+		// Error: Property 'token' does not exist on type 'FastifyRequest'
 		res.send(req.token)
-		//            ^?
 	}
 )
 
@@ -614,7 +613,7 @@ app.listen({
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -628,13 +627,9 @@ const app = new Elysia()
 			token: authorization.split(' ')[1]
 		}
 	})
+	// {  token: string, version: number }
 	.get('/token', ({ token, version }) => {
-		version
-		//  ^?
-
-
 		return token
-		//       ^?
 	})
 ```
 
@@ -670,15 +665,7 @@ Fastify use a function to return Fastify plugin to define a named middleware, wh
 
 ::: code-group
 
-```ts twoslash [Fastify]
-const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
-}
-// ---cut---
-// @errors: 2339 2322
+```ts [Fastify]
 import fastify from 'fastify'
 import type { FastifyRequest, FastifyReply } from 'fastify'
 
@@ -691,7 +678,7 @@ const role =
 
 		if (user.role !== role) return reply.status(401).send('Unauthorized')
 
-		// @ts-ignore
+		// Error: Property 'user' does not exist on type 'FastifyRequest'
 		request.user = user
 
 		next()
@@ -703,8 +690,8 @@ app.get(
 		preHandler: role('admin')
 	},
 	(request, reply) => {
+		// Error: Property 'user' does not exist on type 'FastifyRequest'
 		reply.send(request.user)
-		//            ^?
 	}
 )
 ```
@@ -722,14 +709,7 @@ app.get(
 
 ::: code-group
 
-```ts twoslash [Elysia]
-const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
-}
-// ---cut---
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -747,8 +727,8 @@ const app = new Elysia()
 			}
 		})
 	})
+	// { user: User }
 	.get('/token', ({ user }) => user, {
-	//                 ^?
 		role: 'admin'
 	})
 ```
@@ -827,7 +807,7 @@ app.get(
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 class CustomError extends Error {
@@ -856,11 +836,6 @@ const app = new Elysia()
 	// Global error handler
 	.onError(({ error, code }) => {
 		if(code === 'CUSTOM')
-		// ^?
-
-
-
-
 			return {
 				message: 'Something went wrong!',
 				error
@@ -1218,7 +1193,7 @@ fastify.swagger()
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia, t } from 'elysia'
 import { openapi } from '@elysia/openapi' // [!code ++]
 
@@ -1233,7 +1208,6 @@ const app = new Elysia()
 		)
 	})
 	.post('/users', ({ body }) => body, {
-	//                  ^?
 		body: 'user',
 		response: {
 			201: 'user'
@@ -1342,7 +1316,7 @@ describe('GET /', () => {
 
 Alternatively, Elysia also offers a helper library called [Eden](/eden/overview) for End-to-end type safety, allowing us to test with auto-completion, and full type safety.
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 import { treaty } from '@elysia/eden'
 import { describe, expect, it } from 'bun:test'
@@ -1356,7 +1330,6 @@ describe('GET /', () => {
 
 		expect(status).toBe(200)
 		expect(data).toBe('Hello World')
-		//      ^?
 	})
 })
 ```
@@ -1366,7 +1339,7 @@ Elysia offers a built-in support for **end-to-end type safety** without code gen
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysia/eden'
 
@@ -1383,30 +1356,12 @@ const { data, error } = await api.mirror.post({
 	message: 'Hello World'
 })
 
-if(error)
+if (error)
+	// { status: 422, body: { message: 'Invalid request body', details: [...] } }
 	throw error
-	//     ^?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+// { message: 'Hello World' }
 console.log(data)
-//          ^?
-
-
-
-// ---cut-after---
-console.log('ok')
 ```
 
 :::

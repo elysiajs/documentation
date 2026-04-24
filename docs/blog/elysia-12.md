@@ -168,7 +168,7 @@ Due to TypeScript limitation, macro's `resolve` only works with the new object s
 
 Elysia 1.2 introduce a parser with a custom name, allowing you to specify which parser should be used for decoding request body.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -185,7 +185,7 @@ new Elysia()
 
 You may also reference Elysia's built-in parser or provide multiple parsers to be used in order.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia()

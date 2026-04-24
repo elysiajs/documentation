@@ -40,7 +40,7 @@ Designed with simplicity and type-safety in mind, Elysia offers a familiar API w
 
 Here's a simple hello world in Elysia.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -245,7 +245,7 @@ With Elysia, type safety is not limited to server-side.
 
 With Elysia, you can synchronize your types with your frontend team automatically, similar to tRPC, using Elysia's client library, "Eden".
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 import { openapi, fromTypes } from '@elysia/openapi'
 
@@ -373,7 +373,7 @@ const { data, error } = await app.user({ id: 617 }).get()
 console.log(data)
 ```
 
-```typescript twoslash [server.ts]
+```typescript [server.ts]
 import { Elysia, t } from 'elysia'
 
 const plugin = new Elysia()

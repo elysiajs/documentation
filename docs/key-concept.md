@@ -111,7 +111,7 @@ A component is a plugin that could plug into other instances.
 
 It could be a router, a store, a service, or anything else.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 const store = new Elysia()
@@ -223,7 +223,7 @@ By default, each plugin will be re-executed **every time** applying to another i
 
 To prevent this, Elysia can deduplicate lifecycle with **a unique identifier** using `name` and optional `seed` property.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 // `name` is a unique identifier
@@ -335,7 +335,7 @@ You should **always use an inline function** to provide an accurate type inferen
 
 If you need to apply a separate function, eg. MVC's controller pattern, it's recommended to destructure properties from inline function to prevent unnecessary type inference as follows:
 
-```ts twoslash
+```ts
 import { Elysia, t } from 'elysia'
 
 abstract class Controller {

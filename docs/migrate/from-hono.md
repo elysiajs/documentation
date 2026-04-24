@@ -316,7 +316,7 @@ app.patch(
 
 ::: code-group
 
-```ts twoslash [Elysia TypeBox]
+```ts [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
@@ -334,7 +334,7 @@ const app = new Elysia()
 	})
 ```
 
-```ts twoslash [Elysia Zod]
+```ts [Elysia Zod]
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 
@@ -353,7 +353,7 @@ const app = new Elysia()
 	})
 ```
 
-```ts twoslash [Elysia Valibot]
+```ts [Elysia Valibot]
 import { Elysia } from 'elysia'
 import * as v from 'valibot'
 
@@ -565,8 +565,7 @@ For example, you can customize context in a **type-safe** manner using [derive](
 
 ::: code-group
 
-```ts twoslash [Hono]
-// @errors: 2339, 2769
+```ts [Hono]
 import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory'
 
@@ -617,7 +616,7 @@ app.post('/user', authenticate, async (c) => {
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -631,13 +630,9 @@ const app = new Elysia()
 			token: authorization.split(' ')[1]
 		}
 	})
+	// {  token: string, version: number }
 	.get('/token', ({ token, version }) => {
-		version
-		//  ^?
-
-
 		return token
-		//       ^?
 	})
 ```
 
@@ -673,15 +668,7 @@ Hono uses a callback function to define a reusable route-specific middleware, wh
 
 ::: code-group
 
-```ts twoslash [Hono]
-const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
-}
-// ---cut---
-// @errors: 2339 2589 2769
+```ts [Hono]
 import { Hono } from 'hono'
 import { createMiddleware } from 'hono/factory'
 
@@ -701,6 +688,7 @@ const role = (role: 'user' | 'admin') => createMiddleware(async (c, next) => {
 })
 
 app.get('/user/:id', role('admin'), (c) => {
+	// Error: No overload matches this call.
 	return c.json(c.get('user'))
 })
 ```
@@ -718,14 +706,7 @@ app.get('/user/:id', role('admin'), (c) => {
 
 ::: code-group
 
-```ts twoslash [Elysia]
-const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
-}
-// ---cut---
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -743,8 +724,8 @@ const app = new Elysia()
 			}
 		})
 	})
+	// { user: User }
 	.get('/token', ({ user }) => user, {
-	//                 ^?
 		role: 'admin'
 	})
 ```
@@ -813,7 +794,7 @@ app.get('/error', (req, res) => {
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 class CustomError extends Error {
@@ -842,11 +823,6 @@ const app = new Elysia()
 	// Global error handler
 	.onError(({ error, code }) => {
 		if(code === 'CUSTOM')
-		// ^?
-
-
-
-
 			return {
 				message: 'Something went wrong!',
 				error
@@ -1201,7 +1177,7 @@ export default app
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia, t } from 'elysia'
 import { openapi } from '@elysia/openapi' // [!code ++]
 
@@ -1216,7 +1192,6 @@ const app = new Elysia()
 		)
 	})
 	.post('/users', ({ body }) => body, {
-	//                  ^?
 		body: 'user',
 		response: {
 			201: 'user'
@@ -1317,7 +1292,7 @@ describe('GET /', () => {
 
 Alternatively, Elysia also offers a helper library called [Eden](/eden/overview) for End-to-end type safety, allowing us to test with auto-completion, and full type safety.
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 import { treaty } from '@elysia/eden'
 import { describe, expect, it } from 'bun:test'
@@ -1331,7 +1306,6 @@ describe('GET /', () => {
 
 		expect(status).toBe(200)
 		expect(data).toBe('Hello World')
-		//      ^?
 	})
 })
 ```
@@ -1345,7 +1319,7 @@ Both offer end-to-end type safety, however Hono doesn't seem to offer type-safe 
 
 ::: code-group
 
-```ts twoslash [Hono]
+```ts [Hono]
 import { Hono } from 'hono'
 import { hc } from 'hono/client'
 import { z } from 'zod'
@@ -1371,14 +1345,8 @@ const response = await client.mirror.$post({
 	}
 })
 
+// { message: string }
 const data = await response.json()
-//     ^?
-
-
-
-
-
-console.log(data)
 ```
 
 :::
@@ -1394,7 +1362,7 @@ console.log(data)
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysia/eden'
 
@@ -1411,31 +1379,12 @@ const { data, error } = await api.mirror.post({
 	message: 'Hello World'
 })
 
-if(error)
+if (error)
+	// { status: 422, body: { message: 'Invalid request body', details: [...] } }
 	throw error
-	//     ^?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// { message: 'Hello World' }
 console.log(data)
-//          ^?
-
-
-
-// ---cut-after---
-console.log('ok')
 ```
 
 :::

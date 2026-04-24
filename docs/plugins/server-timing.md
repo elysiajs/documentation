@@ -23,7 +23,7 @@ bun add @elysia/server-timing
 ```
 
 Then use it:
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { serverTiming } from '@elysia/server-timing'
 
@@ -76,7 +76,7 @@ Below you can find the common patterns to use the plugin.
 ## Allow Condition
 You may disable Server Timing on specific routes via `allow` property
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 import { serverTiming } from '@elysia/server-timing'
 

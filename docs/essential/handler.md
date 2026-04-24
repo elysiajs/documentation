@@ -65,7 +65,7 @@ Static resource values, headers and status can be mutated dynamically using life
 
 **Context** contains request information which is unique for each request, and is not shared except for `store` <small>(global mutable state)</small>.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -135,7 +135,7 @@ new Elysia()
 
 **set** is a mutable property that forms a response accessible via `Context.set`.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -150,7 +150,7 @@ new Elysia()
 ### set.headers
 Allows us to append or delete response headers represented as an Object.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -174,7 +174,7 @@ redirect <Badge type="warning">Legacy</Badge>
 
 Redirect a request to another resource.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -202,7 +202,7 @@ Set a default status code if not provided.
 
 It's recommended to use this in a plugin that only needs to return a specific status code while allowing the user to return a custom value. For example, HTTP 201/206 or 403/405, etc.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -223,14 +223,12 @@ HTTP Status indicates the type of response. If the route handler is executed suc
 
 You can also set a status code using the common name of the status code instead of using a number.
 
-```typescript twoslash
-// @errors 2322
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
     .get('/', ({ set }) => {
-        set.status
-          // ^?
+        set.status = 418
 
         return 'Kirifuji Nagisa'
     })
@@ -244,7 +242,7 @@ Elysia provides a mutable store for interacting with cookies.
 
 There's no need for get/set; you can extract the cookie name and retrieve or update its value directly.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -262,7 +260,7 @@ See [Patterns: Cookie](/patterns/cookie) for more information.
 ## Redirect
 Redirect a request to another resource.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -324,7 +322,7 @@ In this example, we stream a response by using the `yield` keyword.
 ## Server Sent Events (SSE)
 Elysia supports [Server Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) by providing a `sse` utility function.
 
-```typescript twoslash
+```typescript
 import { Elysia, sse } from 'elysia'
 
 new Elysia()
@@ -346,7 +344,7 @@ When a value is wrapped in `sse`, Elysia will automatically set the response hea
 
 Headers can only be set before the first chunk is yielded.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -388,7 +386,7 @@ Before response streaming is completed, if the user cancels the request, Elysia 
 ### Eden
 [Eden](/eden/overview) will interpret a stream response as `AsyncGenerator` allowing us to use `for await` loop to consume the stream.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { treaty } from '@elysia/eden'
 

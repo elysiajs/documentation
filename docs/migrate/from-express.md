@@ -284,19 +284,14 @@ app.patch('/user/:id', (req, res) => {
 
 ::: code-group
 
-```ts twoslash [Elysia TypeBox]
+```ts [Elysia TypeBox]
 import { Elysia, t } from 'elysia'
 
 const app = new Elysia()
 	.patch('/user/:id', ({ params, body }) => ({
-//                           ^?
 		params,
 		body
-//   ^?
 	}),
-
-
-
 	{
 		params: t.Object({
 			id: t.Number()
@@ -307,7 +302,7 @@ const app = new Elysia()
 	})
 ```
 
-```ts twoslash [Elysia Zod]
+```ts [Elysia Zod]
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 
@@ -326,7 +321,7 @@ const app = new Elysia()
 	})
 ```
 
-```ts twoslash [Elysia Valibot]
+```ts [Elysia Valibot]
 import { Elysia } from 'elysia'
 import * as v from 'valibot'
 
@@ -532,8 +527,7 @@ For example, you can customize context in a **type safe** manner using [derive](
 
 ::: code-group
 
-```ts twoslash [Express]
-// @errors: 2339
+```ts [Express]
 import express from 'express'
 import type { Request, Response } from 'express'
 
@@ -547,8 +541,8 @@ const getVersion = (req: Request, res: Response, next: Function) => {
 }
 
 app.get('/version', getVersion, (req, res) => {
+	// Error: Property 'version' does not exist on type 'Request'
 	res.send(req.version)
-	//            ^?
 })
 
 const authenticate = (req: Request, res: Response, next: Function) => {
@@ -564,11 +558,11 @@ const authenticate = (req: Request, res: Response, next: Function) => {
 }
 
 app.get('/token', getVersion, authenticate, (req, res) => {
+	// Error: Property 'version' does not exist on type 'Request'
 	req.version
-	//  ^?
 
+	// Error: Property 'token' does not exist on type 'Request'
   	res.send(req.token)
-   //            ^?
 })
 ```
 
@@ -585,7 +579,7 @@ app.get('/token', getVersion, authenticate, (req, res) => {
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -599,13 +593,9 @@ const app = new Elysia()
 			token: authorization.split(' ')[1]
 		}
 	})
+	// {  token: string, version: number }
 	.get('/token', ({ token, version }) => {
-		version
-		//  ^?
-
-
 		return token
-		//       ^?
 	})
 ```
 
@@ -641,15 +631,7 @@ Express uses a function to return a plugin to define a reusable route-specific m
 
 ::: code-group
 
-```ts twoslash [Express]
-const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
-}
-// ---cut---
-// @errors: 2339
+```ts [Express]
 import express from 'express'
 import type { Request, Response } from 'express'
 
@@ -662,15 +644,14 @@ const role = (role: 'user' | 'admin') =>
 	  	if (user.role !== role)
 	   		return res.status(401).send('Unauthorized')
 
-		// @ts-ignore
 	    req.user = user
 
 		next()
 	}
 
 app.get('/token', role('admin'), (req, res) => {
+	// Error: Property 'user' does not exist on type 'Request'
   	res.send(req.user)
-   //            ^?
 })
 ```
 
@@ -687,14 +668,7 @@ app.get('/token', role('admin'), (req, res) => {
 
 ::: code-group
 
-```ts twoslash [Elysia]
-const findUser = (authorization?: string) => {
-	return {
-		name: 'Jane Doe',
-		role: 'admin' as const
-	}
-}
-// ---cut---
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
@@ -704,7 +678,7 @@ const app = new Elysia()
 				const user = findUser(authorization)
 
 				if(user.role !== role)
-					return status(401)
+					throw status(401)
 
 				return {
 					user
@@ -712,8 +686,8 @@ const app = new Elysia()
 			}
 		})
 	})
+	// { user: User }
 	.get('/token', ({ user }) => user, {
-	//                 ^?
 		role: 'admin'
 	})
 ```
@@ -780,7 +754,7 @@ app.get('/error', (req, res) => {
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 
 class CustomError extends Error {
@@ -809,11 +783,6 @@ const app = new Elysia()
 	// Global error handler
 	.onError(({ error, code }) => {
 		if(code === 'CUSTOM')
-		// ^?
-
-
-
-
 			return {
 				message: 'Something went wrong!',
 				error
@@ -1113,7 +1082,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia, t } from 'elysia'
 import { openapi } from '@elysia/openapi' // [!code ++]
 
@@ -1128,7 +1097,6 @@ const app = new Elysia()
 		)
 	})
 	.post('/users', ({ body }) => body, {
-	//                  ^?
 		body: 'user',
 		response: {
 			201: 'user'
@@ -1230,7 +1198,7 @@ describe('GET /', () => {
 
 Alternatively, Elysia also offers a helper library called [Eden](/eden/overview) for End-to-end type safety, allowing you to test with auto-completion, and full type safety.
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia } from 'elysia'
 import { treaty } from '@elysia/eden'
 import { describe, expect, it } from 'bun:test'
@@ -1244,7 +1212,6 @@ describe('GET /', () => {
 
 		expect(status).toBe(200)
 		expect(data).toBe('Hello World')
-		//      ^?
 	})
 })
 ```
@@ -1254,7 +1221,7 @@ Elysia offers built-in support for **end-to-end type safety** without code gener
 
 ::: code-group
 
-```ts twoslash [Elysia]
+```ts [Elysia]
 import { Elysia, t } from 'elysia'
 import { treaty } from '@elysia/eden'
 
@@ -1272,29 +1239,11 @@ const { data, error } = await api.mirror.post({
 })
 
 if (error)
+	// { status: 422, body: { message: 'Invalid request body', details: [...] } }
 	throw error
-	//     ^?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+// { message: 'Hello World' }
 console.log(data)
-//          ^?
-
-
-
-// ---cut-after---
-console.log('ok')
 ```
 
 :::

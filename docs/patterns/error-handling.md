@@ -184,7 +184,7 @@ If Elysia doesn't know the error, the error code will be `UNKNOWN` with default 
 
 But you can also add a custom error with type safety with `Elysia.error` which will help narrow down the error type for full type safety with auto-complete, and custom status code as follows:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 class MyError extends Error {

@@ -147,7 +147,7 @@ Elysia's type system is complex, methods usually introduce a new type to the ins
 Using method chaining will help save that new type reference.
 
 For example:
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()

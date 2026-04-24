@@ -98,7 +98,7 @@ Dynamic paths match some part and capture the value to extract extra information
 
 To define a dynamic path, we can use a colon `:` followed by a name.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -125,7 +125,7 @@ See <DocLink href="/essential/route#dynamic-path">Dynamic Path</DocLink>.
 ### Optional path parameters
 We can make a path parameter optional by adding a question mark `?` after the parameter name.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -153,7 +153,7 @@ Dynamic paths allow capturing a single segment while wildcards allow capturing t
 
 To define a wildcard, we can use an asterisk `*`.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()

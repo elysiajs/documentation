@@ -22,7 +22,7 @@ This page is a **config reference** for **OpenTelemetry**. If you're looking to 
 
 To start using OpenTelemetry, install `@elysia/opentelemetry` and apply plugin to any instance.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 import { opentelemetry } from '@elysia/opentelemetry'
 
