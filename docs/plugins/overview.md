@@ -61,6 +61,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [OAuth2 Resource Server](https://github.com/ap-1/elysia-oauth2-resource-server) - a plugin for validating JWT tokens from OAuth2 providers against JWKS endpoints with support for issuer, audience, and scope verification
 -   [Elysia OpenID Client](https://github.com/macropygia/elysia-openid-client) - OpenID client based on [openid-client](https://github.com/panva/node-openid-client)
 -   [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple, lightweight rate limiter
+-   [Advanced Rate Limiter](https://github.com/mrtcmn/elysia-advanced-rate-limiter) - a fast, opinionated rate limiter for Elysia, in-memory or Redis
 -   [LLMs.txt](https://github.com/opuu/elysia-llms-txt) - generate `/llms.txt` for LLM-friendly docs from OpenAPI/Swagger
 -   [Logysia](https://github.com/tristanisham/logysia) - classic logging middleware
 -   [Logestic](https://github.com/cybercoder-naj/logestic) - an advanced and customizable logging library for ElysiaJS
