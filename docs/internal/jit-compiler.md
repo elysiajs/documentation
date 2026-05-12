@@ -27,7 +27,7 @@ Elysia is fast and will likely remain *one of the fastest web frameworks for Jav
 	<Benchmark />
 </section>
 
-Elysia speed is not only achieved by optimization for specific runtime eg. Bun native features like `Bun.serve.routes`. But also the way Elysia handles route registration and request handling.
+Elysia speed is not only achieved by optimization for specific runtime eg. Bun native features like `Bun.serve.routes`, but also by the way Elysia handles route registration and request handling.
 
 Elysia has an **JIT "compiler"** embedded within its core since [Elysia 0.4](/blog/elysia-04) (30 Mar 2023) at (*src/compose.ts*) using `new Function(...)` or also known as `eval(...)`.
 
