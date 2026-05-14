@@ -22,7 +22,7 @@
         <a
             href="https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13913513"
             target="_blank"
-            title="cs.money, CS2 skin traind platform, use Elysia on the backend of the customer support service, as well as for other products with high rps."
+            title="cs.money, CS2 skin trading platform, use Elysia on the backend of the customer support service, as well as for other products with high rps."
             class="opacity-60 hover:opacity-100 focus:opacity-100 transition-opacity"
         >
             <img src="/logo/csmoney.webp" class="dark:hidden" alt="X/Twitter" />
