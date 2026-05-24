@@ -132,7 +132,7 @@ console.log(
 )
 ```
 ## Macro
-You can use [macro](https://elysiajs.com/patterns/macro.html#macro) with [resolve](https://elysiajs.com/essential/handler.html#resolve) to provide session and user information before passing to the view.
+You can use [macro](https://elysiajs.com/patterns/macro.html#macro) with [resolve](https://elysiajs.com/patterns/macro#resolve) to provide session and user information before passing to the view.
 ```ts
 import { Elysia } from 'elysia'
 import { auth } from './auth'
