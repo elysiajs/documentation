@@ -207,7 +207,40 @@ body {
 
 ::view-transition-group(root) {
     animation-timing-function: var(--expo-in);
-    z-index: 100;
+    z-index: 1000;
+}
+
+.theme-switch-overlay {
+    position: fixed;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+html.-theme-switching .theme-switch-overlay {
+    view-transition-name: theme-switch-overlay;
+}
+
+::view-transition-group(theme-switch-overlay) {
+    z-index: 1001;
+}
+
+::view-transition-old(theme-switch-overlay) {
+    display: none;
+}
+
+::view-transition-new(theme-switch-overlay) {
+    mask: url('/assets/shigure-ui-smol.gif') center / 0 no-repeat;
+    animation: theme-switch-overlay var(--switch-duration) both;
+    mix-blend-mode: normal;
+}
+
+html.-theme-switching-from-dark::view-transition-new(theme-switch-overlay) {
+    background: white;
+}
+
+html.-theme-switching:not(.-theme-switching-from-dark)::view-transition-new(theme-switch-overlay) {
+    background: black;
 }
 
 ::view-transition-new(root) {
@@ -251,6 +284,24 @@ body {
     }
     100% {
         mask-size: 750vmax;
+    }
+}
+
+@keyframes theme-switch-overlay {
+    0% {
+        mask-size: 0;
+        opacity: 1;
+    }
+
+    10%,
+    90% {
+        mask-size: 25vmax;
+        opacity: 1;
+    }
+
+    100% {
+        mask-size: 25vmax;
+        opacity: 0;
     }
 }
 
