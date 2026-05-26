@@ -207,7 +207,7 @@ body {
 
 ::view-transition-group(root) {
     animation-timing-function: var(--expo-in);
-    z-index: 1000;
+    z-index: 100;
 }
 
 .theme-switch-overlay {
@@ -222,7 +222,7 @@ html.-theme-switching .theme-switch-overlay {
 }
 
 ::view-transition-group(theme-switch-overlay) {
-    z-index: 1001;
+    z-index: 101;
 }
 
 ::view-transition-old(theme-switch-overlay) {
