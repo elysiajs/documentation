@@ -147,6 +147,7 @@ Here are some of the official plugins maintained by the Elysia team:
 ## Project templates:
 
 -   [ElysiaTemplate](https://github.com/QLing-yes/ElysiaTemplate) - MVC backend, auto route & middleware, more coming.
+-   [Elysia Starter](https://github.com/mertthesamael/elysia-starter) - A production-ready ElysiaJS backend starter on Bun and TypeScript, with JWT auth, Prisma/PostgreSQL, OpenAPI, OpenTelemetry, Sentry, Kafka, WebSockets, Resend email, cron jobs, and Docker — structured for feature modules and a consistent API response envelope.
 
 ---
 
