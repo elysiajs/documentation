@@ -38,8 +38,8 @@ import { Elysia } from 'elysia'
 
 new Elysia()
 	.get('/', ({ cookie: { visit } }) => {
-		const total = +visit.value ?? 0
-		visit.value++
+		const total = Number(visit.value ?? 0)
+		visit.value = total + 1
 
 		return `You have visited ${visit.value} times`
 	})
