@@ -75,6 +75,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Apitally](https://github.com/apitally/apitally-js) - capture metrics, logs, and traces in [Apitally](https://apitally.io/elysia), a simple API monitoring and analytics tool
 -   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy on AWS Lambda
 -   [Decorators](https://github.com/gaurishhs/elysia-decorators) - use TypeScript decorators
+-   [InferDI](https://github.com/inferdi/inferdi/tree/main/packages/elysia) - type-safe, decorator-free dependency injection with per-request scopes for Elysia
 -   [Elysia FSR](https://github.com/deadlinecode/elysia-fsr) - file-system routing with Eden-compatible type generation, monorepo/workspace support, and logical route grouping
 -   [Autoload](https://github.com/kravetsone/elysia-autoload) - filesystem router based on a directory structure that generates types for [Eden](/eden/overview) with [`Bun.build`](https://github.com/kravetsone/elysia-autoload?tab=readme-ov-file#bun-build-usage) support
 -   [Msgpack](https://github.com/kravetsone/elysia-msgpack) - allows you to work with [MessagePack](https://msgpack.org)
