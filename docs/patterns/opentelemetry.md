@@ -178,7 +178,7 @@ export const instrumentation = opentelemetry({
 })
 ```
 
-Then we can apply this `instrumentaiton` plugin into our main instance in `src/index.ts`
+Then we can apply this `instrumentation` plugin into our main instance in `src/index.ts`
 
 ```ts [src/index.ts]
 import { Elysia } from 'elysia'
