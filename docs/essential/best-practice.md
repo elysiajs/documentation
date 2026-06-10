@@ -65,7 +65,7 @@ import { Auth } from './service'
 import { AuthModel } from './model'
 
 export const auth = new Elysia({ prefix: '/auth' })
-	.get(
+	.post(
 		'/sign-in',
 		async ({ body, cookie: { session } }) => {
 			const response = await Auth.signIn(body)
