@@ -52,7 +52,7 @@ import { Elysia } from 'elysia'
 
 const app = new Elysia()
   .patch('/user/:id', ({ params }) => {
-	return { id: req.params.id }
+	return { id: params.id }
   })
 ```
 
