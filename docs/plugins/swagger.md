@@ -8,11 +8,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
+        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysia/swagger".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
+        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysia/swagger".
 ---
 
 ::: warning
@@ -26,14 +26,14 @@ This plugin generates a Swagger endpoint for an Elysia server
 Install with:
 
 ```bash
-bun add @elysiajs/swagger
+bun add @elysia/swagger
 ```
 
 Then use it:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { swagger } from '@elysia/swagger'
 
 new Elysia()
     .use(swagger())
@@ -98,7 +98,7 @@ You can change the swagger endpoint by setting [path](#path) in the plugin confi
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { swagger } from '@elysia/swagger'
 
 new Elysia()
     .use(
@@ -113,7 +113,7 @@ new Elysia()
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysiajs/swagger'
+import { swagger } from '@elysia/swagger'
 
 new Elysia()
     .use(

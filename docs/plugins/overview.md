@@ -65,6 +65,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [OAuth2 Resource Server](https://github.com/ap-1/elysia-oauth2-resource-server) - a plugin for validating JWT tokens from OAuth2 providers against JWKS endpoints with support for issuer, audience, and scope verification
 -   [Elysia OpenID Client](https://github.com/macropygia/elysia-openid-client) - OpenID client based on [openid-client](https://github.com/panva/node-openid-client)
 -   [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - simple, lightweight rate limiter
+-   [Elysia Nazli](https://github.com/esbuker/elysia-nazli) - Ergonomic, store-pluggable rate limiter with global and per-route rules.
 -   [LLMs.txt](https://github.com/opuu/elysia-llms-txt) - generate `/llms.txt` for LLM-friendly docs from OpenAPI/Swagger
 -   [Logysia](https://github.com/tristanisham/logysia) - classic logging middleware
 -   [Logestic](https://github.com/cybercoder-naj/logestic) - an advanced and customizable logging library for ElysiaJS
@@ -78,6 +79,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Apitally](https://github.com/apitally/apitally-js) - capture metrics, logs, and traces in [Apitally](https://apitally.io/elysia), a simple API monitoring and analytics tool
 -   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy on AWS Lambda
 -   [Decorators](https://github.com/gaurishhs/elysia-decorators) - use TypeScript decorators
+-   [Elysia FSR](https://github.com/deadlinecode/elysia-fsr) - file-system routing with Eden-compatible type generation, monorepo/workspace support, and logical route grouping
 -   [Autoload](https://github.com/kravetsone/elysia-autoload) - filesystem router based on a directory structure that generates types for [Eden](/eden/overview) with [`Bun.build`](https://github.com/kravetsone/elysia-autoload?tab=readme-ov-file#bun-build-usage) support
 -   [Msgpack](https://github.com/kravetsone/elysia-msgpack) - allows you to work with [MessagePack](https://msgpack.org)
 -   [XML](https://github.com/kravetsone/elysia-xml) - allows you to work with XML

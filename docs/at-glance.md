@@ -40,7 +40,7 @@ Designed with simplicity and type-safety in mind, Elysia offers a familiar API w
 
 Here's a simple hello world in Elysia.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -201,7 +201,7 @@ For instance, because Elysia adopts OpenAPI by default, generating API documenta
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
     .use(openapi()) // [!code ++]
@@ -223,7 +223,7 @@ This is a **unique feature** of Elysia, allowing you to have complete and accura
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
     .use(openapi({
@@ -245,9 +245,9 @@ With Elysia, type safety is not limited to server-side.
 
 With Elysia, you can synchronize your types with your frontend team automatically, similar to tRPC, using Elysia's client library, "Eden".
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
     .use(openapi({
@@ -282,7 +282,7 @@ export type App = typeof app
 // @filename: client.ts
 // ---cut---
 // client.ts
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from './server'
 
 const app = treaty<App>('localhost:3000')
@@ -342,7 +342,7 @@ export type App = typeof app
 // @filename: client.ts
 // ---cut---
 // client.ts
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from './server'
 
 const app = treaty<App>('localhost:3000')
@@ -373,7 +373,7 @@ const { data, error } = await app.user({ id: 617 }).get()
 console.log(data)
 ```
 
-```typescript twoslash [server.ts]
+```typescript [server.ts]
 import { Elysia, t } from 'elysia'
 
 const plugin = new Elysia()

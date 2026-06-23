@@ -37,7 +37,7 @@ We can use <DocLink href="/patterns/openapi">OpenAPI plugin</DocLink> to show an
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi' // [!code ++]
+import { openapi } from '@elysia/openapi' // [!code ++]
 
 new Elysia()
 	.use(openapi()) // [!code ++]
@@ -60,7 +60,7 @@ We can provide API documentation with a `detail` field which follows OpenAPI 3.0
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())
@@ -86,7 +86,7 @@ We can also define reusable schema with <DocLink href="https://elysiajs.com/esse
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())
@@ -131,7 +131,7 @@ To use <DocLink href="/blog/openapi-type-gen.html">OpenAPI Type Gen</DocLink>, s
 ```typescript
 import { Elysia } from 'elysia'
 
-import { openapi, fromTypes } from '@elysiajs/openapi' // [!code ++]
+import { openapi, fromTypes } from '@elysia/openapi' // [!code ++]
 
 new Elysia()
 	.use(openapi({

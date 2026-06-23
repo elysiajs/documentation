@@ -39,7 +39,7 @@ function handleShortcut(event: KeyboardEvent) {
 const questions = [
     'What makes Elysia different',
     'Why is Elysia fast',
-    'Elysia compare to Hono',
+    'How to separate route file',
     'Setup OpenAPI with Elysia',
     'Does Elysia support OpenTelemetry',
     'Can I use Elysia with Node.js',

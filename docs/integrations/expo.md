@@ -111,7 +111,7 @@ export const POST = app.fetch
 ::: code-group
 
 ```typescript [lib/eden.ts]
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { app } from '../app/[...slugs]+api'
 
 export const api = treaty<app>('localhost:3000/api')

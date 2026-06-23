@@ -611,7 +611,7 @@ new Elysia()
 
 This can be improved with `Elysia.group`, allowing us to apply prefixes to multiple routes at the same time by grouping them together:
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -636,7 +636,7 @@ This code behaves the same as our first example and should be structured as foll
 
 `.group()` can also accept an optional guard parameter to reduce boilerplate of using groups and guards together:
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()

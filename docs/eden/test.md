@@ -26,7 +26,7 @@ Create **test/index.test.ts** in the root of the project directory with the foll
 // test/index.test.ts
 import { describe, expect, it } from 'bun:test'
 
-import { edenTreaty } from '@elysiajs/eden'
+import { edenTreaty } from '@elysia/eden'
 
 const app = new Elysia()
     .get('/', () => 'hi')

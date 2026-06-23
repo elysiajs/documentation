@@ -180,7 +180,7 @@ new Elysia()
 	})
 ```
 
-```typescript twoslash [auth.ts]
+```typescript [auth.ts]
 import { Elysia, t } from 'elysia'
 
 export const auth = new Elysia()
@@ -230,7 +230,7 @@ export type App = typeof app
 
 // @filename: client.ts
 // ---cut---
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from 'server'
 
 const api = treaty<App>('api.elysiajs.com')
@@ -245,9 +245,9 @@ const { data } = await api.profile.patch({
 
 <template v-slot:ssot-4>
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())
@@ -259,7 +259,7 @@ new Elysia()
 
 ```typescript
 import { Elysia } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
 	.use(
@@ -298,7 +298,7 @@ new Elysia()
 
 ::: code-group
 
-```ts twoslash [TypeBox]
+```ts [TypeBox]
 import { Elysia, t } from 'elysia'
 
 
@@ -313,7 +313,7 @@ new Elysia()
 	})
 ```
 
-```ts twoslash [Zod]
+```ts [Zod]
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 
@@ -328,7 +328,7 @@ new Elysia()
 	})
 ```
 
-```ts twoslash [Valibot]
+```ts [Valibot]
 import { Elysia } from 'elysia'
 import * as v from 'valibot'
 
@@ -343,7 +343,7 @@ new Elysia()
 	})
 ```
 
-```ts twoslash [ArkType]
+```ts [ArkType]
 import { Elysia } from 'elysia'
 import { type } from 'arktype'
 
@@ -358,7 +358,7 @@ new Elysia()
 	})
 ```
 
-```ts twoslash [Effect]
+```ts [Effect]
 import { Elysia } from 'elysia'
 import { Schema } from 'effect'
 
@@ -385,7 +385,7 @@ new Elysia()
 
 ```typescript [OpenAPI]
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 new Elysia()
 	.use(openapi())
@@ -394,7 +394,7 @@ new Elysia()
 
 ```typescript [With Type Gen]
 import { Elysia } from 'elysia'
-import { openapi, fromTypes } from '@elysiajs/openapi'
+import { openapi, fromTypes } from '@elysia/openapi'
 
 export const app = new Elysia()
 	.use(
@@ -436,7 +436,7 @@ export type App = typeof app
 
 // @filename: client.ts
 // ---cut---
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from 'server'
 
 const api = treaty<App>('api.elysiajs.com')
@@ -481,7 +481,7 @@ export const app = new Elysia()
 
 // @filename: client.ts
 // ---cut---
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import { app } from './index'
 import { test, expect } from 'bun:test'
 

@@ -32,7 +32,7 @@ Otherwise, install it manually:
 1. Install Elysia Static plugin
 ```ts
 import { Elysia } from 'elysia'
-import { staticPlugin } from '@elysiajs/static'
+import { staticPlugin } from '@elysia/static'
 
 new Elysia()
 	.use(await staticPlugin()) // [!code ++]
@@ -111,7 +111,7 @@ We can change the default `/public` prefix by passing the `prefix` option to `st
 
 ```ts
 import { Elysia } from 'elysia'
-import { staticPlugin } from '@elysiajs/static'
+import { staticPlugin } from '@elysia/static'
 
 new Elysia()
   	.use(

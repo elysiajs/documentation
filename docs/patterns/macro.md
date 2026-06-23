@@ -26,7 +26,7 @@ Macro is similar to a function that has control over the lifecycle event, schema
 
 Once defined, it will be available in the hook and can be activated by adding the property.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 const plugin = new Elysia({ name: 'plugin' })
@@ -317,7 +317,7 @@ Macro will automatically deduplicate the lifecycle event, ensuring that each lif
 
 By default, Elysia will use the property value as the seed, but you can override it by providing a custom seed.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()

@@ -60,7 +60,7 @@ export type App = typeof app // [!code ++]
 // @filename: client.ts
 // ---cut---
 // client.ts
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { App } from './server' // [!code ++]
 
 const app = treaty<App>('localhost:3000')

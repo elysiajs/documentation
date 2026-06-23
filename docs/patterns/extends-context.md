@@ -212,7 +212,7 @@ new Elysia()
 
 **decorate** assigns an additional property to **Context** directly **at call time**.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 class Logger {
@@ -248,7 +248,7 @@ Retrieve values from existing properties in **Context** and assign new propertie
 
 Derive assigns when request happens **at transform lifecycle** allowing us to "derive" <small>(create new properties from existing properties)</small>.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -281,7 +281,7 @@ Resolve allow us to assign a new property to context.
 
 Resolve is called at **beforeHandle** lifecycle or **after validation**, allowing us to **resolve** request properties safely.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
@@ -310,7 +310,7 @@ new Elysia()
 ### Error from resolve/derive
 As resolve and derive is based on **transform** and **beforeHandle** lifecycle, we can return an error from resolve and derive. If error is returned from **derive**, Elysia will return early exit and return the error as response.
 
-```typescript twoslash
+```typescript
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -414,7 +414,7 @@ To provide a smoother experience, some plugins might have a lot of property valu
 
 The **Affix** function which consists of **prefix** and **suffix**, allowing us to remap all properties of an instance.
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 const setup = new Elysia({ name: 'setup' })
@@ -438,7 +438,7 @@ By default, **affix** will handle both runtime, type-level code automatically, r
 
 In some cases, we can also remap all properties of the plugin:
 
-```ts twoslash
+```ts
 import { Elysia } from 'elysia'
 
 const setup = new Elysia({ name: 'setup' })
@@ -466,7 +466,7 @@ However, Elysia also offers some utility type to help you define a handler type.
 ### InferContext
 Infer context is a utility type to help you define a context type based on Elysia instance.
 
-```typescript twoslash
+```typescript
 import { Elysia, type InferContext } from 'elysia'
 
 const setup = new Elysia()
@@ -481,7 +481,7 @@ const handler = ({ store }: Context) => store.a
 ### InferHandler
 Infer handler is a utility type to help you define a handler type based on Elysia instance, path, and schema.
 
-```typescript twoslash
+```typescript
 import { Elysia, type InferHandler } from 'elysia'
 
 const setup = new Elysia()

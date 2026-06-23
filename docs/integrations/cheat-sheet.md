@@ -150,17 +150,11 @@ new Elysia()
 ## File upload
 See [Validation#file](/essential/validation#file)
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from 'elysia'
 
 new Elysia()
 	.post('/body', ({ body }) => body, {
-                    // ^?
-
-
-
-
-
 		body: t.Object({
 			file: t.File({ format: 'image/*' }),
 			multipleFiles: t.Files()
@@ -292,7 +286,7 @@ See [openapi](/plugins/openapi.html)
 
 ```typescript
 import { Elysia } from 'elysia'
-import { openapi } from '@elysiajs/openapi'
+import { openapi } from '@elysia/openapi'
 
 const app = new Elysia()
     .use(openapi())
@@ -346,7 +340,7 @@ See [GraphQL Yoga](/plugins/graphql-yoga)
 
 ```typescript
 import { Elysia } from 'elysia'
-import { yoga } from '@elysiajs/graphql-yoga'
+import { yoga } from '@elysia/graphql-yoga'
 
 const app = new Elysia()
     .use(

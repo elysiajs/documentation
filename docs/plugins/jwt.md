@@ -7,11 +7,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysiajs/jwt".
+        content: Plugin for Elysia that adds support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysia/jwt".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysiajs/jwt".
+        content: Plugin for Elysia that adds support for using JWT (JSON Web Token) in Elysia server. Start by installing the plugin with "bun add @elysia/jwt".
 ---
 
 # JWT Plugin
@@ -19,7 +19,7 @@ This plugin adds support for using JWT in Elysia handlers.
 
 Install with:
 ```bash
-bun add @elysiajs/jwt
+bun add @elysia/jwt
 ```
 
 Then use it:
@@ -28,7 +28,7 @@ Then use it:
 
 ```typescript [cookie]
 import { Elysia } from 'elysia'
-import { jwt } from '@elysiajs/jwt'
+import { jwt } from '@elysia/jwt'
 
 const app = new Elysia()
     .use(
@@ -62,7 +62,7 @@ const app = new Elysia()
 
 ```typescript [headers]
 import { Elysia } from 'elysia'
-import { jwt } from '@elysiajs/jwt'
+import { jwt } from '@elysia/jwt'
 
 const app = new Elysia()
     .use(

@@ -21,7 +21,7 @@ We can use [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia), a community pl
 1. Install the plugin with the following command:
 
 ```bash
-bun add elysia @elysiajs/eden
+bun add elysia @elysia/eden
 bun add -d nuxt-elysia
 ```
 

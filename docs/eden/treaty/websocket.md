@@ -17,9 +17,9 @@ head:
 # WebSocket
 Eden Treaty supports WebSocket using the `subscribe` method.
 
-```typescript twoslash
+```typescript
 import { Elysia, t } from "elysia";
-import { treaty } from "@elysiajs/eden";
+import { treaty } from "@elysia/eden";
 
 const app = new Elysia()
   .ws("/chat", {

@@ -30,7 +30,7 @@ Both parameters are type-safe and will be guided by TypeScript automatically:
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
     .post('/user', ({ body }) => body, {
@@ -72,7 +72,7 @@ If the method is **"GET"** or **"HEAD"**:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
     .get('/hello', () => 'hi')
@@ -94,7 +94,7 @@ If the body is optional or not needed, but query or headers are required, you ma
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
     .post('/user', () => 'hi', {
@@ -119,7 +119,7 @@ Eden Treaty is a fetch wrapper; we may add any valid [Fetch](https://developer.m
 
 ```typescript
 import { Elysia, t } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
     .get('/hello', () => 'hi')
@@ -154,7 +154,7 @@ Attaching a file will result in **content-type** being **multipart/form-data**
 Suppose we have the server as follows:
 ```typescript
 import { Elysia, t } from 'elysia'
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 
 const app = new Elysia()
     .post('/image', ({ body: { image, title } }) => title, {

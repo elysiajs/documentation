@@ -66,7 +66,7 @@ We can add [Eden](/eden/overview.html) for **end-to-end type safety** similar to
 
 ```typescript [src/routes/api.$.ts]
 import { Elysia } from 'elysia'
-import { treaty } from '@elysiajs/eden' // [!code ++]
+import { treaty } from '@elysia/eden' // [!code ++]
 
 import { createFileRoute } from '@tanstack/react-router'
 import { createIsomorphicFn } from '@tanstack/react-start'

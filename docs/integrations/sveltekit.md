@@ -54,7 +54,7 @@ If you place an Elysia server not in the root directory of the app router, you n
 
 For example, if you place Elysia server in **src/routes/api/[...slugs]/+server.ts**, you need to annotate prefix as **/api** to Elysia server.
 
-```typescript twoslash
+```typescript
 // src/routes/api/[...slugs]/+server.ts
 import { Elysia, t } from 'elysia';
 

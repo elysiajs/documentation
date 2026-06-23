@@ -120,7 +120,7 @@ export const POST = app.fetch
 ::: code-group
 
 ```typescript [lib/eden.ts]
-import { treaty } from '@elysiajs/eden'
+import { treaty } from '@elysia/eden'
 import type { app } from '../app/api/[[...slugs]]/route'
 
 // .api to enter /api prefix
