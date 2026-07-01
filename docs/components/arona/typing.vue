@@ -1,7 +1,7 @@
 <template>
     <AnimatePresence>
         <motion.section
-            class="flex items-center gap-1.5 mt-2 mb-4 pl-0.5 origin-bottom-left"
+            class="flex items-center gap-1.5 mt-2 mb-4 px-2 origin-bottom-left"
             :class="props.class"
             :initial="{ opacity: 0, y: 8, scale: 0.8 }"
             :animate="{

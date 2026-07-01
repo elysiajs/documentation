@@ -276,7 +276,7 @@
                                             isStreaming &&
                                             index === history.length - 1
                                         "
-                                        class="-translate-y-2"
+                                        class="-translate-y-4"
                                     />
                                 </motion.div>
 
