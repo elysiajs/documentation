@@ -247,15 +247,8 @@
                                         ease: easeOutExpo
                                     }"
                                 >
-                                    <p
-                                        v-if="parseThinking(content).thinking"
-                                        class="elysia-thinking"
-                                    >
-                                        Thinking
-                                    </p>
                                     <StreamMarkdown
-                                        v-else
-                                        :content="parseThinking(content).content"
+                                        :content="content"
                                         :done="
                                             index === history.length - 1
                                                 ? !isStreaming
@@ -275,6 +268,15 @@
                                                 ? '-streaming'
                                                 : ''
                                         "
+                                    />
+
+                                    <Typing
+                                        v-if="
+                                            isThinking &&
+                                            isStreaming &&
+                                            index === history.length - 1
+                                        "
+                                        class="-translate-y-2"
                                     />
                                 </motion.div>
 
@@ -648,6 +650,7 @@ const includeCurrentPage = ref(false)
 const thinkHarder = ref(false)
 const history = ref<History[]>([])
 const isStreaming = ref(false)
+const isThinking = ref(false)
 const feedback = ref<boolean | null>(null)
 const error = ref<string | undefined>()
 
@@ -658,9 +661,7 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
-const url = import.meta.env.DEV
-    ? 'http://localhost:3000'
-    : 'https://arona.elysiajs.com'
+const url = true ? 'http://localhost:3000' : 'https://arona.elysiajs.com'
 
 watch(
     () => model.value,
@@ -751,6 +752,7 @@ if (typeof window !== 'undefined')
 
 function cancelRequest() {
     isStreaming.value = false
+    isThinking.value = false
 
     if (!controller) return
 
@@ -847,6 +849,7 @@ function auth() {
 
 function resetState() {
     isStreaming.value = false
+    isThinking.value = false
     controller = undefined
     turnstileToken.value = undefined
     powToken.value = undefined
@@ -926,14 +929,13 @@ function copyContent(index: number) {
     }, 2000)
 }
 
-function parseThinking(content: string) {
-    if (!content.trimStart().startsWith('.'))
-        return { thinking: false, content }
+function parseStream(raw: string) {
+    let content = raw.replace(/(^|\n\n)\.{3,}\n\n/g, (_, lead) => lead)
 
-    const boundary = content.indexOf('\n\n')
-    if (boundary === -1) return { thinking: true, content: '' }
+    const tail = /(^|\n\n)\.{3,}$/.exec(content)
+    if (tail) content = content.slice(0, tail.index)
 
-    return { thinking: false, content: content.slice(boundary + 2) }
+    return { content: content.trimStart(), thinking: tail !== null }
 }
 
 async function ask(input?: string, seed?: number) {
@@ -1061,6 +1063,8 @@ async function ask(input?: string, seed?: number) {
     const reader = response.body.getReader()
 
     let content = ''
+    let raw = ''
+    isThinking.value = false
 
     let scroll = false
     let allowHaptic = true
@@ -1089,7 +1093,11 @@ async function ask(input?: string, seed?: number) {
         }
 
         const text = decoder.decode(value)
-        content = history.value[index].content += text
+        raw += text
+
+        const parsed = parseStream(raw)
+        isThinking.value = parsed.thinking
+        content = history.value[index].content = parsed.content
 
         if (allowHaptic) {
             allowHaptic = false
@@ -1122,10 +1130,6 @@ async function ask(input?: string, seed?: number) {
         const checksum = /checksum:(\w+)/g.exec(metadata)?.[1]?.trim()
         if (checksum) history.value[index].checksum = checksum
     }
-
-    const think = parseThinking(content)
-    if (!think.thinking && think.content !== content)
-        content = history.value[index].content = think.content.trimStart()
 
     resetState()
     auth()
@@ -1625,7 +1629,7 @@ onUnmounted(() => {
 }
 
 .elysia-thinking {
-    @apply mt-4 px-2 text-sm font-medium w-fit select-none;
+    @apply text-sm font-medium w-fit select-none;
     background: linear-gradient(
         90deg,
         theme('--color-mauve-400') 35%,

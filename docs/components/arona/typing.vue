@@ -1,7 +1,8 @@
 <template>
     <AnimatePresence>
-        <motion.div
-            class="flex items-center gap-1.5 mt-1.25 mb-4 pl-0.5 origin-bottom-left"
+        <motion.section
+            class="flex items-center gap-1.5 mt-2 mb-4 pl-0.5 origin-bottom-left"
+            :class="props.class"
             :initial="{ opacity: 0, y: 8, scale: 0.8 }"
             :animate="{
                 opacity: 1,
@@ -17,8 +18,8 @@
             }"
         >
             <img src="/assets/elysia.svg" alt="Elysia logo" class="size-4" />
-            <p class="text-sm text-mauve-400">{{ word }}{{ suffix }}</p>
-        </motion.div>
+            <p class="elysia-thinking">{{ word }}</p>
+        </motion.section>
     </AnimatePresence>
 </template>
 
@@ -52,18 +53,8 @@ const words = [
 ]
 
 const word = ref(words[Math.floor(Math.random() * words.length)])
-const suffix = ref('.')
 
-let interval: number
-
-onMounted(() => {
-    interval = window.setInterval(() => {
-        if (suffix.value.length >= 3) suffix.value = '.'
-        else suffix.value += '.'
-    }, 250)
-})
-
-onUnmounted(() => {
-    clearInterval(interval)
-})
+const props = defineProps<{
+	class?: string
+}>()
 </script>
