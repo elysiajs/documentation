@@ -99,7 +99,7 @@ new Elysia()
 		'/',
 		({ body }) => body,
 		{
-			age: t.Object({ // [!code --]
+			body: t.Object({ // [!code --]
 				age: t.Number() // [!code --]
 			}), // [!code --]
 			body: 'age',  // [!code ++]
