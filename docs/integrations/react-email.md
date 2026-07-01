@@ -150,6 +150,9 @@ new Elysia()
 ``` tsx [Resend]
 import { Elysia, t } from 'elysia'
 
+import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
 import OTPEmail from './emails/otp'
 
 import Resend from 'resend' // [!code ++]
@@ -161,11 +164,13 @@ new Elysia()
 		// Random between 100,000 and 999,999
   		const otp = ~~(Math.random() * (900_000 - 1)) + 100_000
 
+	const html = renderToStaticMarkup(<OTPEmail otp={otp} />)
+
         await resend.emails.send({ // [!code ++]
         	from: 'ibuki@gehenna.sh', // [!code ++]
            	to: body, // [!code ++]
            	subject: 'Verify your email address', // [!code ++]
-            html: <OTPEmail otp={otp} />, // [!code ++]
+            html, // [!code ++]
         }) // [!code ++]
 
         return { success: true }
