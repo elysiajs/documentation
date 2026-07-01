@@ -661,7 +661,7 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
-const url = true ? 'http://localhost:3000' : 'https://arona.elysiajs.com'
+const url = import.meta.env.DEV ? 'http://localhost:3000' : 'https://arona.elysiajs.com'
 
 watch(
     () => model.value,
