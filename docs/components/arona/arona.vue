@@ -247,8 +247,15 @@
                                         ease: easeOutExpo
                                     }"
                                 >
+                                    <p
+                                        v-if="parseThinking(content).thinking"
+                                        class="elysia-thinking"
+                                    >
+                                        Thinking
+                                    </p>
                                     <StreamMarkdown
-                                        :content="content"
+                                        v-else
+                                        :content="parseThinking(content).content"
                                         :done="
                                             index === history.length - 1
                                                 ? !isStreaming
@@ -919,6 +926,16 @@ function copyContent(index: number) {
     }, 2000)
 }
 
+function parseThinking(content: string) {
+    if (!content.trimStart().startsWith('.'))
+        return { thinking: false, content }
+
+    const boundary = content.indexOf('\n\n')
+    if (boundary === -1) return { thinking: true, content: '' }
+
+    return { thinking: false, content: content.slice(boundary + 2) }
+}
+
 async function ask(input?: string, seed?: number) {
     if (isStreaming.value || !turnstileToken.value || !powToken.value) return
 
@@ -1105,6 +1122,10 @@ async function ask(input?: string, seed?: number) {
         const checksum = /checksum:(\w+)/g.exec(metadata)?.[1]?.trim()
         if (checksum) history.value[index].checksum = checksum
     }
+
+    const think = parseThinking(content)
+    if (!think.thinking && think.content !== content)
+        content = history.value[index].content = think.content.trimStart()
 
     resetState()
     auth()
@@ -1600,6 +1621,39 @@ onUnmounted(() => {
     to {
         transform: scale(1) translateY(0);
         opacity: 1;
+    }
+}
+
+.elysia-thinking {
+    @apply mt-4 px-2 text-sm font-medium w-fit select-none;
+    background: linear-gradient(
+        90deg,
+        theme('--color-mauve-400') 35%,
+        theme('--color-mauve-200') 50%,
+        theme('--color-mauve-400') 65%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: text-shimmer 1.6s linear infinite;
+}
+
+html.dark .elysia-thinking {
+    background: linear-gradient(
+        90deg,
+        theme('--color-mauve-500') 35%,
+        theme('--color-mauve-300') 50%,
+        theme('--color-mauve-500') 65%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+@keyframes text-shimmer {
+    to {
+        background-position: -200% 0;
     }
 }
 </style>
