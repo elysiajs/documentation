@@ -147,7 +147,7 @@ Elysia JIT *"compiler"* is designed for peak performance in mind. However, the d
 ### Initial Request Overhead
 The first time a request is made to a specific route, Elysia needs to analyze the route handler code and generate the optimized code.
 
-This process is relatively **very fast** and usually takes < 0.005ms per route in most cases on a modern CPU and happend only **once per route**. But it is still an overhead.
+This process is relatively **very fast** and usually takes < 0.005ms per route in most cases on a modern CPU and happens only **once per route**. But it is still an overhead.
 
 <JIT />
 
@@ -189,7 +189,7 @@ Although, it's not recommended because there are some features missing without J
 
 ## Afterword
 
-With all of these *overkills* optimization, Elysia manages to have *almost* zero overhead and the only limiting factor is the speed of the underlying JavaScript engine itself.
+While all of this *overkills* optimization, Elysia manages to have *almost* zero overhead and the only limiting factor is the speed of the underlying JavaScript engine itself.
 
 Despite the maintainability challenges, the trade-offs made by Elysia's JIT "compiler" are worth it for the significant performance gains it provides and aligns with our goal to provide a fast foundation for building high-performance server.
 
