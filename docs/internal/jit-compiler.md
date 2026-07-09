@@ -189,7 +189,7 @@ Although, it's not recommended because there are some features missing without J
 
 ## Afterword
 
-While all of this *overkills* optimization, Elysia manages to have *almost* zero overhead and the only limiting factor is the speed of the underlying JavaScript engine itself.
+With all of this *overkill* optimization, Elysia manages to have *almost* zero overhead and the only limiting factor is the speed of the underlying JavaScript engine itself.
 
 Despite the maintainability challenges, the trade-offs made by Elysia's JIT "compiler" are worth it for the significant performance gains it provides and aligns with our goal to provide a fast foundation for building high-performance server.
 
