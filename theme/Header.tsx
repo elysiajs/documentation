@@ -1,9 +1,32 @@
+/// <reference types="view-transitions-api-types" />
+
 import { useContext, useEffect, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { Moon, Search as SearchIcon, Sun } from 'lucide-react'
 import { SearchPanel } from '@rspress/core/theme-original'
 import { ThemeContext } from '@rspress/core/runtime'
 
 import './header.css'
+
+const THEME_SWITCH_ANIMATION_WINDOW = 3 * 60 * 1000
+
+function canAnimateThemeSwitch() {
+    return (
+        typeof document.startViewTransition === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: no-preference)').matches
+    )
+}
+
+function updateThemeSwitchAnimationSpeed() {
+    const lastSwitch = window.localStorage.getItem('theme-switch')
+    const switchedRecently =
+        lastSwitch !== null &&
+        !Number.isNaN(Number(lastSwitch)) &&
+        Date.now() - Number(lastSwitch) <= THEME_SWITCH_ANIMATION_WINDOW
+
+    document.documentElement.classList.toggle('-animated', switchedRecently)
+    window.localStorage.setItem('theme-switch', Date.now().toString())
+}
 
 function GithubIcon() {
     return (
@@ -44,6 +67,22 @@ export function CustomHeader() {
         return () => window.removeEventListener('keydown', onKeyDown)
     }, [])
 
+    const toggleTheme = async () => {
+        if (!setTheme) return
+
+        const nextTheme = theme === 'dark' ? 'light' : 'dark'
+        if (!canAnimateThemeSwitch()) {
+            setTheme(nextTheme)
+            return
+        }
+
+        updateThemeSwitchAnimationSpeed()
+
+        await document.startViewTransition!(async () => {
+            flushSync(() => setTheme(nextTheme))
+        }).ready
+    }
+
     return (
         <>
             <header className="elysia-header">
@@ -63,7 +102,7 @@ export function CustomHeader() {
                     <a href="/blog">Blog</a>
                     <a href="/illust">Illust</a>
                     <i aria-hidden="true" />
-                    <button type="button" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} onClick={() => setTheme?.(theme === 'dark' ? 'light' : 'dark')}>
+                    <button type="button" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} onClick={() => void toggleTheme()}>
                         {theme === 'dark' ? <Moon /> : <Sun />}
                     </button>
                     <a className="icon-link" href="https://github.com/elysiajs/elysia" target="_blank" rel="noreferrer" aria-label="GitHub"><GithubIcon /></a>

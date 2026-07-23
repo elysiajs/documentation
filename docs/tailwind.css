@@ -205,6 +205,16 @@ body {
     background-color: var(--vp-c-bg) !important;
 }
 
+:root {
+    --switch-duration: 1.75s;
+    --switch-name: scale;
+}
+
+.-animated {
+    --switch-duration: 1s;
+    --switch-name: scale-fast;
+}
+
 ::view-transition-group(root) {
     animation-timing-function: var(--expo-in);
     z-index: 100;
@@ -215,6 +225,7 @@ body {
     animation: var(--switch-name) var(--switch-duration);
     animation-fill-mode: both;
     animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+    z-index: 9999;
 }
 
 ::view-transition-old(root),
@@ -222,6 +233,11 @@ body {
     animation: var(--switch-name) var(--switch-duration);
     animation-fill-mode: both;
     animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+    z-index: 1;
+}
+
+.dark::view-transition-new(root) {
+    z-index: 9999;
 }
 
 @keyframes scale {
