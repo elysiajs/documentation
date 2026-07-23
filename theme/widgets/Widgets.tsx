@@ -64,7 +64,7 @@ export function Card({
             <h3 className="!text-black dark:!text-white !font-medium text-lg !my-0">
                 {title}
             </h3>
-            <p className="!m-0 !leading-normal">{children}</p>
+            <div className="!m-0 !leading-normal">{children}</div>
         </a>
     )
 }

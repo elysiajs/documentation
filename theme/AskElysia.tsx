@@ -36,17 +36,18 @@ type ToggleAIOptions = {
 
 type TurnstileApi = {
     render: (target: HTMLElement, options: Record<string, unknown>) => string
+    remove: (widget?: string) => void
     reset: (widget?: string) => void
 }
 
 const siteKey = '0x4AAAAAAB64PTSQa07Ofw_F'
 const suggestions = [
-    'What is Eden?',
+    'What is Eden',
     'Elysia with Node.js',
     'How to add OpenAPI',
     'Can I use Zod with Elysia?',
-    'What is OpenAPI type gen?',
-    'How to separate route files'
+    'What is OpenAPI type gen',
+    'How to separate route file'
 ]
 
 function currentPageReference() {
@@ -61,6 +62,7 @@ export function AskElysia() {
     const [expanded, setExpanded] = useState(true)
     const [question, setQuestion] = useState('')
     const [includePage, setIncludePage] = useState(false)
+    const [thinkHarder, setThinkHarder] = useState(false)
     const [messages, setMessages] = useState<AronaMessage[]>([])
     const [streaming, setStreaming] = useState(false)
     const [error, setError] = useState('')
@@ -77,7 +79,14 @@ export function AskElysia() {
         void requestProofOfWork().then(setProof).catch(() => setProof(undefined))
 
         const api = (window as Window & { turnstile?: TurnstileApi }).turnstile
-        if (api && widget.current) api.reset(widget.current)
+        if (api && widget.current) {
+            try {
+                api.reset(widget.current)
+            } catch {
+                widget.current = undefined
+                setTurnstileToken(undefined)
+            }
+        }
     }, [])
 
     const close = useCallback(() => {
@@ -121,6 +130,7 @@ export function AskElysia() {
                 history: prior,
                 proof,
                 turnstileToken,
+                think: thinkHarder,
                 reference: includePage ? currentPageReference() : undefined,
                 signal: request.signal,
                 onChunk: (chunk) =>
@@ -145,7 +155,7 @@ export function AskElysia() {
             setStreaming(false)
             verify()
         }
-    }, [includePage, messages, proof, question, streaming, turnstileToken, verify])
+    }, [includePage, messages, proof, question, streaming, thinkHarder, turnstileToken, verify])
 
     useEffect(() => {
         const target = window as unknown as {
@@ -188,10 +198,11 @@ export function AskElysia() {
 
     useEffect(() => {
         if (!open || widget.current || !turnstile.current) return
+        let disposed = false
 
         const render = () => {
             const api = (window as Window & { turnstile?: TurnstileApi }).turnstile
-            if (!api || !turnstile.current || widget.current) return
+            if (disposed || !api || !turnstile.current || widget.current) return
             widget.current = api.render(turnstile.current, {
                 sitekey: siteKey,
                 callback: (token: string) => setTurnstileToken(token),
@@ -207,6 +218,20 @@ export function AskElysia() {
             script.async = true
             script.onload = render
             document.head.appendChild(script)
+        }
+
+        return () => {
+            disposed = true
+            const id = widget.current
+            const api = (window as Window & { turnstile?: TurnstileApi }).turnstile
+            if (id && api) {
+                try {
+                    api.remove(id)
+                } catch {
+                    // Turnstile may already have removed the widget during HMR.
+                }
+            }
+            if (widget.current === id) widget.current = undefined
         }
     }, [open])
 
@@ -246,9 +271,10 @@ export function AskElysia() {
                 <article ref={chat}>
                     {messages.length === 0 ? (
                         <div className="arona-empty">
-                            <img src="/elysia/sprite/sit.webp" alt="Elysia chan" />
-                            <h2>How can I help?</h2>
-                            <p>Ask anything about Elysia and its ecosystem.</p>
+                            <img src="/oiia/elysia-hypnosis.webp" alt="Elysia chan sitting" />
+                            <p>Hi~ Did you missed me?</p>
+                            <p>How can I help you today?</p>
+                            <h6>Example questions</h6>
                             <div>{suggestions.map((item) => <button key={item} onClick={() => void submit(item)}>{item}</button>)}</div>
                         </div>
                     ) : messages.map((message, index) => (
@@ -261,14 +287,16 @@ export function AskElysia() {
                 </article>
 
                 <form onSubmit={onSubmit}>
-                    <textarea ref={textarea} rows={1} value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={onKeyDown} placeholder="Ask anything about Elysia…" />
+                    <textarea ref={textarea} rows={1} value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={onKeyDown} placeholder="What's on your mind" />
                     <div>
-                        <label className={includePage ? 'is-active' : undefined}>
+                        <label className={includePage ? 'is-active' : undefined} title="Use this page as reference" aria-label="Use this page as reference">
                             <BookOpen />
                             <input type="checkbox" checked={includePage} onChange={(event) => setIncludePage(event.target.checked)} />
-                            Current page
                         </label>
-                        <span className="arona-verify"><Lightbulb />{proof && turnstileToken ? 'Ready' : 'Verifying'}</span>
+                        <label className={thinkHarder ? 'is-active' : undefined} title="Think harder for more accurate answers (slower answer)" aria-label="Think harder for more accurate answers">
+                            <Lightbulb />
+                            <input type="checkbox" checked={thinkHarder} onChange={(event) => setThinkHarder(event.target.checked)} />
+                        </label>
                         <button className="arona-send" type={streaming ? 'button' : 'submit'} onClick={streaming ? () => controller.current?.abort() : undefined} aria-label={streaming ? 'Stop response' : 'Send message'}>
                             {streaming ? <Square /> : <Send />}
                         </button>

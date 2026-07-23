@@ -68,6 +68,7 @@ export async function askArona({
     history,
     proof,
     turnstileToken,
+    think,
     reference,
     signal,
     onChunk
@@ -76,6 +77,7 @@ export async function askArona({
     history: AronaMessage[]
     proof: string
     turnstileToken: string
+    think?: boolean
     reference?: string
     signal: AbortSignal
     onChunk: (content: string) => void
@@ -91,6 +93,7 @@ export async function askArona({
             pow: { suffix: proof },
             message: message.slice(0, 8192),
             history: history.slice(-8),
+            ...(think ? { think: true } : {}),
             ...(reference ? { reference } : {})
         }),
         signal
