@@ -9,6 +9,7 @@ import {
     type PointerEvent as ReactPointerEvent,
     type ReactNode
 } from 'react'
+import { useLocation } from '@rspress/core/runtime'
 import {
     Bookmark,
     CheckCircle2,
@@ -34,6 +35,7 @@ import {
     X
 } from 'lucide-react'
 
+import { tableOfContents } from '../../docs/components/xiao/table-of-content'
 import './tutorial.css'
 
 export type VirtualFileMap = Record<string, string>
@@ -95,6 +97,43 @@ interface TreeNode {
 
 const METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']
 const EMPTY_TESTCASES: TutorialTestcase[] = []
+
+async function loadTutorialHighlighter() {
+    const [core, engine, typescript, githubLight, githubDark] = await Promise.all([
+        import('shiki/core'),
+        import('shiki/engine/javascript'),
+        import('shiki/langs/typescript.mjs'),
+        import('shiki/themes/catppuccin-latte.mjs'),
+        import('shiki/themes/catppuccin-mocha.mjs')
+    ])
+
+    return core.createHighlighterCore({
+        engine: engine.createJavaScriptRegexEngine(),
+        langs: [typescript.default],
+        themes: [githubLight.default, githubDark.default]
+    })
+}
+
+let tutorialHighlighter: ReturnType<typeof loadTutorialHighlighter> | undefined
+
+function highlightTutorialCode(source: string, dark: boolean) {
+    tutorialHighlighter ??= loadTutorialHighlighter()
+    return tutorialHighlighter.then((highlighter) => highlighter.codeToHtml(source, {
+        lang: 'typescript',
+        themes: {
+            light: 'catppuccin-latte',
+            dark: 'catppuccin-mocha'
+        },
+        defaultColor: dark ? 'dark' : 'light'
+    }))
+}
+
+function applyTutorialTheme(dark: boolean) {
+    const root = document.documentElement
+    root.classList.toggle('dark', dark)
+    root.classList.toggle('rp-dark', dark)
+    root.style.colorScheme = dark ? 'dark' : 'light'
+}
 
 function defaultFiles(code?: string | VirtualFileMap): VirtualFileMap {
     if (typeof code === 'string') return { 'index.ts': code }
@@ -580,8 +619,17 @@ export function Editor({
     children,
     className = ''
 }: EditorProps) {
+    const { pathname } = useLocation()
+    const currentPath = pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
+    const chapter = tableOfContents.find(({ contents }) =>
+        contents.some(({ href }) => href.replace(/\/$/, '') === currentPath)
+    ) ?? tableOfContents[0]
+    const current = chapter.contents.find(({ href }) =>
+        href.replace(/\/$/, '') === currentPath
+    ) ?? chapter.contents[0]
     const defaults = useRef(defaultFiles(code))
     const shell = useRef<HTMLDivElement>(null)
+    const highlightLayer = useRef<HTMLDivElement>(null)
     const [files, setFiles] = useState<VirtualFileMap>(() => defaultFiles(code))
     const [tabs, setTabs] = useState<string[]>(() => [Object.keys(defaultFiles(code))[0]])
     const [activeFile, setActiveFile] = useState(() => Object.keys(defaultFiles(code))[0])
@@ -602,11 +650,27 @@ export function Editor({
     const [testResults, setTestResults] = useState<boolean[]>(() => testcases.map(() => false))
     const [hydrated, setHydrated] = useState(false)
     const [dark, setDark] = useState(false)
+    const [highlighted, setHighlighted] = useState({ source: '', html: '' })
     const [resetOpen, setResetOpen] = useState(false)
     const [docSize, setDocSize] = useState(30)
-    const [editorSize, setEditorSize] = useState(59)
+    const [editorSize, setEditorSize] = useState(60)
     const { content, answer } = splitContent(children)
     const tree = buildTree(files)
+    const activeCode = files[activeFile] ?? ''
+
+    useEffect(() => {
+        let active = true
+
+        void highlightTutorialCode(activeCode, dark)
+            .then((html) => {
+                if (active) setHighlighted({ source: activeCode, html })
+            })
+            .catch(() => {
+                if (active) setHighlighted({ source: '', html: '' })
+            })
+
+        return () => { active = false }
+    }, [activeCode, dark])
 
     function requestFromState(): TutorialRequest {
         return {
@@ -652,9 +716,10 @@ export function Editor({
         setHeaders(savedHeaders ?? [])
         setCookies(savedCookies ?? [])
 
-        const savedTheme = localStorage.getItem('rspress-theme-appearance')
-        const isDark = savedTheme === 'dark' || (!savedTheme && document.documentElement.classList.contains('dark'))
+        const savedTheme = localStorage.getItem('vitepress-theme-appearance')
+        const isDark = savedTheme === 'dark'
         setDark(isDark)
+        applyTutorialTheme(isDark)
         setHydrated(true)
     }, [])
 
@@ -754,8 +819,8 @@ export function Editor({
     function toggleTheme() {
         const next = !dark
         setDark(next)
-        document.documentElement.classList.toggle('dark', next)
-        localStorage.setItem('rspress-theme-appearance', next ? 'dark' : 'light')
+        applyTutorialTheme(next)
+        localStorage.setItem('vitepress-theme-appearance', next ? 'dark' : 'light')
     }
 
     function toggleAI() {
@@ -813,6 +878,8 @@ export function Editor({
 
     const style = {
         '--td-doc-size': `${aside === null ? 0 : docSize}%`,
+        '--td-doc-size-desktop': aside === null ? '0px' : `calc(${docSize}% - ${docSize * 0.5}px)`,
+        '--td-doc-size-mobile': aside === null ? '0px' : `calc(${docSize}% - ${docSize * 0.45}px)`,
         '--td-editor-size': `${editorSize}%`
     } as CSSProperties
 
@@ -833,7 +900,16 @@ export function Editor({
             <section className="td-doc-pane">
                 {aside === 'docs' ? <iframe title="Documentation" src={doc} /> : (
                     <article className="td-task">
-                        <div className="td-task__crumb"><span>Interactive tutorial</span><span>/</span><strong>Assignment</strong></div>
+                        <div className="td-task__crumb">
+                            <label htmlFor="elysia-tutorial-page">{chapter.title} /</label>
+                            <select id="elysia-tutorial-page" value={current.href} onChange={(event) => { window.location.href = event.currentTarget.value }}>
+                                {tableOfContents.map((group) => (
+                                    <optgroup label={group.title} key={group.title}>
+                                        {group.contents.map((item) => <option value={item.href} key={item.href}>{item.title}</option>)}
+                                    </optgroup>
+                                ))}
+                            </select>
+                        </div>
                         <div className="td-task__content">{content}</div>
                         {!!testcases.length && <ol className="td-tests">
                             {testcases.map((testcase, index) => <li className={testResults[index] ? 'is-passing' : ''} key={`${testcase.title}-${index}`}>
@@ -867,7 +943,12 @@ export function Editor({
                         </aside>}
                         <div className="td-code-editor">
                             <div className="td-line-numbers" aria-hidden="true">{(files[activeFile] ?? '').split('\n').map((_, index) => <span key={index}>{index + 1}</span>)}</div>
-                            <textarea aria-label={activeFile ? `Editing ${activeFile}` : 'Code editor'} value={files[activeFile] ?? ''} onChange={(event) => editCode(event.target.value)} onKeyDown={editorKeyDown} spellCheck={false} autoCapitalize="off" autoCorrect="off" />
+                            <div ref={highlightLayer} className="td-code-highlight" aria-hidden="true" dangerouslySetInnerHTML={{ __html: highlighted.html }} />
+                            <textarea className={highlighted.source === activeCode && highlighted.html ? 'is-highlighted' : ''} aria-label={activeFile ? `Editing ${activeFile}` : 'Code editor'} value={activeCode} onChange={(event) => editCode(event.target.value)} onScroll={(event) => {
+                                if (!highlightLayer.current) return
+                                highlightLayer.current.scrollTop = event.currentTarget.scrollTop
+                                highlightLayer.current.scrollLeft = event.currentTarget.scrollLeft
+                            }} onKeyDown={editorKeyDown} spellCheck={false} autoCapitalize="off" autoCorrect="off" />
                         </div>
                     </div>
                 </section>
@@ -877,9 +958,8 @@ export function Editor({
                 <section className="td-result-pane">
                     <div className="td-request-bar">
                         <IconButton label="Request settings" active={advanced} onClick={() => setAdvanced(!advanced)}><Settings2 size={16} /></IconButton>
-                        <select aria-label="HTTP method" value={method} onChange={(event) => setMethod(event.target.value)}>{METHODS.map((item) => <option key={item}>{item}</option>)}</select>
-                        <input aria-label="Request path" value={path} onChange={(event) => setPath(event.target.value)} />
-                        <button className="td-send" type="button" onClick={() => run(true)}>Run</button>
+                        <select aria-label="HTTP method" value={method} style={{ width: `${method.length + 2}ch` }} onChange={(event) => setMethod(event.target.value)}>{METHODS.map((item) => <option key={item}>{item}</option>)}</select>
+                        <input aria-label="Request path" value={path} style={{ width: `calc(${path.length + 2}ch + 8px)` }} onChange={(event) => setPath(event.target.value)} />
                     </div>
                     <div className="td-result-tabs">
                         <IconButton label="Preview" active={resultMode === 'preview'} onClick={() => setResultMode('preview')}><Compass size={16} /></IconButton>

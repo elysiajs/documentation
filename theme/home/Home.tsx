@@ -13,6 +13,7 @@ import {
     type SVGProps
 } from 'react'
 
+import { sponsorOverride } from '../../docs/components/fern/sponsor.constant'
 import './home.css'
 
 type FernProps = { children?: ReactNode }
@@ -560,7 +561,7 @@ const sponsorTiers = {
 
 function SponsorAvatar({ login, name, compact = false }: { login: string; name?: string; compact?: boolean }) {
     return (
-        <a className={compact ? 'fern-sponsor-avatar is-compact' : 'fern-sponsor-avatar'} href={`https://github.com/${login}`} target="_blank" rel="noreferrer">
+        <a className={compact ? 'fern-sponsor-avatar is-compact' : 'fern-sponsor-avatar'} href={(sponsorOverride.href as Record<string, string>)[login] ?? `https://github.com/${login}`} target="_blank" rel="noreferrer">
             <img src={`https://github.com/${login}.png?size=168`} loading="lazy" alt={`Sponsor avatar ${name ?? login}`} />
             {!compact && <span><strong>{name ?? login}</strong><small>Supporting Elysia</small></span>}
         </a>

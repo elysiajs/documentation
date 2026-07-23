@@ -20,6 +20,17 @@ html.dark {
     --rp-c-brand: #f9a8c5;
     --rp-c-brand-light: #ffc0d7;
     --rp-c-brand-dark: #f06292;
+    --rp-c-bg: #1d161e;
+    --rp-c-bg-soft: #2a212c;
+    --rp-c-bg-mute: #342936;
+    --rp-c-bg-alt: #1d161e;
+    --rp-c-divider: #594c5b;
+    --rp-c-divider-light: #463947;
+    --rp-c-text-0: #fff;
+    --rp-c-text-1: #f3f1f3;
+    --rp-c-text-2: #a89ea9;
+    --rp-c-text-3: #79697b;
+    --rp-code-block-bg: #2a212c;
 }
 
 .rp-nav {
@@ -34,6 +45,52 @@ html.dark {
         "Segoe UI", sans-serif;
 }
 
+html.dark body,
+html.dark .rp-doc-layout__container,
+html.dark .rp-doc-layout__sidebar,
+html.dark .rp-doc-layout__outline {
+    background-color: #1d161e;
+}
+
+.rp-doc-layout__container::before {
+    position: fixed;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 15rem;
+    content: '';
+    pointer-events: none;
+    opacity: 0.48;
+    background:
+        linear-gradient(105deg, transparent 14%, rgb(192 132 252 / 0.14) 30%, transparent 44%),
+        linear-gradient(105deg, transparent 33%, rgb(34 211 238 / 0.14) 49%, transparent 65%),
+        linear-gradient(105deg, transparent 58%, rgb(52 211 153 / 0.13) 72%, transparent 88%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+}
+
+.rp-doc-layout__container > * { z-index: 1; }
+
+@media (min-width: 1280px) {
+    :root {
+        --rp-outline-width: 285px;
+    }
+
+    .rp-doc-layout__doc-container {
+        padding: 102px 112px 48px 95px;
+    }
+
+    .rp-doc-layout__outline {
+        padding-top: 30px;
+    }
+
+    .rp-doc-layout__sidebar {
+        padding: 12px 32px 80px 63px;
+        border-right: 0;
+        background: transparent;
+    }
+}
+
 .rspress-doc a {
     text-decoration-color: color-mix(in srgb, var(--rp-c-brand) 45%, transparent);
 }
@@ -44,39 +101,268 @@ html.dark {
 
 .elysia-doc-tools {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.65rem;
-    margin-bottom: 0.4rem;
+    gap: 1rem;
+    min-height: 1.5rem;
+    margin-bottom: 0.25rem;
     color: var(--rp-c-text-3);
     font-size: 0.75rem;
 }
 
+.elysia-doc-tools > button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--rp-c-text-3);
+}
+
+.elysia-doc-tools > button svg { width: 0.9rem; height: 0.9rem; }
+
+.elysia-doc-tools > div {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
 .elysia-doc-tools a {
-    color: var(--rp-c-text-2);
+    display: grid;
+    place-items: center;
+    color: var(--rp-c-text-3);
     text-decoration: none;
     transition: color 160ms ease;
 }
+
+.elysia-doc-tools a svg { width: 1.1rem; height: 1.1rem; }
 
 .elysia-doc-tools a:hover {
     color: var(--rp-c-brand);
 }
 
 .elysia-sidebar-extras {
-    padding: 0 0.75rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0 0 0.75rem;
+}
+
+.elysia-ask-link,
+.elysia-tutorial-link {
+    width: 100%;
+    min-height: 2.5rem;
+}
+
+.elysia-ask-link {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0;
+    color: #22d3ee;
+    font-weight: 650;
+    text-align: left;
+}
+
+.elysia-ask-link > span {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: none;
+    border-radius: 0.55rem;
+    color: white;
+    background: linear-gradient(135deg, #38bdf8, #14b8a6);
+}
+
+.elysia-ask-link sup { margin-left: -0.25rem; font-size: 0.65rem; }
+.elysia-ask-link kbd {
+    margin-left: auto;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid #38bdf866;
+    border-radius: 0.3rem;
+    font: 0.65rem/1.2 ui-monospace, monospace;
 }
 
 .elysia-tutorial-link {
     display: flex;
     align-items: center;
     gap: 0.65rem;
-    padding: 0.65rem 0.75rem;
+    padding: 0.4rem 0;
     border-radius: 0.85rem;
     color: #ec4899;
     font-weight: 650;
     text-decoration: none;
-    background: linear-gradient(135deg, rgb(217 70 239 / 0.08), rgb(249 115 22 / 0.08));
+    background: transparent;
 }
+
+.rp-sidebar-group[data-context] > .rp-sidebar-item__left {
+    gap: 0.65rem;
+}
+
+.rp-sidebar-group[data-context] > .rp-sidebar-item__left::before {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: none;
+    border-radius: 0.55rem;
+    content: '';
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 0.95rem, 100%;
+}
+
+.rp-sidebar-group[data-context='getting-started'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/getting-start.svg'), linear-gradient(135deg, #14b8a6, #38bdf8); }
+.rp-sidebar-group[data-context='essential'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/essential.svg'), linear-gradient(135deg, #2dd4bf, #60a5fa); }
+.rp-sidebar-group[data-context='patterns'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/pattern.svg'), linear-gradient(135deg, #38bdf8, #a78bfa); }
+.rp-sidebar-group[data-context='eden'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/eden.svg'), linear-gradient(135deg, #818cf8, #e879f9); }
+.rp-sidebar-group[data-context='plugins'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/blocks.svg'), linear-gradient(135deg, #c084fc, #fb7185); }
+.rp-sidebar-group[data-context='integration'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/cook.svg'), linear-gradient(135deg, #f472b6, #fb923c); }
+.rp-sidebar-group[data-context='internal'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/book.svg'), linear-gradient(135deg, #fb7185, #facc15); }
+
+.rp-doc-layout__sidebar .rp-sidebar-item {
+    padding-block: 4px;
+    color: #a89ea9;
+}
+
+.rp-doc-layout__sidebar .rp-sidebar-group {
+    margin-top: 0.35rem;
+    color: #d7d0d7;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.rp-doc-layout__sidebar .rp-sidebar-item--group-item {
+    padding-left: 16px !important;
+}
+
+.rp-doc-layout__sidebar .rp-sidebar-item--active {
+    color: #f9a8c5;
+    background: #f9a8c526;
+}
+
+.rp-doc-layout__sidebar .rp-sidebar-item--active::after {
+    position: absolute;
+    top: 0.35rem;
+    bottom: 0.35rem;
+    left: 0;
+    width: 2px;
+    border-radius: 99px;
+    content: '';
+    background: #f9a8c5;
+}
+
+.rp-doc-layout__sidebar .rp-sidebar-item--group-item::before { left: 0; }
+
+.rspress-doc > h1:first-child {
+    margin-top: 0.1rem;
+    font-size: 2.25rem;
+    letter-spacing: -0.025em;
+}
+
+html.dark .rp-codeblock {
+    overflow: hidden;
+    border: 0;
+    border-radius: 1.25rem;
+    background: #2a212c;
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+    color: var(--shiki-dark) !important;
+}
+
+html.dark .rp-codeblock .shiki,
+html.dark .rp-codeblock .shiki span {
+    background: transparent !important;
+}
+
+.elysia-code-group {
+    margin: 1rem 0;
+    overflow: hidden;
+    border: 1px solid var(--rp-c-divider-light);
+    border-radius: 1.25rem;
+    background: var(--rp-code-block-bg);
+}
+
+.elysia-code-group > .rp-tabs__label {
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    border-bottom: 1px solid var(--rp-c-divider-light);
+    background: color-mix(in srgb, var(--rp-code-block-bg) 88%, var(--rp-c-bg-mute));
+}
+
+.elysia-code-group .rp-tabs__label__item {
+    padding: 0.7rem 0.75rem 0.6rem;
+    color: var(--rp-c-text-2);
+    font-size: 0.8rem;
+}
+
+.elysia-code-group .rp-tabs__label__item--selected {
+    color: var(--rp-c-text-0);
+}
+
+.elysia-code-group .rp-tabs__content,
+.elysia-code-group .rp-tabs__content__item,
+.elysia-code-group .rp-codeblock {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+}
+
+html.dark .rp-callout--tip {
+    border-color: transparent;
+    color: #f3f1f3;
+    background: #006047;
+    box-shadow: 0 14px 36px rgb(0 96 71 / 0.18);
+}
+
+.rp-callout--tip .rp-callout__title {
+    color: #f3f1f3;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.rp-outline__title {
+    color: #d7d0d7;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: none;
+}
+
+.rp-outline__title::before { margin-right: 0.4rem; content: '☰'; }
+.rp-outline__action-row { display: none; }
+
+.elysia-outline-sponsors {
+    margin-top: 1.1rem;
+    padding: 0 1rem;
+}
+
+.elysia-outline-sponsors h4 {
+    margin: 0 0 0.75rem;
+    color: #d7d0d7;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.elysia-outline-sponsors > div {
+    display: grid;
+    grid-template-columns: repeat(2, 4.9rem);
+    gap: 1rem;
+}
+
+.elysia-outline-sponsors a,
+.elysia-outline-sponsors img {
+    display: block;
+    width: 4.9rem;
+    height: 4.9rem;
+    border-radius: 0.65rem;
+}
+
+.elysia-outline-sponsors img {
+    object-fit: cover;
+    opacity: 0.8;
+    transition: opacity 160ms;
+}
+
+.elysia-outline-sponsors a:hover img { opacity: 1; }
 
 .elysia-tutorial-link span {
     display: grid;

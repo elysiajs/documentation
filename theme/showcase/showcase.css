@@ -291,7 +291,7 @@ html.dark .showcase-blog-ray { opacity: 0.55; }
     display: flex;
     width: min(100% - 2rem, 80rem);
     margin: 0 auto 1rem;
-    padding: 4rem 1rem 1rem;
+    padding: 8rem 1rem 1rem;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
@@ -316,7 +316,7 @@ html.dark .showcase-blog-ray { opacity: 0.55; }
     display: flex;
     width: min(100% - 2rem, 64rem);
     margin-inline: auto;
-    padding: 1rem 0;
+    padding: 1rem;
     flex-direction: column;
     gap: 1.5rem;
 }
@@ -338,13 +338,19 @@ html.dark .showcase-blog-ray { opacity: 0.55; }
 }
 
 .showcase-blog-cover {
-    flex: 5 1 0;
+    width: 100%;
+    flex: none;
     margin-bottom: 0.5rem;
     overflow: hidden;
     border-radius: 1rem;
     aspect-ratio: 16 / 9;
     background: var(--showcase-bg-soft);
     transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 400ms ease;
+}
+
+.showcase-blog-card.is-featured .showcase-blog-cover {
+    width: auto;
+    flex: 5 1 0;
 }
 
 .showcase-blog-card:hover .showcase-blog-cover,
@@ -526,7 +532,7 @@ html.dark .showcase-yonkoma-ray { opacity: 0.55; }
     display: flex;
     width: min(100% - 2rem, 72rem);
     margin-inline: auto;
-    padding: 3rem 0;
+    padding: 7rem 0 3rem;
     flex-direction: column;
     gap: 1rem;
 }
@@ -548,6 +554,7 @@ html.dark .showcase-yonkoma-ray { opacity: 0.55; }
     box-shadow: 0 0 0 rgb(0 0 0 / 0);
     aspect-ratio: 16 / 9;
     transition: transform 275ms ease, box-shadow 275ms ease;
+    flex: 9 1 0;
 }
 
 .showcase-cover-card:hover,
@@ -566,7 +573,8 @@ html.dark .showcase-yonkoma-ray { opacity: 0.55; }
 .showcase-yonkoma-hero > section {
     display: flex;
     width: 100%;
-    max-width: 32rem;
+    max-width: none;
+    flex: 4 1 0;
     flex-direction: column;
     justify-content: center;
     font-size: 1.125rem;
@@ -586,7 +594,7 @@ html.dark .showcase-yonkoma-ray { opacity: 0.55; }
     font-weight: 500;
 }
 html.dark .showcase-yonkoma-hero strong { color: #f9a8c5; }
-.showcase-yonkoma-intent { margin-top: 1.5rem !important; }
+.showcase-yonkoma-intent { margin-top: 3rem !important; }
 
 .showcase-gallery-heading {
     display: flex;

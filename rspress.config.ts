@@ -2,12 +2,27 @@ import path from 'node:path'
 
 import { defineConfig } from '@rspress/core'
 import { pluginSitemap } from '@rspress/plugin-sitemap'
+import { pluginTwoslash } from '@rspress/plugin-twoslash'
 import tailwindcss from '@tailwindcss/postcss'
+
+import remarkCodeGroups from './theme/remark-code-groups'
 
 const description =
     'Ergonomic Framework for Humans. TypeScript framework supercharged by Bun with end-to-end type safety, a unified type system, and an outstanding developer experience.'
 
-type SidebarItem = { text: string; link: string }
+type SidebarItem = {
+    text: string
+    link: string
+}
+
+type SidebarGroup = {
+    text: string
+    collapsible: boolean
+    collapsed: boolean
+    items: Array<SidebarItem | SidebarGroup>
+}
+
+type SidebarEntry = string | [string, string] | SidebarGroup
 
 const labels: Record<string, string> = {
     'at-glance': 'At Glance',
@@ -61,16 +76,34 @@ const labels: Record<string, string> = {
 
 const item = (link: string, text?: string): SidebarItem => {
     const slug = link.split('/').filter(Boolean).at(-1) ?? link
-    return { text: text ?? labels[slug] ?? slug, link }
+    const fallback = slug
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+
+    return { text: text ?? labels[slug] ?? fallback, link }
 }
 
-const group = (text: string, links: Array<string | [string, string]>) => ({
+const toSidebarItem = (entry: SidebarEntry) => {
+    if (typeof entry === 'string') return item(entry)
+    if (Array.isArray(entry)) return item(entry[0], entry[1])
+
+    return entry
+}
+
+const subgroup = (text: string, links: SidebarEntry[]): SidebarGroup => ({
     text,
     collapsible: true,
     collapsed: false,
-    items: links.map((entry) =>
-        Array.isArray(entry) ? item(entry[0], entry[1]) : item(entry)
-    )
+    items: links.map(toSidebarItem)
+})
+
+const group = (text: string, links: SidebarEntry[]) => ({
+    text,
+    context: text.toLowerCase().replaceAll(' ', '-'),
+    collapsible: true,
+    collapsed: false,
+    items: links.map(toSidebarItem)
 })
 
 const sidebar = [
@@ -108,13 +141,15 @@ const sidebar = [
     group('Eden', [
         '/eden/overview',
         '/eden/installation',
-        ['/eden/treaty/overview', 'Treaty Overview'],
-        ['/eden/treaty/parameters', 'Treaty Parameters'],
-        ['/eden/treaty/response', 'Treaty Response'],
-        ['/eden/treaty/websocket', 'Treaty Web Socket'],
-        ['/eden/treaty/config', 'Treaty Config'],
-        ['/eden/treaty/unit-test', 'Treaty Unit Test'],
-        '/eden/treaty/legacy',
+        subgroup('Eden Treaty', [
+            '/eden/treaty/overview',
+            '/eden/treaty/parameters',
+            '/eden/treaty/response',
+            '/eden/treaty/websocket',
+            '/eden/treaty/config',
+            '/eden/treaty/unit-test',
+            '/eden/treaty/legacy'
+        ]),
         '/eden/fetch'
     ]),
     group('Plugins', [
@@ -157,12 +192,24 @@ export default defineConfig({
     title: 'ElysiaJS',
     description,
     lang: 'en-US',
+    i18nSource: {
+        outlineTitle: { en: 'On this page', zh: '本页目录' }
+    },
     siteOrigin: 'https://elysiajs.com',
     icon: '/assets/elysia.png',
     logo: '/assets/elysia.svg',
     logoText: 'ElysiaJS',
     outDir: 'docs/.rspress/dist',
-    llms: true,
+    llms: {
+        remarkSplitMdxOptions: {
+            excludes: [[[
+                'AronaBanner', 'Badge', 'Benchmark', 'Blog', 'Blogs', 'Card',
+                'ContentSlot', 'Deck', 'DocLink', 'Editor', 'Fern', 'JIT',
+                'Playground', 'Preview', 'Tab', 'TutorialBadge', 'TutorialLink',
+                'Yonkoma'
+            ], '@site/components']]
+        }
+    },
     mediumZoom: { selector: '.rspress-doc [data-zoomable], .rspress-doc img' },
     route: {
         extensions: ['.md', '.mdx'],
@@ -182,8 +229,10 @@ export default defineConfig({
         ['link', { rel: 'preload', as: 'image', href: '/assets/elysia.svg', fetchpriority: 'high' }],
         ['link', { rel: 'canonical', href: 'https://elysiajs.com' }]
     ],
-    plugins: [pluginSitemap()],
+    plugins: [pluginSitemap(), pluginTwoslash()],
     markdown: {
+        globalComponents: [path.join(import.meta.dirname, 'theme/CodeGroup.tsx')],
+        remarkPlugins: [remarkCodeGroups],
         link: { checkDeadLinks: false },
         shiki: {
             themes: { light: 'github-light', dark: 'github-dark' },
@@ -211,10 +260,7 @@ export default defineConfig({
         darkMode: 'auto',
         enableAppearanceAnimation: true,
         search: true,
-        llmsUI: {
-            viewOptions: ['markdownLink', 'chatgpt', 'claude'],
-            placement: 'title'
-        },
+        llmsUI: false,
         socialLinks: [
             { icon: 'github', mode: 'link', content: 'https://github.com/elysiajs/elysia' },
             { icon: 'x', mode: 'link', content: 'https://twitter.com/elysiajs' },
