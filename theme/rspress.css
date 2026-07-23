@@ -89,7 +89,7 @@ html.dark .rp-doc-layout__outline {
 html.dark .rp-doc-layout__container:has(> .rp-doc-layout__sidebar)::before {
     --elysia-ray-stripe-color: #000;
     opacity: 0.55;
-    filter: opacity(0.5) saturate(2);
+    filter: opacity(0.32) saturate(1.6);
 }
 
 .rp-doc-layout__container > * { z-index: 1; }
