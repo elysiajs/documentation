@@ -16,7 +16,7 @@ head:
 
 # OpenTelemetry
 
-::: tip
+:::tip
 This page is a **config reference** for **OpenTelemetry**. If you're looking to set up and integrate with OpenTelemetry, we recommend taking a look at [Integrate with OpenTelemetry](/patterns/opentelemetry) instead.
 :::
 

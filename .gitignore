@@ -174,3 +174,5 @@ dist
 
 **/.vitepress/cache
 **/.vitepress/dist
+**/.rspress
+doc_build

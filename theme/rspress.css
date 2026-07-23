@@ -1,0 +1,292 @@
+:root {
+    --rp-c-brand: #f06292;
+    --rp-c-brand-light: #ff94c2;
+    --rp-c-brand-dark: #ba2d65;
+    --rp-c-link: #e84e82;
+    --rp-radius: 12px;
+    --vp-c-brand-1: var(--rp-c-brand);
+    --vp-c-brand-2: var(--rp-c-brand);
+    --vp-c-brand-light: var(--rp-c-brand-light);
+    --vp-c-brand-dark: var(--rp-c-brand-dark);
+    --vp-c-bg: var(--rp-c-bg);
+    --vp-c-bg-alt: var(--rp-c-bg-soft);
+    --vp-c-bg-soft: var(--rp-c-bg-soft);
+    --vp-c-text-1: var(--rp-c-text-1);
+    --vp-c-text-2: var(--rp-c-text-2);
+    --vp-c-divider: var(--rp-c-divider);
+}
+
+html.dark {
+    --rp-c-brand: #f9a8c5;
+    --rp-c-brand-light: #ffc0d7;
+    --rp-c-brand-dark: #f06292;
+}
+
+.rp-nav {
+    padding-inline: max(1.5rem, calc((100vw - 64rem) / 2));
+    background: color-mix(in srgb, var(--rp-c-bg) 90%, transparent);
+    backdrop-filter: blur(18px) saturate(1.3);
+}
+
+.rp-doc-layout__container,
+.rspress-doc {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+}
+
+.rspress-doc a {
+    text-decoration-color: color-mix(in srgb, var(--rp-c-brand) 45%, transparent);
+}
+
+.rspress-doc img {
+    border-radius: 0.75rem;
+}
+
+.elysia-doc-tools {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 0.4rem;
+    color: var(--rp-c-text-3);
+    font-size: 0.75rem;
+}
+
+.elysia-doc-tools a {
+    color: var(--rp-c-text-2);
+    text-decoration: none;
+    transition: color 160ms ease;
+}
+
+.elysia-doc-tools a:hover {
+    color: var(--rp-c-brand);
+}
+
+.elysia-sidebar-extras {
+    padding: 0 0.75rem 0.75rem;
+}
+
+.elysia-tutorial-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.85rem;
+    color: #ec4899;
+    font-weight: 650;
+    text-decoration: none;
+    background: linear-gradient(135deg, rgb(217 70 239 / 0.08), rgb(249 115 22 / 0.08));
+}
+
+.elysia-tutorial-link span {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.55rem;
+    color: white;
+    font-size: 0.7rem;
+    background: linear-gradient(135deg, #d946ef, #f97316);
+}
+
+@media (max-width: 768px) {
+    .elysia-doc-tools {
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+}
+
+.elysia-card-deck {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.elysia-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--rp-c-divider);
+    border-radius: 1rem;
+    color: var(--rp-c-text-2) !important;
+    text-decoration: none !important;
+    background: var(--rp-c-bg);
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.elysia-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--rp-c-brand) 35%, var(--rp-c-divider));
+    box-shadow: 0 18px 40px rgb(55 40 70 / 0.08);
+}
+
+.elysia-card h3,
+.elysia-card p { margin: 0 !important; }
+.elysia-card h3 { color: var(--rp-c-text-1); font-size: 1.05rem; }
+.elysia-card p { font-size: 0.875rem; line-height: 1.45; }
+
+.elysia-tabs > nav { display: flex; gap: 0.35rem; margin: 0.75rem 0; }
+.elysia-tabs > nav button {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--rp-c-divider);
+    border-radius: 999px;
+    color: var(--rp-c-text-2);
+    font-size: 0.78rem;
+    font-weight: 650;
+    background: var(--rp-c-bg-soft);
+}
+.elysia-tabs > nav button.active { color: var(--rp-c-brand); border-color: color-mix(in srgb, var(--rp-c-brand) 40%, transparent); background: color-mix(in srgb, var(--rp-c-brand) 10%, transparent); }
+.elysia-badge { display: inline-flex; padding: 0.2rem 0.5rem; border-radius: 999px; color: #2870a8; font: 700 0.68rem/1.2 'Geist Mono', monospace; background: rgb(56 189 248 / 0.12); vertical-align: middle; }
+.elysia-badge.warning { color: #b46a12; background: rgb(245 158 11 / 0.14); }
+.elysia-badge.danger { color: #d44578; background: rgb(240 98 146 / 0.13); }
+
+.elysia-playground { margin: 1.25rem 0; overflow: hidden; border: 1px solid var(--rp-c-divider); border-radius: 1rem; background: var(--rp-c-bg-soft); box-shadow: 0 12px 32px rgb(55 40 70 / 0.07); }
+.elysia-playground header { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.9rem; }
+.browser-dots { width: 0.6rem; height: 0.6rem; margin-right: 1.8rem; border-radius: 50%; color: #f4b4cb; background: currentColor; box-shadow: 1rem 0 #f5cf9c, 2rem 0 #a9dfcd; }
+.playground-address { display: flex; flex: 1; align-items: center; gap: 0.35rem; max-width: 26rem; padding: 0.35rem 0.65rem; border-radius: 0.7rem; background: var(--rp-c-bg); }
+.playground-address span { color: var(--rp-c-text-3); font-size: 0.8rem; }
+.playground-address select { min-width: 0; color: var(--rp-c-brand); font-weight: 700; background: transparent; }
+.elysia-playground header strong { color: #22a06b; font-size: 0.8rem; }
+.elysia-playground pre { min-height: 12rem; margin: 0; padding: 1rem; white-space: pre-wrap; background: transparent; }
+
+.elysia-tutorial-badge { display: inline-flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem; padding: 0.3rem 0.55rem; border-radius: 0.55rem; color: var(--rp-c-brand) !important; font: 600 0.75rem/1.2 'Geist Mono', monospace; text-decoration: none !important; background: color-mix(in srgb, var(--rp-c-brand) 10%, transparent); vertical-align: middle; }
+
+.elysia-feature-banner { position: relative; isolation: isolate; display: flex; flex-direction: column; justify-content: center; min-height: 8.5rem; margin: 1rem 0; padding: 1.5rem; overflow: hidden; border: 1px solid var(--rp-c-divider); border-radius: 1rem; color: var(--rp-c-text-2) !important; text-decoration: none !important; background: var(--rp-c-bg); transition: transform 250ms ease, box-shadow 250ms ease; }
+.elysia-feature-banner:hover { transform: translateY(-2px); box-shadow: 0 20px 45px rgb(40 24 55 / 0.1); }
+.elysia-feature-banner::after { position: absolute; z-index: -1; inset: 0 0 0 45%; content: ''; background: radial-gradient(circle at right, rgb(77 208 225 / 0.2), transparent 70%); }
+.elysia-feature-banner.tutorial::after { background: radial-gradient(circle at right, rgb(236 72 153 / 0.2), transparent 70%); }
+.elysia-feature-banner img { position: absolute; right: 1rem; bottom: 0; max-height: 90%; }
+.elysia-feature-banner small { color: var(--rp-c-text-3); }
+.elysia-feature-banner h3 { margin: 0.25rem 0 !important; font-size: clamp(1.6rem, 4vw, 2rem); color: transparent; background: linear-gradient(120deg, #34d399, #38bdf8); background-clip: text; }
+.elysia-feature-banner.tutorial h3 { background-image: linear-gradient(120deg, #d946ef, #f97316); }
+.elysia-feature-banner p { max-width: 24rem; margin: 0 !important; }
+
+.elysia-blog-index { width: min(100% - 2rem, 64rem); margin: 0 auto; padding: 4rem 0; }
+.elysia-blog-index > header { margin-bottom: 2.5rem; text-align: center; }
+.elysia-blog-index > header span { color: var(--rp-c-brand); font: 700 0.72rem/1.2 'Geist Mono', monospace; letter-spacing: 0.14em; }
+.elysia-blog-index > header h1 { margin: 0.45rem 0 0.25rem; font-size: clamp(2.2rem, 6vw, 4rem); }
+.elysia-blog-index > header p { color: var(--rp-c-text-3); }
+.elysia-blog-index > section { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; margin-top: 2.5rem; }
+.elysia-blog-card { display: flex; flex-direction: column; gap: 1rem; color: inherit; text-decoration: none; }
+.elysia-blog-card.featured { display: grid; grid-template-columns: minmax(0, 5fr) minmax(15rem, 3fr); align-items: center; }
+.elysia-blog-card img { width: 100%; aspect-ratio: 16 / 9; border-radius: 1.2rem; object-fit: cover; transition: transform 300ms ease, box-shadow 300ms ease; }
+.elysia-blog-card:hover img { transform: scale(1.015); box-shadow: 0 24px 50px rgb(45 29 55 / 0.13); }
+.elysia-blog-card h2 { margin: 0 0 0.5rem; color: var(--rp-c-text-1); font-size: clamp(1.25rem, 3vw, 1.8rem); }
+.elysia-blog-card p { margin: 0; color: var(--rp-c-text-2); }
+.elysia-blog-card time { display: block; margin-top: 1rem; color: var(--rp-c-text-3); font-size: 0.8rem; }
+
+.elysia-blog-post { width: min(100% - 2rem, 48rem); margin: 2rem auto 5rem; font-size: 1.05rem; }
+.elysia-blog-post > h1 { margin: 1.5rem 0 1rem; font-size: clamp(2rem, 5vw, 3rem); }
+.elysia-blog-post > aside { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.5rem; }
+.elysia-blog-post > aside img { width: 2.5rem; height: 2.5rem; border-radius: 50%; }
+.elysia-blog-post > aside div { display: flex; flex-direction: column; }
+.elysia-blog-post > aside time { color: var(--rp-c-text-3); font-size: 0.75rem; }
+.elysia-blog-post > img { width: 100%; margin-bottom: 2rem; border-radius: 1rem; }
+.elysia-blog-post > img.shadow { box-shadow: 0 20px 55px rgb(25 12 35 / 0.13); }
+.blog-back { color: var(--rp-c-text-3); text-decoration: none; }
+
+.elysia-landing { overflow: hidden; background: var(--rp-c-bg); }
+.landing-hero { position: relative; display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 4rem); padding: 3rem max(1.5rem, calc((100vw - 72rem) / 2)); }
+.landing-orbit { position: absolute; width: min(70rem, 95vw); aspect-ratio: 1; border-radius: 50%; opacity: 0.34; background: radial-gradient(circle, rgb(157 185 255 / 0.5), rgb(227 208 255 / 0.18) 35%, transparent 67%); }
+.landing-orbit::after { position: absolute; inset: 7%; border: 1px solid rgb(168 148 230 / 0.16); border-radius: inherit; content: ''; }
+.hero-copy { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; max-width: 52rem; text-align: center; }
+.hero-copy > img { width: min(25rem, 70vw); aspect-ratio: 1.5; object-fit: contain; }
+.hero-copy h1 { margin: -1.25rem 0 1.25rem; font-size: clamp(2.8rem, 6.5vw, 5.4rem); line-height: 1.02; letter-spacing: -0.055em; background: linear-gradient(105deg, #70c7ec, #967ce5 65%, #ef84ae); background-clip: text; color: transparent; }
+.hero-copy h1 button { color: inherit; font: inherit; letter-spacing: inherit; }
+.hero-copy > p { max-width: 45rem; color: var(--rp-c-text-2); font-size: clamp(1.05rem, 2vw, 1.35rem); }
+.hero-copy > p strong { color: #8b7ae5; }
+.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; margin-top: 2rem; }
+.hero-actions a, .hero-actions button { padding: 0.8rem 1.3rem; border-radius: 999px; font-weight: 700; }
+.hero-actions a { color: white; background: #ed6a9b; text-decoration: none; }
+.hero-actions button { color: #db4f85; background: rgb(240 98 146 / 0.12); font-family: 'Geist Mono', monospace; }
+.hero-actions button span { margin-left: 0.6rem; opacity: 0.6; }
+.landing-hero.kawaii { justify-content: space-between; }
+.landing-hero.kawaii .hero-copy { align-items: flex-start; max-width: 42rem; text-align: left; }
+.hero-character { position: relative; z-index: 1; align-self: flex-end; width: min(42rem, 48vw); max-height: 88vh; object-fit: contain; }
+.landing-note { display: grid; place-items: center; max-width: 40rem; margin: 0 auto 7rem; padding: 0 1.5rem; color: var(--rp-c-text-3); text-align: center; }
+.landing-note span { width: 100%; color: #e788ac; font-size: 1.4rem; }
+.landing-note h2 { font-size: 1.2rem; font-weight: 500; }
+.landing-principle { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; width: min(100% - 3rem, 64rem); margin: 0 auto 5rem; }
+.landing-principle small, .landing-feature-grid small, .landing-final small { color: var(--rp-c-brand); font: 700 0.7rem/1.2 'Geist Mono', monospace; letter-spacing: 0.13em; }
+.landing-principle h2, .landing-feature-grid h2, .landing-final h2 { margin: 0.5rem 0 1rem; font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.05; letter-spacing: -0.04em; }
+.landing-principle h2 { color: transparent; background: linear-gradient(110deg, #fb7185, #f9a8d4); background-clip: text; }
+.landing-code { overflow: hidden; border: 1px solid var(--rp-c-divider); border-radius: 1.2rem; box-shadow: 0 24px 60px rgb(96 73 130 / 0.12); }
+.elysia-benchmark { display: grid; grid-template-columns: 13rem 1fr; gap: 4rem; width: min(100% - 3rem, 64rem); margin: 5rem auto; padding: 3rem; border-radius: 1.5rem; background-color: var(--rp-c-bg-soft); background-image: linear-gradient(rgb(128 128 128 / 0.08) 1px, transparent 1px), linear-gradient(90deg, rgb(128 128 128 / 0.08) 1px, transparent 1px); background-size: 32px 32px; }
+.elysia-benchmark header { display: flex; flex-direction: column; justify-content: center; gap: 2rem; }
+.landing-metric { display: flex; flex-direction: column; }
+.landing-metric strong { color: transparent; font-size: 4.5rem; line-height: 0.9; background: linear-gradient(110deg, #8b5cf6, #ec4899); background-clip: text; }
+.landing-metric span { color: var(--rp-c-text-3); }
+.elysia-benchmark > div { align-self: center; min-width: 0; }
+.benchmark-row { display: grid; grid-template-columns: 8rem minmax(4rem, 1fr) 4.5rem; align-items: center; gap: 0.7rem; margin: 0.75rem 0; font: 600 0.76rem/1.2 'Geist Mono', monospace; }
+.benchmark-row i { display: block; height: 1.3rem; max-width: 100%; border-radius: 999px; background: #c7bfce; }
+.benchmark-row:first-child i { background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+.benchmark-row small { color: var(--rp-c-text-3); }
+.landing-feature-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; width: min(100% - 3rem, 68rem); margin: 5rem auto; }
+.landing-feature-grid > article { min-width: 0; padding: 2rem; overflow: hidden; border: 1px solid var(--rp-c-divider); border-radius: 1.5rem; background: linear-gradient(145deg, var(--rp-c-bg), var(--rp-c-bg-soft)); }
+.landing-feature-grid h2 { font-size: clamp(1.8rem, 3vw, 2.7rem); }
+.landing-feature-grid .rp-codeblock { margin-top: 1.5rem; }
+.landing-final { display: grid; grid-template-columns: 5rem 1fr auto; align-items: center; gap: 1.5rem; width: min(100% - 3rem, 64rem); margin: 7rem auto 4rem; padding: 2rem; border: 1px solid rgb(240 98 146 / 0.22); border-radius: 1.5rem; background: linear-gradient(120deg, rgb(240 98 146 / 0.08), rgb(139 92 246 / 0.08)); }
+.landing-final img { width: 4.5rem; height: 4.5rem; }
+.landing-final h2 { margin: 0.2rem 0; font-size: 2rem; }
+.landing-final p { margin: 0; color: var(--rp-c-text-2); }
+.landing-final a { padding: 0.8rem 1.2rem; border-radius: 999px; color: white; font-weight: 700; text-decoration: none; background: var(--rp-c-brand); }
+
+.elysia-illustrations { width: min(100% - 2rem, 72rem); margin: 0 auto; padding: 4rem 0; }
+.elysia-illustrations > header { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 3rem; }
+.elysia-illustrations > header img { width: 100%; border-radius: 1.5rem; box-shadow: 0 24px 55px rgb(30 18 40 / 0.12); }
+.elysia-illustrations h1 { margin: 0.2rem 0 1rem; font-size: clamp(3rem, 7vw, 5.5rem); }
+.elysia-illustrations strong, .elysia-illustrations > section small { color: var(--rp-c-brand); }
+.elysia-illustrations > section { max-width: 30rem; margin: 5rem 0 2rem; }
+.elysia-illustrations > section h2 { margin: 0.3rem 0; font-size: 2rem; }
+.illustration-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
+.illustration-grid figure { margin: 0; }
+.illustration-grid img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 1rem; background: var(--rp-c-bg-soft); transition: transform 250ms ease; }
+.illustration-grid figure:hover img { transform: translateY(-4px); }
+.illustration-grid figcaption { padding: 0.6rem 0.2rem; color: var(--rp-c-text-2); font-size: 0.85rem; }
+
+.elysia-editor-shell { display: grid; grid-template-columns: minmax(18rem, 32%) 1fr; width: 100%; min-height: 100dvh; padding: 0.5rem; gap: 0.4rem; background: #f5f3f7; }
+.dark .elysia-editor-shell { background: #17131a; }
+.elysia-editor-shell > aside { min-width: 0; overflow: auto; padding: 1rem 1.25rem 3rem; border: 1px solid var(--rp-c-divider); border-radius: 1rem; background: var(--rp-c-bg); }
+.editor-logo { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--rp-c-text-1); font-weight: 750; text-decoration: none; }
+.editor-logo img { width: 2rem; height: 2rem; }
+.editor-doc { font-size: 0.9rem; }
+.elysia-editor-shell > aside > button { width: 100%; margin: 1rem 0; padding: 0.7rem; border-radius: 0.7rem; color: var(--rp-c-brand); font-weight: 700; background: rgb(240 98 146 / 0.1); }
+.editor-answer { padding: 1rem; border-radius: 0.8rem; background: var(--rp-c-bg-soft); }
+.elysia-editor-shell > main { display: grid; grid-template-rows: 3fr 2fr; min-width: 0; gap: 0.4rem; }
+.editor-pane, .editor-result { display: flex; flex-direction: column; min-height: 0; overflow: hidden; border: 1px solid var(--rp-c-divider); border-radius: 1rem; background: #f8f9fb; }
+.dark .editor-pane, .dark .editor-result { background: #252029; }
+.editor-pane header, .editor-result header { display: flex; justify-content: space-between; padding: 0.65rem 1rem; color: var(--rp-c-text-2); font: 650 0.78rem/1.2 'Geist Mono', monospace; border-bottom: 1px solid var(--rp-c-divider); }
+.editor-pane header button { color: #22a06b; }
+.editor-pane textarea { flex: 1; width: 100%; resize: none; padding: 1.25rem; border: 0; outline: 0; color: #3d3650; font: 0.9rem/1.6 'Geist Mono', monospace; background: transparent; }
+.dark .editor-pane textarea { color: #e5dfea; }
+.result-body { padding: 1rem; overflow: auto; }
+.result-body > p { color: var(--rp-c-text-3); }
+.result-body article { display: flex; gap: 0.6rem; margin-top: 0.6rem; padding: 0.7rem; border-radius: 0.7rem; background: var(--rp-c-bg); }
+.result-body article span { color: var(--rp-c-brand); }
+.result-body article div { display: flex; flex-direction: column; }
+.result-body article small { color: var(--rp-c-text-3); }
+.elysia-preview { min-height: 100dvh; margin: 0; padding: 2rem; }
+.elysia-jit { display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 2rem 0; padding: 2rem; border: 1px solid var(--rp-c-divider); border-radius: 1rem; background: var(--rp-c-bg-soft); }
+.elysia-jit strong { color: var(--rp-c-brand); }
+
+@media (max-width: 768px) {
+    .elysia-card-deck, .elysia-blog-index > section, .landing-principle, .landing-feature-grid, .elysia-illustrations > header { grid-template-columns: 1fr; }
+    .elysia-blog-card.featured { display: flex; }
+    .landing-hero.kawaii .hero-copy { align-items: center; text-align: center; }
+    .hero-character { display: none; }
+    .elysia-benchmark { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem; }
+    .elysia-benchmark header { flex-direction: row; }
+    .landing-metric strong { font-size: 3rem; }
+    .benchmark-row { grid-template-columns: 6rem minmax(3rem, 1fr); }
+    .benchmark-row small { display: none; }
+    .landing-final { grid-template-columns: 3rem 1fr; }
+    .landing-final img { width: 3rem; height: 3rem; }
+    .landing-final a { grid-column: 1 / -1; text-align: center; }
+    .illustration-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .elysia-editor-shell { grid-template-columns: 1fr; min-height: auto; }
+    .elysia-editor-shell > aside { max-height: none; }
+    .elysia-editor-shell > main { min-height: 48rem; }
+}

@@ -105,7 +105,7 @@ This will open a browser window with the preview of your email.
 ## Sending email
 To send an email, we can use `react-dom/server` to render the email, then submit it using a preferred provider:
 
-::: code-group
+:::code-group
 
 ```tsx [Nodemailer]
 import { Elysia, t } from 'elysia'
@@ -256,7 +256,7 @@ new Elysia()
 
 :::
 
-::: tip
+:::tip
 Notice that we can directly import the email component out of the box thanks to Bun
 :::
 

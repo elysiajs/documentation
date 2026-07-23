@@ -59,7 +59,7 @@ pnpm add @sinclair/typebox openapi-types
 
 To deploy with Node.js, make sure to set `type: module` in your `package.json`
 
-::: code-group
+:::code-group
 
 ```ts [package.json]
 {
@@ -73,7 +73,7 @@ To deploy with Node.js, make sure to set `type: module` in your `package.json`
 ### Using Bun
 To deploy with Bun, make sure to set the runtime to Bun in your `vercel.json`
 
-::: code-group
+:::code-group
 
 ```ts [vercel.json]
 {

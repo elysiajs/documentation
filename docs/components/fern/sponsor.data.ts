@@ -1,5 +1,3 @@
-import { defineLoader } from 'vitepress'
-
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
@@ -25,8 +23,7 @@ export interface GoldSponsorDetail {
     caption: string
 }
 
-declare const data: Sponsor[]
-export { data }
+export const data: Sponsor[] = []
 
 // Key is sponsorEntity.login
 export const goldSponsorDetail: Record<
@@ -39,7 +36,7 @@ export const goldSponsorDetail: Record<
 // but you won't see the duration, and tier
 const hidden = ['l2D']
 
-export default defineLoader({
+export const sponsorLoader = {
     async load(): Promise<Sponsor[]> {
         try {
             if (!process.env.GITHUB_TOKEN)
@@ -112,4 +109,4 @@ export default defineLoader({
             return []
         }
     }
-})
+}

@@ -22,7 +22,7 @@ Elysia can run inside TanStack Start server routes.
 2. Define an Elysia server
 3. Export Elysia handler in **server.handlers**
 
-::: code-group
+:::code-group
 
 ```typescript [src/routes/api.$.ts]
 import { Elysia } from 'elysia'
@@ -62,7 +62,7 @@ pnpm add @sinclair/typebox openapi-types
 
 We can add [Eden](/eden/overview.html) for **end-to-end type safety** similar to tRPC.
 
-::: code-group
+:::code-group
 
 ```typescript [src/routes/api.$.ts]
 import { Elysia } from 'elysia'
@@ -102,7 +102,7 @@ In a React component, we can use `getTreaty` to call the Elysia server with type
 ## Loader Data
 Tanstack Start supports **Loader** to fetch data before rendering the component.
 
-::: code-group
+:::code-group
 
 ```tsx [src/routes/index.tsx]
 import { createFileRoute } from '@tanstack/react-router'
@@ -131,7 +131,7 @@ Eden Treaty will ensure type safety on both server and client.
 ## React Query
 We can also use React Query to interact with Elysia server on client.
 
-::: code-group
+:::code-group
 
 ```tsx [src/routes/index.tsx]
 import { createFileRoute } from '@tanstack/react-router'
@@ -153,7 +153,7 @@ function App() {
 }
 ```
 
-::: code-group
+:::code-group
 
 This can work with any React Query features like caching, pagination, infinite queries, etc.
 

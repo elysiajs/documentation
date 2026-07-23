@@ -1,2 +1,2 @@
 ## Elysia documentation
-Written by VitePress
+Built with Rspress.
