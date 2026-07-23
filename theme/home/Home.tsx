@@ -13,7 +13,7 @@ import {
     type SVGProps
 } from 'react'
 
-import { sponsorOverride } from '../../docs/components/fern/sponsor.constant'
+import { sponsorOverride } from '../sponsors'
 import './home.css'
 
 type FernProps = { children?: ReactNode }

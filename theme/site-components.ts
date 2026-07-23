@@ -1,10 +1,12 @@
-export { Badge, ContentSlot, JIT } from './components'
 export { Benchmark, Fern } from './home/Home'
 export {
     AronaBanner,
+    Badge,
     Card,
+    ContentSlot,
     Deck,
     DocLink,
+    JIT,
     Playground,
     Tab,
     TutorialBadge,

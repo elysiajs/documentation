@@ -22,6 +22,22 @@ type SlotProps = {
     children?: ReactNode
 }
 
+export function ContentSlot({ children }: SlotProps) {
+    return <>{children}</>
+}
+
+export function Badge({
+    type = 'info',
+    text,
+    children
+}: {
+    type?: 'info' | 'warning' | 'danger' | string
+    text?: string
+    children?: ReactNode
+}) {
+    return <span className={`elysia-badge ${type}`}>{text ?? children}</span>
+}
+
 function contentSlots(children: ReactNode) {
     const slots = new Map<string, ReactNode>()
 
@@ -365,5 +381,13 @@ export function DocLink({
             <Bookmark className="inline h-4 w-4 mr-0.5 -translate-y-0.25" />
             {children}
         </a>
+    )
+}
+
+export function JIT() {
+    return (
+        <div className="elysia-jit">
+            <span>Request</span><i>→</i><strong>Compiled route</strong><i>→</i><span>Response</span>
+        </div>
     )
 }

@@ -35,32 +35,15 @@ import {
     X
 } from 'lucide-react'
 
-import { tableOfContents } from '../../docs/components/xiao/table-of-content'
+import type {
+    TutorialExpectedResponse,
+    TutorialRequest,
+    TutorialTestcase
+} from './data-types'
+import { tableOfContents } from './table-of-content'
 import './tutorial.css'
 
 export type VirtualFileMap = Record<string, string>
-
-export interface TutorialRequest {
-    url: string
-    method?: string
-    body?: unknown
-    headers?: Record<string, string>
-    cookie?: Record<string, string>
-}
-
-export interface TutorialExpectedResponse {
-    body?: unknown | ((body: string) => boolean)
-    status?: number | null | ((status: number) => boolean)
-    headers?: Record<string, string | ((value: string) => boolean)>
-}
-
-export interface TutorialTestcase {
-    title: string
-    description?: string
-    test:
-        | { request: TutorialRequest; response: TutorialExpectedResponse }
-        | Array<{ request: TutorialRequest; response: TutorialExpectedResponse }>
-}
 
 export interface EditorProps {
     code?: string | VirtualFileMap
@@ -716,7 +699,7 @@ export function Editor({
         setHeaders(savedHeaders ?? [])
         setCookies(savedCookies ?? [])
 
-        const savedTheme = localStorage.getItem('vitepress-theme-appearance')
+        const savedTheme = localStorage.getItem('rspress-theme-appearance')
         const isDark = savedTheme === 'dark'
         setDark(isDark)
         applyTutorialTheme(isDark)
@@ -820,7 +803,7 @@ export function Editor({
         const next = !dark
         setDark(next)
         applyTutorialTheme(next)
-        localStorage.setItem('vitepress-theme-appearance', next ? 'dark' : 'light')
+        localStorage.setItem('rspress-theme-appearance', next ? 'dark' : 'light')
     }
 
     function toggleAI() {

@@ -246,6 +246,17 @@ export default defineConfig({
             }
         },
         tools: {
+            bundlerChain(chain, { CHAIN_ID }) {
+                const pluginName = CHAIN_ID.PLUGIN.REACT_FAST_REFRESH
+                if (!chain.plugins.has(pluginName)) return
+
+                chain.plugin(pluginName).tap(([options]) => [
+                    {
+                        ...options,
+                        exclude: /[\\/]node_modules[\\/]/
+                    }
+                ])
+            },
             postcss: (_, { addPlugins }) => addPlugins(tailwindcss())
         }
     },

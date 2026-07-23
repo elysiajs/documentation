@@ -8,10 +8,10 @@ import {
 import { FileText, Sparkles } from 'lucide-react'
 
 import '../docs/tailwind.css'
-import { sponsorOverride } from '../docs/components/fern/sponsor.constant'
 import './rspress.css'
 import { AskElysia } from './AskElysia'
 import { CustomHeader } from './Header'
+import { sponsorOverride } from './sponsors'
 
 export * from '@rspress/core/theme-original'
 
