@@ -52,21 +52,44 @@ html.dark .rp-doc-layout__outline {
     background-color: #1d161e;
 }
 
-.rp-doc-layout__container::before {
+.rp-doc-layout__container:has(> .rp-doc-layout__sidebar)::before {
+    --elysia-ray-stripe-color: #fff;
+    --elysia-ray-stripes: repeating-linear-gradient(
+        100deg,
+        var(--elysia-ray-stripe-color) 0%,
+        var(--elysia-ray-stripe-color) 7%,
+        transparent 10%,
+        transparent 12%,
+        var(--elysia-ray-stripe-color) 16%
+    );
+    --elysia-ray-rainbow: repeating-linear-gradient(
+        100deg,
+        #60a5fa 10%,
+        #e879f9 16%,
+        #5eead4 22%,
+        #60a5fa 30%
+    );
     position: fixed;
-    z-index: 0;
+    z-index: 55;
     top: 0;
     left: 0;
     width: 100%;
-    height: 15rem;
+    height: 13.75rem;
     content: '';
     pointer-events: none;
-    opacity: 0.48;
-    background:
-        linear-gradient(105deg, transparent 14%, rgb(192 132 252 / 0.14) 30%, transparent 44%),
-        linear-gradient(105deg, transparent 33%, rgb(34 211 238 / 0.14) 49%, transparent 65%),
-        linear-gradient(105deg, transparent 58%, rgb(52 211 153 / 0.13) 72%, transparent 88%);
-    mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+    opacity: 0.25;
+    background-image: var(--elysia-ray-stripes), var(--elysia-ray-rainbow);
+    background-position: 50% 50%, 50% 50%;
+    background-size: 300%, 200%;
+    background-blend-mode: difference;
+    filter: invert(1);
+    mask-image: radial-gradient(ellipse at 100% 0%, #000 40%, transparent 70%);
+}
+
+html.dark .rp-doc-layout__container:has(> .rp-doc-layout__sidebar)::before {
+    --elysia-ray-stripe-color: #000;
+    opacity: 0.55;
+    filter: opacity(0.5) saturate(2);
 }
 
 .rp-doc-layout__container > * { z-index: 1; }
