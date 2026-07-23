@@ -69,7 +69,7 @@ html.dark .rp-doc-layout__outline {
         #5eead4 22%,
         #60a5fa 30%
     );
-    position: fixed;
+    position: absolute;
     z-index: 55;
     top: 0;
     left: 0;
