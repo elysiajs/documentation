@@ -252,6 +252,10 @@ html.dark .rp-doc-layout__container:has(> .rp-doc-layout__sidebar)::before {
     font-weight: 600;
 }
 
+.rp-doc-layout__sidebar .rp-sidebar-group[data-context] {
+    padding-left: 0;
+}
+
 .rp-doc-layout__sidebar .rp-sidebar-item--group-item {
     padding-left: 16px !important;
 }
