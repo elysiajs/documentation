@@ -205,6 +205,20 @@ html.dark .rp-doc-layout__container:has(> .rp-doc-layout__sidebar)::before {
     font: 0.65rem/1.2 ui-monospace, monospace;
 }
 
+.elysia-command-shortcut {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.elysia-command-shortcut::before {
+    content: '⌘';
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 0.75;
+}
+
 .elysia-tutorial-link {
     display: flex;
     align-items: center;
@@ -233,7 +247,7 @@ html.dark .rp-doc-layout__container:has(> .rp-doc-layout__sidebar)::before {
     background-size: 0.95rem, 100%;
 }
 
-.rp-sidebar-group[data-context='getting-started'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/getting-start.svg'), linear-gradient(135deg, #14b8a6, #38bdf8); }
+.rp-sidebar-group[data-context='getting-started'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/getting-start.svg'), linear-gradient(135deg, #00c950, #00b8db); }
 .rp-sidebar-group[data-context='essential'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/essential.svg'), linear-gradient(135deg, #2dd4bf, #60a5fa); }
 .rp-sidebar-group[data-context='patterns'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/pattern.svg'), linear-gradient(135deg, #38bdf8, #a78bfa); }
 .rp-sidebar-group[data-context='eden'] > .rp-sidebar-item__left::before { background-image: url('../docs/public/assets/eden.svg'), linear-gradient(135deg, #818cf8, #e879f9); }

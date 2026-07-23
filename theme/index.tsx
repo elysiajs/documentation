@@ -56,7 +56,7 @@ function SidebarExtras() {
         <div className="elysia-sidebar-extras">
             <button type="button" className="elysia-ask-link" onClick={() => (window as Window & { toggleAI?: () => void }).toggleAI?.()}>
                 <span aria-hidden="true">✦</span>
-                Ask Elysia <sup>AI</sup><kbd>⌘ I</kbd>
+                Ask Elysia <sup>AI</sup><kbd className="elysia-command-shortcut" aria-label="Command I">I</kbd>
             </button>
             <a href="/tutorial/" className="elysia-tutorial-link">
                 <span aria-hidden="true">&gt;_</span>

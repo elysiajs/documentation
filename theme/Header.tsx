@@ -55,7 +55,7 @@ export function CustomHeader() {
                 <button className="elysia-header__search" type="button" onClick={() => setSearchOpen(true)}>
                     <SearchIcon />
                     <span>Search</span>
-                    <kbd>⌘ K</kbd>
+                    <kbd className="elysia-command-shortcut" aria-label="Command K">K</kbd>
                 </button>
 
                 <nav className="elysia-header__nav" aria-label="Main navigation">
