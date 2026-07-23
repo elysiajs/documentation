@@ -219,6 +219,7 @@ html.dark .rp-doc-layout__container:has(> .rp-doc-layout__sidebar)::before {
 
 .rp-sidebar-group[data-context] > .rp-sidebar-item__left {
     gap: 0.65rem;
+    margin-left: -0.75rem;
 }
 
 .rp-sidebar-group[data-context] > .rp-sidebar-item__left::before {
@@ -250,10 +251,6 @@ html.dark .rp-doc-layout__container:has(> .rp-doc-layout__sidebar)::before {
     color: #d7d0d7;
     font-size: 1rem;
     font-weight: 600;
-}
-
-.rp-doc-layout__sidebar .rp-sidebar-group[data-context] {
-    padding-left: 0;
 }
 
 .rp-doc-layout__sidebar .rp-sidebar-item--group-item {
