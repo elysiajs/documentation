@@ -59,7 +59,7 @@ Assuming you already have a `prisma/schema.prisma`.
 
 We can add a `prismabox` generator to the Prisma schema file as follows:
 
-::: code-group
+:::code-group
 
 ```ts [prisma/schema.prisma]
 generator client {
@@ -111,7 +111,7 @@ For example:
 ## Using generated models
 Then we can import the generated models in our Elysia application:
 
-::: code-group
+:::code-group
 
 ```ts [src/index.ts]
 import { Elysia, t } from 'elysia'

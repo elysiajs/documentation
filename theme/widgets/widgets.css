@@ -1,0 +1,42 @@
+@reference '../../docs/tailwind.css';
+
+.playground {
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.0625);
+}
+
+.mockup-browser {
+    @apply rounded-2xl;
+
+    & > .mockup-browser-toolbar {
+        @apply flex justify-between w-full px-4 py-2;
+
+        &::before {
+            @apply inline-block min-w-3 min-h-3 mr-14 my-auto rounded-lg opacity-30;
+            content: '';
+            transform: translateX(-0.8rem);
+            box-shadow:
+                0.8em 0,
+                2em 0,
+                3.2em 0;
+        }
+
+        & > .input {
+            @apply flex justify-start items-center gap-1 w-full max-w-sm px-3 py-0.75 rounded-xl bg-neutral-100 dark:bg-mauve-700 overflow-hidden;
+
+            & > .select {
+                @apply clicky text-pink-400 dark:text-pink-300 font-bold px-1 py-0.25 bg-pink-400/10 hover:bg-pink-400/20 dark:bg-pink-300/25 dark:hover:bg-pink-300/40 border border-solid border-pink-400/50 dark:border-pink-300/50 rounded-lg cursor-pointer transition-colors;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 567.9px) {
+    .playground > .mockup-browser-toolbar {
+        padding-left: 0.7em;
+        padding-right: 0.7em;
+    }
+
+    .playground > .mockup-browser-toolbar::before {
+        display: none !important;
+    }
+}

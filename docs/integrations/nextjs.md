@@ -22,7 +22,7 @@ With Next.js App Router, we can run Elysia on Next.js routes.
 2. Define an Elysia server
 3. Export **Elysia.fetch** with the name of the HTTP methods you want to use
 
-::: code-group
+:::code-group
 
 ```typescript [app/api/[[...slugs]]/route.ts]
 import { Elysia, t } from 'elysia'
@@ -59,7 +59,7 @@ Because our Elysia server is not in the root directory of the app router, you ne
 
 For example, if you place the Elysia server in **app/user/[[...slugs]]/route.ts**, you need to annotate the prefix as **/user** on the Elysia server.
 
-::: code-group
+:::code-group
 
 ```typescript [app/user/[[...slugs]]/route.ts]
 import { Elysia, t } from 'elysia'
@@ -92,7 +92,7 @@ To start, we need to do the following steps:
 
 1. Export Elysia instance
 
-::: code-group
+:::code-group
 
 ```typescript [app/api/[[...slugs]]/route.ts]
 import { Elysia } from 'elysia'
@@ -117,7 +117,7 @@ export const POST = app.fetch
 
 2. Create a Treaty client with isomorphic approach
 
-::: code-group
+:::code-group
 
 ```typescript [lib/eden.ts]
 import { treaty } from '@elysia/eden'
@@ -137,7 +137,7 @@ It's important that you should use `typeof process` instead of `typeof window` b
 
 3. Use the client in both server and client components
 
-::: code-group
+:::code-group
 
 ```tsx [app/page.tsx]
 import { api } from '../lib/eden'
@@ -156,7 +156,7 @@ This allows you to have type safety from the frontend to the backend with minima
 ## React Query
 We can also use React Query to interact with the Elysia server on the client.
 
-::: code-group
+:::code-group
 
 ```tsx [src/routes/index.tsx]
 import { createFileRoute } from '@tanstack/react-router'
@@ -178,7 +178,7 @@ function App() {
 }
 ```
 
-::: code-group
+:::
 
 This can work with any React Query features like caching, pagination, infinite queries, etc.
 

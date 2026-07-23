@@ -15,7 +15,7 @@ head:
         content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysia/swagger".
 ---
 
-::: warning
+:::warning
 Swagger plugin is deprecated and is no longer maintained. Please use [OpenAPI plugin](/plugins/openapi) instead.
 :::
 
