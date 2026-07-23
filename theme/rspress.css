@@ -238,12 +238,13 @@ html.dark .rp-doc-layout__outline {
     background: #f9a8c526;
 }
 
-.rp-doc-layout__sidebar .rp-sidebar-item--active::after {
+.rp-doc-layout__sidebar .rp-sidebar-item--group-item.rp-sidebar-item--active .rp-sidebar-item__left::before {
     position: absolute;
     top: 0.35rem;
     bottom: 0.35rem;
     left: 0;
     width: 2px;
+    height: auto;
     border-radius: 99px;
     content: '';
     background: #f9a8c5;
