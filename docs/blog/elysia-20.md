@@ -213,7 +213,7 @@ Elysia 2 is a **complete rewrite** of Elysia, restart from zero, focus on other 
 
 We tried to make Elysia the fastest JavaScript framework. But we have sacrifice a lot in the process. Memory usage, bundle size, startup time was a secondary concern.
 
-The scope goes farer than we originally designed it to be and the features we added keeps piling up like a technical debt.
+The scope goes further than we originally designed it to be and the features we added keeps piling up like a technical debt.
 
 We never expect Elysia to be where it is today so we didn't really design it for a really big scale. We thought it would be a niche framework that solve specific problems so we never market or advertise Elysia other than just posting on personal X/Twitter profile.
 
@@ -221,7 +221,7 @@ But we were wrong.
 
 Today, **Elysia is the 9th most used JavaScript backend framework** and highlight at [State of JavaScript 2025](https://2025.stateofjs.com/en-US/libraries/back-end-frameworks/)
 
-We geniuely believe in building a decent software, and if it's good then people will follow and you prove that to us. Much more than we thought.
+We genuinely believe in building a decent software, and if it's good then people will follow and you prove that to us. Much more than we thought.
 
 From your feedback, we now realize that there are more important things to consider other than the runtime performance.
 
@@ -546,7 +546,7 @@ Yes if applicable.
 
 We almost always see a great result in all app that opt-in into AOT build mode.
 
-The actualy cost of AOT mode is that it will produce an inline code of each routes and schema into your final bundle. This might slightly increase bundle size and small retained memory at app start but **greatly reduced peak memory usage**.
+The actually cost of AOT mode is that it will produce an inline code of each routes and schema into your final bundle. This might slightly increase bundle size and small retained memory at app start but **greatly reduced peak memory usage**.
 
 ### Build Time Environment
 
@@ -740,7 +740,7 @@ new Elysia()
 
 We have update some APIs and remove several soft deprecated APIs in this version.
 
-To make migration to Elysia 2 as smooth as possible, we offers Elysia codemod which should automate 95% of the code to Elysia 2.
+To make migration to Elysia 2 as smooth as possible, we offer Elysia codemod which should automate 95% of the code to Elysia 2.
 
 ```ts
 bunx @elysia/codemod@latest
@@ -903,7 +903,7 @@ new Elysia()
 
 #### Fallback
 
-To handle fallback case where error is not staically analyzable, simply use `instanceof Error`.
+To handle fallback case where error is not statically analyzable, simply use `instanceof Error`.
 
 ```ts
 import { NotFound, ValidationError } from 'elysia'
@@ -919,7 +919,7 @@ new Elysia()
 
 ### Problem Error
 
-Elysia now use [RFC 9457](https://www.google.com/search?q=rfc+9457): Problem Details API for describing error.
+Elysia now use [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457): Problem Details API for describing error.
 
 All Elysia error now return problem detail JSON instead of bare string and align to use problem detail structure instead.
 
@@ -945,7 +945,7 @@ Eden already handle new headers and format but for others client, make sure to d
 
 ### return or throw
 
-This behavior have cause many confusion to many users. All error whether return or throw now will now be able to intercept from `onError`.
+This behavior has cause a lot of confusion to many users. All error whether return or throw now will now be able to intercept from `onError`.
 
 ---
 
@@ -1166,7 +1166,7 @@ Elysia 2 is a better foundation of Elysia with all of the scope we have and will
 
 What you should look out for is a reduced peak memory usage and faster startup time, especially with Serverless environment like Cloudflare Worker.
 
-Although this version is a bit rought because of all breaking changes and rewrite but you should be able to expect a much more solid experience with the future version of Elysia.
+Although this version is a bit rough because of all breaking changes and rewrite but you should be able to expect a much more solid experience with the future version of Elysia.
 
 ## Should I update to Elysia 2 beta?
 
@@ -1190,7 +1190,7 @@ DayDream is a big release for Elysia with more than 8 months in making.
 
 This wouldn't be possible without all of the [sponsors](https://github.com/sponsors/saltyaom) especially Jarred Sumner, that make it possible for me to do full-time maintaining Elysia.
 
-It wouldn't be possible with all of the time and resources the community have gave us not just financially but emotionally.
+Not without all of the time and resources the community have gave us not just financially but emotionally as well.
 
 "Daydream" as a song got me every single time, especially with story of how it come from. GGZ was probably one of the very first mobile game I get to play. Seeing the story of how your favorite struggle through so much hardship just to make her wish come true in the end is something I want to hold on doing.
 
@@ -1204,7 +1204,7 @@ But even if the road is infinitely long, there will be one day we reach the end 
 
 ---
 
-I saved this version name because it have a special place in my heart. For a very specialy occasion, especially now that it fits today's Elysia occasion perfectly.
+I saved this version name because it have a special place in my heart. For a very special occasion, especially now that it fits today's Elysia occasion perfectly.
 
 With Elysia now that we literally just wake up to see that everything we did is just a dream. A slightly different but better reality to wake up in.
 
@@ -1214,7 +1214,7 @@ Sometime I wonder why I spent so much time in Open Source. Is really worth it? F
 
 When I'm tired and don't want to do anything anymore, sometime I just stop. And secretly lookout on how people use Elysia without interacting. I see a lot of Japanese, Korean, Spanish blog post/video about Elysia even if I don't understand it.
 
-Seeing how people use your tool that you spent so much effort to build for years. A story, an experience of how Elysia help you build your tool is something I'm not sure how to describe. It's a treasure only for me to cheerish.
+Seeing how people use your tool that you spent so much effort to build for years. A story, an experience of how Elysia help you build your tool is something I'm not sure how to describe. It's a treasure only for me to cherish.
 
 It's something that keep me going everyday. To realize that what I do have a meaning. To realize that I'm not alone.
 
