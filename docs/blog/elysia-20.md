@@ -199,7 +199,7 @@ head:
     src="/blog/elysia-20/elysia-20.webp"
     alt="'Elysia 2' in a big title on the left with the word 'DayDream' on the slightly above the title. Accompany by Elysia chan mascot on the right side."
     author="saltyaom"
-    date="32 Jul 2026"
+    date="30 Jul 2026"
     shadow
 >
 
