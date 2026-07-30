@@ -207,23 +207,25 @@ Following our convention, this release is named after the song [DayDream](https:
 
 Elysia 2 is a **complete rewrite** of Elysia, restart from zero, focus on other area not just throughput.
 
-<small> The name is to honor the struggle Kiana went through a long journey to make her wish come true. </small>
+<small> The name is to honor the struggle Kiana went through, a long journey to make her wish come true. </small>
 
 ---
 
-We tried to make Elysia the fastest JavaScript framework. But we sacrifice a lot in the process. Like memory usage, bundle size, startup time was a secondary concern.
+We tried to make Elysia the fastest JavaScript framework. But we have sacrifice a lot in the process. Memory usage, bundle size, startup time was a secondary concern.
 
-The scope goes farer than we originally designed it to be and the features we added keeps piling up.
+The scope goes farer than we originally designed it to be and the features we added keeps piling up like a technical debt.
 
-We never expect Elysia to be where it is today. We thought it would be a niche framework that solve specific problems so we never market or advertise Elysia other than just posting on personal X/Twitter profile.
+We never expect Elysia to be where it is today so we didn't really design it for a really big scale. We thought it would be a niche framework that solve specific problems so we never market or advertise Elysia other than just posting on personal X/Twitter profile.
 
-We geniuely believe in building a decent software, and if it's good then people will follow and you prove that to us.
+But we were wrong.
 
 Today, **Elysia is the 9th most used JavaScript backend framework** and highlight at [State of JavaScript 2025](https://2025.stateofjs.com/en-US/libraries/back-end-frameworks/)
 
-From your usage, we now realize that there are more important things to consider other than the runtime performance.
+We geniuely believe in building a decent software, and if it's good then people will follow and you prove that to us. Much more than we thought.
 
-So we read, think about of all the scope and features it has and what we plan to have. We read Elysia codebase and rearchitecture with all of the feature we have from the ground up while keeping performance as priority.
+From your feedback, we now realize that there are more important things to consider other than the runtime performance.
+
+So we re-think about of all the scope and features it has. We read Elysia codebase and rearchitecture with all of the feature we have from the ground up while keeping performance as priority.
 
 Elysia 2 beta, is well, **beta**. It's not a stable release yet. You can try it with `elysia@next`
 
@@ -1186,7 +1188,7 @@ We will keep the beta label until significant portions of plugin has been migrat
 
 DayDream is a big release for Elysia with more than 8 months in making.
 
-This wouldn't be possible without all of the [sponsors](https://github.com/sponsors/saltyaom) especially Jarred Sumner that make it possible for me to do full-time maintaining Elysia.
+This wouldn't be possible without all of the [sponsors](https://github.com/sponsors/saltyaom) especially Jarred Sumner, that make it possible for me to do full-time maintaining Elysia.
 
 It wouldn't be possible with all of the time and resources the community have gave us not just financially but emotionally.
 
