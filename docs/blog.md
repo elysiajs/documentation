@@ -27,6 +27,13 @@ head:
 <Blogs
   :blogs="[
       {
+        title: 'Elysia 2 beta - DayDream',
+		href: '/blog/elysia-20',
+		cover: 'elysia-20.webp',
+		detail: 'Entire rewritten Elysia from the ground up. Focusing on performance, memory usage, startup time and bundle size. Elysia 2 is a new era of Elysia, with a new architecture and featuring Ahead of Time (AOT) compilation.',
+		date: '30 Jul 2026'
+      },
+      {
         title: '2x faster than Encore - 1 year later',
 		href: '/blog/elysia-v-encore',
 		cover: 'elysia-v-encore.webp',

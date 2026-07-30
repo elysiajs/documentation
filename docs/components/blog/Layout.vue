@@ -63,7 +63,7 @@ import Banner from '../fern/banner.vue'
 
 const authors = {
     saltyaom: {
-        src: 'lilith-happy.webp',
+        src: 'ely.webp',
         twitter: 'saltyaom'
     }
 }
