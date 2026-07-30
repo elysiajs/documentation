@@ -1192,7 +1192,7 @@ This wouldn't be possible without all of the [sponsors](https://github.com/spons
 
 Not without all of the time and resources the community have gave us not just financially but emotionally as well.
 
-"Daydream" as a song got me every single time, especially with story of how it come from. GGZ was probably one of the very first mobile game I get to play. Seeing the story of how your favorite struggle through so much hardship just to make her wish come true in the end is something I want to hold on doing.
+"Daydream" as a song got me every single time, especially with story of how it come from. GGZ was probably one of the very first mobile game I get to play. Seeing the story of how your favorite character struggle through so much hardship just to make her wish come true in the end is something I want to do the same.
 
 8 months for me feels like it pass in a blink of an eyes. Yesterday I have been writing Elysia 1.4 release note and now I'm writing Elysia 2. And there are still a much longer road ahead.
 
