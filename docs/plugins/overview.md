@@ -139,6 +139,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [elysia-wide-event](https://github.com/choiexe1/elysia-wide-event) - Wide event logging plugin for structured request-level observability.
 - [elysia-beta-headers](https://github.com/P0u4a/elysia-beta-headers) - Elysia plugin for gating your app's beta/experimental features via type-safe API headers
 -   [elysia-better-session](https://github.com/0x0arash/elysia-better-session) - Elysia plugin for server-side session management with different store adapters.
+-   [@stitchapi/elysia](https://github.com/rejifald/StitchAPI/tree/main/packages/elysia) - Plugin that adds a StitchAPI seam to the context for typed outbound API calls, with per-request principal, SSE streaming, and error-to-HTTP mapping.
 
 ## Complementary projects:
 
