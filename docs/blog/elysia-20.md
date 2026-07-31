@@ -252,7 +252,7 @@ bun add elysia@next
 - [Afterwords](#afterwords)
 
 ## Bundle Size
-We have made Elysia 2 smaller than Elysia 1.4 by **more than 50%** and we can make it even smaller if you don't use TypeBox.
+We have made Elysia 2 smaller than Elysia 1.4 by **more than 50%** and we can make it even smaller with build plugin
 
 ### Tree Shake TypeBox
 Elysia 2 is designed to be **modular**. We add Standard Schema support in 1.4 but because the structure, Elysia still bundle TypeBox whether you use it or not.
