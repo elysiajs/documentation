@@ -77,7 +77,7 @@ In this example, the `isSignIn` check will only apply to `profile` but not `app`
 
 **Elysia isolates lifecycle by default** unless explicitly stated. This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
 
-To **"export"** the lifecycle to other instances, you must add specify the scope.
+To **"export"** the lifecycle to other instances, you must specify the scope.
 
 ```ts
 import { Elysia } from 'elysia'
