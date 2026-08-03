@@ -13,4 +13,5 @@ export {
     TutorialLink
 } from './widgets/Widgets'
 export { Blog, Blogs, Yonkoma } from './showcase/Showcase'
+export { Chart } from './showcase/Chart'
 export { Editor, Preview } from './tutorial/Tutorial'

@@ -211,6 +211,10 @@ function Hero() {
             <div className="fern-hero-overlay" aria-hidden="true"><div /></div>
             <header className={`fern-hero${kawaii ? ' is-kawaii' : ''}`}>
                 <div className="fern-hero-copy">
+                    <a className="fern-hero-announcement" href="/blog/elysia-20">
+                        <SparkleIcon />
+                        Introducing Elysia 2 beta
+                    </a>
                     <img src="/assets/elysia_v.webp" alt="Curved text logo saying 'Elysia JS'" />
                     <h1>
                         Ergonomic Framework {kawaii && <br />}for{' '}

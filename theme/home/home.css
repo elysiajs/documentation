@@ -232,6 +232,29 @@ html.dark .fern-hero-overlay { opacity: 0.125; }
     transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.fern-hero-announcement {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-bottom: 1rem;
+    padding: 0.1875rem 0.625rem 0.1875rem 0.375rem;
+    border-radius: 999px;
+    color: #ec4899 !important;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: rgb(244 114 182 / 0.125);
+    transition: transform 180ms ease, background 180ms ease;
+}
+
+.fern-hero-announcement:hover,
+.fern-hero-announcement:focus-visible {
+    background: rgb(244 114 182 / 0.2);
+    transform: translateY(-1px);
+}
+
+.fern-hero-announcement svg { width: 0.875rem; height: 0.875rem; }
+html.dark .fern-hero-announcement { color: #f9a8d4 !important; }
+
 .fern-hero-copy > img {
     width: min(100%, 35ch);
     margin-inline: auto;

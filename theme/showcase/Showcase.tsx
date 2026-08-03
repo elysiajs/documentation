@@ -53,7 +53,7 @@ type GalleryItem = {
 const authors = {
     saltyaom: {
         name: 'saltyaom',
-        profile: '/blog/authors/lilith-happy.webp',
+        profile: '/blog/authors/ely.webp',
         twitter: 'saltyaom'
     }
 } as const
