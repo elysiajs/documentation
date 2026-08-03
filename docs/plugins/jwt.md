@@ -24,7 +24,7 @@ bun add @elysia/jwt
 
 Then use it:
 
-::: code-group
+:::code-group
 
 ```typescript [cookie]
 import { Elysia } from 'elysia'

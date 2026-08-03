@@ -47,7 +47,7 @@ This is required to setup the necessary HMR hooks.
 
 2. Create **public/index.html** and **index.tsx**
 
-::: code-group
+:::code-group
 
 ```html [public/index.html]
 <!doctype html>
@@ -145,7 +145,7 @@ plugins = ["bun-plugin-tailwind"]
 
 3. Create a CSS file with Tailwind directives
 
-::: code-group
+:::code-group
 
 ```css [public/global.css]
 @tailwind base;
@@ -155,7 +155,7 @@ plugins = ["bun-plugin-tailwind"]
 
 4. Add Tailwind to your HTML or alternatively JavaScript/TypeScript file
 
-::: code-group
+:::code-group
 
 ```html [public/index.html]
 <!doctype html>

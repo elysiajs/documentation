@@ -14,8 +14,5 @@
     "skipDefaultLibCheck": true,
     "isolatedModules": true
   },
-  "exclude": [
-    "postcss.config.js",
-    "tailwind.config.js"
-  ]
+  "exclude": ["postcss.config.js", "tailwind.config.js"]
 }

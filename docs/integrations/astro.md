@@ -56,7 +56,7 @@ Elysia will work normally as expected because of WinterTC compliance.
 
 We recommend running [Astro on Bun](https://docs.astro.build/en/recipes/bun) as Elysia is designed to be run on Bun.
 
-::: tip
+:::tip
 You can run Elysia server without running Astro on Bun thanks to WinterTC support.
 :::
 

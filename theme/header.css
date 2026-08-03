@@ -1,0 +1,105 @@
+.elysia-header {
+    position: fixed;
+    z-index: 80;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 4rem;
+    padding-left: 4rem;
+    padding-right: 6rem;
+    color: var(--rp-c-text-2);
+    background: transparent;
+}
+
+.elysia-header a { color: inherit; text-decoration: none; }
+
+.elysia-header__brand {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    gap: 0.55rem;
+    color: var(--rp-c-text-1) !important;
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.elysia-header__brand img { width: 1.75rem; height: 1.75rem; }
+
+.elysia-header__search {
+    position: absolute;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    width: 15rem;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--rp-c-divider) 75%, transparent);
+    border-radius: 0.8rem;
+    color: var(--rp-c-text-3);
+    background: color-mix(in srgb, var(--rp-c-bg-soft) 35%, transparent);
+    transition: border-color 160ms, background 160ms;
+    transform: translateX(-50%);
+}
+
+.elysia-header__search:hover,
+.elysia-header__search:focus-visible {
+    border-color: color-mix(in srgb, var(--rp-c-text-3) 45%, transparent);
+    background: color-mix(in srgb, var(--rp-c-bg-soft) 65%, transparent);
+}
+
+.elysia-header__search svg { width: 1rem; height: 1rem; }
+.elysia-header__search span { font-size: 0.875rem; }
+.elysia-header__search kbd {
+    margin-left: auto;
+    padding: 0.15rem 0.4rem;
+    border: 1px solid var(--rp-c-divider);
+    border-radius: 0.35rem;
+    color: var(--rp-c-text-3);
+    font: 0.7rem/1.2 ui-monospace, monospace;
+    background: color-mix(in srgb, var(--rp-c-bg-soft) 55%, transparent);
+}
+
+.elysia-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+}
+
+.elysia-header__nav > a:not(.icon-link) { color: var(--rp-c-text-2); }
+.elysia-header__nav > a:hover { color: var(--rp-c-brand); }
+.elysia-header__nav > i { width: 1px; height: 1.25rem; background: var(--rp-c-divider); }
+.elysia-header__nav button,
+.elysia-header__nav .icon-link {
+    display: grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--rp-c-text-3);
+}
+.elysia-header__nav svg { width: 1.2rem; height: 1.2rem; }
+.elysia-header__nav button:hover,
+.elysia-header__nav .icon-link:hover { color: var(--rp-c-text-1); }
+
+@media (min-width: 769px) {
+    .rp-nav { display: none !important; }
+}
+
+@media (max-width: 768px) {
+    .elysia-header { display: none; }
+    .rp-nav {
+        padding-inline: 1rem;
+        background: transparent;
+        backdrop-filter: none;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+    .elysia-header { padding-inline: 2rem; }
+    .elysia-header__search { width: 12rem; }
+    .elysia-header__nav { gap: 0.9rem; }
+}

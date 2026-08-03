@@ -22,7 +22,7 @@ Starting from Expo SDK 50, and App Router v3, Expo allows us to create API route
 2. Define an Elysia server
 3. Export **Elysia.fetch** with the name of the HTTP methods you want to use
 
-::: code-group
+:::code-group
 
 ```typescript [app/[...slugs]+api.ts]
 import { Elysia, t } from 'elysia'
@@ -54,7 +54,7 @@ If you place an Elysia server not in the root directory of the app router, you n
 
 For example, if you place the Elysia server in **app/api/[...slugs]+api.ts**, you need to annotate the prefix as **/api** on the Elysia server.
 
-::: code-group
+:::code-group
 
 ```typescript [app/api/[...slugs]+api.ts]
 import { Elysia, t } from 'elysia'
@@ -81,7 +81,7 @@ We can add [Eden](/eden/overview) for **end-to-end type safety** similar to tRPC
 
 1. Export `type` from the Elysia server
 
-::: code-group
+:::code-group
 
 ```typescript [app/[...slugs]+api.ts]
 import { Elysia } from 'elysia'
@@ -108,7 +108,7 @@ export const POST = app.fetch
 
 2. Create a Treaty client
 
-::: code-group
+:::code-group
 
 ```typescript [lib/eden.ts]
 import { treaty } from '@elysia/eden'
@@ -121,7 +121,7 @@ export const api = treaty<app>('localhost:3000/api')
 
 3. Use the client in both server and client components
 
-::: code-group
+:::code-group
 
 ```tsx [app/page.tsx]
 import { api } from '../lib/eden'
@@ -140,7 +140,7 @@ You can either directly use the API route with Elysia and deploy as a normal Ely
 
 If you are using the Expo server runtime, you may use the `expo export` command to create an optimized build for your Expo app. This will include an Expo function that uses Elysia at **dist/server/_expo/functions/[...slugs\]+api.js**
 
-::: tip
+:::tip
 Please note that Expo Functions are treated as Edge functions instead of normal servers, so running the Edge function directly will not allocate any port.
 :::
 

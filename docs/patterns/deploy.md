@@ -22,7 +22,7 @@ Elysia is single-threaded by default. To take advantage of multi-core CPU, we ca
 
 Let's create an **index.ts** file that imports our main server from **server.ts** and fork multiple workers based on the number of CPU cores available.
 
-::: code-group
+:::code-group
 
 ```ts [src/index.ts]
 import cluster from 'node:cluster'
@@ -50,7 +50,7 @@ new Elysia()
 
 This will ensure that Elysia is running on multiple CPU cores.
 
-::: tip
+:::tip
 Elysia on Bun uses SO_REUSEPORT by default, which allows multiple instances to listen on the same port. This only works on Linux.
 :::
 
@@ -314,6 +314,6 @@ new Elysia()
 
 This should allow Elysia to intercept port provided by Railway.
 
-::: tip
+:::tip
 Elysia assigns the hostname to `0.0.0.0` automatically, which works with Railway
 :::

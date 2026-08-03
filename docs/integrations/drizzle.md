@@ -72,7 +72,7 @@ We may use `overrides` field in `package.json` to pin the version of `@sinclair/
 ## Drizzle schema
 Assuming we have a `user` table in our codebase as follows:
 
-::: code-group
+:::code-group
 
 ```ts [src/database/schema.ts]
 import {
@@ -109,7 +109,7 @@ export type Table = typeof table
 ## drizzle-typebox
 We may convert the `user` table into TypeBox models by using `drizzle-typebox`:
 
-::: code-group
+:::code-group
 
 ```ts [src/index.ts]
 import { t } from 'elysia'
@@ -174,7 +174,7 @@ As we are likely going to use `t.Pick` and `t.Omit` to exclude or include certai
 
 We recommend using these utility functions **(copy as-is)** to simplify the process:
 
-::: code-group
+:::code-group
 
 ```ts [src/database/utils.ts]
 /**
@@ -305,7 +305,7 @@ const createUser = t.Pick(
 ### Table Singleton
 We recommend using a singleton pattern to store the table schema, this will allow us to access the table schema from anywhere in the codebase:
 
-::: code-group
+:::code-group
 
 ```ts [src/database/model.ts]
 import { table } from './schema'
@@ -325,7 +325,7 @@ export const db = {
 
 This will allow us to access the table schema from anywhere in the codebase:
 
-::: code-group
+:::code-group
 
 ```ts [src/index.ts]
 import { Elysia, t } from 'elysia'
@@ -351,7 +351,7 @@ new Elysia()
 
 If type refinement is needed, you may use `createInsertSchema` and `createSelectSchema` to refine the schema directly.
 
-::: code-group
+:::code-group
 
 ```ts [src/database/model.ts]
 import { t } from 'elysia'

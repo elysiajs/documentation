@@ -68,7 +68,7 @@ const submit = async (name: string) => {
 
 By default, Elysia infers `error` and `response` types to TypeScript automatically, and Eden will be providing auto-completion and type narrowing for accurate behavior.
 
-::: tip
+:::tip
 If the server responds with an HTTP status >= 300, then the value will always be `null`, and `error` will have a returned value instead.
 
 Otherwise, response will be passed to `data`.
@@ -77,7 +77,7 @@ Otherwise, response will be passed to `data`.
 ## Stream response
 Eden will interpret a stream response or [Server-Sent Events](/essential/handler.html#server-sent-events-sse) as an `AsyncGenerator`, allowing us to use a `for await` loop to consume the stream.
 
-::: code-group
+:::code-group
 
 ```typescript twoslash [Stream]
 import { Elysia } from 'elysia'

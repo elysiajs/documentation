@@ -17,7 +17,7 @@ head:
 
 # Eden Treaty Legacy
 
-::: tip NOTE
+:::tip NOTE
 This is the documentation for Eden Treaty 1 (edenTreaty).
 
 For a new project, we recommend starting with Eden Treaty 2 (treaty) instead.
@@ -69,7 +69,7 @@ const { data: nendoroid, error } = app.mirror.post({
 })
 ```
 
-::: tip
+:::tip
 Eden Treaty is fully type-safe with auto-completion support.
 :::
 
@@ -95,7 +95,7 @@ Path parameters will be mapped automatically by their name in the URL.
 - eg: .id.hi
 - eg: .id['123']
 
-::: tip
+:::tip
 If a path doesn't support path parameters, TypeScript will show an error.
 :::
 
@@ -158,7 +158,7 @@ Both **data** and **error** will be typed as nullable until you can confirm thei
 
 To put it simply, if the fetch is successful, data will have a value and error will be null, and vice versa.
 
-::: tip
+:::tip
 The error is wrapped with an `Error`, and its value returned from the server can be retrieved from `Error.value`
 :::
 

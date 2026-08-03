@@ -19,7 +19,7 @@ Elysia provides a runtime adapter to run Elysia on multiple runtimes, including 
 
 To run Elysia on Node.js, simply install Node adapter.
 
-::: code-group
+:::code-group
 
 ```bash [bun]
 bun add elysia @elysia/node
@@ -57,7 +57,7 @@ For the best experience, we recommend installing `tsx` or `ts-node` with `nodemo
 
 `tsx` is a CLI that transpiles TypeScript to JavaScript with hot-reload and several more features you would expect from a modern development environment.
 
-::: code-group
+:::code-group
 
 ```bash [bun]
 bun add -d tsx @types/node typescript

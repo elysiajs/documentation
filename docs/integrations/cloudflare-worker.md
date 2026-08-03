@@ -39,7 +39,7 @@ export default new Elysia({
 
 3. Make sure to have `compatibility_date` set to at least `2025-06-01` in your wrangler config
 
-::: code-group
+:::code-group
 
 ```jsonc [wrangler.jsonc]
 {
@@ -95,7 +95,7 @@ new Elysia()
 
 Add the following to your wrangler config:
 
-::: code-group
+:::code-group
 
 ```jsonc [wrangler.jsonc]
 {

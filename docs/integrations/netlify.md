@@ -21,7 +21,7 @@ Netlify Edge Functions require a special directory to run a function; the defaul
 
 To create a function at **/hello**, you would need to create a file at `netlify/edge-functions/hello.ts`, then simply `export default` an Elysia instance.
 
-::: code-group
+:::code-group
 
 ```typescript [netlify/edge-functions/hello.ts]
 import { Elysia } from 'elysia'

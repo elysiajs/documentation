@@ -21,7 +21,7 @@ bun add @elysia/eden
 bun add -d elysia
 ```
 
-::: tip
+:::tip
 Eden needs Elysia to infer utility types.
 
 Make sure to install Elysia with the version matching the server.
@@ -182,7 +182,7 @@ bun add -d @types/bun
 ### Path alias (monorepo)
 If you are using path aliases in your monorepo, make sure that the frontend is able to resolve the path the same way as the backend.
 
-::: tip
+:::tip
 Setting up path aliases in a monorepo can be tricky. You can fork our example template: [Kozeki Template](https://github.com/SaltyAom/kozeki-template) and modify it to your needs.
 :::
 

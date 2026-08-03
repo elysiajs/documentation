@@ -72,7 +72,7 @@ export const auth = betterAuth({
     plugins: [openAPI()] // [!code ++]
 })
 ```
-::: tip
+:::tip
 The `openAPI()` plugin is required for `auth.api.generateOpenAPISchema` to be available. Without it, you will get a type error: `Property 'generateOpenAPISchema' does not exist`.
 :::
 Then we may extract the OpenAPI schema with the following code:

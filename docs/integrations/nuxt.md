@@ -38,7 +38,7 @@ export default defineNuxtConfig({
 })
 ```
 
-::: tip
+:::tip
 The `nitro.preset: 'Bun'` configuration is required because Elysia runs on Bun runtime. This tells Nuxt's Nitro to use Bun as the server runtime instead of the default Node.js runtime.
 :::
 

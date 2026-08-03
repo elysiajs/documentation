@@ -1,4 +1,4 @@
-import { Testcases } from '../../../components/xiao/playground/types'
+import { Testcases } from '../../../../theme/tutorial/data-types'
 
 export const code = `import { Elysia, t } from 'elysia'
 

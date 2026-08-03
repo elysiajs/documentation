@@ -56,8 +56,8 @@ body {
 @font-face {
     font-family: 'Geist Mono';
     src:
-        url('/assets/GeistMono-Regular.woff2') format('woff2'),
-        url('/assets/GeistMono-Regular.woff') format('woff');
+        url('./public/assets/GeistMono-Regular.woff2') format('woff2'),
+        url('./public/assets/GeistMono-Regular.woff') format('woff');
 }
 
 .font-mono {
@@ -205,16 +205,27 @@ body {
     background-color: var(--vp-c-bg) !important;
 }
 
+:root {
+    --switch-duration: 1.75s;
+    --switch-name: scale;
+}
+
+.-animated {
+    --switch-duration: 1s;
+    --switch-name: scale-fast;
+}
+
 ::view-transition-group(root) {
     animation-timing-function: var(--expo-in);
     z-index: 100;
 }
 
 ::view-transition-new(root) {
-    mask: url('/assets/shigure-ui-smol.gif') center / 0 no-repeat;
+    mask: url('./public/assets/shigure-ui-smol.gif') center / 0 no-repeat;
     animation: var(--switch-name) var(--switch-duration);
     animation-fill-mode: both;
     animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+    z-index: 9999;
 }
 
 ::view-transition-old(root),
@@ -222,6 +233,11 @@ body {
     animation: var(--switch-name) var(--switch-duration);
     animation-fill-mode: both;
     animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+    z-index: 1;
+}
+
+.dark::view-transition-new(root) {
+    z-index: 9999;
 }
 
 @keyframes scale {
@@ -320,7 +336,7 @@ button.copy::after {
     &:nth-child(4) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/getting-start.svg);
+                background-image: url(./public/assets/getting-start.svg);
             }
 
             &::after {
@@ -332,7 +348,7 @@ button.copy::after {
     &:nth-child(5) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/essential.svg);
+                background-image: url(./public/assets/essential.svg);
             }
 
             &::after {
@@ -344,7 +360,7 @@ button.copy::after {
     &:nth-child(6) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/pattern.svg);
+                background-image: url(./public/assets/pattern.svg);
             }
 
             &::after {
@@ -356,7 +372,7 @@ button.copy::after {
     &:nth-child(7) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/eden.svg);
+                background-image: url(./public/assets/eden.svg);
             }
 
             &::after {
@@ -368,7 +384,7 @@ button.copy::after {
     &:nth-child(8) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/blocks.svg);
+                background-image: url(./public/assets/blocks.svg);
             }
 
             &::after {
@@ -380,7 +396,7 @@ button.copy::after {
     &:nth-child(9) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/cook.svg);
+                background-image: url(./public/assets/cook.svg);
             }
 
             &::after {
@@ -392,7 +408,7 @@ button.copy::after {
     &:nth-child(10) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/book.svg);
+                background-image: url(./public/assets/book.svg);
             }
 
             &::after {
@@ -404,7 +420,7 @@ button.copy::after {
     &:nth-child(11) {
         & > .VPSidebarItem > .item > .text {
             &::before {
-                background-image: url(/assets/book.svg);
+                background-image: url(./public/assets/book.svg);
             }
 
             &::after {
