@@ -41,9 +41,13 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [Server Timing](/plugins/server-timing) - audit performance bottlenecks with the [Server-Timing API](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing)
 -   [Static](/plugins/static) - serve static files/folders
 
+## Community templates:
+
+-   [ElysiaTemplate](https://github.com/QLing-yes/ElysiaTemplate) - `bun create app-elysia@latest` MVC、auto route、multiple template options、more coming
+-   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - scaffold your Elysia project with the environment easily (help with ORM, Linters and Plugins)!
+
 ## Community plugins
 
--   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - scaffold your Elysia project with the environment easily (help with ORM, Linters and Plugins)!
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication that is simple and clean
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
 -   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - run Elysia ecosystem on Node.js and Deno
