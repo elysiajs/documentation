@@ -64,7 +64,7 @@ Please refer to the [Scalar config](https://github.com/scalar/scalar/blob/main/d
 
 Configuration for customizing Swagger.
 
-Please refer to the [Swagger specification](https://swagger.io/specification/v2/).
+Please refer to the [Swagger specification](https://spec.openapis.org/oas/v2.0.html).
 
 ### excludeStaticFile
 
