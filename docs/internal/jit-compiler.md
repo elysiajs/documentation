@@ -125,7 +125,7 @@ When `set` or `status` is not used, Elysia will use `mapCompactResponse` to map 
 
 ## Platform Specific Optimization
 
-Elysia is originally made specifically for Bun but also works on [Node.js](/integrations/node), [Deno](/integrations/deno), [Cloudflare Workers](/integrations/cloudflare-workers) and more.
+Elysia is originally made specifically for Bun but also works on [Node.js](/integrations/node), [Deno](/integrations/deno), [Cloudflare Workers](/integrations/cloudflare-worker) and more.
 
 There are a big difference between being **compatible** and being **optimized** for a specific platform.
 
