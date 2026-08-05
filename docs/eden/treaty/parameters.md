@@ -115,7 +115,7 @@ api.user.post(null, {
 
 ## Fetch parameters
 
-Eden Treaty is a fetch wrapper; we may add any valid [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) parameters to Eden by passing them to `$fetch`:
+Eden Treaty is a fetch wrapper; we may add any valid [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) parameters to Eden by passing them to `fetch`:
 
 ```typescript
 import { Elysia, t } from 'elysia'
