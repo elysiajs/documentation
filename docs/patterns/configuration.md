@@ -87,7 +87,7 @@ new Elysia({
 ```
 Disable Ahead of Time compilation
 
-#### Options - @default `false`
+#### Options - @default `true`
 
 - `true` - Precompile every route before starting the server
 
