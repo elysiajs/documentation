@@ -1223,7 +1223,7 @@ const app = new Elysia()
 
 <template v-slot:right-content>
 
-> Elysia use `@elysia/swagger` for OpenAPI documentation using Scalar by default, or optionally Swagger
+> Elysia use `@elysiajs/swagger` for OpenAPI documentation using Scalar by default, or optionally Swagger
 
 </template>
 

@@ -125,9 +125,9 @@ node_modules/elysia
   peer elysia@">= 1.1.0" from @elysia/opentelemetry@1.1.2
   node_modules/@elysia/opentelemetry
     dev @elysia/opentelemetry@"1.1.7" from the root project
-  peer elysia@">= 1.1.0" from @elysia/swagger@1.1.0
-  node_modules/@elysia/swagger
-    dev @elysia/swagger@"1.1.6" from the root project
+  peer elysia@">= 1.1.0" from @elysiajs/swagger@1.1.0
+  node_modules/@elysiajs/swagger
+    dev @elysiajs/swagger@"1.1.6" from the root project
   peer elysia@">= 1.1.0" from @elysia/eden@1.1.2
   node_modules/@elysia/eden
     dev @elysia/eden@"1.1.3" from the root project
