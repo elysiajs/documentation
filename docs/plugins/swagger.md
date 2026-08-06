@@ -8,11 +8,11 @@ head:
 
     - - meta
       - name: 'description'
-        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysia/swagger".
+        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
 
     - - meta
       - name: 'og:description'
-        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysia/swagger".
+        content: Plugin for Elysia that adds support for generating Swagger API documentation for Elysia Server. Start by installing the plugin with "bun add @elysiajs/swagger".
 ---
 
 ::: warning
@@ -26,7 +26,7 @@ This plugin generates a Swagger endpoint for an Elysia server
 Install with:
 
 ```bash
-bun add @elysia/swagger
+bun add @elysiajs/swagger
 ```
 
 Then use it:
