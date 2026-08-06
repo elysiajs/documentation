@@ -33,7 +33,7 @@ Then use it:
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysia/swagger'
+import { swagger } from '@elysiajs/swagger'
 
 new Elysia()
     .use(swagger())
@@ -98,7 +98,7 @@ You can change the swagger endpoint by setting [path](#path) in the plugin confi
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysia/swagger'
+import { swagger } from '@elysiajs/swagger'
 
 new Elysia()
     .use(
@@ -113,7 +113,7 @@ new Elysia()
 
 ```typescript
 import { Elysia } from 'elysia'
-import { swagger } from '@elysia/swagger'
+import { swagger } from '@elysiajs/swagger'
 
 new Elysia()
     .use(
