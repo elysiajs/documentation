@@ -53,11 +53,26 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
     window.localStorage.setItem('theme-switch', Date.now().toString())
 
-    if (document.startViewTransition !== undefined)
-        await document.startViewTransition(async () => {
+    const root = document.documentElement
+    root.classList.add('-theme-switching')
+    root.classList.toggle(
+        '-theme-switching-from-dark',
+        root.classList.contains('dark')
+    )
+
+    if (document.startViewTransition !== undefined) {
+        const transition = document.startViewTransition(async () => {
             darkTheme.value = !darkTheme.value
             await nextTick()
-        }).ready
+        })
+
+        void transition.finished.finally(() => {
+            root.classList.remove('-theme-switching')
+            root.classList.remove('-theme-switching-from-dark')
+        })
+
+        await transition.ready
+    }
 })
 
 const onNewPage = () => {
@@ -124,6 +139,8 @@ function toggleAIForCurrentPage() {
 </script>
 
 <template>
+    <div class="theme-switch-overlay" aria-hidden="true" />
+
     <DefaultTheme.Layout>
         <template #doc-top>
             <Ray
