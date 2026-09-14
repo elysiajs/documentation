@@ -14,7 +14,7 @@
                 <span class="text-black dark:text-white"
                     >request validation, type inference, OpenAPI documentation,
                     client-server communication</span
-                >. Every part of Elysia is design for
+                >. Every part of Elysia is designed for
                 <span
                     class="font-bold text-gradient from-lime-400 to-sky-400 leading-tight"
                 >
