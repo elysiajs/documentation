@@ -285,7 +285,7 @@ import { Elysia, form, file } from 'elysia'
 new Elysia()
 	.get('/', () => form({
 		name: 'Tea Party',
-		images: [file('nagi.web'), file('mika.webp')]
+		images: [file('nagi.webp'), file('mika.webp')]
 	}))
 	.listen(3000)
 ```
@@ -299,7 +299,7 @@ Or alternatively, you can return a single file by returning `file` directly with
 import { Elysia, file } from 'elysia'
 
 new Elysia()
-	.get('/', file('nagi.web'))
+	.get('/', file('nagi.webp'))
 	.listen(3000)
 ```
 
