@@ -106,7 +106,7 @@ Elysia 0.3 also features `schema.contentType` to explicitly validate incoming re
 ## OpenAPI Schema 3.0.x
 With Elysia 0.3, Elysia now uses OpenAPI schema 3.0.x by default for better stating API definitions, and better support for multiple types based on content-type.
 
-`schema.details` are now updated to OpenAPI 3.0.x, and Elysia also updates the Swagger plugin to match the OpenAPI 3.0.x to take advantage of new features in OpenAPI 3 and Swagger, especially with file uploading.
+`schema.details` are now updated to OpenAPI 3.0.x, and Elysia also updates the Swagger plugin to match the OpenAPI 3.0.x to take advantage of new features in OpenAPI 3.0.x and 2.0, especially with file uploading.
 
 ## Eden Rework
 To support more demand for Elysia, supporting Elysia Fn, Rest all together, Eden has been reworked to scale with the new architecture.
@@ -154,7 +154,7 @@ Fix:
 - Missing merged return type for `.ws`
 - Missing nanoid
 - context side-effects
-- `t.Files` in swagger is referring to single file
+- `t.Files` in OpenAPI is referring to single file
 - Eden response type is unknown
 - Unable to type `setModel` inference definition via Eden
 - Handle error thrown in non permission function

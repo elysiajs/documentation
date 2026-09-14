@@ -339,7 +339,7 @@ This works as same as using an inline but instead you defined it once and refers
 TypeScript and validation code will works as expected.
 
 ## Bonus: Documentation
-As a bonus, Elysia type system is also OpenAPI Schema 3.0 compliance, which means that it can generate documentation with tools that support OpenAPI Schema like Swagger.
+As a bonus, Elysia type system is also OpenAPI Schema 3.0 compliance, which means that it can generate documentation with tools that support OpenAPI Schema like Swagger UI or the newer Scalar UI.
 
 We can use Elysia Swagger plugin to generate an API documentation in a single line.
 
