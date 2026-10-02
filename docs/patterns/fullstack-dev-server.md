@@ -35,14 +35,17 @@ import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysia/static'
 
 new Elysia()
-	.use(await staticPlugin()) // [!code ++]
-	.listen(3000)
+	.use(await staticPlugin({ // [!code ++]
+		bunFullstack: true // [!code ++]
+	})) // [!code ++]
+.listen(3000)
 ```
 
 :::tip
-Notice that we need to add `await` before `staticPlugin()` to enable Fullstack Dev Server.
+Two things are required to enable Fullstack Dev Server:
 
-This is required to setup the necessary HMR hooks.
+- **`await`** before `staticPlugin()` sets up the necessary HMR hooks.
+- **`bunFullstack: true`** tells Bun to bundle and compile your HTML entry points (including JSX/TSX). Without it, `.tsx` files are served as plain text and you'll see `Uncaught SyntaxError: Unexpected token '<'` in the browser.
 :::
 
 2. Create **public/index.html** and **index.tsx**
