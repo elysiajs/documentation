@@ -114,12 +114,13 @@ import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysia/static'
 
 new Elysia()
-  	.use(
-  		await staticPlugin({
-  			prefix: '/' // [!code ++]
-   		})
-   )
-  .listen(3000)
+    .use(
+        await staticPlugin({
+            prefix: '/', // [!code ++]
+            bunFullstack: true // [!code ++]
+        })
+    )
+    .listen(3000)
 ```
 
 This would serve the static files at `/` instead of `/public`.
