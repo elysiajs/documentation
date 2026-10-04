@@ -344,7 +344,7 @@ This allows us to control Elysia behavior for picking body parser function to fi
 `type` may be one of the following:
 
 ```typescript
-type ContentType = |
+type ContentType =
     // Shorthand for 'text/plain'
     | 'text'
     // Shorthand for 'application/json'
