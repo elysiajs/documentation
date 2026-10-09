@@ -11,7 +11,7 @@
     />
     <div
         class="absolute -top-16 left-0 w-full flex justify-center items-center h-screen object-center animate-pulse overflow-hidden"
-        style="animation-duration: 8s;"
+        style="animation-duration: 8s"
     >
         <div
             class="aspect-square h-full lg:h-auto lg:w-full !bg-right lg:!bg-center md:translate-x-0 lg:animate-spin opacity-90 dark:opacity-12.5"
@@ -32,7 +32,7 @@
         style="min-height: calc(100vh - 64px)"
     >
         <div
-            class="flex flex-col justify-center transition-all"
+            class="flex flex-col justify-center transition-all pb-4"
             :class="
                 kawaii
                     ? 'items-start my-auto lg:max-w-5xl xl:max-w-5xl 2xl:max-w-6xl md:pl-10 md:pb-6 md:pr-6'
@@ -45,6 +45,15 @@
 	        >
 	            ElysiaJS
 	        </h1> -->
+
+            <a
+                class="flex items-center gap-1.5 text-pink-500 dark:text-pink-300 text-sm font-medium pl-1.5 pr-2.5 py-0.75 rounded-full bg-pink-400/12.5 bg-pink-200/12.5 mb-4 clicky"
+                href="/blog/elysia-20"
+            >
+                <Sparkle :size="14" />
+                Introducing Elysia 2 beta
+            </a>
+
             <img
                 src="/assets/elysia_v.webp"
                 alt="Curved text logo saying 'Elysia JS'"
@@ -226,16 +235,19 @@
         </div>
         <div
             class="flex-1 transition-all select-none pointer-events-none my-auto"
-            :class="kawaii ? 'md:flex max-w-5xl md:max-h-[min(calc(100vh-64px),2100px)]' : 'hidden'"
+            :class="
+                kawaii
+                    ? 'md:flex max-w-5xl md:max-h-[min(calc(100vh-64px),2100px)]'
+                    : 'hidden'
+            "
         >
-	        <img
-	            src="/illust/ely/rev2/elysia-chan-rev-2-preview.webp"
-         		class="w-full md:scale-105 md:-translate-x-[10%] object-contain md:object-cover select-none pointer-events-none"
-         		style="object-position: 50% 2vh;"
-	        />
+            <img
+                src="/illust/ely/rev2/elysia-chan-rev-2-preview.webp"
+                class="w-full md:scale-105 md:-translate-x-[10%] object-contain md:object-cover select-none pointer-events-none"
+                style="object-position: 50% 2vh"
+            />
 
-        	<div
-         	/>
+            <div />
         </div>
     </header>
 </template>
@@ -244,6 +256,7 @@
 import { onMounted, ref, watch } from 'vue'
 
 import Ray from './ray.vue'
+import { Sparkle } from 'lucide-vue-next'
 
 const kawaii = ref(false)
 const toggleKawaii = () => {
@@ -255,15 +268,15 @@ const toggleKawaii = () => {
 onMounted(() => {
     const search = window.location.search
 
-     if (search.includes('kawaii=true') || search.includes('uwu=true')) {
-         localStorage.setItem('kawaii', 'true')
-         return (kawaii.value = true)
-     }
+    if (search.includes('kawaii=true') || search.includes('uwu=true')) {
+        localStorage.setItem('kawaii', 'true')
+        return (kawaii.value = true)
+    }
 
-     if (search.includes('kawaii=false') || search.includes('uwu=false')) {
-         localStorage.setItem('kawaii', 'false')
-         return (kawaii.value = false)
-     }
+    if (search.includes('kawaii=false') || search.includes('uwu=false')) {
+        localStorage.setItem('kawaii', 'false')
+        return (kawaii.value = false)
+    }
 
     if (localStorage.getItem('kawaii') === 'true') return (kawaii.value = true)
 })

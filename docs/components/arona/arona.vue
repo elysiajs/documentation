@@ -269,6 +269,15 @@
                                                 : ''
                                         "
                                     />
+
+                                    <Typing
+                                        v-if="
+                                            isThinking &&
+                                            isStreaming &&
+                                            index === history.length - 1
+                                        "
+                                        class="-translate-y-4"
+                                    />
                                 </motion.div>
 
                                 <p
@@ -641,6 +650,7 @@ const includeCurrentPage = ref(false)
 const thinkHarder = ref(false)
 const history = ref<History[]>([])
 const isStreaming = ref(false)
+const isThinking = ref(false)
 const feedback = ref<boolean | null>(null)
 const error = ref<string | undefined>()
 
@@ -651,9 +661,7 @@ const init = ref(false)
 
 let controller: AbortController | undefined
 
-const url = import.meta.env.DEV
-    ? 'http://localhost:3000'
-    : 'https://arona.elysiajs.com'
+const url = import.meta.env.DEV ? 'http://localhost:3000' : 'https://arona.elysiajs.com'
 
 watch(
     () => model.value,
@@ -744,6 +752,7 @@ if (typeof window !== 'undefined')
 
 function cancelRequest() {
     isStreaming.value = false
+    isThinking.value = false
 
     if (!controller) return
 
@@ -840,6 +849,7 @@ function auth() {
 
 function resetState() {
     isStreaming.value = false
+    isThinking.value = false
     controller = undefined
     turnstileToken.value = undefined
     powToken.value = undefined
@@ -917,6 +927,15 @@ function copyContent(index: number) {
     setTimeout(() => {
         copied.value = false
     }, 2000)
+}
+
+function parseStream(raw: string) {
+    let content = raw.replace(/(^|\n\n)\.{3,}\n\n/g, (_, lead) => lead)
+
+    const tail = /(^|\n\n)\.{3,}$/.exec(content)
+    if (tail) content = content.slice(0, tail.index)
+
+    return { content: content.trimStart(), thinking: tail !== null }
 }
 
 async function ask(input?: string, seed?: number) {
@@ -1044,6 +1063,8 @@ async function ask(input?: string, seed?: number) {
     const reader = response.body.getReader()
 
     let content = ''
+    let raw = ''
+    isThinking.value = false
 
     let scroll = false
     let allowHaptic = true
@@ -1072,7 +1093,11 @@ async function ask(input?: string, seed?: number) {
         }
 
         const text = decoder.decode(value)
-        content = history.value[index].content += text
+        raw += text
+
+        const parsed = parseStream(raw)
+        isThinking.value = parsed.thinking
+        content = history.value[index].content = parsed.content
 
         if (allowHaptic) {
             allowHaptic = false
@@ -1600,6 +1625,39 @@ onUnmounted(() => {
     to {
         transform: scale(1) translateY(0);
         opacity: 1;
+    }
+}
+
+.elysia-thinking {
+    @apply text-sm font-medium w-fit select-none;
+    background: linear-gradient(
+        90deg,
+        theme('--color-mauve-400') 35%,
+        theme('--color-mauve-200') 50%,
+        theme('--color-mauve-400') 65%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: text-shimmer 1.6s linear infinite;
+}
+
+html.dark .elysia-thinking {
+    background: linear-gradient(
+        90deg,
+        theme('--color-mauve-500') 35%,
+        theme('--color-mauve-300') 50%,
+        theme('--color-mauve-500') 65%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+@keyframes text-shimmer {
+    to {
+        background-position: -200% 0;
     }
 }
 </style>
