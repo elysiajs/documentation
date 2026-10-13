@@ -40,7 +40,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Without `.use(websocket())`, calling `.ws()` will throw a `WebSocket capability` error at startup.
+Without `.use(websocket())`, the app throws a `WebSocket capability` error when it builds its fetch handler (for example on `.listen()` or `.handle()`).
 
 The plugin also accepts app-wide server tuning options — the former `ElysiaConfig.websocket`:
 
