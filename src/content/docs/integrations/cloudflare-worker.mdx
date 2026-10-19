@@ -14,27 +14,48 @@ import { FileTree } from "../../../components/ui/file-tree";
 
 <h1 id="_top">Cloudflare Worker</h1>
 
-Elysia can run on Cloudflare Workers using Web Standard requests and responses. For Elysia v2, compile the route handlers at build time before handing the bundle to Wrangler.
+Elysia can run on Cloudflare Workers using Web Standard requests and responses.
 
-:::caution[Elysia v2 compatibility]
+For Elysia v2, there's no need for Cloudflare adapter. You can either:
+1. compile route handlers at start time
+2. compile route handlers at build time
 
-The v1 `elysia/adapter/cloudflare-worker` export and `aot: false` option are not part of Elysia v2. The setup below uses the v2 `aot` build plugin and the same `workerd` target as Elysia's Cloudflare test fixture.
+### Compile at start time
 
-:::
+The easiest way to get started is to compile them at start time.
+
+1. add `compile` before exporting the app:
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Cloudflare Worker!')
+    .compile()
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+However, there's an overhead of compiling the handlers at start time, which can be avoided by compiling them at build time.
+
+### Compile at build time
 
 1. Use [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update) to set up your project:
 
 ```bash
 wrangler init elysia-on-cloudflare
-bun add elysia@2.0.0-beta.32
+bun add elysia@rc
 bun add -d esbuild
 ```
 
-2. Define your Elysia app and export a Worker fetch handler:
+2. Define your Elysia app and export Elysia instance and Worker fetch handler:
 
 ```ts title="src/index.ts"
 import { Elysia } from 'elysia'
 
+// export here for AOT
 export const app = new Elysia()
     .get('/', () => 'Hello Cloudflare Worker!')
 
