@@ -1,0 +1,178 @@
+/* ============================================================
+   Spica Constellation System — Color tokens
+   OKLCH, chroma boosted ~1.25x for wide-gamut (P3). On sRGB the
+   browser gamut-maps back toward the hex anchor in each comment.
+   Vibrancy SCALE is preserved across the palette; neutrals and the
+   deep night base are left un-boosted.
+   ============================================================ */
+:root {
+  color-scheme: light;
+  /* --- Primary · soft-pink blossom (the one accent) --------------- */
+  --primary:          oklch(0.6860 0.2460 4.20);   /* #F9578A · primary — blossom · white bold labels ≥3.0:1 */
+  --on-primary: #FFFFFF;
+  --primary-soft:     oklch(0.9680 0.0200 355.00);  /* #FFF0F5 · tonal fill: secondary buttons, chips, callouts */
+  --primary-line:     oklch(0.9050 0.0500 353.00);  /* #F9D6E3 · hairline / soft border */
+  --primary-deep:     oklch(0.6100 0.2350 6.50);   /* #D9446F · links, text-on-light */
+  --primary-cta-deep: oklch(0.6450 0.2400 5.50);   /* #E64F7D · pressed / hover on the primary CTA */
+  --primary-ink:      oklch(0.4850 0.1400 357.00); /* #904061 · deepest emphasis, AAA on light */
+
+  /* --- Harmonic supports · a cool spread, left -> center -> right of the primary --- */
+  --harmony-left:        oklch(0.8334 0.0790 247.14); /* #A8CDF0 · coolest blue */
+  --harmony-left-soft:   oklch(0.9447 0.0265 252.50); /* #E3EEFB */
+  --harmony-left-deep:   oklch(0.5594 0.0946 248.71); /* #50789F · text */
+
+  --harmony-center:      oklch(0.8671 0.0568 273.01); /* #C9D2F2 · periwinkle, the workhorse */
+  --harmony-center-soft: oklch(0.9333 0.0309 275.91); /* #E4E8FA */
+  --harmony-center-line: oklch(0.9126 0.0380 275.59); /* #DCE1F7 · hairline */
+  --harmony-center-deep: oklch(0.5554 0.1575 274.68); /* #5E6BBC · text */
+
+  --harmony-right:       oklch(0.8102 0.0969 308.23); /* #CFB4E8 · lavender, nearest the primary */
+  --harmony-right-soft:  oklch(0.9296 0.0406 311.74); /* #EFE2F8 */
+  --harmony-right-deep:  oklch(0.5406 0.1519 303.57); /* #7E5BA8 · text */
+
+  /* --- Warm light · pink-centred bloom (a glow, never a flat fill) --- */
+  --bloom:      oklch(0.8549 0.0928 350.16); /* #F6BCD6 */
+  --bloom-soft: oklch(0.9604 0.0238 352.64); /* #FDEDF3 */
+
+  /* --- Ink · soft plum-charcoal (no pure black) --------------------- */
+  --ink:       oklch(0.2772 0.0190 303.36); /* #2A2630 · body */
+  --ink-soft:  oklch(0.4575 0.0228 295.31); /* #585563 · secondary */
+  --ink-muted: oklch(0.6834 0.0241 302.75); /* #9C96A6 · tertiary, placeholder, disabled */
+
+  /* --- Surface · near-white base with the faintest rose whisper (no pure white) --- */
+  --base:          #FFFFFF;
+  --surface:       oklch(0.9830 0.0025 333.98); /* panel / control · rose whisper toned down */
+  --surface-2:     oklch(0.9604 0.0085 325.64); /* #F5F0F5 · state / chip */
+  --surface-raised: #FFFFFF; /* selected chips and elevated surfaces */
+  --border:        oklch(0.9447 0.0108 339.34); /* #F2EAEF · default 1px */
+  --border-strong: oklch(0.9022 0.0152 338.94); /* #E6DBE2 · dividers, input borders */
+  --control-border: var(--border-strong);
+
+  /* --- Functional · separate from brand ----------------------------- */
+  --success:      oklch(0.8020 0.1008 161.40); /* #8FCFAE */
+  --success-soft: oklch(0.9595 0.0186 164.73); /* #E9F5EF */
+  --success-deep: oklch(0.5017 0.1118 158.21); /* #2F7350 */
+  --warning:      oklch(0.8521 0.1164 82.04);  /* #EDC987 · the only home for cape-yellow */
+  --warning-soft: oklch(0.9487 0.0521 87.36);  /* #FAEDCF */
+  --warning-deep: oklch(0.4852 0.1161 73.97);  /* #7E5616 */
+  --danger:       oklch(0.6708 0.2464 24.13);  /* #F75656 */
+  --on-danger: #FFFFFF;
+  --danger-soft:  oklch(0.9473 0.0329 17.63);  /* #FFE7E7 */
+  --danger-deep:  oklch(0.5703 0.2673 27.43);  /* #D92424 */
+
+  /* --- Ceremonial gold · masthead / colophon only, never product UI - */
+  --gold: oklch(0.7460 0.1130 86.22); /* #C6A968 */
+
+  /* --- Attention light · the pink->violet->blue bloom for focus moments --- */
+  --attention: radial-gradient(125% 130% at 18% -10%, var(--bloom-soft) 0%, #F8EAF2 34%, #ECEFFB 66%, #FFFFFF 100%);
+
+  /* --- Surface washes · near-white base + soft pastel corner blooms --- */
+  --surface-wash:
+    radial-gradient(58% 50% at 2% 0%,   rgba(255,116,156,.12) 0%, rgba(255,116,156,0) 68%),
+    radial-gradient(52% 46% at 100% 6%, rgba(168,205,240,.16) 0%, rgba(168,205,240,0) 70%),
+    radial-gradient(60% 55% at 94% 100%,rgba(207,180,232,.15) 0%, rgba(207,180,232,0) 70%),
+    radial-gradient(50% 46% at 4% 96%,  rgba(201,210,242,.14) 0%, rgba(201,210,242,0) 70%),
+    var(--base);
+  --surface-wash-rose:
+    radial-gradient(62% 54% at 0% 0%,   rgba(255,116,156,.18) 0%, rgba(255,116,156,0) 66%),
+    radial-gradient(54% 48% at 100% 4%, rgba(246,188,214,.20) 0%, rgba(246,188,214,0) 70%),
+    radial-gradient(58% 52% at 96% 100%,rgba(222,194,236,.12) 0%, rgba(222,194,236,0) 72%),
+    var(--base);
+  --surface-wash-cool:
+    radial-gradient(56% 50% at 100% 0%, rgba(168,205,240,.20) 0%, rgba(168,205,240,0) 68%),
+    radial-gradient(58% 52% at 0% 100%, rgba(201,210,242,.18) 0%, rgba(201,210,242,0) 70%),
+    radial-gradient(48% 44% at 6% 2%,   rgba(207,180,232,.10) 0%, rgba(207,180,232,0) 72%),
+    var(--base);
+  --surface-wash-iris:
+    radial-gradient(60% 54% at 98% 2%,  rgba(207,180,232,.22) 0%, rgba(207,180,232,0) 68%),
+    radial-gradient(56% 50% at 2% 98%,  rgba(222,194,236,.18) 0%, rgba(222,194,236,0) 70%),
+    radial-gradient(50% 46% at 88% 96%, rgba(255,116,156,.10) 0%, rgba(255,116,156,0) 72%),
+    var(--base);
+  --surface-wash-dawn:
+    radial-gradient(80% 46% at 18% -6%, rgba(255,116,156,.16) 0%, rgba(255,116,156,0) 64%),
+    radial-gradient(70% 44% at 86% 4%,  rgba(246,188,214,.14) 0%, rgba(246,188,214,0) 66%),
+    radial-gradient(90% 50% at 50% 106%,rgba(201,210,242,.18) 0%, rgba(201,210,242,0) 64%),
+    var(--base);
+
+  /* --- Night sky · the one dark surface (deep indigo nebula) -------- */
+  --night:      oklch(0.1717 0.0376 274.61); /* #0B0E20 */
+  --night-2:    oklch(0.2287 0.0548 272.30); /* #141A36 */
+  --night-ink:  oklch(0.9444 0.0286 294.06); /* #EDEAFB · text on night */
+  --night-soft: oklch(0.7613 0.0830 277.94); /* #A7AEDC · secondary on night */
+  --surface-night:
+    radial-gradient(58% 56% at 50% 36%, rgba(96,112,196,.30) 0%, rgba(96,112,196,0) 60%),
+    radial-gradient(46% 50% at 88% 90%, rgba(72,150,140,.18) 0%, rgba(72,150,140,0) 64%),
+    radial-gradient(50% 52% at 10% 8%,  rgba(126,91,168,.22) 0%, rgba(126,91,168,0) 64%),
+    linear-gradient(158deg, #0B0E20 0%, #141A36 58%, #0B0E20 100%);
+}
+
+/* Dark mode · violet-charcoal canvas, with lifted surfaces and the same pink accent. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --primary: oklch(0.7800 0.1500 350.00);
+  --primary-cta-deep: oklch(0.7300 0.1500 350.00);
+  --on-primary: oklch(0.2100 0.0340 264.665);
+  --on-danger: oklch(0.2100 0.0340 264.665);
+  --control-border: oklch(0.6000 0.0300 300.00);
+  --base: oklch(0.2100 0.0240 285.00); /* #171723 · Spica's dark canvas */
+  --surface: oklch(0.2500 0.0280 295.00);
+  --surface-2: oklch(0.2950 0.0300 300.00);
+  --surface-raised: oklch(0.3200 0.0320 305.00);
+  --border: oklch(0.3300 0.0280 300.00);
+  --border-strong: oklch(0.4000 0.0320 300.00);
+  --ink: oklch(0.9400 0.0120 285.00);
+  --ink-soft: oklch(0.8000 0.0220 278.00);
+  --ink-muted: oklch(0.7000 0.0250 278.00);
+
+  --primary-soft: oklch(0.2900 0.0450 350.00);
+  --primary-line: oklch(0.4000 0.0850 350.00);
+  --primary-deep: oklch(0.8000 0.1300 355.00);
+  --primary-ink: oklch(0.8600 0.0900 355.00);
+  --harmony-left-soft: oklch(0.2900 0.0350 248.00);
+  --harmony-left-deep: oklch(0.8334 0.0790 247.14);
+  --harmony-center-soft: oklch(0.2900 0.0400 274.00);
+  --harmony-center-line: oklch(0.4000 0.0500 274.00);
+  --harmony-center-deep: oklch(0.8671 0.0568 273.01);
+  --harmony-right-soft: oklch(0.2900 0.0400 308.00);
+  --harmony-right-deep: oklch(0.8102 0.0969 308.23);
+  --bloom-soft: oklch(0.2900 0.0350 350.00);
+  --success-soft: oklch(0.2900 0.0350 161.00);
+  --success-deep: oklch(0.8020 0.1008 161.40);
+  --warning-soft: oklch(0.2900 0.0350 82.00);
+  --warning-deep: oklch(0.8521 0.1164 82.04);
+  --danger-soft: oklch(0.2900 0.0450 24.00);
+  --danger-deep: oklch(0.8000 0.1200 24.00);
+
+  --attention: radial-gradient(125% 130% at 18% -10%, var(--bloom-soft), var(--harmony-center-soft) 66%, var(--base));
+  --wash-pink: oklch(0.4600 0.1100 350.00);
+  --wash-blue: oklch(0.4600 0.1100 248.00);
+  --wash-periwinkle: oklch(0.4600 0.1100 274.00);
+  --wash-lavender: oklch(0.4600 0.1100 308.00);
+
+  --surface-wash:
+    radial-gradient(72.5% 62.5% at 2% 0%, color-mix(in oklab, var(--wash-pink) 20%, transparent), transparent 100%),
+    radial-gradient(65% 57.5% at 100% 6%, color-mix(in oklab, var(--wash-blue) 24%, transparent), transparent 100%),
+    radial-gradient(75% 68.75% at 94% 100%, color-mix(in oklab, var(--wash-lavender) 26%, transparent), transparent 100%),
+    radial-gradient(62.5% 57.5% at 4% 96%, color-mix(in oklab, var(--wash-periwinkle) 21%, transparent), transparent 100%),
+    var(--base);
+  --surface-wash-rose:
+    radial-gradient(77.5% 67.5% at 0% 0%, color-mix(in oklab, var(--wash-pink) 26%, transparent), transparent 100%),
+    radial-gradient(67.5% 60% at 100% 4%, color-mix(in oklab, var(--wash-pink) 21%, transparent), transparent 100%),
+    radial-gradient(72.5% 65% at 96% 100%, color-mix(in oklab, var(--wash-lavender) 19%, transparent), transparent 100%),
+    var(--base);
+  --surface-wash-cool:
+    radial-gradient(70% 62.5% at 100% 0%, color-mix(in oklab, var(--wash-blue) 28%, transparent), transparent 100%),
+    radial-gradient(72.5% 65% at 0% 100%, color-mix(in oklab, var(--wash-periwinkle) 23%, transparent), transparent 100%),
+    radial-gradient(60% 55% at 6% 2%, color-mix(in oklab, var(--wash-lavender) 11%, transparent), transparent 100%),
+    var(--base);
+  --surface-wash-iris:
+    radial-gradient(75% 67.5% at 98% 2%, color-mix(in oklab, var(--wash-lavender) 28%, transparent), transparent 100%),
+    radial-gradient(70% 62.5% at 2% 98%, color-mix(in oklab, var(--wash-lavender) 24%, transparent), transparent 100%),
+    radial-gradient(62.5% 57.5% at 88% 96%, color-mix(in oklab, var(--wash-pink) 14%, transparent), transparent 100%),
+    var(--base);
+  --surface-wash-dawn:
+    radial-gradient(100% 57.5% at 18% -6%, color-mix(in oklab, var(--wash-pink) 24%, transparent), transparent 100%),
+    radial-gradient(87.5% 55% at 86% 4%, color-mix(in oklab, var(--wash-pink) 21%, transparent), transparent 100%),
+    radial-gradient(112.5% 62.5% at 50% 106%, color-mix(in oklab, var(--wash-periwinkle) 24%, transparent), transparent 100%),
+    var(--base);
+}

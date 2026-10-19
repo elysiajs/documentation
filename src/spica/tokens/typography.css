@@ -1,0 +1,40 @@
+/* ============================================================
+   Spica Constellation System — Typography tokens
+   Headers = Alice (single weight, soft storybook serif) · Body/UI = Nunito · Code = JetBrains Mono
+   Scale: 1.25 modular ramp · 12 / 16 / 20 / 24 / 32 / 39 / 48 / 74
+   No uppercase anywhere — eyebrows & badges are sentence case.
+   ============================================================ */
+:root {
+  /* font families */
+  /* one weight (400) — use size, not weight, for hierarchy */
+  --display: 'Alice', 'Iowan Old Style', Georgia, serif; /* @kind font */
+  /* body + UI — rounded, soft, friendly */
+  --body:    'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif; /* @kind font */
+  --sans:    var(--body); /* @kind font */
+  /* legacy alias — older cards still reference it; resolves to the body sans */
+  --serif:   var(--body); /* @kind font */
+  /* code + small labels */
+  --mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace; /* @kind font */
+
+  /* type scale */
+  --text-eyebrow: 13px;  /* body sans, semibold, sentence case, primary-deep */
+  --text-meta:    12px;
+  --text-sm:      14px;
+  --text-body:    16px;
+  --text-lead:    20px;
+  --text-h3:      24px;
+  --text-h2:      32px;
+  --text-h1:      48px;
+  --text-display: 74px;
+
+  /* line-heights */
+  --lh-display: 1.05; /* @kind other */
+  --lh-body:    1.6; /* @kind other */
+  --lh-code:    1.55; /* @kind other */
+
+  /* tracking */
+  --track-tight:  -0.012em; /* @kind other */
+
+  /* reading measure */
+  --reading-width: 680px; /* @kind other */
+}

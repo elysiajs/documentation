@@ -1,0 +1,120 @@
+/* ============================================================
+   Spica Constellation System — Effects: radii, borders, shadow, motion
+   Friendly, rounded; warm-tinted shadows; a little glow where it matters.
+   ============================================================ */
+:root {
+  /* radii — friendly, rounded */
+  --radius-sm:   8px;   /* chips, small controls */
+  --radius:      12px;  /* buttons, inputs */
+  --radius-card: 16px;  /* cards, callouts */
+  --radius-lg:   22px;  /* large frames, nav shells */
+  --radius-pill: 999px;
+
+  /* borders */
+  --border-width: 1px;
+
+  /* shadows — tinted with ink so they read warm */
+  --shadow-xs: 0 1px 2px rgba(42,38,48,.05);
+  --shadow-sm: 0 2px 6px color-mix(in oklab, var(--primary) 30%, transparent);
+  --shadow-md: 0 6px 18px rgba(42,38,48,.10);
+  --shadow-lg: 0 10px 30px rgba(42,38,48,.14);
+  /* attention elevation — primary modal / urgent */
+  --shadow-attention: 0 10px 30px color-mix(in oklab, var(--primary) 24%, transparent),
+                      0 0 0 4px color-mix(in oklab, var(--bloom) 30%, transparent);
+
+  /* quiet glass — elevated floating surfaces (menus, popovers, nav, modal).
+     Subtle: mostly opaque so rows stay crisp, a gentle blur picks up the wash beneath. */
+  --glass:        rgba(255,255,255,.86);
+  --glass-blur-small: saturate(1.05) blur(4px);
+  --glass-blur:   saturate(1.05) blur(6px); /* @kind other */
+  --glass-border: color-mix(in oklab, var(--border-strong) 70%, white);
+
+  /* focus — a dashed pink outline sitting 3px off the control (follows the corner radius),
+     like the slider's thin bars. Apply: outline: var(--focus-outline); outline-offset: var(--focus-offset). */
+  --focus-outline: 1.5px dashed color-mix(in oklab, var(--primary) 60%, white); /* @kind other */
+  --focus-offset: 3px;
+  /* danger flavour of the same ring */
+  --focus-outline-danger: 1.5px dashed var(--danger); /* @kind other */
+
+  /* magic — soft pink→blue glow for key moments (hover on a primary, a just-finished task, the fox waving) */
+  --glow:        0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent), 0 6px 22px color-mix(in oklab, var(--primary) 28%, transparent), 0 10px 34px color-mix(in oklab, var(--harmony-left) 40%, transparent);
+  --glow-soft:   0 4px 18px color-mix(in oklab, var(--bloom) 45%, transparent), 0 8px 28px color-mix(in oklab, var(--harmony-center) 35%, transparent);
+  /* pastel gradient for featured surfaces — hero cards, empty states, celebration moments */
+  --gradient-magic: linear-gradient(135deg, var(--bloom-soft) 0%, var(--harmony-center-soft) 55%, var(--harmony-left-soft) 100%);
+  --gradient-magic-strong: linear-gradient(135deg, var(--primary-line) 0%, var(--harmony-right-soft) 50%, var(--harmony-left) 100%);
+
+  /* motion — soft and a little bouncy. Springs are the house easing for anything that moves,
+     grows or appears (toggles, chips, popovers, the slider, the fox). Reserve plain --ease-out for
+     colour/opacity fades and for long-distance moves where overshoot would look sloppy. */
+  --ease-out:    cubic-bezier(0.22, 0.61, 0.36, 1); /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* @kind other */
+  --ease-bounce: cubic-bezier(0.68, -0.4, 0.32, 1.4); /* @kind other */
+  --dur-fast: 140ms; /* @kind other */
+  --dur-base: 220ms; /* @kind other */
+  --dur-slow: 420ms; /* @kind other */
+
+  /* spacing rhythm — 4px base, 8px vertical */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-24: 96px; /* between major sections */
+}
+
+/* Signature motion — the constellation/astrolabe decoration */
+@keyframes spica-bloom { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: scale(1); } }
+@keyframes spica-spin  { to { transform: rotate(360deg); } }
+@keyframes spica-march { to { stroke-dashoffset: -10; } }
+/* M3-expressive progress: the active track's squiggle travels left by one wavelength (20px) */
+@keyframes spica-wave { from { -webkit-mask-position-x: 0; mask-position-x: 0; } to { -webkit-mask-position-x: -20px; mask-position-x: -20px; } }
+/* the progress stop-dot bobs up and down as the squiggle travels under it */
+@keyframes spica-bob { 0%,100% { transform: translate(-50%,-50%); } 25% { transform: translate(-50%, calc(-50% - 3px)); } 75% { transform: translate(-50%, calc(-50% + 3px)); } }
+/* indeterminate linear sweep — a fixed-width segment travels across (GPU transform, reliable) */
+@keyframes spica-indet { 0% { transform: translateX(-130%); } 100% { transform: translateX(330%); } }
+
+/* magic motion — a gentle float for the fox / hero art, a soft twinkle for ✦ accents, a happy little pop */
+@keyframes spica-float   { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes spica-twinkle { 0%,100% { opacity: .45; transform: scale(.85); } 50% { opacity: 1; transform: scale(1.1); } }
+@keyframes spica-pop     { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes spica-wiggle  { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+/* glow arrives with the surface — once, on open/hover */
+@keyframes spica-glow-in { from { box-shadow: 0 0 0 0 transparent; } to { box-shadow: var(--glow-soft); } }
+/* popover emerges from its trigger — short fade + ~4px rise, everything arrives together */
+@keyframes spica-menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* Keep floating surfaces quiet over the dark canvas. */
+:root[data-theme='dark'] {
+  --glass: color-mix(in oklab, var(--surface-raised) 99%, transparent);
+  --glass-border: var(--border-strong);
+  --shadow-xs: 0 1px 2px rgba(12, 9, 16, .20);
+  --shadow-md: 0 6px 18px rgba(12, 9, 16, .28);
+  --shadow-lg: 0 10px 30px rgba(12, 9, 16, .36);
+  --gradient-magic-strong: linear-gradient(135deg, var(--primary-line), var(--harmony-right-soft) 50%, var(--harmony-left-soft));
+}
+
+/* Native control states share the same dark contrast as their Tailwind counterparts. */
+:root[data-theme='dark'] :is(input, textarea)::placeholder {
+  color: var(--ink-muted);
+  opacity: 1;
+}
+
+:root[data-theme='dark'] [data-spica-field='filled'] {
+  --field-filled-border: var(--control-border);
+}
+
+:root[data-theme='dark'] .spica-slider-rail {
+  --slider-active: var(--primary);
+  --slider-inactive: var(--control-border);
+}
+
+.spica-slider-rail:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}

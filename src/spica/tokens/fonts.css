@@ -1,0 +1,6 @@
+/* ============================================================
+   Spica Constellation System — Webfonts
+   Headers: Alice · Body/UI: Nunito · Code: JetBrains Mono — all from Google Fonts.
+   Drop self-hosted files into fonts/ and add @font-face for full offline use.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Alice&family=Nunito:ital,wght@0,400..800;1,400..700&family=JetBrains+Mono:ital,wght@0,400..600;1,400&display=swap');

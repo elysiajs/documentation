@@ -1,0 +1,8 @@
+/* ============================================================
+   Spica Constellation System — global entry point
+   Consumers link THIS one file. Keep it as @import lines only.
+   ============================================================ */
+@import url('./tokens/fonts.css');
+@import url('./tokens/colors.css');
+@import url('./tokens/typography.css');
+@import url('./tokens/effects.css');
