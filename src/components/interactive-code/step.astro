@@ -1,0 +1,98 @@
+---
+import { Code } from '@astrojs/starlight/components';
+import type { CodeStep } from './compile-magic-move';
+
+interface Props extends Pick<CodeStep, 'lang'> {
+	code?: string;
+	highlight?: number[];
+	step?: number;
+	class?: string;
+}
+
+const { code, lang = 'typescript', step, highlight, class: className } = Astro.props;
+---
+
+{code === undefined ? <div class={className} data-interactive-step-content><slot /></div> : <section
+	class:list={['interactive-step doc-enhanced:[min-block-size:min(30dvh,22rem)] mb-16 box-border', className]}
+	data-code-step={step}
+>
+	<slot />
+	<div class="doc-enhanced:hidden h-full" data-code-fallback>
+		<Code code={code} lang={lang} mark={highlight} />
+	</div>
+</section>}
+
+<style>
+	.interactive-step {
+		--marker-center: calc(var(--sl-text-h2) * var(--sl-line-height-headings) / 2);
+		--marker-x: 0.5rem;
+		--marker-size: 0.375rem;
+		position: relative;
+		display: flow-root;
+		margin-block-start: 0;
+		padding-inline-start: 2rem;
+	}
+
+	.interactive-step::before {
+		content: '';
+		position: absolute;
+		inset-inline-start: 0.5rem;
+		inset-block: 0 -4rem;
+		border-inline-start: 1px solid var(--color-border);
+	}
+
+	.interactive-step:first-child::before {
+		inset-block-start: var(--marker-center);
+	}
+
+	.interactive-step:last-child::before {
+		inset-block-end: calc(100% - var(--marker-center));
+	}
+
+	.interactive-step::after {
+		content: '';
+		position: absolute;
+		inset-inline-start: calc(var(--marker-x) - var(--marker-size) / 2);
+		inset-block-start: calc(var(--marker-center) - var(--marker-size) / 2);
+		inline-size: var(--marker-size);
+		block-size: var(--marker-size);
+		box-sizing: border-box;
+		border: 1px solid var(--color-border-strong);
+		border-radius: 50%;
+		background: var(--sl-color-bg);
+	}
+
+	.interactive-step[data-active]::after {
+		color: var(--color-primary);
+		border-color: currentColor;
+		background: currentColor;
+	}
+
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.interactive-step[data-active]::after {
+				color: var(--timeline-marker-color, var(--color-border));
+			}
+		}
+	}
+
+	.interactive-step:global(:has(> .sl-heading-wrapper > h3)) {
+		--marker-center: calc(var(--sl-text-h3) * var(--sl-line-height-headings) / 2);
+		--marker-x: 1.5rem;
+		--marker-size: 0.375rem;
+		padding-inline-start: 3rem;
+	}
+
+	.interactive-step > :global(.sl-heading-wrapper:has(> h3)) {
+		position: relative;
+	}
+
+	.interactive-step > :global(.sl-heading-wrapper:has(> h3))::before {
+		content: '';
+		position: absolute;
+		inset-inline-start: -2.5rem;
+		inset-block-start: var(--marker-center);
+		inline-size: 1rem;
+		border-block-start: 1px solid var(--color-border);
+	}
+</style>

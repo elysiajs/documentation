@@ -1,0 +1,421 @@
+---
+import { IconSparkle } from '@tabler/icons-react'
+
+import Ripple from '../components/ui/ripple.astro'
+import InstallCommand from '../components/landing/install-command.astro'
+import Footer from '../components/footer.astro'
+
+import '../styles/global.css'
+import '../styles/landing.css'
+
+const title = 'Elysia - Ergonomic Framework for Humans'
+const description =
+	'Elysia is an ergonomic framework for Humans. End-to-end type safety, error type soundness with formidable speed and exceptional DX across JavaScript runtime.'
+
+const ogImage = new URL('/assets/cover.webp', Astro.site)
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script is:inline>
+			;(() => {
+				document.documentElement.dataset.landingIntroActive = 'true'
+				try {
+					if (
+						new URLSearchParams(location.search).get('intro') ===
+						'1'
+					)
+						return
+					const lastIntroAt = Number(
+						localStorage.getItem('elysia:landing:lastIntroAt')
+					)
+					const now = Date.now()
+					if (
+						Number.isFinite(lastIntroAt) &&
+						lastIntroAt > 0 &&
+						lastIntroAt <= now &&
+						now - lastIntroAt < 15 * 60 * 1000
+					) {
+						document.documentElement.dataset.skipLandingIntro =
+							'true'
+					}
+				} catch {}
+			})()
+		</script>
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:alt" content={title} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content={title} />
+		<link rel="icon" href="/favicon.svg" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Alice&family=Nunito:ital,wght@0,400..800;1,400..700&family=JetBrains+Mono:ital,wght@0,400..600;1,400&display=swap"
+		/>
+	</head>
+	<body>
+		<a href="#main" class="landing-skip">Skip to content</a>
+		<header class="landing-header">
+			<div class="landing-header-content">
+				<a href="/" class="landing-brand">
+					<img
+						src="/assets/elysia.svg"
+						alt=""
+						width="26"
+						height="26"
+					/>
+					<span>ElysiaJS</span>
+				</a>
+				<nav aria-label="Main navigation" class="site-nav">
+					<a href="/at-glance/">Docs</a>
+					<a href="/blog/">Blog</a>
+					<a href="/illust/">Illust</a>
+				</nav>
+			</div>
+		</header>
+		<main id="main">
+			<noscript>
+				<style>
+					.landing-loader {
+						display: none;
+					}
+				</style>
+			</noscript>
+			<div class="landing-loader" role="status" aria-label="Loading">
+				<img
+					src="/assets/elysia_v.svg"
+					alt=""
+					width="959"
+					height="534"
+				/>
+			</div>
+			<div
+				class="landing-stage relative w-full h-[calc(100vh+7rem)] overflow-hidden"
+			>
+				<img
+					class="greenfield z-1"
+					src="/field-graded/day/day_sky.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-2"
+					src="/field-graded/day/day_cloud_overview.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-3"
+					src="/field-graded/day/day_cloud_back.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-4"
+					src="/field-graded/day/day_cloud_left.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-4"
+					src="/field-graded/day/day_cloud_right.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-5"
+					src="/field-graded/day/day_sea.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-6"
+					src="/field-graded/day/day_mt_back.webp"
+					alt=""
+				/>
+
+				<!-- <div class="landing-aurora z-6" aria-hidden="true"></div> -->
+				<div class="landing-copy">
+					<div class="landing-wordmark">
+						<h1>Elysia</h1>
+					</div>
+
+					<section class="landing-intro">
+						<p class="font-display">
+							Ergonomic Framework for humans
+						</p>
+
+						<div class="landing-actions">
+							<a
+								href="/at-glance/"
+								class="landing-start flex items-center relative bg-black/25 border border-white/75 outline-white/75 outline outline-offset-4 text-white backdrop-blur-xs font-sans font-semibold text-xl px-8 py-2.5 rounded-full no-underline hover:scale-105 focus:scale-105 active:scale-98 transition-all easing-out duration-250"
+							>
+								Get Started
+								<IconSparkle
+									size={14}
+									strokeWidth={1.5}
+									className="absolute left-1.5 opacity-90"
+								/>
+								<IconSparkle
+									size={14}
+									strokeWidth={1.5}
+									className="absolute right-1.5 opacity-90"
+								/>
+								<Ripple />
+							</a>
+
+							<InstallCommand />
+						</div>
+					</section>
+				</div>
+
+				<img
+					class="greenfield z-7"
+					src="/field-graded/day/day_tulip.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-8"
+					src="/field-graded/day/day_mt_front.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-8"
+					src="/field-graded/day/day_observatory.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-9"
+					src="/field-graded/day/day_observatory_tree.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-10"
+					data-layer="day_fg"
+					src="/field-graded/day/day_fg.webp"
+					alt=""
+				/>
+
+				<div
+					class="greenfield z-10 elysia-chan-layer"
+					data-layer="elysia-chan-landing"
+				>
+					<img
+						class="elysia-chan-landing"
+						src="/field/elysia-landing-1416.png"
+						alt="Elysia chan landing"
+					/>
+				</div>
+				<img
+					class="greenfield z-12 flower-left"
+					data-layer="flower-left"
+					src="/field-graded/day/day_flower.webp"
+					alt=""
+				/>
+				<img
+					class="greenfield z-12 flower-right"
+					data-layer="flower-right"
+					src="/field-graded/day/day_flower.webp"
+					alt=""
+				/>
+
+				<div class="landing-edge-blur" aria-hidden="true">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</div>
+
+			<Footer />
+		</main>
+
+		<script>
+			const skipLandingIntro =
+				document.documentElement.dataset.skipLandingIntro === 'true'
+			const reduce = matchMedia(
+				'(prefers-reduced-motion: reduce)'
+			).matches
+			const mobileLayout = matchMedia('(max-width: 1023px)')
+
+			const layers = [
+				...document.querySelectorAll<HTMLElement>('.greenfield')
+			]
+
+			const ambient: Record<
+				string,
+				{
+					drift?: [number, number]
+					sway?: [number, number]
+					depth?: number
+					edgePinned?: boolean
+				}
+			> = {
+				day_cloud_back: { drift: [10, 80] },
+				day_cloud_left: { drift: [14, 60] },
+				day_cloud_right: { drift: [12, 66] },
+				day_cloud_front: { drift: [8, 50] },
+				day_tulip: { sway: [0.25, 7] },
+				day_observatory_tree: { sway: [0.35, 6] },
+				// flowers: wind reads as a sideways push with a slight lean, same period so they move together
+				'flower-left': {
+					drift: [4, 5.4],
+					sway: [0.2, 5.4],
+					depth: 1,
+					edgePinned: true
+				},
+				'flower-right': {
+					drift: [5, 4.6],
+					sway: [0.25, 4.6],
+					depth: 1,
+					edgePinned: true
+				}
+			}
+
+			const zOf = (el: HTMLElement) =>
+				+(el.className.match(/\bz-(\d+)/)?.[1] ?? 1)
+
+			const maxZ = Math.max(...layers.map(zOf))
+			const items = layers.map((el, i) => {
+				const name =
+					el.dataset.layer ??
+					(el as HTMLImageElement).src.match(
+						/\/([\w-]+)\.webp/
+					)?.[1] ??
+					''
+				return {
+					el,
+					depth: (zOf(el) - 1) / (maxZ - 1),
+					phase: i * 1.7,
+					...ambient[name]
+				}
+			})
+
+			if (!reduce)
+				for (const { el, depth } of items) {
+					const s = 1 + Math.min(depth, 1) * 0.09
+					el.style.scale = String(1.1 * s)
+				}
+
+			const introEase = 'cubic-bezier(0.32, 0.72, 0, 1)'
+			const introFinished: Promise<unknown>[] = []
+
+			function playIntro() {
+				start = last = performance.now()
+				requestAnimationFrame(frame)
+				if (reduce || skipLandingIntro) return
+				for (const { el, depth } of items) {
+					// The scene rises with the sheet, without a pause before the reveal.
+					const z = zOf(el)
+					if (z < 5) continue
+					const rise = z < 7 ? 35 : 85 + 25 * Math.min(depth, 1)
+					const animation = el.animate(
+						[{ translate: `0 ${rise}vh` }, { translate: '0 0' }],
+						{
+							duration: 1800,
+							easing: introEase,
+							fill: 'backwards'
+						}
+					)
+					introFinished.push(animation.finished.catch(() => {}))
+				}
+			}
+
+			const target = { x: 0, y: 0 }
+			const pos = { x: 0, y: 0 }
+			let start = performance.now()
+			let last = start
+
+			if (!reduce) {
+				addEventListener('mousemove', (e) => {
+					target.x = e.clientX / innerWidth - 0.5
+					target.y = e.clientY / innerHeight - 0.5
+				})
+
+				document.addEventListener(
+					'mouseleave',
+					() => (target.x = target.y = 0)
+				)
+			}
+
+			function frame(now: number) {
+				const dt = (now - last) / 1000
+				last = now
+
+				const t = (now - start) / 1000
+				const k = 1 - Math.exp(-dt / 0.16)
+
+				pos.x += (target.x - pos.x) * k
+				pos.y += (target.y - pos.y) * k
+
+				const mobile = mobileLayout.matches
+				for (const {
+					el,
+					depth,
+					phase,
+					drift,
+					sway,
+					edgePinned
+				} of items) {
+					if (reduce) continue
+
+					const pointerDepth = edgePinned && mobile ? 0 : depth
+					let x = -pos.x * 56 * pointerDepth
+					let y =
+						-pos.y * 32 * pointerDepth + scrollY * (1 - depth) * 0.5
+					let r = 0
+					if (drift)
+						x +=
+							Math.sin((t / drift[1]) * Math.PI * 2 + phase) *
+							drift[0]
+					if (sway)
+						r =
+							Math.sin((t / sway[1]) * Math.PI * 2 + phase) *
+							sway[0]
+					const s = 1 + Math.min(depth, 1) * 0.09
+					el.style.transform = `translate3d(${x / s}px, ${y / s}px, 0) rotate(${r}deg)`
+				}
+
+				requestAnimationFrame(frame)
+			}
+
+			const loader =
+				document.querySelector<HTMLElement>('.landing-loader')!
+			// Wait for decoded layers and a minimum hold so the loading screen never flickers.
+			const decoded = [
+				...document.querySelectorAll<HTMLImageElement>(
+					'.landing-stage img'
+				)
+			].map((img) => img.decode().catch(() => {}))
+			await Promise.all([
+				...decoded,
+				new Promise((r) => setTimeout(r, 800))
+			])
+			if (skipLandingIntro) {
+				loader.remove()
+				delete document.documentElement.dataset.landingIntroActive
+				playIntro()
+			} else {
+				loader.addEventListener('animationend', async (e) => {
+					if (e.target !== loader) return
+					try {
+						localStorage.setItem(
+							'elysia:landing:lastIntroAt',
+							String(Date.now())
+						)
+					} catch {}
+					loader.remove()
+					await Promise.all(introFinished)
+					delete document.documentElement.dataset.landingIntroActive
+				})
+				loader.classList.add('is-done')
+				playIntro()
+			}
+		</script>
+	</body>
+</html>

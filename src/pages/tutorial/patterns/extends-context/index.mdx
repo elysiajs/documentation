@@ -1,0 +1,148 @@
+---
+title: "Extends context"
+description: "Learn how to extend the context in Elysia using decorate, state, and derive to enhance your web applications."
+---
+
+import Lesson from '../../../../components/tutorial/lesson.astro';
+import DocLink from '../../../../components/tutorial/doc-link.astro';
+
+<Lesson title={frontmatter.title} description={frontmatter.description} doc="/essential/handler/#extend-context">
+
+# Extends context
+
+Elysia provides a context with small utilities to help you get started.
+
+You can extend Elysia's context with:
+1. <DocLink href="/essential/handler/#extend-context">Decorate</DocLink>
+2. <DocLink href="/essential/handler/#extend-context">State</DocLink>
+3. <DocLink href="/essential/life-cycle/#derive">Derive</DocLink>
+
+## Decorate
+**Singleton**, and **immutable** properties that are shared across all requests.
+
+```typescript
+import { Elysia } from 'elysia'
+
+class Logger {
+    log(value: string) {
+        console.log(value)
+    }
+}
+
+new Elysia()
+    .decorate('logger', new Logger())
+    .get('/', ({ logger }) => {
+        logger.log('hi')
+
+        return 'hi'
+    })
+```
+
+Decorated value it will be available in the context as a read-only property, see <DocLink href="/essential/handler/#extend-context">Decorate</DocLink>.
+
+## State
+A **mutable** reference that is shared across all requests.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.state('count', 0)
+	.get('/', ({ store }) => {
+		store.count++
+
+		return store.count
+	})
+```
+
+State will be available in **context.store** that is shared across every request, see <DocLink href="/essential/handler/#extend-context">State</DocLink>.
+
+The first two requests return `1`, then `2`. Increment `store.count` to update the shared state. Destructuring a number with `({ store: { count } })` copies its current value into a local variable. Incrementing that variable does not change `store.count`.
+
+## Derive
+
+<DocLink href="/essential/handler/#extend-context">Decorate</DocLink> value is registered as a singleton.
+
+<DocLink href="/essential/life-cycle/#derive">Derive</DocLink> adds context values **per request**, after validation.
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.derive(({ headers: { authorization } }) => ({
+		authorization
+	}))
+	.get('/', ({ authorization }) => authorization)
+```
+
+Any **returned value will be available in context** except status, which will be send to client directly, and abort the subsequent handlers.
+
+`derive` runs before the handler, after input has been validated and converted. Return an object to add values to context, or return `status()` to end the request early.
+
+## Scope
+<DocLink href="/essential/handler/#extend-context">State</DocLink>, and <DocLink href="/essential/handler/#extend-context">Decorate</DocLink> are shared across all requests, and instances.
+
+<br />
+
+<DocLink href="/essential/life-cycle/#derive">Derive</DocLink> values are per request, and have an encapsulation scope <small>(as they're based on life-cycle event)</small>.
+
+If you want to use a derived value from a plugin, you would have to declare a <DocLink href="/essential/plugin/#scope">Scope</DocLink>.
+
+```typescript ins={5}
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+	.derive(
+		'plugin',
+		({ headers: { authorization } }) => ({
+			authorization
+		})
+	)
+
+new Elysia()
+	.use(plugin)
+	.get('/', ({ authorization }) => authorization)
+	.listen(3000)
+```
+
+## Assignment
+
+Let's try to extend Elysia's context.
+
+<Fragment slot="answer">
+
+We can use <DocLink href="/essential/life-cycle/#derive">derive</DocLink> to extract age from query.
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+class Logger {
+	log(info: string) {
+		console.log(info)
+	}
+}
+
+new Elysia()
+	.decorate('logger', new Logger())
+	.onRequest(({ request, logger }) => {
+		logger.log(`Request to ${request.url}`)
+	})
+	.guard({
+		query: t.Optional(
+			t.Object({
+				age: t.Number({ minimum: 15 })
+			})
+		)
+	})
+	.derive(({ query: { age }, status }) => {
+		if(!age) return status(401)
+
+		return { age }
+	})
+	.get('/profile', ({ age }) => age)
+	.listen(3000)
+```
+
+</Fragment>
+
+</Lesson>

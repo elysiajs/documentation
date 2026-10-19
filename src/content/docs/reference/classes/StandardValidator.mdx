@@ -1,0 +1,376 @@
+---
+template: "splash"
+description: "Elysia API reference for StandardValidator."
+editUrl: false
+next: false
+prev: false
+title: "StandardValidator"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">StandardValidator</h1>
+
+## Members
+
+### Properties
+
+| Property | Description |
+| ------ | ------ |
+| [Clean](/reference/classes/standardvalidator/#clean) | - |
+| [isAsync](/reference/classes/standardvalidator/#isasync) | - |
+| [mayReturnPromise](/reference/classes/standardvalidator/#mayreturnpromise) | - |
+
+### Methods
+
+| Method | Description |
+| ------ | ------ |
+| [Check](/reference/classes/standardvalidator/#check) | - |
+| [EncodeFrom](/reference/classes/standardvalidator/#encodefrom) | - |
+| [Errors](/reference/classes/standardvalidator/#errors) | - |
+| [From](/reference/classes/standardvalidator/#from) | - |
+| [clear](/reference/classes/standardvalidator/#clear) | - |
+| [create](/reference/classes/standardvalidator/#create) | - |
+| [reference](/reference/classes/standardvalidator/#reference) | - |
+| [response](/reference/classes/standardvalidator/#response) | - |
+
+Defined in: elysia/dist/validator/index.d.ts:44
+
+## Extends
+
+- [`Validator`](/reference/classes/validator/)
+
+## Constructors
+
+### Constructor
+
+```ts
+new StandardValidator(schema): StandardValidator;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:47
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `schema` | [`StandardSchemaV1Like`](/reference/interfaces/standardschemav1like/) |
+
+#### Returns
+
+`StandardValidator`
+
+#### Overrides
+
+[`Validator`](/reference/classes/validator/).[`constructor`](/reference/classes/validator/#constructor)
+
+## Properties
+
+### Clean
+
+```ts
+Clean: (value) => unknown;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:37
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `unknown` |
+
+#### Returns
+
+`unknown`
+
+#### Inherited from
+
+[`Validator`](/reference/classes/validator/).[`Clean`](/reference/classes/validator/#clean)
+
+***
+
+### isAsync
+
+```ts
+isAsync: boolean;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:31
+
+#### Inherited from
+
+[`Validator`](/reference/classes/validator/).[`isAsync`](/reference/classes/validator/#isasync)
+
+***
+
+### mayReturnPromise
+
+```ts
+mayReturnPromise: boolean;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:46
+
+#### Overrides
+
+[`Validator`](/reference/classes/validator/).[`mayReturnPromise`](/reference/classes/validator/#mayreturnpromise)
+
+## Methods
+
+### Check()
+
+```ts
+Check(value): boolean;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:48
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `unknown` |
+
+#### Returns
+
+`boolean`
+
+#### Overrides
+
+[`Validator`](/reference/classes/validator/).[`Check`](/reference/classes/validator/#check)
+
+***
+
+### EncodeFrom()
+
+```ts
+EncodeFrom(value): unknown;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:50
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `unknown` |
+
+#### Returns
+
+`unknown`
+
+***
+
+### Errors()
+
+```ts
+Errors(value): TLocalizedValidationError[];
+```
+
+Defined in: elysia/dist/validator/index.d.ts:49
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `unknown` |
+
+#### Returns
+
+`TLocalizedValidationError`[]
+
+#### Overrides
+
+[`Validator`](/reference/classes/validator/).[`Errors`](/reference/classes/validator/#errors)
+
+***
+
+### From()
+
+```ts
+From(
+   value, 
+   type?, 
+   allowAsync?
+): unknown;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:51
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `unknown` |
+| `type?` | `string` |
+| `allowAsync?` | `boolean` |
+
+#### Returns
+
+`unknown`
+
+#### Overrides
+
+[`Validator`](/reference/classes/validator/).[`From`](/reference/classes/validator/#from)
+
+***
+
+### clear()
+
+```ts
+static clear(): void;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:42
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+[`Validator`](/reference/classes/validator/).[`clear`](/reference/classes/validator/#clear)
+
+***
+
+### create()
+
+#### Call Signature
+
+```ts
+static create<Schema>(schema, options?): TypeBoxValidator<Schema>;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:38
+
+##### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Schema` *extends* `TSchema` |
+
+##### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `schema` | `Schema` |
+| `options?` | `ValidatorOptions` |
+
+##### Returns
+
+`TypeBoxValidator`\<`Schema`\>
+
+##### Inherited from
+
+[`Validator`](/reference/classes/validator/).[`create`](/reference/classes/validator/#create)
+
+#### Call Signature
+
+```ts
+static create<Schema>(schema, options?): StandardValidator;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:39
+
+##### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Schema` *extends* [`StandardSchemaV1Like`](/reference/interfaces/standardschemav1like/)\<`unknown`, `unknown`\> |
+
+##### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `schema` | `Schema` |
+| `options?` | `ValidatorOptions` |
+
+##### Returns
+
+`StandardValidator`
+
+##### Inherited from
+
+[`Validator`](/reference/classes/validator/).[`create`](/reference/classes/validator/#create)
+
+#### Call Signature
+
+```ts
+static create(schema, options?): Validator;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:40
+
+##### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `schema` | `null` |
+| `options?` | `ValidatorOptions` |
+
+##### Returns
+
+[`Validator`](/reference/classes/validator/)
+
+##### Inherited from
+
+[`Validator`](/reference/classes/validator/).[`create`](/reference/classes/validator/#create)
+
+***
+
+### reference()
+
+```ts
+static reference(schema, models): AnySchema;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:35
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `schema` | \| `string` \| `TSchema` \| [`StandardSchemaV1Like`](/reference/interfaces/standardschemav1like/)\<`unknown`, `unknown`\> |
+| `models` | `Record`\<`string` \| `number` \| `symbol`, [`AnySchema`](/reference/type-aliases/anyschema/)\> |
+
+#### Returns
+
+[`AnySchema`](/reference/type-aliases/anyschema/)
+
+#### Inherited from
+
+[`Validator`](/reference/classes/validator/).[`reference`](/reference/classes/validator/#reference)
+
+***
+
+### response()
+
+```ts
+static response(schema, options?): Map<number, Validator>;
+```
+
+Defined in: elysia/dist/validator/index.d.ts:41
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `schema` | \| `TSchema` \| [`StandardSchemaV1Like`](/reference/interfaces/standardschemav1like/)\<`unknown`, `unknown`\> \| `Record`\<`number`, \| `TSchema` \| [`StandardSchemaV1Like`](/reference/interfaces/standardschemav1like/)\<`unknown`, `unknown`\>\> |
+| `options?` | `ResponseValidatorOptions` |
+
+#### Returns
+
+`Map`\<`number`, [`Validator`](/reference/classes/validator/)\>
+
+#### Inherited from
+
+[`Validator`](/reference/classes/validator/).[`response`](/reference/classes/validator/#response)
+
+</div>
+</InteractiveDocLayout>
+</div>

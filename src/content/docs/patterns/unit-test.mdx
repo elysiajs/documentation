@@ -1,0 +1,79 @@
+---
+title: Unit test
+description: Test Elysia handlers with Request, Response, and Bun’s test runner.
+template: splash
+---
+
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+import "../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Unit test</h1>
+
+Test routes with Web Standard `Request` and `Response` objects. You don’t need to open a port for a handler test.
+
+Elysia provides the **Elysia.handle** method, which accepts a Web Standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) and returns a promise of a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response), simulating an HTTP Request.
+
+Bun includes a built-in [test runner](https://bun.sh/docs/cli/test) that offers a Jest-like API through the `bun:test` module, facilitating the creation of unit tests.
+
+Create **test/index.test.ts** in the root of the project directory with the following:
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const app = new Elysia().get('/', () => 'hi')
+
+        const response = await app
+            .handle(new Request('http://localhost/'))
+            .then((res) => res.text())
+
+        expect(response).toBe('hi')
+    })
+})
+```
+
+Then we can perform tests by running **bun test**.
+
+```bash
+bun test
+```
+
+Pass an absolute URL to `new Request()`. A relative path such as `/user` is not enough.
+
+We can also use other testing libraries like Jest to create Elysia unit tests.
+
+## Eden Treaty test
+
+We may use Eden Treaty to create an end-to-end type safety test for an Elysia server as follows:
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia().get('/hello', 'hi')
+
+const api = treaty(app)
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const { data, error } = await api.hello.get()
+
+        expect(error).toBeNull()
+        expect(data).toBe('hi')
+    })
+})
+```
+
+See [Eden Treaty Unit Test](/eden/treaty/unit-test/) for setup and more information.
+
+</div>
+</InteractiveDocLayout>
+</div>

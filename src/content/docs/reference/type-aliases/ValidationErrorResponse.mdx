@@ -1,0 +1,118 @@
+---
+template: "splash"
+description: "Request validation problem. Diagnostic fields are development-only."
+editUrl: false
+next: false
+prev: false
+title: "ValidationErrorResponse"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">ValidationErrorResponse</h1>
+
+```ts
+type ValidationErrorResponse = object;
+```
+
+Defined in: elysia/dist/error.d.ts:165
+
+Request validation problem. Diagnostic fields are development-only.
+
+## Properties
+
+### code
+
+```ts
+code: "validation";
+```
+
+Defined in: elysia/dist/error.d.ts:167
+
+***
+
+### detail?
+
+```ts
+optional detail?: string;
+```
+
+Defined in: elysia/dist/error.d.ts:170
+
+***
+
+### expected?
+
+```ts
+optional expected?: string;
+```
+
+Defined in: elysia/dist/error.d.ts:174
+
+***
+
+### found?
+
+```ts
+optional found?: unknown;
+```
+
+Defined in: elysia/dist/error.d.ts:172
+
+***
+
+### on
+
+```ts
+on: string;
+```
+
+Defined in: elysia/dist/error.d.ts:171
+
+***
+
+### property?
+
+```ts
+optional property?: string;
+```
+
+Defined in: elysia/dist/error.d.ts:173
+
+***
+
+### status
+
+```ts
+status: 422;
+```
+
+Defined in: elysia/dist/error.d.ts:169
+
+***
+
+### title
+
+```ts
+title: "Validation Error";
+```
+
+Defined in: elysia/dist/error.d.ts:168
+
+***
+
+### type
+
+```ts
+type: "validation";
+```
+
+Defined in: elysia/dist/error.d.ts:166
+
+</div>
+</InteractiveDocLayout>
+</div>

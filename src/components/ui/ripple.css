@@ -1,0 +1,50 @@
+/* m3-ripple, Copyright 2025 saltyAom (MIT); license in ripple.ts. */
+spica-ripple {
+	position: absolute;
+	inset: 0;
+	display: block;
+	margin: 0 !important;
+	border-radius: inherit;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+spica-ripple::before,
+spica-ripple > span {
+	position: absolute;
+	inset: 0;
+	margin: 0 !important;
+	opacity: 0;
+	pointer-events: none;
+}
+
+spica-ripple::before {
+	content: '';
+	background: var(--ripple-color, currentColor);
+	transition: opacity var(--ripple-duration, 150ms);
+}
+
+spica-ripple > span {
+	background: radial-gradient(closest-side, var(--ripple-color, currentColor) max(100% - 70px, 65%), transparent 100%);
+	transform-origin: center;
+	transition: opacity 375ms;
+}
+
+spica-ripple[data-hovered]::before { opacity: var(--ripple-hover-opacity, 0); }
+spica-ripple[data-pressed] > span {
+	opacity: var(--ripple-pressed-opacity, 0.12);
+	transition-duration: 75ms;
+}
+
+spica-ripple[disabled],
+:disabled > spica-ripple,
+[aria-disabled='true'] spica-ripple,
+[inert] spica-ripple { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+	spica-ripple::before, spica-ripple > span { transition: none; }
+}
+
+@media (forced-colors: active) {
+	spica-ripple { display: none; }
+}

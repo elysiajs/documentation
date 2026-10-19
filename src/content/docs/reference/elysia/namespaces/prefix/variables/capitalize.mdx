@@ -1,0 +1,44 @@
+---
+template: "splash"
+description: "Elysia API reference for capitalize."
+editUrl: false
+next: false
+prev: false
+title: "capitalize"
+---
+
+import InteractiveDocLayout from "../../../../../../../components/interactive-code/layout.astro";
+import "../../../../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">capitalize</h1>
+
+```ts
+capitalize: <T, Models>(prefix, models) => { [k in keyof Models as `${T}.${Capitalize<k & string>}`]: Models[k] };
+```
+
+Defined in: elysia/dist/utils.d.ts:209
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` *extends* `string` |
+| `Models` *extends* `Record`\<`string`, [`AnySchema`](/reference/type-aliases/anyschema/)\> |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `prefix` | `T` |
+| `models` | `Models` |
+
+## Returns
+
+`` { [k in keyof Models as `${T}.${Capitalize<k & string>}`]: Models[k] } ``
+
+</div>
+</InteractiveDocLayout>
+</div>

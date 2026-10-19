@@ -1,0 +1,136 @@
+---
+title: Compress plugin
+description: Reference and examples for the Compress plugin.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro'
+import '../../../styles/routing.css'
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Compress plugin</h1>
+
+The official [`@elysia/compress`](https://github.com/elysiajs/elysia-compress) plugin compresses eligible HTTP responses. It negotiates an encoding from the request's `Accept-Encoding` header. The runtime determines which codecs are available.
+
+## Installation
+
+```bash
+bun add @elysia/compress
+```
+
+## Basic use
+
+Register `compress` before the routes that use it:
+
+```ts
+import { Elysia } from 'elysia'
+import { compress } from '@elysia/compress'
+
+new Elysia()
+	.use(compress())
+	.get('/', () => 'Hello Elysia! '.repeat(100))
+	.listen(3000)
+```
+
+By default, the plugin uses a 1,024-byte threshold for responses with a known length and buffered responses. The response must pass the media type check. If the client does not accept an available encoding, the plugin returns the response without compression.
+
+## Route control
+
+The `compress` route option belongs in the hook argument before the handler. Disable compression for one route while keeping the default behavior elsewhere:
+
+```ts
+new Elysia()
+	.use(compress())
+	.get('/compressed', () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', { compress: false }, () => 'Hello Elysia! '.repeat(100))
+```
+
+Set `default` to `false` to require each route to opt in:
+
+```ts
+new Elysia()
+	.use(compress({ default: false }))
+	.get('/compressed', { compress: true }, () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', () => 'Hello Elysia! '.repeat(100))
+```
+
+An opted-in route still follows the configured media types, threshold, encoding negotiation, and skip conditions.
+
+## Options
+
+```ts
+new Elysia().use(
+	compress({
+		encodings: ['gzip', 'deflate'],
+		threshold: 2048,
+		options: {
+			gzip: { level: 6 }
+		}
+	})
+)
+```
+
+| Option      | Default                             | Description                                                                                                                                                          |
+| ----------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default`   | `true`                              | Compress routes unless a route sets `compress: false`. Set it to `false` to require `compress: true`.                                                                |
+| `encodings` | `['br', 'zstd', 'gzip', 'deflate']` | Set the server preference order. The plugin removes codecs that the runtime does not support. Client quality values take priority, and the server order breaks ties. |
+| `threshold` | `1024`                              | Set the minimum number of bytes for responses with a known length and buffered responses.                                                                            |
+| `types`     | Built-in predicate                  | Return `true` for media types that the plugin may compress. The predicate receives a lowercase media type without parameters. It replaces the built-in predicate.    |
+| `stream`    | `true`                              | Compress responses marked with `Transfer-Encoding: chunked`. Set it to `false` to leave those responses uncompressed.                                                |
+| `options`   | `{}`                                | Set options for `br`, `zstd`, `gzip`, or `deflate`. Brotli and Zstandard accept their codec parameters. `gzip` and deflate accept zlib options such as `level`.      |
+
+The built-in `types` predicate makes these media types eligible for compression:
+
+- `text/*`
+- `application/json`
+- media types that end in `+json`
+
+The plugin always excludes `text/event-stream`.
+
+The threshold applies to a declared `Content-Length` or a buffered body. A chunked response without a known length can start compression before the plugin knows its final size.
+
+## Runtime codec support
+
+The runtime determines which codecs the plugin can use. The plugin uses Brotli, gzip, and deflate when the runtime provides the matching zlib codec and a Web stream bridge. Zstandard requires its matching zlib codec too. If zlib is unavailable, the Web `CompressionStream` API can provide gzip and deflate.
+
+The `CompressionStream` fallback does not apply custom gzip or deflate `options`. Do not assume that every runtime supports all four encodings.
+
+## Skip behavior
+
+The plugin leaves a response uncompressed when any of these conditions apply:
+
+- The request method is `HEAD`.
+- The status is `204`, `205`, `206`, or `304`.
+- The response already has `Content-Encoding`.
+- `Cache-Control` contains `no-transform`.
+- The response has no body or uses `text/event-stream`.
+- The `types` predicate rejects the media type.
+- A known or buffered body is smaller than `threshold`.
+- The response is chunked and `stream` is `false`.
+
+## Response headers
+
+A compressed response gets `Content-Encoding` and includes `Accept-Encoding` in `Vary`. The plugin removes `Content-Length`, `Content-Range`, `Accept-Ranges`, and `Transfer-Encoding` because those values describe the uncompressed response. It also changes a strong `ETag` to a weak `ETag`.
+
+If an otherwise eligible response has no accepted encoding, the response remains uncompressed and includes `Accept-Encoding` in `Vary`.
+
+## Protect responses that contain secrets
+
+Compression can expose secrets through a BREACH-style response-size attack when one response contains both a secret and attacker-controlled input. Add `no-transform` to that response:
+
+```ts
+app.get('/secret', ({ query, set }) => {
+	set.headers['cache-control'] = 'private, no-transform'
+
+	return { echo: query.q, token: session.token }
+})
+```
+
+The plugin detects `no-transform` and returns the response without compression.
+
+</div>
+</InteractiveDocLayout>
+</div>

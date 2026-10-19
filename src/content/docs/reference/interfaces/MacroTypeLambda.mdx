@@ -1,0 +1,77 @@
+---
+template: "splash"
+description: "Type-level lambda applied to a macro's per call site hook value"
+editUrl: false
+next: false
+prev: false
+title: "MacroTypeLambda"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">MacroTypeLambda</h1>
+
+## Members
+
+### Properties
+
+| Property | Description |
+| ------ | ------ |
+| [context](/reference/interfaces/macrotypelambda/#context) | The call-site schema and accumulated singleton context, excluding output from macros selected at the same call site |
+| [input](/reference/interfaces/macrotypelambda/#input) | - |
+
+Defined in: elysia/dist/types.d.ts:813
+
+Type-level lambda applied to a macro's per call site hook value
+
+Return type as `$type: macroType<Lambda>()`
+`output` will be added to route's context
+
+A function-form macro may also compute `option` from `this['context']`.
+The hook value is then typed as `option` per route, guard, group and ws,
+replacing the macro's declared parameter
+
+`this` is not allowed in a nested type literal
+
+```ts
+interface LiveOption<Context> { topic?: (ctx: Context) => string }
+interface Live extends MacroTypeLambda { option: LiveOption<this['context']> }
+
+new Elysia().macro({
+    live: (option: LiveOption<Context>) => ({
+        $type: macroType<Live>(),
+        beforeHandle() {}
+    })
+})
+```
+
+## Properties
+
+### context
+
+```ts
+context: unknown;
+```
+
+Defined in: elysia/dist/types.d.ts:819
+
+The call-site schema and accumulated singleton context, excluding output
+from macros selected at the same call site
+
+***
+
+### input
+
+```ts
+input: unknown;
+```
+
+Defined in: elysia/dist/types.d.ts:814
+
+</div>
+</InteractiveDocLayout>
+</div>

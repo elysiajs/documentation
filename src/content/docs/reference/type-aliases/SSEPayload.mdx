@@ -1,0 +1,73 @@
+---
+template: "splash"
+description: "Elysia API reference for SSEPayload."
+editUrl: false
+next: false
+prev: false
+title: "SSEPayload"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">SSEPayload</h1>
+
+```ts
+type SSEPayload<Data, Event> = object;
+```
+
+Defined in: elysia/dist/types.d.ts:159
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Data` | `unknown` |
+| `Event` *extends* `string` \| `undefined` | `string` \| `undefined` |
+
+## Properties
+
+### data?
+
+```ts
+optional data?: Data;
+```
+
+Defined in: elysia/dist/types.d.ts:163
+
+***
+
+### event?
+
+```ts
+optional event?: Event;
+```
+
+Defined in: elysia/dist/types.d.ts:161
+
+***
+
+### id?
+
+```ts
+optional id?: string | number | null;
+```
+
+Defined in: elysia/dist/types.d.ts:160
+
+***
+
+### retry?
+
+```ts
+optional retry?: number;
+```
+
+Defined in: elysia/dist/types.d.ts:162
+
+</div>
+</InteractiveDocLayout>
+</div>

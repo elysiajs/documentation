@@ -1,0 +1,50 @@
+---
+template: "splash"
+description: "RFC 9457 Problem Details shape."
+editUrl: false
+next: false
+prev: false
+title: "Problem"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Problem</h1>
+
+```ts
+type Problem<Code, Extension> = object & Extension;
+```
+
+Defined in: elysia/dist/error.d.ts:145
+
+RFC 9457 Problem Details shape.
+
+## Type Declaration
+
+| Name | Type | Description | Defined in |
+| ------ | ------ | ------ | ------ |
+| `code?` | `string` | Extension member carrying a stable machine-readable token. `type` may be widened to a URI by [HTTPError.typeBase](/reference/classes/httperror/#typebase), `code` never is | elysia/dist/error.d.ts:153 |
+| `detail?` | `string` | - | elysia/dist/error.d.ts:156 |
+| `instance?` | `string` | - | elysia/dist/error.d.ts:157 |
+| `status?` | `Code` | - | elysia/dist/error.d.ts:155 |
+| `title?` | `string` | - | elysia/dist/error.d.ts:154 |
+| `type?` | `string` | URI (or slug) identifying the problem type. **Default** `'about:blank'` | elysia/dist/error.d.ts:146 |
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Code` *extends* `number` \| keyof [`StatusMap`](/reference/type-aliases/statusmap/) | `number` \| keyof [`StatusMap`](/reference/type-aliases/statusmap/) |
+| `Extension` *extends* `Record`\<`string`, `unknown`\> | `object` |
+
+## See
+
+https://www.rfc-editor.org/info/rfc9457/
+
+</div>
+</InteractiveDocLayout>
+</div>

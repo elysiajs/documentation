@@ -1,0 +1,170 @@
+<spica-page-navigation-track data-page-track>
+	<span data-page-hover aria-hidden="true"></span>
+	<span data-page-active aria-hidden="true"></span>
+	<slot />
+</spica-page-navigation-track>
+
+<script>
+	type Position = { left: number; top: number; width: number; height: number }
+	type Selection = { row: HTMLElement; position: Position }
+
+	class PageNavigationTrack extends HTMLElement {
+		private cleanup?: () => void
+
+		connectedCallback() {
+			this.cleanup?.()
+			const active = this.querySelector<HTMLElement>('[data-page-active]')!
+			const hover = this.querySelector<HTMLElement>('[data-page-hover]')!
+			const controller = new AbortController()
+			const { signal } = controller
+			let selected: Selection | null = null
+			let hovered: Selection | null = null
+			const position = (row: HTMLElement): Position | null => {
+				const bounds = row.getBoundingClientRect()
+				if (row.closest('[hidden]') || !bounds.width || !bounds.height) return null
+				const origin = this.getBoundingClientRect()
+				return { left: bounds.left - origin.left, top: bounds.top - origin.top, width: bounds.width, height: bounds.height }
+			}
+			const place = (marker: HTMLElement, row: HTMLElement, next: Position, previous: Selection | null) => {
+				const last = previous?.position
+				if (!last || last.left !== next.left || last.top !== next.top || last.width !== next.width || last.height !== next.height) {
+					marker.getBoundingClientRect()
+					marker.toggleAttribute('data-moving', !!previous && previous.row !== row && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+					marker.style.width = `${next.width}px`
+					marker.style.height = `${next.height}px`
+					marker.style.transform = `translate(${next.left}px, ${next.top}px)`
+				}
+				marker.setAttribute('data-visible', '')
+				return { row, position: next }
+			}
+			const hideHover = () => {
+				hovered = null
+				hover.removeAttribute('data-visible')
+				hover.removeAttribute('data-moving')
+			}
+			const syncActive = () => {
+				const row = this.querySelector<HTMLElement>('[data-page-link][aria-current="location"]')
+				const next = row && position(row)
+				if (!row || !next) {
+					selected = null
+					active.removeAttribute('data-visible')
+					active.removeAttribute('data-moving')
+					this.removeAttribute('data-active-marker')
+					return
+				}
+				selected = place(active, row, next, selected)
+				this.setAttribute('data-active-marker', '')
+			}
+			const mutation = new MutationObserver(() => {
+				syncActive()
+				if (hovered && !position(hovered.row)) hideHover()
+			})
+			mutation.observe(this, { subtree: true, attributes: true, attributeFilter: ['aria-current', 'hidden'] })
+			const resize = new ResizeObserver(() => {
+				syncActive()
+				hideHover()
+			})
+			resize.observe(this)
+			for (const row of this.querySelectorAll('[data-page-link]')) resize.observe(row)
+			this.addEventListener('pointermove', (event) => {
+				if (event.pointerType === 'touch' || !matchMedia('(hover: hover) and (pointer: fine)').matches) {
+					hideHover()
+					return
+				}
+				const row = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-page-link]') : null
+				if (!row || !this.contains(row) || hovered?.row === row) return
+				const next = position(row)
+				if (next) hovered = place(hover, row, next, hovered)
+			}, { signal })
+			this.addEventListener('pointerleave', hideHover, { signal })
+			this.addEventListener('focusin', hideHover, { signal })
+			document.addEventListener('scroll', hideHover, { capture: true, passive: true, signal })
+			window.addEventListener('resize', hideHover, { signal })
+			hideHover()
+			syncActive()
+			this.cleanup = () => {
+				controller.abort()
+				mutation.disconnect()
+				resize.disconnect()
+			}
+		}
+
+		disconnectedCallback() {
+			this.cleanup?.()
+		}
+	}
+	if (!customElements.get('spica-page-navigation-track'))
+		customElements.define('spica-page-navigation-track', PageNavigationTrack)
+</script>
+
+<style>
+	spica-page-navigation-track {
+		display: block;
+		position: relative;
+		isolation: isolate;
+		width: 100%;
+	}
+	:global([data-page-link]) {
+		position: relative;
+		font-weight: 400;
+		transition:
+			color var(--dur-base) var(--ease-out),
+			font-weight var(--dur-base) var(--ease-out);
+	}
+	[data-page-hover], [data-page-active] {
+		position: absolute;
+		inset: 0 auto auto 0;
+		z-index: -1;
+		pointer-events: none;
+		border-radius: 0.75rem;
+		opacity: 0;
+	}
+	[data-page-hover] {
+		z-index: -2;
+		background: var(--color-surface-2);
+		transition: opacity var(--dur-fast) var(--ease-out);
+	}
+	[data-page-active], :global([data-page-link][aria-current='location']) {
+		background: var(--color-primary-soft);
+	}
+	:global(html[data-theme='dark']) [data-page-active],
+	:global(html[data-theme='dark'] [data-page-link][aria-current='location']) {
+		background: var(--color-primary-tint);
+	}
+	:global([data-page-link][aria-current='location']) {
+		color: var(--color-primary-deep);
+		font-weight: 700;
+	}
+	[data-page-active]::before,
+	:global([data-page-link][aria-current='location']::before) {
+		content: '';
+		position: absolute;
+		inset-inline-start: 0;
+		inset-block: 9px;
+		width: 3px;
+		border-radius: 999px;
+		background: var(--color-primary);
+		pointer-events: none;
+	}
+	[data-active-marker] :global([data-page-link][aria-current='location']),
+	:global(html[data-theme='dark']) [data-active-marker] :global([data-page-link][aria-current='location']) {
+		background: transparent;
+	}
+	[data-active-marker] :global([data-page-link][aria-current='location']::before) {
+		display: none;
+	}
+	[data-page-active][data-visible] { opacity: 1; }
+	[data-page-active][data-moving] {
+		transition: transform var(--dur-base) var(--ease-out);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		[data-page-hover][data-visible] { opacity: 1; }
+		[data-page-hover][data-moving] {
+			transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		:global([data-page-link]),
+		[data-page-active][data-moving], [data-page-hover][data-moving] { transition: none; }
+	}
+</style>

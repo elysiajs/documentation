@@ -1,0 +1,23 @@
+---
+import { IconBookmark } from '@tabler/icons-react';
+
+interface Props {
+	href: string;
+}
+
+const { href } = Astro.props;
+---
+
+<a
+	href={href}
+	data-doc-link
+	class="inline-flex items-center gap-1 rounded-lg text-primary-ink underline decoration-dotted underline-offset-2 focus-ring"
+>
+	<IconBookmark
+		size={16}
+		stroke={1.75}
+		className="inline-block flex-none -translate-y-px"
+		aria-hidden="true"
+	/>
+	<slot />
+</a>

@@ -1,0 +1,266 @@
+---
+template: "splash"
+description: "Elysia API reference for Compiled."
+editUrl: false
+next: false
+prev: false
+title: "Compiled"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Compiled</h1>
+
+## Members
+
+### Accessors
+
+| Accessor | Description |
+| ------ | ------ |
+| [reconstruct](/reference/classes/compiled/#reconstruct) | - |
+
+### Methods
+
+| Method | Description |
+| ------ | ------ |
+| [claim](/reference/classes/compiled/#claim) | - |
+| [getHandler](/reference/classes/compiled/#gethandler) | - |
+| [getPlanRebuilder](/reference/classes/compiled/#getplanrebuilder) | - |
+| [getValidator](/reference/classes/compiled/#getvalidator) | - |
+| [hasProgram](/reference/classes/compiled/#hasprogram) | - |
+| [hasValidator](/reference/classes/compiled/#hasvalidator) | - |
+| [register](/reference/classes/compiled/#register) | - |
+| [release](/reference/classes/compiled/#release) | - |
+
+Defined in: elysia/dist/compile/aot.d.ts:131
+
+## Constructors
+
+### Constructor
+
+```ts
+new Compiled(): Compiled;
+```
+
+#### Returns
+
+`Compiled`
+
+## Accessors
+
+### reconstruct
+
+#### Set Signature
+
+```ts
+set static reconstruct(impl): void;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:134
+
+##### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `impl` | `ReconstructImpl` |
+
+##### Returns
+
+`void`
+
+## Methods
+
+### claim()
+
+```ts
+static claim(
+   id, 
+   fingerprint, 
+   key?
+): boolean;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:133
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `id` | [`ProgramId`](/reference/interfaces/programid/) |
+| `fingerprint` | [`AotFingerprint`](/reference/interfaces/aotfingerprint/) |
+| `key?` | `string` |
+
+#### Returns
+
+`boolean`
+
+***
+
+### getHandler()
+
+```ts
+static getHandler(
+   id, 
+   method, 
+   path
+): FrozenHandler;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:135
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `id` | [`ProgramId`](/reference/interfaces/programid/) |
+| `method` | `string` |
+| `path` | `string` |
+
+#### Returns
+
+`FrozenHandler`
+
+***
+
+### getPlanRebuilder()
+
+```ts
+static getPlanRebuilder(id?): (original, plan) => any;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:139
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `id?` | [`ProgramId`](/reference/interfaces/programid/) |
+
+#### Returns
+
+(`original`, `plan`) => `any`
+
+***
+
+### getValidator()
+
+```ts
+static getValidator(
+   method, 
+   path, 
+   slot, 
+   id?
+): FrozenValidator;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:137
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `method` | `string` |
+| `path` | `string` |
+| `slot` | `ValidatorSlot` |
+| `id?` | [`ProgramId`](/reference/interfaces/programid/) |
+
+#### Returns
+
+`FrozenValidator`
+
+***
+
+### hasProgram()
+
+```ts
+static hasProgram(id): boolean;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:136
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `id` | [`ProgramId`](/reference/interfaces/programid/) |
+
+#### Returns
+
+`boolean`
+
+***
+
+### hasValidator()
+
+```ts
+static hasValidator(
+   method, 
+   path, 
+   slot, 
+   id?
+): boolean;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:138
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `method` | `string` |
+| `path` | `string` |
+| `slot` | `ValidatorSlot` |
+| `id?` | [`ProgramId`](/reference/interfaces/programid/) |
+
+#### Returns
+
+`boolean`
+
+***
+
+### register()
+
+```ts
+static register(manifest, key?): void;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:132
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `manifest` | `CompiledProgramRegistration` |
+| `key?` | `string` |
+
+#### Returns
+
+`void`
+
+***
+
+### release()
+
+```ts
+static release(id): void;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:140
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `id` | [`ProgramId`](/reference/interfaces/programid/) |
+
+#### Returns
+
+`void`
+
+</div>
+</InteractiveDocLayout>
+</div>

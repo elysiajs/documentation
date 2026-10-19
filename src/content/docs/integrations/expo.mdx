@@ -1,0 +1,154 @@
+---
+title: "Integration with Expo"
+description: "With Expo App Router, you can run Elysia on Expo routes. Elysia will work normally as expected thanks to WinterTC compliance."
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration with Expo</h1>
+
+Starting from Expo SDK 50 and App Router v3, Expo allows us to create API routes directly in an Expo app.
+
+1. Create **app/[...slugs]+api.ts**
+2. Define an Elysia server
+3. Export **Elysia.fetch** with the name of the HTTP methods you want to use
+
+
+```typescript title="app/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hello Expo')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+You can treat the Elysia server as if it were a normal Expo API route.
+
+### pnpm
+If your pnpm configuration does not install peer dependencies, add the peers required by Elysia v2 explicitly:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefix
+If you place an Elysia server not in the root directory of the app router, you need to annotate the prefix on the Elysia server.
+
+For example, if you place the Elysia server in **app/api/[...slugs]+api.ts**, you need to annotate the prefix as **/api** on the Elysia server.
+
+
+```typescript title="app/api/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', 'Hello Expo')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+This will ensure that Elysia routing works properly wherever you place it.
+
+## Eden
+
+We can add [Eden](/eden) for **end-to-end type safety** similar to tRPC.
+
+1. Export `type` from the Elysia server
+
+
+```typescript title="app/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.get('/', 'Hello Expo')
+	.post(
+		'/user',
+		{
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body }) => body
+	)
+
+export type app = typeof app
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+2. Create a Treaty client
+
+
+```typescript title="lib/eden.ts"
+import { treaty } from '@elysia/eden'
+import type { app } from '../app/[...slugs]+api'
+
+export const api = treaty<app>('http://localhost:8081')
+```
+
+
+For a physical device, replace `localhost` with an origin the device can reach, such as your development machine’s LAN address. Use your deployed API origin in production.
+
+3. Use the client in your Expo screen
+
+
+```tsx title="app/index.tsx"
+import { useEffect, useState } from 'react'
+import { Text } from 'react-native'
+import { api } from '../lib/eden'
+
+export default function Page() {
+	const [message, setMessage] = useState<string | null>(null)
+
+	useEffect(() => {
+		api.get().then(({ data }) => setMessage(data))
+	}, [])
+
+	return <Text>{message ?? 'Loading…'}</Text>
+}
+```
+
+
+## Deployment
+You can either directly use the API route with Elysia and deploy it as a normal Elysia app if needed, or use the [experimental Expo server runtime](https://docs.expo.dev/router/reference/api-routes/#deployment).
+
+If you are using the Expo server runtime, you may use the `expo export` command to create an optimized build for your Expo app. This will include an Expo function that uses Elysia under `dist/server/_expo/functions/`
+
+
+:::tip
+
+An exported API function needs a server adapter to receive requests. Importing the generated function alone does not allocate a port.
+
+:::
+
+
+You may use the Expo function adapter provided by Expo to deploy your Edge Function.
+
+The Expo deployment guide covers these adapters:
+- [Express](https://docs.expo.dev/router/reference/api-routes/#express)
+- [Netlify](https://docs.expo.dev/router/reference/api-routes/#netlify)
+- [Vercel](https://docs.expo.dev/router/reference/api-routes/#vercel)
+
+</div>
+</InteractiveDocLayout>
+</div>

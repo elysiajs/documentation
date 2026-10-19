@@ -1,0 +1,429 @@
+---
+title: "Elysia 0.7 - Stellar Stellar"
+description: "Introducing up to 13x faster type inference. Declarative telemetry with trace. Reactive cookie model, and cookie validation. TypeBox 0.31 and custom decoder support. Rewritten Web Socket. Definitions remapping and custom affix. Laying a more solid foundation for Elysia for a brighter future."
+date: 2023-09-20
+cover: ../../assets/blog/elysia-07/stellar-stellar.webp
+alt: "Landscape of wilderness and mountains in a night full of stars"
+author: saltyaom
+---
+
+Named after our never giving up spirit, our beloved Virtual YouTuber, ~~Suicopath~~ Hoshimachi Suisei, and her brilliant voice: 「[Stellar Stellar](https://youtu.be/AAsRtnbDs-0)」from her first album:「Still Still Stellar」.
+
+Once forgotten, she really is a star that truly shines in the dark.
+
+**Stellar Stellar** brings many exciting new updates to help Elysia solidify the foundation, and handle complexity with ease, featuring:
+- Entirely rewritten types, up to 13x faster type inference.
+- "Trace" for declarative telemetry and better performance audit.
+- Reactive Cookie model and cookie validation to simplify cookie handling.
+- TypeBox 0.31 with custom decoder support.
+- Rewritten Web Socket for even better support.
+- Definitions remapping, and declarative affix for preventing name collision.
+- Text based status
+
+## Rewritten Type
+
+A core feature of Elysia is developer experience.
+
+Type is one of the most important aspects of Elysia, as it allows us to do many amazing things like unified type, syncing your business logic, typing, documentation and frontend.
+
+We want you to have an outstanding experience with Elysia, focusing on your business logic part, and letting Elysia handle the rest, whether it's type-inference with unified type or the Eden connector for syncing types with the backend.
+
+To achieve that, we put our effort into creating a unified type system to synchronize all of the types, but as the features grow, we found that our type inference might not be fast enough because of our lack of TypeScript experience a year ago.
+
+With the experience we gained along the way of handling a complex type system, various optimizations, and many projects like [Mobius](https://github.com/saltyaom/mobius), we challenge ourselves to speed up our type system once again, making this a second type rewrite for Elysia.
+
+We delete and rewrite every Elysia type from the ground up to make Elysia types an order of magnitude faster.
+
+Here's a comparison between 0.6 and 0.7 on a simple `Elysia.get` example:
+
+<figure class="flex gap-2">
+    <img alt="Elysia 0.6" style="width: 50%; background: transparent; box-shadow: unset;" class="-png" src="/blog/elysia-07/type-0-6.webp" />
+    <img alt="Elysia 0.7" style="width: 50%; background: transparent; box-shadow: unset;" class="-png" src="/blog/elysia-07/type-0-7.webp" />
+</figure>
+
+With our newfound experience, and newer TypeScript features like const generic, we are able to simplify a lot of our code, reducing our codebase by over a thousand lines of types.
+
+This allows us to refine our type system to be even faster, and even more stable.
+
+![Comparison between Elysia 0.6 and 0.7 on a complex project with our 300 routes, and 3,500 lines of type declaration](/blog/elysia-07/inference-comparison.webp)
+
+Using Perfetto and TypeScript CLI to generate a trace on a large-scale and complex app, we measure up to 13x inference speed.
+
+And if you might wonder if we might break type inference with 0.6 or not, we do have a unit test at the type level to make sure that, in most cases, there's no breaking change for types.
+
+We hope this improvement will help you with even faster type inference like faster auto-completion, and load time from your IDE to be near instant to help your development to be even faster and more fluent than ever before.
+
+## Trace
+
+Performance is another one of the important aspects for Elysia.
+
+We don't want to be fast for benchmarking purposes. We want you to have a really fast server in real-world scenarios, not just benchmarking.
+
+There are many factors that can slow down your app, and it's hard to identify one. That's why we introduce **"Trace"**.
+
+**Trace** allows us to tap into a life-cycle event and identify performance bottlenecks for our app.
+
+![Example of usage of Trace](/blog/elysia-07/trace.webp)
+
+This example code allows us to tap into all **beforeHandle** events, and extract the execution time one-by-one before setting the Server-Timing API to inspect the performance bottleneck.
+
+And this is not limited to only `beforeHandle`. Any event can be traced, even the `handler` itself. The naming convention is named after life-cycle events you are already familiar with.
+
+This API allows us to effortlessly audit performance bottlenecks of your Elysia server and integrate with the report tools of your choice.
+
+By default, Trace uses AoT compilation and Dynamic Code injection to conditionally report an event that you actually use automatically, which means there's no performance impact at all.
+
+## Reactive Cookie
+We merged our cookie plugin into Elysia core.
+
+Same as Trace, Reactive Cookie uses AoT compilation and Dynamic Code injection to conditionally inject the cookie usage code, leading to no performance impact if you don't use one.
+
+Reactive Cookie takes a more modern approach like signals to handle cookies with an ergonomic API.
+
+![Example of usage of Reactive Cookie](/blog/elysia-07/cookie.webp)
+
+There's no `getCookie` or `setCookie`. Everything is just a cookie object.
+
+When you want to use a cookie, you just extract the name and get/set its value like this:
+```typescript
+app.get('/', ({ cookie: { name } }) => {
+    // Get
+    name.value
+
+    // Set
+    name.value = "New Value"
+})
+```
+
+Then the cookie will automatically sync the value with headers and the cookie jar, making the `cookie` object a single source of truth for handling cookies.
+
+The Cookie Jar is reactive, which means that if you don't set the new value for the cookie, the `Set-Cookie` header will not be sent to keep the same cookie value and reduce the performance bottleneck.
+
+### Cookie Schema
+With the merge of cookies into the core of Elysia, we introduce a new **Cookie Schema** for validating cookie values.
+
+This is useful when you have to strictly validate a cookie session or want to have a strict type or type inference for handling cookies.
+
+```typescript
+app.get('/', ({ cookie: { name } }) => {
+    // Set
+    name.value = {
+        id: 617,
+        name: 'Summoning 101'
+    }
+}, {
+    cookie: t.Cookie({
+        value: t.Object({
+            id: t.Numeric(),
+            name: t.String()
+        })
+    })
+})
+```
+
+Elysia encodes and decodes cookie values for you automatically, so if you want to store JSON in a cookie like decoded JWT value, or just want to make sure if the value is a numeric string, you can do that effortlessly.
+
+### Cookie Signature
+And lastly, with the introduction of Cookie Schema and the `t.Cookie` type, we are able to create a unified type for signing/verifying cookie signatures automatically.
+
+Cookie signature is a cryptographic hash appended to a cookie's value, generated using a secret key and the content of the cookie to enhance security by adding a signature to the cookie.
+
+This makes sure that the cookie value is not modified by a malicious actor, helping in verifying the authenticity and integrity of the cookie data.
+
+To handle cookie signature in Elysia, it's as simple as providing a `secret` and `sign` property:
+```typescript
+new Elysia({
+    cookie: {
+        secret: 'Fischl von Luftschloss Narfidort'
+    }
+})
+    .get('/', ({ cookie: { profile } }) => {
+        profile.value = {
+            id: 617,
+            name: 'Summoning 101'
+        }
+    }, {
+        cookie: t.Cookie({
+            profile: t.Object({
+                id: t.Numeric(),
+                name: t.String()
+            })
+        }, {
+            sign: ['profile']
+        })
+    })
+```
+
+Provide a cookie secret and a `sign` property to indicate which cookie should have signature verification.
+
+Elysia then signs and unsigns cookie values automatically, eliminating the need to call **sign** / **unsign** functions manually.
+
+Elysia handles Cookie's secret rotation automatically, so if you have to migrate to a new cookie secret, you can just append the secret, and Elysia will use the first value to sign a new cookie, while trying to unsign cookies with the rest of the secrets if they match.
+```typescript
+new Elysia({
+    cookie: {
+        secrets: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']
+    }
+})
+```
+
+The Reactive Cookie API is declarative and straightforward, and there's something magical about the ergonomics it provides, and we are really looking forward to you trying it.
+
+## TypeBox 0.31
+With the release of 0.7, we are updating to TypeBox 0.31 to bring even more features to Elysia.
+
+This brings new exciting features like support for TypeBox's `Decode` in Elysia natively.
+
+Previously, a custom type like `Numeric` required a dynamic code injection to convert numeric strings to numbers, but with the use of TypeBox's decode, we are allowed to define a custom function to encode and decode the value of a type automatically.
+
+This allows us to simplify the type to:
+```typescript
+Numeric: (property?: NumericOptions<number>) =>
+    Type.Transform(Type.Union([Type.String(), Type.Number(property)]))
+        .Decode((value) => {
+            const number = +value
+            if (isNaN(number)) return value
+
+            return number
+        })
+        .Encode((value) => value) as any as TNumber,
+```
+
+Instead of relying on an extensive check and code injection, it's simplified by a `Decode` function in TypeBox.
+
+We have rewritten all types that require Dynamic Code Injection to use `Transform` for easier code maintenance.
+
+Not only limited to that, with `t.Transform` you can now also define a custom type with a custom function to Encode and Decode manually, allowing you to write more expressive code than ever before.
+
+We can't wait to see what you will bring with the introduction of `t.Transform`.
+
+### New Type
+With the introduction of **Transform**, we have added a new type like `t.ObjectString` to automatically decode an Object value in a request.
+
+This is useful when you have to use **multipart/formdata** for handling file uploading but it doesn't support objects. You can now just use `t.ObjectString()` to tell Elysia that the field is a stringified JSON, so Elysia can decode it automatically.
+```typescript
+new Elysia({
+    cookie: {
+        secret: 'Fischl von Luftschloss Narfidort'
+    }
+})
+    .post('/', ({ body: { data: { name } } }) => name, {
+        body: t.Object({
+            image: t.File(),
+            data: t.ObjectString({
+                name: t.String()
+            })
+        })
+    })
+```
+
+We hope that this will simplify the need for JSON with **multipart**.
+
+## Rewritten Web Socket
+Aside from entirely rewriting types, we also entirely rewrote Web Socket as well.
+
+Previously, we found that Web Socket has 3 major problems:
+1. Schema is not strictly validated
+2. Slow type inference
+3. The need for `.use(ws())` in every plugin
+
+With this new update, we solve all of the problems above while improving the performance of Web Socket.
+
+1. Now, Elysia's Web Socket is strictly validated, and type is synced automatically.
+2. We remove the need for `.use(ws())` for using WebSocket in every plugin.
+
+And we bring a performance improvement to the already fast Web Socket.
+
+Previously, Elysia Web Socket needed to handle routing for every incoming request to unify the data and context. But with the new model, Web Socket can now infer the data for its route without relying on a router.
+
+This brings the performance close to Bun's native Web Socket performance.
+
+Thanks to [Bogeychan](https://github.com/bogeychan) for providing the test case for Elysia Web Socket, helping us to rewrite Web Socket with confidence.
+
+## Definitions Remap
+Proposed on [#83](https://github.com/elysiajs/elysia/issues/83) by [Bogeychan](https://github.com/bogeychan).
+
+To summarize, Elysia allows us to decorate a request and store with any value we desire. However, some plugins might have a duplicate name with the value we have, and sometimes a plugin has a name collision but we can't rename the property at all.
+
+### Remapping
+As the name suggests, this allows us to remap existing `state`, `decorate`, `model`, `derive` to anything we like to prevent name collision, or just rename a property.
+
+When you provide a function as the first parameter, the callback will accept the current value, allowing us to remap the value to anything we like.
+```typescript
+new Elysia()
+    .state({
+        a: "a",
+        b: "b"
+    })
+    // Exclude b state
+    .state(({ b, ...rest }) => rest)
+```
+
+This is useful when you have to deal with a plugin that has some duplicate name, allowing you to remap the name of the plugin:
+```typescript
+new Elysia()
+    .use(
+        plugin
+            .decorate(({ logger, ...rest }) => ({
+                pluginLogger: logger,
+                ...rest
+            }))
+    )
+```
+
+The Remap function can be used with `state`, `decorate`, `model`, `derive` to help you define a correct property name and prevent name collision.
+
+### Affix
+To provide a smoother experience, some plugins might have a lot of property values which can be overwhelming to remap one-by-one.
+
+The **Affix** function, which consists of a **prefix** and **suffix**, allows us to remap all properties of an instance, preventing the name collision of the plugin.
+
+```typescript
+const setup = new Elysia({ name: 'setup' })
+    .decorate({
+        argon: 'a',
+        boron: 'b',
+        carbon: 'c'
+    })
+
+const app = new Elysia()
+    .use(
+        setup
+            .prefix('decorator', 'setup')
+    )
+    .get('/', ({ setupCarbon }) => setupCarbon)
+```
+
+This allows us to bulk remap a property of the plugin effortlessly, preventing the name collision of the plugin.
+
+By default, **affix** will handle both runtime and type-level code automatically, remapping the property to camelCase as a naming convention.
+
+In some conditions, you can also remap `all` property of the plugin:
+```typescript
+const app = new Elysia()
+    .use(
+        setup
+            .prefix('all', 'setup')
+    )
+    .get('/', ({ setupCarbon }) => setupCarbon)
+```
+
+We hope that remapping and affix will provide a powerful API for you to handle multiple complex plugins with ease.
+
+## True Encapsulation Scope
+With the introduction of Elysia 0.7, Elysia can now truly encapsulate an instance by treating a scoped instance as another instance.
+
+The new scope model can even prevent events like `onRequest` from being resolved on a main instance, which was not possible.
+
+```typescript
+const plugin = new Elysia({ scoped: true, prefix: '/hello' })
+    .onRequest(() => {
+        console.log('In Scoped')
+    })
+    .get('/', () => 'hello')
+
+const app = new Elysia()
+    .use(plugin)
+    // 'In Scoped' will not log
+    .get('/', () => 'Hello World')
+```
+
+Furthermore, scoped is now truly scoped down both at runtime and at the type level which is not possible without the type rewrite mentioned before.
+
+This is exciting from the maintainer's side because previously, it was almost impossible to truly encapsulate the scope of an instance, but using `mount` and WinterCG compliance, we are finally able to truly encapsulate the instance of the plugin while providing a soft link with main instance properties like `state`, `decorate`.
+
+## Text based status
+There are over 64 standard HTTP status codes to remember, and I admit that sometimes we also forget the status we want to use.
+
+This is why we ship 64 HTTP Status codes in text-based form with autocompletion for you.
+
+![Example of using text-based status code](/blog/elysia-07/teapot.webp)
+
+Text will then resolve to a status code automatically as expected.
+
+As you type, there should be auto-completion for text popping up automatically for your IDE, whether it's NeoVim or VSCode, as it's a built-in TypeScript feature.
+
+![Text-based status code showing auto-completion](/blog/elysia-07/teapot-autocompletion.webp)
+
+This is a small ergonomic feature to help you develop your server without switching between IDE and MDN to search for a correct status code.
+
+## Notable Improvement
+Improvement:
+- `onRequest` can now be async
+- add `Context` to `onError`
+- lifecycle hooks now accept arrays of functions
+- static Code Analysis now supports rest parameters
+- break down dynamic router into a single pipeline instead of inlining to static router to reduce memory usage
+- set `t.File` and `t.Files` to `File` instead of `Blob`
+- skip class instance merging
+- handle `UnknownContextPassToFunction`
+- [#157](https://github.com/elysiajs/elysia/pull/179) WebSocket - added unit tests and fixed example & api by @bogeychan
+- [#179](https://github.com/elysiajs/elysia/pull/179) add github action to run bun test by @arthurfiorette
+
+Breaking Change:
+- remove `ws` plugin, migrate to core
+- rename `addError` to `error`
+
+Change:
+- using single findDynamicRoute instead of inlining to static map
+- remove `mergician`
+- remove array routes due to problem with TypeScript
+- rewrite Type.ElysiaMeta to use TypeBox.Transform
+
+Bug fix:
+- strictly validate response by default
+- `t.Numeric` not working on headers / query / params
+- `t.Optional(t.Object({ [name]: t.Numeric }))` causing error
+- add null check before converting `Numeric`
+- inherit store to instance plugin
+- handle class overlapping
+- [#187](https://github.com/elysiajs/elysia/pull/187) InternalServerError message fixed to "INTERNAL_SERVER_ERROR" instead of "NOT_FOUND" by @bogeychan
+- [#167](https://github.com/elysiajs/elysia/pull/167) mapEarlyResponse with aot on after handle
+
+## Afterward
+Since the latest release, we have gained over 2,000 stars on GitHub!
+
+Taking a look back, we have progressed more than we have ever imagined back then.
+
+Pushing the boundary of TypeScript, and developer experience even to the point that we are doing something we feel is truly profound.
+
+With every release, we are gradually one step closer to bringing the future we drew a long time ago.
+
+A future where we can freely create anything we want with an astonishing developer experience.
+
+We feel truly thankful to be loved by you and the lovely community of TypeScript and Bun.
+
+It's exciting to see Elysia is brought to life by amazing developers like:
+- [Ethan Niser with his amazing BETH Stack](https://youtu.be/aDYYn9R-JyE?si=hgvGgbywu_-jsmhR)
+- Being mentioned by [Fireship](https://youtu.be/dWqNgzZwVJQ?si=AeCmcMsTZtNwmhm2)
+- Having official integration for [Lucia Auth](https://github.com/pilcrowOnPaper/lucia)
+
+And many more developers that choose Elysia for their next project.
+
+Our goal is simple, to bring an eternal paradise where you can pursue your dream and everyone can live happily.
+
+Thank you for your love and overwhelming support for Elysia. We hope we can make the future in which we pursue our dreams a reality one day.
+
+**May all the beauty be blessed**
+
+> Stretch out that hand as if to reach someone
+>
+> I'm just like you, nothing special
+>
+> That's right, I'll sing the song of the night
+>
+> Stellar Stellar
+>
+> In the middle of the world, the universe
+>
+> The music won't ever, ever stop tonight
+>
+> That's right, I'd always longed to be
+>
+> Not Cinderella, forever waiting
+>
+> But the prince that came to for her
+>
+> Cause I'm a star, that's why
+>
+> Stellar Stellar

@@ -1,0 +1,367 @@
+---
+title: Interactive routing
+description: Build an Elysia router one step at a time.
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import { Card, CardTitle } from '../../../components/ui/card';
+import { NumberedCards } from '../../../components/ui/numbered-cards';
+import '../../../styles/routing.css';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../components/playground/code.astro';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+
+export const demo1 = new Elysia()
+	.get('/', 'Elysia')
+	.get('/hi', 'Hello!');
+
+export const demo2 = new Elysia()
+    .get('/user/1', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/*', ({ params }) => params['*'])
+
+export const demo3 = new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .get('/profile', 'Profile')
+    )
+
+export const demo4 = new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .get('/profile', 'Profile')
+
+export const steps = [
+	{
+		label: 'Static path',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/hi', 'Hi')
+    .listen(3000)`,
+	},
+	{
+		label: 'Dynamic path',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .listen(3000)`,
+	},
+	{
+		label: 'Access params',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/:id/profile', ({ params: { id } }) => id)
+    .listen(3000)`,
+	},
+		{
+		label: 'Optional params',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/:id?/profile', ({ params: { id } }) => id)
+    .listen(3000)`,
+	},
+	{
+		label: 'Wildcard',
+		code: `import { Elysia } from 'elysia'
+		
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/*', ({ params }) => params['*'])
+    .listen(3000)`,
+	}
+];
+
+<div class="routing-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Routing</h1>
+
+A [REST API](https://en.wikipedia.org/wiki/REST) takes a path and method to decide which handler to run.
+
+<CodePlayground elysia={demo1}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Elysia')
+    .get('/hi', 'Hello!')
+    .listen(3000)
+```
+
+</CodePlayground>
+
+> Calling `.listen` will start a web server at port 3000.
+
+We can access our server by going to http://localhost:3000.
+
+- `/` with the `GET` method will return `Elysia`.
+- `/hi` with the `GET` method will return `Hello!`.
+- Any other path will return a `404`.
+
+Visiting a URL in your browser sends a `GET` request.
+
+## Path types
+
+Paths can be grouped into 3 types:
+
+</div>
+
+<NumberedCards items={[
+    { title: 'Static paths', children: 'exact match' },
+    { title: 'Dynamic paths', children: 'some parts are dynamic, and can be captured as parameters' },
+    { title: 'Wildcards', children: 'match the rest of a path' },
+]} />
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## Static path
+
+A static path is an exact match, with no surprises.
+
+- `/` matches only `/`
+- `/hi` matches only `/hi`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Dynamic path
+
+Add `:` followed by a name to capture its value.
+
+`/user/:id` matches `/user/42`, `/user/abc`, and `/user/hello-world`.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Access params
+
+Read the matched value from `params` in your handler.
+
+When `/user/42/profile` matches `/user/:id/profile`, `params.id` is `42`. The handler returns it as the response.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Optional params
+
+Add `?` after a parameter name to make it optional.
+
+`/user/:id?/profile` matches both `/user/42/profile` and `/user/profile`.
+
+The value will be `undefined` if the parameter is not present.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Wildcard
+
+Adding `*` at the end of a path will match any path after it.
+
+`/user/*` matches multi-segment paths such as `/user/hello-world/profile`. In this example, `/user/42` still goes to `/user/:id`, because dynamic paths take priority over wildcards (see [path priority](#path-priority)).
+
+For `/user/hello-world/profile`, `params['*']` is `hello-world/profile`.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<section class="content-layout">
+
+## Path priority
+
+Elysia will resolve paths in the following order:
+
+1. static paths
+2. dynamic paths
+3. wildcards
+
+<CodePlayground elysia={demo2}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user/1', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/*', ({ params }) => params['*'])
+    .listen(3000)
+```
+
+</CodePlayground>
+
+</section>
+
+
+<section class="content-layout">
+
+---
+
+## HTTP verbs
+
+[HTTP verbs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods) are the methods of requests, such as `GET`, `POST`, or `PUT`.
+
+<div class="routing-methods">
+
+<Card className="routing-method-card">
+
+<CardTitle>GET</CardTitle>
+
+Get data from the server. Browsers use it to visit a page.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>HEAD</CardTitle>
+
+Similar to **GET**, but only returns the headers, not the body.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>POST</CardTitle>
+
+Send data to the server, often to create a resource.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>PUT</CardTitle>
+
+Replace a resource with the data you send.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>PATCH</CardTitle>
+
+Update part of a resource.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>DELETE</CardTitle>
+
+Delete a resource.
+
+</Card>
+
+</div>
+
+To define a standard method, use the corresponding method on the Elysia instance:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', 'Hi GET!')
+	.post('/', 'Hi POST!')
+	.put('/', 'Hi PUT!')
+	.patch('/', 'Hi PATCH!')
+	.delete('/', 'Hi DELETE!')
+	.listen(3000)
+```
+
+</section>
+
+<section class="content-layout">
+
+### Custom method
+
+Define using `.method` with the method name as the first argument. The rest is the same as other methods.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.method('PROPFIND', '/', 'Hi PROPFIND!')
+	.listen(3000)
+```
+
+### All methods
+
+Catch all methods using `.all`:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.all('/', 'Hi ALL!')
+	.listen(3000)
+```
+
+---
+
+
+## Group
+
+Many paths with the same prefix can be grouped using `.group`:
+
+<CodePlayground elysia={demo3}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .get('/profile', 'Profile')
+    )
+    .listen(3000)
+```
+
+</CodePlayground>
+
+It's similar to writing `/user/sign-in` and `/user/profile` separately.
+
+### Prefix
+
+If the entire instance has the same prefix, we can define it in the constructor:
+
+<CodePlayground elysia={demo4}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .get('/profile', 'Profile')
+```
+
+</CodePlayground>
+
+This is different from `.group` because the prefix is applied to all paths in the instance while group applies to the paths in the callback.
+
+</section>
+
+</InteractiveDocLayout>
+
+</div>

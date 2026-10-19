@@ -1,0 +1,32 @@
+:is(.routing-page, .essential-page) {
+	--sl-font: var(--font-sans);
+	--sl-font-mono: var(--font-mono);
+	--ec-codeFontFml: var(--font-mono);
+	font-family: var(--font-sans);
+}
+
+:is(.routing-page, .essential-page) :is(h1, h2, h3) {
+	font-family: var(--font-display);
+	font-weight: 400;
+}
+
+:is(.routing-page, .essential-page) :is(code, pre) {
+	font-family: var(--font-mono);
+}
+
+.key-concept-page .expressive-code .ec-line mark {
+	--ec-tm-markBg: var(--interactive-highlight-bg);
+	--ec-tm-markBrdCol: color-mix(in oklab, var(--color-border-strong) 60%, transparent);
+	--ec-tm-inlMarkerBrdWd: 1px;
+}
+
+.routing-methods {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+	gap: 1rem;
+}
+
+.routing-methods > .routing-method-card {
+	margin: 0;
+	min-width: 0;
+}

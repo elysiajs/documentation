@@ -1,0 +1,145 @@
+---
+import '../styles/global.css'
+import '../styles/blog.css'
+import BlogPageTransition from '../components/blog/page-transition.astro'
+import { blogPageTitle } from '../lib/page-meta'
+
+interface Props {
+	title: string
+	description: string
+	/** Absolute URL for `og:image` / `twitter:image`. */
+	image?: string
+	imageAlt?: string
+	generatedImage?: boolean
+	transitionCoverId?: string
+}
+
+const {
+	title,
+	description,
+	image,
+	imageAlt,
+	generatedImage = false,
+	transitionCoverId
+} = Astro.props
+const fullTitle = blogPageTitle(title)
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		{
+			transitionCoverId && (
+				<link
+					rel="expect"
+					href={`#${transitionCoverId}`}
+					blocking="render"
+				/>
+			)
+		}
+		<title>{fullTitle}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={fullTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="article" />
+		{
+			image && (
+				<>
+					<meta property="og:image" content={image} />
+					{generatedImage && (
+						<>
+							<meta property="og:image:width" content="1200" />
+							<meta property="og:image:height" content="630" />
+							<meta property="og:image:type" content="image/jpeg" />
+						</>
+					)}
+					{imageAlt && (
+						<meta property="og:image:alt" content={imageAlt} />
+					)}
+					<meta name="twitter:card" content="summary_large_image" />
+					<meta name="twitter:image" content={image} />
+					{imageAlt && (
+						<meta name="twitter:image:alt" content={imageAlt} />
+					)}
+				</>
+			)
+		}
+		<link rel="icon" href="/favicon.svg" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Alice&family=Nunito:ital,wght@0,400..800;1,400..700&family=JetBrains+Mono:ital,wght@0,400..600;1,400&display=swap"
+		/>
+		{/* Inlined to avoid a flash: the theme is read before first paint */}
+		<script is:inline>
+			;(() => {
+				let stored
+				try {
+					stored = localStorage.getItem('starlight-theme')
+				} catch {
+					// The system theme works without storage.
+				}
+				const theme =
+					stored ||
+					(window.matchMedia('(prefers-color-scheme: light)').matches
+						? 'light'
+						: 'dark')
+				document.documentElement.dataset.theme =
+					theme === 'light' ? 'light' : 'dark'
+			})()
+		</script>
+		<BlogPageTransition />
+	</head>
+	<body data-blog class="spica-surface min-h-dvh bg-base font-sans text-ink">
+		<a
+			href="#main"
+			class="sr-only fixed left-3 top-3 z-50 rounded-xl bg-surface px-3 py-2 text-ink focus:not-sr-only focus:fixed focus-ring"
+			>Skip to content</a
+		>
+		<header class="pointer-events-none z-45 md:sticky md:top-0">
+			<div
+				class="mx-auto flex min-h-[3.25rem] w-[calc(100%-2rem)] max-w-[72rem] flex-wrap items-center justify-between gap-2 leading-[1.6] md:w-[calc(100%-3rem)] md:flex-nowrap md:gap-4"
+			>
+				<a
+					href="/"
+					class="blog-link page-nav-surface pointer-events-auto flex items-center gap-2 rounded-xl bg-glass px-2 py-1 text-ink no-underline [backdrop-filter:var(--glass-blur-small)] focus-ring md:px-3"
+				>
+					<img
+						src="/assets/elysia.svg"
+						alt=""
+						width="26"
+						height="26"
+						loading="lazy"
+						class="block"
+					/>
+					<span class="text-lg font-bold leading-[1.6]">ElysiaJS</span
+					>
+				</a>
+				<nav
+					aria-label="Main navigation"
+					class="site-nav page-nav-surface pointer-events-auto flex flex-wrap items-center rounded-xl bg-glass py-1 leading-[1.6] text-ink-soft [backdrop-filter:var(--glass-blur-small)]"
+				>
+					<a
+						href="/at-glance/"
+						class="blog-link rounded-lg text-ink-soft no-underline focus-ring"
+						>Docs</a
+					>
+					<a
+						href="/blog/"
+						aria-current="true"
+						class="blog-link rounded-lg text-primary-ink no-underline focus-ring"
+						>Blog</a
+					>
+					<a
+						href="/illust/"
+						class="blog-link rounded-lg text-ink-soft no-underline focus-ring"
+						>Illust</a
+					>
+				</nav>
+			</div>
+		</header>
+		<main id="main"><slot /></main>
+	</body>
+</html>

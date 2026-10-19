@@ -1,0 +1,184 @@
+---
+title: "Encapsulation"
+description: "Elysia hooks are encapsulated to its own instance only. If you create a new instance, it will not share hooks with other instances."
+---
+
+import { Elysia } from 'elysia';
+import Lesson from '../../../../components/tutorial/lesson.astro';
+import DocLink from '../../../../components/tutorial/doc-link.astro';
+import Playground from '../../../../components/playground/runner.astro';
+
+export const profile1 = new Elysia()
+	.onBeforeHandle(
+		({ query: { name }, status }) => {
+			if(!name)
+				return status(401)
+		}
+	)
+	.get('/profile', () => 'Hi!')
+
+export const demo1 = new Elysia()
+	.use(profile1)
+	.patch('/rename', () => 'Ok! XD')
+
+export const profile2 = new Elysia()
+	.onBeforeHandle(
+		'plugin',
+		({ query: { name }, status }) => {
+			if(!name)
+				return status(401)
+		}
+	)
+	.get('/profile', () => 'Hi!')
+
+export const demo2 = new Elysia()
+	.use(profile2)
+	.patch('/rename', () => 'Ok! XD')
+
+<Lesson title={frontmatter.title} description={frontmatter.description} doc="/essential/plugin/#scope">
+
+# Encapsulation
+
+Elysia hooks are **encapsulated** to its own instance only.
+
+If you create a new instance, it will not share hooks with other instances.
+
+```ts
+import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+	.onBeforeHandle(
+		({ query: { name }, status }) => {
+			if(!name)
+				return status(401)
+		}
+	)
+	.get('/profile', () => 'Hi!')
+
+new Elysia()
+	.use(profile)
+	.patch('/rename', () => 'Ok! XD')
+	.listen(3000)
+```
+
+<Playground elysia={demo1} />
+
+> Try changing the path in the URL bar to **/rename** and see the result
+
+<br />
+
+**Elysia isolates lifecycle** unless explicitly stated.
+
+This is similar to **export** in JavaScript, where you need to export the function to make it available outside the module.
+
+To **"export"** the lifecycle to other instances, you must specify the scope.
+
+### Scope
+
+There are 3 scopes available:
+1. **local** (default) - apply to only current instance and descendant only
+2. **plugin** - apply to parent, current instance and descendants
+3. **global** - apply to all instance that apply the plugin (all parents, current, and descendants)
+
+In our case, we want to apply the sign-in check to the `app` which is a direct parent, so we can use either **plugin** or **global**.
+
+```ts ins={5}
+import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+	.onBeforeHandle(
+		'plugin',
+		({ cookie }) => {
+			throwIfNotSignIn(cookie)
+		}
+	)
+	.get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+	.use(profile)
+	// This has sign in check
+	.patch('/rename', ({ body }) => updateProfile(body))
+```
+
+<Playground elysia={demo2} />
+
+Casting lifecycle to **"plugin"** will export lifecycle to **parent instance**.
+While **"global"** will export lifecycle to **all instances** that has a plugin.
+
+Learn more about this in <DocLink href="/essential/plugin/#scope-level">scope</DocLink>.
+
+## Guard
+Similar to lifecycle, **schema** is also encapsulated to its own instance.
+
+We can specify guard scope similar to lifecycle.
+
+```typescript ins={5}
+import { Elysia, t } from 'elysia'
+
+const user = new Elysia()
+	.guard('plugin', {
+		query: t.Object({
+			age: t.Number(),
+			name: t.Optional(t.String())
+		}),
+		beforeHandle({ query: { age }, status }) {
+			if(age < 18) return status(403)
+		}
+	})
+	.get('/profile', () => 'Hi!')
+	.get('/settings', () => 'Settings')
+```
+
+It's very important to note that every hook will affect all routes **after** its declaration.
+
+See <DocLink href="/essential/plugin/#scope">Scope</DocLink> for more information.
+
+## Assignment
+
+Let's define a scope for `nameCheck`, and `ageCheck` to make our app works.
+
+<Fragment slot="answer">
+
+We can modify scope as follows:
+1. modify `nameCheck` scope to **plugin**
+2. modify `ageCheck` scope to **global**
+
+```typescript ins={5,13}
+import { Elysia, t } from 'elysia'
+
+const nameCheck = new Elysia()
+	.onBeforeHandle(
+		'plugin',
+		({ query: { name }, status }) => {
+			if(!name) return status(401)
+		}
+	)
+
+const ageCheck = new Elysia()
+	.guard('global', {
+		query: t.Object({
+			age: t.Number(),
+			name: t.Optional(t.String())
+		}),
+		beforeHandle({ query: { age }, status }) {
+			if(age < 18) return status(403)
+		}
+	})
+
+const name = new Elysia()
+	.use(nameCheck)
+	.patch('/rename', () => 'Ok! XD')
+
+const profile = new Elysia()
+	.use(ageCheck)
+	.use(name)
+	.get('/profile', () => 'Hi!')
+
+new Elysia()
+	.use(profile)
+	.listen(3000)
+```
+
+</Fragment>
+
+</Lesson>

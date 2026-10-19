@@ -1,0 +1,105 @@
+---
+title: GraphQL Yoga plugin
+description: Reference and examples for the GraphQL Yoga plugin.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">GraphQL Yoga plugin</h1>
+
+This plugin integrates GraphQL Yoga with Elysia
+
+Install with:
+
+```bash
+bun add @elysia/graphql-yoga@next
+```
+
+Then use it:
+
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+	.use(
+		yoga({
+			typeDefs: /* GraphQL */ `
+				type Query {
+					hi: String
+				}
+			`,
+			resolvers: {
+				Query: {
+					hi: () => 'Hello from Elysia'
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+Accessing `/graphql` in the browser (GET request) would show you a GraphiQL instance for the GraphQL-enabled Elysia server.
+
+Optionally, you can install a custom version of optional peer dependencies as well:
+
+```bash
+bun add graphql graphql-yoga
+```
+
+## Resolver
+
+Elysia uses [Mobius](https://github.com/saltyaom/mobius) to infer types from the **typeDefs** field automatically, allowing you to get full type-safety and auto-complete when typing **resolver** types.
+
+## Context
+
+You can add custom context to the resolver function by adding **context**
+
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+	.use(
+		yoga({
+			typeDefs: /* GraphQL */ `
+				type Query {
+					hi: String
+				}
+			`,
+			context: {
+				name: 'Mobius'
+			},
+			// Required for resolvers to infer the context type
+			useContext(_) {},
+			resolvers: {
+				Query: {
+					hi: async (parent, args, context) => context.name
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+## Config
+
+This plugin extends [GraphQL Yoga's createYoga options, please refer to the GraphQL Yoga documentation](https://the-guild.dev/graphql/yoga-server/docs) by inlining the `schema` config at the root.
+
+Below is a config which is accepted by the plugin
+
+### path
+
+Default: `/graphql`
+
+Endpoint to expose GraphQL handler
+
+</div>
+</InteractiveDocLayout>
+</div>

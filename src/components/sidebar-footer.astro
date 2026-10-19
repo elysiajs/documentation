@@ -1,0 +1,29 @@
+---
+import config from 'virtual:starlight/user-config';
+import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
+import { IconBrandGithub, IconBrandX, IconBrandDiscord } from '@tabler/icons-react';
+import { ThemeTabs } from './theme-tabs';
+
+const github = config.social?.find(({ icon }) => icon === 'github');
+---
+
+<div class="spica-surface flex items-center justify-between gap-1 pb-1.5">
+	{github && (
+		<a href={github.href} target="_blank" rel="me" aria-label={github.label} title={github.label}
+			class="inline-flex size-9 items-center justify-center rounded-xl text-ink-soft no-underline focus-ring transition-colors hover:text-primary">
+			<IconBrandGithub size={19} stroke={1.5} aria-hidden="true" />
+		</a>
+	)}
+	<a href="https://x.com/elysiajs" target="_blank" rel="me" aria-label="X" title="X"
+		class="inline-flex size-9 items-center justify-center rounded-xl text-ink-soft no-underline focus-ring transition-colors hover:text-primary">
+		<IconBrandX size={19} stroke={1.5} aria-hidden="true" />
+	</a>
+	<a href="https://discord.gg/eaFJ2KDJck" target="_blank" rel="me" aria-label="Discord" title="Discord"
+		class="inline-flex size-9 items-center justify-center rounded-xl text-ink-soft no-underline focus-ring transition-colors hover:text-primary">
+		<IconBrandDiscord size={19} stroke={1.5} aria-hidden="true" />
+	</a>
+	<div class="ml-auto" data-theme-control>
+		<ThemeSelect />
+		<ThemeTabs client:load />
+	</div>
+</div>

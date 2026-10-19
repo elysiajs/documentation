@@ -1,0 +1,446 @@
+---
+import '../styles/global.css'
+import '../styles/illust.css'
+import GalleryItem from '../components/illust/gallery-item.astro'
+import { preview, yonkoma } from '../components/illust/gallery'
+import {
+	IconArrowRight,
+	IconCode,
+	IconPencil,
+	IconRocket,
+	IconShield
+} from '@tabler/icons-react'
+import Footer from '../components/footer.astro'
+import { ogImagePath } from '../lib/og'
+import { illustMeta } from '../lib/page-meta'
+
+const { title, description } = illustMeta
+const image = new URL('/assets/cover_s.webp', Astro.site)
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:image" content={image} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:alt" content={title} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={image} />
+		<meta name="twitter:image:alt" content={title} />
+		<link rel="icon" href="/favicon.svg" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Alice&family=Nunito:ital,wght@0,400..800;1,400..700&family=JetBrains+Mono:ital,wght@0,400..600;1,400&display=swap"
+		/>
+		<script is:inline>
+			;(() => {
+				let stored
+				try {
+					stored = localStorage.getItem('starlight-theme')
+				} catch {}
+
+				const theme =
+					stored ||
+					(window.matchMedia('(prefers-color-scheme: light)').matches
+						? 'light'
+						: 'dark')
+				document.documentElement.dataset.theme =
+					theme === 'light' ? 'light' : 'dark'
+			})()
+		</script>
+	</head>
+	<body data-illust>
+		<a href="#main" class="illust-skip">Skip to content</a>
+		<header class="illust-header">
+			<div class="illust-header-content illust-container">
+				<a href="/" class="illust-brand page-nav-surface"
+					><img
+						src="/assets/elysia.svg"
+						alt=""
+						width="26"
+						height="26"
+					/>ElysiaJS</a
+				>
+				<nav aria-label="Main navigation" class="site-nav page-nav-surface">
+					<a href="/at-glance/">Docs</a>
+					<a href="/blog/">Blog</a>
+					<a href="/illust/" aria-current="page">Illust</a>
+				</nav>
+			</div>
+		</header>
+		<main id="main" class="illust-container">
+			<header class="illust-hero">
+				<button
+					type="button"
+					class="illust-hero-cover"
+					data-open-dialog="mascot-card"
+					aria-haspopup="dialog"
+					aria-controls="mascot-card"
+					aria-label="Interact to show Elysia chan card"
+				>
+					<img
+						src="/assets/cover_s.webp"
+						alt="Elysia chan cover"
+						width="2560"
+						height="1440"
+						fetchpriority="high"
+					/>
+					<span
+						>Meet Elysia chan <svg
+							width="14"
+							height="14"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							stroke-linejoin="round"
+							aria-hidden="true"
+							><path
+								d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"
+							></path></svg
+						></span
+					>
+				</button>
+				<section class="illust-intro">
+					<h1>Illustration</h1>
+					<p>
+						<strong>Elysia chan</strong> is the mascot of ElysiaJS.
+					</p>
+					<p>
+						An arctic fox girl. Elegant and charming, yet playful
+						and a bit cheeky at times.
+					</p>
+					<p>
+						We want to make Elysia chan come to life as a lovely
+						character that everyone can relate to.
+					</p>
+				</section>
+			</header>
+
+			<!-- <section class="illust-section" aria-labelledby="daily-life-title">
+				<header class="illust-section-heading">
+					<p lang="ja">エリシアちゃんの日常</p>
+					<h2 id="daily-life-title">Elysia chan daily life</h2>
+					<p>Monthly 4koma (yonkoma), exploring the daily life of Elysia chan by SaltyAom.</p>
+				</header>
+				<div class="illust-grid">
+					{yonkoma.map((item, index) => <GalleryItem {...item} id={`comic-${index}`} comic />)}
+				</div>
+			</section> -->
+
+			<section
+				class="illust-section"
+				aria-labelledby="illustration-title"
+			>
+				<header class="illust-section-heading">
+					<p lang="ja">イラスト</p>
+					<h2 id="illustration-title">Illustration</h2>
+					<p>
+						Illustrations of Elysia chan by our talented community
+						members.
+					</p>
+				</header>
+				<div class="illust-grid">
+					{
+						preview.map((item, index) => (
+							<GalleryItem
+								{...item}
+								id={`illustration-${index}`}
+							/>
+						))
+					}
+				</div>
+			</section>
+
+			<p class="illust-vision">
+				We believe that technology should be cute and fun instead of
+				serious.<br />We love to create something that brings joy to
+				people's lives.<br />Elysia design system and Elysia chan will
+				always be a part of that vision.
+			</p>
+		</main>
+
+		<Footer />
+
+		<dialog
+			id="mascot-card"
+			class="illust-dialog mascot-dialog"
+			aria-labelledby="mascot-card-title"
+			closedby="closerequest"
+		>
+			<section class="mascot-content">
+				<header>
+					<h2 id="mascot-card-title">Elysia chan</h2><button
+						type="button"
+						class="dialog-close"
+						data-close-dialog
+						aria-label="Close Elysia chan card"
+						autofocus
+						><svg
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.75"
+							stroke-linecap="round"
+							aria-hidden="true"
+							><path d="m6 6 12 12M6 18 18 6"></path></svg
+						></button
+					>
+				</header>
+				<div class="mascot-perspective" data-glare-card>
+					<div class="mascot-arrival">
+						<div class="mascot-card">
+							<template data-dialog-image>
+								<img
+									data-src="/illust/ely/rev3/elysia 2 card.webp"
+									alt="Card illustration of Elysia chan, an arctic fox girl"
+									loading="eager"
+									decoding="async"
+								/>
+							</template>
+							<div class="mascot-glare" aria-hidden="true"></div>
+							<div class="mascot-foil" aria-hidden="true"></div>
+						</div>
+					</div>
+				</div>
+				<p>Illustration by SaltyAom</p>
+			</section>
+		</dialog>
+	</body>
+</html>
+
+<script>
+	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+	for (const dialog of document.querySelectorAll<HTMLDialogElement>(
+		'.illust-dialog'
+	)) {
+		const opener = document.querySelector<HTMLButtonElement>(
+			`[data-open-dialog="${dialog.id}"]`
+		)
+		if (!opener) continue
+
+		const root = document.documentElement
+		let previousOverflow: { value: string; priority: string } | undefined
+		let pendingClose: object | undefined
+		let backdropPressed = false
+		const motionTargets = new Set<Element>([
+			dialog,
+			...dialog.querySelectorAll<HTMLElement>(
+				'.gallery-image, .gallery-controls, .mascot-arrival, .mascot-content > header, .mascot-content > p'
+			)
+		])
+
+		const restorePage = () => {
+			if (dialog.open || !previousOverflow) return
+
+			if (previousOverflow.value)
+				root.style.setProperty(
+					'overflow',
+					previousOverflow.value,
+					previousOverflow.priority
+				)
+			else root.style.removeProperty('overflow')
+
+			previousOverflow = undefined
+			pendingClose = undefined
+			delete dialog.dataset.closing
+			delete dialog.dataset.instant
+			backdropPressed = false
+			opener.focus({ preventScroll: true })
+		}
+
+		const closeDialog = async (instant = false) => {
+			if (!dialog.open) return
+			if (instant || reducedMotion.matches) {
+				dialog.dataset.instant = ''
+				dialog.close()
+				restorePage()
+				return
+			}
+			if (pendingClose) return
+
+			const operation = {}
+			pendingClose = operation
+			dialog.dataset.closing = ''
+			dialog.getBoundingClientRect()
+			await Promise.allSettled(
+				dialog
+					.getAnimations({ subtree: true })
+					.filter((animation) => {
+						const effect = animation.effect
+						return (
+							effect instanceof KeyframeEffect &&
+							effect.target &&
+							motionTargets.has(effect.target) &&
+							Number.isFinite(effect.getComputedTiming().endTime)
+						)
+					})
+					.map((animation) => animation.finished)
+			)
+
+			if (pendingClose !== operation || !dialog.open) return
+			dialog.close()
+			restorePage()
+		}
+
+		const loadImages = () => {
+			for (const template of dialog.querySelectorAll<HTMLTemplateElement>(
+				'template[data-dialog-image]'
+			))
+				template.replaceWith(template.content.cloneNode(true))
+
+			for (const image of dialog.querySelectorAll<HTMLImageElement>(
+				'img[data-src]'
+			)) {
+				if (image.dataset.src) image.src = image.dataset.src
+				delete image.dataset.src
+			}
+		}
+
+		if (dialog.id === 'mascot-card')
+			opener.addEventListener('pointerenter', loadImages, { once: true })
+
+		opener.addEventListener('click', (event) => {
+			if (dialog.open) {
+				pendingClose = undefined
+				delete dialog.dataset.closing
+				return
+			}
+
+			loadImages()
+
+			previousOverflow = {
+				value: root.style.getPropertyValue('overflow'),
+				priority: root.style.getPropertyPriority('overflow')
+			}
+			if (event.detail === 0) dialog.dataset.instant = ''
+
+			dialog.showModal()
+			root.style.setProperty('overflow', 'hidden')
+			if (dialog.hasAttribute('data-instant')) {
+				dialog.getBoundingClientRect()
+				delete dialog.dataset.instant
+			}
+		})
+
+		dialog.addEventListener('close', restorePage)
+		dialog.addEventListener('cancel', (event) => {
+			event.preventDefault()
+			void closeDialog()
+		})
+		dialog.addEventListener('keydown', (event) => {
+			if (event.key !== 'Escape') return
+			event.preventDefault()
+			void closeDialog(true)
+		})
+
+		dialog
+			.querySelector<HTMLButtonElement>('[data-close-dialog]')
+			?.addEventListener('click', (event) => {
+				void closeDialog(event.detail === 0)
+			})
+
+		dialog.addEventListener('pointerdown', (event) => {
+			backdropPressed = event.target === dialog
+		})
+
+		dialog.addEventListener('click', (event) => {
+			if (event.target === dialog && backdropPressed) void closeDialog()
+			backdropPressed = false
+		})
+
+		for (const choice of dialog.querySelectorAll<HTMLButtonElement>(
+			'[data-gallery-src]'
+		)) {
+			choice.addEventListener('click', () => {
+				const image = dialog.querySelector<HTMLImageElement>(
+					'[data-gallery-image] img'
+				)
+				const title = dialog.querySelector<HTMLHeadingElement>(
+					'h2[data-gallery-title]'
+				)
+				const { gallerySrc, galleryTitle } = choice.dataset
+				if (!image || !title || !gallerySrc || !galleryTitle) return
+
+				image.src = gallerySrc
+				image.alt = galleryTitle
+				title.textContent = galleryTitle
+
+				for (const variant of dialog.querySelectorAll<HTMLButtonElement>(
+					'[data-gallery-src]'
+				))
+					variant.setAttribute(
+						'aria-pressed',
+						String(variant === choice)
+					)
+			})
+		}
+	}
+
+	const card = document.querySelector<HTMLElement>('[data-glare-card]')
+	if (card) {
+		const resetCard = () => {
+			for (const property of [
+				'--rotate-x',
+				'--rotate-y',
+				'--glare-x',
+				'--glare-y',
+				'--foil-x',
+				'--foil-y'
+			])
+				card.style.removeProperty(property)
+
+			card.removeAttribute('data-active')
+		}
+
+		card.addEventListener('pointermove', (event) => {
+			if (reducedMotion.matches || event.pointerType === 'touch') return
+
+			const bounds = card.getBoundingClientRect()
+			const x = Math.max(
+				0,
+				Math.min(
+					100,
+					((event.clientX - bounds.left) / bounds.width) * 100
+				)
+			)
+			const y = Math.max(
+				0,
+				Math.min(
+					100,
+					((event.clientY - bounds.top) / bounds.height) * 100
+				)
+			)
+
+			card.style.setProperty(
+				'--rotate-x',
+				`${(-(x - 50) / 3.5) * 0.4}deg`
+			)
+			card.style.setProperty('--rotate-y', `${((y - 50) / 2) * 0.4}deg`)
+			card.style.setProperty('--glare-x', `${x}%`)
+			card.style.setProperty('--glare-y', `${y}%`)
+			card.style.setProperty('--foil-x', `${50 + x / 4 - 12.5}%`)
+			card.style.setProperty('--foil-y', `${50 + y / 3 - 16.67}%`)
+			card.setAttribute('data-active', '')
+		})
+
+		card.addEventListener('pointerleave', resetCard)
+		reducedMotion.addEventListener('change', resetCard)
+		document
+			.querySelector('#mascot-card')
+			?.addEventListener('close', resetCard)
+	}
+</script>

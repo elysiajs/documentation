@@ -1,0 +1,178 @@
+---
+title: "Better Auth"
+description: "We may use @better-auth/cli to generate an auth schema and migrate our database as well."
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Better Auth</h1>
+
+Better Auth is a framework-agnostic authentication (and authorization) framework for TypeScript.
+It provides a comprehensive set of features out of the box and includes a plugin ecosystem that simplifies adding advanced functionalities.
+We recommend going through the [Better Auth basic setup](https://www.better-auth.com/docs/installation) before going through this page.
+Our basic setup will look like this:
+```ts title="auth.ts"
+import { betterAuth } from 'better-auth'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool()
+})
+```
+## Handler
+After setting up the Better Auth instance, we can mount it to Elysia via [mount](/patterns/mount).
+We need to mount the handler to an Elysia endpoint.
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+const app = new Elysia()
+	.mount(auth.handler)
+	.listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+Then we can access Better Auth at `http://localhost:3000/api/auth`.
+### Custom endpoint
+We recommend setting a prefix path when using [mount](/patterns/mount).
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+
+const app = new Elysia()
+	.mount('/auth', auth.handler)
+	.listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+Then we can access Better Auth at `http://localhost:3000/auth/api/auth`.
+But the URL looks redundant, so we can customize the `/api/auth` prefix to something else in the Better Auth instance.
+```ts
+import { betterAuth } from 'better-auth'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool(),
+    basePath: '/api'
+})
+```
+Then we can access Better Auth at `http://localhost:3000/auth/api`.
+Unfortunately, we can't set the `basePath` of a Better Auth instance to be empty or `/`.
+## OpenAPI
+Better Auth supports `openapi` with `better-auth/plugins`.
+However, if we are using [@elysia/openapi](/plugins/openapi), you might want to extract the documentation from the Better Auth instance.
+First, we need to add the `openAPI` plugin to our Better Auth instance:
+```ts title="auth.ts"
+import { betterAuth } from 'better-auth'
+import { openAPI } from 'better-auth/plugins'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool(),
+    plugins: [openAPI()]
+})
+```
+
+:::tip
+
+The `openAPI()` plugin is required for `auth.api.generateOpenAPISchema` to be available. Without it, you will get a type error: `Property 'generateOpenAPISchema' does not exist`.
+
+:::
+
+Then we may extract the OpenAPI schema with the following code:
+```ts title="auth.ts"
+let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>
+const getSchema = async () => (_schema ??= auth.api.generateOpenAPISchema())
+export const OpenAPI = {
+    getPaths: (prefix = '/api/auth') =>
+        getSchema().then(({ paths }) => {
+            const reference: typeof paths = Object.create(null)
+            for (const path of Object.keys(paths)) {
+                const key = prefix + path
+                reference[key] = paths[path]
+                for (const method of Object.keys(paths[path])) {
+                    const operation = (reference[key] as any)[method]
+                    operation.tags = ['Better Auth']
+                }
+            }
+            return reference
+        }) as Promise<any>,
+    components: getSchema().then(({ components }) => components) as Promise<any>
+} as const
+```
+Then use it in our Elysia instance that uses `@elysia/openapi`:
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+import { OpenAPI } from './auth'
+const app = new Elysia().use(
+    openapi({
+        documentation: {
+            components: await OpenAPI.components,
+            paths: await OpenAPI.getPaths()
+        }
+    })
+)
+```
+## CORS
+To configure CORS, you can use the `cors` plugin from `@elysia/cors`.
+```ts
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+import { auth } from './auth'
+const app = new Elysia()
+    .use(
+        cors({
+            origin: 'http://localhost:3001',
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            credentials: true,
+            allowedHeaders: ['Content-Type', 'Authorization']
+        })
+    )
+    .mount(auth.handler)
+    .listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+## Macro
+You can use [macro](/patterns/macro/) with [derive](/patterns/macro#derive) to provide session and user information before passing it to the view.
+```ts
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+// user middleware (compute user and session and pass to routes)
+const betterAuth = new Elysia({ name: 'better-auth' })
+    .mount(auth.handler)
+    .macro({
+        auth: {
+            async derive({ status, request: { headers } }) {
+                const session = await auth.api.getSession({
+                    headers
+                })
+                if (!session) return status(401, 'Unauthorized')
+                return {
+                    user: session.user,
+                    session: session.session
+                }
+            }
+        }
+    })
+const app = new Elysia()
+    .use(betterAuth)
+    .get('/user', {
+        auth: true
+    }, ({ user }) => user)
+    .listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+This lets you access `user` and `session` in routes that enable `auth: true`.
+
+</div>
+</InteractiveDocLayout>
+</div>

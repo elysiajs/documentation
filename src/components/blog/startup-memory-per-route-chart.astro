@@ -1,0 +1,93 @@
+---
+interface Item {
+	label: string
+	highlight?: boolean
+	noValidator: number[]
+	typebox: number[]
+	zod: number[]
+}
+
+interface Props {
+	items: Item[]
+}
+
+const { items } = Astro.props
+const validators = [
+	{ label: 'No validator', key: 'noValidator', color: 'bg-border' },
+	{
+		label: 'TypeBox',
+		key: 'typebox',
+		color: 'bg-harmony-center-soft outline-1 -outline-offset-1 outline-harmony-center-line'
+	},
+	{ label: 'Zod', key: 'zod', color: 'bg-harmony-right-deep' }
+] as const
+const perAddedRoute = (memoryAt25: number, memoryAt400: number) =>
+	((memoryAt400 - memoryAt25) / 375) * 1000
+const maximum = Math.max(
+	...items.flatMap(({ noValidator, typebox, zod }) =>
+		[noValidator, typebox, zod].map(([memoryAt25, memoryAt400]) =>
+			perAddedRoute(memoryAt25, memoryAt400)
+		)
+	)
+)
+---
+
+<div class="my-6 min-w-0 max-w-full">
+	<div
+		class="min-w-0 max-w-full overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+		tabindex="0"
+		role="region"
+		aria-label="Incremental startup memory per route chart from 25 to 400 routes"
+	>
+		<div class="min-w-[36rem]">
+			<div
+				class="relative grid grid-cols-6 gap-3 before:absolute before:inset-x-0 before:top-[13rem] before:h-px before:bg-border-strong"
+				role="list"
+				aria-label="Frameworks"
+			>
+				{
+					items.map((item) => (
+						<div role="listitem" class="flex min-w-0 flex-col">
+							<span
+								class={`order-2 mt-2 min-h-8 text-center text-xs leading-4 font-semibold ${item.highlight ? 'text-primary-deep' : 'text-ink-soft'}`}
+							>
+								{item.label}
+							</span>
+							<dl class="order-1 grid h-[13rem] grid-cols-3 items-end">
+								{validators.map(({ label, key, color }) => {
+									const value = perAddedRoute(item[key][0], item[key][1])
+									const display = Number.isInteger(value) ? value : value.toFixed(1)
+									return (
+										<div class="relative h-[13rem] min-w-0">
+											<dt class="sr-only">{label}</dt>
+											<dd
+												class="absolute inset-x-0 h-4 whitespace-nowrap text-center text-[0.6rem] leading-4 font-semibold tracking-tight tabular-nums text-ink-soft"
+												style={`bottom: ${(value / maximum) * 12}rem`}
+											>
+												{display}<span class="sr-only"> kB per route</span>
+											</dd>
+											<dd
+												aria-hidden="true"
+												class={`absolute bottom-0 left-1/2 w-3 -translate-x-1/2 rounded-t-sm ${color}`}
+												style={`height: ${(value / maximum) * 12}rem`}
+											/>
+										</div>
+									)
+								})}
+							</dl>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+	<p class="mt-2 text-xs text-ink-muted sm:hidden">Scroll horizontally to see all frameworks.</p>
+	<div class="mt-4 flex flex-wrap justify-center gap-4 text-xs text-ink-muted" role="list" aria-label="Validator legend">
+		{validators.map(({ label, color }) => (
+			<span role="listitem" class="inline-flex items-center gap-1.5">
+				<i aria-hidden="true" class={`size-2 rounded-full ${color}`} />
+				{label}
+			</span>
+		))}
+	</div>
+</div>

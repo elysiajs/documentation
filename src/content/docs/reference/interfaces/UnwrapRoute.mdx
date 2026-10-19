@@ -1,0 +1,103 @@
+---
+template: "splash"
+description: "Elysia API reference for UnwrapRoute."
+editUrl: false
+next: false
+prev: false
+title: "UnwrapRoute"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">UnwrapRoute</h1>
+
+## Members
+
+### Properties
+
+| Property | Description |
+| ------ | ------ |
+| [body](/reference/interfaces/unwraproute/#body) | - |
+| [cookie](/reference/interfaces/unwraproute/#cookie) | - |
+| [headers](/reference/interfaces/unwraproute/#headers) | - |
+| [params](/reference/interfaces/unwraproute/#params) | - |
+| [query](/reference/interfaces/unwraproute/#query) | - |
+| [response](/reference/interfaces/unwraproute/#response) | - |
+
+Defined in: elysia/dist/types.d.ts:691
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Schema` *extends* [`InputSchema`](/reference/interfaces/inputschema/)\<`any`\> | - |
+| `Definitions` *extends* `DefinitionBase`\[`"typebox"`\] | `object` |
+| `Path` *extends* `string` | `""` |
+
+## Properties
+
+### body
+
+```ts
+body: UnwrapBodySchema<Schema["body"], Definitions>;
+```
+
+Defined in: elysia/dist/types.d.ts:692
+
+***
+
+### cookie
+
+```ts
+cookie: UnwrapSchema<Schema["cookie"], Definitions>;
+```
+
+Defined in: elysia/dist/types.d.ts:696
+
+***
+
+### headers
+
+```ts
+headers: UnwrapSchema<Schema["headers"], Definitions>;
+```
+
+Defined in: elysia/dist/types.d.ts:693
+
+***
+
+### params
+
+```ts
+params: object extends Schema["params"] ? ResolvePath<Path> : object extends Schema ? ResolvePath<Path> : UnwrapSchema<Schema["params"], Definitions, "output">;
+```
+
+Defined in: elysia/dist/types.d.ts:695
+
+***
+
+### query
+
+```ts
+query: UnwrapSchema<Schema["query"], Definitions>;
+```
+
+Defined in: elysia/dist/types.d.ts:694
+
+***
+
+### response
+
+```ts
+response: Schema["response"] extends string | AnySchema ? object : Schema["response"] extends object ? { [k in string | number | symbol]: UnwrapResponseSchema<any[any][k], Definitions> extends A ? A extends File ? File | ElysiaFile : A : unknown } : unknown;
+```
+
+Defined in: elysia/dist/types.d.ts:702
+
+</div>
+</InteractiveDocLayout>
+</div>

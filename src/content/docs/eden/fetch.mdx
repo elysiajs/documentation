@@ -1,0 +1,119 @@
+---
+title: Eden Fetch
+description: Call Elysia routes with a typed fetch-style client.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Fetch</h1>
+
+A fetch-like alternative to Eden Treaty.
+
+With Eden Fetch, you can interact with an Elysia server in a type-safe manner using the Fetch API.
+
+---
+
+First export your existing Elysia server type:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+Then import the server type, and consume the Elysia API on the client:
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data: pong } = await fetch('/hi', {})
+
+// response type: 1895
+const { data: id } = await fetch('/id/:id', {
+    params: {
+        id: '1895'
+    }
+})
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
+})
+```
+
+## Error handling
+You can handle errors the same way as with Eden Treaty:
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            throw error.value
+            break
+
+        case 500:
+        case 502:
+            throw error.value
+            break
+
+        default:
+            throw error.value
+            break
+    }
+}
+
+const { id, name } = nendoroid
+```
+
+## When should I use Eden Fetch over Eden Treaty
+Choose the request syntax that fits your project. Neither client is universally faster to type-check.
+
+The preference is based on your agreement with your team; however, we recommend using [Eden Treaty](/eden/treaty/overview) instead.
+
+For a large API, such as **more than 500 routes** consumed by one frontend, compare TypeScript checking and editor responsiveness in your own project. Eden Fetch can be worth trying when Treaty inference becomes costly; route count alone is not a performance guarantee.
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

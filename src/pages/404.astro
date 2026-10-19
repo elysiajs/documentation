@@ -1,0 +1,448 @@
+---
+import '../styles/global.css'
+import '../components/ui/ripple.css'
+import { ButtonLink } from '../components/ui/button'
+import Aurora from '../components/aurora.astro'
+
+const guideDashLengths = [
+	8, 7.5, 6.5, 5.5, 4.75, 4.25, 4, 4.25, 4.75, 5.5, 6.5, 7.5
+]
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Page not found | Elysia Interactive</title>
+		<meta
+			name="description"
+			content="The page you were looking for could not be found."
+		/>
+		<meta name="robots" content="noindex" />
+		<link rel="icon" href="/favicon.svg" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Alice&family=Nunito:ital,wght@0,400..800;1,400..700&family=JetBrains+Mono:ital,wght@0,400..600;1,400&display=swap"
+		/>
+		{/* Keep the saved docs theme without waiting for first paint. */}
+		<script is:inline>
+			;(() => {
+				let stored
+				try {
+					stored = localStorage.getItem('starlight-theme')
+				} catch {
+					// The system theme works without storage.
+				}
+				const theme =
+					stored ||
+					(window.matchMedia('(prefers-color-scheme: light)').matches
+						? 'light'
+						: 'dark')
+				document.documentElement.dataset.theme =
+					theme === 'light' ? 'light' : 'dark'
+			})()
+		</script>
+	</head>
+	<body class="spica-surface m-0 min-h-dvh bg-base font-sans text-ink">
+		<main
+			class="spica-surface box-border flex min-h-dvh items-center px-4 py-12 sm:px-6 lg:px-8 [background:var(--surface-wash-dawn)]"
+		>
+			<div
+				class="mx-auto grid w-full max-w-5xl overflow-hidden rounded-3xl border border-border bg-surface lg:grid-cols-[1.05fr_0.95fr]"
+			>
+				<div class="flex flex-col justify-center p-7 sm:p-10 lg:p-12">
+					<p class="mb-3 text-sm font-bold text-primary-deep">
+						Error 404
+					</p>
+					<h1
+						id="_top"
+						class="m-0 max-w-xl font-display text-4xl leading-tight font-normal text-balance text-ink sm:text-5xl"
+					>
+						This star wandered off course.
+					</h1>
+					<p
+						class="mt-5 max-w-lg text-base leading-7 text-pretty text-ink-soft"
+					>
+						The page you were looking for is not here. Let’s get you
+						back somewhere familiar.
+					</p>
+					<div class="mt-8 flex flex-wrap gap-3">
+						<ButtonLink href="/" className="text-lg px-6 py-2.5">
+							<span>Go home</span>
+						</ButtonLink>
+						<ButtonLink href="/at-glance/" variant="tertiary">
+							<span>Read the docs</span>
+						</ButtonLink>
+					</div>
+				</div>
+
+				<div
+					class="relative flex min-h-72 items-center justify-center overflow-hidden border-t border-border p-8 lg:min-h-[30rem] lg:border-t-0 lg:border-l [background:var(--surface-wash-iris)]"
+					aria-hidden="true"
+				>
+					<Aurora class="z-10!" variant="moving" />
+					{
+						/* Each ring is its own <svg> plane: inner SVG nodes can't 3D-rotate in Safari. */
+					}
+					<div
+						class="gyro relative aspect-[420/360] w-full max-w-sm text-primary"
+					>
+						<svg
+							class="gyro-guide"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<defs>
+								<linearGradient
+									id="spica-404-orbit"
+									x1="72"
+									y1="58"
+									x2="346"
+									y2="308"
+									gradientUnits="userSpaceOnUse"
+								>
+									<stop stop-color="var(--color-harmony-left)"
+									></stop>
+									<stop
+										offset="0.52"
+										stop-color="var(--color-primary)"
+									></stop>
+									<stop
+										offset="1"
+										stop-color="var(--color-harmony-right)"
+									></stop>
+								</linearGradient>
+							</defs>
+							<g
+								stroke="var(--color-primary-line)"
+								stroke-width="1.5"
+								stroke-linecap="round"
+							>
+								{
+									Array.from({ length: 96 }, (_, index) => {
+										const length =
+											guideDashLengths[
+												Math.floor(index / 2) %
+													guideDashLengths.length
+											]
+										return (
+											<line
+												x1="210"
+												y1={44 - length / 2}
+												x2="210"
+												y2={44 + length / 2}
+												transform={`rotate(${index * 3.75} 210 180)`}
+											/>
+										)
+									})
+								}
+							</g>
+							<path
+								d="M210 35V53M210 307V325M65 180H83M337 180H355"
+								stroke="var(--color-primary)"
+								stroke-width="2"
+								stroke-linecap="round"></path>
+						</svg>
+						<svg
+							class="gyro-plane gyro-outer gyro-depth gyro-depth-back"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="164"
+								stroke="url(#spica-404-orbit)"
+								stroke-width="2"></circle>
+						</svg>
+						<svg
+							class="gyro-plane gyro-outer"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="164"
+								stroke="url(#spica-404-orbit)"
+								stroke-width="2"></circle>
+						</svg>
+						<svg
+							class="gyro-plane gyro-outer gyro-depth gyro-depth-front"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="164"
+								stroke="url(#spica-404-orbit)"
+								stroke-width="2"></circle>
+						</svg>
+						<svg
+							class="gyro-plane gyro-inner gyro-depth gyro-depth-back"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="121"
+								stroke="var(--color-border-strong)"
+								stroke-width="1.5"></circle>
+						</svg>
+						<svg
+							class="gyro-plane gyro-inner"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="121"
+								stroke="var(--color-border-strong)"
+								stroke-width="1.5"></circle>
+						</svg>
+						<svg
+							class="gyro-plane gyro-inner gyro-depth gyro-depth-front"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="121"
+								stroke="var(--color-border-strong)"
+								stroke-width="1.5"></circle>
+						</svg>
+						<svg
+							class="gyro-plane gyro-core"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<text
+								x="210"
+								y="199"
+								fill="var(--color-ink)"
+								font-size="58"
+								text-anchor="middle"
+								class="font-display">404</text
+							>
+						</svg>
+						<svg
+							class="gyro-plane gyro-ring gyro-depth gyro-depth-back"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="70"
+								stroke="url(#spica-404-orbit)"
+								stroke-width="2"></circle>
+						</svg>
+						<svg
+							class="gyro-plane gyro-ring"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="70"
+								stroke="url(#spica-404-orbit)"
+								stroke-width="2"></circle>
+						</svg>
+						<svg
+							class="gyro-plane gyro-ring gyro-depth gyro-depth-front"
+							viewBox="0 0 420 360"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							focusable="false"
+						>
+							<circle
+								cx="210"
+								cy="180"
+								r="70"
+								stroke="url(#spica-404-orbit)"
+								stroke-width="2"></circle>
+						</svg>
+					</div>
+				</div>
+			</div>
+		</main>
+		<style>
+			.gyro {
+				--gyro-ease: cubic-bezier(0.37, 0, 0.63, 1);
+				perspective: 1100px;
+				transform-style: preserve-3d;
+			}
+			.gyro-plane,
+			.gyro-guide {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+			}
+			.gyro-plane {
+				backface-visibility: visible;
+			}
+			.gyro-depth-back {
+				--gyro-z: -1px;
+			}
+			.gyro-depth-front {
+				--gyro-z: 1px;
+			}
+			/* Static poses provide reduced-motion fallbacks; animations override them. */
+			.gyro-outer {
+				transform: rotateZ(-18deg) rotateX(0deg)
+					translateZ(var(--gyro-z, 0px));
+				animation: gyro-outer 22s var(--gyro-ease) -3s infinite;
+			}
+			.gyro-inner {
+				animation: gyro-inner 16s var(--gyro-ease) -5s infinite;
+			}
+			.gyro-core {
+				animation: gyro-core 7s var(--gyro-ease) infinite;
+			}
+			.gyro-ring {
+				animation: gyro-ring 12s var(--gyro-ease) -7s infinite;
+			}
+			@keyframes gyro-ring {
+				0% {
+					transform: rotateZ(30deg) rotateY(0deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				40% {
+					transform: rotateZ(30deg) rotateY(186deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				47% {
+					transform: rotateZ(30deg) rotateY(179deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				50% {
+					transform: rotateZ(30deg) rotateY(180deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				90% {
+					transform: rotateZ(30deg) rotateY(366deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				97% {
+					transform: rotateZ(30deg) rotateY(359deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				100% {
+					transform: rotateZ(30deg) rotateY(360deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+			}
+			@keyframes gyro-outer {
+				0% {
+					transform: rotateZ(-18deg) rotateX(0deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				40% {
+					transform: rotateZ(-18deg) rotateX(186deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				47% {
+					transform: rotateZ(-18deg) rotateX(179deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				50% {
+					transform: rotateZ(-18deg) rotateX(180deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				90% {
+					transform: rotateZ(-18deg) rotateX(366deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				97% {
+					transform: rotateZ(-18deg) rotateX(359deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				100% {
+					transform: rotateZ(-18deg) rotateX(360deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+			}
+			@keyframes gyro-inner {
+				0% {
+					transform: rotateZ(0deg) rotateY(0deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				40% {
+					transform: rotateZ(-186deg) rotateY(186deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				47% {
+					transform: rotateZ(-179deg) rotateY(179deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				50% {
+					transform: rotateZ(-180deg) rotateY(180deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				90% {
+					transform: rotateZ(-366deg) rotateY(366deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				97% {
+					transform: rotateZ(-359deg) rotateY(359deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+				100% {
+					transform: rotateZ(-360deg) rotateY(360deg)
+						translateZ(var(--gyro-z, 0px));
+				}
+			}
+			@keyframes gyro-core {
+				0%,
+				100% {
+					transform: translateY(0) rotateX(-4deg) rotateY(-5deg);
+				}
+				42% {
+					transform: translateY(-4px) rotateX(4deg) rotateY(5deg);
+				}
+				72% {
+					transform: translateY(1px) rotateX(-2deg) rotateY(-2deg);
+				}
+			}
+			@media (prefers-reduced-motion: reduce) {
+				.gyro-plane {
+					animation: none;
+				}
+				.gyro-depth {
+					display: none;
+				}
+			}
+		</style>
+		<script>
+			import '../components/ui/ripple'
+		</script>
+	</body>
+</html>

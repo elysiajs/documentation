@@ -1,0 +1,322 @@
+---
+title: Eden Treaty legacy
+description: Reference for the original edenTreaty client API.
+template: splash
+pagefind: false
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Treaty legacy</h1>
+
+:::tip[Note]
+
+This is the legacy Eden Treaty 1 (`edenTreaty`) client API. The server examples use Elysia v2; `$query`, `$fetch`, and dynamic property access belong to this older client interface.
+
+For a new project, we recommend starting with [Eden Treaty 2](/eden/treaty/overview) (treaty) instead.
+:::
+
+
+Eden Treaty is an object-like representation of an Elysia server.
+
+It provides accessors like a normal object with types directly from the server, providing autocomplete and type checks for client calls.
+
+---
+
+To use Eden Treaty, first export your existing Elysia server's type:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+Then import the server type, and consume the Elysia API on the client:
+```ts
+// client.ts
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = edenTreaty<App>('http://localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data: pong, error: pongError } = await app.get()
+
+// response type: 1895
+const { data: id, error: idError } = await app.id['1895'].get()
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+```
+
+:::tip
+
+Eden Treaty is fully type-safe with auto-completion support.
+:::
+
+
+## Anatomy
+Eden Treaty will transform all existing paths to an object-like representation that can be described as:
+```text
+EdenTreaty.<1>.<2>.<n>.<method>({
+    ...body,
+    $query?: {},
+    $fetch?: RequestInit
+})
+```
+
+### Path
+Eden will transform `/` into `.` which can be called with a registered `method`, for example:
+- **/path** -> .path
+- **/nested/path** -> .nested.path
+
+### Path parameters
+Path parameters will be mapped automatically by their name in the URL.
+
+- **/id/:id** -> .id.`<anyThing>`
+- eg: .id.hi
+- eg: .id['123']
+
+:::tip
+
+If a path doesn't support path parameters, TypeScript will show an error.
+:::
+
+
+### Query
+You can append queries to the path with `$query`:
+```ts
+app.get({
+    $query: {
+        name: 'Eden',
+        code: 'Gold'
+    }
+})
+```
+
+### Fetch
+Eden Treaty is a fetch wrapper. You can add any valid [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) parameters to Eden by passing them to `$fetch`:
+```ts
+app.post({
+    $fetch: {
+        headers: {
+            'x-organization': 'MANTIS'
+        }
+    }
+})
+```
+
+## Error handling
+Eden Treaty will return a value of `data` and `error` as a result, both fully typed.
+```ts
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            warnUser(error.value)
+            break
+
+        case 500:
+        case 502:
+            emergencyCallDev(error.value)
+            break
+
+        default:
+            reportError(error.value)
+            break
+    }
+
+    throw error
+}
+
+const { id, name } = nendoroid
+```
+
+Both **data** and **error** will be typed as nullable until you can confirm their statuses with a type guard.
+
+To put it simply, if the fetch is successful, data will have a value and error will be null, and vice versa.
+
+:::tip
+
+The error is wrapped with an `Error`, and its value returned from the server can be retrieved from `Error.value`
+:::
+
+
+### Error type based on status
+Both Eden Treaty and Eden Fetch can narrow down an error type by status code, as inferred from the server's `status()` responses.
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .model({
+        nendoroid: t.Object({
+            id: t.Number(),
+            name: t.String()
+        }),
+        error: t.Object({
+            message: t.String()
+        })
+    })
+    .get('/', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: 'nendoroid',
+        response: {
+            200: 'nendoroid',
+            400: 'error',
+            401: 'error'
+        }
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+And on the client side:
+```ts
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            // narrow down to type 'error' described in the server
+            warnUser(error.value)
+            break
+
+        default:
+            // other declared error statuses
+            reportError(error.value)
+            break
+    }
+
+    throw error
+}
+```
+
+## WebSocket
+Eden supports WebSocket using the same API as a normal route.
+```ts
+// Server
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+const app = new Elysia()
+    .use(websocket())
+    .ws('/chat', {
+        message({ body }) {
+            return body
+        },
+        body: t.String(),
+        response: t.String()
+    })
+    .listen(3000)
+
+export type App = typeof app
+```
+
+To start listening to real-time data, call the `.subscribe` method:
+```ts
+// Client
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+const app = edenTreaty<App>('http://localhost:3000')
+
+const chat = app.chat.subscribe()
+
+chat.subscribe((message) => {
+    console.log('got', message)
+})
+
+chat.on('open', () => {
+    chat.send('hello from client')
+})
+```
+
+We can use [schema](/integrations/cheat-sheet#schema) to enforce type-safety on WebSockets, just like a normal route.
+
+---
+
+`subscribe()` returns an `EdenWS` wrapper with typed message helpers such as `send`, `subscribe`, and `on`.
+
+Use `chat.ws` to access the underlying native WebSocket, including APIs not exposed by the wrapper.
+
+## File upload
+You may pass any of the following to the field to attach a file:
+- **File**
+- **FileList**
+- **Blob**
+
+Attaching a file will result in **content-type** being **multipart/form-data**
+
+Suppose we have the server as follows:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/image', {
+        body: t.Object({
+            title: t.String(),
+            image: t.Files(),
+        })
+    }, ({ body: { image, title } }) => title)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+We can use the client as follows:
+```ts
+// client.ts
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+
+export const client = edenTreaty<App>('http://localhost:3000')
+
+const id = <T extends HTMLElement = HTMLElement>(id: string) =>
+    document.getElementById(id)! as T
+
+const { data } = await client.image.post({
+    title: "Misono Mika",
+    image: id<HTMLInputElement>('picture').files!,
+})
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

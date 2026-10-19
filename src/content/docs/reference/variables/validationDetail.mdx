@@ -1,0 +1,45 @@
+---
+template: "splash"
+description: "Wrap a string into a TypeBox error callback that overrides the default validation message. Use as t.Number({ error: validationDetail('x must be a number') })."
+editUrl: false
+next: false
+prev: false
+title: "validationDetail"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">validationDetail</h1>
+
+```ts
+const validationDetail: <T>(message) => (error) => any;
+```
+
+Defined in: elysia/dist/error.d.ts:39
+
+Wrap a string into a TypeBox `error` callback that overrides the default
+validation message. Use as `t.Number({ error: validationDetail('x must be a number') })`.
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `message` | `T` |
+
+## Returns
+
+(`error`) => `any`
+
+</div>
+</InteractiveDocLayout>
+</div>

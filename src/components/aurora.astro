@@ -1,0 +1,110 @@
+---
+interface Props {
+	class?: string
+	variant?: 'static' | 'moving'
+}
+
+const { class: className, variant = 'static' } = Astro.props
+---
+
+<div
+	class:list={[
+		'docs-aurora absolute inset-x-0 top-0 -z-1 h-[198px] overflow-hidden pointer-events-none print:hidden',
+		className
+	]}
+	aria-hidden="true"
+>
+	<div
+		class:list={[
+			'aurora absolute inset-0 opacity-60',
+			{ 'aurora-moving': variant === 'moving' }
+		]}
+	>
+	</div>
+</div>
+
+<style>
+	.docs-aurora {
+		opacity: 0.25;
+	}
+
+	.aurora {
+		--stripes: repeating-linear-gradient(
+			100deg,
+			#fff 0%,
+			#fff 7%,
+			transparent 10%,
+			transparent 12%,
+			#fff 16%
+		);
+		--stripes-dark: repeating-linear-gradient(
+			100deg,
+			#000 0%,
+			#000 7%,
+			transparent 10%,
+			transparent 12%,
+			#000 16%
+		);
+		--rainbow: repeating-linear-gradient(
+			100deg,
+			#60a5fa 10%,
+			#e879f9 16%,
+			#5eead4 22%,
+			#60a5fa 30%
+		);
+		background-image: var(--stripes), var(--rainbow);
+		background-size: 300%, 200%;
+		background-position:
+			50% 50%,
+			50% 50%;
+		filter: invert(100%);
+		mask-image: radial-gradient(
+			ellipse at 100% 0%,
+			black 40%,
+			transparent 70%
+		);
+	}
+
+	.aurora::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image: var(--stripes), var(--rainbow);
+		background-size: 200%, 100%;
+		mix-blend-mode: difference;
+	}
+
+	.aurora-moving::after {
+		inset: 0 -200% 0 0;
+		background-size: 66.6667%, 33.3333%;
+		animation: aurora-shift 90s linear infinite;
+	}
+
+	@keyframes aurora-shift {
+		from {
+			transform: translate3d(0, 0, 0);
+		}
+		to {
+			transform: translate3d(-66.6667%, 0, 0);
+		}
+	}
+
+	:global(html[data-theme='dark']) .docs-aurora {
+		opacity: 0.55;
+	}
+
+	:global(html[data-theme='dark']) .aurora {
+		background-image: var(--stripes-dark), var(--rainbow);
+		filter: opacity(50%) saturate(200%);
+	}
+
+	:global(html[data-theme='dark']) .aurora::after {
+		background-image: var(--stripes-dark), var(--rainbow);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.aurora-moving::after {
+			animation: none;
+		}
+	}
+</style>

@@ -1,0 +1,131 @@
+---
+title: "Error handling"
+description: "Learn how to handle errors in Elysia, including custom error handling, error codes, and best practices for managing exceptions in your web applications."
+---
+
+import Lesson from '../../../../components/tutorial/lesson.astro';
+import DocLink from '../../../../components/tutorial/doc-link.astro';
+
+<Lesson title={frontmatter.title} description={frontmatter.description} doc="/patterns/error-handling/">
+
+# Error handling
+
+<DocLink href="/essential/life-cycle/#error-error-handling">error</DocLink> is called when an **error is thrown**.
+
+It accepts context similar to a handler, with an `error` property containing the thrown error. Use `instanceof` to check its class.
+
+```typescript
+import { Elysia, NotFound } from 'elysia'
+
+new Elysia()
+	.onError(({ error, status }) => {
+		if(error instanceof NotFound)
+			return 'uhe~ are you lost?'
+
+		return status(418, "My bad! But I'm cute so you'll forgive me, right?")
+	})
+	.get('/', () => 'ok')
+	.listen(3000)
+```
+
+You can return a <DocLink href="/essential/handler/#status">status</DocLink> to override the default error status.
+
+## Custom error
+
+Register an error class with `.onError(ErrorClass, handler)` to handle that type:
+
+```typescript ins={10-12}
+import { Elysia } from 'elysia'
+
+class NicheError extends Error {
+	constructor(message: string) {
+		super(message)
+	}
+}
+
+new Elysia()
+	.onError(NicheError, ({ error, status }) => {
+		// Typed as NicheError
+		console.log(error)
+
+		return status(418, "We have no idea how you got here")
+	})
+	.get('/', () => {
+        throw new NicheError('Custom error message')
+	})
+	.listen(3000)
+```
+
+The handler receives an error typed as `NicheError`, so its properties are available with autocomplete.
+
+### Error status code
+You can also provide a custom status code by adding a **status** property to class:
+
+```typescript ins={4}
+import { Elysia } from 'elysia'
+
+class NicheError extends Error {
+	status = 418
+
+	constructor(message: string) {
+		super(message)
+	}
+}
+```
+
+Elysia will use this status code if the error is thrown, see <DocLink href="/patterns/error-handling/#custom-status-code">Custom status code</DocLink>.
+
+### Error response
+
+Return a response from the class handler to choose the body and status:
+
+```typescript
+import { Elysia } from 'elysia'
+
+class NicheError extends Error {
+	status = 418
+}
+
+new Elysia()
+	.onError(NicheError, ({ error, status }) =>
+		status(error.status, { message: error.message })
+	)
+	.get('/', () => {
+		throw new NicheError('Custom error message')
+	})
+```
+
+See <DocLink href="/patterns/error-handling/#third-party-errors">Class error handlers</DocLink>.
+
+## Assignment
+
+Let's try to extend Elysia's context.
+
+<Fragment slot="answer">
+
+1. Handle the `NotFound` class to override the 404 response.
+2. Handle `YourError` and return its 418 status.
+
+```typescript
+import { Elysia, NotFound } from 'elysia'
+
+class YourError extends Error {
+	status = 418
+
+	constructor(message: string) {
+		super(message)
+	}
+}
+
+new Elysia()
+	.onError(NotFound, () => 'Hi there')
+	.onError(YourError, ({ error, status }) => status(error.status, error.message))
+	.get('/', () => {
+		throw new YourError("A")
+	})
+	.listen(3000)
+```
+
+</Fragment>
+
+</Lesson>

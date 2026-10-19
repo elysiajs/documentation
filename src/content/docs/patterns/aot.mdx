@@ -1,0 +1,242 @@
+---
+title: Ahead-of-time compilation
+description: Compile Elysia route handlers and schemas during your build with the AOT bundler plugin.
+template: splash
+---
+
+import '../../../styles/routing.css';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import FileCodeBlock from '../../../components/interactive-code/file-code-block.astro';
+import TabItem from '../../../components/interactive-code/tab-item.astro';
+
+export const aotSteps = [
+    {
+        label: 'Export the instance',
+        code: `import { Elysia, t } from 'elysia'
+
+export const app = new Elysia()
+	.get('/hello/:name', {
+		params: t.Object({ name: t.String({ minLength: 2 }) })
+	}, ({ params }) => \`Hello, \${params.name}!\`)
+	.listen(3000)`,
+        highlight: [3],
+    },
+    {
+        label: 'Create a build script',
+        code: `import { aot } from 'elysia/plugin/aot/bun'
+
+const result = await Bun.build({
+	entrypoints: ['src/index.ts'],
+	outdir: 'dist',
+	target: 'bun',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+
+process.exit(0)`,
+        highlight: [4, 7],
+    },
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Ahead-of-time compilation</h1>
+
+Elysia generates an optimized function for each route to make your app faster. The compilation happens only once, when the first request is received for each route. This is called Just-in-time (JIT) compilation.
+
+But instead, you can use Ahead-of-time (AOT) compilation to remove the said overhead while making the app fast by moving the compilation to the build step.
+
+## Export your app
+
+To use the AOT plugin, export your Elysia instance.
+
+</div>
+
+<InteractiveDoc steps={aotSteps}>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:50dvh]!">
+
+### Export the instance
+
+In `src/index.ts`, export your Elysia instance as `app` so the AOT plugin can find it.
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:50dvh]!">
+
+### Create a build script
+
+Create `build.ts` with the same entry path in `entrypoints` and `aot()`.
+
+The script will dry run your app to capture the route registration and generate a bundle in `dist/`.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+### Build and run
+
+Run the build from your project root, then start the generated bundle:
+
+```sh
+bun run build.ts
+bun dist/index.js
+```
+
+### Multiple apps
+
+The AOT plugin compiles your main app: the `app` export, else the `default` export, else the only Elysia instance the entry exports.
+
+Every other exported Elysia instance with a `name` and at least one route gets its own manifest of compiled routes, keyed by that name:
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+
+export const api = new Elysia({ name: 'api', prefix: '/api' })
+	.post('/state', {
+		body: t.Object({ theme: t.String() })
+	}, ({ body }) => body)
+
+export const app = new Elysia({ name: 'app' }).use(api)
+
+export default app
+```
+
+Both `app.handle()` and `api.handle()` serve from their own manifests.
+
+Any other Elysia instance in the bundle that builds its own router must be named and exported from the entry. This is any instance you call `.handle()`, `.listen()`, or `.compile()` on, read `.fetch` from, or mount with `.mount(sub.fetch)` or `.mount(sub.handle)`. Otherwise, the build still succeeds, but the bundle throws at runtime:
+
+```text
+[elysia-aot] App "<name>" has no AOT manifest. Name and export it, .mount() ones too
+```
+
+Plugins composed only with `.use()` need neither. Neither does `.mount()` with a plain function, such as [Better Auth](/integrations/better-auth/)'s `auth.handler`.
+
+When the build compiles more than one app, the main app must be named too, and each name must be unique.
+
+Keep app names static, the same at build and at runtime. Don't derive a name from an environment variable.
+
+## Benefits of AOT
+
+Moving compilation to the build step gives your app:
+
+- **Faster startup and first requests.** Route handlers and schemas are compiled before the server runs.
+- **Lower peak memory usage.** The server avoids the temporary allocations needed for runtime compilation.
+- **Less runtime code.** AOT analyzes unused Elysia modules and can remove TypeBox entirely when all TypeBox schemas can be compiled.
+- **Faster default merging.** AOT precomputes how schema defaults are merged, reducing work when filling in missing values.
+
+Generated route and schema code can increase bundle size and retained memory at startup. See the [Elysia 2.0 AOT overview](/blog/elysia-20#ahead-of-time-compilation) for details.
+
+## Detect AOT build
+
+You can programmatically detect if the app is running in an AOT build. Use this to conditionally initialize external services, such as database connections or third-party APIs, that are not needed during the build.
+
+```ts
+import { inAotBuild } from 'elysia'
+
+if (!inAotBuild()) {
+	// Initialize external services here.
+}
+```
+
+## Bundler and Runtime
+
+AOT is a bundler plugin that generates code for your Elysia app. It is compatible with Bun, Vite, esbuild, Rspack, and unplugin.
+
+<FileCodeBlock>
+<TabItem label="Bun">
+
+```ts title="build.ts"
+import { aot } from 'elysia/plugin/aot/bun'
+
+await Bun.build({
+	entrypoints: ['src/index.ts'],
+	outdir: 'dist',
+	target: 'bun',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+
+process.exit(0)
+```
+
+</TabItem>
+<TabItem label="Vite">
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import { aot } from 'elysia/plugin/aot/vite'
+
+export default defineConfig({
+	build: { ssr: 'src/index.ts' },
+	ssr: { noExternal: ['elysia'] },
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+```
+
+</TabItem>
+<TabItem label="esbuild">
+
+```ts title="build.ts"
+import * as esbuild from 'esbuild'
+import { aot } from 'elysia/plugin/aot/esbuild'
+
+await esbuild.build({
+	entryPoints: ['src/index.ts'],
+	bundle: true,
+	platform: 'node',
+	format: 'esm',
+	outfile: 'dist/index.js',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+```
+
+</TabItem>
+<TabItem label="Rspack">
+
+```ts title="rspack.config.ts"
+import { aot } from 'elysia/plugin/aot/rspack'
+
+export default {
+	entry: './src/index.ts',
+	target: 'node',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+}
+```
+
+</TabItem>
+<TabItem label="unplugin">
+
+```ts title="rollup.config.ts"
+import { createUnplugin } from 'unplugin'
+import { aotFactory } from 'elysia/plugin/aot/unplugin'
+
+const aot = createUnplugin(aotFactory)
+
+export default {
+	plugins: [aot.rollup({ entry: 'src/index.ts', target: 'bun' })]
+}
+```
+
+</TabItem>
+</FileCodeBlock>
+
+#### Target
+
+For specific runtime optimization, set the AOT plugin's `target` to the runtime that executes the bundle:
+
+```ts
+aot('src/index.ts', { target: 'bun' })
+aot('src/index.ts', { target: 'node' })
+aot('src/index.ts', { target: 'workerd' })
+```
+
+For Cloudflare Workers, use `target: 'workerd'` and follow the [Cloudflare Workers integration](/integrations/cloudflare-worker/) for the deployment setup.
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,158 @@
+---
+title: "Integration with AI SDK"
+description: "Elysia provides support for response streaming with ease, allowing you to integrate with Vercel AI SDKs seamlessly."
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Integration with AI SDK</h1>
+
+Elysia provides support for response streaming with ease, allowing you to integrate with [Vercel AI SDKs](https://vercel.com/docs/ai) seamlessly.
+
+## Response streaming
+
+Elysia supports continuous streaming of a `ReadableStream` and `Response`, allowing you to return streams directly from the AI SDKs. Choose one of the return statements shown in each example.
+
+```ts
+import { Elysia } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    // Just return a ReadableStream
+    return stream.textStream
+
+    // UI Message Stream is also supported
+    return stream.toUIMessageStream()
+})
+```
+
+Elysia will handle the stream automatically, allowing you to use it in various ways.
+
+## Server-sent events
+
+Elysia also supports Server-Sent Events for streaming responses by simply wrapping a `ReadableStream` with the `sse` function.
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    // Each chunk will be sent as a Server Sent Event
+    return sse(stream.textStream)
+
+    // UI Message Stream is also supported
+    return sse(stream.toUIMessageStream())
+})
+```
+
+## As a response
+
+If you don't need type safety from the stream for further usage with [Eden](/eden), you can return the stream directly as a response.
+
+```ts
+import { Elysia } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    return stream.toTextStreamResponse()
+
+    // UI Message Stream Response will use SSE
+    return stream.toUIMessageStreamResponse()
+})
+```
+
+## Manual streaming
+
+If you want to have more control over the streaming, you can use a generator function to yield the chunks manually.
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', async function* () {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    for await (const data of stream.textStream)
+        yield sse({
+            data,
+            event: 'message'
+        })
+
+    yield sse({
+        event: 'done'
+    })
+})
+```
+
+## Fetch
+
+If the AI SDK doesn't support the model you're using, you can still use the `fetch` function to call the provider's HTTP API and stream the response directly.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().get('/', () => {
+    return fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+            model: 'gpt-5',
+            stream: true,
+            messages: [
+                {
+                    role: 'system',
+                    content: 'You are Yae Miko from Genshin Impact'
+                },
+                { role: 'user', content: 'Hi! How are you doing?' }
+            ]
+        })
+    })
+})
+```
+
+Elysia will proxy the response from the global `fetch` with streaming support automatically.
+
+---
+
+For additional information, please refer to the [AI SDK documentation](https://ai-sdk.dev/docs/introduction).
+
+</div>
+</InteractiveDocLayout>
+</div>

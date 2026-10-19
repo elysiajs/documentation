@@ -1,0 +1,32 @@
+---
+template: "splash"
+description: "Elysia API reference for MacroToProperty."
+editUrl: false
+next: false
+prev: false
+title: "MacroToProperty"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">MacroToProperty</h1>
+
+```ts
+type MacroToProperty<T> = Prettify<{ [K in keyof T]: T[K] extends Function ? T[K] extends (a: infer Params) => any ? MacroOptionLambda<T[K]> extends never ? Params : unknown : boolean : boolean }>;
+```
+
+Defined in: elysia/dist/types.d.ts:707
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` |
+
+</div>
+</InteractiveDocLayout>
+</div>

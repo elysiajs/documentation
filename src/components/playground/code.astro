@@ -1,0 +1,14 @@
+---
+import type { PlaygroundProps } from './prepare-playground-routes';
+import Playground from './runner.astro';
+
+type Props = PlaygroundProps;
+---
+
+<!-- Keep code outside React SSR, which strips Expressive Code's stylesheet link. -->
+<div class="spica-surface spica-card code-playground grid min-w-0 gap-2 rounded-3xl border border-border bg-surface p-1.5 font-sans shadow-xs" data-tone="light">
+	<div class="min-w-0 text-sm leading-[1.55] text-pretty text-ink-soft">
+		<div class="code-playground__code min-w-0 [--code-surface-wash:var(--surface-wash-cool)] [&_.expressive-code]:m-0! [&_.expressive-code_.frame]:border-0! [&_.expressive-code_.frame]:p-0! [&_.expressive-code_.frame]:shadow-none!"><slot /></div>
+		<Playground {...Astro.props} />
+	</div>
+</div>

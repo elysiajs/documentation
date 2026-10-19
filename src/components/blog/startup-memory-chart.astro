@@ -1,0 +1,111 @@
+---
+interface Item {
+	label: string
+	highlight?: boolean
+	noValidator: number[]
+	typebox: number[]
+	zod: number[]
+}
+
+interface Props {
+	items: Item[]
+}
+
+const { items } = Astro.props
+const validators = [
+	{
+		label: 'No validator',
+		key: 'noValidator',
+		lightColor: 'bg-border',
+		strongColor: 'bg-border-strong'
+	},
+	{
+		label: 'TypeBox',
+		key: 'typebox',
+		lightColor:
+			'bg-harmony-center-soft outline-1 -outline-offset-1 outline-harmony-center-line',
+		strongColor: 'bg-harmony-center'
+	},
+	{
+		label: 'Zod',
+		key: 'zod',
+		lightColor: 'bg-harmony-right-soft',
+		strongColor: 'bg-harmony-right-deep'
+	}
+] as const
+const maximum = Math.max(
+	...items.flatMap(({ noValidator, typebox, zod }) => [
+		...noValidator,
+		...typebox,
+		...zod
+	])
+)
+---
+
+<div class="my-6 min-w-0 max-w-full">
+	<div
+		class="min-w-0 max-w-full overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+		tabindex="0"
+		role="region"
+		aria-label="Startup memory chart at 25 and 400 routes"
+	>
+		<div class="min-w-[38rem]">
+			<div
+				class="relative grid grid-cols-6 gap-3 before:absolute before:inset-x-0 before:top-[13rem] before:h-px before:bg-border-strong"
+				role="list"
+				aria-label="Frameworks"
+			>
+				{
+					items.map((item) => (
+						<div role="listitem" class="flex min-w-0 flex-col">
+							<span
+								class={`order-2 mt-2 min-h-8 text-center text-xs leading-4 font-semibold ${item.highlight ? 'text-primary-deep' : 'text-ink-soft'}`}
+							>
+								{item.label}
+							</span>
+							<dl class="order-1 grid h-[13rem] grid-cols-3 items-end">
+								{validators.map(({ label, key, lightColor, strongColor }) => {
+									const [at25, at400] = item[key]
+									return (
+										<div class="relative h-[13rem] min-w-0">
+											<dt class="sr-only">{label}</dt>
+											<dd
+												class="absolute inset-x-0 h-4 whitespace-nowrap text-center text-[0.6rem] leading-4 font-semibold tracking-tight tabular-nums text-ink-soft"
+												style={`bottom: ${(Math.max(at25, at400) / maximum) * 12}rem`}
+											>
+												<span aria-hidden="true">{at25}/{at400}</span>
+												<span class="sr-only">25 routes: {at25} MB; 400 routes: {at400} MB</span>
+											</dd>
+											<dd
+												aria-hidden="true"
+												class="absolute inset-x-0 bottom-0 flex items-end justify-center gap-0.5"
+											>
+												<span
+													class={`w-2 rounded-t-sm ${lightColor}`}
+													style={`height: ${(at25 / maximum) * 12}rem`}
+												/>
+												<span
+													class={`w-2 rounded-t-sm ${strongColor}`}
+													style={`height: ${(at400 / maximum) * 12}rem`}
+												/>
+											</dd>
+										</div>
+									)
+								})}
+							</dl>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+	<p class="mt-2 text-xs text-ink-muted sm:hidden">Scroll horizontally to see all frameworks.</p>
+	<div class="mt-4 flex flex-wrap justify-center gap-4 text-xs text-ink-muted" role="list" aria-label="Validator legend">
+		{validators.map(({ label, strongColor }) => (
+			<span role="listitem" class="inline-flex items-center gap-1.5">
+				<i aria-hidden="true" class={`size-2 rounded-full ${strongColor}`} />
+				{label}
+			</span>
+		))}
+	</div>
+</div>

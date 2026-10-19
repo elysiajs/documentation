@@ -1,0 +1,212 @@
+---
+title: JIT compiler
+description: How Elysia analyzes handlers and generates route-specific request code.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">JIT "compiler"</h1>
+
+Elysia optimizes both the runtime features it uses and the request-handling work it performs. A route that only reads a path parameter shouldn't need to parse an unused query or body.
+
+Since [Elysia 0.4](/blog/elysia-04/), released on 30 March 2023, the framework has generated JavaScript request handlers using `new Function(...)`.
+
+This isn't a traditional compiler that translates one programming language into another. It generates code tailored to a route's handler, schemas, and hooks. That's why we put "compiler" in quotes.
+
+In v2, the handler generator lives under `src/compile/handler/`, including `jit.ts`. Older explanations refer to `src/compose.ts`. Sucrose still lives in `src/sucrose.ts`.
+
+By default, a route can compile when it is first used. Once generated, the handler is reused. Static responses and precompiled routes can take different paths, so not every request or every route needs the same analysis.
+
+## Static code analysis (Sucrose)
+
+*Sucrose* is the nickname for the analysis module that helps the compiler understand which context fields a handler uses.
+
+It reads a function's source with `Function.toString()` and uses specialized analysis to find relevant access patterns. It doesn't execute the handler to discover what it needs.
+
+Consider this route:
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .patch('/user/:id', ({ params }) => ({ id: params.id }))
+```
+
+The handler reads `params`. It doesn't read `body`, `query`, or `headers`.
+
+Sucrose contributes this information to route compilation. The compiler also considers hooks and schemas: a body validation schema still needs its input even if the handler doesn't read `body` directly.
+
+Conceptually, the generated code can do this:
+
+```ts title="Route-specific handler, simplified"
+function tailoredHandler(request) {
+    const context = {
+        request,
+        params: parseParams(request.url)
+    }
+
+    return routeHandler(context)
+}
+```
+
+These are explanatory sketches, not Elysia's generated source or exported helper functions. Compare that with a central handler that eagerly prepares every field:
+
+```ts title="Eager central handler, simplified"
+async function centralHandler(request) {
+    const context = {
+        request,
+        params: parseParams(request.url),
+        body: await parseBody(request),
+        query: parseQuery(request.url),
+        headers: parseHeaders(request.headers)
+    }
+
+    return routeHandler(context)
+}
+```
+
+| Input | Parameter-only route | Eager sketch |
+| --- | --- | --- |
+| Path parameters | Read | Read |
+| Body | Skip unless another route requirement needs it | Read |
+| Query | Skip unless needed | Read |
+| Headers object | Skip unless needed | Read |
+
+This reduces unnecessary work for each request. Other frameworks can also parse lazily; the sketches explain the optimization rather than claiming that every other framework always parses everything.
+
+### Why not acorn, esprima, or other traditional analysis tools?
+
+General-purpose parsers understand far more JavaScript than this analysis needs. They also construct an AST, which adds work and allocations.
+
+Elysia specializes in the function source patterns relevant to context usage. It treats that subset as its own small input language and uses conservative analysis when access is harder to determine.
+
+The tradeoff is narrower scope in exchange for less parsing work. It isn't a replacement for a general JavaScript parser.
+
+## Compiler optimizations
+
+The compiler can shape control flow around a route's actual requirements, specialize response handling, and use direct property access where possible.
+
+Constant values and known schemas also give it information that a single general request handler wouldn't have. Many small savings contribute to the result; their impact depends on the route.
+
+### Example: `mapResponse`, `mapCompactResponse`
+
+Elysia has response mappers for different amounts of response metadata.
+
+When a handler doesn't modify `set` or use a custom status, a compact mapper can return its value without preparing extra status and header state. When that state is needed, the full mapper handles it.
+
+Creating and mapping a response with custom headers involves different work from returning a plain value. The optimization selects the path that fits the route instead of always paying for the general case.
+
+## Platform-specific optimization
+
+Elysia was originally built for Bun and also supports [Node.js](/integrations/node/), [Deno](/integrations/deno/), and other environments through runtime-specific integrations.
+
+Being compatible with a platform and taking advantage of its native APIs are different jobs. For example, Bun's native routing and static response paths can avoid some JavaScript dispatch work.
+
+Other examples include:
+
+- Native WebSocket handling on Bun through Elysia's [WebSocket plugin](/patterns/websocket/).
+- The `file()` helper using platform-specific file handling when available.
+- Native header operations where the runtime exposes them.
+
+Elysia is listed in [TechEmpower Round 23's plaintext benchmark](https://www.techempower.com/benchmarks/#section=data-r23&hw=ph&test=plaintext). That is a historical result for a specific configuration, not a measurement of the v2 examples on this page.
+
+Measure your actual workload and runtime. Database access, serialization, middleware, and network conditions can dominate a small routing benchmark.
+
+## Overhead of the JIT compiler
+
+Generating a specialized handler has costs as well as benefits.
+
+### Initial request overhead
+
+A route's first use may need analysis and code generation. Later requests reuse the result.
+
+Measure it locally against the version and runtime you're using:
+
+```ts title="Measure eager route compilation"
+import { Elysia } from 'elysia'
+
+const iterations = 10_000
+const start = performance.now()
+
+for (let index = 0; index < iterations; index++) {
+    new Elysia()
+        .post('/id/:id', ({ params }) => params.id)
+        .compile()
+}
+
+const elapsed = performance.now() - start
+console.log(`${elapsed.toFixed(1)} ms total`)
+console.log(`${(elapsed / iterations).toFixed(4)} ms per instance`)
+```
+
+This includes instance creation and route registration as well as compilation. Warmup, garbage collection, route complexity, and hardware affect the result.
+
+Use `precompile: true` on the root application to move compilation before listening, or call `.compile()` explicitly:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ precompile: true })
+    .get('/hello/:name', ({ params }) => 'Hello ' + params.name)
+    .listen(3000)
+```
+
+You trade some startup time for less first-request work.
+
+### Memory usage
+
+Generated code and related metadata occupy memory. More routes can mean more compiled handlers and validators. Measure memory with a representative route set if this matters for your deployment.
+
+### Bigger bundle size
+
+The compiler and its analysis code add to Elysia's package. Ahead-of-time build tooling can change what is needed at runtime, but a smaller bundle and a faster handler aren't automatically the same tradeoff.
+
+### Maintainability
+
+Generated code adds complexity for framework maintainers. Debugging it requires understanding both the route definition and the code generation path.
+
+Keeping generation and analysis specialized helps runtime performance, but also means those paths need their own tests.
+
+### Security considerations
+
+`new Function(...)` compiles JavaScript. It isn't a sandbox.
+
+Elysia generates code from application routes and compiler-controlled structures; it doesn't intend to evaluate arbitrary request strings as JavaScript. That boundary still needs care when handling schemas, plugin configuration, or other inputs that influence generated code.
+
+Don't accept untrusted application code or executable schema configuration and assume route compilation makes it safe. A runtime's restrictions on dynamic code generation also apply independently of application correctness.
+
+## Libraries that use dynamic code generation
+
+Elysia isn't alone in generating specialized functions. [Ajv](https://ajv.js.org/guide/managing-schemas.html) and [TypeBox](https://github.com/sinclairzx81/typebox) use compilation techniques for validation too.
+
+The same broad idea is to do preparation once, then reuse a function on the hot path. Elysia applies it to request handling as well as validation. Exact implementation details depend on the validator and version you choose.
+
+## Opting out
+
+:::note[Elysia v2]
+
+The v1 option `new Elysia({ aot: false })` selected the old dynamic handler. The v2 constructor no longer exposes that option. Setting `precompile: true` changes when compilation happens; it doesn't disable code generation.
+
+:::
+
+V2 provides ahead-of-time build plugins under paths such as `elysia/plugin/aot/bun`, `elysia/plugin/aot/esbuild`, and `elysia/plugin/aot/vite`. These prepare handlers during a build rather than using the old dynamic-mode switch.
+
+When deploying to a runtime that restricts dynamic code generation, check its [deployment requirements](/patterns/deploy/) and the build plugin's supported paths. Don't assume changing the old `aot` flag makes an application compatible.
+
+## Afterword
+
+The compiler trades some startup work, memory, and implementation complexity for less repeated request-handling work. That tradeoff is central to Elysia's design.
+
+The project published a [six-page paper in the ACM Digital Library](https://dl.acm.org/doi/10.1145/3605098.3636068) about its earlier JIT compiler and performance optimizations. It gives background on the approach; the current implementation has continued to evolve.
+
+Native libraries and bindings, including systems such as uWebSockets, make different tradeoffs and can outperform JavaScript frameworks on some workloads. Use benchmarks to answer a specific workload question rather than to promise a universal winner.
+
+</div>
+</InteractiveDocLayout>
+</div>

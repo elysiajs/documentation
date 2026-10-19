@@ -1,0 +1,22 @@
+---
+import Head from '@astrojs/starlight/components/Head.astro'
+import { ClientRouter } from 'astro:transitions'
+---
+
+<Head />
+{Astro.locals.starlightRoute.hasSidebar && <ClientRouter fallback="swap" />}
+
+<style is:global>
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none;
+		mix-blend-mode: normal;
+	}
+	::view-transition-old(docs-content),
+	::view-transition-old(docs-outline) { display: none; }
+
+	@keyframes docs-content-enter {
+		from { opacity: 0; transform: translateY(32px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+</style>

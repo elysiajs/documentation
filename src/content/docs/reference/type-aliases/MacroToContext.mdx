@@ -1,0 +1,37 @@
+---
+template: "splash"
+description: "Elysia API reference for MacroToContext."
+editUrl: false
+next: false
+prev: false
+title: "MacroToContext"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">MacroToContext</h1>
+
+```ts
+type MacroToContext<MacroFn, SelectedMacro, Definitions, R> = Prettify<InnerMacroToContext<MacroFn, Pick<SelectedMacro, Extract<keyof MacroFn, keyof SelectedMacro>>, Definitions, R> extends infer A ? { [K in Exclude<keyof A, "return">]: K extends "derive" ? UnionToIntersect<A[K]> : K extends "meta" ? (A[K] & { value: unknown })["value"] : A[K] } & Prettify<{
+  return: FlattenMacroResponse<A["return"]>;
+}> : object>;
+```
+
+Defined in: elysia/dist/types.d.ts:840
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `MacroFn` *extends* [`Macro`](/reference/interfaces/macro/) | `object` |
+| `SelectedMacro` *extends* `BaseMacro` | `object` |
+| `Definitions` *extends* `DefinitionBase`\[`"typebox"`\] | `object` |
+| `R` *extends* `1`[] | \[\] |
+
+</div>
+</InteractiveDocLayout>
+</div>

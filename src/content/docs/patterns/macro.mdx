@@ -1,0 +1,364 @@
+---
+title: Macro
+description: Package lifecycle hooks, validation, and context behind typed route options.
+template: splash
+---
+
+import '../../../styles/routing.css';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+
+export const steps = [
+    {
+        "label": "Define a macro",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        hi: (word: string) => ({\n            beforeHandle() {\n                console.log(word)\n            }\n        })\n    })"
+    },
+    {
+        "label": "Enable it on a route",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        hi: (word: string) => ({\n            beforeHandle() {\n                console.log(word)\n            }\n        })\n    })\n\nconst app = new Elysia()\n    .use(plugin)\n    .get('/', { hi: 'Elysia' }, () => 'hi')"
+    },
+    {
+        "label": "Add a context property",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        greeting: (name: string) => ({\n            derive: () => ({ greeting: `Hello ${name}` })\n        })\n    })\n\nconst app = new Elysia()\n    .use(plugin)\n    .get('/', { greeting: 'Elysia' }, ({ greeting }) => greeting)"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Macro</h1>
+
+A **macro** controls lifecycle hooks, schemas, and context through a typed route option. Define it once, then enable it on the routes that need it.
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## Define a macro
+
+A macro packages hooks, schemas, and context extensions behind a route option. This one accepts the word to log.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Enable it on a route
+
+Register the plugin, then add `hi` to the route's options. Visiting `/` logs `Elysia` and returns `hi`. The macro options come before the handler.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Add a context property
+
+Return a `derive` function from the macro to add a typed context property. This route returns `Hello Elysia`.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## Property shorthand
+
+Each property in the macro object can be a function or an object. Use an object when you only need to enable or disable a feature:
+
+```ts
+import { Elysia } from 'elysia'
+
+const auth = new Elysia()
+    .macro({
+        isAuth: {
+            derive: () => ({ user: 'saltyaom' })
+        }
+    })
+    .get('/', { isAuth: true }, ({ user }) => user)
+```
+
+Setting `isAuth: false` disables it. The object form is shorthand for a function that checks a boolean:
+
+```ts
+import { Elysia } from 'elysia'
+
+const auth = new Elysia()
+    .macro({
+        isAuth(enabled: boolean) {
+            if (!enabled) return
+
+            return {
+                derive: () => ({ user: 'saltyaom' })
+            }
+        }
+    })
+```
+
+These examples supply a fixed user to show context inference; replace that value with your authentication logic in an app.
+
+## Error handling
+
+Return `status()` from a macro hook to stop the request with an HTTP status.
+
+```ts
+import { Elysia, status } from 'elysia'
+
+new Elysia()
+    .macro({
+        auth: {
+            derive({ headers }) {
+                if (!headers.authorization)
+                    return status(401, 'Unauthorized')
+
+                return { user: 'SaltyAom' }
+            }
+        }
+    })
+    .get('/', { auth: true }, ({ user }) => `Hello ${user}`)
+```
+
+Here a missing authorization header returns `401`. The example only checks that a header exists; your authentication function must verify it before returning a user.
+
+Return `status()` for expected HTTP outcomes. Throwing an ordinary unhandled `Error` produces a `500` response by default.
+
+Returning rather than throwing a status also lets [Eden](/eden/) and [OpenAPI type generation](/patterns/openapi/#openapi-from-types) infer the route's possible responses.
+
+<span id="resolve"></span>
+
+## Derive
+
+Add a property to context by returning an object with a [`derive`](/essential/life-cycle/#derive) function. In Elysia 2, this replaces the old macro `resolve` option.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .macro({
+        withUser: {
+            derive: () => ({ user: 'Pardofelis' })
+        }
+    })
+    .get('/', { withUser: true }, ({ user }) => user)
+```
+
+The route receives a typed `user` property. This is useful when you need to authenticate a user, load related database data, or compute another request-specific context value.
+
+<span id="macro-extension-with-resolve"></span>
+
+### Macro extension with derive
+
+A macro can enable another macro and add its own derived properties. The route receives the combined result:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .macro({
+        withUser: {
+            derive: () => ({ user: 'lilith' as const })
+        }
+    })
+    .macro({
+        withMember: {
+            withUser: true,
+            derive: () => ({ role: 'member' as const })
+        }
+    })
+    .get('/', { withMember: true }, ({ user, role }) => ({ user, role }))
+```
+
+A macro's own hooks infer its own schema. They don't automatically infer context derived by another macro. When one computation needs another's result, keep them together in one `derive` callback, or read the combined properties in the route handler.
+
+The old `.macro(name, definition)` workaround is removed in Elysia 2. Use the object form, as above.
+
+## Schema
+
+A macro can define a schema for the routes that enable it.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        withFriends: {
+            body: t.Object({
+                friends: t.Tuple([t.Literal('Fouco'), t.Literal('Sartre')])
+            })
+        }
+    })
+    .post('/', {
+        body: t.Object({ name: t.Literal('Lilith') }),
+        withFriends: true
+    }, ({ body }) => body.friends)
+```
+
+This route validates both the `name` and `friends` properties. A valid JSON body is:
+
+```json
+{
+    "name": "Lilith",
+    "friends": ["Fouco", "Sartre"]
+}
+```
+
+Macro schemas are combined with the route's schema and other enabled macro schemas. They can also be used with [Standard Schema validators](/essential/validation/#standard-schema).
+
+### Schema with lifecycle in the same macro
+
+Object-form macros infer their own schema inside their lifecycle hooks:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        withFriends: {
+            body: t.Object({
+                friends: t.Tuple([t.Literal('Fouco'), t.Literal('Sartre')])
+            }),
+            beforeHandle({ body: { friends } }) {
+                console.log(friends)
+            }
+        }
+    })
+    .post('/', { withFriends: true }, ({ body }) => body)
+```
+
+Here `friends` is typed from this macro's body schema. You don't need a named single-macro overload. This differs from inferring properties supplied by another macro, as described [above](#macro-extension-with-derive).
+
+## Extension
+
+A macro can enable multiple macros and add more functionality of its own.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        sartre: {
+            body: t.Object({ sartre: t.Literal('Sartre') })
+        },
+        fouco: {
+            body: t.Object({ fouco: t.Literal('Fouco') })
+        },
+        lilith: {
+            fouco: true,
+            sartre: true,
+            body: t.Object({ lilith: t.Literal('Lilith') })
+        }
+    })
+    .post('/', { lilith: true }, ({ body }) => body)
+```
+
+Enabling `lilith` enables `fouco` and `sartre` too. The request body must satisfy all three schemas.
+
+## Deduplication
+
+Elysia deduplicates repeated macro hooks so an enabled dependency doesn't run multiple times just because more than one macro uses it.
+
+For a function-form macro, its option value is the default seed. Return a custom `seed` to choose the deduplication identity:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        sartre: (role: string) => ({
+            seed: role,
+            body: t.Object({ sartre: t.Literal('Sartre') })
+        })
+    })
+```
+
+The macro name and seed identify a function-form expansion. Keep seeds stable, and avoid circular object values unless you supply a separate primitive seed.
+
+Elysia limits nested macro expansion to 16 levels to prevent an infinite loop. Avoid circular dependencies rather than relying on that limit.
+
+When a route and a macro both provide OpenAPI `detail`, Elysia merges them and gives the route's detail precedence.
+
+## Type lambda
+
+Type Lambda is an optional advanced feature for function-form macros.
+
+It lets you compute a macro's types from the value a route sets on it. This is useful when you want to narrow the type of a context property based on the route's option value.
+
+To use one, return `$type: macroType<Lambda>()` from the macro:
+
+```ts
+import { Elysia, macroType, type MacroTypeLambda } from 'elysia'
+
+interface Role extends MacroTypeLambda {
+    output: Record<'role', this['input']>
+}
+
+new Elysia()
+    .macro({
+        role: (role: 'admin' | 'member') => ({
+            $type: macroType<Role>(),
+            derive: () => ({ role })
+        })
+    })
+    .get('/admin', { role: 'admin' }, ({ role }) => role)
+    .get('/member', { role: 'member' }, ({ role }) => role)
+```
+
+Here `role` is typed as `'admin'` on `/admin` and `'member'` on `/member`, not `'admin' | 'member'`.
+
+- `this['input']` - a value from the macro
+- `output` - value to add to the route's context.
+
+`this['input']` keeps a literal type only when the macro's parameter type has literals, such as `'admin' | 'member'` or a template literal: `` `room:${string}` ``.
+
+Note:
+- Lambda only changes types.
+- Elysia ignores `$type` at runtime. The macro still has to provide the value via `derive`.
+- TypeScript doesn't check that `derive` returns what `output` promises.
+- TypeScript doesn't allow `this` inside a nested object. Use the `Record` type instead.
+
+### Option typed from the route
+
+Use the lambda's `option` and `this['context']` to type a macro callback from the route:
+
+```ts
+import { Elysia, macroType, t, type Context, type MacroTypeLambda } from 'elysia'
+
+interface Log extends MacroTypeLambda {
+    option: (context: this['context']) => string
+}
+
+new Elysia()
+    .macro({
+        log: (message: (context: Context) => string) => ({
+            $type: macroType<Log>(),
+            beforeHandle(context) {
+                console.log(message(context))
+            }
+        })
+    })
+    .post('/user/:id', {
+        body: t.Object({ name: t.String() }),
+        log: ({ params, body }) => `${params.id} is now ${body.name}`
+    }, ({ body }) => body)
+```
+
+In `log`, `params.id` and `body.name` are strings. Without the lambda, `body` is `unknown`.
+
+`message` keeps its declared type, `(context: Context) => string`, so the macro can call it with its hook's context. Route options use the lambda's `option` type. Keep these types compatible.
+
+`this['context']` includes:
+
+- The route's schema and path parameters.
+- Values from earlier `decorate`, `derive`, and macros on an earlier `guard`.
+
+It excludes additions from macros enabled alongside it, including this macro's own `derive`, `output`, and schema.
+
+This also applies to `guard`, `group`, and `ws`. A `group` includes path parameters from its prefix, not its child routes.
+
+Use `this['input']` in `output` and `this['context']` in `option`. Each is `unknown` in the other. A lambda can set both.
+
+</div>
+</InteractiveDocLayout>
+</div>

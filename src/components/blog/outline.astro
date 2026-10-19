@@ -1,0 +1,426 @@
+---
+import { IconX } from '@tabler/icons-react'
+import { IconButton } from '../ui/icon-button'
+import PageNavigationTrack from '../page-navigation-track.astro'
+
+interface Props {
+	headings: { depth: number; slug: string; text: string }[]
+}
+
+const { headings } = Astro.props
+---
+
+{
+	headings.length >= 2 && (
+		<div
+			data-desktop-outline
+			class="desktop-outline spica-surface not-content print:hidden"
+		>
+			<IconButton
+				size="sm"
+				label="On this page"
+				data-desktop-page-toggle
+				aria-controls="blog-page-navigation"
+				aria-expanded="false"
+				className="[&[hidden]]:hidden"
+				hidden
+			>
+				<svg
+					width="20"
+					height="20"
+					viewBox="0 0 20 20"
+					fill="none"
+					stroke-width="3"
+					class="-rotate-90"
+					aria-hidden="true"
+				>
+					<circle
+						cx="10"
+						cy="10"
+						r="8"
+						stroke="var(--color-border-strong)"
+					/>
+					<circle
+						cx="10"
+						cy="10"
+						r="8"
+						stroke="var(--color-primary)"
+						pathLength="100"
+						stroke-dasharray="100"
+						stroke-dashoffset="100"
+						data-desktop-page-ring
+					/>
+				</svg>
+			</IconButton>
+			<nav
+				id="blog-page-navigation"
+				class="spica-surface not-content mb-8 grid gap-2.5 [&[hidden]]:hidden"
+				aria-label="On this page"
+				data-page-navigation
+			>
+				<span class="flex items-center gap-2 text-sm font-medium text-ink h-5">
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 20 20"
+						fill="none"
+						stroke-width="3"
+						class="shrink-0 -rotate-90"
+						aria-hidden="true"
+					>
+						<circle
+							cx="10"
+							cy="10"
+							r="8"
+							stroke="var(--color-border-strong)"
+						/>
+						<circle
+							cx="10"
+							cy="10"
+							r="8"
+							stroke="var(--color-primary)"
+							pathLength="100"
+							stroke-dasharray="100"
+							stroke-dashoffset="100"
+							data-page-ring
+						/>
+					</svg>
+					On this page
+					<IconButton
+						size="sm"
+						label="Close on this page"
+						data-page-navigation-close
+						className="ml-auto [&[hidden]]:hidden"
+						hidden
+					>
+						<IconX size={18} stroke={1.5} />
+					</IconButton>
+				</span>
+				<PageNavigationTrack>
+					<ol
+						role="list"
+						class="flex flex-col gap-0.5 list-none m-0 p-0"
+					>
+						{headings.map((heading) => (
+							<li class="m-0">
+								<a
+									class:list={[
+										'block rounded-xl py-1.25 pr-2 text-sm leading-5 font-normal text-ink-soft no-underline focus-ring hover:text-primary transition-colors',
+										heading.depth === 3 ? 'pl-7' : 'pl-3'
+									]}
+									href={`#${heading.slug}`}
+									data-page-depth={heading.depth}
+									data-page-link
+								>
+									{heading.text}
+								</a>
+							</li>
+						))}
+					</ol>
+				</PageNavigationTrack>
+			</nav>
+		</div>
+	)
+}
+
+<style>
+	.desktop-outline {
+		display: grid;
+		align-items: start;
+		position: fixed;
+		box-sizing: border-box;
+		width: max-content;
+		height: auto;
+		max-height: calc(100dvh - var(--blog-nav-offset) - 1rem);
+		overflow: clip;
+		interpolate-size: allow-keywords;
+		transition:
+			width var(--dur-base) var(--ease-out),
+			height var(--dur-base) var(--ease-out),
+			top var(--dur-base) var(--ease-out),
+			right var(--dur-base) var(--ease-out),
+			padding var(--dur-base) var(--ease-out),
+			border-radius var(--dur-base) var(--ease-out);
+		top: var(--blog-nav-offset);
+		right: 1.5rem;
+		z-index: 40;
+	}
+	.desktop-outline > :global(*) {
+		grid-area: 1 / 1;
+		transition:
+			opacity var(--dur-base) var(--ease-out),
+			visibility var(--dur-base),
+			display var(--dur-base);
+		transition-behavior: allow-discrete;
+	}
+	.desktop-outline > :global([hidden]) {
+		opacity: 0;
+		pointer-events: none;
+	}
+	.desktop-outline [data-page-navigation] {
+		width: min(13rem, calc(100dvi - 2rem));
+		max-height: calc(100dvh - var(--blog-nav-offset) - 1rem);
+		margin: 0;
+		overflow: auto;
+		overscroll-behavior: contain;
+	}
+	.desktop-outline[data-collapsed] {
+		width: 36px;
+		height: 36px;
+		top: var(--blog-nav-offset);
+		bottom: auto;
+		right: 0.75rem;
+		padding: 2px;
+		border: 1px solid var(--color-border-strong);
+		border-radius: 1rem;
+		background: var(--color-glass);
+		backdrop-filter: var(--glass-blur-small);
+		box-shadow: var(--shadow-md);
+	}
+	.desktop-outline[data-open] {
+		width: max-content;
+		height: auto;
+		max-height: calc(
+			100dvh - var(--blog-nav-offset) - 1rem - env(safe-area-inset-bottom)
+		);
+		border-radius: 1.5rem;
+		padding: 0.75rem 0.5rem 0.75rem 0.75rem;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		top: var(--blog-nav-offset);
+		bottom: auto;
+		right: 0.75rem;
+	}
+	.desktop-outline[data-open] [data-page-navigation] {
+		overflow: visible;
+	}
+	.desktop-outline [data-page-navigation] > span {
+		position: relative;
+	}
+	.desktop-outline :global([data-page-navigation-close]) {
+		position: absolute;
+		right: 0;
+		top: -5px;
+	}
+	.desktop-outline[data-collapsed]:not([data-open]) [data-page-navigation] {
+		visibility: hidden;
+		opacity: 0;
+		pointer-events: none;
+	}
+	/* Same collapsed state before the script has set `data-collapsed`, so a narrow viewport never
+	   flashes the expanded panel over the article on load. */
+	@media (width < 80rem) {
+		.desktop-outline:not([data-open]) {
+			width: 36px;
+			height: 36px;
+			top: var(--blog-nav-offset);
+			bottom: auto;
+			right: 0.75rem;
+			padding: 2px;
+			border: 1px solid var(--color-border-strong);
+			border-radius: 1rem;
+			background: var(--color-glass);
+			backdrop-filter: var(--glass-blur-small);
+			box-shadow: var(--shadow-md);
+		}
+		.desktop-outline:not([data-open]) [data-page-navigation] {
+			visibility: hidden;
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
+	@starting-style {
+		.desktop-outline > :global(*) {
+			opacity: 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.desktop-outline,
+		.desktop-outline > :global(*) {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	function pageScrollProgress(
+		scrollTop: number,
+		scrollHeight: number,
+		viewportHeight: number
+	) {
+		const range = scrollHeight - viewportHeight
+		return range > 0 ? Math.min(Math.max(scrollTop / range, 0), 1) : 0
+	}
+
+	function enhance(shell: HTMLElement) {
+		try {
+			const pageNavigation = shell.querySelector<HTMLElement>(
+				'[data-page-navigation]'
+			)
+			const toggle = shell.querySelector<HTMLButtonElement>(
+				'[data-desktop-page-toggle]'
+			)
+			const toggleRing = shell.querySelector<SVGCircleElement>(
+				'[data-desktop-page-ring]'
+			)
+			const outlineClose = shell.querySelector<HTMLButtonElement>(
+				'[data-page-navigation-close]'
+			)
+			const pageLinks = Array.from(
+				pageNavigation?.querySelectorAll<HTMLAnchorElement>(
+					'[data-page-link]'
+				) ?? []
+			)
+			const pageTargets = pageLinks.map((link) =>
+				document.getElementById(decodeURIComponent(link.hash.slice(1)))
+			)
+			const ring =
+				shell.querySelector<SVGCircleElement>('[data-page-ring]')
+
+			if (
+				!pageNavigation ||
+				!toggle ||
+				!toggleRing ||
+				!outlineClose ||
+				!pageLinks.length ||
+				pageTargets.some((target) => !target) ||
+				!ring
+			)
+				throw new Error('BlogOutline headings do not match the page.')
+
+			const wide = matchMedia('(min-width: 80rem)')
+			let collapsed = !wide.matches
+			let open = false
+			let activePage = -1
+			let frame = 0
+
+			const updatePageLink = () => {
+				const threshold =
+					parseFloat(
+						getComputedStyle(document.documentElement)
+							.scrollPaddingBlockStart
+					) + 32
+				let nextPage = 0
+				for (const [index, target] of pageTargets.entries()) {
+					if (target!.getBoundingClientRect().top <= threshold)
+						nextPage = index
+					else break
+				}
+				if (nextPage !== activePage) {
+					if (activePage >= 0)
+						pageLinks[activePage].removeAttribute('aria-current')
+					activePage = nextPage
+					pageLinks[activePage].setAttribute(
+						'aria-current',
+						'location'
+					)
+				}
+				ring.style.strokeDashoffset = String(
+					100 *
+						(1 -
+							pageScrollProgress(
+								window.scrollY,
+								document.documentElement.scrollHeight,
+								window.innerHeight
+							))
+				)
+				toggleRing.style.strokeDashoffset = ring.style.strokeDashoffset
+			}
+
+			const scheduleUpdate = () => {
+				if (frame) return
+				frame = requestAnimationFrame(() => {
+					frame = 0
+					updatePageLink()
+				})
+			}
+
+			const renderOutline = () => {
+				shell.toggleAttribute('data-collapsed', collapsed)
+				shell.toggleAttribute('data-open', open)
+				toggle.hidden = !collapsed || open
+				toggle.setAttribute('aria-expanded', String(open))
+				pageNavigation.inert = collapsed && !open
+				outlineClose.hidden = !open
+			}
+			const setOutline = (next: boolean, returnFocus = false) => {
+				open = next && collapsed
+				renderOutline()
+				if (open) {
+					updatePageLink()
+					outlineClose.focus({ preventScroll: true })
+				} else if (returnFocus) toggle.focus({ preventScroll: true })
+			}
+			toggle.addEventListener('click', () => setOutline(!open))
+			outlineClose.addEventListener('click', () =>
+				setOutline(false, true)
+			)
+			pageNavigation.addEventListener('click', (event) => {
+				const link = (
+					event.target as Element
+				).closest<HTMLAnchorElement>('[data-page-link]')
+				if (!open || !link) return
+				setOutline(false)
+				const target = document.getElementById(
+					decodeURIComponent(link.hash.slice(1))
+				)
+				if (target) {
+					if (!target.hasAttribute('tabindex')) {
+						target.setAttribute('tabindex', '-1')
+						target.addEventListener(
+							'blur',
+							() => target.removeAttribute('tabindex'),
+							{ once: true }
+						)
+					}
+					target.focus({ preventScroll: true })
+				}
+			})
+			document.addEventListener('pointerdown', (event) => {
+				if (open && !shell.contains(event.target as Node))
+					setOutline(
+						false,
+						pageNavigation.contains(document.activeElement)
+					)
+			})
+			document.addEventListener('keydown', (event) => {
+				if (open && event.key === 'Escape' && !event.defaultPrevented) {
+					event.preventDefault()
+					setOutline(false, true)
+				}
+			})
+			wide.addEventListener('change', () => {
+				const hadFocus = shell.contains(document.activeElement)
+				collapsed = !wide.matches
+				open = false
+				renderOutline()
+				updatePageLink()
+				if (hadFocus)
+					(collapsed
+						? toggle
+						: pageLinks[Math.max(activePage, 0)]
+					).focus({ preventScroll: true })
+			})
+
+			const observer = new ResizeObserver(scheduleUpdate)
+			observer.observe(document.documentElement)
+			void document.fonts.ready.then(() => {
+				updatePageLink()
+				scheduleUpdate()
+			})
+			window.addEventListener('scroll', scheduleUpdate, { passive: true })
+			window.addEventListener('resize', scheduleUpdate)
+			pageNavigation.addEventListener('focusout', scheduleUpdate)
+			renderOutline()
+			updatePageLink()
+			scheduleUpdate()
+		} catch (error) {
+			console.error('BlogOutline enhancement failed.', error)
+		}
+	}
+
+	// Posts with fewer than two headings render no outline; the bundled script still runs there.
+	const shell = document.querySelector<HTMLElement>('[data-desktop-outline]')
+	if (shell) enhance(shell)
+</script>

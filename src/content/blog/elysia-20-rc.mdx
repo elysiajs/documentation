@@ -1,0 +1,309 @@
+---
+title: "Elysia 2 RC - またおいで"
+description: "Elysia 2 RC is here after a year of development, with huge improvements to memory usage, type inference, and the lifecycle API, more control over macros, and the introduction of Eden Plugin and the new documentation."
+date: 2026-10-19
+cover: ../../assets/blog/elysia-20-rc/またおいで.webp
+alt: "Elysia-chan in the center of the page in light rain, with a greenish-blue overlay like a rainforest shower"
+author: saltyaom
+shadow: true
+---
+
+import Chart from '../../components/blog/chart.astro';
+import StartupMemoryChart from '../../components/blog/startup-memory-chart.astro';
+import StartupMemoryPerRouteChart from '../../components/blog/startup-memory-per-route-chart.astro';
+
+export const startupMemory = [
+    { label: 'Elysia 2', noValidator: [20, 24], typebox: [31, 37], zod: [28, 44] },
+    { label: 'Elysia 2 + AOT', noValidator: [19, 23], typebox: [25, 35], zod: [28, 44] },
+    { label: 'Hono', noValidator: [17, 23], typebox: [33, 49], zod: [26, 43] },
+    { label: 'H3', noValidator: [19, 25], typebox: [31, 49], zod: [28, 45] },
+    { label: 'Express', noValidator: [38, 42], typebox: [44, 61], zod: [42, 58] },
+    { label: 'Fastify', noValidator: [41, 51], typebox: [65, 100], zod: [45, 67] }
+]
+
+export const memoryBeforeAfterLoadtest = [
+    { label: 'Elysia', detail: 'Bun', value: 42.2, secondaryValue: 53.5 },
+    { label: 'h3', detail: 'Bun', value: 38.6, secondaryValue: 55.0 },
+    { label: 'Hono', detail: 'Bun', value: 38.6, secondaryValue: 55.0 },
+    { label: 'Effect', detail: 'Bun', value: 52.9, secondaryValue: 81.4 },
+    { label: 'Elysia', detail: 'Node', value: 109.4, secondaryValue: 178.1 },
+    { label: 'Express', detail: 'Bun', value: 69.0, secondaryValue: 183.9 },
+    { label: 'Effect', detail: 'Node', value: 109.9, secondaryValue: 190.5 },
+    { label: 'h3', detail: 'Node', value: 101.5, secondaryValue: 202.7 },
+    { label: 'Adonis', detail: 'Node', value: 122.6, secondaryValue: 216.8 },
+    { label: 'Koa', detail: 'Node', value: 111.6, secondaryValue: 217.4 },
+    { label: 'Nest', detail: 'Node', value: 135.4, secondaryValue: 221.7 },
+    { label: 'Hono', detail: 'Node', value: 114.5, secondaryValue: 226.0 },
+    { label: 'Fastify', detail: 'Node', value: 110.6, secondaryValue: 226.5 },
+    { label: 'Express', detail: 'Node', value: 104.3, secondaryValue: 238.4 }
+]
+
+> Welcome back~
+
+After a year of development, Elysia 2 RC is finally here.
+
+Elysia 2 is still named [DayDream](https://youtu.be/3qRd7Ok0NVY), but the development took a long time, and the improvements from beta to RC were big enough to justify calling it Elysia 2.1. We decided to name this release as well.
+
+Elysia 2 RC is named after [またおいで (Please come again)](https://youtu.be/ezOrPwjaHZo) by South& to honor the improvements we've made.
+
+We recommended reading the [beta release note](/blog/elysia-20) first, as this release builds upon it.
+
+---
+
+## Memory usage
+
+First, Elysia 2 is about a better foundation.
+
+We entirely rewrote Elysia to shift its focus from throughput alone to efficiency across all axes, starting with memory usage.
+
+We invested in understanding the internal memory structures of JSC and V8 and how to optimize Elysia's memory usage.
+
+![Static Route Memory usage](/blog/elysia-20-rc/mem-static-route.webp)
+![Dynamic Route Memory usage](/blog/elysia-20-rc/mem-dynamic-route.webp)
+
+This means each route should use less memory than before. Even after a load test, peak memory shouldn't increase as much and should stay close to its pre-test level.
+
+![Return status Memory usage](/blog/elysia-20-rc/mem-return-status.webp)
+![Set Headers Memory usage](/blog/elysia-20-rc/mem-set-headers.webp)
+
+An actual codebase almost always uses `set.headers` and `status` on the response, so this improvement is relevant to real codebases.
+
+![Inline Response Memory usage](/blog/elysia-20-rc/mem-inline-response.webp)
+![Inline Guard Memory usage](/blog/elysia-20-rc/mem-inline-guard.webp)
+
+This means that response schemas and guards use much less memory than before. This is relevant to a larger codebase rather than a "Hello World" test or benchmark.
+
+You wouldn't notice these improvements in a small "Hello World" demo benchmark. They become relevant in a real codebase, especially as the number of routes grows.
+
+### Startup memory by route count
+
+Here's the measured startup memory usage for 25 and 400 routes.
+
+<StartupMemoryChart items={startupMemory} />
+
+<small>Startup memory in MB. Values above each pair read 25/400 routes: the lighter left bar is 25 routes, and the stronger right bar is 400 routes. All bars share a 0–100 MB scale.</small>
+
+### Average memory usage per route
+
+Here's the average memory usage per route when scaling from 25 to 400 routes. The value is calculated by subtracting the 25-route measurement from the 400-route measurement, and then dividing by the 375 added routes.
+
+<StartupMemoryPerRouteChart items={startupMemory} />
+
+<small>The change in startup memory from 25 to 400 routes, divided by the 375 added routes, shown in decimal kB per route (1 MB = 1,000 kB). Subtracting the 25-route measurement largely removes the fixed startup footprint. **Lower is better.**</small>
+
+Because Elysia 2 includes a JIT and static code analysis, its bundle size is larger than Hono's and h3's, so it has a larger fixed startup footprint.
+
+But as the route count increases, Elysia 2 should be one of the most memory-efficient framework.
+
+---
+
+## Throughput
+
+It wouldn't be Elysia if we didn't improve throughput. Elysia 2 RC is still the fastest framework on Bun and very close to Fastify on Node.js.
+
+<video loading="lazy" autoplay muted loop playsinline>
+  <source src="/blog/elysia-20-rc/throughput.mp4" type="video/mp4" />
+</video>
+
+See [HTTP Benchmark](https://github.com/SaltyAom/bun-http-framework-benchmark/tree/ebc9d5e7dcd1a1786ac77d77e8a2f1a84b026038) for the latest benchmark.
+
+### Memory usage after load test
+
+Even after a load test, Elysia 2's peak memory usage is still very low and predictable compared to other frameworks.
+
+<Chart
+    items={memoryBeforeAfterLoadtest}
+    series={['Before', 'After']}
+    unit="MB"
+/>
+
+<small>The chart shows server RSS for the frameworks in the throughput video. **Before** is measured after startup validation, and **After** is measured after all benchmark workloads.</small>
+
+We have improved validation and coercion latency when using an `Elysia.t` schema.
+
+![validation-coercion-latency.webp](/blog/elysia-20-rc/validation-coercion-latency.webp)
+
+---
+
+## Deeper type inference
+
+Previously, we optimized Elysia's types to be as fast as possible within TypeScript's limits, so we had to limit what Elysia could do to keep type-checking time reasonable.
+
+But now that TypeScript 7 has been released with much faster inference, we can give Elysia 2 much deeper type inference while still being conscious of type-checking speed.
+
+We have expanded type inference to cover more cases, especially in error handling.
+
+![Elysia infer error from all possible type](/blog/elysia-20-rc/error-infer.webp)
+
+Elysia can now statically infer all possible types from macros, lifecycle hooks, and inline hooks. Even error responses can be mapped or overridden and remain statically analyzable.
+
+This makes it easy to identify all possible errors and makes Eden Treaty and OpenAPI type generation more useful, as they can now generate much more accurate types for error responses.
+
+![OpenAPI type gen showing all possible error](/blog/elysia-20-rc/openapi.webp)
+
+With OpenAPI type generation, you no longer have to manually annotate errors. It lists all possible errors that the route can throw and generates a proper OpenAPI spec for them.
+
+This is somewhat similar to neverthrow and covers a lot of Effect.ts error handling, but with Elysia's ergonomics.
+
+See [Error Handling](/patterns/error-handling) to learn how to structure your code to make Elysia infer errors.
+
+---
+
+## Reverting breaking changes to the lifecycle API
+
+Previously, in the beta, we renamed the lifecycle API to remove the `on` prefix. But after a lot of feedback, and to make migrating to Elysia 2 smoother, we decided to revert the lifecycle API to the original `on` prefix.
+
+Now Elysia 1 plugins should just work with Elysia 2 without any modifications.
+
+![Error hook](/blog/elysia-20-rc/error-hook.webp)
+
+However, the two-parameter `onError` hook still has one breaking change: `code` is now an `Error` instance. Most plugins should still work.
+
+---
+
+## Custom macro types
+
+We have a rule to reduce explicit types as much as possible by making Elysia infer them for you. But sometimes, the cases are too limited, and giving you complete control is better than trying to infer the types for you.
+
+With Elysia 2, you can now annotate and control macro types explicitly.
+
+![Macro Type](/blog/elysia-20-rc/macro-type.webp)
+
+This is less ergonomic than we want, but it gives you more control. Consider it an opt-in advanced feature for type wizards and plugin developers.
+
+See [Macro Type Lambda](/patterns/macro#type-lambda) for how to use it.
+
+---
+
+## Eden Plugin
+
+Along with macro types, we are now introducing Eden Plugin with an explicit type.
+
+![Eden Plugin](/blog/elysia-20-rc/eden-plugin.webp)
+
+This lets you control the plugin's type so you can add custom fields or create new extensions to Eden Treaty.
+
+See [Eden Treaty Plugin](/eden/treaty/plugin/) for how to use it.
+
+---
+
+## Node.js improvements
+
+Elysia is a Web Standard framework similar to Hono. This means Elysia should be able to run on any runtime that supports Web Standard APIs.
+
+Because Node.js doesn't provide a Web Standard HTTP server out of the box, we have to provide a compatibility layer to make Elysia run on Node.js, similar to other frameworks like h3, Hono, Next.js, Nuxt, and Astro.
+
+We are now using `srvx` and `crossws` on Node.js, which also form the foundation of `h3`.
+
+This allows Elysia to maintain good performance and stability on Node.js while still supporting Web Standard APIs.
+
+<video loading="lazy" autoplay muted loop playsinline>
+  <source src="/blog/elysia-20-rc/node.mp4" type="video/mp4" />
+</video>
+
+---
+
+## Compression plugin
+
+We have added an officially maintained compression plugin to Elysia 2. It is a simple plugin that compresses the response body using gzip or brotli.
+
+```ts
+import { compress } from '@elysia/compress'
+
+new Elysia()
+  .use(compress())
+```
+
+It will use Bun's fast path when possible and fall back to the runtime's native compression.
+
+See [Compression Plugin](/plugins/compress/) for more details.
+
+---
+
+## Stability
+
+Elysia 2 RC was supposed to be released about two months ago. But because we wanted to make sure the release was stable and smooth, we decided to delay it for intensive testing.
+
+The number of test cases has tripled since the beta release and is around 10 times what it was in 1.4, with several performance, memory-usage, and type-inference gates to make sure Elysia doesn't regress in the future.
+
+We developed Elysia 2 while integrating it with our internal servers to make sure it's ready for production.
+
+We are quite confident that Elysia 2 RC is stable and ready for production.
+
+What you will see in Elysia 2 is not better performance, but much lower memory usage and startup times.
+
+---
+
+We recommend starting new projects with Elysia 2 RC and planning to migrate existing projects to Elysia 2 RC. The migration should be relatively easy with the codemod we provide:
+
+```bash
+bunx @elysia/codemod@latest
+```
+
+You can create a new project with Elysia 2 RC using:
+
+```bash
+bun create elysia && bun add elysia@rc
+```
+
+We also update Elysiajs skills for LLM with a much better structure as well. We recommend updating your skills to the latest version with:
+```
+bunx skills add elysia@rc
+```
+
+---
+
+## Afterword
+
+I have never thought that it would be so hard to create something over a year and not release it.
+
+From the outside, Elysia must seem like it has been stale for a year, even though we have been working harder than on any other version of Elysia.
+
+It's hard not to rush it. I wake up every day wanting to release it.
+
+This reminds me of the song [またおいで (Please come again)](https://youtu.be/ezOrPwjaHZo) by South&. The song is about waiting for someone to come back.
+
+I know that there are a lot of people who have been waiting.
+
+I want to quickly go home.
+
+I want to say that I have been working so hard every day.
+
+I want to say that I have come back.
+
+I want to give you the embrace you deserve.
+
+But the right time for that will come.
+
+It might be a year from now but I'll bring my memory back.
+
+Until then, I'll let you have a piece of me in your heart.
+
+---
+
+Coincidentally, Elysia 2 RC is ready just before the end of the rainy season here, as the song keeps repeating:
+
+> "I'll be back before the rainy season is over"
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Cover art for Elysia 2.0 RC<br /><br />As promise I will be here before rainy season over<br /><br />Please wait just a little while longer https://t.co/Dt2FX2Qv3z</p>&mdash; SaltyAom (@saltyAom) <a href="https://x.com/saltyAom/status/2108602528497893405?ref_src=twsrc%5Etfw">October 9, 2026</a></blockquote>
+<script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
+
+This wouldn't be possible without all the support from the community and our GitHub sponsors, especially Jarred Sumner (Bun). Their support allows us to work on Elysia full-time.
+
+For you it might have been another software release but for me it's a year of my life.
+
+I hope you can feel the love and care I put into it.
+
+> Please don't cry, please don't cry
+>
+> I'll be back when the rainy season is over
+>
+> Please come again, please come again
+>
+> May the scent of hollyhocks guide you here
+
+I'll stay within your heart.
+
+Thank you for waiting for Elysia 2 RC.
+
+\- SaltyAom

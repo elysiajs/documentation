@@ -1,0 +1,32 @@
+---
+template: "splash"
+description: "typebox/system is a subgraph of typebox/type, so a static re-export here would pin ~231 KB of the deferral back into the eager graph. The proxy also guarantees Elysia's own Settings default lands BEFORE the namespace is handed out, keeping a user's explicit TypeSystem.Settings.Set(...) last — the ordering the eager setupTypebox() used to provide"
+editUrl: false
+next: false
+prev: false
+title: "TypeSystem"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">TypeSystem</h1>
+
+```ts
+const TypeSystem: typeof System;
+```
+
+Defined in: elysia/dist/type/index.d.ts:19
+
+`typebox/system` is a subgraph of `typebox/type`, so a static re-export here
+would pin ~231 KB of the deferral back into the eager graph. The proxy also
+guarantees Elysia's own `Settings` default lands BEFORE the namespace is
+handed out, keeping a user's explicit `TypeSystem.Settings.Set(...)` last —
+the ordering the eager `setupTypebox()` used to provide
+
+</div>
+</InteractiveDocLayout>
+</div>

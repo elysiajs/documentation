@@ -1,0 +1,48 @@
+---
+template: "splash"
+description: "Certify a byte stream for direct Response body pass-through."
+editUrl: false
+next: false
+prev: false
+title: "bytes"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">bytes</h1>
+
+```ts
+function bytes<T>(stream): T;
+```
+
+Defined in: elysia/dist/utils.d.ts:155
+
+Certify a byte stream for direct Response body pass-through.
+
+The returned Response owns this exact stream. Cancel it through the response
+body reader; preserving identity means Elysia does not install a second
+request-signal reader after the body is locked.
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` *extends* `ReadableStream`\<`Uint8Array`\<`ArrayBufferLike`\>\> |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `stream` | `T` |
+
+## Returns
+
+`T`
+
+</div>
+</InteractiveDocLayout>
+</div>

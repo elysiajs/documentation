@@ -1,0 +1,96 @@
+---
+template: "splash"
+description: "Elysia API reference for ElysiaStatus."
+editUrl: false
+next: false
+prev: false
+title: "ElysiaStatus"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">ElysiaStatus</h1>
+
+## Members
+
+### Properties
+
+| Property | Description |
+| ------ | ------ |
+| [headers](/reference/classes/elysiastatus/#headers) | - |
+| [response](/reference/classes/elysiastatus/#response) | - |
+| [status](/reference/classes/elysiastatus/#status) | - |
+
+Defined in: elysia/dist/error.d.ts:124
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Code` *extends* `number` \| keyof [`StatusMap`](/reference/type-aliases/statusmap/) | - |
+| `T` | [`StatusResponse`](/reference/type-aliases/statusresponse/)\<`Code`\> |
+| `Status` *extends* [`NumericStatus`](/reference/type-aliases/numericstatus/)\<`Code`\> | [`NumericStatus`](/reference/type-aliases/numericstatus/)\<`Code`\> |
+
+## Constructors
+
+### Constructor
+
+```ts
+new ElysiaStatus<Code, T, Status>(
+   code, 
+   res, 
+   headers?
+): ElysiaStatus<Code, T, Status>;
+```
+
+Defined in: elysia/dist/error.d.ts:136
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `code` | `Code` |
+| `res` | `T` |
+| `headers?` | `Record`\<`string`, `string`\> |
+
+#### Returns
+
+`ElysiaStatus`\<`Code`, `T`, `Status`\>
+
+## Properties
+
+### headers?
+
+```ts
+optional headers?: Record<string, string>;
+```
+
+Defined in: elysia/dist/error.d.ts:135
+
+***
+
+### response
+
+```ts
+response: T;
+```
+
+Defined in: elysia/dist/error.d.ts:134
+
+***
+
+### status
+
+```ts
+status: Status;
+```
+
+Defined in: elysia/dist/error.d.ts:133
+
+</div>
+</InteractiveDocLayout>
+</div>

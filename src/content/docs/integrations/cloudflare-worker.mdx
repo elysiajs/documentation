@@ -1,0 +1,229 @@
+---
+title: "Cloudflare Worker"
+description: "Build Elysia v2 handlers for Cloudflare Workers and configure deployment, static assets, and bindings."
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+import { FileTree } from "../../../components/ui/file-tree";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Cloudflare Worker</h1>
+
+Elysia can run on Cloudflare Workers using Web Standard requests and responses. For Elysia v2, compile the route handlers at build time before handing the bundle to Wrangler.
+
+:::caution[Elysia v2 compatibility]
+
+The v1 `elysia/adapter/cloudflare-worker` export and `aot: false` option are not part of Elysia v2. The setup below uses the v2 `aot` build plugin and the same `workerd` target as Elysia's Cloudflare test fixture.
+
+:::
+
+1. Use [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update) to set up your project:
+
+```bash
+wrangler init elysia-on-cloudflare
+bun add elysia@2.0.0-beta.32
+bun add -d esbuild
+```
+
+2. Define your Elysia app and export a Worker fetch handler:
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+export const app = new Elysia()
+    .get('/', () => 'Hello Cloudflare Worker!')
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+3. Compile Elysia's handlers for `workerd` during your build:
+
+```ts title="build.ts"
+import * as esbuild from 'esbuild'
+import { aot } from 'elysia/plugin/aot/esbuild'
+
+await esbuild.build({
+    entryPoints: ['src/index.ts'],
+    bundle: true,
+    format: 'esm',
+    outfile: 'dist/worker.js',
+    conditions: ['workerd', 'worker', 'browser', 'import'],
+    platform: 'browser',
+    target: 'esnext',
+    external: ['node:*', 'cloudflare:*'],
+    plugins: [aot('src/index.ts', { target: 'workerd' })]
+})
+```
+
+4. Point Wrangler at the generated bundle. Choose either JSONC or TOML:
+
+```jsonc title="wrangler.jsonc"
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "elysia-on-cloudflare",
+    "main": "dist/worker.js",
+    "compatibility_date": "2025-09-06",
+    "compatibility_flags": ["nodejs_compat"],
+    "build": { "command": "bun build.ts" }
+}
+```
+
+```toml title="wrangler.toml"
+name = "elysia-on-cloudflare"
+main = "dist/worker.js"
+compatibility_date = "2025-09-06"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "bun build.ts"
+```
+
+The compatibility date and `nodejs_compat` flag match Elysia's v2 Cloudflare fixture. Keep the flag for this setup; the v1 advice to omit it does not apply here.
+
+5. Start the development server:
+
+```bash
+wrangler dev
+```
+
+This starts the local Worker at `http://localhost:8787`. To deploy it, run `wrangler deploy`.
+
+### pnpm
+If your pnpm configuration does not install peer dependencies, add the peers required by Elysia v2 explicitly:
+
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Limitations
+Here are some known limitations of using Elysia on Cloudflare Workers:
+
+1. `file()` and the [Static plugin](/plugins/static) must not assume access to your development machine's filesystem. Workers provide a [virtual filesystem](https://developers.cloudflare.com/workers/runtime-apis/nodejs/fs/), including with the compatibility settings above; use [static assets](#static-files) for files you want to publish.
+2. Generate [OpenAPI types](/blog/openapi-type-gen/) during your build. A Worker cannot inspect TypeScript source files that are not included in its bundle.
+3. Avoid plugins that construct runtime-only objects during build or module initialization. Workers restrict some operations outside request handling.
+4. Use a function handler when returning a value, so response creation happens while handling a request:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+```
+
+## Static files
+Use [Cloudflare's built-in static file serving](https://developers.cloudflare.com/workers/static-assets/) to publish your `public` directory without relying on a filesystem-based static plugin.
+
+Add the following to your wrangler config:
+
+
+```jsonc title="wrangler.jsonc"
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "elysia-on-cloudflare",
+    "main": "dist/worker.js",
+    "compatibility_date": "2025-09-06",
+    "compatibility_flags": ["nodejs_compat"],
+    "build": { "command": "bun build.ts" },
+    "assets": { "directory": "public" }
+}
+```
+
+```toml title="wrangler.toml"
+name = "elysia-on-cloudflare"
+main = "dist/worker.js"
+compatibility_date = "2025-09-06"
+compatibility_flags = ["nodejs_compat"]
+assets = { directory = "public" }
+
+[build]
+command = "bun build.ts"
+```
+
+
+Create a `public` folder and place your static files in it.
+
+For example, if you have a folder structure like this:
+
+<FileTree
+    client:load
+    variant="card"
+    mono
+    dense
+    nodes={[
+        {
+            id: 'public',
+            name: 'public',
+            children: [
+                { id: 'public/kyuukurarin.mp4', name: 'kyuukurarin.mp4' },
+                {
+                    id: 'public/static',
+                    name: 'static',
+                    children: [
+                        { id: 'public/static/mika.webp', name: 'mika.webp' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'src',
+            name: 'src',
+            children: [{ id: 'src/index.ts', name: 'index.ts' }]
+        },
+        { id: 'wrangler.toml', name: 'wrangler.toml' }
+    ]}
+    defaultExpanded={['public', 'public/static', 'src']}
+    className="not-content my-6"
+/>
+
+Then you should be able to access your static files from the following paths:
+- **http://localhost:8787/kyuukurarin.mp4**
+- **http://localhost:8787/static/mika.webp**
+
+## Bindings
+You can use Cloudflare Workers bindings by importing `env` from `cloudflare:workers`. Import it inside the handler so the build process does not need to resolve a Worker-only module.
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+export const app = new Elysia()
+    .get('/', async () => {
+        const { env } = await import('cloudflare:workers')
+        return `Hello ${await env.KV.get('my-key')}`
+    })
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+Configure a `KV` binding in Wrangler and generate its TypeScript types with `wrangler types`. The external `cloudflare:*` imports stay available to the Worker runtime.
+
+See [Cloudflare Workers: Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global) for more information about bindings.
+
+## AoT compilation
+In v1, Workers originally required `aot: false`. Cloudflare later added [Function compilation during startup](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#enable-eval-during-startup), and Elysia 1.4.7's Cloudflare adapter used it with a compatibility date of at least `2025-06-01`.
+
+Elysia v2 uses a different compilation pipeline. The `aot` build plugin above moves handler generation into the build, using `target: 'workerd'` to generate code for Workers even when the build runs on Bun.
+
+Calling `.compile()` warms up Elysia's handlers in the current runtime. It does not replace the Worker build step, and v2 has no `aot: false` constructor option.
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .compile()
+```
+
+The deployment and binding examples still need to be tested against your Cloudflare account and chosen dependency versions.
+
+</div>
+</InteractiveDocLayout>
+</div>

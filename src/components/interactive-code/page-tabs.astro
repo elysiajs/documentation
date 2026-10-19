@@ -1,0 +1,17 @@
+---
+import DocumentTabs from './document-tabs.astro';
+
+interface Props {
+	label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div class="page-tabs" data-page-tabs role="group" aria-label={label}>
+	<DocumentTabs {label} kind="page"><slot /></DocumentTabs>
+</div>
+
+<style>
+	.page-tabs { margin-block: 1.5rem; }
+</style>

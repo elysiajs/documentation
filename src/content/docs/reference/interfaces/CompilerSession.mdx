@@ -1,0 +1,98 @@
+---
+template: "splash"
+description: "Elysia API reference for CompilerSession."
+editUrl: false
+next: false
+prev: false
+title: "CompilerSession"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">CompilerSession</h1>
+
+## Members
+
+### Properties
+
+| Property | Description |
+| ------ | ------ |
+| [app](/reference/interfaces/compilersession/#app) | - |
+| [capture](/reference/interfaces/compilersession/#capture) | - |
+| [explicitCapture](/reference/interfaces/compilersession/#explicitcapture) | - |
+| [external](/reference/interfaces/compilersession/#external) | - |
+| [handlerCapture](/reference/interfaces/compilersession/#handlercapture) | - |
+| [sucroseCache](/reference/interfaces/compilersession/#sucrosecache) | - |
+
+Defined in: elysia/dist/compile/aot.d.ts:11
+
+## Properties
+
+### app?
+
+```ts
+optional app?: object;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:18
+
+***
+
+### capture?
+
+```ts
+optional capture?: Map<string, CapturedValidator>;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:16
+
+***
+
+### explicitCapture?
+
+```ts
+optional explicitCapture?: true;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:20
+
+***
+
+### external?
+
+```ts
+optional external?: true;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:19
+
+***
+
+### handlerCapture?
+
+```ts
+optional handlerCapture?: Map<string, CapturedHandler>;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:17
+
+***
+
+### sucroseCache
+
+```ts
+readonly sucroseCache: Map<number, {
+  content: string;
+  inference: unknown;
+}>;
+```
+
+Defined in: elysia/dist/compile/aot.d.ts:12
+
+</div>
+</InteractiveDocLayout>
+</div>

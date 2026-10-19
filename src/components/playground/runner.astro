@@ -1,0 +1,28 @@
+---
+import { RouteRunner } from './route-runner'
+import { resolvePlaygroundRoutes, type PlaygroundProps } from './prepare-playground-routes'
+
+type Props = PlaygroundProps
+
+const routes = await resolvePlaygroundRoutes(Astro.props)
+---
+
+<RouteRunner routes={routes} client:load />
+
+<style>
+	:global(.playground__tab)::after {
+		content: '';
+		position: absolute;
+		inset: auto calc(-1rem - 1px) 0 auto;
+		width: calc(1rem + 1px);
+		height: calc(1rem + 1px);
+		background: radial-gradient(
+			circle at 100% 0,
+			transparent calc(1rem - 0.5px),
+			var(--color-border) 1rem,
+			var(--color-border) calc(1rem + 0.5px),
+			var(--preview-surface) calc(1rem + 1px)
+		);
+		pointer-events: none;
+	}
+</style>

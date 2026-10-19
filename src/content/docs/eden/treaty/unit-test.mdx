@@ -1,0 +1,54 @@
+---
+title: Unit test
+description: Test an Elysia instance directly with Eden Treaty.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Unit test</h1>
+
+According to [Eden Treaty config](/eden/treaty/config#urlorinstance) and [Unit Test](/patterns/unit-test), we may pass an Elysia instance to Eden Treaty directly to interact with the Elysia server directly without sending a network request.
+
+We may use this pattern to create a unit test with end-to-end type safety and type-level tests all at once.
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia().get('/hello', 'hi')
+const api = treaty(app)
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const { data } = await api.hello.get()
+
+        expect(data).toBe('hi')
+
+    })
+})
+```
+
+## Type safety test
+Include your test folder in `tsconfig.json`, then run TypeScript with the project's compiler options.
+
+```bash
+bunx tsc --noEmit
+```
+
+This is useful to ensure type integrity for both client and server, especially during migrations.
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

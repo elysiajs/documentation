@@ -1,0 +1,122 @@
+---
+template: "splash"
+description: "Elysia API reference for HTTPHeaders."
+editUrl: false
+next: false
+prev: false
+title: "HTTPHeaders"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">HTTPHeaders</h1>
+
+```ts
+type HTTPHeaders = Record<string, string | number | string[]> & object;
+```
+
+Defined in: elysia/dist/types.d.ts:539
+
+## Type Declaration
+
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `accept?` | `string` | elysia/dist/types.d.ts:559 |
+| `accept-encoding?` | `string` | elysia/dist/types.d.ts:560 |
+| `accept-language?` | `string` | elysia/dist/types.d.ts:561 |
+| `accept-ranges?` | `string` | elysia/dist/types.d.ts:588 |
+| `access-control-allow-credentials?` | `string` | elysia/dist/types.d.ts:567 |
+| `access-control-allow-headers?` | `string` | elysia/dist/types.d.ts:568 |
+| `access-control-allow-methods?` | `string` | elysia/dist/types.d.ts:569 |
+| `access-control-allow-origin?` | `string` | elysia/dist/types.d.ts:566 |
+| `access-control-expose-headers?` | `string` | elysia/dist/types.d.ts:570 |
+| `access-control-max-age?` | `string` | elysia/dist/types.d.ts:571 |
+| `access-control-request-headers?` | `string` | elysia/dist/types.d.ts:572 |
+| `access-control-request-method?` | `string` | elysia/dist/types.d.ts:573 |
+| `age?` | `string` | elysia/dist/types.d.ts:544 |
+| `allow?` | `string` | elysia/dist/types.d.ts:586 |
+| `alt-svg?` | `string` | elysia/dist/types.d.ts:611 |
+| `alt-used?` | `string` | elysia/dist/types.d.ts:612 |
+| `authorization?` | `string` | elysia/dist/types.d.ts:541 |
+| `cache-control?` | `string` | elysia/dist/types.d.ts:545 |
+| `clear-site-data?` | `string` | elysia/dist/types.d.ts:546 |
+| `connection?` | `string` | elysia/dist/types.d.ts:557 |
+| `content-disposition?` | `string` | elysia/dist/types.d.ts:576 |
+| `content-encoding?` | `string` | elysia/dist/types.d.ts:579 |
+| `content-language?` | `string` | elysia/dist/types.d.ts:580 |
+| `content-length?` | `string` \| `number` | elysia/dist/types.d.ts:577 |
+| `content-location?` | `string` | elysia/dist/types.d.ts:581 |
+| `content-range?` | `string` | elysia/dist/types.d.ts:591 |
+| `content-security-policy?` | `string` | elysia/dist/types.d.ts:592 |
+| `content-security-policy-report-only?` | `string` | elysia/dist/types.d.ts:593 |
+| `content-type?` | `SetContentType` \| `string` & `object` | elysia/dist/types.d.ts:578 |
+| `cookie?` | `string` | elysia/dist/types.d.ts:564 |
+| `cross-origin-embedder-policy?` | `string` | elysia/dist/types.d.ts:594 |
+| `cross-origin-opener-policy?` | `string` | elysia/dist/types.d.ts:595 |
+| `cross-origin-resource-policy?` | `string` | elysia/dist/types.d.ts:596 |
+| `date?` | `string` | elysia/dist/types.d.ts:613 |
+| `dnt?` | `string` | elysia/dist/types.d.ts:614 |
+| `early-data?` | `string` | elysia/dist/types.d.ts:615 |
+| `etag?` | `string` | elysia/dist/types.d.ts:551 |
+| `expect?` | `string` | elysia/dist/types.d.ts:562 |
+| `expect-ct?` | `string` | elysia/dist/types.d.ts:597 |
+| `expires?` | `string` | elysia/dist/types.d.ts:547 |
+| `forwarded?` | `string` | elysia/dist/types.d.ts:582 |
+| `if-match?` | `string` | elysia/dist/types.d.ts:552 |
+| `if-modified-since?` | `string` | elysia/dist/types.d.ts:554 |
+| `if-none-match?` | `string` | elysia/dist/types.d.ts:553 |
+| `if-range?` | `string` | elysia/dist/types.d.ts:590 |
+| `if-unmodified-since?` | `string` | elysia/dist/types.d.ts:555 |
+| `keep-alive?` | `string` | elysia/dist/types.d.ts:558 |
+| `large-allocation?` | `string` | elysia/dist/types.d.ts:616 |
+| `last-event-id?` | `string` | elysia/dist/types.d.ts:604 |
+| `last-modified?` | `string` | elysia/dist/types.d.ts:550 |
+| `link?` | `string` | elysia/dist/types.d.ts:617 |
+| `location?` | `string` | elysia/dist/types.d.ts:584 |
+| `max-forwards?` | `string` | elysia/dist/types.d.ts:563 |
+| `no-vary-search?` | `string` | elysia/dist/types.d.ts:548 |
+| `origin?` | `string` | elysia/dist/types.d.ts:574 |
+| `permission-policy?` | `string` | elysia/dist/types.d.ts:598 |
+| `ping-from?` | `string` | elysia/dist/types.d.ts:605 |
+| `ping-to?` | `string` | elysia/dist/types.d.ts:606 |
+| `pragma?` | `string` | elysia/dist/types.d.ts:549 |
+| `proxy-authenticate?` | `string` | elysia/dist/types.d.ts:542 |
+| `proxy-authorization?` | `string` | elysia/dist/types.d.ts:543 |
+| `range?` | `string` | elysia/dist/types.d.ts:589 |
+| `refresh?` | `string` | elysia/dist/types.d.ts:585 |
+| `report-to?` | `string` | elysia/dist/types.d.ts:607 |
+| `retry-after?` | `string` | elysia/dist/types.d.ts:618 |
+| `server?` | `"Elysia"` \| `string` & `object` | elysia/dist/types.d.ts:587 |
+| `service-worker-allowed?` | `string` | elysia/dist/types.d.ts:619 |
+| `set-cookie?` | `string` \| `string`[] | elysia/dist/types.d.ts:565 |
+| `source-map?` | `string` | elysia/dist/types.d.ts:620 |
+| `strict-transport-security?` | `string` | elysia/dist/types.d.ts:599 |
+| `te?` | `string` | elysia/dist/types.d.ts:608 |
+| `timing-allow-origin?` | `string` | elysia/dist/types.d.ts:575 |
+| `trailer?` | `string` | elysia/dist/types.d.ts:609 |
+| `transfer-encoding?` | `string` | elysia/dist/types.d.ts:610 |
+| `upgrade?` | `string` | elysia/dist/types.d.ts:621 |
+| `upgrade-insecure-requests?` | `string` | elysia/dist/types.d.ts:600 |
+| `vary?` | `string` | elysia/dist/types.d.ts:556 |
+| `via?` | `string` | elysia/dist/types.d.ts:583 |
+| `www-authenticate?` | `string` | elysia/dist/types.d.ts:540 |
+| `x-content-type-options?` | `string` | elysia/dist/types.d.ts:601 |
+| `x-dns-prefetch-control?` | `string` | elysia/dist/types.d.ts:622 |
+| `x-forwarded-for?` | `string` | elysia/dist/types.d.ts:623 |
+| `x-forwarded-host?` | `string` | elysia/dist/types.d.ts:624 |
+| `x-forwarded-proto?` | `string` | elysia/dist/types.d.ts:625 |
+| `x-frame-options?` | `string` | elysia/dist/types.d.ts:602 |
+| `x-powered-by?` | `"Elysia"` \| `string` & `object` | elysia/dist/types.d.ts:626 |
+| `x-request-id?` | `string` | elysia/dist/types.d.ts:627 |
+| `x-requested-with?` | `string` | elysia/dist/types.d.ts:628 |
+| `x-robots-tag?` | `string` | elysia/dist/types.d.ts:629 |
+| `x-ua-compatible?` | `string` | elysia/dist/types.d.ts:630 |
+| `x-xss-protection?` | `string` | elysia/dist/types.d.ts:603 |
+
+</div>
+</InteractiveDocLayout>
+</div>

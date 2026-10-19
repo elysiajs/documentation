@@ -1,0 +1,752 @@
+---
+import PageActions from '../page-actions'
+import Breadcrumb from '../breadcrumb'
+import { IconX } from '@tabler/icons-react'
+import { IconButton } from '../ui/icon-button'
+import { docToMarkdown } from '../../../scripts/export-docs'
+import Sponsors from '../sponsors.astro'
+import PageNavigationTrack from '../page-navigation-track.astro'
+
+const content = await Astro.slots.render('default')
+const { markdown } = docToMarkdown(
+	`<div data-interactive-doc-layout>${content}</div>`
+)!
+const pageHeadings = [
+	{
+		depth: 1,
+		slug: '_top',
+		text: Astro.locals.t('tableOfContents.overview')
+	},
+	...Astro.locals.starlightRoute.headings.filter(
+		({ depth }) => depth >= 2 && depth <= 3
+	)
+]
+---
+
+<div class="@container/page" data-interactive-doc-layout>
+	<div
+		data-desktop-outline
+		class="desktop-outline spica-surface not-content print:hidden"
+		transition:name="docs-outline"
+		transition:animate="none"
+	>
+		<IconButton
+			size="sm"
+			label="On this page"
+			data-desktop-page-toggle
+			aria-controls="docs-page-navigation"
+			aria-expanded="false"
+			className="[&[hidden]]:hidden"
+			hidden
+		>
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 20 20"
+				fill="none"
+				stroke-width="3"
+				class="-rotate-90"
+				aria-hidden="true"
+			>
+				<circle
+					cx="10"
+					cy="10"
+					r="8"
+					stroke="var(--color-border-strong)"></circle>
+				<circle
+					cx="10"
+					cy="10"
+					r="8"
+					stroke="var(--color-primary)"
+					pathLength="100"
+					stroke-dasharray="100"
+					stroke-dashoffset="100"
+					data-desktop-page-ring></circle>
+			</svg>
+		</IconButton>
+		<nav
+			id="docs-page-navigation"
+			class="spica-surface not-content mb-8 grid gap-2.5 [&[hidden]]:hidden data-[compact]:mb-0 data-[compact]:w-max data-[compact]:max-w-[min(20rem,calc(100dvw_-_2.375rem))] data-[compact]:max-h-[calc(100dvh_-_2.375rem)] data-[compact]:overflow-auto data-[compact]:overscroll-contain data-[compact]:p-3 data-[compact]:pr-2 data-[compact]:text-ink"
+			aria-label="On this page"
+			data-page-navigation
+		>
+			<span
+				class="flex items-center gap-2 text-sm font-medium text-ink h-5"
+			>
+				<svg
+					width="20"
+					height="20"
+					viewBox="0 0 20 20"
+					fill="none"
+					stroke-width="3"
+					class="shrink-0 -rotate-90"
+					aria-hidden="true"
+				>
+					<circle
+						cx="10"
+						cy="10"
+						r="8"
+						stroke="var(--color-border-strong)"></circle>
+					<circle
+						cx="10"
+						cy="10"
+						r="8"
+						stroke="var(--color-primary)"
+						pathLength="100"
+						stroke-dasharray="100"
+						stroke-dashoffset="100"
+						data-page-ring></circle>
+				</svg>
+				On this page
+				<IconButton
+					size="sm"
+					label="Close on this page"
+					data-page-navigation-close
+					className="ml-auto [&[hidden]]:hidden"
+					hidden
+				>
+					<IconX size={18} stroke={1.5} />
+				</IconButton>
+			</span>
+			<PageNavigationTrack>
+				<ol role="list" class="flex flex-col gap-0.5 list-none m-0 p-0">
+					{
+						pageHeadings.map((heading) => (
+							<li class="m-0 [&[hidden]]:hidden">
+								<a
+									class:list={[
+										'block rounded-xl py-1.25 pr-2 text-sm leading-5 font-normal text-ink-soft no-underline focus-ring hover:text-primary transition-colors',
+										heading.depth === 3 ? 'pl-7' : 'pl-3'
+									]}
+									href={`#${heading.slug}`}
+									data-page-depth={heading.depth}
+									data-page-link
+								>
+									{heading.text}
+								</a>
+							</li>
+						))
+					}
+				</ol>
+			</PageNavigationTrack>
+			{Astro.locals.starlightRoute.hasSidebar && <Sponsors />}
+		</nav>
+	</div>
+
+	{
+		Astro.locals.starlightRoute.hasSidebar && (
+			<div class="content-layout not-content">
+				<Breadcrumb
+					client:load
+					sidebar={Astro.locals.starlightRoute.sidebar}
+					title={Astro.locals.starlightRoute.entry.data.title}
+				/>
+			</div>
+		)
+	}
+	<div
+		class="content-layout not-content mb-0 flex md:justify-end sm:block sm:h-0 sm:mb-0"
+		data-page-actions
+	>
+		<PageActions markdown={markdown} client:load />
+	</div>
+
+	<Fragment set:html={content} />
+</div>
+
+<style>
+	:global(
+		[data-interactive-doc-layout]
+			:is(h1, h2, h3):not(:where(.not-content, .not-content *))
+	) {
+		font-family: var(--font-display);
+		font-weight: 400;
+	}
+
+	:global([data-outline-open]) {
+		border-radius: 1.5rem;
+	}
+
+	@media (min-width: 64rem) {
+		.desktop-outline {
+			display: grid;
+			align-items: start;
+			position: fixed;
+			box-sizing: border-box;
+			width: max-content;
+			height: auto;
+			max-height: calc(100dvh - var(--sl-nav-height, 4rem) - 2rem);
+			overflow: clip;
+			interpolate-size: allow-keywords;
+			transition:
+				width var(--dur-base) var(--ease-out),
+				height var(--dur-base) var(--ease-out),
+				top var(--dur-base) var(--ease-out),
+				right var(--dur-base) var(--ease-out),
+				padding var(--dur-base) var(--ease-out),
+				border-radius var(--dur-base) var(--ease-out);
+			inset-block-start: calc(var(--sl-nav-height, 4rem) + 1rem);
+			top: 1.5rem;
+			right: 1.5rem;
+			z-index: var(--sl-z-index-toc);
+			border-radius: 0rem;
+		}
+		.desktop-outline > :global(*) {
+			grid-area: 1 / 1;
+			transition:
+				opacity var(--dur-base) var(--ease-out),
+				visibility var(--dur-base),
+				display var(--dur-base);
+			transition-behavior: allow-discrete;
+		}
+		.desktop-outline > :global([hidden]) {
+			opacity: 0;
+			pointer-events: none;
+		}
+		.desktop-outline [data-page-navigation] {
+			width: min(13rem, calc(100dvi - 2rem));
+			max-height: calc(100dvh - var(--sl-nav-height, 4rem) - 2rem);
+			margin: 0;
+			overflow: auto;
+			overscroll-behavior: contain;
+		}
+		.desktop-outline[data-collapsed] {
+			width: 36px;
+			height: 36px;
+			top: 0.75rem;
+			right: 0.75rem;
+			padding: 2px;
+			border: 1px solid var(--color-border-strong);
+			background: var(--color-glass);
+			backdrop-filter: var(--glass-blur-small);
+			box-shadow: var(--shadow-md);
+			border-radius: 1rem;
+		}
+		.desktop-outline[data-open] {
+			width: max-content;
+			height: auto;
+			border-radius: 1.5rem;
+			padding: 0.75rem 0.5rem 0.75rem 0.75rem;
+			overflow-y: auto;
+			overscroll-behavior: contain;
+			top: 0.5rem;
+			right: 0.5rem;
+		}
+		.desktop-outline[data-open] [data-page-navigation] {
+			overflow: visible;
+		}
+		.desktop-outline [data-page-navigation] > span {
+			position: relative;
+		}
+		.desktop-outline :global([data-page-navigation-close]) {
+			position: absolute;
+			right: 0;
+			top: -5px;
+		}
+		.desktop-outline[data-collapsed]:not([data-open])
+			[data-page-navigation] {
+			visibility: hidden;
+			opacity: 0;
+			pointer-events: none;
+		}
+		@starting-style {
+			.desktop-outline > :global(*) {
+				opacity: 0;
+			}
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.desktop-outline,
+		.desktop-outline > :global(*) {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	function pageScrollProgress(
+		scrollTop: number,
+		scrollHeight: number,
+		viewportHeight: number
+	) {
+		const range = scrollHeight - viewportHeight
+		return range > 0 ? Math.min(Math.max(scrollTop / range, 0), 1) : 0
+	}
+
+	function enhance(root: HTMLElement, signal: AbortSignal) {
+		try {
+			const pageNavigation = root.querySelector<HTMLElement>(
+				'[data-page-navigation]'
+			)
+			const desktopShell = root.querySelector<HTMLElement>(
+				'[data-desktop-outline]'
+			)
+			const desktopToggle = root.querySelector<HTMLButtonElement>(
+				'[data-desktop-page-toggle]'
+			)
+			const desktopRing = root.querySelector<SVGCircleElement>(
+				'[data-desktop-page-ring]'
+			)
+			const pageLinks = Array.from(
+				pageNavigation?.querySelectorAll<HTMLAnchorElement>(
+					'[data-page-link]'
+				) ?? []
+			)
+			const headings = pageLinks.map((link) => {
+				const target = document.getElementById(
+					decodeURIComponent(link.hash.slice(1))
+				)
+				if (!target)
+					throw new Error(
+						'InteractiveDocLayout headings do not match the page.'
+					)
+				return { link, target }
+			})
+			let visibleHeadings = headings
+			const track = root.querySelector<HTMLElement>('[data-page-track]')
+			const ring =
+				root.querySelector<SVGCircleElement>('[data-page-ring]')
+			const pageToggle = document.querySelector<HTMLButtonElement>(
+				'[data-page-navigation-toggle]'
+			)
+			const floatingRing = pageToggle?.querySelector<SVGCircleElement>(
+				'[data-floating-page-ring]'
+			)
+			const siteHeader = document.querySelector<HTMLElement>(
+				'body > .page > header'
+			)
+
+			if (
+				!pageNavigation ||
+				!pageLinks.length ||
+				!track ||
+				!ring
+			)
+				throw new Error(
+					'InteractiveDocLayout headings do not match the page.'
+				)
+
+			let activePage = -1
+			let activeLink: HTMLAnchorElement | undefined
+			let frame = 0
+			signal.addEventListener(
+				'abort',
+				() => {
+					cancelAnimationFrame(frame)
+				},
+				{ once: true }
+			)
+
+			const updatePageLink = () => {
+				const threshold =
+					(siteHeader?.getBoundingClientRect().height ?? 0) + 32
+				let nextPage = 0
+				for (const [index, { target }] of visibleHeadings.entries()) {
+					if (target.getBoundingClientRect().top <= threshold)
+						nextPage = index
+					else break
+				}
+				const nextLink = visibleHeadings[nextPage]?.link
+				if (nextLink !== activeLink) {
+					activeLink?.removeAttribute('aria-current')
+					activeLink = nextLink
+					activeLink?.setAttribute('aria-current', 'location')
+				}
+				activePage = nextPage
+				ring.style.strokeDashoffset = String(
+					100 *
+						(1 -
+							pageScrollProgress(
+								window.scrollY,
+								document.documentElement.scrollHeight,
+								window.innerHeight
+							))
+				)
+				if (floatingRing)
+					floatingRing.style.strokeDashoffset =
+						ring.style.strokeDashoffset
+				if (desktopRing)
+					desktopRing.style.strokeDashoffset =
+						ring.style.strokeDashoffset
+			}
+
+			const measure = () => {
+				visibleHeadings = headings.filter(({ link, target }) => {
+					const visible = !target.closest('[hidden]')
+					if (link.parentElement) link.parentElement.hidden = !visible
+					return visible
+				})
+				updatePageLink()
+			}
+
+			let updateOverlap = () => {}
+			const scheduleUpdate = () => {
+				if (signal.aborted || frame) return
+				frame = requestAnimationFrame(() => {
+					frame = 0
+					updatePageLink()
+					updateOverlap()
+				})
+			}
+
+			if (root.querySelector('[data-page-tabs]')) {
+				const revealHash = (hash: string) => {
+					const target = document.getElementById(
+						decodeURIComponent(hash.slice(1))
+					)
+					if (!target || !root.contains(target)) return
+					const panels: HTMLElement[] = []
+					let panel = target.closest<HTMLElement>('[role="tabpanel"]')
+					while (panel) {
+						panels.unshift(panel)
+						panel =
+							panel.parentElement?.closest<HTMLElement>(
+								'[role="tabpanel"]'
+							) ?? null
+					}
+					let revealed = false
+					for (const panel of panels) {
+						if (!panel.hidden) continue
+						for (const sibling of panel.parentElement?.querySelectorAll<HTMLElement>(
+							':scope > [role="tabpanel"]'
+						) ?? [])
+							sibling.hidden = sibling !== panel
+						revealed = true
+					}
+					if (revealed) {
+						measure()
+						target.scrollIntoView()
+					}
+				}
+				const tabObserver = new MutationObserver(() => {
+					measure()
+					scheduleUpdate()
+				})
+				for (const panel of root.querySelectorAll(
+					'[data-document-tabs] > [role="tabpanel"]'
+				))
+					tabObserver.observe(panel, {
+						attributes: true,
+						attributeFilter: ['hidden']
+					})
+				signal.addEventListener(
+					'abort',
+					() => tabObserver.disconnect(),
+					{ once: true }
+				)
+				revealHash(location.hash)
+				window.addEventListener(
+					'hashchange',
+					() => revealHash(location.hash),
+					{ signal }
+				)
+				document.addEventListener(
+					'click',
+					(event) => {
+						if (
+							event.defaultPrevented ||
+							event.button !== 0 ||
+							event.metaKey ||
+							event.ctrlKey ||
+							event.shiftKey ||
+							event.altKey ||
+							!(event.target instanceof Element)
+						)
+							return
+						const link =
+							event.target.closest<HTMLAnchorElement>('a[href]')
+						if (
+							!link ||
+							link.getAttribute('role') === 'tab' ||
+							!link.hash ||
+							link.origin !== location.origin ||
+							link.pathname !== location.pathname ||
+							link.search !== location.search
+						)
+							return
+						revealHash(link.hash)
+					},
+					{ capture: true, signal }
+				)
+			}
+
+			const floating =
+				document.querySelector<HTMLElement>('.docs-floating')
+			const controls = floating?.querySelector<HTMLElement>(
+				'[data-floating-controls]'
+			)
+			const outlineClose =
+				pageNavigation.querySelector<HTMLButtonElement>(
+					'[data-page-navigation-close]'
+				)
+			if (
+				pageToggle &&
+				floating &&
+				controls &&
+				outlineClose &&
+				desktopShell &&
+				desktopToggle
+			) {
+				const inlineOutline = matchMedia('(min-width: 64rem)')
+				let collapsed = false
+				let open = false
+				const renderOutline = () => {
+					const desktop = inlineOutline.matches
+					desktopShell.toggleAttribute(
+						'data-collapsed',
+						desktop && collapsed
+					)
+					desktopShell.toggleAttribute('data-open', desktop && open)
+					desktopToggle.hidden = !desktop || !collapsed || open
+					desktopToggle.setAttribute(
+						'aria-expanded',
+						String(desktop && open)
+					)
+					pageToggle.setAttribute(
+						'aria-expanded',
+						String(!desktop && open)
+					)
+					floating.toggleAttribute(
+						'data-outline-open',
+						!desktop && open
+					)
+					if (!desktop)
+						controls.hidden = controls.inert =
+							open ||
+							!!document.querySelector(
+								'.docs-page[data-sidebar-open]'
+							)
+					pageNavigation.hidden = !desktop && !open
+					pageNavigation.inert = !open && (!desktop || collapsed)
+					outlineClose.hidden = !open
+				}
+				const setOutline = (next: boolean, returnFocus = false) => {
+					const toggle = inlineOutline.matches
+						? desktopToggle
+						: pageToggle
+					open = next && (!inlineOutline.matches || collapsed)
+					renderOutline()
+					if (open) {
+						measure()
+						outlineClose.focus({ preventScroll: true })
+					} else if (returnFocus)
+						toggle.focus({ preventScroll: true })
+				}
+				updateOverlap = () => {
+					if (!inlineOutline.matches) return
+					// Keep overlap tied to the expanded outline, independent of its animated shell.
+					const normal = pageNavigation.getBoundingClientRect()
+					const top =
+						1.5 *
+						parseFloat(
+							getComputedStyle(document.documentElement).fontSize
+						)
+					const right = document.documentElement.clientWidth - top
+					const next = Array.from(
+						root.querySelectorAll<HTMLElement>(
+							'[data-interactive-doc][data-enhanced] .interactive-doc__code'
+						)
+					).some((code) => {
+						const bounds = code.getBoundingClientRect()
+						return (
+							bounds.width > 0 &&
+							bounds.height > 0 &&
+							bounds.left < right &&
+							bounds.right > right - normal.width &&
+							bounds.top < top + normal.height &&
+							bounds.bottom > top
+						)
+					})
+					if (next === collapsed) return
+					const hadFocus = desktopShell.contains(
+						document.activeElement
+					)
+					collapsed = next
+					open = false
+					renderOutline()
+					if (hadFocus)
+						(collapsed
+							? desktopToggle
+							: visibleHeadings[Math.max(activePage, 0)].link
+						).focus({ preventScroll: true })
+				}
+				const setOutlineMode = () => {
+					const hadFocus =
+						pageNavigation.contains(document.activeElement) ||
+						document.activeElement === pageToggle ||
+						document.activeElement === desktopToggle
+					open = collapsed = false
+					controls.hidden = controls.inert = !!document.querySelector(
+						'.docs-page[data-sidebar-open]'
+					)
+					pageToggle.hidden = inlineOutline.matches
+					pageNavigation.toggleAttribute(
+						'data-compact',
+						!inlineOutline.matches
+					)
+					if (inlineOutline.matches)
+						desktopShell.append(pageNavigation)
+					else floating.append(pageNavigation)
+					renderOutline()
+					measure()
+					updateOverlap()
+					if (hadFocus)
+						(inlineOutline.matches
+							? collapsed
+								? desktopToggle
+								: visibleHeadings[Math.max(activePage, 0)].link
+							: pageToggle
+						).focus({ preventScroll: true })
+				}
+				desktopToggle.addEventListener(
+					'click',
+					() => setOutline(!open),
+					{ signal }
+				)
+				pageToggle.addEventListener('click', () => setOutline(!open), {
+					signal
+				})
+				outlineClose.addEventListener(
+					'click',
+					() => setOutline(false, true),
+					{ signal }
+				)
+				pageNavigation.addEventListener(
+					'click',
+					(event) => {
+						const link = (
+							event.target as Element
+						).closest<HTMLAnchorElement>('[data-page-link]')
+						if (!open || !link) return
+						setOutline(false)
+						const target = document.getElementById(
+							decodeURIComponent(link.hash.slice(1))
+						)
+						if (target) {
+							if (!target.hasAttribute('tabindex')) {
+								target.setAttribute('tabindex', '-1')
+								target.addEventListener(
+									'blur',
+									() => target.removeAttribute('tabindex'),
+									{ once: true, signal }
+								)
+							}
+							target.focus({ preventScroll: true })
+						}
+					},
+					{ signal }
+				)
+				document.addEventListener(
+					'pointerdown',
+					(event) => {
+						if (
+							open &&
+							!(
+								inlineOutline.matches ? desktopShell : floating
+							).contains(event.target as Node)
+						)
+							setOutline(
+								false,
+								pageNavigation.contains(document.activeElement)
+							)
+					},
+					{ signal }
+				)
+				document.addEventListener(
+					'keydown',
+					(event) => {
+						if (
+							open &&
+							event.key === 'Escape' &&
+							!event.defaultPrevented
+						) {
+							event.preventDefault()
+							setOutline(false, true)
+						}
+					},
+					{ signal }
+				)
+				document.addEventListener(
+					'docs:close-outline',
+					() => {
+						if (open)
+							setOutline(
+								false,
+								pageNavigation.contains(document.activeElement)
+							)
+					},
+					{ signal }
+				)
+				inlineOutline.addEventListener('change', setOutlineMode, {
+					signal
+				})
+				signal.addEventListener(
+					'abort',
+					() => {
+						desktopShell.append(pageNavigation)
+						floating.removeAttribute('data-outline-open')
+						pageToggle.setAttribute('aria-expanded', 'false')
+						controls.hidden = controls.inert =
+							!!document.querySelector(
+								'.docs-page[data-sidebar-open]'
+							)
+					},
+					{ once: true }
+				)
+				setOutlineMode()
+			}
+
+			const observer = new ResizeObserver((entries) => {
+				if (signal.aborted) return
+				if (
+					entries.some(
+						({ target }) => target !== document.documentElement
+					)
+				)
+					measure()
+				scheduleUpdate()
+			})
+			signal.addEventListener('abort', () => observer.disconnect(), {
+				once: true
+			})
+			observer.observe(track)
+			observer.observe(document.documentElement)
+			for (const link of pageLinks) observer.observe(link)
+			void document.fonts.ready.then(() => {
+				if (!signal.aborted) {
+					measure()
+					scheduleUpdate()
+				}
+			})
+			window.addEventListener('scroll', scheduleUpdate, {
+				passive: true,
+				signal
+			})
+			window.addEventListener('resize', scheduleUpdate, { signal })
+			root.addEventListener('interactive-doc:enhanced', scheduleUpdate, {
+				signal
+			})
+			pageNavigation.addEventListener('focusout', scheduleUpdate, {
+				signal
+			})
+			measure()
+			scheduleUpdate()
+		} catch (error) {
+			console.error('InteractiveDocLayout enhancement failed.', error)
+		}
+	}
+
+	let page: AbortController | undefined
+	document.addEventListener('astro:before-swap', () => page?.abort(), {
+		capture: true
+	})
+	document.addEventListener('astro:page-load', () => {
+		page?.abort()
+		page = new AbortController()
+		for (const root of document.querySelectorAll<HTMLElement>(
+			'[data-interactive-doc-layout]'
+		))
+			enhance(root, page.signal)
+	})
+</script>

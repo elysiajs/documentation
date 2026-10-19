@@ -1,0 +1,104 @@
+---
+title: "Integration with Astro"
+description: "You can run Elysia on Astro. Elysia will work normally as expected because of WinterTC compliance."
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration with Astro</h1>
+
+With [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/), we can run Elysia on Astro directly.
+
+Install an [Astro server adapter](https://docs.astro.build/en/guides/on-demand-rendering/) for your deployment target. Then:
+
+1. Set **output** to **server** in **astro.config.mjs**
+
+```javascript
+// astro.config.mjs
+import { defineConfig } from 'astro/config'
+
+// https://astro.build/config
+export default defineConfig({
+    output: 'server'
+})
+```
+
+2. Create **src/pages/[...slugs].ts**
+3. Create or import an existing Elysia server in **[...slugs].ts**
+4. Export the handler with the name of the method you want to expose
+
+```typescript
+// src/pages/[...slugs].ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/api', () => 'hi')
+    .post('/api', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+const handle = ({ request }: { request: Request }) => app.handle(request)
+
+export const GET = handle
+export const POST = handle
+```
+
+Elysia will work normally as expected because of WinterTC compliance.
+
+We recommend [Astro on Bun](https://docs.astro.build/en/recipes/bun) when running on Bun.
+
+
+:::tip
+
+You can run an Elysia server without running Astro on Bun thanks to WinterTC support.
+
+:::
+
+
+With this approach, you can have co-location of both frontend and backend in a single repository and have End-to-end type-safety with Eden.
+
+### pnpm
+If your pnpm configuration does not install peer dependencies, add the peers required by Elysia v2 explicitly:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefix
+
+If you place an Elysia server not in the root of the pages directory, you need to annotate the prefix on the Elysia server.
+
+For example, if you place the Elysia server in **src/pages/api/[...slugs].ts**, you need to annotate the prefix as **/api** on the Elysia server.
+
+```typescript
+// src/pages/api/[...slugs].ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', () => 'hi')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+const handle = ({ request }: { request: Request }) => app.handle(request)
+
+export const GET = handle
+export const POST = handle
+```
+
+This will ensure that Elysia routing works properly wherever you place it.
+
+Please refer to [Astro Endpoints](https://docs.astro.build/en/core-concepts/endpoints/) for more information.
+
+</div>
+</InteractiveDocLayout>
+</div>

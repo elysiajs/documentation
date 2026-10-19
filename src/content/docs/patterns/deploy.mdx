@@ -1,0 +1,333 @@
+---
+title: Deploy to production
+description: Build and deploy an Elysia server as a binary, JavaScript bundle, or container.
+template: splash
+---
+
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+import "../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Deploy to production</h1>
+
+Build your server into an executable or JavaScript bundle, then run it directly or in a container.
+
+## Cluster mode
+
+A single Elysia process runs its JavaScript on one main thread. Run several processes when you want to spread requests across CPU cores.
+
+Let's create an **index.ts** file that imports our main server from **server.ts** and forks multiple workers based on the number of CPU cores available.
+
+```ts
+import cluster from 'node:cluster'
+import os from 'node:os'
+import process from 'node:process'
+import { server } from './server'
+
+if (cluster.isPrimary) {
+  	for (let i = 0; i < os.availableParallelism(); i++)
+    	cluster.fork()
+} else {
+	server.listen({ port: 3000, reusePort: true })
+   
+  	console.log(`Worker ${process.pid} started`)
+}
+```
+
+```ts
+// server.ts
+import { Elysia } from 'elysia'
+
+export const server = new Elysia()
+	.get('/', () => 'Hello World!')
+```
+
+
+This will ensure that Elysia is running on multiple CPU cores.
+
+:::tip
+
+This Bun example explicitly enables `reusePort` so workers can share port `3000` on Linux. On other platforms, use a process manager or load balancer with separate ports.
+
+:::
+
+## Compile to binary
+We recommend running the build command before deploying to production as it could potentially reduce memory usage and file size significantly.
+
+We recommend compiling Elysia into a single binary using the command as follows:
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun \
+	--outfile server \
+	src/index.ts
+```
+
+This generates an executable named `server` for the selected operating system and architecture.
+
+Compilation can reduce startup work and deployment size. Measure memory with your own production workload; the improvement is not a fixed multiplier.
+
+This command is a bit long, so let's break it down:
+1. **--compile** Compile TypeScript to binary
+2. **--minify-whitespace** Remove unnecessary whitespace
+3. **--minify-syntax** Minify JavaScript syntax to reduce file size
+4. **--target bun** Optimize the binary for the Bun runtime
+5. **--outfile server** Output the binary as `server`
+6. **src/index.ts** The entry file of our server (codebase)
+
+To start our server, simply run the binary.
+```bash
+./server
+```
+
+Once the binary is compiled, you don't need `Bun` installed on the machine to run the server.
+
+This is great as the deployment server doesn't need to install an extra runtime to run it, making the binary portable.
+
+### Target
+Use a platform-specific `--target` value to build the binary for another platform.
+
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun-linux-x64 \
+	--outfile server \
+	src/index.ts
+```
+
+Choose a target matching the deployment OS, architecture, and Linux C library:
+
+| Target | Operating system | Architecture | C library |
+| --- | --- | --- | --- |
+| `bun-linux-x64` | Linux | x64 | glibc |
+| `bun-linux-arm64` | Linux | arm64 | glibc |
+| `bun-windows-x64` | Windows | x64 | — |
+| `bun-windows-arm64` | Windows | arm64 | — |
+| `bun-darwin-x64` | macOS | x64 | — |
+| `bun-darwin-arm64` | macOS | arm64 | — |
+| `bun-linux-x64-musl` | Linux | x64 | musl |
+| `bun-linux-arm64-musl` | Linux | arm64 | musl |
+
+See [Bun’s current target list](https://bun.com/docs/bundler/executables#supported-targets) when choosing a build for another machine.
+
+### Why not --minify
+Bun has a `--minify` flag that will minify the binary.
+
+However, if we are using [OpenTelemetry](/plugins/opentelemetry/), it will reduce a function name to a single character.
+
+This makes tracing harder than it should be, as OpenTelemetry relies on function names.
+
+However, if you're not using OpenTelemetry, you may opt in for `--minify` instead
+```bash
+bun build \
+	--compile \
+	--minify \
+	--outfile server \
+	src/index.ts
+```
+
+### Permission
+Some Linux distributions might not be able to run the binary. We suggest enabling execute permissions on the binary if you're on Linux:
+```bash
+chmod +x ./server
+
+./server
+```
+
+<span id="unknown-random-chinese-error" />
+
+### Unsupported CPU
+If an executable fails with an illegal-instruction error, check both its architecture and the Bun version used to build it.
+
+Current Bun x64 builds require SSE4.2 and select newer CPU instructions at runtime. Older releases distinguished baseline and modern AVX2 targets; current releases accept those suffixes for compatibility but resolve them to the same binary.
+
+Match the target to the deployment machine and check [Bun’s CPU requirements](https://bun.com/docs/bundler/executables#supported-targets) before rebuilding. An unfamiliar error message by itself doesn't identify a missing CPU feature.
+
+## Compile to JavaScript
+Bundle to JavaScript when you want to keep Bun as a separately installed runtime. This works on supported Windows, Linux, and macOS hosts.
+
+```bash
+bun build \
+	--target bun \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile ./dist/index.js \
+	src/index.ts
+```
+
+This will generate a single portable JavaScript file that you can deploy on your server.
+```bash
+NODE_ENV=production bun ./dist/index.js
+```
+
+## Docker
+A compiled executable lets you use a small runtime image. This example builds it in a Bun image, then copies it into Distroless:
+
+`Dockerfile`
+
+```dockerfile
+FROM oven/bun AS build
+
+WORKDIR /app
+
+# Cache packages installation
+COPY package.json package.json
+COPY bun.lock bun.lock
+
+RUN bun install --frozen-lockfile
+
+COPY ./src ./src
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
+```
+
+### OpenTelemetry
+If you are using [OpenTelemetry](/patterns/opentelemetry) to deploy a production server, OpenTelemetry relies on monkey-patching `node_modules/<library>`. To make instrumentation work properly, we need to specify libraries to be instrumented as external modules to exclude them from being bundled.
+
+For example, if you are using `@opentelemetry/instrumentation-pg` to instrument the `pg` library, we need to exclude `pg` from being bundled and make sure that it is importing `node_modules/pg`.
+
+To make this work, we may specify `pg` as an external module with `--external pg`
+```bash
+bun build --compile --external pg --outfile server src/index.ts
+```
+
+This tells Bun not to bundle `pg` into the final output file. The library will be imported from the `node_modules` directory at runtime. So on a production server, you must also keep the `node_modules` directory.
+
+It's recommended to specify packages that should be available in a production server as `dependencies` in `package.json` and use `bun install --production` to install only production dependencies.
+
+Keep every package left external in `dependencies`:
+
+```json
+{
+	"dependencies": {
+		"pg": "^8.23.1"
+	},
+	"devDependencies": {
+		"@elysia/opentelemetry": "2.0.0-beta.2",
+		"@opentelemetry/instrumentation-pg": "^0.74.0",
+		"@types/pg": "^8.23.1",
+		"elysia": "2.0.0-beta.32"
+	}
+}
+```
+
+Then, after running a build command, run this on a production server:
+```bash
+bun install --production
+```
+
+If the node_modules directory still includes development dependencies, you may remove the node_modules directory and reinstall production dependencies again.
+
+### Monorepo
+If you are using Elysia with a monorepo, you may need to include dependent `packages`.
+
+If you are using Turborepo, you may place a Dockerfile inside your apps directory like **apps/server/Dockerfile**. This also applies to other monorepo managers such as Lerna, etc.
+
+Assuming that our monorepo uses Turborepo with a structure as follows:
+- apps
+	- server
+		- **Dockerfile (place a Dockerfile here)**
+- packages
+	- config
+
+Then we can build our Dockerfile at the monorepo root (not app root):
+```bash
+docker build -f apps/server/Dockerfile -t elysia-mono .
+```
+
+With a Dockerfile as follows:
+`apps/server/Dockerfile`
+
+```dockerfile
+FROM oven/bun:1 AS build
+
+WORKDIR /app
+
+# Cache packages
+COPY package.json package.json
+COPY bun.lock bun.lock
+
+COPY apps/server/package.json ./apps/server/package.json
+COPY packages/config/package.json ./packages/config/package.json
+
+RUN bun install --frozen-lockfile
+
+COPY apps/server ./apps/server
+COPY packages/config ./packages/config
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	apps/server/src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
+```
+
+## Railway
+[Railway](https://railway.app) is one of the popular deployment platforms.
+
+Read Railway’s `PORT` environment variable instead of assuming a fixed production port.
+
+We need to modify our Elysia server to accept the `PORT` environment variable to comply with Railway's port configuration.
+
+Instead of a fixed port, we may use `process.env.PORT` and provide a fallback in development instead.
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', 'Hello Elysia')
+	.listen({ port: process.env.PORT ?? 3000, hostname: '0.0.0.0' })
+```
+
+This should allow Elysia to intercept the port provided by Railway.
+
+:::tip
+
+Listen on `0.0.0.0` so Railway can reach the server through the assigned port.
+
+:::
+
+</div>
+</InteractiveDocLayout>
+</div>

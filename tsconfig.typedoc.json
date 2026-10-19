@@ -1,0 +1,11 @@
+{
+  "files": ["./node_modules/elysia/dist/index.d.ts"],
+  "compilerOptions": {
+    "strict": false,
+    "skipLibCheck": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "esnext",
+    "noEmit": true
+  }
+}

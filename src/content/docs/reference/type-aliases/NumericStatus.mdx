@@ -1,0 +1,34 @@
+---
+template: "splash"
+description: "Numeric form of a status name or code."
+editUrl: false
+next: false
+prev: false
+title: "NumericStatus"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">NumericStatus</h1>
+
+```ts
+type NumericStatus<Code> = Code extends keyof StatusMap ? StatusMap[Code] : Code;
+```
+
+Defined in: elysia/dist/error.d.ts:160
+
+Numeric form of a status name or code.
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Code` *extends* `number` \| keyof [`StatusMap`](/reference/type-aliases/statusmap/) |
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,170 @@
+---
+title: "Integration with TanStack Start"
+description: "Elysia can run inside TanStack Start API server routes, and it works in Data Loader or with TanStack React Query with type safety using Eden."
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration with TanStack Start</h1>
+
+Elysia can run inside TanStack Start server routes.
+
+1. Create **src/routes/api.$.ts**
+2. Define an Elysia server
+3. Export the Elysia handler in **server.handlers**
+
+
+```typescript title="src/routes/api.$.ts"
+import { Elysia } from 'elysia'
+
+import { createFileRoute } from '@tanstack/react-router'
+
+const app = new Elysia({
+	prefix: '/api'
+}).get('/', 'Hello Elysia!')
+
+const handle = ({ request }: { request: Request }) => app.fetch(request)
+
+export const Route = createFileRoute('/api/$')({
+	server: {
+		handlers: {
+			GET: handle,
+			POST: handle
+		}
+	}
+})
+```
+
+
+Elysia should now be running on **/api**.
+
+We may add additional methods to **server.handlers** to support other HTTP methods as needed.
+
+### pnpm
+If your pnpm configuration does not install peer dependencies, add the peers required by Elysia v2 explicitly:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Eden
+
+We can add [Eden](/eden) for **end-to-end type safety** similar to tRPC.
+
+Move the Elysia instance into its own module, so page components never import the route file:
+
+```typescript title="src/elysia.ts"
+import { Elysia } from 'elysia'
+
+export const app = new Elysia({
+	prefix: '/api'
+}).get('/', 'Hello Elysia!')
+```
+
+Keep the route file limited to the route export:
+
+```typescript title="src/routes/api.$.ts"
+import { createFileRoute } from '@tanstack/react-router'
+
+import { app } from '../elysia'
+
+const handle = ({ request }: { request: Request }) => app.fetch(request)
+
+export const Route = createFileRoute('/api/$')({
+	server: {
+		handlers: {
+			GET: handle,
+			POST: handle
+		}
+	}
+})
+```
+
+Then create the Eden Treaty client in a separate module:
+
+```typescript title="src/lib/eden.ts"
+import { treaty } from '@elysia/eden'
+import { createIsomorphicFn } from '@tanstack/react-start'
+
+import { app } from '../elysia'
+
+export const getTreaty = createIsomorphicFn()
+	.server(() => treaty(app).api)
+	.client(() => treaty<typeof app>('localhost:3000').api)
+```
+
+
+Notice that we use **createIsomorphicFn** to create a separate Eden Treaty instance for both the server and client:
+1. On the server, Elysia is called directly without HTTP overhead.
+2. On the client, we call the Elysia server through HTTP.
+
+TanStack Start removes the `.server()` implementation from the client build, so the browser only uses the app's type.
+
+In a React component, we can use `getTreaty` to call the Elysia server with type safety.
+
+## Loader data
+TanStack Start supports **Loader** to fetch data before rendering the component.
+
+
+```tsx title="src/routes/index.tsx"
+import { createFileRoute } from '@tanstack/react-router'
+
+import { getTreaty } from '../lib/eden'
+
+export const Route = createFileRoute('/')({
+	component: App,
+	loader: () => getTreaty().get().then((res) => res.data)
+})
+
+function App() {
+	const data = Route.useLoaderData()
+
+	return data
+}
+```
+
+
+Calling Elysia in a loader executes it on the server during SSR and doesn’t incur HTTP overhead.
+When navigating from one page to another, the loader will run on the client-side, making an HTTP request to the endpoint.
+
+Eden Treaty will ensure type safety on both server and client.
+
+## React Query
+We can also use React Query to interact with the Elysia server on the client.
+
+
+```tsx title="src/routes/index.tsx"
+import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+
+import { getTreaty } from '../lib/eden'
+
+export const Route = createFileRoute('/')({
+	component: App
+})
+
+function App() {
+	const { data: response } = useQuery({
+		queryKey: ['get'],
+		queryFn: () => getTreaty().get()
+	})
+
+	return response?.data
+}
+```
+
+
+This can work with any React Query features like caching, pagination, infinite queries, etc.
+
+---
+
+Please visit [TanStack Start Documentation](https://tanstack.com/start) for more information about TanStack Start.
+
+</div>
+</InteractiveDocLayout>
+</div>

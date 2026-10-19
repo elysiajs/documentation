@@ -1,0 +1,709 @@
+---
+import PageFrame from '@astrojs/starlight/components/PageFrame.astro'
+import { Image } from 'astro:assets'
+import { IconLayoutSidebar, IconSearch, IconX } from '@tabler/icons-react'
+
+import { Button } from '../components/ui/button'
+import { ProductSwitcher, SearchField } from '../components/docs-controls'
+import { IconButton } from '../components/ui/icon-button'
+import '../components/ui/ripple.css'
+
+import { dedupeCodeStyles } from './dedupeCodeStyles'
+import { productOf } from '../lib/product'
+
+import Aurora from '../components/aurora.astro'
+
+const { hasSidebar } = Astro.locals.starlightRoute
+const content = dedupeCodeStyles(await Astro.slots.render('default'))
+const contentAnimation = {
+	old: { name: 'none' },
+	new: {
+		name: 'docs-content-enter',
+		duration: '320ms',
+		easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+		fillMode: 'both'
+	}
+}
+---
+
+{
+	hasSidebar ? (
+		<div
+			class="page docs-page relative isolate group/docs [--sl-content-width:72rem] [--sl-content-inline-start:0rem] [--sl-sidebar-width:15rem] min-h-dvh print:p-0"
+			transition:persist={`docs-shell-${productOf(Astro.url.pathname)}`}
+			transition:animate="none"
+		>
+			<Aurora variant="static" />
+			<div
+				class="docs-backdrop fixed inset-0 z-44 bg-[color-mix(in_oklch,var(--color-night)_22%,transparent)] print:hidden"
+				hidden
+			/>
+			<aside
+				id="starlight__sidebar"
+				class="docs-sidebar-pane spica-surface px-4 rounded-2xl xl:rounded-none group-data-ready/docs:overflow-y-auto xl:group-data-ready/docs:not-group-data-sidebar-open/docs:invisible [&[hidden]]:hidden max-xl:group-data-ready/docs:w-[calc(min(19rem,100dvw_-_3rem)_-_0.375rem)] max-xl:group-data-ready/docs:h-[calc(100dvh_-_1.375rem)] max-xl:group-data-ready/docs:max-h-none xl:z-45 xl:fixed xl:inset-[0_auto_0_0] xl:w-(--sl-sidebar-width) xl:overflow-y-auto [&_.md\:sl-hidden]:block print:hidden backdrop-blur-sm"
+				aria-label="Documentation sidebar"
+			>
+				<div data-sidebar-content class="flex min-h-full flex-col">
+					<div class="docs-sidebar-header sticky top-0 z-1 grid gap-2 pt-2 bg-(--sl-color-bg-sidebar)">
+						<div class="flex items-center gap-1 py-1.5">
+							<a
+								href="/"
+								class="flex items-center gap-2 grow no-underline"
+							>
+								<Image
+									src="/assets/elysia.svg"
+									alt="Elysia Logo"
+									width={26}
+									height={26}
+								/>
+								<h1 class="text-lg font-sans font-bold text-ink">
+									ElysiaJS
+								</h1>
+							</a>
+							<IconButton
+								size="sm"
+								className="text-ink-muted xl:hidden"
+								label="Toggle Sidebar"
+								data-sidebar-close
+								aria-controls="starlight__sidebar"
+								hidden
+							>
+								<IconLayoutSidebar size={18} stroke={1.5} />
+							</IconButton>
+						</div>
+						<Button
+							variant="tertiary"
+							className="w-full justify-center text-ink-muted px-2.5 min-h-10.25"
+							data-docs-search
+							hidden
+						>
+							<>
+								<IconSearch size={16} stroke={1.75} />
+								<p class="text-md translate-y-px grow text-left">
+									Search
+								</p>
+								<span class="flex items-center gap-1">
+									<kbd
+										data-search-shortcut
+										class="font-mono text-xs font-light bg-surface-raised align-middle px-1.25 py-0.25 border border-b-2 border-border-strong rounded-lg shadow-xs"
+									>
+										^
+									</kbd>
+									<kbd class="font-mono text-xs font-light bg-surface-raised align-middle px-1.25 py-0.25 border border-b-2 border-border-strong rounded-lg shadow-xs">
+										K
+									</kbd>
+								</span>
+							</>
+						</Button>
+						<ProductSwitcher
+							product={productOf(Astro.url.pathname)}
+							client:load
+						/>
+					</div>
+					<nav
+						class="flex flex-1 flex-col"
+						aria-label={Astro.locals.t(
+							'sidebarNav.accessibleLabel'
+						)}
+					>
+						<slot name="sidebar" />
+					</nav>
+				</div>
+			</aside>
+			<div
+				class="docs-floating spica-surface fixed inset-[0.75rem_auto_auto_0.75rem] data-[sidebar-expanded]:top-2 data-[sidebar-expanded]:left-2 data-outline-open:top-2 data-outline-open:left-2 z-45 p-0.5 border border-solid border-border-strong rounded-2xl bg-glass [backdrop-filter:var(--glass-blur-small)] shadow-md [&[hidden]]:hidden print:hidden"
+				hidden
+			>
+				<div data-floating-controls class="flex [&[hidden]]:hidden">
+					<IconButton
+						size="sm"
+						data-sidebar-open
+						label="Open sidebar"
+						aria-expanded="false"
+						aria-controls="starlight__sidebar"
+						className="text-ink-muted"
+					>
+						<IconLayoutSidebar size={18} stroke={1.5} />
+					</IconButton>
+					<IconButton
+						size="sm"
+						label="Search"
+						data-docs-search
+						className="text-ink-muted"
+					>
+						<IconSearch size={18} stroke={1.5} />
+					</IconButton>
+					<IconButton
+						size="sm"
+						label="On this page"
+						data-page-navigation-toggle
+						aria-controls="docs-page-navigation"
+						aria-expanded="false"
+						className="text-ink-muted lg:hidden [&[hidden]]:hidden"
+						hidden
+					>
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 20 20"
+							fill="none"
+							stroke-width="3"
+							class="-rotate-90"
+							aria-hidden="true"
+						>
+							<circle
+								cx="10"
+								cy="10"
+								r="8"
+								stroke="var(--color-border-strong)"
+							/>
+							<circle
+								cx="10"
+								cy="10"
+								r="8"
+								stroke="var(--color-primary)"
+								pathLength="100"
+								stroke-dasharray="100"
+								stroke-dashoffset="100"
+								data-floating-page-ring
+							/>
+						</svg>
+					</IconButton>
+				</div>
+			</div>
+			<div
+				class="main-frame w-full max-w-[70.5rem] mx-auto lg:max-xl:pe-60 max-xl:pt-8 xl:w-[calc(100%_-_32rem)] print:w-full! print:m-0! print:p-0!"
+				transition:name="docs-content"
+				transition:animate={{
+					forwards: contentAnimation,
+					backwards: contentAnimation
+				}}
+			>
+				<Fragment set:html={content} />
+			</div>
+			<dialog
+				class="docs-search spica-surface open:flex flex-col overflow-hidden box-border h-[min(70dvh,40rem)] max-sm:fixed max-sm:inset-0 max-sm:m-0 max-sm:w-full max-sm:h-dvh max-sm:max-w-none max-sm:max-h-none max-sm:rounded-none max-sm:border-0 max-sm:pt-[max(1rem,env(safe-area-inset-top))] max-sm:pb-[max(1rem,env(safe-area-inset-bottom))] max-sm:pl-[max(1rem,env(safe-area-inset-left))] max-sm:pr-[max(1rem,env(safe-area-inset-right))] w-[min(44rem,calc(100%_-_2rem))] max-h-[min(70dvh,40rem)] mt-[15dvh] mx-auto mb-auto p-4 border border-solid border-border-strong rounded-3xl bg-glass light:bg-surface/85 [backdrop-filter:var(--glass-blur-small)] text-ink shadow-lg backdrop:bg-[color-mix(in_oklch,var(--color-night)_20%,transparent)]"
+				aria-label="Search documentation"
+				closedby="any"
+			>
+				<div class="flex flex-none items-center min-w-0 [&>div]:min-w-0 [&>div]:flex-1 [&_.field-ring]:border-0 [&_.field-ring]:bg-transparent [&_.field-ring]:outline-none">
+					<SearchField />
+					<IconButton
+						size="lg"
+						label="Close search"
+						data-search-close
+						className="sm:hidden"
+					>
+						<IconX size={22} stroke={1.75} />
+					</IconButton>
+				</div>
+				<div
+					class="flex-none mt-3"
+					data-search-products
+					data-current-product={productOf(Astro.url.pathname)}
+				/>
+				<p
+					class="docs-search-status flex-none mt-4 mx-1 mb-0 text-ink-muted text-[0.875rem]"
+					role="status"
+				>
+					Type to search the documentation.
+				</p>
+				<div class="docs-search-frame relative isolate flex-1 min-h-0 mt-3 overflow-hidden">
+					<ul
+						class="docs-search-results relative isolate h-full overflow-y-auto overscroll-contain list-none p-0 m-0 [&_a]:relative [&_a]:z-1 [&_a]:grid [&_a]:gap-1 [&_a]:p-3 [&_a]:rounded-xl [&_a]:no-underline [&_a]:text-ink [&_a:focus-visible]:outline-none [&_span]:text-ink-muted [&_span]:text-[0.875rem]"
+						id="docs-search-results"
+						role="listbox"
+						aria-label="Search results"
+					/>
+				</div>
+				<p
+					id="docs-search-help"
+					class="flex flex-none flex-wrap items-center gap-x-4 gap-y-2 mt-3 mx-0 mb-0 pt-3 text-xs text-ink-muted [&_kbd]:inline-flex [&_kbd]:min-w-5 [&_kbd]:h-5 [&_kbd]:items-center [&_kbd]:justify-center [&_kbd]:px-1 [&_kbd]:rounded-md [&_kbd]:bg-surface [&_kbd]:border [&_kbd]:border-solid [&_kbd]:border-border-strong [&_kbd]:font-mono [&_kbd]:text-xs [&_kbd]:shadow-xs"
+				>
+					<span class="inline-flex items-center gap-1">
+						<>
+							<kbd>
+								<>
+									<span aria-hidden="true">↑</span>
+									<span class="sr-only">Up arrow</span>
+								</>
+							</kbd>
+							<kbd>
+								<>
+									<span aria-hidden="true">↓</span>
+									<span class="sr-only">Down arrow</span>
+								</>
+							</kbd>
+						</>{' '}
+						to navigate
+					</span>
+					<span class="inline-flex items-center gap-1">
+						<kbd>
+							<>
+								<span aria-hidden="true">↵</span>
+								<span class="sr-only">Enter</span>
+							</>
+						</kbd>{' '}
+						to select
+					</span>
+					<span class="inline-flex items-center gap-1">
+						<kbd>
+							<>
+								<span aria-hidden="true">esc</span>
+								<span class="sr-only">Escape</span>
+							</>
+						</kbd>{' '}
+						to close
+					</span>
+				</p>
+			</dialog>
+		</div>
+	) : (
+		<PageFrame>
+			<>
+				<slot name="header" slot="header" />
+				<Fragment set:html={content} />
+			</>
+		</PageFrame>
+	)
+}
+
+<style>
+	.docs-search-frame :global(.docs-search-group) {
+		margin-block-end: 0.5rem;
+	}
+	.docs-search-frame :global(.docs-search-group-heading) {
+		display: grid;
+		gap: 0.125rem;
+		padding: 0.5rem 0.75rem 0.25rem;
+		font-size: 0.875rem;
+	}
+	.docs-search-frame :global(.docs-search-group-heading span) {
+		font-size: 0.75rem;
+	}
+	.docs-search-frame :global(.docs-search-group ul) {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.docs-search-frame :global(.docs-search-group a) {
+		padding-inline-start: 1.5rem;
+	}
+	@supports (transition-behavior: allow-discrete) and (overlay: auto) {
+		.docs-search,
+		.docs-search::backdrop {
+			opacity: 0;
+			transition-property: opacity, display, overlay;
+			transition-duration: 100ms;
+			transition-timing-function: var(--ease-out);
+			transition-behavior: allow-discrete;
+		}
+		.docs-search {
+			--search-dialog-scale: 0.98;
+			transform: scale(var(--search-dialog-scale));
+			transform-origin: center;
+			transition-property: opacity, transform, display, overlay;
+		}
+		.docs-search[open],
+		.docs-search[open]::backdrop {
+			opacity: 1;
+			transition-duration: 160ms;
+		}
+		.docs-search[open] {
+			transform: scale(1);
+		}
+		@starting-style {
+			.docs-search[open],
+			.docs-search[open]::backdrop {
+				opacity: 0;
+			}
+			.docs-search[open] {
+				transform: scale(var(--search-dialog-scale));
+			}
+		}
+		@media (width < 40rem), (prefers-reduced-motion: reduce) {
+			.docs-search {
+				--search-dialog-scale: 1;
+			}
+		}
+		@media (prefers-reduced-motion: reduce) {
+			.docs-search[open],
+			.docs-search[open]::backdrop {
+				transition-duration: 100ms;
+			}
+		}
+	}
+	.docs-search-results::before,
+	.docs-search-results::after {
+		content: '';
+		position: absolute;
+		pointer-events: none;
+		top: 0;
+		left: 0;
+		height: var(--search-marker-height, 0px);
+		transform: translateY(var(--search-marker-y, 0px));
+		opacity: 0;
+	}
+	.docs-search-results::before {
+		right: 0;
+		border-radius: var(--radius-xl);
+		background: var(--color-border);
+	}
+	:global(html[data-theme='dark']) .docs-search-results::before {
+		background: var(--color-primary-tint);
+	}
+	.docs-search-results::after {
+		height: 14px;
+		transform: translateY(
+			calc(
+				var(--search-marker-y, 0px) +
+					(var(--search-marker-height, 0px) - 14px) / 2
+			)
+		);
+		width: 3px;
+		border-radius: 999px;
+		background: var(--color-primary);
+	}
+	.docs-search-results[data-active-marker]::before,
+	.docs-search-results[data-active-marker]::after {
+		opacity: 1;
+	}
+	.docs-search-results[data-animate-marker]::before,
+	.docs-search-results[data-animate-marker]::after {
+		transition: transform var(--dur-fast) var(--ease-out);
+	}
+	.docs-search-results:has(:global(a:focus-visible))::before,
+	.docs-search-results:has(:global(a:focus-visible))::after {
+		opacity: 0;
+	}
+	.docs-search-results :global(a:focus-visible) {
+		background: var(--color-border);
+	}
+	:global(html[data-theme='dark'])
+		.docs-search-results
+		:global(a:focus-visible) {
+		background: var(--color-primary-tint);
+	}
+	.docs-search-results :global(a:focus-visible::after) {
+		content: '';
+		position: absolute;
+		inset-inline-start: 0;
+		top: 50%;
+		height: 14px;
+		transform: translateY(-50%);
+		width: 3px;
+		border-radius: 999px;
+		background: var(--color-primary);
+		pointer-events: none;
+	}
+	.docs-search-results
+		:global(a:is([data-hovered], [aria-selected='true'], :focus-visible)),
+	.docs-search-results
+		:global(
+			a:is([data-hovered], [aria-selected='true'], :focus-visible) span
+		) {
+		color: var(--color-primary-ink);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.docs-search-results[data-animate-marker]::before,
+		.docs-search-results[data-animate-marker]::after {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	import '../components/ui/ripple'
+	import { initSearch } from '../search/ui'
+
+	let activeShell: HTMLElement | undefined
+	function initDocsShell() {
+		const shell = document.querySelector<HTMLElement>('.docs-page')
+		if (!shell || shell === activeShell) return
+		activeShell = shell
+		const controller = new AbortController()
+		const { signal } = controller
+		const sidebar = shell.querySelector<HTMLElement>('#starlight__sidebar')!
+		const openButton = shell.querySelector<HTMLButtonElement>(
+			'[data-sidebar-open]'
+		)!
+		const closeButton = shell.querySelector<HTMLButtonElement>(
+			'[data-sidebar-close]'
+		)!
+		const floating = shell.querySelector<HTMLElement>('.docs-floating')!
+		const controls = floating.querySelector<HTMLElement>(
+			'[data-floating-controls]'
+		)!
+
+		const placeholder = document.createComment('Documentation sidebar')
+		sidebar.before(placeholder)
+
+		const backdrop = shell.querySelector<HTMLElement>('.docs-backdrop')!
+		const dialog = shell.querySelector<HTMLDialogElement>('.docs-search')!
+		const input = shell.querySelector<HTMLInputElement>(
+			'[data-docs-search-input]'
+		)!
+		const preloadSearch = initSearch(shell, signal)
+		const desktop = matchMedia('(min-width: 80rem)')
+		const sidebarFocusTarget = () =>
+			desktop.matches
+				? sidebar.querySelector<HTMLAnchorElement>('a[href]')!
+				: closeButton
+
+		const setOpen = (open: boolean) => {
+			if (open) document.dispatchEvent(new Event('docs:close-outline'))
+			shell.toggleAttribute('data-sidebar-open', open)
+			floating.toggleAttribute(
+				'data-sidebar-expanded',
+				open && !desktop.matches
+			)
+			if (desktop.matches) {
+				if (sidebar.parentElement !== placeholder.parentElement)
+					placeholder.after(sidebar)
+			} else if (sidebar.parentElement !== floating)
+				floating.append(sidebar)
+
+			sidebar.hidden = !desktop.matches && !open
+			controls.hidden = controls.inert = open && !desktop.matches
+			openButton.setAttribute('aria-expanded', String(open))
+			floating.hidden = open && desktop.matches
+			sidebar.inert = !open
+			backdrop.hidden = !open || desktop.matches
+			document.body.toggleAttribute(
+				'data-docs-menu-open',
+				open && !desktop.matches
+			)
+
+			for (const element of document.querySelectorAll<HTMLElement>(
+				'.main-frame, .sl-skip-link'
+			))
+				element.inert = open && !desktop.matches
+		}
+
+		const closeSidebar = () => {
+			setOpen(false)
+			openButton.focus()
+		}
+
+		openButton.addEventListener('click', () => {
+			setOpen(true)
+			sidebarFocusTarget().focus()
+		})
+		closeButton.addEventListener('click', closeSidebar)
+		backdrop.addEventListener('click', closeSidebar)
+		sidebar.addEventListener('click', (event) => {
+			if (
+				!desktop.matches &&
+				(event.target as Element).closest('a[href]')
+			)
+				setOpen(false)
+		})
+
+		desktop.addEventListener(
+			'change',
+			() => {
+				const focusWasInSidebar = sidebar.contains(
+					document.activeElement
+				)
+				const focusWasInToolbar = floating.contains(
+					document.activeElement
+				)
+				const focusWasOnClose = document.activeElement === closeButton
+				setOpen(desktop.matches)
+				if (!desktop.matches && focusWasInSidebar) openButton.focus()
+				else if (
+					desktop.matches &&
+					(focusWasInToolbar || focusWasOnClose)
+				)
+					sidebarFocusTarget().focus()
+			},
+			{ signal }
+		)
+
+		document.addEventListener(
+			'keydown',
+			(event) => {
+				if (
+					!event.isComposing &&
+					!event.defaultPrevented &&
+					(event.metaKey || event.ctrlKey) &&
+					event.key.toLowerCase() === 'k'
+				) {
+					event.preventDefault()
+					openSearch()
+					return
+				}
+				if (
+					event.defaultPrevented ||
+					dialog.open ||
+					desktop.matches ||
+					!shell.hasAttribute('data-sidebar-open') ||
+					document.querySelector('[role="menu"]')
+				)
+					return
+
+				if (event.key === 'Escape') {
+					event.preventDefault()
+					closeSidebar()
+				}
+
+				if (event.key === 'Tab') {
+					const focusable = [
+						...sidebar.querySelectorAll<HTMLElement>(
+							'a[href], button, input, select, summary, [tabindex="0"]'
+						)
+					].filter(
+						(element) =>
+							!element.hasAttribute('disabled') &&
+							element.tabIndex >= 0 &&
+							element.getClientRects().length
+					)
+
+					const first = focusable[0],
+						last = focusable.at(-1)!
+
+					if (event.shiftKey && document.activeElement === first) {
+						event.preventDefault()
+						last.focus()
+					} else if (
+						!event.shiftKey &&
+						document.activeElement === last
+					) {
+						event.preventDefault()
+						first.focus()
+					}
+				}
+			},
+			{ signal }
+		)
+
+		let searchReturn: HTMLElement | null = null
+		const openSearch = () => {
+			if (dialog.open) return
+
+			document.dispatchEvent(new Event('docs:close-outline'))
+			searchReturn = document.activeElement as HTMLElement
+
+			dialog.showModal()
+			preloadSearch()
+			input.focus()
+		}
+
+		for (const button of shell.querySelectorAll<HTMLButtonElement>(
+			'[data-docs-search]'
+		)) {
+			button.hidden = false
+			button.addEventListener('click', openSearch)
+			button.addEventListener('pointerenter', preloadSearch, {
+				passive: true
+			})
+			button.addEventListener('focus', preloadSearch)
+		}
+
+		shell
+			.querySelector('[data-search-close]')!
+			.addEventListener('click', () => dialog.close())
+
+		dialog.addEventListener('close', () => {
+			if (
+				searchReturn &&
+				searchReturn.getClientRects().length &&
+				!searchReturn.closest('[inert]')
+			)
+				searchReturn.focus()
+			else
+				(shell.hasAttribute('data-sidebar-open')
+					? sidebarFocusTarget()
+					: openButton
+				).focus()
+		})
+
+		dialog.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && !event.isComposing) {
+				event.preventDefault()
+				event.stopPropagation()
+				dialog.close()
+			}
+		})
+
+		dialog.addEventListener('click', (event) => {
+			if (Reflect.has(dialog, 'closedBy') || event.target !== dialog)
+				return
+
+			const box = dialog.getBoundingClientRect()
+			if (
+				event.clientX < box.left ||
+				event.clientX > box.right ||
+				event.clientY < box.top ||
+				event.clientY > box.bottom
+			)
+				dialog.close()
+		})
+
+		const shortcut = shell.querySelector<HTMLElement>(
+			'[data-search-shortcut]'
+		)!
+		if (/Mac|iPhone|iPad/.test(navigator.platform))
+			shortcut.textContent = '⌘'
+
+		closeButton.hidden = false
+		shell.setAttribute('data-ready', '')
+		setOpen(desktop.matches)
+
+		document.addEventListener(
+			'astro:before-swap',
+			(event) => {
+				if (dialog.open) dialog.close()
+				if (!desktop.matches) setOpen(false)
+
+				event.newDocument.documentElement.dataset.theme =
+					document.documentElement.dataset.theme
+
+				const nextShell =
+					event.newDocument.querySelector<HTMLElement>('.docs-page')
+				if (
+					!nextShell ||
+					nextShell.dataset.astroTransitionPersist !==
+						shell.dataset.astroTransitionPersist
+				) {
+					controller.abort()
+					activeShell = undefined
+					return
+				}
+
+				const nextMain =
+					nextShell.querySelector<HTMLElement>('.main-frame')!
+				const currentHref = nextShell
+					.querySelector('#starlight__sidebar a[aria-current="page"]')
+					?.getAttribute('href')
+				const nativeSwap = event.swap
+
+				event.swap = () => {
+					// Let Astro deduplicate incoming scripts and persist the shell before replacing content.
+					nativeSwap()
+					shell.querySelector('.main-frame')!.replaceWith(nextMain)
+
+					for (const link of sidebar.querySelectorAll<HTMLAnchorElement>(
+						'a[href]'
+					)) {
+						if (link.getAttribute('href') === currentHref) {
+							link.setAttribute('aria-current', 'page')
+							for (
+								let group = link.closest('details');
+								group;
+								group =
+									group.parentElement?.closest('details') ??
+									null
+							)
+								group.open = true
+						} else link.removeAttribute('aria-current')
+					}
+				}
+			},
+			{ signal }
+		)
+	}
+
+	initDocsShell()
+	document.addEventListener('astro:page-load', initDocsShell)
+</script>

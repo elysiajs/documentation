@@ -1,0 +1,101 @@
+---
+template: "splash"
+description: "Elysia API reference for TCookieObject."
+editUrl: false
+next: false
+prev: false
+title: "TCookieObject"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">TCookieObject</h1>
+
+## Members
+
+### Properties
+
+| Property | Description |
+| ------ | ------ |
+| [config](/reference/interfaces/tcookieobject/#config) | - |
+| [properties](/reference/interfaces/tcookieobject/#properties) | - |
+| [required](/reference/interfaces/tcookieobject/#required) | - |
+| [type](/reference/interfaces/tcookieobject/#type) | - |
+
+Defined in: elysia/dist/type/elysia/cookie.d.ts:5
+
+## Extends
+
+- `TObject`\<`T`\>
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` *extends* `TProperties` |
+
+## Properties
+
+### config?
+
+```ts
+optional config?: CookieValidatorOptions;
+```
+
+Defined in: elysia/dist/type/elysia/cookie.d.ts:6
+
+***
+
+### properties
+
+```ts
+properties: T;
+```
+
+Defined in: typebox/build/type/types/object.d.mts:9
+
+#### Inherited from
+
+```ts
+TObject.properties
+```
+
+***
+
+### required
+
+```ts
+required: TUnionToTuple<Extract<keyof { [Key in string | number | symbol as T[Key] extends TOptional<T[Key]> ? never : Key]: T[Key] }, string>, [], TUnionLast<Extract<keyof { [Key in string | number | symbol as T[Key] extends TOptional<T[Key]> ? never : Key]: T[Key] }, string>>> extends [] ? undefined : TUnionToTuple<Extract<keyof { [Key in string | number | symbol as T[Key] extends TOptional<T[Key]> ? never : Key]: T[Key] }, string>, [], TUnionLast<Extract<keyof { [Key in string | number | symbol as T[Key] extends TOptional<T[Key]> ? never : Key]: T[Key] }, string>>>;
+```
+
+Defined in: typebox/build/type/types/object.d.mts:10
+
+#### Inherited from
+
+```ts
+TObject.required
+```
+
+***
+
+### type
+
+```ts
+type: "object";
+```
+
+Defined in: typebox/build/type/types/object.d.mts:8
+
+#### Inherited from
+
+```ts
+TObject.type
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,866 @@
+html, body {
+	margin: 0;
+}
+
+html[data-landing-intro-active='true'],
+html[data-landing-intro-active='true'] body {
+	overflow: hidden;
+}
+
+.landing-header {
+	position: absolute;
+	inset: 0 0 auto;
+	z-index: 40;
+	color: #fff;
+	font-family: 'Nunito', sans-serif;
+}
+
+.landing-header-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	width: min(calc(100% - 3rem), 72rem);
+	min-height: 3.25rem;
+	margin-inline: auto;
+}
+
+.landing-brand,
+.landing-header nav {
+	display: flex;
+	align-items: center;
+}
+
+.landing-brand {
+	gap: 0.5rem;
+	font-size: 1.125rem;
+	font-weight: 700;
+}
+
+.landing-header a {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	border-radius: 0.5rem;
+	color: inherit;
+	text-decoration: none;
+	text-shadow: 0 1px 3px rgb(38 24 35 / 0.5), 0 2px 8px rgb(38 24 35 / 0.25);
+}
+
+.landing-header a:hover {
+	color: #ffd6e6;
+}
+
+.landing-header a:focus-visible,
+.landing-start:focus-visible,
+.landing-command button:focus-visible,
+.landing-skip:focus-visible {
+	outline: 1.5px dashed #f9578a;
+	outline-offset: 3px;
+}
+
+.landing-skip {
+	position: fixed;
+	top: 0.75rem;
+	left: 0.75rem;
+	z-index: 41;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.75rem;
+	background: #fff8fc;
+	color: #303044;
+	transform: translateY(-200%);
+}
+
+.landing-skip:focus {
+	transform: none;
+}
+
+.landing-copy {
+	display: contents;
+}
+
+.landing-wordmark {
+	position: absolute;
+	z-index: 6;
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100vh;
+	color: rgb(255 255 255 / 0.8);
+}
+
+.landing-wordmark h1 {
+	margin: 0;
+	font-size: 28.5vw;
+	font-weight: 300;
+	transform: translateY(-6vw);
+}
+
+.landing-intro {
+	position: absolute;
+	z-index: 13;
+	top: 50vh;
+	left: 50%;
+	right: 1.5rem;
+	max-width: 36rem;
+	padding-top: 2.875vw;
+	color: #fff;
+}
+
+.landing-intro > p {
+	margin: 0 0 1rem;
+	font-size: clamp(1.5rem, 2.1vw, 1.875rem);
+	font-weight: 500;
+	line-height: 1.25;
+	text-shadow: 0 1px 3px rgb(38 24 35 / 0.55), 0 3px 12px rgb(38 24 35 / 0.3);
+}
+
+.landing-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 1rem;
+}
+
+.landing-start {
+	box-sizing: border-box;
+	justify-content: center;
+	min-height: 44px;
+	white-space: nowrap;
+}
+
+.landing-command {
+	position: relative;
+	display: flex;
+	max-width: 100%;
+}
+
+.landing-command-control {
+	display: flex;
+	align-items: center;
+	min-height: 48px;
+	padding-left: 1.25rem;
+	border-radius: 999px;
+	background-color: rgb(31 25 38 / 0.26);
+	backdrop-filter: blur(4px);
+	transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.landing-command code {
+	font-family: 'JetBrains Mono', monospace;
+	font-size: 1rem;
+	white-space: nowrap;
+	user-select: text;
+	opacity: 0.65;
+	transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.landing-command button {
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	margin: 2px;
+	border: 0;
+	border-radius: 50%;
+	background-color: transparent;
+	color: inherit;
+	cursor: pointer;
+	transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.landing-command button[hidden],
+.landing-copy-check,
+.landing-command[data-copied='true'] .landing-copy-icon {
+	display: none;
+}
+
+.landing-command[data-copied='true'] .landing-copy-check {
+	display: block;
+}
+
+.landing-command button:hover,
+.landing-command button:focus-visible,
+.landing-command[data-copied='true'] button {
+	background-color: rgb(255 255 255 / 0.18);
+}
+
+.landing-command-control:hover code,
+.landing-command-control:focus-within code,
+.landing-command[data-copied='true'] code {
+	opacity: 1;
+}
+
+.landing-command-control:hover,
+.landing-command-control:focus-within,
+.landing-command[data-copied='true'] .landing-command-control {
+	background-color: rgb(31 25 38 / 0.4);
+}
+
+@media (hover: none) {
+	.landing-command code { opacity: 1; }
+	.landing-command-control { background-color: rgb(31 25 38 / 0.4); }
+}
+
+.landing-command button:disabled {
+	cursor: progress;
+}
+
+.landing-copy-status {
+	position: absolute;
+	top: calc(100% + 0.375rem);
+	right: 0;
+	width: 100%;
+	text-align: center;
+	font-family: 'Nunito', sans-serif;
+	font-size: 0.8125rem;
+	line-height: 1.25;
+	text-shadow: 0 1px 3px #303044;
+}
+
+.landing-command[data-copied='true'] .landing-copy-status {
+	width: 48px;
+}
+
+@media (max-width: 1023px) and (orientation: portrait) {
+	.landing-wordmark {
+		top: clamp(5.5rem, 11vh, 7rem);
+		height: auto;
+	}
+
+	.landing-wordmark h1 {
+		line-height: 1;
+		transform: none;
+	}
+
+	.greenfield.elysia-chan-layer {
+		top: 26vh;
+		left: calc(50% - 8.375vh);
+		width: 16.75vh;
+		height: 36vh;
+		transform-origin: center;
+	}
+
+	.landing-intro {
+		top: auto;
+		bottom: calc(7rem + 8vh);
+		left: 1rem;
+		right: 1rem;
+		max-width: none;
+		padding-top: 0;
+		text-align: center;
+	}
+
+	.landing-intro > p {
+		max-width: 25rem;
+		margin-inline: auto;
+		font-size: clamp(1.375rem, 4vw, 1.875rem);
+	}
+
+	.landing-actions {
+		justify-content: center;
+	}
+}
+
+@media (max-width: 600px) {
+	.landing-header-content {
+		width: calc(100% - 2rem);
+	}
+
+	.landing-brand {
+		gap: 0.375rem;
+		font-size: 1rem;
+	}
+
+	.landing-brand img {
+		width: 24px;
+		height: 24px;
+	}
+
+	.landing-actions {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.landing-command code {
+		font-size: 0.875rem;
+	}
+}
+
+@media (max-width: 1023px) and (max-height: 650px) and (orientation: portrait) {
+	.landing-wordmark {
+		top: 3.5rem;
+	}
+
+	.landing-wordmark h1 {
+		font-size: clamp(4rem, 22vw, 6rem);
+	}
+
+	.greenfield.elysia-chan-layer {
+		top: 31vh;
+		left: calc(50% - 5.5833vh);
+		width: 11.1666vh;
+		height: 24vh;
+	}
+
+	.landing-intro {
+		bottom: calc(7rem + 2.5rem);
+	}
+
+	.landing-intro > p {
+		margin-bottom: 0.75rem;
+		font-size: 1.25rem;
+	}
+
+	.landing-actions {
+		gap: 0.75rem;
+	}
+
+	.landing-start {
+		padding-block: 0.375rem;
+		font-size: 1rem;
+	}
+}
+
+@media (max-width: 1023px) and (orientation: landscape) {
+	.greenfield.elysia-chan-layer {
+		top: 25vh;
+		left: 20%;
+		width: 27vh;
+		height: 58vh;
+		transform-origin: center;
+	}
+
+	.greenfield.flower-left {
+		left: -0.5rem;
+		transform-origin: left bottom;
+	}
+
+	.greenfield.flower-right {
+		left: auto;
+		right: -0.5rem;
+		transform-origin: right bottom;
+	}
+
+	.landing-intro {
+		top: 35vh;
+		left: 48%;
+		padding-top: 0;
+	}
+
+	.landing-intro > p {
+		font-size: clamp(1.125rem, 2.7vw, 1.5rem);
+		margin-bottom: 0.75rem;
+	}
+
+	.landing-actions {
+		gap: 0.75rem;
+	}
+
+	.landing-start {
+		padding-block: 0.375rem;
+		font-size: 1rem;
+	}
+
+	.landing-command code {
+		font-size: 0.875rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.landing-start,
+	.landing-command-control,
+	.landing-command code,
+	.landing-command button {
+		transition: none;
+	}
+}
+
+.landing-edge-blur {
+	position: absolute;
+	top: 100vh;
+	inset-inline: 0;
+	height: 7rem;
+	z-index: 14;
+	pointer-events: none;
+}
+
+.landing-edge-blur > span {
+	position: absolute;
+	inset: 0;
+	-webkit-backdrop-filter: blur(var(--edge-blur));
+	backdrop-filter: blur(var(--edge-blur));
+	-webkit-mask-image: linear-gradient(to bottom, transparent var(--edge-start), #000 calc(var(--edge-start) + 25%));
+	mask-image: linear-gradient(to bottom, transparent var(--edge-start), #000 calc(var(--edge-start) + 25%));
+}
+
+.landing-edge-blur > span:nth-child(1) {
+	--edge-blur: 2px;
+	--edge-start: 0%;
+}
+
+.landing-edge-blur > span:nth-child(2) {
+	--edge-blur: 6px;
+	--edge-start: 25%;
+}
+
+.landing-edge-blur > span:nth-child(3) {
+	--edge-blur: 12px;
+	--edge-start: 50%;
+}
+
+.landing-edge-blur > span:nth-child(4) {
+	--edge-blur: 24px;
+	--edge-start: 75%;
+}
+
+.landing-edge-blur::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: linear-gradient(
+		to bottom,
+		rgb(255 255 255 / 0) 0%,
+		rgb(255 255 255 / 0.028) 10%,
+		rgb(255 255 255 / 0.104) 20%,
+		rgb(255 255 255 / 0.216) 30%,
+		rgb(255 255 255 / 0.352) 40%,
+		rgb(255 255 255 / 0.5) 50%,
+		rgb(255 255 255 / 0.648) 60%,
+		rgb(255 255 255 / 0.784) 70%,
+		rgb(255 255 255 / 0.896) 80%,
+		rgb(255 255 255 / 0.972) 90%,
+		#fff 100%
+	);
+}
+
+.greenfield {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	scale: 110%;
+	transform-origin: center;
+	will-change: transform;
+	pointer-events: none;
+	user-select: none;
+}
+
+/* Size each 1920x1200 layer <img> to its centered viewport cover box. */
+img.greenfield {
+	width: max(100vw, 160vh);
+	height: max(100vh, 62.5vw);
+	left: calc(50vw - max(50vw, 80vh));
+	top: calc(50vh - max(50vh, 31.25vw));
+}
+
+.greenfield[data-layer='day_fg'] {
+	-webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent 100%);
+	mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent 100%);
+}
+
+.greenfield.z-12 {
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		#000 calc(100% - 4rem),
+		rgb(0 0 0 / 0.844) calc(100% - 3rem),
+		rgb(0 0 0 / 0.5) calc(100% - 2rem),
+		rgb(0 0 0 / 0.156) calc(100% - 1rem),
+		transparent 100%
+	);
+	mask-image: linear-gradient(
+		to bottom,
+		#000 calc(100% - 4rem),
+		rgb(0 0 0 / 0.844) calc(100% - 3rem),
+		rgb(0 0 0 / 0.5) calc(100% - 2rem),
+		rgb(0 0 0 / 0.156) calc(100% - 1rem),
+		transparent 100%
+	);
+}
+
+@media (max-width: 1023px) and (orientation: portrait) {
+	.greenfield.z-12 {
+		top: auto;
+		bottom: 7rem;
+		width: 140vw;
+		height: 87.5vw;
+		left: 0;
+		-webkit-mask-image: linear-gradient(
+			to bottom,
+			#000 94%,
+			rgb(0 0 0 / 0.844) 95.5%,
+			rgb(0 0 0 / 0.5) 97%,
+			rgb(0 0 0 / 0.156) 98.5%,
+			transparent 100%
+		);
+		mask-image: linear-gradient(
+			to bottom,
+			#000 94%,
+			rgb(0 0 0 / 0.844) 95.5%,
+			rgb(0 0 0 / 0.5) 97%,
+			rgb(0 0 0 / 0.156) 98.5%,
+			transparent 100%
+		);
+	}
+
+	.greenfield.flower-right {
+		left: auto;
+		right: 0;
+	}
+}
+
+/* the flower art is one image with clumps in both bottom corners; show it twice, clipped, so each clump sways on its own */
+.flower-left {
+	clip-path: inset(0 50% 0 0);
+}
+
+.flower-right {
+	clip-path: inset(0 0 0 50%);
+}
+
+.elysia-chan-layer {
+	top: 27.8vh;
+	left: 20.6%;
+	width: 26.612542372881vh;
+	height: 60vh;
+	transform-origin: calc(50vw - 22.5vw) calc(50vh - 27.8vh);
+}
+
+.elysia-chan-landing {
+	position: static;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+@media (min-width: 1024px), (min-width: 951px) and (orientation: landscape) {
+	.landing-copy {
+		position: absolute;
+		inset: 0rem 0 7rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: clamp(0.5rem, 1.5vh, 1rem);
+	}
+
+	.landing-wordmark {
+		position: relative;
+		inset: auto;
+		height: auto;
+	}
+
+	.landing-wordmark h1 {
+		font-size: min(28.5vw, 50vh);
+		line-height: 0.7;
+		transform: none;
+	}
+
+	.landing-intro {
+		position: relative;
+		inset: auto;
+		margin-inline: 50% 1.5rem;
+		padding-top: 0;
+	}
+}
+
+@media (max-width: 950px) {
+	.landing-copy {
+		position: absolute;
+		top: 4.5rem;
+		bottom: calc(7rem + 4vh);
+		left: 48%;
+		right: 1.5rem;
+		z-index: 13;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	.landing-wordmark {
+		position: static;
+		display: block;
+		place-items: normal;
+		width: auto;
+		height: auto;
+	}
+
+	.landing-wordmark h1 {
+		font-size: clamp(4rem, 10vw, 6rem);
+		line-height: 1;
+		transform: none;
+	}
+
+	.landing-intro {
+		position: static;
+		top: auto;
+		bottom: auto;
+		left: auto;
+		right: auto;
+		max-width: none;
+		padding-top: 0;
+		text-align: left;
+	}
+
+	.landing-intro > p {
+		margin-inline: 0;
+		font-size: clamp(1.25rem, 2.7vw, 1.5rem);
+	}
+
+	.landing-actions {
+		justify-content: flex-start;
+	}
+
+	.greenfield.elysia-chan-layer {
+		--mascot-height: min(58vh, clamp(32.8rem, 64vw, 36rem));
+		--mascot-width: calc(var(--mascot-height) * 659 / 1416);
+		top: auto;
+		bottom: calc(7rem + 12vh);
+		left: min(
+			calc(26% - var(--mascot-width) / 2),
+			calc(48% - var(--mascot-width) - 3.5rem)
+		);
+		width: var(--mascot-width);
+		height: var(--mascot-height);
+		transform-origin: bottom center;
+	}
+}
+
+@media (640px <= width < 868px) {
+	.landing-wordmark h1 {
+		font-size: 5rem;
+	}
+
+	.landing-intro > p {
+		font-size: 1.5rem;
+	}
+}
+
+@media (width < 640px) and (orientation: portrait) {
+	.greenfield.flower-left {
+		left: -0.5rem;
+		width: 175vw;
+		height: 109.375vw;
+		transform-origin: left bottom;
+	}
+
+	.greenfield.flower-right {
+		left: auto;
+		right: -0.5rem;
+		width: 120vw;
+		height: 75vw;
+		transform-origin: right bottom;
+	}
+}
+
+@media (width < 640px) {
+	.greenfield.elysia-chan-layer {
+		display: none;
+	}
+
+	.landing-copy {
+		left: 1rem;
+		right: 1rem;
+		max-width: 36rem;
+		margin-inline: auto;
+		text-align: center;
+	}
+
+	.landing-wordmark h1 {
+		font-size: clamp(4rem, 22vw, 8rem);
+	}
+
+	.landing-intro {
+		text-align: center;
+	}
+
+	.landing-intro > p {
+		margin-inline: auto;
+	}
+
+	.landing-actions {
+		justify-content: center;
+	}
+}
+
+.landing-aurora {
+	position: absolute;
+	inset: 0 0 auto;
+	height: 50vh;
+	overflow: hidden;
+	pointer-events: none;
+	opacity: 0.3;
+	mix-blend-mode: screen;
+	mask-image:
+		linear-gradient(to bottom, #000 0%, #000 12%, transparent 100%),
+		radial-gradient(ellipse 85% 130% at 68% 0%, #000 25%, transparent 100%);
+	mask-composite: intersect;
+	animation: landing-aurora-in 3s ease-out both;
+}
+
+@keyframes landing-aurora-in {
+	from {
+		opacity: 0;
+	}
+}
+
+.landing-aurora::before,
+.landing-aurora::after {
+	content: '';
+	position: absolute;
+	inset: 0 auto 0 0;
+	animation: landing-aurora-shift 110s linear infinite;
+}
+
+/* 100deg, 240px horizontal period: a narrow soft gold ray and a wide faint one per period, plus a slow pastel wash every 480px */
+.landing-aurora::before {
+	width: calc(100% + 2400px);
+	background-image:
+		repeating-linear-gradient(100deg, transparent 0 16px, rgb(255 243 208 / 0.55) 48px, transparent 80px 120px, rgb(255 246 220 / 0.4) 160px, transparent 200px 236.4px),
+		repeating-linear-gradient(100deg, rgb(255 226 150 / 0.35) 0, transparent 110px, rgb(186 222 255 / 0.3) 220px, transparent 330px, rgb(255 205 190 / 0.25) 400px, rgb(255 226 150 / 0.35) 472.7px);
+}
+
+/* 96deg, 330px horizontal period, drifts the other way: cool blue-lilac shafts that cross the gold ones */
+.landing-aurora::after {
+	inset: 0 0 0 auto;
+	width: calc(100% + 3300px);
+	background-image: repeating-linear-gradient(96deg, transparent 0 90px, rgb(214 232 255 / 0.5) 150px, transparent 210px 250px, rgb(255 240 220 / 0.35) 280px, transparent 310px 328.2px);
+	animation-name: landing-aurora-shift-back;
+	animation-duration: 150s;
+}
+
+@keyframes landing-aurora-shift {
+	to {
+		transform: translate3d(-2400px, 0, 0);
+	}
+}
+
+@keyframes landing-aurora-shift-back {
+	to {
+		transform: translate3d(3300px, 0, 0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.landing-aurora::before,
+	.landing-aurora::after {
+		animation: none;
+	}
+}
+
+/* The loading sheet slides up with the rising scene to suggest falling from the sky. */
+.landing-loader {
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	display: grid;
+	place-items: center;
+	background: #fff;
+}
+
+html[data-skip-landing-intro='true'] .landing-aurora {
+	animation: none;
+}
+
+.landing-loader::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: calc(100% + 20vh);
+	height: min(12vh, 8rem);
+	pointer-events: none;
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	-webkit-mask-image: linear-gradient(to bottom, transparent, #000 35%, #000 65%, transparent);
+	mask-image: linear-gradient(to bottom, transparent, #000 35%, #000 65%, transparent);
+}
+
+.landing-loader::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: calc(100% - 1px);
+	height: calc(40vh + 1px);
+	pointer-events: none;
+	background: linear-gradient(
+		to bottom,
+		rgb(255 255 255 / 1) 0%,
+		rgb(255 255 255 / 0.972) 10%,
+		rgb(255 255 255 / 0.896) 20%,
+		rgb(255 255 255 / 0.784) 30%,
+		rgb(255 255 255 / 0.648) 40%,
+		rgb(255 255 255 / 0.5) 50%,
+		rgb(255 255 255 / 0.352) 60%,
+		rgb(255 255 255 / 0.216) 70%,
+		rgb(255 255 255 / 0.104) 80%,
+		rgb(255 255 255 / 0.028) 90%,
+		rgb(255 255 255 / 0) 100%
+	);
+}
+
+.landing-loader img {
+	width: min(60vw, 420px);
+	height: auto;
+	transition: transform 1.8s cubic-bezier(0.32, 0.72, 0, 1);
+	animation:
+		loader-logo-in 0.6s cubic-bezier(0.23, 1, 0.32, 1) both,
+		loader-logo-float 2.4s ease-in-out 0.6s infinite alternate;
+}
+
+.landing-loader.is-done {
+	pointer-events: none;
+	animation: loader-slide-up 1.8s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.landing-loader.is-done img {
+	transform: translateY(45vh);
+}
+
+@keyframes loader-logo-in {
+	from {
+		opacity: 0;
+		scale: 0.92;
+	}
+}
+
+@keyframes loader-logo-float {
+	to {
+		translate: 0 -6px;
+	}
+}
+
+@keyframes loader-slide-up {
+	to {
+		transform: translateY(calc(-100% - 40vh));
+	}
+}
+
+@keyframes loader-fade {
+	to {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.landing-loader::before,
+	.landing-loader::after {
+		display: none;
+	}
+
+	.landing-loader img {
+		animation: loader-fade 0.4s ease-out reverse both;
+		transition: none;
+	}
+
+	.landing-loader.is-done img {
+		transform: none;
+	}
+
+	.landing-loader.is-done {
+		animation: loader-fade 0.2s ease-in forwards;
+	}
+}

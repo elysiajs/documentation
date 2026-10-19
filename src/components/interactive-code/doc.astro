@@ -1,0 +1,437 @@
+---
+import { compileMagicMove } from './compile-magic-move'
+import type { CodeStep } from './compile-magic-move'
+import { highlightRanges } from './highlight-ranges'
+import { interactiveStepContent } from './interactive-step-content'
+import InteractiveStep from './step.astro'
+import TitleNavigation from './title-navigation'
+
+interface Props {
+	steps: (CodeStep & { label: string; highlight?: number[] })[]
+}
+
+const { steps } = Astro.props
+
+if (
+	!steps.length ||
+	steps.some(({ code, label }) => !code.trim() || !label.trim())
+) {
+	throw new Error('InteractiveDoc requires non-empty code and labels.')
+}
+
+for (const { code, highlight = [] } of steps) {
+	if (
+		highlight.some(
+			(line) =>
+				!Number.isInteger(line) ||
+				line < 1 ||
+				line > code.split('\n').length
+		)
+	) {
+		throw new Error(
+			'InteractiveDoc highlight lines must be positive integers within the code.'
+		)
+	}
+}
+
+const content = interactiveStepContent(
+	await Astro.slots.render('default'),
+	steps.length
+)
+const compiled = await compileMagicMove(steps)
+const firstHighlights = highlightRanges(steps[0].highlight ?? [])
+const serializedSteps = JSON.stringify(
+	compiled.map((tokens, index) => ({
+		...tokens,
+		label: steps[index].label,
+		highlight: steps[index].highlight ?? []
+	}))
+).replaceAll('<', '\\u003c')
+---
+
+<div
+	class="@container/doc spica-surface"
+	data-interactive-doc
+	data-enhanced
+>
+	<noscript>
+		<style is:inline>
+			[data-interactive-doc][data-enhanced] [data-code-layout] {
+				display: block !important;
+			}
+			[data-interactive-doc][data-enhanced] [data-code-step] {
+				min-block-size: 0 !important;
+			}
+			[data-interactive-doc][data-enhanced] [data-code-fallback] {
+				display: block !important;
+			}
+			[data-interactive-doc][data-enhanced] .interactive-doc__code {
+				display: none !important;
+			}
+		</style>
+	</noscript>
+	<div
+		class="min-w-0 doc-enhanced:grid doc-enhanced:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] doc-enhanced:items-start doc-enhanced:gap-[clamp(1rem,2cqi,2rem)]"
+		data-code-layout
+	>
+		<div class="min-w-0 pt--interactive-step-padding">
+			{
+				steps.map((entry, index) => (
+					<InteractiveStep step={index} {...entry} class={content[index].className}>
+						<Fragment set:html={content[index].html} />
+					</InteractiveStep>
+				))
+			}
+		</div>
+
+		<aside
+			class="interactive-doc__code relative min-w-0 rounded-l-xl data-[stuck]:rounded-none border-[var(--interactive-code-border)] text-[var(--interactive-code-fg)] hidden doc-enhanced:sticky doc-enhanced:[inset-block-start:var(--sl-nav-height,4rem)] doc-enhanced:[block-size:calc(100dvh-var(--sl-nav-height,4rem))] doc-enhanced:block doc-enhanced:[inline-size:calc(100%+50dvi-50cqi)] doc-enhanced:justify-self-start"
+			aria-label="Interactive code"
+		>
+			<div
+				class="relative min-w-0 doc-enhanced:sticky doc-enhanced:[--interactive-code-height:min(70dvh,40rem,calc(100dvh-var(--sl-nav-height,4rem)))] doc-enhanced:[max-block-size:var(--interactive-code-height)] doc-enhanced:[inset-block-start:calc(var(--sl-nav-height,4rem)+(100dvh-var(--sl-nav-height,4rem)-var(--interactive-code-height))/2)] doc-enhanced:[display:flex] doc-enhanced:flex-col"
+			>
+				<div
+					class="relative z-10 flex shrink-0 items-center justify-start px-[clamp(0.375rem,1.25cqi,0.875rem)] pt-4 text-[0.6875rem] leading-[1.25] text-[var(--interactive-code-muted)]"
+				>
+					<span
+						class="shrink-0 tabular-nums ml-4"
+						data-code-progress
+						aria-hidden="true"
+					>
+						1 / {steps.length}
+					</span>
+					<TitleNavigation
+						labels={steps.map(({ label }) => label)}
+						client:load
+					/>
+				</div>
+				<pre
+					class="relative m-0 py-0 px-4 box-border flex-[1_1_auto] overflow-auto bg-transparent [inline-size:100%] [min-block-size:0] [min-inline-size:0] [scrollbar-gutter:stable] border-0 focus-visible:[outline:var(--focus-outline)] focus-visible:outline-offset-[-3px]"
+					data-code-pane
+					tabindex="0"
+					aria-label={`${steps[0].label} code`}>
+					<code class="relative m-0 block box-border min-w-full w-max bg-transparent px-[clamp(0.375rem,1.25cqi,0.875rem)] text-[0.9rem] leading-[1.75] font-medium text-[var(--interactive-code-fg)] whitespace-pre [tab-size:2] font-mono [font-size-adjust:from-font]" data-code-content><span class="pointer-events-none absolute inset-0" data-code-highlights aria-hidden="true">{firstHighlights.map(({ start, length }) => <span style={`inset-block-start:${start - 1}lh;block-size:${length}lh`} />)}</span><span class="relative block" data-code-tokens>{compiled[0].tokens.map((token) => token.content === '\n' ? <br /> : <span class:list={['shiki-magic-move-item', token.htmlClass]} style={token.htmlStyle}>{token.content}</span>)}</span></code>
+				</pre>
+			</div>
+		</aside>
+	</div>
+
+	<script
+		type="application/json"
+		is:inline
+		data-code-steps
+		set:html={serializedSteps}
+	/>
+</div>
+
+<style>
+	[data-interactive-doc] {
+		--interactive-code-border: var(--color-border);
+		--interactive-code-fg: var(--color-ink);
+		--interactive-code-muted: var(--color-ink-soft);
+		--interactive-code-shadow: var(--shadow-lg);
+		font-family: var(--font-sans);
+		--interactive-gap: 3rem;
+		--interactive-step-padding: 3rem;
+		--intro-offset: max(0px, (100% - var(--container-2xl)) / 2);
+		--timeline-radius: min(1rem, (var(--intro-offset) + 1.5rem) / 2);
+		position: relative;
+		margin-block: var(--interactive-gap);
+	}
+
+	.interactive-doc__code {
+		border: 1px solid var(--color-border);
+		background:
+			radial-gradient(
+					circle,
+					color-mix(in oklab, var(--color-ink-muted) 30%, transparent)
+						0.8px,
+					transparent 0.8px
+				)
+				0 0 / 20px 20px,
+			radial-gradient(
+				58% 50% at 2% 0%,
+				rgba(255, 116, 156, 0.12) 0%,
+				rgba(255, 116, 156, 0) 68%
+			),
+			radial-gradient(
+				52% 46% at 100% 6%,
+				rgba(168, 205, 240, 0.16) 0%,
+				rgba(168, 205, 240, 0) 70%
+			),
+			radial-gradient(
+				60% 55% at 94% 100%,
+				rgba(207, 180, 232, 0.15) 0%,
+				rgba(207, 180, 232, 0) 70%
+			),
+			radial-gradient(
+				50% 46% at 4% 96%,
+				rgba(201, 210, 242, 0.14) 0%,
+				rgba(201, 210, 242, 0) 70%
+			),
+			var(--color-surface);
+	}
+
+	@media (width >= 64rem) {
+		[data-interactive-doc] {
+			--interactive-step-padding: 4.5rem;
+		}
+	}
+
+	:global(.content-layout) + [data-interactive-doc]::before {
+		content: '';
+		position: absolute;
+		inset-block-start: calc(-1 * var(--interactive-gap));
+		inset-inline-start: calc(0.5rem + var(--timeline-radius));
+		inline-size: calc(
+			var(--intro-offset) + 1.5rem - var(--timeline-radius)
+		);
+		block-size: var(--interactive-gap);
+		box-sizing: border-box;
+		border-inline-end: 1px solid var(--color-border);
+		border-block-end: 1px solid var(--color-border);
+		border-end-end-radius: var(--timeline-radius);
+		pointer-events: none;
+	}
+
+	:global(.content-layout)
+		+ [data-interactive-doc]
+		:global(.interactive-step:first-child)::before {
+		inset-block-start: calc(
+			-1 * var(--interactive-step-padding) + var(--timeline-radius)
+		);
+	}
+
+	:global(.content-layout) + [data-interactive-doc]::after {
+		content: '';
+		position: absolute;
+		inset-block-start: 0;
+		inset-inline-start: 0.5rem;
+		inline-size: var(--timeline-radius);
+		block-size: var(--timeline-radius);
+		box-sizing: border-box;
+		border-inline-start: 1px solid var(--color-border);
+		border-block-start: 1px solid var(--color-border);
+		border-start-start-radius: var(--timeline-radius);
+		pointer-events: none;
+	}
+
+	[data-interactive-doc][data-timeline-ready]::before,
+	[data-interactive-doc][data-timeline-ready]::after,
+	[data-timeline-ready] :global(.interactive-step)::before,
+	[data-timeline-ready]
+		:global(.interactive-step > .sl-heading-wrapper)::before {
+		display: none;
+	}
+
+	[data-interactive-doc] > :global([data-timeline]) {
+		position: absolute;
+		inset-inline-start: 0;
+		margin: 0;
+		pointer-events: none;
+		view-timeline: --doc-timeline block;
+		view-timeline-inset: 50% 50%;
+	}
+
+	[data-interactive-doc] :global([data-timeline] svg) {
+		display: block;
+		inline-size: 100%;
+		block-size: 100%;
+		overflow: visible;
+	}
+
+	[data-interactive-doc] :global([data-timeline-progress]) {
+		visibility: hidden;
+	}
+
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			[data-interactive-doc] :global([data-timeline-progress]) {
+				visibility: visible;
+				/* Keep longhands: minifying the shorthand folds in a timeline Chrome rejects. */
+				animation-name: timeline-reveal;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
+				animation-timeline: --doc-timeline;
+			}
+		}
+	}
+
+	@keyframes timeline-reveal {
+		from {
+			clip-path: inset(0 0 100% 0) view-box;
+		}
+		to {
+			clip-path: inset(0) view-box;
+		}
+	}
+</style>
+
+<script>
+	import { MagicMoveRenderer } from '@shikijs/magic-move/renderer'
+	import { enhanceTimeline } from './interactive-timeline'
+	import { highlightRanges } from './highlight-ranges'
+
+	function enhance(root: HTMLElement, signal: AbortSignal) {
+		try {
+			const source =
+				root.querySelector<HTMLScriptElement>('[data-code-steps]')
+			const pane = root.querySelector<HTMLElement>('[data-code-pane]')
+			const codeTokens =
+				root.querySelector<HTMLElement>('[data-code-tokens]')
+			const highlights = root.querySelector<HTMLElement>(
+				'[data-code-highlights]'
+			)
+			const codeRegion = root.querySelector<HTMLElement>(
+				'.interactive-doc__code'
+			)
+			const progress = root.querySelector<HTMLElement>(
+				'[data-code-progress]'
+			)
+			const sections = Array.from(
+				root.querySelectorAll<HTMLElement>('[data-code-step]')
+			)
+			const steps = JSON.parse(source?.textContent ?? '[]')
+			const headings = sections.map((section) =>
+				section.querySelector<HTMLElement>('h2[id], h3[id]')
+			)
+			if (
+				headings.some((heading) => !heading?.id) ||
+				new Set(headings.map((heading) => heading!.id)).size !==
+					sections.length
+			) {
+				throw new Error(
+					'InteractiveDoc steps must have headings with unique IDs.'
+				)
+			}
+
+			if (
+				!pane ||
+				!codeTokens ||
+				!highlights ||
+				!codeRegion ||
+				!progress ||
+				steps.length !== sections.length ||
+				!sections.every(
+					(section, index) =>
+						Number(section.dataset.codeStep) === index
+				)
+			) {
+				throw new Error(
+					'InteractiveDoc steps do not match its compiled code.'
+				)
+			}
+
+			const renderer = new MagicMoveRenderer(codeTokens, {
+				animateContainer: false,
+				containerStyle: false,
+				duration: 260,
+				easing: 'cubic-bezier(0.77, 0, 0.175, 1)'
+			})
+			const reducedMotion = window.matchMedia(
+				'(prefers-reduced-motion: reduce)'
+			)
+			let active = -1
+			let frame = 0
+			signal.addEventListener('abort', () => {
+				cancelAnimationFrame(frame)
+				for (const animation of codeTokens.getAnimations({ subtree: true })) animation.cancel()
+			}, { once: true })
+
+			const show = (index: number, render = true) => {
+				if (index === active) return
+
+				if (active >= 0) {
+					sections[active].removeAttribute('data-active')
+				}
+				active = index
+				sections[active].setAttribute('data-active', '')
+				root.dispatchEvent(
+					new CustomEvent('interactive-doc:step-change', {
+						detail: active
+					})
+				)
+				progress.textContent = `${active + 1} / ${steps.length}`
+				pane.setAttribute('aria-label', `${steps[active].label} code`)
+
+				highlights.replaceChildren(
+					...highlightRanges(steps[active].highlight).map(
+						({ start, length }) => {
+							const highlight = document.createElement('span')
+							highlight.style.insetBlockStart = `${start - 1}lh`
+							highlight.style.blockSize = `${length}lh`
+							return highlight
+						}
+					)
+				)
+
+				if (render) {
+					if (reducedMotion.matches) renderer.replace(steps[active])
+					else void renderer.render(steps[active])
+				}
+			}
+
+			const scheduleUpdate = () => {
+				if (signal.aborted || frame) return
+				frame = requestAnimationFrame(() => {
+					frame = 0
+					const center = window.innerHeight / 2
+					let closest = 0
+					let closestDistance = Number.POSITIVE_INFINITY
+
+					for (const [index, section] of sections.entries()) {
+						const { top, bottom } = section.getBoundingClientRect()
+						const distance =
+							center < top
+								? top - center
+								: center > bottom
+									? center - bottom
+									: 0
+						if (distance < closestDistance) {
+							closest = index
+							closestDistance = distance
+						}
+					}
+
+					const regionTop = codeRegion.getBoundingClientRect().top
+					const stickyTop = Number.parseFloat(
+						getComputedStyle(codeRegion).insetBlockStart
+					)
+					codeRegion.toggleAttribute(
+						'data-stuck',
+						Number.isFinite(stickyTop) &&
+							Math.abs(regionTop - stickyTop) <= 1
+					)
+					show(closest)
+				})
+			}
+
+			renderer.replace(steps[0])
+			show(0, false)
+			root.dispatchEvent(
+				new CustomEvent('interactive-doc:enhanced', { bubbles: true })
+			)
+			window.addEventListener('scroll', scheduleUpdate, { passive: true, signal })
+			window.addEventListener('resize', scheduleUpdate, { signal })
+			scheduleUpdate()
+		} catch (error) {
+			root.removeAttribute('data-enhanced')
+			root
+				.querySelector<HTMLElement>('.interactive-doc__code')
+				?.setAttribute('hidden', '')
+			console.error('InteractiveDoc enhancement failed.', error)
+		}
+	}
+
+	let page: AbortController | undefined
+	document.addEventListener('astro:before-swap', () => page?.abort(), { capture: true })
+	document.addEventListener('astro:page-load', () => {
+		page?.abort()
+		page = new AbortController()
+		for (const root of document.querySelectorAll<HTMLElement>('[data-interactive-doc]')) {
+			enhanceTimeline(root, page.signal)
+			enhance(root, page.signal)
+		}
+	})
+</script>

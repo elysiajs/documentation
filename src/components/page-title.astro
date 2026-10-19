@@ -1,0 +1,37 @@
+---
+import StarlightPageTitle from '@astrojs/starlight/components/PageTitle.astro'
+import Breadcrumb from './breadcrumb'
+
+const { entry, sidebar, hasSidebar } = Astro.locals.starlightRoute
+const hasInlineTitle = entry.data.template === 'splash'
+---
+
+{
+	!hasInlineTitle && (
+		<>
+			{hasSidebar && (
+				<Breadcrumb
+					client:load
+					sidebar={sidebar}
+					title={entry.data.title}
+				/>
+			)}
+			<StarlightPageTitle />
+		</>
+	)
+}
+
+<style is:global>
+	@layer starlight.core {
+		main:has([data-interactive-doc-layout])
+			> .content-panel:has(> .sl-container:empty) {
+			display: none;
+		}
+
+		main:has([data-interactive-doc-layout])
+			> .content-panel:has(> .sl-container:empty)
+			+ .content-panel {
+			border-top: 0;
+		}
+	}
+</style>

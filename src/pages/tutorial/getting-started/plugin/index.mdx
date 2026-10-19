@@ -1,0 +1,73 @@
+---
+title: "Plugin"
+description: "Learn how to use plugins in Elysia to enhance your web applications with reusable components and features."
+---
+
+import Lesson from '../../../../components/tutorial/lesson.astro';
+
+<Lesson title={frontmatter.title} description={frontmatter.description} doc="/essential/plugin/">
+
+# Plugin
+
+Every Elysia instance can be plug-and-play with other instances using the `use` method.
+
+```typescript ins={8}
+import { Elysia } from 'elysia'
+
+const user = new Elysia()
+	.get('/profile', 'User Profile')
+	.get('/settings', 'User Settings')
+
+new Elysia()
+	.use(user)
+	.get('/', 'Home')
+	.listen(3000)
+```
+
+Once applied, all routes from `user` instance will be available in `app` instance.
+
+### Plugin config
+You can also create a plugin that takes an argument and returns an Elysia instance to make a more dynamic plugin.
+
+```typescript ins={3,11}
+import { Elysia } from 'elysia'
+
+const user = ({ log = false }) => new Elysia()
+	.onBeforeHandle(({ request }) => {
+		if (log) console.log(request)
+	})
+	.get('/profile', 'User Profile')
+	.get('/settings', 'User Settings')
+
+new Elysia()
+	.use(user({ log: true }))
+	.get('/', 'Home')
+	.listen(3000)
+```
+
+It's also recommended that you read about [Key Concept: Dependency](/key-concept/#dependency) to understand how Elysia handles dependencies between plugins.
+
+## Assignment
+
+Let's apply the `user` instance to the `app` instance.
+
+<Fragment slot="answer">
+
+Similar to the above example, we can use the `use` method to plug the `user` instance into the `app` instance.
+
+```typescript ins={8}
+import { Elysia } from 'elysia'
+
+const user = new Elysia()
+	.get('/profile', 'User Profile')
+	.get('/settings', 'User Settings')
+
+const app = new Elysia()
+	.use(user)
+	.get('/', 'Home')
+	.listen(3000)
+```
+
+</Fragment>
+
+</Lesson>

@@ -1,0 +1,95 @@
+@layer components {
+	.spica-numbered-cards {
+		container: numbered-cards / inline-size;
+	}
+
+	.spica-numbered-cards > ol {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.spica-numbered-cards > ol > li {
+		min-width: 0;
+		margin: 0;
+	}
+
+	.spica-numbered-card {
+		--card-bloom: var(--color-harmony-left);
+		--card-light: var(--color-harmony-center);
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		height: 100%;
+		overflow: clip;
+		background:
+			radial-gradient(ellipse at 100% 0%, color-mix(in oklab, var(--card-bloom) var(--card-bloom-opacity, 30%), transparent), transparent 72%),
+			radial-gradient(ellipse at 0% 100%, color-mix(in oklab, var(--card-light) var(--card-light-opacity, 16%), transparent), transparent 65%),
+			var(--color-surface);
+	}
+
+	html[data-theme='dark'] .spica-numbered-card {
+		--card-bloom-opacity: 7%;
+		--card-light-opacity: 5%;
+	}
+
+	.spica-numbered-cards > ol > li:nth-child(2) > .spica-numbered-card {
+		--card-bloom: var(--color-harmony-center);
+		--card-light: var(--color-harmony-right);
+	}
+
+	.spica-numbered-cards > ol > li:nth-child(3) > .spica-numbered-card {
+		--card-bloom: var(--color-harmony-right);
+		--card-light: var(--color-harmony-left);
+	}
+
+	.spica-numbered-cards > ol > li:nth-child(4) > .spica-numbered-card {
+		--card-bloom: var(--color-bloom);
+		--card-light: var(--color-harmony-center);
+	}
+
+	.spica-numbered-card-number {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		width: auto;
+		aspect-ratio: 92 / 113;
+		height: calc((100% - 0.5rem) / 0.875);
+		font-family: var(--font-display);
+		/* Alice 1–4 ink bounds at 200px, with stroke room in the SVG viewBox. */
+		font-size: 200px;
+		pointer-events: none;
+		opacity: 0.5;
+	}
+
+	.spica-numbered-card .spica-card-title {
+		position: relative;
+		overflow-wrap: anywhere;
+	}
+
+	.spica-numbered-card-body {
+		color: var(--color-ink-muted);
+		margin: 0;
+		position: relative;
+		overflow-wrap: anywhere;
+	}
+
+	.spica-numbered-card-body > :first-child { margin-top: 0; }
+	.spica-numbered-card-body > :last-child { margin-bottom: 0; }
+
+	@container numbered-cards (min-width: 32rem) {
+		.spica-numbered-cards > ol {
+			grid-template-columns: repeat(min(2, var(--card-count)), minmax(0, 1fr));
+		}
+	}
+
+	@container numbered-cards (min-width: 56rem) {
+		.spica-numbered-cards > ol {
+			grid-template-columns: repeat(var(--card-count), minmax(0, 1fr));
+		}
+	}
+}

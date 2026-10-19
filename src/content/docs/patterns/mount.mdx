@@ -1,0 +1,76 @@
+---
+title: Mount
+description: Run Request and Response based applications together with Elysia.
+template: splash
+---
+
+import '../../../styles/routing.css';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Mount</h1>
+
+[WinterTC](https://wintertc.org/) is a standard for building HTTP servers behind Cloudflare, Deno, Vercel, and others.
+
+It allows web servers to run interoperably across runtimes by using [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response).
+
+Elysia is WinterTC compliant. It is optimized to run on Bun, but also supports other runtimes if possible.
+
+This allows any WinterTC-compliant framework or code to run together, allowing frameworks like Elysia, Hono, Remix, Itty Router to run together in a simple function.
+
+## Mount
+Pass a `fetch` function to `.mount`:
+```ts
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const hono = new Hono()
+	.get('/', (c) => c.text('Hello from Hono!'))
+
+const app = new Elysia()
+    .get('/', () => 'Hello from Elysia')
+    .mount('/hono', hono.fetch)
+```
+
+Any framework that uses `Request` and `Response` can interoperate with Elysia, like:
+- Hono
+- Nitro
+- H3
+- [Next.js API Route](/integrations/nextjs/)
+- [Nuxt API Route](/integrations/nuxt/)
+- [SvelteKit API Route](/integrations/sveltekit/)
+
+And these can be used on multiple runtimes like:
+- Bun
+- Deno
+- Vercel Edge Runtime
+- Cloudflare Worker
+- Netlify Edge Function
+
+If the framework supports the **.mount** function, you can also mount Elysia inside another framework:
+```ts
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const elysia = new Elysia()
+    .get('/', () => 'Hello from Elysia inside Hono inside Elysia')
+
+const hono = new Hono()
+    .get('/', (c) => c.text('Hello from Hono!'))
+    .mount('/elysia', elysia.fetch)
+
+const main = new Elysia()
+    .get('/', () => 'Hello from Elysia')
+    .mount('/hono', hono.fetch)
+    .listen(3000)
+```
+
+The mounted app receives a standard Request and returns a Response. When composing two Elysia instances, prefer `.use()` so Elysia can preserve their types and plugin scopes.
+
+</div>
+</InteractiveDocLayout>
+</div>

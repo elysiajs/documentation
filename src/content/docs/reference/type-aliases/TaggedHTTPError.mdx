@@ -1,0 +1,62 @@
+---
+template: "splash"
+description: "Class returned by HTTPError.id"
+editUrl: false
+next: false
+prev: false
+title: "TaggedHTTPError"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">TaggedHTTPError</h1>
+
+```ts
+type TaggedHTTPError<Type, Annotation> = HTTPError<Type> & object & Annotation;
+```
+
+Defined in: elysia/dist/error.d.ts:225
+
+Class returned by [HTTPError.id](/reference/classes/httperror/#id)
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Type` *extends* `string` | - |
+| `Annotation` | `object` |
+
+```ts
+type new TaggedHTTPError(message?, options?): HTTPError<Type> & object & Annotation;
+```
+
+Class returned by [HTTPError.id](/reference/classes/httperror/#id)
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `message?` | `string` |
+| `options?` | `ErrorOptions` |
+
+## Returns
+
+[`HTTPError`](/reference/classes/httperror/)\<`Type`\> & `object` & `Annotation`
+
+## Properties
+
+### prototype
+
+```ts
+prototype: HTTPError<Type>;
+```
+
+Defined in: elysia/dist/error.d.ts:230
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,237 @@
+---
+import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
+import { IconArrowRight } from '@tabler/icons-react'
+
+import Blog from '../../layouts/blog.astro'
+import Ripple from '../../components/ui/ripple.astro'
+import Footer from '../../components/footer.astro'
+import { ogImagePath } from '../../lib/og'
+import { blogIndexMeta, blogPageTitle } from '../../lib/page-meta'
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.date.getTime() - a.data.date.getTime()
+)
+const [featured, ...archive] = posts
+
+const readMinutes = (body = '') =>
+	Math.max(
+		1,
+		Math.round(
+			body
+				.split('\n')
+				.filter((line) => !/^\s*(export |import |[{}\[\]<])/.test(line))
+				.join(' ')
+				.split(/\s+/)
+				.filter(Boolean).length / 220
+		)
+	)
+
+const kindLabel = {
+	release: 'Release',
+	guide: 'Guide',
+	benchmark: 'Benchmark',
+	announcement: 'Announcement'
+}
+
+const formatDate = (date: Date) =>
+	date.toLocaleDateString('en-GB', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric',
+		timeZone: 'UTC'
+	})
+
+const isoDate = (date: Date) => date.toISOString().slice(0, 10)
+
+const ctaClass =
+	'blog-featured-cta inline-flex items-center justify-center gap-[7px] whitespace-nowrap rounded-xl border border-transparent bg-primary px-[18px] py-[9px] font-sans text-sm leading-none font-semibold text-on-primary shadow-primary select-none'
+
+const ogImage = new URL(ogImagePath('blog'), Astro.site).href
+---
+
+<Blog
+	title={blogIndexMeta.title}
+	description={blogIndexMeta.description}
+	image={ogImage}
+	imageAlt={blogPageTitle(blogIndexMeta.title)}
+	generatedImage
+>
+	<div data-blog-listing class="mx-auto max-w-[72rem] px-6">
+		<section class="pt-14 pb-10 md:pt-20">
+			<div class="grid items-end gap-8 md:grid-cols-[3fr_2fr]">
+				<div>
+					<p class="font-semibold text-ink-muted">
+						Blog post from the Elysia team · {posts.length} entries
+					</p>
+					<h1
+						class="mt-3 font-display font-normal text-[clamp(2.75rem,6vw,4.75rem)] leading-[1.02] text-balance"
+					>
+						Releases, and field notes
+					</h1>
+				</div>
+			</div>
+			<div
+				class="relative mt-10 border-t border-border"
+				aria-hidden="true"
+			>
+				<span
+					class="absolute top-0 left-0 -translate-y-1/2 bg-base pr-2 leading-none"
+				>
+					<span
+						class="inline-block text-border-strong animate-spica-twinkle"
+					>
+						✦
+					</span>
+				</span>
+			</div>
+		</section>
+
+		<section aria-labelledby="featured-title">
+			<a
+				data-blog-article-link
+				href={`/blog/${featured.id}/`}
+				class="blog-featured spica-surface relative grid items-center gap-8 overflow-hidden rounded-[22px] border border-border [background:var(--surface-wash)] p-6 text-inherit no-underline focus-ring [--ripple-color:var(--color-primary)] md:grid-cols-[3fr_2fr] md:p-8"
+			>
+				<Ripple pressedOpacity={0.12} />
+				<Image
+					src={featured.data.cover}
+					alt={featured.data.alt}
+					layout="constrained"
+					width={32}
+					loading="lazy"
+					class="absolute top-0 left-0 w-full h-full object-cover blur-2xl scale-110 contrast-125 saturate-125 opacity-30"
+				/>
+				<Image
+					data-blog-cover
+					src={featured.data.cover}
+					alt={featured.data.alt}
+					layout="constrained"
+					width={960}
+					loading="lazy"
+					class="z-10 blog-featured-cover order-1 aspect-video w-full rounded-2xl object-cover border border-border bg-surface"
+				/>
+				<div class="z-10 order-2">
+					<p
+						class="flex flex-wrap items-center gap-2 text-sm font-semibold"
+					>
+						<span
+							class="rounded-lg bg-primary-soft px-2 py-0.5 text-primary-deep"
+							>Latest</span
+						>
+						<span aria-hidden="true" class="text-ink-muted">·</span>
+						<span class="text-ink-soft"
+							>{kindLabel[featured.data.kind]}</span
+						>
+						<span aria-hidden="true" class="text-ink-muted">·</span>
+						<time
+							datetime={isoDate(featured.data.date)}
+							class="text-ink-muted"
+						>
+							{formatDate(featured.data.date)}
+						</time>
+					</p>
+					<h2
+						id="featured-title"
+						class="mt-3 font-display font-normal text-[clamp(1.75rem,3.2vw,2.5rem)] leading-[1.08] text-balance"
+					>
+						{featured.data.title}
+					</h2>
+					<p class="mt-3 text-lg text-ink-soft">
+						{featured.data.description}
+					</p>
+					<div
+						class="mt-6 flex flex-wrap items-center justify-between gap-4"
+					>
+						<span class="text-sm text-ink-muted">
+							by {featured.data.author} · {
+								readMinutes(featured.body)
+							} min read
+						</span>
+						<span class={ctaClass}>
+							{
+								featured.data.kind === 'release'
+									? 'Read the release notes'
+									: 'Read the post'
+							} →
+						</span>
+					</div>
+				</div>
+			</a>
+		</section>
+
+		<section
+			class="pt-12 max-w-4xl mx-auto"
+			aria-labelledby="archive-title"
+		>
+			<div
+				class="flex items-center gap-4 text-sm font-semibold text-ink-muted"
+			>
+				<h2 id="archive-title" class="text-sm font-semibold">
+					The archive
+				</h2>
+				<span class="h-px flex-1 bg-border" aria-hidden="true"></span>
+				<span>Newest first</span>
+			</div>
+
+			<ol class="mt-4 list-none p-0">
+				{
+					archive.map((post, i) => (
+						<li
+							class="blog-row not-first:border-t border-border"
+							style={`--i:${i}`}
+						>
+							<a
+								data-blog-article-link
+								href={`/blog/${post.id}/`}
+								class="grid gap-4 rounded-xl py-6 text-inherit no-underline focus-ring md:grid-cols-[16rem_minmax(0,1fr)_2rem] md:items-center md:gap-6 [--ripple-color:var(--color-primary)]"
+							>
+								<Ripple pressedOpacity={0.12} />
+								<Image
+									data-blog-cover
+									src={post.data.cover}
+									alt={post.data.alt}
+									layout="constrained"
+									width={640}
+									loading="lazy"
+									class="aspect-video w-full rounded-xl border border-border bg-surface object-cover"
+								/>
+
+								<div class="min-w-0">
+									<time
+										datetime={isoDate(post.data.date)}
+										class="block text-sm text-ink-muted"
+									>
+										{formatDate(post.data.date)}
+									</time>
+									<h3 class="blog-row-title mt-2 font-display font-normal text-2xl leading-tight text-balance">
+										{post.data.title}
+									</h3>
+									<p class="mt-1 line-clamp-2 text-ink-muted">
+										{post.data.description}
+									</p>
+									<p class="mt-2 flex flex-wrap items-center gap-x-1.5 text-sm text-ink-muted">
+										by {post.data.author} ·{' '}
+										{readMinutes(post.body)} min read ·
+										<span class="rounded-lg bg-surface-2 px-2 py-0.5 text-xs font-semibold text-ink-soft">
+											{kindLabel[post.data.kind]}
+										</span>
+									</p>
+								</div>
+
+								<span
+									class="blog-row-arrow hidden self-center text-ink-muted md:block"
+									aria-hidden="true"
+								>
+									<IconArrowRight size={18} stroke={1.5} />
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ol>
+		</section>
+	</div>
+</Blog>
+
+<Footer />

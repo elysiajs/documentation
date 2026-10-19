@@ -1,0 +1,48 @@
+---
+template: "splash"
+description: "Elysia API reference for FileTypeDetector."
+editUrl: false
+next: false
+prev: false
+title: "FileTypeDetector"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">FileTypeDetector</h1>
+
+```ts
+type FileTypeDetector = (file) => MaybePromise<
+  | string
+  | {
+  mime?: string;
+}
+  | null
+| undefined>;
+```
+
+Defined in: elysia/dist/type/elysia/file-type.d.ts:5
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `file` | `File` |
+
+## Returns
+
+`MaybePromise`\<
+  \| `string`
+  \| \{
+  `mime?`: `string`;
+\}
+  \| `null`
+  \| `undefined`\>
+
+</div>
+</InteractiveDocLayout>
+</div>

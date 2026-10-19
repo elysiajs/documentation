@@ -1,0 +1,59 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import './ripple.css'
+
+interface Props {
+	disabled?: boolean
+	hoverOpacity?: number
+	pressedOpacity?: number
+	duration?: number
+	minimumPressDuration?: number
+	touchDelay?: number
+	easing?: string
+	class?: string
+	style?: HTMLAttributes<'span'>['style']
+}
+
+const {
+	disabled = false,
+	hoverOpacity,
+	pressedOpacity,
+	duration,
+	minimumPressDuration = 225,
+	touchDelay = 150,
+	easing,
+	class: className,
+	style
+} = Astro.props
+
+const properties = {
+	...(hoverOpacity !== undefined && {
+		'--ripple-hover-opacity': hoverOpacity
+	}),
+	...(pressedOpacity !== undefined && {
+		'--ripple-pressed-opacity': pressedOpacity
+	}),
+	...(duration !== undefined && { '--ripple-duration': `${duration}ms` })
+}
+const rippleStyle =
+	typeof style === 'string'
+		? `${Object.entries(properties)
+				.map(([key, value]) => `${key}:${value}`)
+				.join(';')};${style}`
+		: { ...properties, ...style }
+---
+
+<spica-ripple
+	aria-hidden="true"
+	disabled={disabled || undefined}
+	duration={duration}
+	minimum-press-duration={minimumPressDuration}
+	touch-delay={touchDelay}
+	easing={easing}
+	class={className}
+	style={rippleStyle}><span></span></spica-ripple
+>
+
+<script>
+	import './ripple'
+</script>

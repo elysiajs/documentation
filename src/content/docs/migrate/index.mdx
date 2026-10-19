@@ -1,0 +1,59 @@
+---
+title: Comparison
+description: Compare Elysia with Express, Fastify, Hono, and tRPC by example.
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Comparison with other frameworks</h1>
+
+Elysia is designed to feel familiar if you've used another web framework. These guides compare routing, validation, middleware, and type safety through examples.
+
+## Before you start
+
+Read [Key concept](/key-concept/) for the core ideas behind Elysia. It takes about five minutes.
+
+## Choose your framework
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="/migrate/from-express/">
+<CardTitle>From Express</CardTitle>
+
+Compare Express request handlers and middleware with Elysia routes and lifecycle hooks.
+
+</Card>
+
+<Card href="/migrate/from-fastify/">
+<CardTitle>From Fastify</CardTitle>
+
+Compare validation, lifecycle hooks, plugin encapsulation, and type inference.
+
+</Card>
+
+<Card href="/migrate/from-hono/">
+<CardTitle>From Hono</CardTitle>
+
+Compare routing, middleware context, validation, and typed clients.
+
+</Card>
+
+<Card href="/migrate/from-trpc/">
+<CardTitle>From tRPC</CardTitle>
+
+Compare RPC procedures with HTTP routes and Eden's end-to-end type safety.
+
+</Card>
+
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>

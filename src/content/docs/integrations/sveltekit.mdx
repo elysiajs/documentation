@@ -1,0 +1,77 @@
+---
+title: "Integration with SvelteKit"
+description: "With SvelteKit, you can run Elysia on server routes."
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration with SvelteKit</h1>
+
+With SvelteKit, you can run Elysia on server routes.
+
+1. Create **src/routes/[...slugs]/+server.ts**.
+2. Define an Elysia server.
+3. Export a **fallback** function that calls `app.handle`.
+
+```typescript
+// src/routes/[...slugs]/+server.ts
+import { Elysia, t } from 'elysia';
+
+const app = new Elysia()
+    .get('/', 'hello SvelteKit')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+interface WithRequest {
+	request: Request
+}
+
+export const fallback = ({ request }: WithRequest) => app.handle(request)
+```
+
+You can treat the Elysia server as a normal SvelteKit server route.
+
+### pnpm
+If your pnpm configuration does not install peer dependencies, add the peers required by Elysia v2 explicitly:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefix
+If you place an Elysia server not in the root of the routes directory, you need to annotate the prefix on the Elysia server.
+
+For example, if you place an Elysia server in **src/routes/api/[...slugs]/+server.ts**, you need to annotate the prefix as **/api** on the Elysia server.
+
+```typescript
+// src/routes/api/[...slugs]/+server.ts
+import { Elysia, t } from 'elysia';
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', () => 'hi')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
+
+export const fallback: RequestHandler = ({ request }) => app.handle(request)
+```
+
+This will ensure that Elysia routing will work properly in any location where you place it.
+
+Please refer to [SvelteKit Routing](https://kit.svelte.dev/docs/routing#server) for more information.
+
+</div>
+</InteractiveDocLayout>
+</div>

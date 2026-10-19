@@ -1,0 +1,35 @@
+---
+import DocumentTabs from './document-tabs.astro';
+
+interface Props { label?: string; }
+const { label = 'Code examples' } = Astro.props;
+---
+
+<div class="file-code-block">
+	<DocumentTabs {label} kind="code"><slot /></DocumentTabs>
+</div>
+
+<style>
+	.file-code-block {
+		border: 1px solid var(--color-border);
+		border-radius: 1.5rem;
+		padding: 0.375rem;
+		background: var(--color-surface);
+		box-shadow: var(--shadow-xs);
+	}
+
+	.file-code-block :global([data-document-tabs] > [data-document-tabs-controls]) {
+		margin-bottom: 0.25rem;
+	}
+
+	.file-code-block :global([data-document-tabs] > [role='tabpanel']) {
+		margin-top: 0;
+	}
+
+	.file-code-block :global(.expressive-code .frame) {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		box-shadow: none;
+	}
+</style>

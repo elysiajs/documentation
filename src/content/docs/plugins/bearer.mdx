@@ -1,0 +1,50 @@
+---
+title: Bearer plugin
+description: Reference and examples for the Bearer plugin.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Bearer plugin</h1>
+
+Plugin for [elysia](https://github.com/elysiajs/elysia) for retrieving the Bearer token.
+
+Install with:
+```bash
+bun add @elysia/bearer@next
+```
+
+Then use it:
+```ts
+import { Elysia } from 'elysia'
+import { bearer } from '@elysia/bearer'
+
+const app = new Elysia()
+    .use(bearer())
+    .get('/sign', {
+        beforeHandle({ bearer, set, status }) {
+            if (!bearer) {
+                set.headers[
+                    'WWW-Authenticate'
+                ] = `Bearer realm="sign"`
+
+                return status(401, 'Unauthorized')
+            }
+        }
+    }, ({ bearer }) => bearer)
+    .listen(3000)
+```
+
+This plugin is for retrieving a Bearer token specified in [RFC6750](https://www.rfc-editor.org/rfc/rfc6750#section-2).
+
+This plugin extracts the token. It does not authenticate the request or validate the token; add those checks in your application.
+
+</div>
+</InteractiveDocLayout>
+</div>

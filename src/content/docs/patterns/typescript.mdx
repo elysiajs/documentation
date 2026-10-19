@@ -1,0 +1,170 @@
+---
+title: TypeScript
+description: Infer types from schemas and investigate TypeScript performance.
+template: splash
+---
+
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+import "../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">TypeScript</h1>
+
+Elysia has first-class support for TypeScript out of the box.
+
+Most of the time, you wouldn't need to add any TypeScript annotations manually.
+
+## Inference
+Elysia infers the type of request and response based on the schema you provide.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+    .post('/user/:id', {
+        body: t.Object({
+            id: t.String()
+        }),
+        query: z.object({
+            name: z.string()
+        })
+    }, ({ body }) => body)
+```
+
+Elysia can automatically infer types from schema like TypeBox and [your favorite validation library](/essential/validation#standard-schema) like:
+- Zod
+- Valibot
+- ArkType
+- Effect Schema
+- Yup
+- Joi
+
+### Schema to type
+
+All schema libraries supported by Elysia can be converted to TypeScript types.
+
+
+#### TypeBox
+
+
+```ts
+import { Elysia, t, type UnwrapSchema } from 'elysia'
+
+const User = t.Object({
+  	id: t.String(),
+  	name: t.String()
+})
+
+type User = UnwrapSchema<typeof User>
+```
+
+
+#### Zod
+
+
+```ts
+import { z } from 'zod'
+
+const User = z.object({
+  	id: z.string(),
+  	name: z.string()
+})
+
+type User = z.infer<typeof User>
+```
+
+
+#### Valibot
+
+
+```ts
+import * as v from 'valibot'
+
+const User = v.object({
+  	id: v.string(),
+  	name: v.string()
+})
+
+type User = v.InferOutput<typeof User>
+```
+
+
+#### ArkType
+
+
+```ts
+import { type } from 'arktype'
+
+const User = type({
+  	id: 'string',
+  	name: 'string'
+})
+
+type User = typeof User.infer
+```
+
+
+## Type performance
+
+Elysia is built with type inference performance in mind.
+
+Before every release, we have a local benchmark to ensure that type inference is always snappy, fast, and doesn't blow up your IDE with a "Type instantiation is excessively deep and possibly infinite" error.
+
+Most of the time when writing Elysia, you wouldn't encounter any type performance issue.
+
+However, if you do, here is how to break down what's slowing down your type inference:
+
+1. Navigate to the root of your project and run
+```
+tsc --generateTrace trace --noEmit --incremental false
+```
+
+This should generate a `trace` folder in your project root.
+
+2. Open [Perfetto UI](https://ui.perfetto.dev) and drag the `trace/trace.json` file
+
+![Perfetto](/assets/perfetto.webp)
+
+> It should show you a flame graph like this
+
+Then you can find a chunk that takes a long time to be evaluated. Click on it and it should show you how long the inference takes, and which file and line number it is coming from.
+
+This should help you to identify the bottleneck of your type inference.
+
+### Eden
+
+If you are having a slow type inference issue when using [Eden](/eden/), you can try using a sub app of Elysia to isolate the type inference.
+
+```ts
+import { Elysia } from 'elysia'
+import { plugin1, plugin2, plugin3 } from './plugin'
+
+const app = new Elysia()
+	.use([plugin1, plugin2, plugin3])
+  	.listen(3000)
+
+export type app = typeof app
+
+// Export sub app
+export type subApp = typeof plugin1
+```
+
+And on your frontend, you can import the sub app instead of the whole app.
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { subApp } from 'backend/src'
+
+const api = treaty<subApp>('localhost:3000')
+```
+
+This should make your type inference faster as it doesn't need to evaluate the whole app.
+
+See [Eden Treaty](/eden/) to learn more about Eden.
+
+</div>
+</InteractiveDocLayout>
+</div>

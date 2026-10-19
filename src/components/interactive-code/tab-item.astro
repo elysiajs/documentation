@@ -1,0 +1,10 @@
+---
+interface Props {
+	label: string;
+}
+
+const { label } = Astro.props;
+if (!label?.trim()) throw new Error('TabItem requires a non-empty label.');
+---
+
+<document-tab-item data-label={label}><slot /></document-tab-item>

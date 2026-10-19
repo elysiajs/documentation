@@ -1,0 +1,108 @@
+---
+title: Static plugin
+description: Reference and examples for the Static plugin.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Static plugin</h1>
+
+This plugin can serve static files/folders for an Elysia server
+
+Install with:
+```bash
+bun add @elysia/static@next
+```
+
+Then use it:
+```ts
+import { Elysia } from 'elysia'
+import { staticPlugin } from '@elysia/static'
+
+new Elysia()
+    .use(staticPlugin())
+    .listen(3000)
+```
+
+By default, the static plugin's folder is `public`, and it is registered with the `/public` prefix.
+
+Suppose your project structure is:
+```text
+| - src
+  | - index.ts
+| - public
+  | - takodachi.png
+  | - nested
+    | - takodachi.png
+```
+
+The available paths will become:
+- /public/takodachi.png
+- /public/nested/takodachi.png
+
+## Config
+Below is a config which is accepted by the plugin
+
+### assets
+Default: `"public"`
+
+Path to the folder to expose as static
+
+### prefix
+Default: `"/public"`
+
+Path prefix to register public files
+
+### ignorePatterns
+Default: `['.DS_Store', '.git', '.env']`
+
+List of files to ignore from serving as static files
+
+:::caution
+A custom list replaces the default. Include `.env` and `.git` again, or they will be served.
+:::
+
+### staticLimit
+Default: `1024`
+
+When [alwaysStatic](#alwaysstatic) is enabled, the static plugin registers up to this many paths to the Router with a static name. Files past the limit are resolved lazily on request to reduce memory usage.
+Trade off memory against performance.
+
+### alwaysStatic
+Default: `process.env.NODE_ENV === 'production'`
+
+If set to true, static file paths are registered to the Router at startup, up to [staticLimit](#staticlimit). Otherwise, files are resolved lazily on request.
+
+### headers
+Default: `{}`
+
+Set response headers of files
+
+### indexHTML
+Default: `true`
+
+If enabled, directory requests can serve the `index.html` file inside that directory. This is not a catch-all single-page application fallback for arbitrary missing paths.
+
+## Pattern
+Below you can find the common patterns to use the plugin.
+
+- [Single File](#single-file)
+
+## Single file
+Suppose you want to return just a single file. You can use `file` instead of using the static plugin
+```ts
+import { Elysia, file } from 'elysia'
+
+new Elysia()
+    .get('/file', file('public/takodachi.png'))
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

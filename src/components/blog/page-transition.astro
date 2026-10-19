@@ -1,0 +1,188 @@
+<script is:inline>
+	;(() => {
+		window.__elysiaBlogTransitionController?.dispose()
+
+		const root = document.documentElement
+		const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
+		const maxAge = 5_000
+		const controller = new AbortController()
+		const { signal } = controller
+		let active
+		let pointerIntent
+
+		const pathFor = (url) => {
+			if (!url) return null
+
+			try {
+				const parsed = new URL(url, location.href)
+				if (parsed.origin !== location.origin) return null
+				return `${parsed.pathname.replace(/\/+$/, '')}/`
+			} catch {
+				return null
+			}
+		}
+
+		const forgetPointerIntent = (current = pointerIntent) => {
+			if (pointerIntent !== current) return
+			clearTimeout(current?.timeout)
+			pointerIntent = null
+		}
+
+		const rememberPointerIntent = (path) => {
+			forgetPointerIntent()
+			const current = {
+				path,
+				timeout: setTimeout(() => forgetPointerIntent(current), maxAge)
+			}
+			pointerIntent = current
+		}
+
+		const cleanup = (current = active) => {
+			if (active !== current) return
+			active?.cover.style.removeProperty('view-transition-name')
+			active = null
+			delete root.dataset.blogTransition
+		}
+
+		const arm = (transition, cover) => {
+			const current = { cover }
+			active = current
+			cover.style.viewTransitionName = 'blog-cover'
+			root.dataset.blogTransition = 'cover'
+			void transition.finished.then(
+				() => cleanup(current),
+				() => cleanup(current)
+			)
+		}
+
+		addEventListener('keydown', () => forgetPointerIntent(), {
+			capture: true, signal
+		})
+		addEventListener('pointercancel', () => forgetPointerIntent(), {
+			capture: true, signal
+		})
+		addEventListener('dragstart', () => forgetPointerIntent(), {
+			capture: true, signal
+		})
+
+		addEventListener('pointerdown', (event) => {
+			forgetPointerIntent()
+			if (
+				!event.isTrusted ||
+				event.defaultPrevented ||
+				!event.isPrimary ||
+				event.button !== 0 ||
+				event.metaKey ||
+				event.ctrlKey ||
+				event.shiftKey ||
+				event.altKey
+			) return
+
+			const target = event.target
+			const link = target instanceof Element
+				? target.closest('[data-blog-article-link]')
+				: null
+			if (
+				!(link instanceof HTMLAnchorElement) ||
+				link.hasAttribute('download') ||
+				(link.target && link.target.toLowerCase() !== '_self')
+			) return
+
+			const path = pathFor(link.getAttribute('href'))
+			if (path) rememberPointerIntent(path)
+		}, { signal })
+
+		window.navigation?.addEventListener('navigate', (event) => {
+			const current = pointerIntent
+			if (!current) return
+			if (
+				!event.userInitiated ||
+				pathFor(event.destination.url) !== current.path
+			) {
+				forgetPointerIntent(current)
+				return
+			}
+
+			event.signal.addEventListener(
+				'abort',
+				() => forgetPointerIntent(current),
+				{ once: true }
+			)
+			queueMicrotask(() => {
+				if (event.defaultPrevented) forgetPointerIntent(current)
+			})
+		}, { signal })
+
+		addEventListener('pageswap', (event) => {
+			cleanup()
+			const activation = event.activation
+			const targetPath = pathFor(activation?.entry?.url)
+			const currentPointerIntent = pointerIntent
+			forgetPointerIntent(currentPointerIntent)
+			const transition = event.viewTransition
+			if (!transition) return
+			void transition.ready.catch(() => {})
+
+			const listing = document.querySelector('[data-blog-listing]')
+			const link = [
+				...(listing?.querySelectorAll('[data-blog-article-link]') ?? [])
+			].find((item) => pathFor(item.href) === targetPath)
+			const cover = link?.querySelector('[data-blog-cover]')
+			if (
+				reducedMotion.matches ||
+				activation?.navigationType !== 'push' ||
+				currentPointerIntent?.path !== targetPath ||
+				!cover
+			) {
+				transition.skipTransition()
+				return
+			}
+
+			arm(transition, cover)
+		}, { signal })
+
+		addEventListener('pagereveal', (event) => {
+			cleanup()
+			const transition = event.viewTransition
+			if (!transition) return
+			void transition.ready.catch(() => {})
+
+			const activation = window.navigation?.activation
+			const article = document.querySelector('[data-blog-article]')
+			const cover = article?.querySelector('[data-blog-cover]')
+			if (
+				reducedMotion.matches ||
+				activation?.navigationType !== 'push' ||
+				pathFor(activation.from?.url) !== '/blog/' ||
+				pathFor(activation.entry?.url) !== pathFor(location.href) ||
+				!cover
+			) {
+				transition.skipTransition()
+				return
+			}
+
+			arm(transition, cover)
+		}, { signal })
+
+		addEventListener('pagehide', (event) => {
+			if (event.persisted) {
+				cleanup()
+				forgetPointerIntent()
+			}
+		}, { signal })
+		addEventListener('pageshow', (event) => {
+			if (event.persisted) {
+				cleanup()
+				forgetPointerIntent()
+			}
+		}, { signal })
+
+		window.__elysiaBlogTransitionController = {
+			dispose() {
+				controller.abort()
+				cleanup()
+				forgetPointerIntent()
+			}
+		}
+	})()
+</script>

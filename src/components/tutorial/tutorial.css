@@ -1,0 +1,168 @@
+/*
+ * Lesson-document rules that cannot be Tailwind utilities: the doc pane's markup is authored in
+ * MDX and arrives as an HTML string, so its elements carry no classes.
+ *
+ * A tutorial lesson renders its own `<html>` instead of Starlight's PageFrame, so it also misses
+ * Starlight's reset. `@astrojs/starlight/style/{props,reset}.css` are NOT in the package's exports
+ * map (only `markdown.css` is, and it is useless without the other two), hence the local reset and
+ * the local prose scale.
+ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+/* Same margin reset Starlight applies site-wide: without it every UA heading and paragraph
+   margin leaks into the islands (a 1em `h3` margin knocked the checklist icons out of line). */
+@layer base {
+	* {
+		margin: 0;
+	}
+}
+
+/* 15px prose, as in the Vue playground: the doc pane is a third of the viewport, not a full page. */
+[data-tutorial-task] .sl-markdown-content {
+	font-size: 0.9375rem;
+	line-height: 1.65;
+	color: var(--color-ink-soft);
+}
+
+[data-tutorial-task] .sl-markdown-content :is(h1, h2, h3, h4, h5, h6) {
+	font-family: var(--font-display);
+	font-weight: 400;
+	color: var(--color-ink);
+	text-wrap: balance;
+}
+
+[data-tutorial-task] .sl-markdown-content h1 {
+	margin: 0 0 1rem;
+	font-size: 1.75rem;
+	line-height: 1.1;
+}
+
+[data-tutorial-task] .sl-markdown-content h2 {
+	margin: 1.75rem 0 0.75rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--color-border);
+	font-size: 1.375rem;
+	line-height: 1.15;
+}
+
+[data-tutorial-task] .sl-markdown-content h3 {
+	margin: 1.25rem 0 0.5rem;
+	font-size: 1.125rem;
+	line-height: 1.25;
+}
+
+[data-tutorial-task] .sl-markdown-content :is(h4, h5, h6) {
+	margin: 1rem 0 0.5rem;
+	font-size: 1rem;
+}
+
+[data-tutorial-task] .sl-markdown-content p {
+	margin: 0.875rem 0;
+}
+
+[data-tutorial-task] .sl-markdown-content strong {
+	color: var(--color-ink);
+	font-weight: 700;
+}
+
+[data-tutorial-task] .sl-markdown-content :is(ul, ol) {
+	margin: 0.875rem 0;
+	padding-inline-start: 1.25rem;
+}
+
+[data-tutorial-task] .sl-markdown-content ul {
+	list-style: disc;
+}
+
+[data-tutorial-task] .sl-markdown-content ol {
+	list-style: decimal;
+}
+
+[data-tutorial-task] .sl-markdown-content li + li {
+	margin-top: 0.375rem;
+}
+
+[data-tutorial-task] .sl-markdown-content blockquote {
+	margin: 0.875rem 0;
+	padding: 0.125rem 0 0.125rem 0.875rem;
+	border-inline-start: 2px solid var(--color-border-strong);
+	color: var(--color-ink-muted);
+}
+
+[data-tutorial-task] .sl-markdown-content :is(.expressive-code, figure, pre):not(.expressive-code *) {
+	margin: 1rem 0;
+}
+
+[data-tutorial-task] .sl-markdown-content .expressive-code :is(figure, pre) {
+	margin: 0;
+}
+
+[data-tutorial-task] .sl-markdown-content img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* The pane starts flush with the header, and a leading `##` needs no divider above it. */
+[data-tutorial-task] .sl-markdown-content > :first-child {
+	margin-top: 0;
+}
+
+[data-tutorial-task] .sl-markdown-content > h2:first-child {
+	padding-top: 0;
+	border-top: 0;
+}
+
+/* These grids follow the resizable lesson column, not the viewport. */
+.tutorial-card-grid {
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+}
+
+.tutorial-lesson-nav {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body[data-tutorial] .monaco-editor .cursors-layer.cursor-smooth-caret-animation > .cursor {
+		transition: none;
+	}
+}
+
+/* Keyboard tab changes should land immediately, including the moving indicator. */
+body[data-tutorial] [role='tablist']:has(:focus-visible) * {
+	transition: none;
+}
+
+/* Short phones need room to read the result below the wrapping request toolbar. */
+@media (width < 40rem) and (height < 44rem) {
+	[data-tutorial-shell] {
+		overflow-y: auto;
+	}
+
+	[data-tutorial-shell]:not([data-aside='none']) > aside {
+		flex: 0 0 50dvh;
+		min-height: 17rem;
+	}
+
+	#tutorial-workspace {
+		flex: 0 0 28rem;
+	}
+}
+
+body[data-tutorial] [aria-label='Code editor'] .line-numbers {
+	font-size: 12px;
+}
+
+/* Monaco's input is a proxy for the editor; keep widget and toolbar focus indicators. */
+body[data-tutorial] [aria-label='Code editor'] :is(.native-edit-context:focus, textarea.inputarea:focus) {
+	outline: none;
+}
+
+
+.tutorial-answer:has(button:focus-visible) .tutorial-answer-panel {
+	transition: none;
+}

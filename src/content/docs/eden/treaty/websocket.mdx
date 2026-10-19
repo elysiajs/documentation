@@ -1,0 +1,60 @@
+---
+title: WebSocket
+description: Subscribe to typed WebSocket messages with Eden Treaty.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">WebSocket</h1>
+
+Eden Treaty supports WebSocket using the `subscribe` method.
+
+```ts
+import { Elysia, t } from "elysia";
+import { websocket } from 'elysia/websocket'
+import { treaty } from "@elysia/eden";
+
+const app = new Elysia()
+  .use(websocket())
+  .ws("/chat", {
+    body: t.String(),
+    response: t.String(),
+    message({ body }) {
+            return body
+        },
+  })
+  .listen(3000);
+
+const api = treaty<typeof app>("localhost:3000");
+
+const chat = api.chat.subscribe();
+
+chat.subscribe((message) => {
+  console.log("got", message.data);
+});
+
+chat.on("open", () => {
+  chat.send("hello from client");
+});
+```
+
+`subscribe()` accepts query parameters through its options. Browser WebSockets cannot send arbitrary request headers; use cookies or a server-approved authentication flow.
+
+## Response
+`subscribe()` returns an `EdenWS` wrapper. It provides typed `send`, `subscribe`, `on`, `off`, and `close` helpers.
+
+Use `chat.ws` to access the underlying native WebSocket. The wrapper is not a subclass with every native WebSocket property.
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

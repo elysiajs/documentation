@@ -1,0 +1,50 @@
+---
+template: "splash"
+description: "Elysia API reference for SelectiveProblem."
+editUrl: false
+next: false
+prev: false
+title: "SelectiveProblem"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">SelectiveProblem</h1>
+
+```ts
+type SelectiveProblem<Res> = <Code, T>(code, ...detail) => ElysiaStatus<NumericStatus<Code>, ResponseOf<Res, Code>>;
+```
+
+Defined in: elysia/dist/error.d.ts:221
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Res` |
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Code` *extends* \| keyof `Res` \| [`StatusMapBack`](/reference/type-aliases/statusmapback/)\[`Extract`\<keyof [`StatusMapBack`](/reference/type-aliases/statusmapback/), keyof `Res`\>\] | - |
+| `T` *extends* `ProblemInput`\<`ResponseOf`\<`Res`, `Code`\>\> | `ProblemInput`\<`ResponseOf`\<`Res`, `Code`\>\> |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `code` | `Code` |
+| ...`detail` | `object` *extends* `ProblemInput`\<`ResponseOf`\<`Res`, `Code`\>\> ? \[`CheckExcessProps`\<`T`, `ProblemInput`\<`ResponseOf`\<`Res`, `Code`\>\>\>\] : \[`CheckExcessProps`\<`T`, `ProblemInput`\<`ResponseOf`\<`Res`, `Code`\>\>\>\] |
+
+## Returns
+
+[`ElysiaStatus`](/reference/classes/elysiastatus/)\<[`NumericStatus`](/reference/type-aliases/numericstatus/)\<`Code`\>, `ResponseOf`\<`Res`, `Code`\>\>
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,72 @@
+---
+import StarlightPagination from '@astrojs/starlight/components/Pagination.astro';
+
+const { prev, next } = Astro.locals.starlightRoute.pagination;
+---
+
+{(prev || next) && (
+	<nav class="spica-surface spica-pagination print:hidden" aria-label="Page navigation">
+		<StarlightPagination />
+	</nav>
+)}
+
+<style>
+	.spica-pagination {
+		container: pagination / inline-size;
+		width: 100%;
+		max-width: 42rem;
+		margin-inline: auto;
+	}
+
+	.spica-pagination :global(.pagination-links) {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1rem;
+	}
+
+	.spica-pagination :global(.pagination-links a) {
+		gap: 0.75rem;
+		padding: 1.125rem;
+		border: 1px solid var(--color-border);
+		border-radius: 1rem;
+		background:
+			radial-gradient(ellipse at 100% 0, color-mix(in oklab, var(--color-harmony-center) 12%, transparent), transparent 75%),
+			var(--color-surface);
+		box-shadow: var(--shadow-xs);
+		font: 500 0.875rem / 1.5 var(--font-sans);
+		color: var(--color-ink-soft);
+		transition: border-color var(--dur-fast) var(--ease-out), scale var(--dur-base) var(--ease-out);
+	}
+
+	.spica-pagination :global(.pagination-links a:hover) {
+		border-color: var(--color-border-strong);
+	}
+
+	.spica-pagination :global(.pagination-links a:active) {
+		scale: 0.98;
+		transition-duration: 80ms;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.spica-pagination :global(.pagination-links a) {
+			transition: none;
+		}
+	}
+
+	.spica-pagination :global(.pagination-links a:focus-visible) {
+		outline: var(--focus-outline);
+		outline-offset: var(--focus-offset);
+	}
+
+	.spica-pagination :global(.link-title) {
+		font: 400 1.5rem / 1.2 var(--font-display);
+		color: var(--color-ink);
+	}
+
+	@container pagination (min-width: 32rem) {
+		.spica-pagination :global(.pagination-links) {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.spica-pagination :global([rel='next']) { grid-column: 2; }
+	}
+</style>

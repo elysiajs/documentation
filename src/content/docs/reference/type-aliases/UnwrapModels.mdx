@@ -1,0 +1,33 @@
+---
+template: "splash"
+description: "Elysia API reference for UnwrapModels."
+editUrl: false
+next: false
+prev: false
+title: "UnwrapModels"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">UnwrapModels</h1>
+
+```ts
+type UnwrapModels<T, Iteration> = Iteration["length"] extends 8 ? T : { [K in keyof T]: T[K] extends AnySchema ? UnwrapSchema<T[K]> : T[K] extends Record<string, unknown> ? UnwrapModels<T[K], [...Iteration, 0]> : T[K] };
+```
+
+Defined in: elysia/dist/types.d.ts:706
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `T` *extends* `Record`\<`string`, `unknown`\> | - |
+| `Iteration` *extends* `number`[] | \[\] |
+
+</div>
+</InteractiveDocLayout>
+</div>

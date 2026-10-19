@@ -1,0 +1,38 @@
+---
+template: "splash"
+description: "Elysia API reference for Macro."
+editUrl: false
+next: false
+prev: false
+title: "Macro"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Macro</h1>
+
+Defined in: elysia/dist/types.d.ts:529
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Macro` *extends* `BaseMacro` | `object` |
+| `Input` *extends* `BaseMacro` | `object` |
+| `TypedRoute` *extends* [`RouteSchema`](/reference/interfaces/routeschema/) | `object` |
+| `Singleton` *extends* `SingletonBase` | [`DefaultSingleton`](/reference/interfaces/defaultsingleton/) |
+| `Errors` *extends* `ErrorDefinition`[] | \[\] |
+
+## Indexable
+
+```ts
+[K: string | number | symbol]: MaybeValueOrVoidFunction<Input & Macro & object>
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

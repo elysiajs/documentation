@@ -1,0 +1,42 @@
+---
+template: "splash"
+description: "Elysia API reference for sse."
+editUrl: false
+next: false
+prev: false
+title: "sse"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">sse</h1>
+
+```ts
+const sse: <T>(_payload) => T extends string ? object : T extends SSEPayload ? T : T extends ReadableStream<infer A> ? ReadableStream<FormatSSEPayload<A>> : T extends Generator<infer A, infer B, infer C> ? Generator<FormatSSEPayload<A>, B, C> : T extends AsyncGenerator<infer A, infer B_1, infer C_1> ? AsyncGenerator<FormatSSEPayload<A>, B_1, C_1> : T;
+```
+
+Defined in: elysia/dist/utils.d.ts:161
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` *extends* \| `string` \| [`SSEPayload`](/reference/type-aliases/ssepayload/) \| `Generator` \| `AsyncGenerator` \| `ReadableStream` |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `_payload` | `T` |
+
+## Returns
+
+`T` *extends* `string` ? `object` : `T` *extends* [`SSEPayload`](/reference/type-aliases/ssepayload/) ? `T` : `T` *extends* `ReadableStream`\<infer A\> ? `ReadableStream`\<`FormatSSEPayload`\<`A`\>\> : `T` *extends* `Generator`\<infer A, infer B, infer C\> ? `Generator`\<`FormatSSEPayload`\<`A`\>, `B`, `C`\> : `T` *extends* `AsyncGenerator`\<infer A, infer B\_1, infer C\_1\> ? `AsyncGenerator`\<`FormatSSEPayload`\<`A`\>, `B_1`, `C_1`\> : `T`
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,57 @@
+---
+template: "splash"
+description: "Return a multipart/form-data response."
+editUrl: false
+next: false
+prev: false
+title: "form"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">form</h1>
+
+```ts
+const form: <T>(value) => ElysiaFormData<T>;
+```
+
+Defined in: elysia/dist/utils.d.ts:144
+
+Return a `multipart/form-data` response.
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` *extends* `Record`\<keyof `any`, `unknown`\> |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `T` |
+
+## Returns
+
+`ElysiaFormData`\<`T`\>
+
+## Example
+
+```ts
+import { Elysia, form, file } from 'elysia'
+
+new Elysia().get('/', () =>
+	form({
+		name: 'Tea Party',
+		images: [file('1.webp'), file('2.webp')]
+	})
+)
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,343 @@
+---
+title: WebSocket
+description: Create typed WebSocket routes, validate messages, and control the connection lifecycle.
+template: splash
+---
+
+import '../../../styles/routing.css';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+
+export const steps = [
+    {
+        "label": "Open a socket",
+        "code": "import { Elysia } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', ({ body }) => body)\n    .listen(3000)"
+    },
+    {
+        "label": "Validate messages",
+        "code": "import { Elysia, t } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', {\n        body: t.Object({ message: t.String() })\n    }, ({ body }) => body.message)\n    .listen(3000)"
+    },
+    {
+        "label": "Send more than one reply",
+        "code": "import { Elysia, t } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', {\n        body: t.Object({ message: t.String() }),\n        response: t.String()\n    }, function* ({ body }) {\n        yield 'Message received'\n        yield body.message\n    })\n    .listen(3000)"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">WebSocket</h1>
+
+WebSocket keeps a connection open so your client and server can send messages to each other. Unlike repeated HTTP requests, each message doesn't need a new request and response exchange.
+
+Elysia uses Bun's WebSocket support, built on [uWebSockets](https://github.com/uNetworking/uWebSockets). Socket.IO uses its own protocol on top of transports; use a standard WebSocket client for these routes.
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## Open a socket
+
+Register the WebSocket plugin once, then add a `.ws()` route. Connect to `ws://localhost:3000/ws`; each message is sent back to its client.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Validate messages
+
+The `body` schema validates incoming messages. Send `{"message":"Hello"}` as JSON and the server replies with `Hello`.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Send more than one reply
+
+A generator can yield multiple replies. Each yield is a separate message, checked against the response schema.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## WebSocket message validation
+
+Like HTTP routes, WebSocket routes accept schemas for request data and responses. Put the options before the message handler:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+const app = new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.Object({ message: t.String() }),
+        query: t.Object({ id: t.String() }),
+        response: t.Object({
+            id: t.String(),
+            message: t.String(),
+            time: t.Number()
+        })
+    }, ({ query, body }) => ({
+        id: query.id,
+        message: body.message,
+        time: Date.now()
+    }))
+    .listen(3000)
+```
+
+Connect to `ws://localhost:3000/ws?id=42` and send `{"message":"Hello"}`. The response includes that message, the query's `id`, and the current timestamp.
+
+Context properties such as `query` and `params` sit directly on the socket argument in Elysia 2. Use `ws.query`, not the old `ws.data.query` shape.
+
+| Schema property | Validates |
+| --- | --- |
+| `body` | An incoming message |
+| `query` | The connection URL's query string |
+| `params` | Path parameters |
+| `headers` | The upgrade request's headers |
+| `cookie` | The upgrade request's cookies |
+| `response` | Messages returned, yielded, or sent by the handler |
+
+Elysia parses JSON-shaped string messages before validation. It also recognizes booleans, `null`, and numeric strings that can be converted safely. Other text remains a string; binary messages remain binary.
+
+## Configuration
+
+Pass server-wide WebSocket options to `websocket()`:
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket({ idleTimeout: 30 }))
+    .ws('/ws', ({ body }) => body)
+    .listen(3000)
+```
+
+This replaces the old constructor `websocket` option. Elysia's Bun adapter uses [Bun's WebSocket configuration](https://bun.sh/docs/api/websockets). The following defaults are Bun defaults.
+
+### perMessageDeflate
+
+Default: `false`.
+
+Enable compression for clients that support it. Compression is disabled unless you enable it.
+
+### maxPayloadLength
+
+The maximum incoming message size in bytes. Bun's default is `16 * 1024 * 1024` (16 MiB).
+
+### idleTimeout
+
+Default: `120` seconds.
+
+Close an idle connection after this time without messages or pings.
+
+### backpressureLimit
+
+Default: `16 * 1024 * 1024` bytes (16 MiB).
+
+The maximum number of bytes buffered for one connection.
+
+### closeOnBackpressureLimit
+
+Default: `false`.
+
+Close the connection when its backpressure limit is reached.
+
+## Methods
+
+Use `.ws()` to register a WebSocket route. The socket argument provides methods such as `send`, `publish`, `subscribe`, and `close`, alongside the route's context properties.
+
+## ws
+
+`.ws(path, handler)` registers a message handler. Use `.ws(path, options, handler)` when it also needs schemas or lifecycle hooks.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', ({ body }) => body)
+    .listen(3000)
+```
+
+The two-argument object form also works:
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        message(ws, message) {
+            ws.send(message)
+        }
+    })
+    .listen(3000)
+```
+
+- `path` is the route exposed to WebSocket clients.
+- `options` configures schemas and lifecycle callbacks.
+- `handler` handles each incoming message. Don't also supply `options.message` when passing a separate handler.
+
+Return or yield a value when possible so response types can be inferred. `ws.send()` remains available when you need to send explicitly.
+
+## WebSocketHandler
+
+The route options can contain connection callbacks, message callbacks, schemas, and WebSocket tuning options. The callbacks receive Elysia's socket wrapper with the request context at the top level.
+
+The following sections describe those callbacks.
+
+## open
+
+Called when a connection opens. It receives the socket argument.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        open(ws) {
+            console.log('Connected', ws.id)
+        },
+        message: ({ body }) => body
+    })
+```
+
+`ws.id` identifies the connection. Other socket properties include `remoteAddress`, `readyState`, and your route's `query`, `params`, and derived values.
+
+## message
+
+Called for each incoming message. The parsed, validated value is available as `ws.body` and as the second callback argument.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.String(),
+        message(ws, message) {
+            return message.toUpperCase()
+        }
+    })
+```
+
+The `body` schema determines the message type. Without a schema, handle the parsed value as unknown rather than assuming every message is a string.
+
+## close
+
+Called when a connection closes. It receives the socket, close code, and reason.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        close(ws, code, reason) {
+            console.log('Disconnected', ws.id, code, reason)
+        },
+        message: ({ body }) => body
+    })
+```
+
+## drain
+
+Called when the socket can accept more data after backpressure. It receives the socket; close codes and reasons belong to `close`, not `drain`.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        drain(ws) {
+            console.log('Ready for more data', ws.id)
+        },
+        message: ({ body }) => body
+    })
+```
+
+## parse
+
+The WebSocket `parse` hook processes each message after default parsing and before message validation. It receives the socket and parsed value; return a replacement value or `undefined` to keep it.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.String(),
+        parse(_ws, message) {
+            if (typeof message === 'string') return message.trim()
+        }
+    }, ({ body }) => body)
+```
+
+This is different from an HTTP body parser on the upgrade request.
+
+## beforeHandle
+
+Runs before the connection upgrades, and participates in message handling before the message handler. Return a status to reject the upgrade before opening a socket.
+
+```ts
+import { Elysia, status } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        beforeHandle() {
+            return status(403, 'This socket is closed to new connections')
+        }
+    }, ({ body }) => body)
+```
+
+For authentication, validate the connection's credentials here. Message validation belongs in the `body` schema.
+
+## transform
+
+Runs before validation. In the current WebSocket lifecycle it runs during the upgrade and again for each message, so don't assume it executes only once per connection.
+
+## transformMessage
+
+The old `transformMessage` option is not part of Elysia 2's WebSocket route options. Use [`parse`](#parse) to transform an individual message before validation.
+
+## upgrade
+
+Use `upgrade` to add response headers to the WebSocket handshake. It accepts a static object or a function of the upgrade context.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        upgrade: { 'x-powered-by': 'Elysia' }
+    }, ({ body }) => body)
+```
+
+To validate incoming request headers, use the `headers` schema instead.
+
+
+</div>
+</InteractiveDocLayout>
+</div>

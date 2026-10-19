@@ -1,0 +1,82 @@
+---
+title: "Deploy Elysia on Vercel"
+description: "Vercel Functions support Web Standard frameworks by default, so you can run Elysia on Vercel Functions without any additional configuration."
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Deploy Elysia on Vercel</h1>
+
+Elysia can be deployed on Vercel with zero configuration using either Bun or Node runtime.
+
+1. In **src/index.ts**, create or import an existing Elysia server
+2. Export the Elysia server as the default export
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+export default new Elysia()
+    .get('/', () => 'Hello Vercel Function')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+```
+
+3. Develop locally with the Vercel CLI
+
+```bash
+vc dev
+```
+
+4. Deploy to Vercel
+
+```bash
+vc deploy
+```
+
+That's it. Your Elysia app is now running on Vercel.
+
+### pnpm
+If your pnpm configuration does not install peer dependencies, add the peers required by Elysia v2 explicitly:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+### Using Node.js
+
+To deploy with Node.js, make sure to set `type: module` in your `package.json`
+
+
+```json title="package.json"
+{
+  "name": "elysia-app",
+  "type": "module"
+}
+```
+
+
+### Using Bun
+To deploy with Bun, make sure to set the runtime to Bun in your `vercel.json`
+
+
+```json title="vercel.json"
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "bunVersion": "1.x"
+}
+```
+
+## If this doesn't work
+Vercel has zero-configuration support for Elysia. For additional configuration, please refer to the [Vercel documentation](https://vercel.com/docs/frameworks/backend/elysia)
+
+</div>
+</InteractiveDocLayout>
+</div>

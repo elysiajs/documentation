@@ -1,0 +1,29 @@
+{
+	"name": "elysia-card",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "bunx vite --port 5200 --strictPort",
+		"check": "node scripts/check-export.mjs"
+	},
+	"dependencies": {
+		"@fontsource/alice": "^5.3.0",
+		"@fontsource/jetbrains-mono": "^5.3.0",
+		"@fontsource/nunito": "^5.3.0",
+		"@tailwindcss/vite": "^4.3.3",
+		"@vitejs/plugin-react": "^6.1.2",
+		"modern-screenshot": "^4.7.0",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
+		"shiki": "^4.5.0",
+		"tailwindcss": "^4.3.3",
+		"vite": "^8.3.3"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.4.2",
+		"@types/react": "^19.3.0",
+		"@types/react-dom": "^19.3.0",
+		"puppeteer-core": "^25.12.0",
+		"typescript": "^7.0.2"
+	}
+}

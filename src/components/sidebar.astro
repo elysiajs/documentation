@@ -1,0 +1,369 @@
+---
+import Sidebar from '@astrojs/starlight/components/Sidebar.astro'
+import {
+	IconRocket, IconBook, IconBook2, IconLayoutGrid, IconLeaf, IconLink,
+	IconPuzzle, IconScale, IconPlugConnected, IconCpu
+} from '@tabler/icons-react'
+
+const chapterIcons = {
+	'Getting started': IconRocket,
+	Essential: IconBook2,
+	Patterns: IconLayoutGrid,
+	Eden: IconLeaf,
+	'Eden Treaty': IconLink,
+	Plugins: IconPuzzle,
+	Comparison: IconScale,
+	Integration: IconPlugConnected,
+	Internal: IconCpu,
+	Reference: IconBook
+}
+---
+
+<spica-sidebar class="docs-sidebar spica-surface">
+	<Sidebar />
+	{Object.entries(chapterIcons).map(([label, Icon]) => (
+		<template data-sidebar-chapter={label}>
+			<Icon size={18} stroke={1.5} aria-hidden="true" className="chapter-icon" />
+		</template>
+	))}
+</spica-sidebar>
+
+<script>
+	class SpicaSidebar extends HTMLElement {
+		private hoverListeners?: AbortController
+		private activeObserver?: MutationObserver
+		private layoutObserver?: ResizeObserver
+		private activeRow: HTMLElement | null = null
+		private activeBounds?: { left: number; top: number; width: number; height: number }
+		private transitionReady?: Promise<void>
+		private syncActive?: () => void
+
+		connectedCallback() {
+			this.hoverListeners?.abort()
+			this.activeObserver?.disconnect()
+			this.layoutObserver?.disconnect()
+			for (const item of this.querySelectorAll('sl-sidebar-state-persist a, sl-sidebar-state-persist summary')) {
+				if (item.querySelector(':scope > spica-ripple')) continue
+				const ripple = document.createElement('spica-ripple')
+				ripple.setAttribute('aria-hidden', 'true')
+				ripple.append(document.createElement('span'))
+				item.prepend(ripple)
+			}
+			for (const summary of this.querySelectorAll('summary')) {
+				if (summary.classList.contains('has-icon')) continue
+				const label = summary.querySelector('.group-label > .large')?.textContent?.trim()
+				const template = [...this.querySelectorAll<HTMLTemplateElement>('template[data-sidebar-chapter]')]
+					.find((template) => template.dataset.sidebarChapter === label)
+				if (!template) continue
+				summary.append(template.content.cloneNode(true))
+				summary.classList.add('has-icon')
+			}
+
+			const navigation = this.querySelector<HTMLElement>('sl-sidebar-state-persist')
+			if (!navigation) return
+			let marker = navigation.querySelector<HTMLElement>(':scope > .sidebar-hover')
+			if (!marker) {
+				marker = document.createElement('div')
+				marker.className = 'sidebar-hover'
+				marker.setAttribute('aria-hidden', 'true')
+				navigation.prepend(marker)
+			}
+			let hovered: HTMLElement | null = null
+			const hide = () => {
+				hovered = null
+				marker.removeAttribute('data-visible')
+				marker.removeAttribute('data-moving')
+			}
+			hide()
+			this.hoverListeners = new AbortController()
+			const { signal } = this.hoverListeners
+			let activeMarker = navigation.querySelector<HTMLElement>(':scope > .sidebar-active')
+			if (!activeMarker) {
+				activeMarker = document.createElement('div')
+				activeMarker.className = 'sidebar-active'
+				activeMarker.setAttribute('aria-hidden', 'true')
+				navigation.prepend(activeMarker)
+			}
+			const syncActive = () => {
+				if (this.transitionReady) return
+				const row = navigation.querySelector<HTMLElement>('a[aria-current="page"]')
+				const bounds = row?.getBoundingClientRect()
+				if (!row || row.closest('details:not([open])') || !bounds?.width || !bounds.height) {
+					activeMarker.removeAttribute('data-visible')
+					activeMarker.removeAttribute('data-moving')
+					navigation.removeAttribute('data-active-marker')
+					this.activeRow = null
+					return
+				}
+				const origin = navigation.getBoundingClientRect()
+				const position = { left: bounds.left - origin.left, top: bounds.top - origin.top, width: bounds.width, height: bounds.height }
+				const previous = this.activeBounds
+				if (!previous || previous.left !== position.left || previous.top !== position.top || previous.width !== position.width || previous.height !== position.height) {
+					activeMarker.getBoundingClientRect()
+					const moving = this.activeRow !== null && (this.activeRow !== row || activeMarker.hasAttribute('data-moving'))
+					activeMarker.toggleAttribute('data-moving', moving && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+					activeMarker.style.width = `${position.width}px`
+					activeMarker.style.height = `${position.height}px`
+					activeMarker.style.transform = `translate(${position.left}px, ${position.top}px)`
+					this.activeBounds = position
+				}
+				activeMarker.setAttribute('data-visible', '')
+				navigation.setAttribute('data-active-marker', '')
+				this.activeRow = row
+			}
+			this.syncActive = syncActive
+			syncActive()
+			document.addEventListener('astro:before-swap', (event) => {
+				const ready = event.viewTransition.ready
+				this.transitionReady = ready
+				const resume = () => {
+					if (this.transitionReady !== ready) return
+					this.transitionReady = undefined
+					this.syncActive?.()
+				}
+				// Preserve the previous position while Astro snapshots and reconnects the shell.
+				void ready.then(resume, resume)
+			}, { signal })
+			this.activeObserver = new MutationObserver(syncActive)
+			this.activeObserver.observe(navigation, { subtree: true, attributes: true, attributeFilter: ['aria-current'] })
+			this.layoutObserver = new ResizeObserver(syncActive)
+			this.layoutObserver.observe(navigation)
+			navigation.addEventListener('toggle', syncActive, { capture: true, signal })
+			document.fonts?.addEventListener('loadingdone', syncActive, { signal })
+			activeMarker.addEventListener('transitionend', (event) => {
+				if (event.propertyName === 'transform') activeMarker.removeAttribute('data-moving')
+			}, { signal })
+			navigation.addEventListener('pointermove', (event) => {
+				if (event.pointerType === 'touch' || !matchMedia('(hover: hover) and (pointer: fine)').matches) {
+					hide()
+					return
+				}
+				const row = event.target instanceof Element
+					? event.target.closest<HTMLElement>('a, summary')
+					: null
+				if (!row || !navigation.contains(row) || row === hovered) return
+				const bounds = row.getBoundingClientRect()
+				const origin = navigation.getBoundingClientRect()
+				marker.toggleAttribute('data-moving', hovered !== null)
+				marker.style.width = `${bounds.width}px`
+				marker.style.height = `${bounds.height}px`
+				marker.style.transform = `translate(${bounds.left - origin.left}px, ${bounds.top - origin.top}px)`
+				if (!hovered) marker.getBoundingClientRect()
+				marker.setAttribute('data-visible', '')
+				hovered = row
+			}, { signal })
+			navigation.addEventListener('pointerleave', hide, { signal })
+			navigation.addEventListener('focusin', hide, { signal })
+			navigation.addEventListener('toggle', hide, { capture: true, signal })
+			document.addEventListener('scroll', hide, { capture: true, passive: true, signal })
+			document.addEventListener('astro:before-preparation', hide, { signal })
+			window.addEventListener('resize', hide, { signal })
+		}
+
+		disconnectedCallback() {
+			this.syncActive = undefined
+			this.hoverListeners?.abort()
+			this.activeObserver?.disconnect()
+			this.layoutObserver?.disconnect()
+		}
+	}
+	if (!customElements.get('spica-sidebar'))
+		customElements.define('spica-sidebar', SpicaSidebar)
+</script>
+
+<style>
+	.docs-sidebar {
+		position: relative;
+		font-family: var(--font-sans);
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+	}
+
+	.docs-sidebar > :global([class~='md:sl-hidden']) {
+		position: sticky;
+		inset-block-end: 0;
+		z-index: 1;
+		margin-block-start: auto;
+	}
+
+	.docs-sidebar :global(sl-sidebar-state-persist) {
+		display: block;
+		position: relative;
+		isolation: isolate;
+	}
+	.docs-sidebar :global(.sidebar-hover),
+	.docs-sidebar :global(.sidebar-active) {
+		position: absolute;
+		inset: 0 auto auto 0;
+		z-index: -1;
+		pointer-events: none;
+		border-radius: 0.75rem;
+		background: var(--color-surface-2);
+		opacity: 0;
+		transition: opacity var(--dur-fast) var(--ease-out);
+	}
+	.docs-sidebar :global(.sidebar-hover) {
+		z-index: -2;
+	}
+	.docs-sidebar :global(.sidebar-active) {
+		background: var(--color-primary-soft);
+	}
+	:global(html[data-theme='dark']) .docs-sidebar :global(.sidebar-active) {
+		background: var(--color-primary-tint);
+	}
+	.docs-sidebar :global(.sidebar-active[data-visible]) {
+		opacity: 1;
+	}
+	.docs-sidebar :global(.sidebar-active[data-moving]) {
+		transition: transform var(--dur-base) var(--ease-out);
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.docs-sidebar :global(.sidebar-hover[data-visible]) {
+			opacity: 1;
+		}
+		.docs-sidebar :global(.sidebar-hover[data-moving]) {
+			transition:
+				transform var(--dur-fast) var(--ease-out),
+				opacity var(--dur-fast) var(--ease-out);
+		}
+	}
+
+	.docs-sidebar :global(ul) {
+		--sl-sidebar-item-padding-inline: 0.375rem;
+	}
+	.docs-sidebar :global(.top-level > li + li) {
+		margin-block-start: 0.25rem;
+	}
+	.docs-sidebar :global(ul ul li) {
+		border-inline-start: 0;
+	}
+	.docs-sidebar :global(.large) {
+		color: var(--color-ink);
+		font-size: 0.9375rem;
+		font-weight: 600;
+	}
+	.docs-sidebar :global(.top-level > li > details > summary .large) {
+		font-weight: 700;
+	}
+	.docs-sidebar :global(sl-sidebar-state-persist :is(a, summary)) {
+		--ripple-color: var(--color-primary);
+	}
+	.docs-sidebar :global(summary) {
+		position: relative;
+		justify-content: flex-start;
+		padding: 0.375rem;
+		padding-inline-start: 1.875rem;
+		border-radius: 0.75rem;
+		color: var(--color-ink-soft);
+	}
+	.docs-sidebar :global(summary .caret) {
+		position: absolute;
+		inset-inline-start: 6px;
+		width: 12px;
+		height: 12px;
+		transition: transform var(--dur-base) var(--ease-spring);
+	}
+	.docs-sidebar :global(summary:focus-visible .caret) {
+		transition: none;
+	}
+	.docs-sidebar :global(summary.has-icon) {
+		padding-inline-end: 1.75rem;
+	}
+	.docs-sidebar :global(summary .chapter-icon) {
+		position: absolute;
+		inset-inline-start: 3px;
+		inset-block-start: calc(50% - 9px);
+		pointer-events: none;
+	}
+	.docs-sidebar :global(summary.has-icon .caret) {
+		inset-inline-start: auto;
+		inset-inline-end: 0.5rem;
+	}
+	@supports (interpolate-size: allow-keywords) {
+		.docs-sidebar :global(details) {
+			interpolate-size: allow-keywords;
+		}
+		.docs-sidebar :global(details::details-content) {
+			block-size: 0;
+			overflow: clip;
+			transition:
+				block-size var(--dur-base) var(--ease-out),
+				content-visibility var(--dur-base) allow-discrete;
+		}
+		.docs-sidebar :global(details[open]::details-content) {
+			block-size: auto;
+		}
+		.docs-sidebar
+			:global(details:has(> summary:focus-visible)::details-content) {
+			transition: none;
+		}
+	}
+	.docs-sidebar :global(sl-sidebar-state-persist a) {
+		position: relative;
+		padding: 0.4375rem 0.625rem;
+		padding-inline-start: 2rem;
+		border-radius: 0.75rem;
+		font-size: 0.875rem;
+		font-weight: 400;
+		color: var(--color-ink-soft);
+		transition:
+			color var(--dur-base) var(--ease-out),
+			font-weight var(--dur-base) var(--ease-out);
+	}
+	.docs-sidebar :global(ul ul a) {
+		padding: 0.375rem 0.625rem;
+		padding-inline-start: 1.125rem;
+	}
+	.docs-sidebar :global(sl-sidebar-state-persist a:hover),
+	.docs-sidebar :global(summary:hover),
+	.docs-sidebar :global(summary:hover .large) {
+		color: var(--color-primary-deep);
+	}
+	.docs-sidebar :global(sl-sidebar-state-persist a[aria-current='page']) {
+		color: var(--color-primary-deep);
+		background: var(--color-primary-soft);
+		font-weight: 700;
+	}
+	:global(html[data-theme='dark']) .docs-sidebar :global(sl-sidebar-state-persist a[aria-current='page']) {
+		background: var(--color-primary-tint);
+	}
+	.docs-sidebar :global(sl-sidebar-state-persist a[aria-current='page']::before),
+	.docs-sidebar :global(.sidebar-active::before) {
+		content: '';
+		position: absolute;
+		inset-inline-start: 0;
+		inset-block: 9px;
+		width: 3px;
+		border-radius: 999px;
+		background: var(--color-primary);
+		pointer-events: none;
+	}
+	.docs-sidebar :global(sl-sidebar-state-persist[data-active-marker] a[aria-current='page']),
+	:global(html[data-theme='dark']) .docs-sidebar :global(sl-sidebar-state-persist[data-active-marker] a[aria-current='page']) {
+		background: transparent;
+	}
+	.docs-sidebar :global(sl-sidebar-state-persist[data-active-marker] a[aria-current='page']::before) {
+		display: none;
+	}
+	.docs-sidebar
+		:global(
+			sl-sidebar-state-persist :is(a, summary, select):focus-visible
+		) {
+		outline: var(--focus-outline);
+		outline-offset: var(--focus-offset);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.docs-sidebar :global(sl-sidebar-state-persist a),
+		.docs-sidebar :global(.sidebar-active[data-moving]) {
+			transition: none;
+		}
+		.docs-sidebar :global(.sidebar-hover[data-moving]) {
+			transition: opacity var(--dur-fast) var(--ease-out);
+		}
+		.docs-sidebar :global(.caret),
+		.docs-sidebar :global(details::details-content) {
+			transition: none;
+		}
+	}
+</style>

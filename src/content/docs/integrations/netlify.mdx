@@ -1,0 +1,58 @@
+---
+title: "Integration with Netlify Edge Function"
+description: "Elysia is built on top of Web Standard Request/Response, allowing us to run Elysia on Netlify Edge Function"
+template: splash
+---
+
+import "../../../styles/routing.css";
+import InteractiveDocLayout from "../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration with Netlify Edge Function</h1>
+
+[Netlify Edge Functions](https://docs.netlify.com/build/edge-functions/overview/) run on [Deno](/integrations/deno), which is one of Elysia's supported runtimes, as Elysia is built on top of Web Standards.
+
+Netlify Edge Functions require a special directory to run a function; the default is **\<directory\>/netlify/edge-functions**.
+
+To create a function at **/hello**, you would need to create a file at `netlify/edge-functions/hello.ts`, then export a function that forwards the request to Elysia.
+
+
+```typescript title="netlify/edge-functions/hello.ts"
+import { Elysia } from 'elysia'
+
+export const config = { path: '/hello' }
+
+const app = new Elysia({ prefix: '/hello' })
+	.get('/', () => 'Hello Elysia')
+
+export default (request: Request) => app.handle(request)
+```
+
+
+### Running locally
+To test your Elysia server on Netlify Edge Functions locally, you can install the [Netlify CLI](https://docs.netlify.com/build/edge-functions/get-started/#test-locally) to simulate function invocation.
+
+To install the Netlify CLI:
+```bash
+bun add -g netlify-cli
+```
+
+To run the development environment:
+```bash
+netlify dev
+```
+
+For additional information, please refer to the [Netlify Edge Functions documentation](https://docs.netlify.com/build/edge-functions).
+
+### pnpm
+If your pnpm configuration does not install peer dependencies, add the peers required by Elysia v2 explicitly:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

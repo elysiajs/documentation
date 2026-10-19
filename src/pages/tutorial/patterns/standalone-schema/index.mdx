@@ -1,0 +1,98 @@
+---
+title: "Merge schemas"
+description: "Learn how to use merged guard schemas in Elysia to define reusable validation schemas that coexist with route-specific schemas."
+---
+
+import Lesson from '../../../../components/tutorial/lesson.astro';
+import DocLink from '../../../../components/tutorial/doc-link.astro';
+
+<Lesson title={frontmatter.title} description={frontmatter.description} doc="/essential/validation/">
+
+# Merge schemas
+
+When we define a schema using <DocLink href="/essential/validation/#guard">Guard</DocLink>, the schema will be added to a route. But it will be **overridden** if the route provides a schema:
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.guard({
+		body: t.Object({
+			age: t.Number()
+		})
+	})
+	.post(
+		'/user',
+		{
+			// This will override the guard schema
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body }) => body
+	)
+	.listen(3000)
+```
+
+If we want a schema to **co-exist** with route schema, we can define it as **merged guard schema**:
+
+```typescript ins={5}
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.guard({
+		schema: 'merge',
+		body: t.Object({
+			age: t.Number()
+		})
+	})
+	.post(
+		'/user',
+		// body will have both age and name property
+		{
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body }) => body
+	)
+	.listen(3000)
+```
+
+## Schema library interoperability
+
+Schemas between merged guard schemas can be from different validation libraries.
+
+For example you can define a merged guard schema using **zod**, and a local schema using **t** from **elysia**, and both will works interchangeably.
+
+## Assignment
+
+Let's make both `age` and `name` properties required in the request body by using merged guard schema.
+
+<Fragment slot="answer">
+
+We can define a merged guard schema by adding `schema: 'merge'` in the guard options.
+
+```typescript ins={6}
+import { Elysia, t } from 'elysia'
+import { z } from 'zod'
+
+new Elysia()
+	.guard({
+		schema: 'merge',
+		body: z.object({
+			age: z.number()
+		})
+	})
+	.post(
+		'/user',
+		{
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body }) => body
+	)
+	.listen(3000)
+```
+
+</Fragment>
+
+</Lesson>

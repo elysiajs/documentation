@@ -1,0 +1,586 @@
+@theme {
+	/* --- Primary · soft-pink blossom (the one accent) --- */
+	--color-primary: oklch(0.686 0.246 4.2);
+	--color-on-primary: #ffffff;
+	--color-primary-soft: oklch(0.968 0.02 355);
+	--color-primary-line: oklch(0.905 0.05 353);
+	--color-primary-deep: oklch(0.61 0.235 6.5);
+	--color-primary-cta-deep: oklch(0.645 0.24 5.5);
+	--color-primary-ink: oklch(0.485 0.14 357);
+	--color-primary-tint: color-mix(
+		in oklab,
+		var(--color-primary) 10%,
+		transparent
+	);
+
+	--color-harmony-left: oklch(0.8334 0.079 247.14);
+	--color-harmony-left-soft: oklch(0.9447 0.0265 252.5);
+	--color-harmony-left-deep: oklch(0.5594 0.0946 248.71);
+	--color-harmony-center: oklch(0.8671 0.0568 273.01);
+	--color-harmony-center-soft: oklch(0.9333 0.0309 275.91);
+	--color-harmony-center-line: oklch(0.9126 0.038 275.59);
+	--color-harmony-center-deep: oklch(0.5554 0.1575 274.68);
+	--color-harmony-right: oklch(0.8102 0.0969 308.23);
+	--color-harmony-right-soft: oklch(0.9296 0.0406 311.74);
+	--color-harmony-right-deep: oklch(0.5406 0.1519 303.57);
+
+	--color-bloom: oklch(0.8549 0.0928 350.16);
+	--color-bloom-soft: oklch(0.9604 0.0238 352.64);
+
+	--color-ink: oklch(0.2772 0.019 303.36);
+	--color-ink-soft: oklch(0.4575 0.0228 295.31);
+	--color-ink-muted: oklch(0.6834 0.0241 302.75);
+
+	--color-base: #ffffff;
+	--color-surface: oklch(0.983 0.0025 333.98);
+	--color-surface-2: oklch(0.9604 0.0085 325.64);
+	--color-surface-raised: #ffffff;
+
+	--color-border: oklch(0.9447 0.0108 339.34);
+	--color-border-strong: oklch(0.9022 0.0152 338.94);
+	--color-control-border: var(--color-border-strong);
+
+	--color-success: oklch(0.802 0.1008 161.4);
+	--color-success-soft: oklch(0.9595 0.0186 164.73);
+	--color-success-deep: oklch(0.5017 0.1118 158.21);
+	--color-warning: oklch(0.8521 0.1164 82.04);
+	--color-warning-soft: oklch(0.9487 0.0521 87.36);
+	--color-warning-deep: oklch(0.4852 0.1161 73.97);
+	--color-danger: oklch(0.6708 0.2464 24.13);
+	--color-on-danger: #ffffff;
+	--color-danger-soft: oklch(0.9473 0.0329 17.63);
+	--color-danger-deep: oklch(0.5703 0.2673 27.43);
+
+	--color-gold: oklch(0.746 0.113 86.22);
+
+	--color-night: oklch(0.1717 0.0376 274.61);
+	--color-night-2: oklch(0.2287 0.0548 272.3);
+	--color-night-ink: oklch(0.9444 0.0286 294.06);
+	--color-night-soft: oklch(0.7613 0.083 277.94);
+
+	--color-glass: rgba(255, 255, 255, 0.86);
+	--color-glass-border: color-mix(
+		in oklab,
+		var(--color-border-strong) 70%,
+		white
+	);
+
+	--font-display: 'Alice', 'Iowan Old Style', Georgia, serif;
+	--font-sans: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+	--font-serif: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+	--text-eyebrow: 13px;
+	--text-eyebrow--line-height: 1.2;
+	--text-h2: 32px;
+	--text-h2--line-height: 1.05;
+	--text-display: 74px;
+	--text-display--line-height: 1.05;
+
+	--shadow-xs: 0 1px 2px rgba(42, 38, 48, 0.05);
+	--shadow-md: 0 6px 18px rgba(42, 38, 48, 0.1);
+	--shadow-lg: 0 10px 30px rgba(42, 38, 48, 0.14);
+	--shadow-primary: 0 2px 6px
+		color-mix(in oklab, var(--color-primary) 30%, transparent);
+	--shadow-attention:
+		0 10px 30px color-mix(in oklab, var(--color-primary) 24%, transparent),
+		0 0 0 4px color-mix(in oklab, var(--color-bloom) 30%, transparent);
+	--shadow-glow:
+		0 0 0 1px color-mix(in oklab, var(--color-primary) 30%, transparent),
+		0 6px 22px color-mix(in oklab, var(--color-primary) 28%, transparent),
+		0 10px 34px
+			color-mix(in oklab, var(--color-harmony-left) 40%, transparent);
+	--shadow-glow-soft:
+		0 4px 18px color-mix(in oklab, var(--color-bloom) 45%, transparent),
+		0 8px 28px
+			color-mix(in oklab, var(--color-harmony-center) 35%, transparent);
+
+	--ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--ease-bounce: cubic-bezier(0.68, -0.4, 0.32, 1.4);
+	--animate-spica-spin: spica-spin 1s linear infinite;
+	--animate-spica-march: spica-march 0.9s linear infinite;
+	--animate-spica-wave: spica-wave 0.6s linear infinite;
+	--animate-spica-bob: spica-bob 0.6s linear infinite;
+	--animate-spica-indet: spica-indet 1.4s var(--ease-out) infinite;
+	--animate-spica-bloom: spica-bloom var(--dur-fast) var(--ease-out) both;
+	--animate-spica-pop: spica-pop var(--dur-base) var(--ease-spring) both;
+	--animate-spica-float: spica-float 3s ease-in-out infinite;
+	--animate-spica-twinkle: spica-twinkle 2s ease-in-out infinite;
+	--animate-spica-wiggle: spica-wiggle var(--dur-slow) ease-in-out;
+	--animate-spica-glow-in: spica-glow-in var(--dur-base) var(--ease-out) both;
+	--animate-spica-menu-in: spica-menu-in 160ms var(--ease-out) both;
+
+	@keyframes spica-bloom {
+		from {
+			opacity: 0;
+			transform: scale(0.985);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+
+	@keyframes spica-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes spica-march {
+		to {
+			stroke-dashoffset: -10;
+		}
+	}
+
+	@keyframes spica-wave {
+		from {
+			-webkit-mask-position-x: 0;
+			mask-position-x: 0;
+		}
+		to {
+			-webkit-mask-position-x: -20px;
+			mask-position-x: -20px;
+		}
+	}
+
+	@keyframes spica-bob {
+		0%,
+		100% {
+			transform: translate(-50%, -50%);
+		}
+		25% {
+			transform: translate(-50%, calc(-50% - 3px));
+		}
+		75% {
+			transform: translate(-50%, calc(-50% + 3px));
+		}
+	}
+
+	@keyframes spica-indet {
+		0% {
+			transform: translateX(-130%);
+		}
+
+		100% {
+			transform: translateX(330%);
+		}
+	}
+
+	@keyframes spica-float {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+
+		50% {
+			transform: translateY(-6px);
+		}
+	}
+
+	@keyframes spica-twinkle {
+		0%,
+		100% {
+			opacity: 0.45;
+			transform: scale(0.85);
+		}
+
+		50% {
+			opacity: 1;
+			transform: scale(1.1);
+		}
+	}
+
+	@keyframes spica-pop {
+		0% {
+			transform: scale(0.6);
+			opacity: 0;
+		}
+
+		60% {
+			transform: scale(1.12);
+			opacity: 1;
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes spica-wiggle {
+		0%,
+		100% {
+			transform: rotate(0);
+		}
+
+		25% {
+			transform: rotate(-6deg);
+		}
+
+		75% {
+			transform: rotate(6deg);
+		}
+	}
+
+	@keyframes spica-glow-in {
+		from {
+			box-shadow: 0 0 0 0 transparent;
+		}
+
+		to {
+			box-shadow:
+				0 4px 18px
+					color-mix(in oklab, var(--color-bloom) 45%, transparent),
+				0 8px 28px
+					color-mix(
+						in oklab,
+						var(--color-harmony-center) 35%,
+						transparent
+					);
+		}
+	}
+
+	@keyframes spica-menu-in {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}
+
+:root {
+	color-scheme: light;
+	--dur-fast: 140ms;
+	--dur-base: 220ms;
+	--dur-slow: 420ms;
+	--glass-blur-small: saturate(1.05) blur(4px);
+	--glass-blur: saturate(1.05) blur(6px);
+
+	--focus-outline: 1.5px dashed var(--color-primary);
+	--focus-offset: 3px;
+	--focus-outline-danger: 1.5px dashed var(--color-danger);
+
+	--gradient-magic: linear-gradient(
+		135deg,
+		var(--color-bloom-soft) 0%,
+		var(--color-harmony-center-soft) 55%,
+		var(--color-harmony-left-soft) 100%
+	);
+	--gradient-magic-strong: linear-gradient(
+		135deg,
+		var(--color-primary-line) 0%,
+		var(--color-harmony-right-soft) 50%,
+		var(--color-harmony-left) 100%
+	);
+
+	--attention: radial-gradient(
+		125% 130% at 18% -10%,
+		var(--color-bloom-soft) 0%,
+		#f8eaf2 34%,
+		#eceffb 66%,
+		#ffffff 100%
+	);
+
+	--surface-wash:
+		radial-gradient(
+			58% 50% at 2% 0%,
+			rgba(255, 116, 156, 0.12) 0%,
+			rgba(255, 116, 156, 0) 68%
+		),
+		radial-gradient(
+			52% 46% at 100% 6%,
+			rgba(168, 205, 240, 0.16) 0%,
+			rgba(168, 205, 240, 0) 70%
+		),
+		radial-gradient(
+			60% 55% at 94% 100%,
+			rgba(207, 180, 232, 0.15) 0%,
+			rgba(207, 180, 232, 0) 70%
+		),
+		radial-gradient(
+			50% 46% at 4% 96%,
+			rgba(201, 210, 242, 0.14) 0%,
+			rgba(201, 210, 242, 0) 70%
+		),
+		var(--color-base);
+
+	--surface-wash-rose:
+		radial-gradient(
+			62% 54% at 0% 0%,
+			rgba(255, 116, 156, 0.18) 0%,
+			rgba(255, 116, 156, 0) 66%
+		),
+		radial-gradient(
+			54% 48% at 100% 4%,
+			rgba(246, 188, 214, 0.2) 0%,
+			rgba(246, 188, 214, 0) 70%
+		),
+		radial-gradient(
+			58% 52% at 96% 100%,
+			rgba(222, 194, 236, 0.12) 0%,
+			rgba(222, 194, 236, 0) 72%
+		),
+		var(--color-base);
+
+	--surface-wash-cool:
+		radial-gradient(
+			56% 50% at 100% 0%,
+			rgba(168, 205, 240, 0.2) 0%,
+			rgba(168, 205, 240, 0) 68%
+		),
+		radial-gradient(
+			58% 52% at 0% 100%,
+			rgba(201, 210, 242, 0.18) 0%,
+			rgba(201, 210, 242, 0) 70%
+		),
+		radial-gradient(
+			48% 44% at 6% 2%,
+			rgba(207, 180, 232, 0.1) 0%,
+			rgba(207, 180, 232, 0) 72%
+		),
+		var(--color-base);
+
+	--surface-wash-iris:
+		radial-gradient(
+			60% 54% at 98% 2%,
+			rgba(207, 180, 232, 0.22) 0%,
+			rgba(207, 180, 232, 0) 68%
+		),
+		radial-gradient(
+			56% 50% at 2% 98%,
+			rgba(222, 194, 236, 0.18) 0%,
+			rgba(222, 194, 236, 0) 70%
+		),
+		radial-gradient(
+			50% 46% at 88% 96%,
+			rgba(255, 116, 156, 0.1) 0%,
+			rgba(255, 116, 156, 0) 72%
+		),
+		var(--color-base);
+
+	--surface-wash-dawn:
+		radial-gradient(
+			80% 46% at 18% -6%,
+			rgba(255, 116, 156, 0.16) 0%,
+			rgba(255, 116, 156, 0) 64%
+		),
+		radial-gradient(
+			70% 44% at 86% 4%,
+			rgba(246, 188, 214, 0.14) 0%,
+			rgba(246, 188, 214, 0) 66%
+		),
+		radial-gradient(
+			90% 50% at 50% 106%,
+			rgba(201, 210, 242, 0.18) 0%,
+			rgba(201, 210, 242, 0) 64%
+		),
+		var(--color-base);
+
+	--surface-night:
+		radial-gradient(
+			58% 56% at 50% 36%,
+			rgba(96, 112, 196, 0.3) 0%,
+			rgba(96, 112, 196, 0) 60%
+		),
+		radial-gradient(
+			46% 50% at 88% 90%,
+			rgba(72, 150, 140, 0.18) 0%,
+			rgba(72, 150, 140, 0) 64%
+		),
+		radial-gradient(
+			50% 52% at 10% 8%,
+			rgba(126, 91, 168, 0.22) 0%,
+			rgba(126, 91, 168, 0) 64%
+		),
+		linear-gradient(158deg, #0b0e20 0%, #141a36 58%, #0b0e20 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+	}
+}
+
+@utility focus-ring {
+	&:focus-visible,
+	&:has(:focus-visible) {
+		outline: var(--focus-outline);
+		outline-offset: var(--focus-offset);
+	}
+}
+
+@utility field-ring {
+	&:focus-within {
+		outline: var(--focus-outline);
+		outline-offset: var(--focus-offset);
+		border-color: var(--color-primary-line);
+	}
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+	--color-primary: oklch(0.78 0.15 350);
+	--color-primary-cta-deep: oklch(0.73 0.15 350);
+	--color-on-primary: oklch(0.21 0.034 264.665);
+	--color-on-danger: oklch(0.21 0.034 264.665);
+	--color-control-border: oklch(0.6 0.03 300);
+	--color-base: oklch(0.21 0.024 285); /* #171723 · Spica's dark canvas */
+	--color-surface: oklch(0.25 0.028 295);
+	--color-surface-2: oklch(0.295 0.03 300);
+	--color-surface-raised: oklch(0.32 0.032 305);
+	--color-border: oklch(0.33 0.028 300);
+	--color-border-strong: oklch(0.4 0.032 300);
+	--color-ink: oklch(0.94 0.012 285);
+	--color-ink-soft: oklch(0.8 0.022 278);
+	--color-ink-muted: oklch(0.7 0.025 278);
+
+	--color-primary-soft: oklch(0.29 0.045 350);
+	--color-primary-line: oklch(0.4 0.085 350);
+	--color-primary-deep: oklch(0.8 0.13 355);
+	--color-primary-ink: oklch(0.86 0.09 355);
+	--color-harmony-left-soft: oklch(0.29 0.035 248);
+	--color-harmony-left-deep: oklch(0.8334 0.079 247.14);
+	--color-harmony-center-soft: oklch(0.29 0.04 274);
+	--color-harmony-center-line: oklch(0.4 0.05 274);
+	--color-harmony-center-deep: oklch(0.8671 0.0568 273.01);
+	--color-harmony-right-soft: oklch(0.29 0.04 308);
+	--color-harmony-right-deep: oklch(0.8102 0.0969 308.23);
+	--color-bloom-soft: oklch(0.29 0.035 350);
+	--color-success-soft: oklch(0.29 0.035 161);
+	--color-success-deep: oklch(0.802 0.1008 161.4);
+	--color-warning-soft: oklch(0.29 0.035 82);
+	--color-warning-deep: oklch(0.8521 0.1164 82.04);
+	--color-danger-soft: oklch(0.29 0.045 24);
+	--color-danger-deep: oklch(0.8 0.12 24);
+
+	--attention: radial-gradient(
+		125% 130% at 18% -10%,
+		var(--color-bloom-soft),
+		var(--color-harmony-center-soft) 66%,
+		var(--color-base)
+	);
+	--color-wash-pink: oklch(0.46 0.11 350);
+	--color-wash-blue: oklch(0.46 0.11 248);
+	--color-wash-periwinkle: oklch(0.46 0.11 274);
+	--color-wash-lavender: oklch(0.46 0.11 308);
+
+	--surface-wash:
+		radial-gradient(
+			72.5% 62.5% at 2% 0%,
+			color-mix(in oklab, var(--color-wash-pink) 20%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			65% 57.5% at 100% 6%,
+			color-mix(in oklab, var(--color-wash-blue) 24%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			75% 68.75% at 94% 100%,
+			color-mix(in oklab, var(--color-wash-lavender) 26%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			62.5% 57.5% at 4% 96%,
+			color-mix(in oklab, var(--color-wash-periwinkle) 21%, transparent),
+			transparent 100%
+		),
+		var(--color-base);
+
+	--surface-wash-rose:
+		radial-gradient(
+			77.5% 67.5% at 0% 0%,
+			color-mix(in oklab, var(--color-wash-pink) 26%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			67.5% 60% at 100% 4%,
+			color-mix(in oklab, var(--color-wash-pink) 21%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			72.5% 65% at 96% 100%,
+			color-mix(in oklab, var(--color-wash-lavender) 19%, transparent),
+			transparent 100%
+		),
+		var(--color-base);
+
+	--surface-wash-cool:
+		radial-gradient(
+			70% 62.5% at 100% 0%,
+			color-mix(in oklab, var(--color-wash-blue) 28%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			72.5% 65% at 0% 100%,
+			color-mix(in oklab, var(--color-wash-periwinkle) 23%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			60% 55% at 6% 2%,
+			color-mix(in oklab, var(--color-wash-lavender) 11%, transparent),
+			transparent 100%
+		),
+		var(--color-base);
+
+	--surface-wash-iris:
+		radial-gradient(
+			75% 67.5% at 98% 2%,
+			color-mix(in oklab, var(--color-wash-lavender) 28%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			70% 62.5% at 2% 98%,
+			color-mix(in oklab, var(--color-wash-lavender) 24%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			62.5% 57.5% at 88% 96%,
+			color-mix(in oklab, var(--color-wash-pink) 14%, transparent),
+			transparent 100%
+		),
+		var(--color-base);
+
+	--surface-wash-dawn:
+		radial-gradient(
+			100% 57.5% at 18% -6%,
+			color-mix(in oklab, var(--color-wash-pink) 24%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			87.5% 55% at 86% 4%,
+			color-mix(in oklab, var(--color-wash-pink) 21%, transparent),
+			transparent 100%
+		),
+		radial-gradient(
+			112.5% 62.5% at 50% 106%,
+			color-mix(in oklab, var(--color-wash-periwinkle) 24%, transparent),
+			transparent 100%
+		),
+		var(--color-base);
+}
+
+:root[data-theme='dark'] {
+	--color-glass: color-mix(
+		in oklab,
+		var(--color-surface-raised) 99%,
+		transparent
+	);
+	--color-glass-border: var(--color-border-strong);
+	--shadow-xs: 0 1px 2px rgba(12, 9, 16, 0.2);
+	--shadow-md: 0 6px 18px rgba(12, 9, 16, 0.28);
+	--shadow-lg: 0 10px 30px rgba(12, 9, 16, 0.36);
+	--gradient-magic-strong: linear-gradient(
+		135deg,
+		var(--color-primary-line),
+		var(--color-harmony-right-soft) 50%,
+		var(--color-harmony-left-soft)
+	);
+}

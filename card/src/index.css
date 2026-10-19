@@ -1,0 +1,28 @@
+@import 'tailwindcss';
+@import '../../src/styles/spica.css' theme(static);
+@import '../../src/styles/spica-code.css';
+@import '@fontsource/alice/latin-400.css';
+@import '@fontsource/nunito/latin-400.css';
+@import '@fontsource/nunito/latin-700.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
+
+body {
+	background: var(--color-surface);
+	color: var(--color-ink);
+	font-family: var(--font-sans);
+}
+
+[data-editable] {
+	border-radius: 4px;
+	outline-offset: 3px;
+}
+
+[data-editable]:focus {
+	outline: var(--focus-outline);
+}
+
+@media (hover: hover) and (pointer: fine) {
+	#artboard:not([data-exporting]) [data-editable]:hover:not(:focus) {
+		outline: 1.5px dashed var(--color-primary-line);
+	}
+}

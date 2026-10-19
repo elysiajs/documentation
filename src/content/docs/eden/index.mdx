@@ -1,0 +1,144 @@
+---
+title: End-to-end type safety
+description: Share types between your Elysia server and client with Eden.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">End-to-end type safety</h1>
+
+Imagine you have a toy train set.
+
+Each piece of the train track has to fit perfectly with the next one, like puzzle pieces.
+
+End-to-end type safety is like making sure all the pieces of the track match up correctly so the train doesn't fall off or get stuck.
+
+For a framework, having end-to-end type safety means that you can connect the client and server in a type-safe manner.
+
+Elysia provides end-to-end type safety **without code generation** out of the box with an RPC-like connector, **Eden**.
+
+<video muted controls preload="metadata" aria-label="Eden Treaty type inference demonstration" style={{ aspectRatio: "16 / 9" }}>
+  <source src="/eden/eden-treaty.mp4" type="video/mp4" />
+  [Download the Eden Treaty demonstration](/eden/eden-treaty.mp4).
+</video>
+
+Other frameworks that support e2e type safety:
+- tRPC
+- Remix
+- SvelteKit
+- Nuxt
+- TS-Rest
+
+
+
+Elysia allows you to change the type on the server, and it will be instantly reflected on the client, helping with auto-completion and type enforcement.
+
+## Eden
+Eden is an RPC-like client to connect Elysia with **end-to-end type safety** using only TypeScript's type inference instead of code generation.
+
+It shares the server's types with the client through type-only imports. No generated client needs to be kept in sync.
+
+Eden consists of 2 modules:
+1. Eden Treaty **(recommended)**: an improved RPC version of [Eden Treaty 1](/eden/treaty/legacy) (edenTreaty)
+2. Eden Fetch: A fetch-like client with type safety
+
+Below is an overview of each module.
+
+## Eden Treaty (recommended)
+Eden Treaty is an object-like representation of an Elysia server providing end-to-end type safety and a significantly improved developer experience.
+
+With Eden Treaty, we can interact with an Elysia server with full-type support and auto-completion, error handling with type narrowing, and create type-safe unit tests.
+
+Example usage of Eden Treaty:
+**server.ts**
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hi')
+    .get('/users', () => 'Skadi')
+    .put('/nendoroid/:id', {
+        body: t.Object({
+            name: t.String(),
+            from: t.String()
+        })
+    }, ({ body }) => body)
+    .get('/nendoroid/:id/name', () => 'Skadi')
+    .listen(3000)
+
+export type App = typeof app
+```
+
+**index.ts**
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// Call [GET] at '/'
+const { data } = await app.get()
+
+// Call [PUT] at '/nendoroid/:id'
+const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
+    name: 'Skadi',
+    from: 'Arknights'
+})
+```
+
+## Eden Fetch
+A fetch-like alternative to Eden Treaty for developers who prefer fetch syntax.
+
+For this example, export a server with the matching route:
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/name/:name', {
+        body: t.Object({ branch: t.String(), type: t.String() })
+    }, ({ params, body }) => ({ name: params.name, ...body }))
+    .listen(3000)
+
+export type App = typeof app
+```
+
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+const { data } = await fetch('/name/:name', {
+    method: 'POST',
+    params: {
+        name: 'Saori'
+    },
+    body: {
+        branch: 'Arius',
+        type: 'Striker'
+    }
+})
+```
+
+:::tip[Note]
+
+Unlike Eden Treaty, Eden Fetch doesn't provide a WebSocket implementation for the Elysia server.
+:::
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

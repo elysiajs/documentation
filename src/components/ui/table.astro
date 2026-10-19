@@ -1,0 +1,74 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'table'>;
+---
+
+<div class="spica-markdown-table spica-surface focus-ring" tabindex="0" role="group" aria-label="Scrollable table">
+	<table {...Astro.props}><slot /></table>
+</div>
+
+<style is:global>
+	@layer components {
+		.spica-markdown-table {
+			max-width: 100%;
+			overflow-x: auto;
+			padding: 0.375rem;
+			border: 1px solid var(--color-border);
+			border-radius: var(--radius-3xl);
+			background: var(--color-surface);
+			box-shadow: var(--shadow-xs);
+			font-family: var(--font-sans);
+			color: var(--color-ink);
+		}
+
+		.spica-markdown-table > table {
+			display: table;
+			width: 100%;
+			margin: 0;
+			border-collapse: separate;
+			border-spacing: 0;
+			font-size: 0.875rem;
+			line-height: 1.45;
+		}
+
+		.spica-markdown-table :is(th, td) {
+			padding: 0.6875rem 0.875rem;
+			border: 0;
+			vertical-align: top;
+		}
+
+		.spica-markdown-table thead th {
+			padding-block: 0.25rem 0.4375rem;
+			color: var(--color-ink-soft);
+			font-size: 0.78125rem;
+			font-weight: 700;
+		}
+
+		.spica-markdown-table thead th + th {
+			background: linear-gradient(var(--color-border-strong), var(--color-border-strong)) left 40% / 1px 55% no-repeat;
+		}
+
+		.spica-markdown-table tbody {
+			background: var(--surface-wash-cool);
+			background-color: var(--color-base);
+			clip-path: inset(0 round var(--radius-2xl));
+		}
+
+		.spica-markdown-table tbody :is(th, td) {
+			border-bottom: 1px solid var(--color-border);
+		}
+
+		.spica-markdown-table tbody tr:first-child > * { border-top: 1px solid var(--color-border); }
+		.spica-markdown-table tbody tr > :first-child { border-left: 1px solid var(--color-border); }
+		.spica-markdown-table tbody tr > :last-child { border-right: 1px solid var(--color-border); }
+		.spica-markdown-table tbody tr:first-child > :first-child { border-top-left-radius: var(--radius-2xl); }
+		.spica-markdown-table tbody tr:first-child > :last-child { border-top-right-radius: var(--radius-2xl); }
+		.spica-markdown-table tbody tr:last-child > :first-child { border-bottom-left-radius: var(--radius-2xl); }
+		.spica-markdown-table tbody tr:last-child > :last-child { border-bottom-right-radius: var(--radius-2xl); }
+
+		.spica-markdown-table tbody tr:is(:hover, :focus-within) > * {
+			background: color-mix(in oklab, var(--color-primary-ink) 8%, var(--color-base));
+		}
+	}
+</style>

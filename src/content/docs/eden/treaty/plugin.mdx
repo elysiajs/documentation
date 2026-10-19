@@ -1,0 +1,111 @@
+---
+title: Eden plugin
+description: Extend Eden Treaty with custom client methods and mutation hooks.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden plugin</h1>
+
+Eden plugins add custom methods and mutation hooks to an Eden Treaty client.
+
+The plugin API is available in Eden v2 beta. Follow [Eden installation](/eden/installation/) to install the matching Eden and Elysia versions.
+
+## Add a custom method
+
+`createPlugin` infers each verb's call signature and adds it to every route. Its context argument includes `path`, `paths`, `domain`, and `config`. It also includes `elysia` when you pass an Elysia instance.
+
+### Control method types with `PluginTypeFn`
+
+Define a `PluginTypeFn` and use it as the `TreatyPlugin` type parameter to add methods only to matching routes. The type controls availability; `verbs` implements the method at runtime. This example adds `routePath` to GET routes marked with `live: true`:
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import type { PluginTypeFn, TreatyPlugin } from '@elysia/eden'
+
+const app = new Elysia()
+	.macro({ live: { meta: { live: true } as const } })
+	.get('/users/:id', { live: true }, ({ params }) => params.id)
+	.get('/health', () => 'ok')
+
+interface RouteInfoTypeFn extends PluginTypeFn {
+	output: this['node'] extends { get: { meta: { live: true } } }
+		? { routePath: () => string }
+		: {}
+}
+
+const routeInfo: TreatyPlugin<RouteInfoTypeFn> = {
+	name: 'route-info',
+	verbs: {
+		routePath(context) {
+			return context.path
+		}
+	}
+}
+
+const api = treaty(app).use(routeInfo)
+
+api.users({ id: 1 }).routePath() // '/users/1'
+api.health.get()
+// @ts-expect-error This route is not marked live.
+api.health.routePath()
+```
+
+Keep the client returned by `.use(plugin)`; the original client does not include the plugin. Custom methods run plugin code and do not send HTTP requests.
+
+## Observe mutations
+
+`before` runs before a mutation request. `after` receives the result and the same call context.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { createPlugin, treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/message', {
+		body: t.Object({ text: t.String() })
+	}, ({ body }) => body)
+
+const logger = createPlugin({
+	name: 'mutation-logger',
+	before(context) {
+		console.log('Sending', context.method, context.paths)
+	},
+	after(result, context) {
+		console.log('Received', context.method, result.status)
+	}
+})
+
+const api = treaty(app).use(logger)
+
+await api.message.post({ text: 'Hello' })
+// Sending post [ 'message' ]
+// Received post 200
+```
+
+These hooks run for `post`, `put`, `patch`, and `delete`, not for reads, WebSocket subscriptions, or custom methods. The call context has `paths`, lowercase `method`, request `options`, `config`, and `domain`. The result has `data`, `error`, `status`, `response`, and `headers`; the last two can be `undefined` if the request does not reach the server.
+
+## Registration rules
+
+A plugin needs a non-empty `name` and a `verbs` object, `before`, or `after`.
+
+Plugin methods cannot replace Treaty HTTP methods, `subscribe`, `use`, `~path`, `then`, `catch`, or `finally`. Registering a reserved name or a method already registered by another plugin throws an error.
+
+Chain `.use` to combine plugins. Mutation hooks run in registration order.
+
+Eden's `.use` extends the client. To add routes or hooks to the server, use [Elysia plugins](/essential/plugin/) instead.
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

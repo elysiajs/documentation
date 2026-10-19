@@ -1,0 +1,104 @@
+---
+title: GraphQL Apollo plugin
+description: Reference and examples for the GraphQL Apollo plugin.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">GraphQL Apollo plugin</h1>
+
+Plugin for [elysia](https://github.com/elysiajs/elysia) for using GraphQL Apollo.
+
+Install with:
+
+```bash
+bun add graphql @elysia/apollo@next @apollo/server
+```
+
+Then use it:
+
+```ts
+import { Elysia } from 'elysia'
+import { apollo, gql } from '@elysia/apollo'
+
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs: gql`
+				type Book {
+					title: String
+					author: String
+				}
+
+				type Query {
+					books: [Book]
+				}
+			`,
+			resolvers: {
+				Query: {
+					books: () => {
+						return [
+							{
+								title: 'Elysia',
+								author: 'saltyAom'
+							}
+						]
+					}
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+Accessing `/graphql` should show the Apollo GraphQL playground to work with.
+
+## Context
+
+The `context` callback receives the Elysia context, so read `request` from it.
+
+```ts
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs,
+			resolvers,
+			context: async ({ request }) => {
+				const authorization = request.headers.get('Authorization')
+
+				return {
+					authorization
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+## Config
+
+This plugin extends Apollo's [ApolloServerOptions](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#options) (which is `ApolloServer`'s constructor parameter).
+
+Below are the extended parameters for configuring Apollo Server with Elysia.
+
+### path
+
+Default: `"/graphql"`
+
+Path to expose Apollo Server.
+
+### enablePlayground
+
+Default: `process.env.ENV !== 'production'`
+
+Determine whether Apollo should provide Apollo Playground.
+
+</div>
+</InteractiveDocLayout>
+</div>

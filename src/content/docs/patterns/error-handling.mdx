@@ -1,0 +1,668 @@
+---
+title: Error handling
+description: Customize validation messages, handle error classes, and choose when to throw or return an HTTP status.
+template: splash
+---
+
+import '../../../styles/routing.css';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import CodePlayground from '../../../components/playground/code.astro';
+import { Elysia, HTTPError, problem, status } from 'elysia';
+
+export class CustomError extends HTTPError.id('UNIQUE_ID', 400) {}
+
+export class CreditDetail extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    headers = { 'x-billing-required': 'true' }
+    detail = 'Top up to continue'
+}
+
+export class CreditValue extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    value() {
+        return { code: 'OUT_OF_CREDIT', ok: false }
+    }
+}
+
+export class CreditStatus extends HTTPError.id('OUT_OF_CREDIT') {
+    constructor(balance) {
+        super()
+        this.balance = balance
+    }
+
+    value() {
+        if (this.balance > 0)
+            return status(500, {
+                detail: 'Something went wrong on our side',
+                balance: this.balance
+            })
+
+        return status(402, {
+            type: this.type,
+            code: this.code,
+            detail: 'Out of credit',
+            balance: this.balance
+        })
+    }
+}
+
+export const errorResponseDemos = [
+    new Elysia().get('/', () => new CreditDetail()),
+    new Elysia().get('/', () => new CreditValue()),
+    new Elysia()
+        .get('/balance/0', () => new CreditStatus(0))
+        .get('/balance/1', () => new CreditStatus(1)),
+    new Elysia().get('/return', () => new CustomError('Invalid request')),
+    new Elysia().get('/', () => problem(409, { detail: 'Username is taken' }))
+];
+
+export const errorResponseExamples = await Promise.all(errorResponseDemos.map(async (app) =>
+    Promise.all(app.routes.map(async ({ method, path }) => {
+        const response = await app.handle(new Request(`http://elysiajs.com${path}`, { method }))
+        const headers = [...response.headers].map(([name, value]) => `${name}: ${value}`).join('\n')
+
+        return {
+            method,
+            displayPath: path,
+            response: `HTTP ${response.status}\n${headers}\n\n${JSON.stringify(await response.json(), null, 2)}`
+        }
+    }))
+));
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Error handling</h1>
+
+Elysia provides statically analyzable error handling. This allows you to predict most possible errors from your server similar to <a target="_blank" href="https://effect.website">Effect</a> at home.
+
+This is especially useful for [Eden](/eden) and [OpenAPI Type Gen](/patterns/openapi/#openapi-from-types) to generate types for your API.
+
+This page covers the following topics:
+- [Prefer return over throw](#first-prefer-return-over-throw)
+- [Error hook](#error-hook)
+- [Custom error](#custom-error)
+- [Schema validation](#schema-validation)
+- [Error list](#error-list)
+
+We recommend visiting the [error lifecycle](/essential/life-cycle/#error-error-handling) or [error handling tutorial](/tutorial/patterns/error-handling/) before reading this page.
+
+
+## First: Prefer return over throw
+
+Returning an error allows TypeScript to statically analyze the return type while a thrown error doesn't allow this.
+
+At runtime, a returned `Error` is handled like a thrown one: it goes through your error hooks and produces the same response.
+
+`status()` and `problem()` are different. Returning them sends an ordinary response without entering error handling.
+
+### Problem document
+
+`problem()` returns an [RFC 9457](https://www.rfc-editor.org/info/rfc9457) problem document with the `application/problem+json` content type. Elysia fills `type` and `title` for you:
+
+<CodePlayground examples={errorResponseExamples[4]}>
+
+```ts
+import { Elysia, problem } from 'elysia'
+
+new Elysia()
+    .get('/', () => problem(409, { detail: 'Username is taken' }))
+```
+
+</CodePlayground>
+
+Both `status()` and `problem()` accept a status name in place of the number, such as `problem('Conflict', { detail: 'Username is taken' })`.
+
+## Error hook
+
+Use `.onError()` to handle every error of an instance, or the `error` property to handle errors of a single route:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', {
+        error({ error, status }) {
+            return status(503, 'Try again later')
+        }
+    }, () => {
+        throw new Error('Maintenance window')
+    })
+```
+
+Returning a value from the hook sends it as the response. Returning nothing passes the error to the next hook, then to Elysia's default response.
+
+Returning an `Error` sends it as if no hook handled it, at that error's own status. An `HTTPError` sends its problem document, and an `Error` without a status becomes a `500`. It isn't passed to other hooks.
+
+<span id="third-party-errors"></span>
+
+### Mapping Errors
+
+We can use `.onError(ErrorClass, handler)` to map an error to a response.
+
+This is useful for mapping errors from libraries that you have no control over to a response.
+
+```ts
+import { Elysia, problem } from 'elysia'
+import { DrizzleQueryError } from 'drizzle-orm/errors'
+import { db } from './db'
+import { users } from './schema'
+
+new Elysia()
+    .onError(DrizzleQueryError, () => problem(502, {
+        type: 'UPSTREAM_FAILURE',
+        detail: 'The database connection is unavailable'
+    }))
+    .get('/users', async () => {
+        try {
+            return await db.select().from(users)
+        } catch (error) {
+            if (error instanceof DrizzleQueryError)
+                return error
+
+            throw error
+        }
+    })
+```
+
+This maps `DrizzleQueryError` to a `502` response with a problem document.
+
+A thrown `DrizzleQueryError` would reach the hook too. The `try`/`catch` only exists to return the error, so the `502` response becomes part of the route's type.
+
+If the response never changes, pass the value directly instead of a function:
+
+```ts
+new Elysia()
+    .onError(DrizzleQueryError, problem(502, { detail: 'Database unavailable' }))
+```
+
+<span id="custom-status-code"></span>
+
+### Error status code
+
+Any `Error` with a `status` property is sent with that status and its message as a plain-text body. You don't need `HTTPError` for this:
+
+```ts
+import { Elysia } from 'elysia'
+
+class Teapot extends Error {
+    status = 418
+}
+
+new Elysia()
+    .get('/', () => {
+        throw new Teapot('Short and stout')
+    })
+```
+
+This responds `418` with `Short and stout`.
+
+### Unhandled errors
+
+An error without a `status` that no hook handles becomes a `500` problem document:
+
+```json
+{
+    "type": "internal-server-error",
+    "code": "internal-server-error",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "Maintenance window",
+    "name": "Error"
+}
+```
+
+With `NODE_ENV=production`, Elysia omits `detail` and `name` so internal messages don't leak to clients.
+
+## Custom error
+
+You can use `HTTPError.id()` to create a custom error class that Elysia can translate to HTTP responses.
+
+By default, Elysia returns an RFC 9457 problem document:
+
+<CodePlayground examples={errorResponseExamples[3]}>
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+class CustomError extends HTTPError.id('UNIQUE_ID', 400) {}
+
+new Elysia()
+    .get('/return', () => new CustomError('Invalid request'))
+```
+
+</CodePlayground>
+
+### Error response
+
+You can add optional properties to customize how the error behaves:
+
+| Property | Description |
+| --- | --- |
+| `headers` | add to the response headers |
+| `detail` | set the `detail` string in the problem document |
+| `extension()` | add members to the problem document |
+| `value()` | override the entire response body |
+
+`value()` can be `async`.
+
+The status can also be a name, such as `HTTPError.id('OUT_OF_CREDIT', 'Payment Required')`.
+
+Use `detail` to set the `detail` of the RFC 9457 problem document. It takes priority over the error message, so the message can stay in your logs:
+
+<CodePlayground examples={errorResponseExamples[0]}>
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    headers = { 'x-billing-required': 'true' }
+    detail = 'Top up to continue'
+}
+
+new Elysia()
+    .get('/', () => new OutOfCredit())
+```
+
+</CodePlayground>
+
+Use `extension()` to add your own members to the problem document, like the out-of-credit example from RFC 9457:
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    detail = 'Your current balance is 30, but that costs 50'
+
+    constructor(readonly balance: number) {
+        super()
+    }
+
+    extension() {
+        return { balance: this.balance, accounts: ['/account/12345'] }
+    }
+}
+
+new Elysia()
+    .get('/', () => new OutOfCredit(30))
+```
+
+```json
+{
+    "type": "OUT_OF_CREDIT",
+    "code": "OUT_OF_CREDIT",
+    "detail": "Your current balance is 30, but that costs 50",
+    "status": 402,
+    "balance": 30,
+    "accounts": [
+        "/account/12345"
+    ],
+    "title": "Payment Required"
+}
+```
+
+`type`, `code` and `status` always come from the error, so `extension()` can't change them. It can set `title` and `instance`, and a `detail` string when the class doesn't set `detail`.
+
+`extension()` must return a plain object synchronously. Anything else, such as a Promise, is ignored, so use `value()` for async work. Members whose value is a function are left out.
+
+Use `value()` when you need to replace the entire response body:
+
+<CodePlayground examples={errorResponseExamples[1]}>
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    value() {
+        return { code: 'OUT_OF_CREDIT', ok: false }
+    }
+}
+
+new Elysia()
+    .get('/', () => new OutOfCredit())
+```
+
+</CodePlayground>
+
+For a response that depends on the request, such as its path or headers, map the error with [`.onError(Class, handler)`](#mapping-errors) instead. The handler receives the request's context:
+
+```ts
+import { Elysia, HTTPError, problem } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {}
+
+new Elysia()
+    .onError(OutOfCredit, ({ path }) =>
+        problem(402, { detail: `Top up to access ${path}` })
+    )
+    .get('/', () => new OutOfCredit())
+```
+
+Use `problem()` or `status()` to choose a status code from the error's values. Select a balance below to compare the responses:
+
+<CodePlayground examples={errorResponseExamples[2]}>
+
+```ts
+import { Elysia, HTTPError, status } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT') {
+    constructor(public balance: number) {
+        super()
+    }
+
+    value() {
+        if (this.balance > 0)
+            return status(500, {
+                detail: 'Something went wrong on our side',
+                balance: this.balance
+            })
+
+        return status(402, {
+            type: this.type,
+            code: this.code,
+            detail: 'Out of credit',
+            balance: this.balance
+        })
+    }
+}
+
+new Elysia()
+    .get('/balance/0', () => new OutOfCredit(0))
+    .get('/balance/1', () => new OutOfCredit(1))
+```
+
+</CodePlayground>
+
+Note:
+- Elysia uses `value()` first, then `detail`, then a `detail` from `extension()`, then the error message.
+- If `value()` returns `undefined`, Elysia falls through to `detail` and `extension()`. Otherwise, `extension()` isn't called.
+- If `value()` or `extension()` throws, Elysia returns `500` without the error's headers.
+- For a `detail` that needs async work, return `problem()` from an `async value()`.
+
+<span id="httperrorid-is-a-syntax-sugar"></span>
+
+### HTTPError.id is syntax sugar
+
+You can extend `HTTPError`, or extend `Error` and implement `HTTPError`, and it would work:
+
+```ts
+import { HTTPError } from 'elysia'
+
+class Overdrawn extends HTTPError {
+    readonly type = 'OVERDRAWN'
+    readonly status = 402
+}
+
+class OutOfCredit extends Error implements HTTPError {
+    readonly type = 'OUT_OF_CREDIT'
+    readonly status = 402
+    readonly detail = 'Top up to continue'
+}
+```
+
+It's very important that `type` and `status` should have either `readonly` or `as const` to make it statically analyzable.
+
+If `status` cannot be determined at compile time, you can use `status()` in `value()` instead but you must leave `status` undefined.
+
+`HTTPError.id()` adds two things a hand-written class doesn't get: a `code` member in the response, and the `typeBase` prefix below. A hand-written class sends its `type` as written.
+
+### Problem type URL
+
+You can set `HTTPError.typeBase` to a URL to prefix the `type` of classes made by `HTTPError.id()` and of the [built-in errors](#built-in-errors). Validation errors keep `type: 'validation'`. This is useful for clients that want to look up the error type in a documentation page.
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+HTTPError.typeBase = 'https://elysiajs.com/errors'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {}
+
+new Elysia()
+    .get('/', () => new OutOfCredit('Top up to continue'))
+```
+
+```json
+{
+    "type": "https://elysiajs.com/errors/OUT_OF_CREDIT",
+    "code": "OUT_OF_CREDIT",
+    "detail": "Top up to continue",
+    "status": 402,
+    "title": "Payment Required"
+}
+```
+
+`code` keeps the bare identifier while `type` is an absolute URL if `typeBase` is set. Using `code` might be more convenient for clients that don't need to look up the error type.
+
+### Response type
+
+A returned error is part of the route's response type, under its status. Eden narrows it the same way as a `status()` response:
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {}
+
+const app = new Elysia()
+    .get('/credit', () => new OutOfCredit('Top up to continue'))
+
+const { error } = await treaty(app).credit.get()
+
+if (error?.status === 402)
+    console.log(error.value.code) // 'OUT_OF_CREDIT'
+```
+
+Members returned by `extension()` are part of the type too.
+
+## Schema Validation
+
+<span id="custom-validation-message"></span>
+
+Add `error` to a schema field to choose the message returned when that field fails validation.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/:id', {
+        params: t.Object({
+            id: t.Number({ error: 'id must be a number' })
+        })
+    }, ({ params: { id } }) => id)
+```
+
+| Request | Response |
+| --- | --- |
+| `/string` | `422` with `id must be a number` |
+| `/1` | `200` with `1` |
+
+### Schema messages
+
+You can attach a message to the particular schema that may fail.
+
+```ts
+import { t } from 'elysia'
+
+const Email = t.String({
+    format: 'email',
+    error: 'Invalid email'
+})
+
+const Names = t.Array(
+    t.String({ error: 'All members must be a string' }),
+    { error: 'Expected an array of names' }
+)
+
+const Point = t.Object({ x: t.Number() }, {
+    error: 'Expected an object with a numeric x'
+})
+```
+
+`Names` uses its item message for `[1]` and its array message for `"hello"`.
+
+Object and field messages are separate. The field message applies when the object is valid but a field fails. The object's own message applies when the value isn't an object at all, so `Point`'s message is returned for `"hello"`.
+
+### Error is called per field
+
+The error callback applies when its schema fails. A nested number's callback doesn't handle a value that isn't an object at all:
+
+```ts
+import { t } from 'elysia'
+
+const Point = t.Object({
+    x: t.Number({
+        error() {
+            return 'Expected x to be a number'
+        }
+    })
+})
+```
+
+| JSON body | Message |
+| --- | --- |
+| `{ "x": "hello" }` | `Expected x to be a number` |
+| `"hello"` | Default object validation message |
+
+Add a callback to the object itself to customize the second case:
+
+```ts
+import { t } from 'elysia'
+
+const Point = t.Object({
+    x: t.Number({
+        error() {
+            return 'Expected x to be a number'
+        }
+    })
+}, {
+    error() {
+        return 'Expected value to be an object'
+    }
+})
+```
+
+Now the JSON string `"hello"` produces `Expected value to be an object`.
+
+### Validation detail
+
+Wrap your message in `validationDetail()` to include validation issues alongside it. This is useful when callers need to know which field failed and why.
+
+```ts
+import { Elysia, t, validationDetail } from 'elysia'
+
+new Elysia()
+    .get('/:id', {
+        params: t.Object({
+            id: t.Number({
+                error: validationDetail('id must be a number')
+            })
+        })
+    }, ({ params: { id } }) => id)
+```
+
+In development, `/string` returns a validation object containing your message and the validation issues. See the [validation error tutorial](/tutorial/patterns/validation-error/) for a walkthrough.
+
+<span id="validation-detail-on-production"></span>
+
+### Validation detail in production
+
+With `NODE_ENV=production`, Elysia omits detailed schema issues and submitted values from the validation response.
+
+This is to avoid exposing sensitive data. Your message is still returned, but the response is reduced to a problem document:
+
+```json
+{
+    "type": "validation",
+    "code": "validation",
+    "title": "Validation Error",
+    "status": 422,
+    "on": "params",
+    "property": "/id"
+}
+```
+
+This only applies to the default validation message. A custom message is sent as written, as plain text for a string or JSON for an object, not as a problem document.
+
+:::tip
+You can use [allowUnsafeValidationDetails](/patterns/configuration/#allowunsafevalidationdetails) to include them in production for public APIs. This is not recommended for private APIs, since it exposes submitted values and schema issues.
+:::
+
+### Error message as function
+
+Use a function when you want to construct the message. You can return a string or another value suitable for your error response:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/', {
+        body: t.Object({
+            x: t.Number({
+                error() {
+                    return 'Expected x to be a number'
+                }
+            })
+        })
+    }, () => 'Hello World!')
+    .listen(3000)
+```
+
+`error()` receives an object with the following fields:
+
+| field | description |
+| --- | --- |
+| `type` | The error type, always `validation` for schema errors |
+| `on` | Where the error was found, such as `body` or `params` |
+| `value` | The submitted value (omitted in production) |
+| `errors` | An array of validation issues (omitted in production) |
+
+In production, `value` and `errors` are omitted to avoid exposing sensitive data. Use [allowUnsafeValidationDetails](/patterns/configuration/#allowunsafevalidationdetails) to include them in production.
+
+## Error list
+
+`error.all` is an array property, not a method. Each issue has a dotted `path` such as `name` or `user.email`, a `message`, a `schemaPath`, and `params`:
+
+```ts
+import { Elysia, t, ValidationError } from 'elysia'
+
+new Elysia()
+    .post('/', {
+        body: t.Object({
+            name: t.String(),
+            age: t.Number()
+        }),
+        error({ error, status }) {
+            if (!(error instanceof ValidationError)) return
+
+            const name = error.all.find((issue) => issue.path === 'name')
+
+            return status(422, name?.message ?? error.message)
+        }
+    }, ({ body }) => body)
+    .listen(3000)
+```
+
+For the raw issues from the schema provider, read `error.errors`. TypeBox issues locate the field with an `instancePath` such as `/name`, while a Standard Schema validator may use a different shape.
+
+### Built-in errors
+
+Elysia uses these error classes. Each sends a problem document with the `code` below as `code`, and as `type` unless [`typeBase`](#problem-type-url) is set. Import a class to handle it with `.onError()`.
+
+| Class | Status | `code` | Used when |
+| --- | --- | --- | --- |
+| `NotFound` | `404` | `not-found` | No route matches |
+| `ParseError` | `400` | `parse` | The request body can't be parsed |
+| `ValidationError` | `422` | `validation` | A request fails its schema |
+| `InvalidCookie` | `400` | `invalid-cookie` | A signed cookie fails verification |
+| `InternalServerError` | `500` | `internal-server-error` | You throw it for a server failure |
+
+`ParseError` includes the parser's message as `detail` in development only.
+
+`InvalidCookie` returns `500` instead when the cookie secret itself is missing, since that is a server misconfiguration.
+
+A response that fails its schema returns `500` instead of `422`. In production, that response is a bare internal server error without validation details.
+
+You can throw `NotFound` and `InternalServerError` yourself. A message you pass, such as `new NotFound('No such tea')`, is sent as `detail`, in production too.
+
+</div>
+</InteractiveDocLayout>
+</div>

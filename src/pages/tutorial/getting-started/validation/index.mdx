@@ -1,0 +1,124 @@
+---
+title: "Validation"
+description: "Elysia offers built-in data validation using schemas to ensure request and response data integrity."
+---
+
+import Lesson from '../../../../components/tutorial/lesson.astro';
+import DocLink from '../../../../components/tutorial/doc-link.astro';
+
+<Lesson title={frontmatter.title} description={frontmatter.description} doc="/essential/validation/">
+
+# Validation
+
+Elysia offers data validation out of the box.
+
+You can use `t` from `elysia` to define a schema.
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.post(
+		'/user',
+		{
+			body: t.Object({
+				name: t.String(),
+				age: t.Number()
+			})
+		}, ({ body: { name } }) => `Hello ${name}!`
+	)
+	.listen(3000)
+```
+
+When you define a schema, Elysia will ensure the data is in a correct shape.
+
+If the data doesn't match the schema, Elysia will return a **422 Unprocessable Entity** error.
+
+See <DocLink href="/essential/validation/">Validation</DocLink>.
+
+### Bring your own
+Alternatively, Elysia support **Standard Schema**, allowing you to use a library of your choice like **zod**, **yup** or **valibot**.
+
+```typescript
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+new Elysia()
+	.post(
+		'/user',
+		{
+			body: z.object({
+				name: z.string(),
+				age: z.number()
+			})
+		}, ({ body: { name } }) => `Hello ${name}!`
+	)
+	.listen(3000)
+```
+
+See <DocLink href="/essential/validation/#standard-schema">Standard schema</DocLink> for all compatible schema.
+
+## Validation type
+You can validate the following property:
+
+- `body`
+- `query`
+- `params`
+- `headers`
+- `cookie`
+- `response`
+
+Once a schema is defined, Elysia will infer types for you so you don't have to define a separate schema in TypeScript.
+
+See <DocLink href="/essential/validation/#schema-type">Schema type</DocLink> for each type.
+
+## Response validation
+When you define a validation schema for `response`, Elysia will validate the response before sending it to the client, and type check the response for you.
+
+You can also specify which status code to validate:
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.get(
+		'/user',
+		{
+			response: {
+				200: t.Literal('Hello Elysia!'),
+				418: t.Object({
+					message: t.Literal("I'm a teapot")
+				})
+			}
+		}, () => `Hello Elysia!`
+	)
+	.listen(3000)
+```
+
+See <DocLink href="/essential/validation/#response">Response validation</DocLink>.
+
+## Assignment
+
+Let's exercise what we have learned.
+
+<Fragment slot="answer">
+
+We can define a schema by using `t.Object` provided to the `body` property.
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+	.post(
+		'/user',
+		{
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body: { name } }) => `Hello ${name}!`
+	)
+	.listen(3000)
+```
+
+</Fragment>
+
+</Lesson>

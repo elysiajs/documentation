@@ -1,0 +1,51 @@
+---
+import { IconHeart } from '@tabler/icons-react'
+import { getSponsors } from '../lib/sponsors'
+
+const sponsors = await getSponsors()
+const sponsorLinks = new Map([
+	['sfcompute', 'https://sfcompute.com?from=elysia'],
+	['oven-sh', 'https://bun.sh?from=elysia'],
+	['coderabbitai', 'https://coderabbit.ai?from=elysia'],
+	['scalar', 'https://scalar.com?from=elysia']
+])
+---
+
+{
+	sponsors.length > 0 && (
+		<section class="mt-4 w-full">
+			<h2 class="m-0 flex items-center gap-1.5 font-sans! text-sm font-semibold! text-ink-soft">
+				<IconHeart size={16} stroke={1.5} aria-hidden="true" />
+				Our sponsors
+			</h2>
+			<ul
+				role="list"
+				class="m-0 grid w-full list-none grid-cols-3 gap-x-1 p-0"
+			>
+				{sponsors.map((sponsor) => (
+					<li class="m-0 min-w-0 p-px mt-2">
+						<a
+							href={
+								sponsorLinks.get(sponsor.login) ??
+								`https://github.com/${sponsor.login}`
+							}
+							title={sponsor.name}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group block rounded-lg focus-ring p-0.75 bg-surface-2 outline outline-border-strong"
+						>
+							<img
+								src={sponsor.avatarUrl}
+								alt={sponsor.name}
+								width="160"
+								height="160"
+								loading="lazy"
+								class="block aspect-square h-auto w-full rounded-lg object-[0_6.25%] opacity-70 transition-opacity duration-(--dur-fast) group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none bg-base outline outline-border-strong"
+							/>
+						</a>
+					</li>
+				))}
+			</ul>
+		</section>
+	)
+}

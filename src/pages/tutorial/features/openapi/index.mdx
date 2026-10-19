@@ -1,0 +1,141 @@
+---
+title: "OpenAPI"
+description: "Elysia is built around OpenAPI, and supports OpenAPI documentation out of the box."
+---
+
+import Lesson from '../../../../components/tutorial/lesson.astro';
+import DocLink from '../../../../components/tutorial/doc-link.astro';
+
+<Lesson title={frontmatter.title} description={frontmatter.description} doc="/patterns/openapi/">
+
+# OpenAPI
+
+Elysia is built around OpenAPI, and supports OpenAPI documentation out of the box.
+
+We can use <DocLink href="/patterns/openapi/">OpenAPI plugin</DocLink> to show an API documentation.
+
+```typescript ins={2,5}
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.post(
+		'/',
+		{
+			body: t.Object({
+				age: t.Number()
+			})
+		}, ({ body }) => body
+	)
+	.listen(3000)
+```
+
+Once added, we can access our API documentation by switching the request bar path to `/openapi`.
+
+## Detail
+We can provide API documentation with a `detail` field which follows OpenAPI 3.0 specification (with auto-completion):
+
+```typescript ins={13-17}
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.post(
+		'/',
+		{
+			body: t.Object({
+				age: t.Number()
+			}),
+			detail: {
+				summary: 'Create a user',
+				description: 'Create a user with age',
+				tags: ['User'],
+			}
+		}, ({ body }) => body
+	)
+	.listen(3000)
+```
+
+## Reference model
+We can also define reusable schema with <DocLink href="/patterns/openapi/#reference-model">Reference model</DocLink>:
+
+```typescript ins={7-9,18} del={15-17}
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.model({
+		age: t.Object({
+			age: t.Number()
+		})
+	})
+	.post(
+		'/',
+		{
+			age: t.Object({
+				age: t.Number()
+			}),
+			body: 'age',
+			detail: {
+				summary: 'Create a user',
+				description: 'Create a user with age',
+				tags: ['User'],
+			}
+		}, ({ body }) => body
+	)
+	.listen(3000)
+```
+
+When we defined a reference model, it will be shown in the **Components** section of the OpenAPI documentation.
+
+## Type gen
+<DocLink href="/blog/openapi-type-gen/">OpenAPI type gen</DocLink> can document your API **without manual annotation** infers directly from TypeScript type. <small>No Zod, TypeBox, manual interface declaration, etc.</small>
+
+**This feature is unique to Elysia**, and is not available in other JavaScript frameworks.
+
+For example, if you use Drizzle ORM or Prisma, Elysia can infer the schema directly from the query.
+
+![Drizzle](/blog/openapi-type-gen/drizzle-typegen.webp)
+
+> Returning Drizzle query from Elysia route handler will be automatically inferred into OpenAPI schema.
+
+To use <DocLink href="/blog/openapi-type-gen/">OpenAPI type gen</DocLink>, simply apply the `fromTypes` plugin before `openapi` plugin.
+
+```typescript ins={3,7}
+import { Elysia } from 'elysia'
+
+import { openapi, fromTypes } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi({
+		references: fromTypes()
+	}))
+	.get('/', { hello: 'world' })
+	.listen(3000)
+```
+
+### Browser environment
+
+Unfortunately, this feature requires the **fs** module to read your source code, and is not available in this web playground. As Elysia is running directly in your browser (not a separated server).
+
+You can try this feature locally with <a href="https://github.com/SaltyAom/elysia-typegen-example" target="_blank">Type Gen Example repository</a>:
+
+```bash
+git clone https://github.com/SaltyAom/elysia-typegen-example && \
+cd elysia-typegen-example && \
+bun install && \
+bun run dev
+```
+
+## Assignment
+
+Let's use the preview to **GET '/openapi'** and see how our API documentation looks.
+
+This API documentation is reflected from your code.
+
+Try to modify the code and see how the documentation changes!
+
+</Lesson>

@@ -1,0 +1,34 @@
+---
+template: "splash"
+description: "Elysia API reference for UnwrapSchema."
+editUrl: false
+next: false
+prev: false
+title: "UnwrapSchema"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">UnwrapSchema</h1>
+
+```ts
+type UnwrapSchema<Schema, Definitions, Side> = Schema extends undefined ? unknown : Schema extends TypeBoxSchema ? true extends IsOptionalRoot<Schema, Definitions> ? Partial<StaticCyclic<Schema, Definitions, Side>> : StaticCyclic<Schema, Definitions, Side> : Schema extends StandardSchemaV1Like ? NonNullable<Schema["~standard"]["types"]>[Side] : Schema extends string ? Schema extends keyof Definitions ? Definitions[Schema] extends TypeBoxSchema ? true extends IsOptionalRoot<Definitions[Schema], Definitions> ? Partial<StaticCyclic<Definitions[Schema], Definitions, Side>> : StaticCyclic<Definitions[Schema], Definitions, Side> : Definitions[Schema] extends StandardSchemaV1Like ? NonNullable<...[...]["types"]>[Side] : unknown : unknown : unknown;
+```
+
+Defined in: elysia/dist/types.d.ts:642
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Schema` *extends* [`AnySchema`](/reference/type-aliases/anyschema/) \| `string` \| `undefined` | - |
+| `Definitions` *extends* `DefinitionBase`\[`"typebox"`\] | `object` |
+| `Side` *extends* `SchemaSide` | `"output"` |
+
+</div>
+</InteractiveDocLayout>
+</div>

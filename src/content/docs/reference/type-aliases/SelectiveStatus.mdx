@@ -1,0 +1,50 @@
+---
+template: "splash"
+description: "Elysia API reference for SelectiveStatus."
+editUrl: false
+next: false
+prev: false
+title: "SelectiveStatus"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">SelectiveStatus</h1>
+
+```ts
+type SelectiveStatus<Res> = <Code, T>(code, response) => ElysiaStatus<Code, T>;
+```
+
+Defined in: elysia/dist/error.d.ts:218
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Res` |
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Code` *extends* \| keyof `Res` \| [`StatusMapBack`](/reference/type-aliases/statusmapback/)\[`Extract`\<keyof [`StatusMapBack`](/reference/type-aliases/statusmapback/), keyof `Res`\>\] |
+| `T` *extends* `ResponseOf`\<`Res`, `Code`\> |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `code` | `Code` |
+| `response` | `CheckExcessProps`\<`T`, `ResponseOf`\<`Res`, `Code`\>\> |
+
+## Returns
+
+[`ElysiaStatus`](/reference/classes/elysiastatus/)\<`Code`, `T`\>
+
+</div>
+</InteractiveDocLayout>
+</div>

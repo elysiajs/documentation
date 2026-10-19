@@ -1,0 +1,167 @@
+---
+template: "splash"
+description: "Elysia API reference for ElysiaFile."
+editUrl: false
+next: false
+prev: false
+title: "ElysiaFile"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">ElysiaFile</h1>
+
+## Members
+
+### Properties
+
+| Property | Description |
+| ------ | ------ |
+| [path](/reference/classes/elysiafile/#path) | - |
+
+### Accessors
+
+| Accessor | Description |
+| ------ | ------ |
+| [stats](/reference/classes/elysiafile/#stats) | - |
+| [type](/reference/classes/elysiafile/#type) | - |
+| [value](/reference/classes/elysiafile/#value) | - |
+
+### Methods
+
+| Method | Description |
+| ------ | ------ |
+| [slice](/reference/classes/elysiafile/#slice) | - |
+| [isElysiaFile](/reference/classes/elysiafile/#iselysiafile) | Brand check on the private field: true for subclasses, and unlike `instanceof` it never walks the prototype chain, so no user trap runs |
+
+Defined in: elysia/dist/universal/file.d.ts:44
+
+## Constructors
+
+### Constructor
+
+```ts
+new ElysiaFile(path): ElysiaFile;
+```
+
+Defined in: elysia/dist/universal/file.d.ts:47
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `path` | `string` |
+
+#### Returns
+
+`ElysiaFile`
+
+## Properties
+
+### path
+
+```ts
+path: string;
+```
+
+Defined in: elysia/dist/universal/file.d.ts:46
+
+## Accessors
+
+### stats
+
+#### Get Signature
+
+```ts
+get stats(): Promise<Stats>;
+```
+
+Defined in: elysia/dist/universal/file.d.ts:53
+
+##### Returns
+
+`Promise`\<`Stats`\>
+
+***
+
+### type
+
+#### Get Signature
+
+```ts
+get type(): any;
+```
+
+Defined in: elysia/dist/universal/file.d.ts:56
+
+##### Returns
+
+`any`
+
+***
+
+### value
+
+#### Get Signature
+
+```ts
+get value(): BunFile | ReadStream;
+```
+
+Defined in: elysia/dist/universal/file.d.ts:54
+
+##### Returns
+
+`BunFile` \| `ReadStream`
+
+## Methods
+
+### slice()
+
+```ts
+slice(start, end): BunFile | ReadStream;
+```
+
+Defined in: elysia/dist/universal/file.d.ts:55
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `start` | `number` |
+| `end` | `number` |
+
+#### Returns
+
+`BunFile` \| `ReadStream`
+
+***
+
+### isElysiaFile()
+
+```ts
+static isElysiaFile(value): value is ElysiaFile;
+```
+
+Defined in: elysia/dist/universal/file.d.ts:52
+
+Brand check on the private field: true for subclasses, and unlike
+`instanceof` it never walks the prototype chain, so no user trap runs
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `unknown` |
+
+#### Returns
+
+`value is ElysiaFile`
+
+</div>
+</InteractiveDocLayout>
+</div>

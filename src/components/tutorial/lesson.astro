@@ -1,0 +1,324 @@
+---
+// The full document for one tutorial lesson. `<!doctype html>` has to be the very first thing
+// this component emits and `<head>` has to be literal markup — that is the only shape Astro
+// injects its bundled CSS, the island runtime and the Expressive Code assets into.
+//
+// global.css declares the `@layer` order on its first line, so it is imported first.
+import '../../styles/global.css'
+import './tutorial.css'
+import '../ui/ripple.css'
+
+import Answer from './answer'
+import { dedupeCodeStyles } from '../../layouts/dedupeCodeStyles'
+import AsideHeader from './aside-header'
+import TaskList from './task-list'
+import Playground from './playground'
+import { findLesson } from './lessons'
+import { ogImagePath } from '../../lib/og'
+
+interface Props {
+	title: string
+	description: string
+	/** interdoc path shown in the docs tab. */
+	doc?: string
+}
+
+const { title, description, doc = '/' } = Astro.props
+
+const found = findLesson(Astro.url.pathname)
+const pageId = Astro.url.pathname.replace(/^\/+|\/+$/g, '')
+const id =
+	found?.id ?? (pageId || 'index')
+const fullTitle = `${title} - Elysia tutorial`
+const ogImage = new URL(ogImagePath(pageId), Astro.site)
+
+// Testcase predicates are functions, and Astro serialises island props as JSON — only the two
+// display strings may cross into the island. `playground.tsx` loads the executable module itself.
+const data = import.meta.glob<{
+	testcases?: { title: string; description: string }[]
+}>('/src/pages/tutorial/**/_data.ts', { eager: true })
+const rows = (
+	data[
+		id === 'index'
+			? '/src/pages/tutorial/_data.ts'
+			: `/src/pages/tutorial/${id}/_data.ts`
+	]?.testcases ?? []
+).map(({ title, description }) => ({ title, description }))
+
+// Preserve the compiled Markdown and its Expressive Code assets.
+const content = dedupeCodeStyles(await Astro.slots.render('default'))
+const answer = Astro.slots.has('answer')
+	? dedupeCodeStyles(await Astro.slots.render('answer'))
+	: null
+// Astro's React renderer strips resource links, so emit those outside the answer island.
+const answerLinks = answer?.match(/<link\s[^>]*rel="(?:preload|modulepreload|stylesheet|preconnect|dns-prefetch)"[^>]*>/g) ?? []
+const answerHtml = answerLinks.reduce((html, link) => html.replace(link, ''), answer ?? '')
+
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{fullTitle}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={fullTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:alt" content={fullTitle} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content={fullTitle} />
+		<link rel="icon" href="/favicon.svg" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Alice&family=Nunito:ital,wght@0,400..800;1,400..700&family=JetBrains+Mono:ital,wght@0,400..600;1,400&display=swap"
+		/>
+		{
+			/* Inlined to avoid a flash: the theme and the aside width are both read before first paint. */
+		}
+		<script is:inline>
+			;(() => {
+				let stored
+				let width
+				try {
+					stored = localStorage.getItem('starlight-theme')
+					width = Number(
+						localStorage.getItem('elysia-playground:aside-w')
+					)
+				} catch {
+					// System theme and default pane width work without storage.
+				}
+				const theme =
+					stored ||
+					(window.matchMedia('(prefers-color-scheme: light)').matches
+						? 'light'
+						: 'dark')
+				document.documentElement.dataset.theme =
+					theme === 'light' ? 'light' : 'dark'
+				if (Number.isFinite(width) && width > 0)
+					document.documentElement.style.setProperty(
+						'--aside-w',
+						width + 'px'
+					)
+			})()
+		</script>
+	</head>
+	<body
+		data-tutorial
+		class="spica-surface m-0 h-dvh overflow-hidden overscroll-none bg-surface font-sans text-ink"
+	>
+		<a
+			href="#tutorial-workspace"
+			class="sr-only fixed left-3 top-3 z-50 rounded-xl bg-surface px-3 py-2 text-ink focus:not-sr-only focus:fixed focus-ring"
+			>Skip to playground</a
+		>
+		<main
+			data-tutorial-shell
+			data-aside="task"
+			class="group/shell flex h-full flex-col gap-0.25 p-1.5 sm:flex-row"
+		>
+			<aside
+				class="spica-surface flex min-h-0 w-full flex-col overflow-hidden rounded-2xl border border-border bg-base shadow-xs max-sm:flex-1 group-data-[aside=none]/shell:flex-none sm:w-[var(--aside-w,34%)] sm:min-w-80 sm:max-w-[60%] sm:flex-none sm:group-data-[aside=none]/shell:w-auto sm:group-data-[aside=none]/shell:min-w-0 sm:group-data-[aside=none]/shell:self-start"
+			>
+				<AsideHeader client:load lesson={id} />
+
+				<div
+					data-tutorial-task
+					class="min-h-0 flex-1 overflow-y-auto px-4 pt-4 pb-8 [&[hidden]]:hidden"
+				>
+					<article class="sl-markdown-content">
+						<Fragment set:html={content} />
+					</article>
+
+					<div class="mt-6 flex flex-col gap-6">
+						{rows.length > 0 && <TaskList client:load testcases={rows} />}
+						{answer && <>
+							<Fragment set:html={answerLinks.join('')} />
+							<Answer client:load html={answerHtml} />
+						</>}
+						<nav class="tutorial-lesson-nav grid items-start gap-4 border-t border-border pt-6" aria-label="Lessons">
+							{found?.prev && <a href={found.prev.href} class="min-w-0 rounded-lg text-ink no-underline focus-ring hover:text-primary-ink">
+								<span class="block text-xs text-ink-soft">← Previous</span>
+								<span class="mt-1 block font-display text-lg">{found.prev.title}</span>
+							</a>}
+							{found?.next && <a href={found.next.href} class="col-start-2 min-w-0 rounded-lg text-right text-ink no-underline focus-ring hover:text-primary-ink">
+								<span class="block text-xs text-ink-soft">Next →</span>
+								<span class="mt-1 block font-display text-lg">{found.next.title}</span>
+							</a>}
+						</nav>
+					</div>
+				</div>
+
+				<div
+					data-tutorial-docs
+					hidden
+					class="min-h-0 flex-1 [&[hidden]]:hidden"
+				>
+					<iframe
+						title="Documentation"
+						data-src={doc}
+						loading="lazy"
+						class="size-full border-0 bg-base"></iframe>
+				</div>
+			</aside>
+
+			<div
+				data-aside-handle
+				role="separator"
+				aria-orientation="vertical"
+				aria-label="Resize documentation pane"
+				tabindex="0"
+				class="relative hidden w-1.5 flex-none cursor-col-resize touch-none rounded-full focus:[outline:var(--focus-outline)] focus:[outline-offset:var(--focus-offset)] before:absolute before:inset-y-3 before:left-1/2 before:w-px before:-translate-x-1/2 before:rounded-full before:transition-[width,background-color] before:duration-(--dur-fast) before:ease-out hover:before:w-0.5 hover:before:bg-primary focus:before:w-0.5 focus:before:bg-primary motion-reduce:before:transition-none sm:block sm:group-data-[aside=none]/shell:hidden"
+			>
+			</div>
+
+			<div
+				id="tutorial-workspace"
+				tabindex="-1"
+				class="flex min-h-0 min-w-0 flex-1 flex-col"
+			>
+				<Playground client:load lesson={id} />
+			</div>
+		</main>
+
+		<script>
+			import '../ui/ripple'
+
+			// `loading="lazy"` alone does not defer this one: Chromium exempts an iframe inside a
+			// `display: none` subtree, and the docs pane starts hidden. So the page is fetched the
+			// first time the Docs tab is opened — a DocLink click sets `src` itself and is skipped.
+			const docs = document.querySelector<HTMLElement>(
+				'[data-tutorial-docs]'
+			)
+			const frame = docs?.querySelector('iframe')
+
+			if (docs && frame) {
+				const reveal = () => {
+					if (docs.hidden) return
+					if (!frame.src) frame.src = frame.dataset.src ?? '/'
+					observer.disconnect()
+				}
+				const observer = new MutationObserver(reveal)
+				observer.observe(docs, {
+					attributes: true,
+					attributeFilter: ['hidden']
+				})
+				reveal()
+			}
+
+			const shell = document.querySelector<HTMLElement>(
+				'[data-tutorial-shell]'
+			)
+			const handle = shell?.querySelector<HTMLElement>(
+				'[data-aside-handle]'
+			)
+
+			if (shell && handle) {
+				const KEY = 'elysia-playground:aside-w'
+				const MIN = 320
+				// The aside's own `max-w-[60%]` resolves against the shell's CONTENT box, so the
+				// clamp has to subtract the padding or the two ceilings disagree by 7px.
+				const track = () => {
+					const style = getComputedStyle(shell)
+					return (
+						shell.clientWidth -
+						parseFloat(style.paddingLeft) -
+						parseFloat(style.paddingRight)
+					)
+				}
+				const clamp = (width: number) =>
+					Math.min(Math.max(width, MIN), Math.max(MIN, track() * 0.6))
+
+				const report = (width: number) => {
+					const available = track()
+					handle.setAttribute(
+						'aria-valuemin',
+						String(Math.round((MIN / available) * 100))
+					)
+					handle.setAttribute(
+						'aria-valuemax',
+						String(
+							Math.round(
+								(Math.max(MIN, available * 0.6) / available) *
+									100
+							)
+						)
+					)
+					handle.setAttribute(
+						'aria-valuenow',
+						String(Math.round((width / available) * 100))
+					)
+				}
+
+				const apply = (width: number, persist: boolean) => {
+					const next = clamp(width)
+					document.documentElement.style.setProperty(
+						'--aside-w',
+						`${Math.round(next)}px`
+					)
+					report(next)
+					if (persist)
+						try {
+							localStorage.setItem(KEY, String(Math.round(next)))
+						} catch {
+							// A blocked storage quota must not break the drag.
+						}
+				}
+
+				const aside = shell.firstElementChild as HTMLElement
+				const asideWidth = () => aside.getBoundingClientRect().width
+
+				const resizeObserver = new ResizeObserver(() =>
+					report(asideWidth())
+				)
+				resizeObserver.observe(aside)
+				resizeObserver.observe(shell)
+
+				handle.addEventListener('pointerdown', (event) => {
+					if (event.button !== 0) return
+					// preventDefault keeps the drag from selecting the panes' text, but it also
+					// cancels the focus the press would otherwise move here — so do that by hand,
+					// or the arrow-key resize is unreachable with a mouse.
+					event.preventDefault()
+					handle.focus()
+					handle.setPointerCapture(event.pointerId)
+					// The aside's own left edge, not the shell's: the shell's 6px padding sits
+					// between them and would otherwise offset the handle from the cursor.
+					const left = aside.getBoundingClientRect().left
+
+					const move = (moved: PointerEvent) => {
+						// Keep nested panel resizers from taking over this drag.
+						moved.preventDefault()
+						apply(moved.clientX - left, false)
+					}
+					const done = () => {
+						handle.removeEventListener('pointermove', move)
+						handle.removeEventListener('pointerup', done)
+						handle.removeEventListener('pointercancel', done)
+						apply(asideWidth(), true)
+					}
+
+					handle.addEventListener('pointermove', move)
+					handle.addEventListener('pointerup', done)
+					handle.addEventListener('pointercancel', done)
+				})
+
+				handle.addEventListener('keydown', (event) => {
+					if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')
+						return
+					event.preventDefault()
+					apply(
+						asideWidth() + (event.key === 'ArrowLeft' ? -32 : 32),
+						true
+					)
+				})
+			}
+		</script>
+	</body>
+</html>

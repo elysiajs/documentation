@@ -1,0 +1,56 @@
+html[data-theme-transition] *,
+html[data-theme-transition]::before,
+html[data-theme-transition]::after,
+html[data-theme-transition] *::before,
+html[data-theme-transition] *::after {
+	view-transition-name: none !important;
+}
+
+html[data-theme-transition]::view-transition {
+	pointer-events: none;
+}
+
+html[data-theme-transition]::view-transition-group(root),
+html[data-theme-transition]::view-transition-old(root) {
+	animation: none;
+}
+
+html[data-theme-transition]::view-transition-image-pair(root) {
+	isolation: auto;
+}
+
+html[data-theme-transition]::view-transition-old(root) {
+	z-index: 0;
+	mix-blend-mode: normal;
+}
+
+html[data-theme-transition]::view-transition-new(root) {
+	z-index: 1;
+	mix-blend-mode: normal;
+	mask: url('/assets/shigure-ui-smol.gif') center / 0 no-repeat;
+	animation: theme-reveal 1.75s cubic-bezier(0.7, 0, 0.84, 0) both;
+}
+
+html[data-theme-transition='fast']::view-transition-new(root) {
+	animation-name: theme-reveal-fast;
+	animation-duration: 1s;
+}
+
+@keyframes theme-reveal {
+	0% { mask-size: 0; }
+	10%, 90% { mask-size: 25vmax; }
+	100% { mask-size: 750vmax; }
+}
+
+@keyframes theme-reveal-fast {
+	0% { mask-size: 0; }
+	10%, 87.5% { mask-size: 25vmax; }
+	100% { mask-size: 750vmax; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html[data-theme-transition]::view-transition-new(root) {
+		animation: none;
+		mask: none;
+	}
+}

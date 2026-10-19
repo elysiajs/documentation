@@ -1,0 +1,44 @@
+---
+template: "splash"
+description: "Elysia API reference for status."
+editUrl: false
+next: false
+prev: false
+title: "status"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">status</h1>
+
+```ts
+const status: <Code, T>(code, response?) => ElysiaStatus<Code, T, NumericStatus<Code>>;
+```
+
+Defined in: elysia/dist/error.d.ts:138
+
+## Type Parameters
+
+| Type Parameter | Default type |
+| ------ | ------ |
+| `Code` *extends* `number` \| keyof [`StatusMap`](/reference/type-aliases/statusmap/) | - |
+| `T` | [`StatusResponse`](/reference/type-aliases/statusresponse/)\<`Code`\> |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `code` | `Code` |
+| `response?` | `T` |
+
+## Returns
+
+[`ElysiaStatus`](/reference/classes/elysiastatus/)\<`Code`, `T`, [`NumericStatus`](/reference/type-aliases/numericstatus/)\<`Code`\>\>
+
+</div>
+</InteractiveDocLayout>
+</div>

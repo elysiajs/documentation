@@ -1,0 +1,34 @@
+---
+import DocumentTabs from './document-tabs';
+import { documentPanels } from './document-panels';
+
+interface Props {
+	label: string;
+	kind: 'page' | 'code';
+}
+
+const { label, kind } = Astro.props;
+const { html, tabs, defaultValue } = documentPanels(await Astro.slots.render('default'), `doc-tabs-${crypto.randomUUID()}`);
+---
+
+<div data-document-tabs>
+	<div class="document-tabs-controls not-content" data-document-tabs-controls>
+		<DocumentTabs client:load {label} {kind} {tabs} {defaultValue} />
+	</div>
+	<Fragment set:html={html} />
+</div>
+
+<noscript>
+	<style>
+		[data-document-tabs] > [data-document-tabs-controls] { display: none; }
+		[data-document-tabs] > [role='tabpanel'][hidden] { display: block !important; }
+	</style>
+</noscript>
+
+<style>
+	.document-tabs-controls {
+		overflow-x: auto;
+		padding: 0.25rem;
+		margin-bottom: 0.5rem;
+	}
+</style>

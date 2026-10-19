@@ -1,0 +1,46 @@
+---
+import { IconCheck, IconCopy } from '@tabler/icons-react'
+---
+
+<div class="landing-command" data-install-command>
+	<div class="landing-command-control">
+		<code>bun create elysia app</code>
+		<button type="button" aria-label="Copy install command" hidden>
+			<IconCopy size={18} strokeWidth={1.5} className="landing-copy-icon" aria-hidden="true" />
+			<IconCheck size={18} strokeWidth={1.5} className="landing-copy-check" aria-hidden="true" />
+		</button>
+	</div>
+	<span class="landing-copy-status" role="status" aria-live="polite" aria-atomic="true"></span>
+</div>
+
+<script>
+	for (const command of document.querySelectorAll<HTMLElement>('[data-install-command]')) {
+		const code = command.querySelector('code')!
+		const button = command.querySelector('button')!
+		const status = command.querySelector<HTMLElement>('[role="status"]')!
+		let resetTimer: ReturnType<typeof setTimeout> | undefined
+
+		button.hidden = false
+		button.addEventListener('click', async () => {
+			if (button.disabled) return
+			clearTimeout(resetTimer)
+			button.disabled = true
+			delete command.dataset.copied
+			status.textContent = ''
+
+			try {
+				await navigator.clipboard.writeText(code.textContent!.trim())
+				command.dataset.copied = 'true'
+				status.textContent = 'Copied!'
+			} catch {
+				status.textContent = 'Couldn’t copy. Select the command to copy it.'
+			} finally {
+				button.disabled = false
+				resetTimer = setTimeout(() => {
+					delete command.dataset.copied
+					status.textContent = ''
+				}, 4000)
+			}
+		})
+	}
+</script>

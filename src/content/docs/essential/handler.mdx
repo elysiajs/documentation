@@ -1,0 +1,499 @@
+---
+title: Handler
+description: Read a request and choose what to send back with an Elysia handler.
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../components/playground/code.astro';
+
+export const responseDemo = new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/path', ({ path }) => path)
+    .get('/teapot', ({ status }) => status(418, 'I am a teapot'));
+
+export const extendContextDemo = new Elysia()
+    .state('tea', 'Earl Grey')
+    .decorate('greet', (name) => `Hello ${name}`)
+    .derive(({ query }) => ({ name: query.name ?? 'friend' }))
+    .get('/', ({ store, greet, name }) => ({
+        greeting: greet(name),
+        tea: store.tea
+    }));
+
+export const extendContextExamples = await Promise.all(
+    ['/', '/?name=Nagisa'].map(async (path) => ({
+        method: 'GET',
+        displayPath: path,
+        response: await (await extendContextDemo.handle(
+            new Request(`http://elysiajs.com${path}`)
+        )).text()
+    }))
+);
+
+export const steps = [
+    {
+        label: 'Return a value',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'Use a function',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'Read the request',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ query }) => query.name ?? 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'Choose a status',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ query, status }) => {
+        if (!query.name) return status(400, 'Tell me your name')
+
+        return query.name
+    })
+    .listen(3000)`,
+        highlight: [4, 5, 7],
+    },
+];
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Handler</h1>
+
+A **handler** decides what to send back when a request matches a route. Give Elysia a value to return, or a function that reads the request and builds a response.
+
+Let's start with a greeting, then give it something to respond to.
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## Return a value
+
+Pass a literal value when every request should get the same response. A `GET` request to `/` returns `Hello Elysia`.
+
+Elysia can prepare this response ahead of time. This also works for static resources such as files.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Use a function
+
+Pass a function when you need to do some work for each request. Elysia calls it when the route matches and turns its return value into a response.
+
+This function still returns `Hello Elysia`. Same greeting, now with room to grow.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Read the request
+
+The handler's first argument is **context**. It contains the request information and helpers you'll use to respond.
+
+Here, we take `query` from context. Visiting `/?name=Nagisa` returns `Nagisa`; visiting `/` returns `Hello Elysia`.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Choose a status
+
+Return `status(code, value)` to choose both the HTTP status and the response body.
+
+Now `/` returns `400` with `Tell me your name`. Add `?name=Nagisa` and you'll get `Nagisa` with the usual `200` status.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+:::tip[Static values aren't a cache]
+
+A literal handler gives Elysia a response to prepare ahead of time. Lifecycle hooks can still change the response, including its headers and status.
+
+:::
+
+## Inspect a response
+
+Pick a route below to see its response body. `/path` returns its own pathname, and `/teapot` returns `I am a teapot` with HTTP status `418`.
+
+<CodePlayground elysia={responseDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/path', ({ path }) => path)
+    .get('/teapot', ({ status }) => status(418, 'I am a teapot'))
+    .listen(3000)
+```
+
+</CodePlayground>
+
+The panel shows the body only. To inspect status codes and headers too, run the example locally and request `http://localhost:3000/teapot` with your HTTP client.
+
+## Context
+
+Each request gets its own context. Handlers and lifecycle hooks receive it, though which fields are ready depends on the lifecycle stage.
+
+You can take the whole object and read `context.path`, or destructure just what you need as `({ path }) => path`.
+
+| Property | What you'll find |
+| --- | --- |
+| `body` | The parsed request body, such as JSON, form fields, or uploaded files. |
+| `query` | Query parameters. For `/?name=Nagisa`, `query.name` is `Nagisa`. |
+| `params` | Named path parameters. For `/user/42` matching `/user/:id`, `params.id` is `42`. |
+| `headers` | Incoming request headers, such as `content-type`. |
+| `cookie` | Cookie values for this request, with helpers to update outgoing cookies. |
+| `store` | Shared mutable state registered with `.state()`. |
+| `path` | The request pathname, without the query string. |
+| `request` | The original Web Standard `Request`. |
+| `server` | The running server instance, when the runtime provides one. |
+
+| Helper | What you can do |
+| --- | --- |
+| `status(code, value)` | Return a body with a specific HTTP status. |
+| `redirect(url, status?)` | Return a redirect response. |
+| `set` | Set outgoing response headers and a default status. |
+
+`store` is shared across requests, as are object references you add with `.decorate()`. Compute request-specific values with `.derive()` instead.
+
+See [validation](/essential/validation/) for schemas that check and type request fields.
+
+## status
+
+Prefer returning `status()` for an expected error, such as a missing resource. Elysia carries the status code alongside the body's type.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/tea', {
+        response: {
+            200: t.Object({ name: t.String() }),
+            404: t.String()
+        }
+    }, ({ query, status }) => {
+        if (query.name !== 'earl-grey')
+            return status(404, 'That tea is not on the menu')
+
+        return { name: 'Earl Grey' }
+    })
+    .listen(3000)
+```
+
+TypeScript can check each body against its status-specific response schema. [Eden](/eden/) uses these types to narrow client results and errors by status code too.
+
+Without a custom status or an error, a successful response uses `200`.
+
+## Set response details
+
+Use `set` to change the outgoing response. It belongs to the current request.
+
+### set.headers
+
+Assign response headers by name. You can also replace the headers object or use `delete` to remove an entry you've set.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set, status }) => {
+        set.headers['x-teapot'] = 'true'
+
+        return status(418, 'I am a teapot')
+    })
+    .listen(3000)
+```
+
+Use lowercase names, such as `content-type`, to match Elysia's header autocomplete. HTTP header names themselves are case-insensitive.
+
+### set.status
+
+Use `set.status` when a hook or plugin should choose a default status while leaving the body to the handler.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(({ set }) => {
+        set.status = 201
+    })
+    .post('/tea', () => ({ name: 'Earl Grey' }))
+    .listen(3000)
+```
+
+The hook returns nothing, so the handler still runs. A `POST` request to `/tea` returns the object with status `201`.
+
+You can use a number or a status name, such as `set.status = 'Created'`. Returning `status()` overrides this default and preserves the relationship between status and body types; assigning `set.status` doesn't.
+
+## Cookie
+
+Read a cookie through its `.value` property. Assign a new value to send an updated cookie in the response.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/tea', ({ cookie: { tea } }) => {
+        const previous = tea.value ?? 'none'
+        tea.value = 'Earl Grey'
+
+        return { previous, current: tea.value }
+    })
+    .listen(3000)
+```
+
+On a request without a `tea` cookie, this returns `previous: 'none'` and sets the cookie to `Earl Grey`. These cookie values belong to the request, not a shared global store.
+
+See [cookie](/patterns/cookie/) for options, signing, and removing cookies.
+
+## Redirect
+
+Return `redirect()` to send the client to another URL. It uses `302` by default; pass a second argument for a different redirect status.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ redirect }) => redirect('/tea'))
+    .get('/old-menu', ({ redirect }) => redirect('/tea', 301))
+    .get('/tea', 'Earl Grey')
+    .listen(3000)
+```
+
+The client receives a redirect response with a `Location` header. Remember to return it from your handler.
+
+## Form data
+
+Return `form()` to send multipart form data. Its fields can include text and files.
+
+```ts
+import { Elysia, form, file } from 'elysia'
+
+new Elysia()
+    .get('/album', () => form({
+        name: 'Tea Party',
+        images: [file('nagisa.webp'), file('mika.webp')]
+    }))
+    .listen(3000)
+```
+
+Place the example files in your app's working directory before running it.
+
+### Return a file
+
+For a single file, return `file()` directly.
+
+```ts
+import { Elysia, file } from 'elysia'
+
+new Elysia()
+    .get('/portrait', file('nagisa.webp'))
+    .listen(3000)
+```
+
+## Stream a response
+
+Use a generator function and `yield` to send the response in chunks. Each yielded value becomes part of the stream.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* () {
+        yield 1
+        yield 2
+        yield 3
+    })
+    .listen(3000)
+```
+
+Use `async function*` when producing a chunk requires `await`.
+
+### Server-sent events
+
+Wrap each value in `sse()` to format it as a server-sent event. Elysia sets the response's content type to `text/event-stream`.
+
+```ts
+import { Elysia, sse } from 'elysia'
+
+new Elysia()
+    .get('/events', function* () {
+        yield sse('Tea is brewing')
+        yield sse({
+            event: 'ready',
+            data: { tea: 'Earl Grey' }
+        })
+    })
+    .listen(3000)
+```
+
+The first event carries text. The second uses a named `ready` event with JSON data.
+
+### Set headers before streaming
+
+:::caution[Before the first yield]
+
+Set headers before yielding the first chunk. Elysia sends the headers when streaming begins, so changes after that won't reach the client.
+
+:::
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* ({ set }) {
+        set.headers['x-tea'] = 'Earl Grey'
+
+        yield 1
+        yield 2
+    })
+    .listen(3000)
+```
+
+This applies to both regular streams and server-sent events.
+
+### Return without streaming
+
+Return before the first `yield` to send a normal response instead.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* ({ query }) {
+        if (query.stream !== 'true') return 'Ready'
+
+        yield 1
+        yield 2
+        yield 3
+    })
+    .listen(3000)
+```
+
+`/stream` returns `Ready`. `/stream?stream=true` streams the three values.
+
+### Cancellation
+
+If the client cancels before the stream finishes, Elysia closes the generator. That doesn't interrupt arbitrary work you've already started with `await`; pass the request's abort signal to operations that support it when they need to stop too.
+
+### Consume a stream with Eden
+
+Eden reads a stream as an async generator. Use `for await` to consume its chunks.
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/stream', function* () {
+        yield 1
+        yield 2
+        yield 3
+    })
+
+const { data, error } = await treaty(app).stream.get()
+if (error) throw error
+
+for await (const chunk of data)
+    console.log(chunk)
+```
+
+## Request
+
+Use `request` when you need the original Web Standard `Request`, including its URL, headers, or abort signal.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user-agent', ({ request }) =>
+        request.headers.get('user-agent') ?? 'Unknown'
+    )
+    .listen(3000)
+```
+
+For a parsed body, use `body` from context. Request bodies can only be consumed once, and Elysia may have already read yours.
+
+## Server
+
+On Bun, `server` gives you the running Bun server instance. It becomes available after `.listen()` starts the server.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/port', ({ server }) => server?.port)
+    .get('/ip', ({ server, request }) => server?.requestIP(request))
+    .listen(3000)
+```
+
+`/port` returns the listening port. `server.requestIP(request)` returns the client's socket address information when available.
+
+These server APIs are Bun-specific. The optional chaining also handles requests dispatched without a running server.
+
+## Extend context
+
+Add your own values when your handlers need more than the built-in fields.
+
+| Method | Use it for |
+| --- | --- |
+| `.state()` | Shared mutable state, available through `store`. |
+| `.decorate()` | Shared helpers or services you can read from context. |
+| `.derive()` | Values computed for each request before the handler runs. |
+
+<CodePlayground examples={extendContextExamples}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('tea', 'Earl Grey')
+    .decorate('greet', (name: string) => `Hello ${name}`)
+    .derive(({ query }) => ({ name: query.name ?? 'friend' }))
+    .get('/', ({ store, greet, name }) => ({
+        greeting: greet(name),
+        tea: store.tea
+    }))
+    .listen(3000)
+```
+
+</CodePlayground>
+
+Visiting `/?name=Nagisa` returns a greeting of `Hello Nagisa` and the shared tea value, `Earl Grey`.
+
+See [derive](/essential/life-cycle/#derive) for more examples. In Elysia v2, `.derive()` runs during `beforeHandle` and replaces the former `.resolve()` API.
+
+</div>
+
+</InteractiveDocLayout>

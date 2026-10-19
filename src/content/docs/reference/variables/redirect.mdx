@@ -1,0 +1,37 @@
+---
+template: "splash"
+description: "Elysia API reference for redirect."
+editUrl: false
+next: false
+prev: false
+title: "redirect"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">redirect</h1>
+
+```ts
+const redirect: (url, status?) => Response;
+```
+
+Defined in: elysia/dist/utils.d.ts:124
+
+## Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `url` | `string` | URL to redirect to |
+| `status?` | `301` \| `302` \| `303` \| `307` \| `308` | - |
+
+## Returns
+
+`Response`
+
+</div>
+</InteractiveDocLayout>
+</div>

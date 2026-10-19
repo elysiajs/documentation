@@ -1,0 +1,44 @@
+---
+template: "splash"
+description: "Elysia API reference for prefix."
+editUrl: false
+next: false
+prev: false
+title: "prefix"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">prefix</h1>
+
+```ts
+function prefix<T, Models>(prefix, models): { [k in string | number | symbol as `${T}.${k & string}`]: Models[k] };
+```
+
+Defined in: elysia/dist/utils.d.ts:207
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `T` *extends* `string` |
+| `Models` *extends* `Record`\<`string`, [`AnySchema`](/reference/type-aliases/anyschema/)\> |
+
+## Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `prefix` | `T` |
+| `models` | `Models` |
+
+## Returns
+
+\{ \[k in string \| number \| symbol as \`$\{T\}.$\{k & string\}\`\]: Models\[k\] \}
+
+</div>
+</InteractiveDocLayout>
+</div>
