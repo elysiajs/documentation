@@ -24,6 +24,7 @@ export interface DropdownItem {
 export interface DropdownProps extends React.HTMLAttributes<HTMLDivElement> {
 	trigger?: React.ReactNode
 	items?: Array<DropdownItem | 'divider'>
+	anchor?: React.RefObject<Element | null>
 	/** @default 'start' */
 	align?: 'start' | 'end'
 	finalFocus?: BaseMenu.Popup.Props['finalFocus']
@@ -153,11 +154,13 @@ function renderItems(items: Array<DropdownItem | 'divider'>) {
 
 function MenuPopup({
 	items,
+	anchor,
 	align = 'start',
 	side = 'bottom',
 	finalFocus
 }: {
 	items: Array<DropdownItem | 'divider'>
+	anchor?: React.RefObject<Element | null>
 	align?: 'start' | 'end'
 	side?: 'bottom' | 'right'
 	finalFocus?: BaseMenu.Popup.Props['finalFocus']
@@ -165,6 +168,7 @@ function MenuPopup({
 	return (
 		<BaseMenu.Portal>
 			<BaseMenu.Positioner
+				anchor={anchor}
 				align={align}
 				side={side}
 				sideOffset={6}
@@ -189,6 +193,7 @@ function MenuPopup({
 export function Dropdown({
 	trigger,
 	items = [],
+	anchor,
 	align = 'start',
 	finalFocus,
 	className,
@@ -216,6 +221,7 @@ export function Dropdown({
 				)}
 				<MenuPopup
 					items={items}
+					anchor={anchor}
 					align={align}
 					finalFocus={finalFocus}
 				/>

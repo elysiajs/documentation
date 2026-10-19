@@ -34,13 +34,25 @@ const segment =
 export default function PageActions({ markdown }: { markdown: string }) {
 	const [pageUrl, setPageUrl] = useState('')
 	const [status, setStatus] = useState('')
+	const [menuAlign, setMenuAlign] = useState<'start' | 'end'>('start')
+	const actions = useRef<HTMLDivElement>(null)
 	const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
 		undefined
 	)
 
 	useEffect(() => {
 		setPageUrl(window.location.href)
-		return () => clearTimeout(copyTimer.current)
+		const desktop = window.matchMedia('(min-width: 40rem)')
+		const updateMenuAlign = () =>
+			setMenuAlign(desktop.matches ? 'end' : 'start')
+
+		updateMenuAlign()
+		desktop.addEventListener('change', updateMenuAlign)
+
+		return () => {
+			desktop.removeEventListener('change', updateMenuAlign)
+			clearTimeout(copyTimer.current)
+		}
 	}, [])
 
 	const copy = async () => {
@@ -61,6 +73,7 @@ export default function PageActions({ markdown }: { markdown: string }) {
 	return (
 		<div className="spica-surface relative font-sans sm:float-end sm:ms-4 sm:mb-4 translate-y-1.25">
 			<div
+				ref={actions}
 				className="inline-flex items-stretch rounded-xl border border-border-strong bg-surface shadow-xs"
 				role="group"
 				aria-label="Page actions"
@@ -78,7 +91,8 @@ export default function PageActions({ markdown }: { markdown: string }) {
 					</span>
 				</button>
 				<Dropdown
-					align="end"
+					anchor={actions}
+					align={menuAlign}
 					trigger={
 						<button
 							type="button"

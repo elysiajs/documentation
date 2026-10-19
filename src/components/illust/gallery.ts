@@ -38,18 +38,18 @@ export const preview = [
 	},
 	{
 		description: 'Elysia 2 RC cover image inspired by 「またおいで」',
-		cover: '/illust/ely/またおいで/またおいで base.webp',
+		cover: '/illust/ely/mata-oide/mata-oide-base.webp',
 		illust: 'SaltyAom',
 		page: [
 			{
 				title: 'またおいで',
 				lang: 'Base',
-				src: '/illust/ely/またおいで/またおいで base.webp'
+				src: '/illust/ely/mata-oide/mata-oide-base.webp'
 			},
 			{
 				title: 'またおいで',
 				lang: 'RC',
-				src: '/illust/ely/またおいで/またおいで.webp'
+				src: '/illust/ely/mata-oide/mata-oide.webp'
 			}
 		]
 	},

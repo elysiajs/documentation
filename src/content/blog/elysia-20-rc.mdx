@@ -42,7 +42,7 @@ export const memoryBeforeAfterLoadtest = [
 
 After a year of development, Elysia 2 RC is finally here.
 
-Elysia 2 is still named [DayDream](https://youtu.be/3qRd7Ok0NVY), but the development took a long time, and the improvements from beta to RC were big enough to justify calling it Elysia 2.1. We decided to name this release as well.
+Elysia 2 is still named [DayDream](https://youtu.be/3qRd7Ok0NVY), but the development took a long time, and the improvements from beta to RC were big enough to could justtified as 2.1 so we decided honor this release with a name as well.
 
 Elysia 2 RC is named after [またおいで (Please come again)](https://youtu.be/ezOrPwjaHZo) by South& to honor the improvements we've made.
 
@@ -93,7 +93,7 @@ Here's the average memory usage per route when scaling from 25 to 400 routes. Th
 
 Because Elysia 2 includes a JIT and static code analysis, its bundle size is larger than Hono's and h3's, so it has a larger fixed startup footprint.
 
-But as the route count increases, Elysia 2 should be one of the most memory-efficient framework.
+But as the route count increases, Elysia 2 should be one of the most memory-efficient frameworks.
 
 ---
 
@@ -143,7 +143,7 @@ This makes it easy to identify all possible errors and makes Eden Treaty and Ope
 
 With OpenAPI type generation, you no longer have to manually annotate errors. It lists all possible errors that the route can throw and generates a proper OpenAPI spec for them.
 
-This is somewhat similar to neverthrow and covers a lot of Effect.ts error handling, but with Elysia's ergonomics.
+This is what you would get from neverthrow or Effect.ts error handling, but with Elysia's ergonomics.
 
 See [Error Handling](/patterns/error-handling) to learn how to structure your code to make Elysia infer errors.
 
@@ -157,7 +157,7 @@ Now Elysia 1 plugins should just work with Elysia 2 without any modifications.
 
 ![Error hook](/blog/elysia-20-rc/error-hook.webp)
 
-However, the two-parameter `onError` hook still has one breaking change: `code` is now an `Error` instance. Most plugins should still work.
+However, the two-parameter `onError` hook would be a breaking change.
 
 ---
 
@@ -243,10 +243,12 @@ bunx @elysia/codemod@latest
 You can create a new project with Elysia 2 RC using:
 
 ```bash
-bun create elysia && bun add elysia@rc
+bun create elysia app
+cd app
+bun add elysia@rc
 ```
 
-We also update Elysiajs skills for LLM with a much better structure as well. We recommend updating your skills to the latest version with:
+We've also update Elysia skills for LLM with a much better structure. You can install/update the skill to the latest version with:
 ```
 bunx skills add elysiajs/skills
 ```
@@ -261,7 +263,7 @@ The new documentation is revised to be more beginner-friendly and updated for El
 
 We have rewrite the entire from Vitepress to Astro Starlight for more control over what we can do with the documentation. We write a lot of new component like [lifecycle playground](/essential/life-cycle) with our in-house design language.
 
-We recommended you checking it out from the [documentation home page](/). Many pages has been summarized and rewritten to be more beginner-friendly, and we have added several new content.
+We recommend you checking it out from the [documentation home page](/). Many pages has been summarized and rewritten to be more beginner-friendly, and we have added several new content.
 
 ---
 

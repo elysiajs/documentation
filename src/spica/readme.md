@@ -1,6 +1,6 @@
 # Spica System
 
-version: 2.69 · 2026-10-16 · Alice/Nunito/JetBrains Mono · primary #F9578A · dashed focus · spring motion
+version: 2.70 · 2026-10-20 · Alice/Nunito/JetBrains Mono · primary #F9578A · dashed focus · spring motion
 
 > *Joyful, personal, a little magical. The brightest star in Virgo, made into a design language.*
 
