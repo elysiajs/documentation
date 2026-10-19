@@ -48,10 +48,10 @@
 
             <a
                 class="flex items-center gap-1.5 text-pink-500 dark:text-pink-300 text-sm font-medium pl-1.5 pr-2.5 py-0.75 rounded-full bg-pink-400/12.5 bg-pink-200/12.5 mb-4 clicky"
-                href="/blog/elysia-20"
+                href="https://next.elysiajs.com"
             >
                 <Sparkle :size="14" />
-                Introducing Elysia 2 beta
+                Elysia 2 doc is here
             </a>
 
             <img
