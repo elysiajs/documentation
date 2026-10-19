@@ -10,7 +10,7 @@ import {
 import { Card } from '../ui/card'
 import { Button } from '../ui/button'
 import './plugin-tree.css'
-import { ButtonGroup } from '../../spica/components/ButtonGroup/ButtonGroup'
+import { ButtonGroup } from '../ui/button-group'
 
 const waveHeights = Array.from({ length: 61 }, (_, i) =>
 	Math.round(

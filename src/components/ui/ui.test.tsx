@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test';
 import { renderToString } from 'react-dom/server';
 import { Button, ButtonLink } from './button';
+import { ButtonGroup } from './button-group';
 import { Callout } from './callout';
 import { Card, CardTitle } from './card';
 import { Checkbox } from './checkbox';
@@ -419,4 +420,20 @@ test('NumberedCards keeps gradient references unique across groups', () => {
 	expect(ids.length).toBe(4);
 	expect(new Set(ids).size).toBe(4);
 	for (const id of ids) expect(html).toContain(`stroke="url(#${id})"`);
+});
+
+test('ButtonGroup squares inner corners so joined buttons read as one control', () => {
+	const corner = 'var(--radius, var(--radius-xl, 12px))';
+	const left = `${corner} 0 0 ${corner}`;
+	const right = `0 ${corner} ${corner} 0`;
+	for (const expected of [[corner], [left, right], [left, '0', right]]) {
+		const html = renderToString(
+			<ButtonGroup>
+				{expected.map((_, i) => (
+					<button key={i}>{i}</button>
+				))}
+			</ButtonGroup>
+		);
+		expect([...html.matchAll(/border-radius:([^;"]+)/g)].map((m) => m[1])).toEqual(expected);
+	}
 });
