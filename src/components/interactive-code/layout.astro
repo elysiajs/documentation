@@ -173,11 +173,10 @@ const pageHeadings = [
 			align-items: start;
 			position: fixed;
 			box-sizing: border-box;
-			width: max-content;
-			height: auto;
+			width: var(--outline-width, auto);
+			height: var(--outline-height, auto);
 			max-height: calc(100dvh - var(--sl-nav-height, 4rem) - 2rem);
 			overflow: clip;
-			interpolate-size: allow-keywords;
 			transition:
 				width var(--dur-base) var(--ease-out),
 				height var(--dur-base) var(--ease-out),
@@ -222,18 +221,18 @@ const pageHeadings = [
 			box-shadow: var(--shadow-md);
 			border-radius: 1rem;
 		}
+		.desktop-outline[data-collapsed] [data-page-navigation] {
+			max-height: calc(
+				100dvh - var(--sl-nav-height, 4rem) - 2rem - 1.5rem - 2px
+			);
+		}
 		.desktop-outline[data-open] {
-			width: max-content;
-			height: auto;
+			width: calc(var(--outline-width) + 1.25rem + 2px);
+			height: calc(var(--outline-height) + 1.5rem + 2px);
 			border-radius: 1.5rem;
 			padding: 0.75rem 0.5rem 0.75rem 0.75rem;
-			overflow-y: auto;
-			overscroll-behavior: contain;
 			top: 0.5rem;
 			right: 0.5rem;
-		}
-		.desktop-outline[data-open] [data-page-navigation] {
-			overflow: visible;
 		}
 		.desktop-outline [data-page-navigation] > span {
 			position: relative;
@@ -381,6 +380,7 @@ const pageHeadings = [
 			}
 
 			let updateOverlap = () => {}
+			let syncOutlineSize = () => {}
 			const scheduleUpdate = () => {
 				if (signal.aborted || frame) return
 				frame = requestAnimationFrame(() => {
@@ -491,8 +491,20 @@ const pageHeadings = [
 				const inlineOutline = matchMedia('(min-width: 64rem)')
 				let collapsed = false
 				let open = false
+				syncOutlineSize = () => {
+					const { width, height } =
+						pageNavigation.getBoundingClientRect()
+					if (!width || !height) return
+					const host = inlineOutline.matches ? desktopShell : floating
+					host.style.setProperty('--outline-width', `${width}px`)
+					host.style.setProperty('--outline-height', `${height}px`)
+				}
 				const renderOutline = () => {
 					const desktop = inlineOutline.matches
+					pageNavigation.hidden = !desktop && !open
+					outlineClose.hidden = !open
+					// Measure before toggling so the shell transitions px to px from its old state.
+					syncOutlineSize()
 					desktopShell.toggleAttribute(
 						'data-collapsed',
 						desktop && collapsed
@@ -517,9 +529,7 @@ const pageHeadings = [
 							!!document.querySelector(
 								'.docs-page[data-sidebar-open]'
 							)
-					pageNavigation.hidden = !desktop && !open
 					pageNavigation.inert = !open && (!desktop || collapsed)
-					outlineClose.hidden = !open
 				}
 				const setOutline = (next: boolean, returnFocus = false) => {
 					const toggle = inlineOutline.matches
@@ -705,12 +715,14 @@ const pageHeadings = [
 					)
 				)
 					measure()
+				syncOutlineSize()
 				scheduleUpdate()
 			})
 			signal.addEventListener('abort', () => observer.disconnect(), {
 				once: true
 			})
 			observer.observe(track)
+			observer.observe(pageNavigation)
 			observer.observe(document.documentElement)
 			for (const link of pageLinks) observer.observe(link)
 			void document.fonts.ready.then(() => {

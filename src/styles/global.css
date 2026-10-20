@@ -417,7 +417,6 @@ a.spica-card[href]:active {
 		width: 66px;
 		height: 36px;
 		overflow: clip;
-		interpolate-size: allow-keywords;
 		transition:
 			width var(--dur-base) var(--ease-out),
 			height var(--dur-base) var(--ease-out),
@@ -429,9 +428,14 @@ a.spica-card[href]:active {
 	.docs-floating:where(:has([data-page-navigation-toggle]:not([hidden]))) {
 		width: 96px;
 	}
-	.docs-floating:is([data-sidebar-expanded], [data-outline-open]) {
-		width: max-content;
-		height: auto;
+	/* Explicit lengths (outline ones measured in JS): interpolate-size is Chromium-only, so Safari would snap to max-content/auto. */
+	.docs-floating[data-sidebar-expanded] {
+		width: calc(var(--docs-drawer-width) + 0.25rem + 2px);
+		height: calc(var(--docs-drawer-height) + 0.25rem + 2px);
+	}
+	.docs-floating[data-outline-open] {
+		width: calc(var(--outline-width) + 0.25rem + 2px);
+		height: calc(var(--outline-height) + 0.25rem + 2px);
 	}
 
 	.docs-floating > * {

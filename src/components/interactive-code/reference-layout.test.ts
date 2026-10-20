@@ -152,6 +152,7 @@ test('the floating outline dismisses and restores the same outline at lg', async
 		querySelectorAll() { return []; }
 		attributes = new Map<string, string>();
 		parent: Node | null = null;
+		style = { setProperty() {} };
 		querySelector(selector: string) { return selector === '[data-floating-controls]' ? controls : outlineClose; }
 		contains(element: Node): boolean { return element === this || !!element?.parent && this.contains(element.parent); }
 		focus() {

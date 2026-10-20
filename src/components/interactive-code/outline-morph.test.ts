@@ -54,3 +54,38 @@ test('outline overlap stays stable while its shell morphs', async () => {
 	codeBounds.bottom = 345;
 	expect(update()).toBe(false);
 });
+
+test('the floating outline is measured before it opens so Safari morphs px to px', async () => {
+	const source = await Bun.file(new URL('./layout.astro', import.meta.url)).text();
+	const render = source.slice(source.indexOf('\t\t\t\tsyncOutlineSize = () => {'), source.indexOf('\t\t\t\tconst setOutline ='));
+	const log: string[] = [];
+	const node = (name: string) => ({
+		hidden: true,
+		inert: true,
+		style: { setProperty: (key: string, value: string) => log.push(`${name} ${key} ${value}`) },
+		setAttribute() {},
+		toggleAttribute: (key: string, value: boolean) => value && log.push(`${name} ${key}`),
+	});
+	const floating = node('floating'), desktopShell = node('desktopShell');
+	// A closed floating outline is display:none, so it only has a size once unhidden.
+	const pageNavigation = Object.assign(node('pageNavigation'), {
+		getBoundingClientRect: () => pageNavigation.hidden ? { width: 0, height: 0 } : { width: 208.5, height: 300.25 },
+	});
+	new Function('context', `
+		const { inlineOutline, pageNavigation, desktopShell, desktopToggle, pageToggle, floating, controls, outlineClose, document } = context;
+		let collapsed = false, open = true, syncOutlineSize;
+		${new Bun.Transpiler({ loader: 'ts' }).transformSync(render)}
+		renderOutline();
+	`)({
+		inlineOutline: { matches: false }, pageNavigation, desktopShell, floating,
+		desktopToggle: node('desktopToggle'), pageToggle: node('pageToggle'), controls: node('controls'), outlineClose: node('outlineClose'),
+		document: { querySelector: () => null },
+	});
+
+	// The shell's width/height transition starts from its pre-toggle style, so the target length must already be set.
+	expect(log).toEqual([
+		'floating --outline-width 208.5px',
+		'floating --outline-height 300.25px',
+		'floating data-outline-open',
+	]);
+});

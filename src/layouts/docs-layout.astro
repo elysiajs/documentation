@@ -29,7 +29,7 @@ const contentAnimation = {
 {
 	hasSidebar ? (
 		<div
-			class="page docs-page relative isolate group/docs [--sl-content-width:72rem] [--sl-content-inline-start:0rem] [--sl-sidebar-width:15rem] min-h-dvh print:p-0"
+			class="page docs-page relative isolate group/docs [--sl-content-width:72rem] [--sl-content-inline-start:0rem] [--sl-sidebar-width:15rem] [--docs-drawer-width:calc(min(19rem,100dvw_-_3rem)_-_0.375rem)] [--docs-drawer-height:calc(100dvh_-_1.375rem)] min-h-dvh print:p-0"
 			transition:persist={`docs-shell-${productOf(Astro.url.pathname)}`}
 			transition:animate="none"
 		>
@@ -40,7 +40,7 @@ const contentAnimation = {
 			/>
 			<aside
 				id="starlight__sidebar"
-				class="docs-sidebar-pane spica-surface px-4 rounded-2xl xl:rounded-none group-data-ready/docs:overflow-y-auto xl:group-data-ready/docs:not-group-data-sidebar-open/docs:invisible [&[hidden]]:hidden max-xl:group-data-ready/docs:w-[calc(min(19rem,100dvw_-_3rem)_-_0.375rem)] max-xl:group-data-ready/docs:h-[calc(100dvh_-_1.375rem)] max-xl:group-data-ready/docs:max-h-none xl:z-45 xl:fixed xl:inset-[0_auto_0_0] xl:w-(--sl-sidebar-width) xl:overflow-y-auto [&_.md\:sl-hidden]:block print:hidden backdrop-blur-sm"
+				class="docs-sidebar-pane spica-surface px-4 rounded-2xl xl:rounded-none group-data-ready/docs:overflow-y-auto xl:group-data-ready/docs:not-group-data-sidebar-open/docs:invisible [&[hidden]]:hidden max-xl:group-data-ready/docs:w-(--docs-drawer-width) max-xl:group-data-ready/docs:h-(--docs-drawer-height) max-xl:group-data-ready/docs:max-h-none xl:z-45 xl:fixed xl:inset-[0_auto_0_0] xl:w-(--sl-sidebar-width) xl:overflow-y-auto [&_.md\:sl-hidden]:block print:hidden backdrop-blur-sm"
 				aria-label="Documentation sidebar"
 			>
 				<div data-sidebar-content class="flex min-h-full flex-col">
