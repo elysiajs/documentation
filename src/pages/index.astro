@@ -24,6 +24,8 @@ const ogImage = new URL('/assets/cover.webp', Astro.site)
 		<script is:inline>
 			;(() => {
 				document.documentElement.dataset.landingIntroActive = 'true'
+				// Restore all 15-minute cooldown blocks together.
+				/*
 				try {
 					if (
 						new URLSearchParams(location.search).get('intro') ===
@@ -44,6 +46,7 @@ const ogImage = new URL('/assets/cover.webp', Astro.site)
 							'true'
 					}
 				} catch {}
+				*/
 			})()
 		</script>
 		<title>{title}</title>
@@ -236,8 +239,7 @@ const ogImage = new URL('/assets/cover.webp', Astro.site)
 		</main>
 
 		<script>
-			const skipLandingIntro =
-				document.documentElement.dataset.skipLandingIntro === 'true'
+			// const skipLandingIntro = document.documentElement.dataset.skipLandingIntro === 'true'
 			const reduce = matchMedia(
 				'(prefers-reduced-motion: reduce)'
 			).matches
@@ -308,7 +310,8 @@ const ogImage = new URL('/assets/cover.webp', Astro.site)
 			function playIntro() {
 				start = last = performance.now()
 				requestAnimationFrame(frame)
-				if (reduce || skipLandingIntro) return
+				if (reduce) return
+				// if (skipLandingIntro) return
 				for (const { el, depth } of items) {
 					// The scene rises with the sheet, without a pause before the reveal.
 					const z = zOf(el)
@@ -396,26 +399,30 @@ const ogImage = new URL('/assets/cover.webp', Astro.site)
 				...decoded,
 				new Promise((r) => setTimeout(r, 800))
 			])
+			/*
 			if (skipLandingIntro) {
 				loader.remove()
 				delete document.documentElement.dataset.landingIntroActive
 				playIntro()
 			} else {
-				loader.addEventListener('animationend', async (e) => {
-					if (e.target !== loader) return
-					try {
-						localStorage.setItem(
-							'elysia:landing:lastIntroAt',
-							String(Date.now())
-						)
-					} catch {}
-					loader.remove()
-					await Promise.all(introFinished)
-					delete document.documentElement.dataset.landingIntroActive
-				})
-				loader.classList.add('is-done')
-				playIntro()
-			}
+			*/
+			loader.addEventListener('animationend', async (e) => {
+				if (e.target !== loader) return
+				/*
+				try {
+					localStorage.setItem(
+						'elysia:landing:lastIntroAt',
+						String(Date.now())
+					)
+				} catch {}
+				*/
+				loader.remove()
+				await Promise.all(introFinished)
+				delete document.documentElement.dataset.landingIntroActive
+			})
+			loader.classList.add('is-done')
+			playIntro()
+			// }
 		</script>
 	</body>
 </html>

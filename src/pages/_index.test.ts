@@ -5,12 +5,12 @@ import { runInNewContext } from 'node:vm';
 const source = readFileSync(new URL('./index.astro', import.meta.url), 'utf8');
 const bootstrap = source.match(/<script is:inline>([\s\S]*?)<\/script>/)![1];
 const moduleScript = new Bun.Transpiler({ loader: 'ts' }).transformSync(source.match(/<script>([\s\S]*?)<\/script>/)![1]);
-const storageKey = 'elysia:landing:lastIntroAt';
 const now = 1_800_000_000_000;
 const interval = 15 * 60 * 1000;
 
-function load(stored: string | null, options: { blockedRead?: boolean; blockedWrite?: boolean; reduce?: boolean; search?: string; holdDecode?: boolean; flowers?: boolean; mobile?: boolean } = {}) {
+function load(stored: string | null, options: { reduce?: boolean; search?: string; holdDecode?: boolean; flowers?: boolean; mobile?: boolean } = {}) {
 	const root = { dataset: {} as Record<string, string> };
+	const reads: string[] = [];
 	const writes: [string, string][] = [];
 	const animations: unknown[] = [];
 	const animationControls: { finish: () => void; cancel: () => void }[] = [];
@@ -23,7 +23,6 @@ function load(stored: string | null, options: { blockedRead?: boolean; blockedWr
 	let mousemove: ((event: { clientX: number; clientY: number }) => void) | undefined;
 	let decoded = 0;
 	let removed = false;
-	let currentTime = now;
 	const classes = new Set<string>();
 	const loader = {
 		classList: { add: (name: string) => classes.add(name) },
@@ -51,17 +50,15 @@ function load(stored: string | null, options: { blockedRead?: boolean; blockedWr
 		decode: () => { decoded++; return options.holdDecode ? decoding.promise : Promise.resolve(); },
 	}));
 	const context = {
-		Date: { now: () => currentTime },
+		Date: { now: () => now },
 		URLSearchParams,
 		location: { search: options.search ?? '' },
 		localStorage: {
 			getItem: (key: string) => {
-				expect(key).toBe(storageKey);
-				if (options.blockedRead) throw new Error('Storage blocked');
+				reads.push(key);
 				return stored;
 			},
 			setItem: (key: string, value: string) => {
-				if (options.blockedWrite) throw new Error('Storage blocked');
 				writes.push([key, value]);
 			},
 		},
@@ -89,11 +86,10 @@ function load(stored: string | null, options: { blockedRead?: boolean; blockedWr
 	};
 	runInNewContext(bootstrap, context);
 	return {
-		root, writes, animations, animationControls, frames, frameStarts, timers, listeners, layers, classes,
+		root, reads, writes, animations, animationControls, frames, frameStarts, timers, listeners, layers, classes,
 		decode: () => decoding.resolve(),
 		get removed() { return removed; },
 		get decoded() { return decoded; },
-		setTime: (time: number) => { currentTime = time; },
 		scroll: (y: number) => { context.scrollY = y; },
 		setMobile: (mobile: boolean) => { mobileLayout.matches = mobile; },
 		movePointer: (x: number, y: number) => mousemove!({ clientX: x, clientY: y }),
@@ -102,21 +98,29 @@ function load(stored: string | null, options: { blockedRead?: boolean; blockedWr
 	};
 }
 
-test('only a completed intro less than 15 minutes ago skips the next entrance', () => {
-	for (const age of [0, 1, interval - 1]) {
-		const page = load(String(now - age));
-		expect(page.root.dataset.skipLandingIntro).toBe('true');
-		expect(page.root.dataset.landingIntroActive).toBe('true');
-	}
-	for (const stored of [null, '', 'bad', 'NaN', 'Infinity', '-1', '0', String(now + 1), String(now - interval), String(now - interval - 1)]) {
-		const page = load(stored);
-		expect(page.root.dataset.skipLandingIntro).toBeUndefined();
-		expect(page.root.dataset.landingIntroActive).toBe('true');
-	}
-	expect(load(String(now), { blockedRead: true }).root.dataset.skipLandingIntro).toBeUndefined();
+test.each([null, '', 'bad', 'NaN', 'Infinity', '-1', '0', String(now), String(now - 1), String(now - interval + 1), String(now - interval), String(now - interval - 1), String(now + 1)])('every visit plays the full entrance regardless of stored timestamp (%s)', async (stored) => {
+	const page = load(stored);
+	expect(page.root.dataset.skipLandingIntro).toBeUndefined();
+	expect(page.root.dataset.landingIntroActive).toBe('true');
+	const started = page.start();
+	page.timers[0].callback();
+	await started;
+	expect(page.classes.has('is-done')).toBe(true);
+	expect(page.animations).toHaveLength(1);
+	expect(page.root.dataset.landingIntroActive).toBe('true');
+	await page.finish({ tagName: 'IMG' });
+	expect(page.removed).toBe(false);
+	const finished = page.finish();
+	expect(page.removed).toBe(true);
+	expect(page.root.dataset.landingIntroActive).toBe('true');
+	page.animationControls[0].finish();
+	await finished;
+	expect(page.root.dataset.landingIntroActive).toBeUndefined();
+	expect(page.reads).toHaveLength(0);
+	expect(page.writes).toHaveLength(0);
 });
 
-test('repeat visits wait for decoding after the minimum hold before revealing the scene', async () => {
+test('the full entrance waits for decoding after the minimum hold', async () => {
 	const page = load(String(now - 1000), { holdDecode: true });
 	const started = page.start();
 	expect(page.decoded).toBe(2);
@@ -131,21 +135,23 @@ test('repeat visits wait for decoding after the minimum hold before revealing th
 	expect(page.frames).toHaveLength(0);
 	page.decode();
 	await started;
+	expect(page.removed).toBe(false);
+	expect(page.root.dataset.landingIntroActive).toBe('true');
+	expect(page.frameStarts).toEqual([{ removed: false, locked: true }]);
+	expect(page.frames).toHaveLength(1);
+	expect(page.listeners.animationend).toBeDefined();
+	expect(page.animations).toHaveLength(1);
+	expect(page.classes.has('is-done')).toBe(true);
+	expect(page.writes).toHaveLength(0);
+	page.animationControls[0].finish();
+	await page.finish();
 	expect(page.removed).toBe(true);
 	expect(page.root.dataset.landingIntroActive).toBeUndefined();
-	expect(page.frameStarts).toEqual([{ removed: true, locked: false }]);
-	expect(page.frames).toHaveLength(1);
-	expect(page.listeners.animationend).toBeUndefined();
-	expect(page.animations).toHaveLength(0);
-	expect(page.classes.has('is-done')).toBe(false);
-	expect(page.writes).toHaveLength(0);
-	await page.finish();
-	expect(page.writes).toHaveLength(0);
 	page.frames[0](16);
 	expect(page.layers[0].style.transform).toContain('translate3d(');
 });
 
-test('repeat visits wait for the minimum hold after decoding before revealing the scene', async () => {
+test('the full entrance waits for the minimum hold after decoding', async () => {
 	const page = load(String(now - 1000));
 	const started = page.start();
 	expect(page.decoded).toBe(2);
@@ -159,14 +165,18 @@ test('repeat visits wait for the minimum hold after decoding before revealing th
 	expect(page.frames).toHaveLength(0);
 	page.timers[0].callback();
 	await started;
+	expect(page.removed).toBe(false);
+	expect(page.root.dataset.landingIntroActive).toBe('true');
+	expect(page.frameStarts).toEqual([{ removed: false, locked: true }]);
+	expect(page.frames).toHaveLength(1);
+	expect(page.listeners.animationend).toBeDefined();
+	expect(page.animations).toHaveLength(1);
+	expect(page.classes.has('is-done')).toBe(true);
+	expect(page.writes).toHaveLength(0);
+	page.animationControls[0].finish();
+	await page.finish();
 	expect(page.removed).toBe(true);
 	expect(page.root.dataset.landingIntroActive).toBeUndefined();
-	expect(page.frameStarts).toEqual([{ removed: true, locked: false }]);
-	expect(page.frames).toHaveLength(1);
-	expect(page.listeners.animationend).toBeUndefined();
-	expect(page.animations).toHaveLength(0);
-	expect(page.classes.has('is-done')).toBe(false);
-	expect(page.writes).toHaveLength(0);
 	page.frames[0](16);
 	expect(page.layers[0].style.transform).toContain('translate3d(');
 });
@@ -219,136 +229,45 @@ test('mobile flowers ignore pointer parallax but keep wind and regain pointer mo
 	expect(moved.layers[3].style.transform).not.toBe(baseline.layers[3].style.transform);
 });
 
-test('intro=1 replays the full entrance during the cooldown and saves its completion', async () => {
-	for (const search of ['?intro=1', '?preview=true&intro=1']) {
-		const page = load(String(now - 1000), { search });
-		expect(page.root.dataset.skipLandingIntro).toBeUndefined();
-		expect(page.root.dataset.landingIntroActive).toBe('true');
-		const started = page.start();
-		expect(page.removed).toBe(false);
-		expect(page.decoded).toBe(2);
-		expect(page.timers.map(timer => timer.delay)).toEqual([800]);
-		expect(page.writes).toHaveLength(0);
-		page.timers[0].callback();
-		await started;
-		expect(page.classes.has('is-done')).toBe(true);
-		expect(page.animations).toHaveLength(1);
-		expect(page.writes).toHaveLength(0);
-		page.setTime(now + 2600);
-		const finished = page.finish();
-		expect(page.root.dataset.landingIntroActive).toBe('true');
-		page.animationControls[0].finish();
-		await finished;
-		expect(page.root.dataset.landingIntroActive).toBeUndefined();
-		expect(page.removed).toBe(true);
-		expect(page.writes).toEqual([[storageKey, String(now + 2600)]]);
-	}
-});
-
-test('only intro=1 overrides the cooldown', async () => {
-	for (const search of ['?intro', '?intro=0', '?preview=true']) {
-		const page = load(String(now - 1000), { search });
-		expect(page.root.dataset.skipLandingIntro).toBe('true');
-		expect(page.root.dataset.landingIntroActive).toBe('true');
-		const started = page.start();
-		expect(page.removed).toBe(false);
-		expect(page.decoded).toBe(2);
-		expect(page.timers.map(timer => timer.delay)).toEqual([800]);
-		expect(page.classes.has('is-done')).toBe(false);
-		page.timers[0].callback();
-		await started;
-		expect(page.animations).toHaveLength(0);
-		expect(page.frames).toHaveLength(1);
-		expect(page.removed).toBe(true);
-		expect(page.root.dataset.landingIntroActive).toBeUndefined();
-		expect(page.writes).toHaveLength(0);
-	}
-});
-
-test('an active cooldown with reduced motion waits for readiness without replaying or extending the cooldown', async () => {
-	const page = load(String(now - 1000), { reduce: true });
-	expect(page.root.dataset.skipLandingIntro).toBe('true');
-	expect(page.root.dataset.landingIntroActive).toBe('true');
+test.each(['', '?intro', '?intro=0', '?intro=1', '?preview=true', '?preview=true&intro=1'])('query string %s does not change entrance replay', async (search) => {
+	const page = load(String(now - 1000), { search });
 	const started = page.start();
+	expect(page.decoded).toBe(2);
+	expect(page.timers.map(timer => timer.delay)).toEqual([800]);
+	page.timers[0].callback();
+	await started;
+	expect(page.classes.has('is-done')).toBe(true);
+	expect(page.animations).toHaveLength(1);
 	expect(page.removed).toBe(false);
+	expect(page.root.dataset.landingIntroActive).toBe('true');
+	page.animationControls[0].finish();
+	await page.finish();
+	expect(page.removed).toBe(true);
+	expect(page.root.dataset.landingIntroActive).toBeUndefined();
+	expect(page.reads).toHaveLength(0);
+	expect(page.writes).toHaveLength(0);
+});
+
+test.each([null, String(now - 1000)])('reduced motion keeps the loader event but avoids scene fly-ins (%s)', async (stored) => {
+	const page = load(stored, { reduce: true });
+	const started = page.start();
 	expect(page.decoded).toBe(2);
 	expect(page.timers.map(timer => timer.delay)).toEqual([800]);
 	expect(page.classes.has('is-done')).toBe(false);
 	page.timers[0].callback();
 	await started;
+	expect(page.classes.has('is-done')).toBe(true);
 	expect(page.animations).toHaveLength(0);
 	expect(page.frames).toHaveLength(1);
-	expect(page.frameStarts).toEqual([{ removed: true, locked: false }]);
-	expect(page.listeners.animationend).toBeUndefined();
-	expect(page.removed).toBe(true);
-	expect(page.root.dataset.landingIntroActive).toBeUndefined();
-	expect(page.writes).toHaveLength(0);
-});
-
-test('intro=1 respects reduced motion while recording completion during the cooldown', async () => {
-	const page = load(String(now - 1000), { search: '?intro=1', reduce: true });
-	expect(page.root.dataset.skipLandingIntro).toBeUndefined();
-	const started = page.start();
-	page.timers[0].callback();
-	await started;
-	expect(page.animations).toHaveLength(0);
-	expect(page.root.dataset.landingIntroActive).toBe('true');
-	await page.finish();
-	expect(page.root.dataset.landingIntroActive).toBeUndefined();
-	expect(page.removed).toBe(true);
-	expect(page.writes).toEqual([[storageKey, String(now)]]);
-});
-
-test.each([null, 'bad', String(now + 1), String(now - interval), String(now - interval - 1)])('a fresh, invalid, future, or expired visit (%s) saves completion only after the sheet finishes, not when the logo animates', async (stored) => {
-	const page = load(stored);
-	expect(page.root.dataset.landingIntroActive).toBe('true');
-	const started = page.start();
-	expect(page.decoded).toBe(2);
-	expect(page.timers.map(timer => timer.delay)).toEqual([800]);
-	expect(page.writes).toHaveLength(0);
-	expect(page.root.dataset.landingIntroActive).toBe('true');
-	page.timers[0].callback();
-	await started;
-	expect(page.classes.has('is-done')).toBe(true);
-	expect(page.animations).toHaveLength(1);
-	expect(page.writes).toHaveLength(0);
-	expect(page.root.dataset.landingIntroActive).toBe('true');
-	await page.finish({ tagName: 'IMG' });
+	expect(page.frameStarts).toEqual([{ removed: false, locked: true }]);
+	expect(page.listeners.animationend).toBeDefined();
 	expect(page.removed).toBe(false);
+	expect(page.root.dataset.landingIntroActive).toBe('true');
+	await page.finish();
+	expect(page.removed).toBe(true);
+	expect(page.root.dataset.landingIntroActive).toBeUndefined();
+	expect(page.reads).toHaveLength(0);
 	expect(page.writes).toHaveLength(0);
-	expect(page.root.dataset.landingIntroActive).toBe('true');
-	page.setTime(now + 2600);
-	const finished = page.finish();
-	expect(page.removed).toBe(true);
-	expect(page.writes).toEqual([[storageKey, String(now + 2600)]]);
-	expect(page.root.dataset.landingIntroActive).toBe('true');
-	page.animationControls[0].finish();
-	await finished;
-	expect(page.root.dataset.landingIntroActive).toBeUndefined();
-});
-
-test('blocked storage still allows the intro to finish and removes the loading screen', async () => {
-	const page = load(null, { blockedRead: true, blockedWrite: true });
-	expect(page.root.dataset.landingIntroActive).toBe('true');
-	const started = page.start();
-	page.timers[0].callback();
-	await started;
-	expect(page.animations).toHaveLength(1);
-	page.animationControls[0].finish();
-	await page.finish();
-	expect(page.removed).toBe(true);
-	expect(page.root.dataset.landingIntroActive).toBeUndefined();
-});
-
-test('reduced motion still records completion without animating the scene', async () => {
-	const page = load(null, { reduce: true });
-	const started = page.start();
-	page.timers[0].callback();
-	await started;
-	expect(page.animations).toHaveLength(0);
-	await page.finish();
-	expect(page.writes).toEqual([[storageKey, String(now)]]);
-	expect(page.root.dataset.landingIntroActive).toBeUndefined();
 });
 
 test('scrolling stays locked while image decoding outlasts the minimum hold', async () => {
