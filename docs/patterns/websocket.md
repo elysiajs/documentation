@@ -22,12 +22,34 @@ Unlike HTTP where our client repeatedly asks the website for information and wai
 
 SocketIO is a popular library for WebSocket, but it is not the only one. Elysia uses [uWebSocket](https://github.com/uNetworking/uWebSockets) which Bun uses under the hood with the same API.
 
-To use WebSocket, simply call `Elysia.ws()`:
+## Enabling WebSocket
+
+In Elysia 2, WebSocket support is provided as a **capability plugin**. Register it once before declaring any `.ws()` route:
 
 ```typescript
 import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
 
 new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        message(ws, message) {
+            ws.send(message)
+        }
+    })
+    .listen(3000)
+```
+
+Without `.use(websocket())`, the app throws a `WebSocket capability` error when it builds its fetch handler (for example on `.listen()` or `.handle()`).
+
+The plugin also accepts app-wide server tuning options — the former `ElysiaConfig.websocket`:
+
+```typescript
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket({ idleTimeout: 60, maxPayloadLength: 1024 }))
     .ws('/ws', {
         message(ws, message) {
             ws.send(message)
@@ -42,8 +64,10 @@ Same as normal routes, WebSockets also accept a **schema** object to strictly ty
 
 ```typescript
 import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
 
 const app = new Elysia()
+    .use(websocket())
     .ws('/ws', {
         // validate incoming message
         body: t.Object({
@@ -78,16 +102,18 @@ By default Elysia will parse incoming stringified JSON message as Object for val
 
 ## Configuration
 
-You can set Elysia constructor to set the Web Socket value.
+Server-tuning defaults are passed to the `websocket()` plugin, which accepts the same options as Bun's WebSocket configuration.
 
-```ts
+```typescript
 import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
 
-new Elysia({
-    websocket: {
-        idleTimeout: 30
-    }
-})
+new Elysia()
+    .use(
+        websocket({
+            idleTimeout: 30
+        })
+    )
 ```
 
 Elysia's WebSocket implementation extends Bun's WebSocket configuration, please refer to [Bun's WebSocket documentation](https://bun.sh/docs/api/websockets) for more information.
@@ -136,8 +162,10 @@ Example:
 
 ```typescript
 import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
 
 const app = new Elysia()
+    .use(websocket())
     .ws('/ws', {
         message(ws, message) {
             ws.send(message)
