@@ -1,6 +1,6 @@
 # Spica System
 
-version: 2.70 · 2026-10-20 · Alice/Nunito/JetBrains Mono · primary #F9578A · dashed focus · spring motion
+version: 2.77 · 2026-10-31 · Alice/Nunito/JetBrains Mono · primary #F9578A · bracket focus · spring motion
 
 > *Joyful, personal, a little magical. The brightest star in Virgo, made into a design language.*
 
@@ -194,11 +194,11 @@ Use `Button variant="framed"` for a featured action. It pairs a surface frame wi
 
 `Dropdown` supports nested `items` for submenus that open on hover, click, or keyboard, and `current` marks the active page link.
 
-Its translucent panel has a fine border and top-edge glint. The focused row shows a pink left-edge bar. Panels open with a 240ms spring in scale and position while opacity fades, then close with a 100ms fade. Reduced motion and instant transitions skip the panel animation.
+Its translucent panel has a fine border and top-edge glint. The highlighted row shows a pink left-edge bar, and keyboard focus adds the corner brackets. Panels open with a 240ms spring in scale and position while opacity fades, then close with a 100ms fade. Reduced motion and instant transitions skip the panel animation.
 
 ### Card links
 
-Pass `href` to `Card` to make its entire surface a native link with the dashed Spica focus outline. Native anchor props such as `target` and `rel` are supported. Linked cards and previous/next links use the button’s 0.98 press scale and base-duration ease-out transition; reduced motion skips the transition.
+Pass `href` to `Card` to make its entire surface a native link with the Spica focus brackets. Native anchor props such as `target` and `rel` are supported. Linked cards and previous/next links use the button’s 0.98 press scale and base-duration ease-out transition; reduced motion skips the transition.
 
 ```tsx
 <Card href="/essential/route" title="Routing">
@@ -210,7 +210,7 @@ Use plain `CardTitle` text or the `title` prop inside a linked card. Do not nest
 
 ### Ripple feedback
 
-Production `Button`, `SelectMenu`, `Dropdown` rows, sidebar links and chapter toggles, and linked `Card` include the [m3-ripple](https://github.com/saltyaom/m3-ripple) soft hover and press feedback, loaded by the documentation layout. Buttons, selectors, menu rows, and sidebar controls use primary pink ripple feedback. Active sidebar links pair a soft pink fill with a rounded left accent bar. Native clicks, focus outlines, and disabled controls keep their behavior. Reduced motion skips wave growth; forced colors hides the decoration.
+Production `Button`, `SelectMenu`, `Dropdown` rows, sidebar links and chapter toggles, and linked `Card` include the [m3-ripple](https://github.com/saltyaom/m3-ripple) soft hover and press feedback, loaded by the documentation layout. Buttons, selectors, menu rows, and sidebar controls use primary pink ripple feedback. Active sidebar links pair a soft pink fill with a rounded left accent bar. Native clicks, focus brackets, and disabled controls keep their behavior. Reduced motion skips wave growth; forced colors hides the decoration.
 
 Use the Astro component as a direct child of a positioned button or link with a border radius:
 
@@ -258,7 +258,7 @@ See [`numbered-cards.tsx`](../components/ui/numbered-cards.tsx) and its [styles]
 - **Magic.** Three small things, used sparingly: (1) a **soft pink→blue glow** (`--glow` / `--glow-soft`) on the moments that matter — primary hover, a just-finished task, the fox waving; (2) **pastel gradients** (`--gradient-magic`) on featured surfaces — hero cards, empty states, celebration; (3) **gentle motion** — `spica-float` (a slow bob for hero art / the fox), `spica-twinkle` (✦ accents breathing), `spica-glow-in` (glow arrives with the surface, once). Never all three on one element.
 - **Radii.** Friendly and rounded: 8 (`--radius-sm`, chips) / 12 (`--radius`, buttons, inputs) / 16 (`--radius-card`, cards, callouts) / 22 (`--radius-lg`, frames, nav shells) / pill. No sharp corners.
 - **Shadow & light.** Three tiers — flat page → **quiet glass** (elevated floating surfaces: menus, popovers, nav, modal — translucent `--glass` + a gentle `--glass-blur`, kept subtle so rows stay crisp) → attention light (a soft pink→violet→blue bloom for the moment that interrupts you). Shadows are warm-ink tinted, never blue-black. *(This evolution embraces a subtle quiet-glass for elevation — the old Elysia "no glass" rule is retired.)*
-- **Focus.** A 1.5px **dashed pink outline** sitting 3px off the control, following its corner radius (`outline: var(--focus-outline); outline-offset: var(--focus-offset)`) — the same thin-bar language as the slider. The control's own border softens to `--primary-line` underneath. No glow rings on inputs; `--glow` is reserved for hover/celebration moments. Danger flavour: `--focus-outline-danger`.
+- **Focus.** One focus style for every focusable component, on the site and in every kit component: four 1.5px **pink corner brackets** 4px off its edge (`--focus-bracket-offset`), following its corner radius (an overlay with `border: 1.5px solid var(--primary)` and `mask: var(--focus-brackets)`). Buttons, tabs, menu rows, cards and other controls show them on keyboard focus only (`:focus-visible`); text fields (inputs, textareas, input groups, selects, the focused OTP cell, a select-menu trigger while open, the composer) show them on any focus, and the field's border fades to transparent beneath. Where a clipping parent would cut them, they sit 4px inside the edge instead (in a filled control, such as the split button, in its text colour). A component with its own active marker (menu rows, the current nav item, the selected tab) keeps it and adds the brackets for focus; a container never shows them for a child's focus. They settle in from just outside with `--ease-spring` (`spica-brackets-in`) and fade out with `--ease-out`; reduced motion just shows them, and forced colors falls back to `outline: 2px solid Highlight`. Error fields use `--danger` brackets. Inline text links get no brackets: focus turns their underline pink (`--primary`) and 2px thick. No glow rings on inputs; `--glow` is reserved for hover/celebration moments.
 - **Motion.** Soft and a little bouncy — cute earns it. `--ease-spring` (a visible overshoot) is the house easing for anything that moves, grows or appears: toggles, chips, popovers, the slider, the fox. `--ease-bounce` for celebration moments (a success check popping in). Plain `--ease-out` only for colour/opacity fades and long-distance moves. Keep durations short (140–420ms) so bouncy never becomes sluggish. Signature animations: `spica-pop` (a happy scale-in), `spica-wiggle`, `spica-float`, `spica-twinkle`, `spica-spin`, `spica-march`. Respects `prefers-reduced-motion`.
 
 ### Dark mode
@@ -269,7 +269,7 @@ The Tailwind bridge in `../styles/spica.css` mirrors these tokens; it does not d
 
 Dark surfaces get lighter and slightly warmer as they lift, from quiet violet to soft plum: `--base` (0.21) is the canvas and recessed code/input area; `--surface` (0.25) holds cards and controls; `--surface-2` (0.295) marks hover states and chip trays; `--surface-raised` (0.32) lifts neutral selected pills. Floating menus, tooltips, and dialogs use `--glass`, a 99% raised surface. Surface washes stay anchored to the canvas. Dark washes use deeper pink, blue, periwinkle, and lavender colors with soft corner fades and quiet centers, like the light washes. Playground code uses the blue-led cool wash in both themes; responses keep the lavender iris wash. Text and control contrast remain intact.
 
-Dark primary pink is lighter, with `--on-primary` for labels, checks, and selected switch thumbs. Destructive fills use `--on-danger`. Both foregrounds stay dark instead of inheriting body ink. `--control-border` keeps input and unchecked control boundaries visible; decorative dividers retain `--border` and `--border-strong`. Text placeholders use muted ink, and sliders retain a visible keyboard focus outline.
+Dark primary pink is lighter, with `--on-primary` for labels, checks, and selected switch thumbs. Destructive fills use `--on-danger`. Both foregrounds stay dark instead of inheriting body ink. `--control-border` keeps input and unchecked control boundaries visible; decorative dividers retain `--border` and `--border-strong`. Text placeholders use muted ink, and sliders show focus brackets on keyboard focus.
 
 ## Iconography & motif
 

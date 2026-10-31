@@ -51,7 +51,7 @@ interface ResultProps {
 }
 
 const field =
-	'box-border m-0 min-w-0 appearance-none rounded-xl border bg-transparent px-2 py-1 font-mono text-sm text-ink outline-none focus-ring'
+	'box-border m-0 min-w-0 appearance-none rounded-xl border bg-transparent px-2 py-1 font-mono text-sm text-ink outline-none'
 
 export function requestPaths(routes: TutorialRoute[], method: string): string[] {
 	return [...new Set(routes
@@ -135,7 +135,7 @@ function KeyValueRows({
 						{[0, 1].map((column) => (
 							<td
 								key={column}
-								className="border border-solid border-control-border light:border-border p-0"
+								className="border border-solid border-control-border light:border-border p-0 focus-ring"
 							>
 								<input
 									type="text"
@@ -226,7 +226,7 @@ export default function Result({
 								if (path !== null) onInputChange({ path })
 							}}
 						>
-							<div className="relative min-w-0 flex-1">
+							<div className="relative min-w-0 flex-1 rounded-xl has-[>input:focus-visible]:focus-ring">
 								<Combobox.Input
 									aria-label="Request path"
 									className={cn(field, 'h-9 w-full border-control-border pr-8 light:border-transparent')}
@@ -395,7 +395,7 @@ export default function Result({
 						collisionPadding={8}
 						className="spica-surface z-50"
 					>
-						<Popover.Popup className="spica-surface flex h-72 max-h-(--available-height) w-[min(32rem,calc(100vw-1rem))] max-w-(--available-width) flex-col overflow-hidden rounded-2xl border border-solid border-border-strong bg-glass light:bg-surface [backdrop-filter:var(--glass-blur-small)] font-sans text-ink shadow-lg focus-ring [transform-origin:var(--transform-origin)] transition-[opacity,scale,translate] duration-[240ms] [transition-timing-function:var(--ease-out),var(--ease-spring),var(--ease-spring)] data-[starting-style]:scale-[.96] data-[starting-style]:-translate-y-1 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[ending-style]:duration-100 data-[ending-style]:ease-out data-[instant]:transition-none motion-reduce:transition-none">
+						<Popover.Popup className="spica-surface flex h-72 max-h-(--available-height) w-[min(32rem,calc(100vw-1rem))] max-w-(--available-width) flex-col overflow-hidden rounded-2xl border border-solid border-border-strong bg-glass light:bg-surface [backdrop-filter:var(--glass-blur-small)] font-sans text-ink shadow-lg focus-visible:focus-ring focus-inset [transform-origin:var(--transform-origin)] transition-[opacity,scale,translate] duration-[240ms] [transition-timing-function:var(--ease-out),var(--ease-spring),var(--ease-spring)] data-[starting-style]:scale-[.96] data-[starting-style]:-translate-y-1 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[ending-style]:duration-100 data-[ending-style]:ease-out data-[instant]:transition-none motion-reduce:transition-none">
 							<Popover.Title className="sr-only">
 								Request settings
 							</Popover.Title>
@@ -425,20 +425,22 @@ export default function Result({
 							</div>
 							<div className="min-h-0 flex-1 overflow-auto p-2">
 								{advancedTab === 'body' ? (
-									<textarea
-										aria-label="Request body"
-										value={input.body}
-										onChange={(event) =>
-											onInputChange({
-												body: event.target.value
-											})
-										}
-										spellCheck={false}
-										className={cn(
-											field,
-											'h-full min-h-16 w-full resize-none align-top border-control-border light:border-transparent'
-										)}
-									/>
+									<div className="h-full rounded-xl focus-ring">
+										<textarea
+											aria-label="Request body"
+											value={input.body}
+											onChange={(event) =>
+												onInputChange({
+													body: event.target.value
+												})
+											}
+											spellCheck={false}
+											className={cn(
+												field,
+												'h-full min-h-16 w-full resize-none align-top border-control-border light:border-transparent'
+											)}
+										/>
+									</div>
 								) : (
 									<KeyValueRows
 										key={advancedTab}

@@ -5,7 +5,7 @@ export const menuPanel =
 export const menuGlint =
 	'pointer-events-none absolute -top-px left-[18%] h-[1.5px] w-[38%] rounded-[1px] [background:linear-gradient(90deg,transparent,var(--color-bloom)_30%,var(--color-harmony-center)_70%,transparent)]';
 
-// Bleed into the frame padding, retaining 6px inside the scroll box for dashed focus outlines
+// Bleed into the frame padding, retaining 6px inside the scroll box for the focus brackets
 export const menuScroll =
 	'menu-scroll relative -m-1.5 max-h-[min(260px,calc(var(--available-height)_-_14px))] overflow-y-auto overscroll-contain p-1.5';
 

@@ -25,6 +25,7 @@
     "cn": "^0.2.6",
     "elysia": "2.0.0-beta.32",
     "flexsearch": "^0.8.212",
+    "marked": "^14.0.0",
     "monaco-editor": "^0.56.0",
     "monaco-editor-auto-typings": "^0.4.6",
     "react": "^19.2.8",

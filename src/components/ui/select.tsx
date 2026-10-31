@@ -36,7 +36,7 @@ export function Select({
 			{label ? (
 				<span className="mb-1.5 block text-sm text-ink-soft">{label}</span>
 			) : null}
-			<span className="relative block">
+			<span className="relative block rounded-xl field-ring">
 				<select {...rest} ref={ref} className={cn(selectControl, variant === 'ghost' && selectGhost, className)}>
 					{children ?? options.map((opt) => {
 						const o =

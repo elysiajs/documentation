@@ -177,7 +177,7 @@ function MenuPopup({
 			>
 				<BaseMenu.Popup
 					finalFocus={finalFocus}
-					className={cn(menuPanel, 'min-w-50 focus-ring')}
+					className={cn(menuPanel, 'min-w-50 focus-visible:focus-ring')}
 				>
 					<span aria-hidden className={menuGlint} />
 					<div className={menuScroll}>

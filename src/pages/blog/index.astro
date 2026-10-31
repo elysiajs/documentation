@@ -91,7 +91,7 @@ const ogImage = new URL(ogImagePath('blog'), Astro.site).href
 			<a
 				data-blog-article-link
 				href={`/blog/${featured.id}/`}
-				class="blog-featured spica-surface relative grid items-center gap-8 overflow-hidden rounded-[22px] border border-border [background:var(--surface-wash)] p-6 text-inherit no-underline focus-ring [--ripple-color:var(--color-primary)] md:grid-cols-[3fr_2fr] md:p-8"
+				class="blog-featured spica-surface relative grid items-center gap-8 overflow-hidden rounded-[22px] border border-border [background:var(--surface-wash)] p-6 text-inherit no-underline focus-ring focus-inset [--ripple-color:var(--color-primary)] md:grid-cols-[3fr_2fr] md:p-8"
 			>
 				<Ripple pressedOpacity={0.12} />
 				<Image

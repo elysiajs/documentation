@@ -64,7 +64,7 @@ const separator =
 	'[background-image:linear-gradient(var(--color-border-strong),var(--color-border-strong))] [background-repeat:no-repeat] [background-size:1px_55%] [background-position:left_40%]'
 
 const sortButton =
-	'inline-flex items-center border-0 bg-transparent p-0 [font:inherit] text-inherit cursor-pointer focus-ring'
+	'inline-flex max-w-full items-center border-0 bg-transparent p-0 [font:inherit] text-inherit cursor-pointer focus-ring'
 
 const pageButton =
 	'inline-flex h-7 min-w-7 items-center justify-center rounded-lg border-0 bg-transparent px-1.5 py-0 font-sans text-[12.5px] font-bold cursor-pointer transition-colors duration-(--dur-fast) ease-out motion-reduce:transition-none focus-ring'

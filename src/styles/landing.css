@@ -51,14 +51,6 @@ html[data-landing-intro-active='true'] body {
 	color: #ffd6e6;
 }
 
-.landing-header a:focus-visible,
-.landing-start:focus-visible,
-.landing-command button:focus-visible,
-.landing-skip:focus-visible {
-	outline: 1.5px dashed #f9578a;
-	outline-offset: 3px;
-}
-
 .landing-skip {
 	position: fixed;
 	top: 0.75rem;

@@ -4,8 +4,10 @@ import type { HTMLAttributes } from 'astro/types';
 type Props = HTMLAttributes<'table'>;
 ---
 
-<div class="spica-markdown-table spica-surface focus-ring" tabindex="0" role="group" aria-label="Scrollable table">
-	<table {...Astro.props}><slot /></table>
+<div class="rounded-3xl has-[>:focus-visible]:focus-ring">
+	<div class="spica-markdown-table spica-surface outline-none" tabindex="0" role="group" aria-label="Scrollable table">
+		<table {...Astro.props}><slot /></table>
+	</div>
 </div>
 
 <style is:global>

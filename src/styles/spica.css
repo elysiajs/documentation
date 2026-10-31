@@ -262,9 +262,7 @@
 	--glass-blur-small: saturate(1.05) blur(4px);
 	--glass-blur: saturate(1.05) blur(6px);
 
-	--focus-outline: 1.5px dashed var(--color-primary);
-	--focus-offset: 3px;
-	--focus-outline-danger: 1.5px dashed var(--color-danger);
+	--focus-bracket-offset: 4px;
 
 	--gradient-magic: linear-gradient(
 		135deg,
@@ -408,19 +406,95 @@
 	}
 }
 
+/* Keyboard focus on the host or inside it; a field-ring host only for its text control, so its buttons keep their own */
+@custom-variant focus-mark (&:is(:where(:not(.field-ring)):is(:focus-visible, :has(:focus-visible)), .field-ring:is(:focus, :has(:is(input, textarea, select):focus))));
+
 @utility focus-ring {
-	&:focus-visible,
-	&:has(:focus-visible) {
-		outline: var(--focus-outline);
-		outline-offset: var(--focus-offset);
+	:where(&) {
+		position: relative;
+		outline: none;
+		scroll-margin: calc(var(--focus-bracket-offset) + 2px);
+	}
+
+	&::after {
+		--corner: min(12px, 50% - 3px);
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		box-sizing: content-box;
+		width: calc(100% + 2 * var(--focus-bracket-offset));
+		height: calc(100% + 2 * var(--focus-bracket-offset));
+		margin: 0;
+		border: inherit;
+		border-color: transparent;
+		border-radius: inherit;
+		outline: 1.5px solid var(--color-primary);
+		outline-offset: -1.5px;
+		translate: -50% -50%;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity var(--dur-fast) var(--ease-out);
+		mask:
+			linear-gradient(#000 0 0) top left / var(--corner) var(--corner) no-repeat,
+			linear-gradient(#000 0 0) top right / var(--corner) var(--corner) no-repeat,
+			linear-gradient(#000 0 0) bottom left / var(--corner) var(--corner) no-repeat,
+			linear-gradient(#000 0 0) bottom right / var(--corner) var(--corner) no-repeat;
+	}
+
+	@variant focus-mark {
+		&::after {
+			opacity: 1;
+
+			@media (prefers-reduced-motion: no-preference) {
+				animation: focus-ring-in var(--dur-base) var(--ease-spring);
+			}
+		}
+	}
+
+	@media (forced-colors: active) {
+		@variant focus-mark {
+			outline: 2px solid Highlight;
+		}
+
+		&::after {
+			display: none;
+		}
 	}
 }
 
 @utility field-ring {
-	&:focus-within {
-		outline: var(--focus-outline);
-		outline-offset: var(--focus-offset);
-		border-color: var(--color-primary-line);
+	@apply focus-ring;
+
+	@variant focus-mark {
+		border-color: transparent;
+	}
+}
+
+@utility focus-inset {
+	&::after {
+		--focus-bracket-offset: -4px;
+	}
+
+	@media (forced-colors: active) {
+		outline-offset: -2px;
+	}
+}
+
+@utility focus-underline {
+	&:focus-visible {
+		outline: none;
+		text-decoration: underline 2px var(--color-primary);
+
+		@media (forced-colors: active) {
+			outline: 2px solid Highlight;
+		}
+	}
+}
+
+@keyframes focus-ring-in {
+	from {
+		scale: 1.04;
 	}
 }
 

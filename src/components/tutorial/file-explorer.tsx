@@ -425,40 +425,42 @@ export function FileExplorer({ fs, folders, tabs, onFilesChange }: Props) {
 							className="shrink-0 text-ink-soft"
 						/>
 					)}
-					<input
-						ref={input}
-						size={12}
-						aria-label={
-							editing.path
-								? `Rename ${basename(editing.path)}`
-								: `New ${editing.kind} name`
-						}
-						aria-invalid={!!editing.error}
-						aria-describedby={editing.error ? errorId : undefined}
-						value={editing.value}
-						autoComplete="off"
-						autoCapitalize="off"
-						spellCheck={false}
-						className="box-border w-full min-w-0 rounded-md border border-solid border-primary bg-base px-1.5 py-1 font-mono text-xs text-ink focus-ring"
-						onChange={(event) =>
-							setEditing({
-								...editing,
-								value: event.target.value,
-								error: undefined
-							})
-						}
-						onKeyDown={(event) => {
-							event.stopPropagation()
-							if (event.key === 'Enter') {
-								event.preventDefault()
-								save()
+					<span className="flex min-w-0 flex-1 rounded-md focus-ring">
+						<input
+							ref={input}
+							size={12}
+							aria-label={
+								editing.path
+									? `Rename ${basename(editing.path)}`
+									: `New ${editing.kind} name`
 							}
-							if (event.key === 'Escape') {
-								setEditing(null)
-								focus(editing.path ?? editing.parent)
+							aria-invalid={!!editing.error}
+							aria-describedby={editing.error ? errorId : undefined}
+							value={editing.value}
+							autoComplete="off"
+							autoCapitalize="off"
+							spellCheck={false}
+							className="box-border w-full min-w-0 rounded-md border border-solid border-primary bg-base px-1.5 py-1 font-mono text-xs text-ink outline-none"
+							onChange={(event) =>
+								setEditing({
+									...editing,
+									value: event.target.value,
+									error: undefined
+								})
 							}
-						}}
-					/>
+							onKeyDown={(event) => {
+								event.stopPropagation()
+								if (event.key === 'Enter') {
+									event.preventDefault()
+									save()
+								}
+								if (event.key === 'Escape') {
+									setEditing(null)
+									focus(editing.path ?? editing.parent)
+								}
+							}}
+						/>
+					</span>
 				</div>
 				{editing.error && (
 					<p
@@ -589,7 +591,7 @@ export function FileExplorer({ fs, folders, tabs, onFilesChange }: Props) {
 	}
 
 	return (
-		<div className="flex h-full min-h-0 flex-col text-ink">
+		<div className="flex h-full min-h-0 flex-col text-ink [&_.focus-ring]:focus-inset">
 			<header className="flex shrink-0 items-center gap-0.5 py-1.5 pl-3">
 				<span className="min-w-0 flex-1 truncate text-xs font-semibold text-ink-soft">
 					Files

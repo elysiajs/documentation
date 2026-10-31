@@ -222,6 +222,8 @@ const image = new URL('/assets/cover_s.webp', Astro.site)
 </html>
 
 <script>
+	import { rovingIndex } from '../lib/roving'
+
 	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
 	for (const dialog of document.querySelectorAll<HTMLDialogElement>(
@@ -381,13 +383,38 @@ const image = new URL('/assets/cover_s.webp', Astro.site)
 
 				for (const variant of dialog.querySelectorAll<HTMLButtonElement>(
 					'[data-gallery-src]'
-				))
+				)) {
 					variant.setAttribute(
-						'aria-pressed',
+						'aria-selected',
 						String(variant === choice)
 					)
+					variant.tabIndex = variant === choice ? 0 : -1
+				}
 			})
 		}
+
+		dialog
+			.querySelector<HTMLElement>('.gallery-variants')
+			?.addEventListener('keydown', (event) => {
+				const tabs = [
+					...dialog.querySelectorAll<HTMLButtonElement>(
+						'[data-gallery-src]'
+					)
+				]
+				const next =
+					tabs[
+						rovingIndex(
+							event.key,
+							tabs.indexOf(event.target as HTMLButtonElement),
+							tabs.length
+						)
+					]
+				if (!next) return
+
+				event.preventDefault()
+				next.focus()
+				next.click()
+			})
 	}
 
 	const card = document.querySelector<HTMLElement>('[data-glare-card]')

@@ -139,7 +139,7 @@ export function SelectMenu({
 						<BaseSelect.Popup
 							className={cn(
 								menuPanel,
-								'min-w-(--anchor-width) focus-ring'
+								'min-w-(--anchor-width) focus-visible:focus-ring'
 							)}
 						>
 							<span aria-hidden className={menuGlint} />

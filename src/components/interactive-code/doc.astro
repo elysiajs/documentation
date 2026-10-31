@@ -89,7 +89,7 @@ const serializedSteps = JSON.stringify(
 			aria-label="Interactive code"
 		>
 			<div
-				class="relative min-w-0 doc-enhanced:sticky doc-enhanced:[--interactive-code-height:min(70dvh,40rem,calc(100dvh-var(--sl-nav-height,4rem)))] doc-enhanced:[max-block-size:var(--interactive-code-height)] doc-enhanced:[inset-block-start:calc(var(--sl-nav-height,4rem)+(100dvh-var(--sl-nav-height,4rem)-var(--interactive-code-height))/2)] doc-enhanced:[display:flex] doc-enhanced:flex-col"
+				class="relative min-w-0 has-[>pre:focus-visible]:focus-ring focus-inset doc-enhanced:sticky doc-enhanced:[--interactive-code-height:min(70dvh,40rem,calc(100dvh-var(--sl-nav-height,4rem)))] doc-enhanced:[max-block-size:var(--interactive-code-height)] doc-enhanced:[inset-block-start:calc(var(--sl-nav-height,4rem)+(100dvh-var(--sl-nav-height,4rem)-var(--interactive-code-height))/2)] doc-enhanced:[display:flex] doc-enhanced:flex-col"
 			>
 				<div
 					class="relative z-10 flex shrink-0 items-center justify-start px-[clamp(0.375rem,1.25cqi,0.875rem)] pt-4 text-[0.6875rem] leading-[1.25] text-[var(--interactive-code-muted)]"
@@ -107,7 +107,7 @@ const serializedSteps = JSON.stringify(
 					/>
 				</div>
 				<pre
-					class="relative m-0 py-0 px-4 box-border flex-[1_1_auto] overflow-auto bg-transparent [inline-size:100%] [min-block-size:0] [min-inline-size:0] [scrollbar-gutter:stable] border-0 focus-visible:[outline:var(--focus-outline)] focus-visible:outline-offset-[-3px]"
+					class="relative m-0 py-0 px-4 box-border flex-[1_1_auto] overflow-auto bg-transparent [inline-size:100%] [min-block-size:0] [min-inline-size:0] [scrollbar-gutter:stable] border-0 outline-none"
 					data-code-pane
 					tabindex="0"
 					aria-label={`${steps[0].label} code`}>

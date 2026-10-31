@@ -534,7 +534,7 @@ export function LifecyclePlayground() {
 					<Tooltip label={description}>
 						<button
 							type="button"
-							className="relative flex min-h-10 min-w-0 flex-1 cursor-pointer touch-manipulation items-center rounded-xl border-0 bg-transparent py-1.5 pr-1 pl-6 text-left [color:inherit] [font:inherit] aria-disabled:cursor-default focus-visible:[outline:var(--focus-outline)] focus-visible:outline-offset-2"
+							className="relative flex min-h-10 min-w-0 flex-1 cursor-pointer touch-manipulation items-center rounded-xl border-0 bg-transparent py-1.5 pr-1 pl-6 text-left [color:inherit] [font:inherit] aria-disabled:cursor-default focus-ring"
 							aria-disabled={!revealed}
 							aria-label={`${entry.kind === 'stage' ? '' : `${stage.label}, `}${label}, ${status.toLowerCase()}. Inspect event`}
 							aria-pressed={inspected?.id === entry.id}

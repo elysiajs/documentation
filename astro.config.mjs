@@ -163,7 +163,7 @@ export default defineConfig({
 				{
 					label: 'Essential',
 					items: [
-						{ label: 'Routing', link: '/essential/route/' },
+						{ label: 'Route', link: '/essential/route/' },
 						{ label: 'Handler', link: '/essential/handler/' },
 						{ label: 'Plugin', link: '/essential/plugin/' },
 						{ label: 'Life cycle', link: '/essential/life-cycle/' },
@@ -345,7 +345,19 @@ export default defineConfig({
 		react()
 	],
 	vite: {
-		optimizeDeps: { exclude: ['@rollup/browser'] },
+		optimizeDeps: {
+			exclude: ['@rollup/browser'],
+			// only imported once the assistant opens; found that late, dev re-optimizes and the page's import 504s
+			include: [
+				'marked',
+				'shiki/core',
+				'shiki/engine/javascript',
+				'shiki/langs/typescript.mjs',
+				'shiki/langs/tsx.mjs',
+				'shiki/langs/json.mjs',
+				'shiki/langs/shellscript.mjs'
+			]
+		},
 		plugins: [tailwindcss(), browserPathShim()]
 	}
 })

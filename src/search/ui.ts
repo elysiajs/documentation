@@ -154,6 +154,27 @@ export function initSearch(shell: HTMLElement, signal?: AbortSignal) {
 		syncExpanded()
 		const query = input.value.trim()
 
+		if (query && shell.hasAttribute('data-assistant-ready')) {
+			const row = document.createElement('li')
+			const link = document.createElement('a')
+			const sparkle = document.createElement('span')
+			const title = document.createElement('strong')
+			row.setAttribute('role', 'presentation')
+
+			link.id = 'docs-search-ask'
+			link.className = 'docs-search-ask'
+			link.setAttribute('role', 'option')
+			link.setAttribute('aria-selected', 'false')
+			link.tabIndex = -1
+			sparkle.setAttribute('aria-hidden', 'true')
+			sparkle.textContent = '✦'
+			title.textContent = `Ask Elysia about “${query}”`
+
+			link.append(sparkle, title)
+			row.append(link)
+			results.append(row)
+		}
+
 		if (!query) {
 			status.textContent = 'Type to search the documentation.'
 		} else if (!search) {
@@ -394,8 +415,34 @@ export function initSearch(shell: HTMLElement, signal?: AbortSignal) {
 		)
 			return
 
-		if ((event.target as Element).closest('a[role="option"]'))
-			dialog.close()
+		const option = (event.target as Element).closest('a[role="option"]')
+		if (!option) return
+
+		// close is queued: ask once search has handed focus back, so the panel takes it last
+		if (option.id === 'docs-search-ask') {
+			const query = input.value
+			dialog.addEventListener(
+				'close',
+				() =>
+					document.dispatchEvent(
+						new CustomEvent('docs:ask', {
+							detail: {
+								query,
+								opener: [
+									...shell.querySelectorAll<HTMLElement>(
+										'[data-docs-search]'
+									)
+								].find(
+									(button) => button.getClientRects().length
+								)
+							}
+						})
+					),
+				{ once: true }
+			)
+		}
+
+		dialog.close()
 	})
 
 	dialog.addEventListener('close', () => {
@@ -441,7 +488,9 @@ export function initSearch(shell: HTMLElement, signal?: AbortSignal) {
 			links[active].scrollIntoView({ block: 'nearest' })
 		} else if (event.key === 'Enter') {
 			event.preventDefault()
-			links[active < 0 ? 0 : active].click()
+			// Enter alone still opens the top result, asking takes a deliberate pick
+			const top = links[0].id === 'docs-search-ask' && links.length > 1
+			links[active < 0 ? Number(top) : active].click()
 		}
 	})
 

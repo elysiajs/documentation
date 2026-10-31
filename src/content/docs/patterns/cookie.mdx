@@ -194,6 +194,33 @@ new Elysia()
 
 `secure` and `httpOnly` configure cookies sent by the server; they aren't properties you can prove about an incoming cookie string.
 
+## Cookie codec
+
+A cookie is read from the request and written back, so a codec on a cookie field needs both directions. Use `t.Codec`: its decode runs on the incoming value, and its encode runs when you set `.value`:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/cookie', {
+        cookie: t.Object({
+            visit: t.Optional(
+                t.Codec(t.String())
+                    .Decode((value) => new Date(value))
+                    .Encode((date) => date.toISOString())
+            )
+        })
+    }, ({ cookie: { visit } }) => {
+        const last = visit.value // Date | undefined
+
+        visit.value = new Date() // sent as an ISO string
+
+        return last
+    })
+```
+
+`t.Encode` and `t.Decode` are one-way: `t.Encode` throws when a request sends that cookie, and `t.Decode` throws when you set it.
+
 ## Cookie signature
 A cookie signature lets Elysia verify that a cookie value was signed with your secret and has not been changed. Elysia signs outgoing values and verifies incoming signatures automatically.
 

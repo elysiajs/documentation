@@ -27,7 +27,7 @@ const first = page[0]
 	<p class="gallery-credit">Illustration by {illust}</p>
 
 	<dialog id={id} class="illust-dialog gallery-dialog" aria-labelledby={`${id}-title`} aria-describedby={`${id}-credit`} closedby="closerequest">
-		<div class="gallery-image" data-gallery-image>
+		<div class="gallery-image" id={`${id}-image`} role="tabpanel" data-gallery-image>
 			<template data-dialog-image><img data-src={first.src} alt={first.title} decoding="async" loading="eager" /></template>
 		</div>
 		<section class="gallery-controls">
@@ -40,9 +40,9 @@ const first = page[0]
 
 			<p id={`${id}-credit`} class="gallery-credit">Illustration by {illust}</p>
 
-			<div class="gallery-variants" role="group" aria-label={comic ? 'Comic language' : 'Illustration variant'}>
+			<div class="gallery-variants" role="tablist" aria-orientation="vertical" aria-label={comic ? 'Comic language' : 'Illustration variant'}>
 				{page.map((item, index) => (
-					<button type="button" data-gallery-src={item.src} data-gallery-title={item.title} aria-pressed={index === 0} aria-label={`${comic ? 'Read' : 'View'} ${item.lang}`}>
+					<button type="button" role="tab" data-gallery-src={item.src} data-gallery-title={item.title} aria-selected={index === 0 ? 'true' : 'false'} aria-controls={`${id}-image`} tabindex={index === 0 ? 0 : -1} aria-label={`${comic ? 'Read' : 'View'} ${item.lang}`}>
 						{item.lang}
 					</button>
 				))}

@@ -22,6 +22,15 @@ body:has(.docs-search[open]) {
 	@apply overflow-hidden;
 }
 
+body:has(.docs-assistant:modal) {
+	@apply overflow-hidden;
+}
+
+/* Under the docked glass panel, out of sight and out of the tab order */
+[data-assistant-docked] [data-desktop-outline] {
+	visibility: hidden;
+}
+
 :root {
 	--ec-codeLineHt: 1.65;
 	--color-bg: var(--color-base);
@@ -54,9 +63,10 @@ h3 {
 
 @custom-variant light (&:where(html[data-theme='light'], html[data-theme='light'] *));
 
+/* A docked assistant would cover the code pane, which bleeds to the viewport edge */
 @custom-variant doc-enhanced {
 	@container doc (width >= 44rem) {
-		&:is(:where([data-interactive-doc])[data-enhanced] *) {
+		&:is(:where([data-interactive-doc])[data-enhanced] *):not(:where([data-assistant-docked]) *) {
 			@slot;
 		}
 	}
@@ -156,6 +166,13 @@ h3 {
 		margin-top: 0.75rem;
 	}
 
+	/* Starlight's enlarged hit area moves off ::after, which carries the brackets */
+	.sl-markdown-content .sl-anchor-link::before {
+		content: '';
+		position: absolute;
+		inset: -0.25rem -0.5rem;
+	}
+
 	.sl-markdown-content:not(:where([data-blog] *))
 		.sl-heading-wrapper:is(.level-h2, .level-h3):not(
 			:where(.not-content, .not-content *)
@@ -181,7 +198,7 @@ h3 {
 				opacity var(--dur-fast) var(--ease-out),
 				scale var(--dur-fast) var(--ease-out);
 
-			&::after {
+			&::before {
 				content: none;
 			}
 
@@ -229,7 +246,7 @@ h3 {
 		a:not(
 			:where(.not-content, .not-content *, pre *, .sl-anchor-link, nav *)
 		) {
-		@apply text-primary-ink focus-ring;
+		@apply text-primary-ink focus-underline;
 		text-decoration: underline;
 		text-decoration-thickness: 0.0625em;
 		text-underline-offset: 0.2em;
@@ -393,11 +410,53 @@ a.spica-card[href]:active {
 	@apply max-w-2xl mx-auto w-full;
 }
 
+/* The ask bar's surface is still travelling into place; the panel shows when it lands */
+.docs-page[data-morph] .docs-assistant {
+	opacity: 0;
+	filter: blur(6px);
+	transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.docs-page .docs-assistant {
+		filter: none;
+	}
+}
+
+/* Room at the page end for the ask bar: its 3rem pill, the 1rem gap, and some air */
+.docs-page[data-ask-bar] .main-frame {
+	padding-block-end: calc(5rem + env(safe-area-inset-bottom));
+}
+
 .docs-page .sl-container > footer > .meta {
 	margin-block-start: 0;
 }
 
-.docs-page .sl-container > footer > .meta > a {
+.sl-skip-link,
+.sl-anchor-link,
+.site-title,
+.social-icons a,
+starlight-theme-select label,
+.spica-pagination .pagination-links a,
+.docs-sidebar sl-sidebar-state-persist :is(a, summary) {
+	@apply focus-ring;
+}
+
+/* Starlight fixes it in a lower layer, which focus-ring's relative host would override */
+.sl-skip-link {
+	position: fixed;
+}
+
+starlight-theme-select select {
+	outline: none;
+}
+
+/* Their clipping shells leave no room outside, so controls take the brackets inside */
+:is(.docs-floating, .desktop-outline) .focus-ring {
+	@apply focus-inset;
+}
+
+.sl-container > footer > .meta > a {
 	@apply focus-ring;
 
 	&:is(:hover, :focus-visible) {
@@ -550,6 +609,16 @@ html[data-theme='dark'] .docs-floating {
 @utility rounded-full {
 	corner-shape: round;
 }
+
+a,
+button,
+[role="button"],
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /*
 @supports (corner-shape: squircle) {
     * {

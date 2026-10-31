@@ -293,6 +293,7 @@ const chapterIcons = {
 		}
 		.docs-sidebar :global(details[open]::details-content) {
 			block-size: auto;
+			overflow-clip-margin: var(--focus-bracket-offset);
 		}
 		.docs-sidebar
 			:global(details:has(> summary:focus-visible)::details-content) {
@@ -345,13 +346,6 @@ const chapterIcons = {
 	}
 	.docs-sidebar :global(sl-sidebar-state-persist[data-active-marker] a[aria-current='page']::before) {
 		display: none;
-	}
-	.docs-sidebar
-		:global(
-			sl-sidebar-state-persist :is(a, summary, select):focus-visible
-		) {
-		outline: var(--focus-outline);
-		outline-offset: var(--focus-offset);
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.docs-sidebar :global(sl-sidebar-state-persist a),

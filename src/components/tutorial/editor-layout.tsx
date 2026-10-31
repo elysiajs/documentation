@@ -73,7 +73,7 @@ export default function EditorLayout({ fs, folders, tabs, onFilesChange, onReset
 		<div className="spica-surface flex h-full min-h-0 flex-col bg-base text-ink">
 			<header className="flex shrink-0 items-center gap-1 border-0 bg-base p-1">
 				<IconButton label="Toggle file explorer" size="sm" variant='ghost' active={showTree} aria-expanded={showTree} aria-controls={treeId} onClick={(event) => toggleTree(event.detail > 0)}><IconFolder size={18} stroke={1.5} /></IconButton>
-				<nav aria-label="Open files" className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto" onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setTabDrop(null); }}>
+				<nav aria-label="Open files" className="-m-1 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto p-1" onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setTabDrop(null); }}>
 					{tabs.files.map((file, index) => (
 						<div key={file}
 							className={cn('relative flex shrink-0 select-none items-center rounded-lg bg-transparent hover:bg-surface-2 focus-within:bg-surface-2', index === tabs.active && 'bg-primary-soft text-primary-deep hover:bg-primary-soft focus-within:bg-primary-soft')}
@@ -126,10 +126,10 @@ export default function EditorLayout({ fs, folders, tabs, onFilesChange, onReset
 					if (treeTransition.current) return;
 					treeOpen.current = size.asPercentage > 0;
 					setShowTree(treeOpen.current);
-				}} className="h-full min-h-0 bg-base">
+				}} className="h-full min-h-0 bg-base" style={showTree ? undefined : { overflow: 'hidden' }}>
 					<div id={treeId} inert={!showTree} aria-hidden={!showTree} className="h-full"><FileExplorer key={resetGeneration} fs={fs} folders={folders} tabs={tabs} onFilesChange={onFilesChange} /></div>
 				</Panel>
-				<Separator onPointerDownCapture={beginTreeResize} onKeyDownCapture={beginTreeResize} className="relative w-px shrink-0 cursor-col-resize bg-transparent focus:[outline:var(--focus-outline)] focus:[outline-offset:var(--focus-offset)] hover:bg-primary focus:bg-primary active:bg-primary" aria-label="Resize file explorer and editor" />
+				<Separator onPointerDownCapture={beginTreeResize} onKeyDownCapture={beginTreeResize} className="relative my-1 w-px shrink-0 cursor-col-resize aria-[valuenow=0]:ml-1 bg-transparent focus-ring hover:bg-primary focus:bg-primary active:bg-primary" aria-label="Resize file explorer and editor" />
 				<Panel defaultSize="100%" minSize="25%" className="h-full min-h-0 bg-base">{children}</Panel>
 			</Group>
 		</div>

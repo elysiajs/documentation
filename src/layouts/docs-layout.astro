@@ -1,7 +1,11 @@
 ---
 import PageFrame from '@astrojs/starlight/components/PageFrame.astro'
 import { Image } from 'astro:assets'
-import { IconLayoutSidebar, IconSearch, IconX } from '@tabler/icons-react'
+import {
+	IconLayoutSidebar,
+	IconSearch,
+	IconX
+} from '@tabler/icons-react'
 
 import { Button } from '../components/ui/button'
 import { ProductSwitcher, SearchField } from '../components/docs-controls'
@@ -12,8 +16,12 @@ import { dedupeCodeStyles } from './dedupeCodeStyles'
 import { productOf } from '../lib/product'
 
 import Aurora from '../components/aurora.astro'
+import Assistant from '../components/assistant/assistant'
 
 const { hasSidebar } = Astro.locals.starlightRoute
+// production can't reach Arona without a Turnstile site key
+const assistant =
+	!import.meta.env.PROD || Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY)
 const content = dedupeCodeStyles(await Astro.slots.render('default'))
 const contentAnimation = {
 	old: { name: 'none' },
@@ -29,7 +37,7 @@ const contentAnimation = {
 {
 	hasSidebar ? (
 		<div
-			class="page docs-page relative isolate group/docs [--sl-content-width:72rem] [--sl-content-inline-start:0rem] [--sl-sidebar-width:15rem] [--docs-drawer-width:calc(min(19rem,100dvw_-_3rem)_-_0.375rem)] [--docs-drawer-height:calc(100dvh_-_1.375rem)] min-h-dvh print:p-0"
+			class="page docs-page relative isolate bg-(--sl-color-bg) group/docs [--sl-content-width:72rem] [--sl-content-inline-start:0rem] [--sl-sidebar-width:15rem] [--docs-drawer-width:calc(min(19rem,100dvw_-_3rem)_-_0.375rem)] [--docs-drawer-height:calc(100dvh_-_1.375rem)] min-h-dvh print:p-0"
 			transition:persist={`docs-shell-${productOf(Astro.url.pathname)}`}
 			transition:animate="none"
 		>
@@ -40,7 +48,7 @@ const contentAnimation = {
 			/>
 			<aside
 				id="starlight__sidebar"
-				class="docs-sidebar-pane spica-surface px-4 rounded-2xl xl:rounded-none group-data-ready/docs:overflow-y-auto xl:group-data-ready/docs:not-group-data-sidebar-open/docs:invisible [&[hidden]]:hidden max-xl:group-data-ready/docs:w-(--docs-drawer-width) max-xl:group-data-ready/docs:h-(--docs-drawer-height) max-xl:group-data-ready/docs:max-h-none xl:z-45 xl:fixed xl:inset-[0_auto_0_0] xl:w-(--sl-sidebar-width) xl:overflow-y-auto [&_.md\:sl-hidden]:block print:hidden backdrop-blur-sm"
+				class="docs-sidebar-pane spica-surface px-4 rounded-2xl xl:rounded-none group-data-ready/docs:overflow-y-auto xl:group-data-ready/docs:not-group-data-sidebar-open/docs:invisible [&[hidden]]:hidden max-xl:group-data-ready/docs:w-(--docs-drawer-width) max-xl:group-data-ready/docs:h-(--docs-drawer-height) max-xl:group-data-ready/docs:max-h-none xl:z-45 xl:fixed xl:inset-[0_auto_0_0] xl:w-(--sl-sidebar-width) xl:overflow-y-auto [&_.md\:sl-hidden]:block print:hidden"
 				aria-label="Documentation sidebar"
 			>
 				<div data-sidebar-content class="flex min-h-full flex-col">
@@ -48,7 +56,7 @@ const contentAnimation = {
 						<div class="flex items-center gap-1 py-1.5">
 							<a
 								href="/"
-								class="flex items-center gap-2 grow no-underline"
+								class="flex items-center gap-2 grow rounded-lg no-underline focus-ring"
 							>
 								<Image
 									src="/assets/elysia.svg"
@@ -171,8 +179,10 @@ const contentAnimation = {
 					</IconButton>
 				</div>
 			</div>
+			{/* before the content, so Tab meets the ask bar while it shows at the top */}
+			{assistant && <Assistant client:load />}
 			<div
-				class="main-frame w-full max-w-[70.5rem] mx-auto lg:max-xl:pe-60 max-xl:pt-8 xl:w-[calc(100%_-_32rem)] print:w-full! print:m-0! print:p-0!"
+				class="main-frame w-full max-w-[70.5rem] mx-auto lg:max-xl:pe-60 max-xl:pt-8 xl:w-[calc(100%_-_32rem)] xl:ms-[max(16rem,calc((100%_-_70.5rem)/2))] transition-[width,margin-inline-start,padding-inline-end] duration-(--dur-base) ease-out motion-reduce:transition-none lg:max-xl:group-data-assistant-docked/docs:pe-[25.5rem] xl:group-data-assistant-docked/docs:w-[calc(100%_-_41.5rem)] xl:group-data-assistant-docked/docs:ms-[16rem] print:w-full! print:m-0! print:p-0!"
 				transition:name="docs-content"
 				transition:animate={{
 					forwards: contentAnimation,
@@ -186,7 +196,7 @@ const contentAnimation = {
 				aria-label="Search documentation"
 				closedby="any"
 			>
-				<div class="flex flex-none items-center min-w-0 [&>div]:min-w-0 [&>div]:flex-1 [&_.field-ring]:border-0 [&_.field-ring]:bg-transparent [&_.field-ring]:outline-none">
+				<div class="flex flex-none items-center min-w-0 [&>div]:min-w-0 [&>div]:flex-1 [&_.field-ring]:border-0 [&_.field-ring]:bg-transparent [&_.field-ring]:outline-none [&_.field-ring]:after:hidden">
 					<SearchField />
 					<IconButton
 						size="lg"
@@ -208,9 +218,9 @@ const contentAnimation = {
 				>
 					Type to search the documentation.
 				</p>
-				<div class="docs-search-frame relative isolate flex-1 min-h-0 mt-3 overflow-hidden">
+				<div class="docs-search-frame relative isolate flex-1 min-h-0 mt-3 overflow-hidden has-[>ul:focus-visible]:focus-ring focus-inset">
 					<ul
-						class="docs-search-results relative isolate h-full overflow-y-auto overscroll-contain list-none p-0 m-0 [&_a]:relative [&_a]:z-1 [&_a]:grid [&_a]:gap-1 [&_a]:p-3 [&_a]:rounded-xl [&_a]:no-underline [&_a]:text-ink [&_a:focus-visible]:outline-none [&_span]:text-ink-muted [&_span]:text-[0.875rem]"
+						class="docs-search-results relative isolate h-full overflow-y-auto overscroll-contain list-none p-0 m-0 outline-none [&_a]:relative [&_a]:z-1 [&_a]:grid [&_a]:gap-1 [&_a]:p-3 [&_a]:rounded-xl [&_a]:no-underline [&_a]:text-ink [&_a:focus-visible]:outline-none [&_span]:text-ink-muted [&_span]:text-[0.875rem]"
 						id="docs-search-results"
 						role="listbox"
 						aria-label="Search results"
@@ -290,6 +300,17 @@ const contentAnimation = {
 	}
 	.docs-search-frame :global(.docs-search-group a) {
 		padding-inline-start: 1.5rem;
+	}
+	.docs-search-frame :global(.docs-search-ask) {
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: center;
+		column-gap: 0.625rem;
+		cursor: pointer;
+	}
+	.docs-search-frame :global(.docs-search-ask strong) {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	@supports (transition-behavior: allow-discrete) and (overlay: auto) {
 		.docs-search,

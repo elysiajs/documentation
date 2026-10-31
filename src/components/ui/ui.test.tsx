@@ -19,7 +19,7 @@ const count = (html: string, needle: string) => html.split(needle).length - 1;
 const hasClass = (html: string, name: string) =>
 	new RegExp(`class="(?:[^"]*\\s)?${name}(?:\\s[^"]*)?"`).test(html);
 
-test('Button keeps native semantics and the dashed focus outline', () => {
+test('Button keeps native semantics and the focus brackets', () => {
 	const html = renderToString(<Button disabled className="disabled:bg-danger-soft">Save</Button>);
 	expect(html).toContain('<button');
 	expect(html).toContain('type="button"');

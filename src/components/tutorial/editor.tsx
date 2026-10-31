@@ -43,7 +43,7 @@ export default function Editor(props: Props) {
 	}, [props.fs, props.activeFile]);
 
 	return (
-		<div className="spica-surface relative h-full min-h-0 w-full">
+		<div className="spica-surface relative h-full min-h-0 w-full focus-ring focus-inset">
 			<div ref={element} className="h-full w-full" aria-label="Code editor" />
 			{loading && !error && <p role="status" className="pointer-events-none absolute inset-0 m-0 p-4 text-sm text-ink-soft">Loading editor…</p>}
 			{error && <p role="alert" className="absolute inset-0 m-0 bg-surface p-4 text-danger-deep">Unable to load editor: {error}</p>}

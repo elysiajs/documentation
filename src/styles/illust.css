@@ -1,3 +1,5 @@
+@reference './spica.css';
+
 body[data-illust] {
 	margin: 0;
 	min-block-size: 100dvh;
@@ -31,9 +33,8 @@ html:has(body[data-illust]) {
 	text-wrap: balance;
 }
 
-[data-illust] :is(a, button):focus-visible {
-	outline: var(--focus-outline);
-	outline-offset: var(--focus-offset);
+[data-illust] :is(a, button) {
+	@apply focus-ring;
 }
 
 [data-illust] button {
@@ -225,6 +226,7 @@ html:has(body[data-illust]) {
 }
 
 .gallery-cover {
+	@apply focus-inset;
 	position: relative;
 	display: block;
 	inline-size: 100%;
@@ -478,7 +480,7 @@ html:has(body[data-illust]) {
 	font-size: 0.875rem;
 }
 
-.gallery-variants [aria-pressed='true'] {
+.gallery-variants [aria-selected='true'] {
 	border-color: var(--color-primary-line);
 	background: var(--color-primary-soft);
 	color: var(--color-primary-ink);

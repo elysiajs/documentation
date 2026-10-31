@@ -68,10 +68,10 @@ const ogImage = new URL('/assets/cover.webp', Astro.site)
 		/>
 	</head>
 	<body>
-		<a href="#main" class="landing-skip">Skip to content</a>
+		<a href="#main" class="landing-skip focus-ring">Skip to content</a>
 		<header class="landing-header">
 			<div class="landing-header-content">
-				<a href="/" class="landing-brand">
+				<a href="/" class="landing-brand focus-ring">
 					<img
 						src="/assets/elysia.svg"
 						alt=""
@@ -81,9 +81,9 @@ const ogImage = new URL('/assets/cover.webp', Astro.site)
 					<span>ElysiaJS</span>
 				</a>
 				<nav aria-label="Main navigation" class="site-nav">
-					<a href="/at-glance/">Docs</a>
-					<a href="/blog/">Blog</a>
-					<a href="/illust/">Illust</a>
+					<a href="/at-glance/" class="focus-ring">Docs</a>
+					<a href="/blog/" class="focus-ring">Blog</a>
+					<a href="/illust/" class="focus-ring">Illust</a>
 				</nav>
 			</div>
 		</header>
@@ -156,7 +156,7 @@ const ogImage = new URL('/assets/cover.webp', Astro.site)
 						<div class="landing-actions">
 							<a
 								href="/at-glance/"
-								class="landing-start flex items-center relative bg-black/25 border border-white/75 outline-white/75 outline outline-offset-4 text-white backdrop-blur-xs font-sans font-semibold text-xl px-8 py-2.5 rounded-full no-underline hover:scale-105 focus:scale-105 active:scale-98 transition-all easing-out duration-250"
+								class="landing-start flex items-center relative bg-black/25 border border-white/75 outline-white/75 outline outline-offset-4 text-white backdrop-blur-xs font-sans font-semibold text-xl px-8 py-2.5 rounded-full no-underline hover:scale-105 focus:scale-105 active:scale-98 focus-ring focus-visible:outline-transparent transition-all easing-out duration-250"
 							>
 								Get Started
 								<IconSparkle

@@ -73,7 +73,7 @@ export default function Breadcrumb({
 					<li className="m-0">
 						<a
 							href={root.href}
-							className="rounded-sm text-inherit no-underline hover:text-(--sl-color-text-accent) focus-ring"
+							className="rounded-sm text-inherit no-underline hover:text-(--sl-color-text-accent) focus-underline"
 						>
 							{root.label}
 						</a>

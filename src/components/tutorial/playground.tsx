@@ -402,7 +402,7 @@ export default function Playground({ lesson }: { lesson: string }) {
 						</EditorLayout>
 					</Panel>
 					<Separator
-						className="relative h-2 shrink-0 cursor-row-resize rounded-full focus-ring before:absolute before:inset-x-3 before:top-1/2 before:h-px before:-translate-y-1/2 before:rounded-full before:transition-[height,background-color] before:duration-(--dur-fast) before:ease-out hover:before:h-0.5 hover:before:bg-primary focus-visible:before:h-0.5 focus-visible:before:bg-primary active:before:h-0.5 active:before:bg-primary motion-reduce:before:transition-none"
+						className="relative mx-1 h-2 shrink-0 cursor-row-resize rounded-full focus-ring before:absolute before:inset-x-3 before:top-1/2 before:h-px before:-translate-y-1/2 before:rounded-full before:transition-[height,background-color] before:duration-(--dur-fast) before:ease-out hover:before:h-0.5 hover:before:bg-primary focus-visible:before:h-0.5 focus-visible:before:bg-primary active:before:h-0.5 active:before:bg-primary motion-reduce:before:transition-none"
 						aria-label="Resize editor and result"
 					/>
 					<Panel minSize="10%" className="flex min-h-0 flex-col">

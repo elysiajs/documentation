@@ -51,9 +51,13 @@
 	color: var(--color-ink-muted);
 }
 
-.expressive-code :is(pre, .copy button):focus-visible {
-	outline: var(--focus-outline);
-	outline-offset: -3px;
+.expressive-code .frame:has(> pre:focus-visible),
+.expressive-code .frame .copy button {
+	@apply focus-ring;
+}
+
+.expressive-code .frame pre:focus-visible {
+	outline: none;
 }
 
 .expressive-code .copy button {
@@ -65,22 +69,24 @@
 		scale var(--dur-fast) var(--ease-out);
 }
 
-.expressive-code .copy button::after {
+/* The icon moves from ::after, which carries the focus brackets */
+.expressive-code .frame .copy button::before {
+	z-index: 1;
 	width: 18px;
 	height: 18px;
 	margin: auto;
-	-webkit-mask-size: contain;
-	mask-size: contain;
-	-webkit-mask-position: center;
-	mask-position: center;
+	border: 0;
+	opacity: 1;
+	background-color: var(--ec-frm-inlBtnFg);
+	mask: var(--ec-frm-copyIcon) center / contain no-repeat;
+}
+
+.expressive-code .frame .copy button::after {
+	background: none;
 }
 
 .expressive-code .copy button:active {
 	scale: 0.98;
-}
-
-.expressive-code .copy button:focus-visible {
-	outline-offset: var(--focus-offset);
 }
 
 .expressive-code .frame:hover .copy button:not(:hover),

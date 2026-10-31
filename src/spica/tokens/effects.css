@@ -29,12 +29,15 @@
   --glass-blur:   saturate(1.05) blur(6px); /* @kind other */
   --glass-border: color-mix(in oklab, var(--border-strong) 70%, white);
 
-  /* focus — a dashed pink outline sitting 3px off the control (follows the corner radius),
-     like the slider's thin bars. Apply: outline: var(--focus-outline); outline-offset: var(--focus-offset). */
-  --focus-outline: 1.5px dashed color-mix(in oklab, var(--primary) 60%, white); /* @kind other */
-  --focus-offset: 3px;
-  /* danger flavour of the same ring */
-  --focus-outline-danger: 1.5px dashed var(--danger); /* @kind other */
+  /* focus — four pink corner brackets var(--focus-bracket-offset) outside every focusable control's edge, following its radius.
+     Apply to an overlay inset by -(border + var(--focus-bracket-offset)): border: 1.5px solid var(--primary); border-radius: calc(the control's radius + var(--focus-bracket-offset)); mask: var(--focus-brackets).
+     Danger flavour: border-color var(--danger). Inline text links take a pink, thicker underline instead. */
+  --focus-bracket-offset: 4px;
+  --focus-bracket: min(12px, 50% - 3px); /* @kind other */
+  --focus-brackets: linear-gradient(#000 0 0) top left / var(--focus-bracket) var(--focus-bracket) no-repeat,
+                    linear-gradient(#000 0 0) top right / var(--focus-bracket) var(--focus-bracket) no-repeat,
+                    linear-gradient(#000 0 0) bottom left / var(--focus-bracket) var(--focus-bracket) no-repeat,
+                    linear-gradient(#000 0 0) bottom right / var(--focus-bracket) var(--focus-bracket) no-repeat; /* @kind other */
 
   /* magic — soft pink→blue glow for key moments (hover on a primary, a just-finished task, the fox waving) */
   --glow:        0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent), 0 6px 22px color-mix(in oklab, var(--primary) 28%, transparent), 0 10px 34px color-mix(in oklab, var(--harmony-left) 40%, transparent);
@@ -84,6 +87,8 @@
 @keyframes spica-glow-in { from { box-shadow: 0 0 0 0 transparent; } to { box-shadow: var(--glow-soft); } }
 /* popover emerges from its trigger — short fade + ~4px rise, everything arrives together */
 @keyframes spica-menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+/* focus brackets settle onto the edge from just outside it */
+@keyframes spica-brackets-in { from { transform: scale(1.04); } }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
@@ -114,7 +119,32 @@
   --slider-inactive: var(--control-border);
 }
 
-.spica-slider-rail:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-offset);
+.spica-slider-rail::after {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--focus-bracket-offset));
+  border: 1.5px solid var(--primary);
+  border-radius: var(--focus-bracket-offset);
+  mask: var(--focus-brackets);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.spica-slider-rail:focus-visible { outline: none; }
+.spica-slider-rail:focus-visible::after { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .spica-slider-rail:focus-visible::after { animation: spica-brackets-in var(--dur-base) var(--ease-spring); }
+}
+
+/* A focused control lifts over its neighbours (button groups, toolbars) so they don't cover its brackets. */
+[data-spica-focus]:focus-visible { z-index: 1; }
+
+/* Forced colors: focus falls back from the corner brackets to a solid system outline. */
+@media (forced-colors: active) {
+  [data-spica-field]:focus-within,
+  [data-spica-focus]:focus-visible,
+  .spica-slider-rail:focus-visible { outline: 2px solid Highlight !important; }
+  .spica-slider-rail::after { display: none; }
 }
