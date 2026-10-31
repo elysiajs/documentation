@@ -431,6 +431,26 @@ a.spica-card[href]:active {
 	}
 }
 
+/* Once the chat scrolls, the panel's stars dim, Spica turns gray, and they hold still behind it */
+.docs-assistant > svg {
+	transition: opacity var(--dur-slow) var(--ease-out);
+
+	& :is(.text-primary, stop) {
+		transition:
+			color var(--dur-slow) var(--ease-out),
+			stop-color var(--dur-slow) var(--ease-out);
+	}
+}
+
+.docs-assistant[data-scrolled] > svg {
+	--color-primary: var(--color-ink-muted);
+	opacity: 0.5;
+
+	& :is(.hanging-string, .hanging-twinkle) {
+		animation-play-state: paused;
+	}
+}
+
 /* The ask bar's surface is still travelling into place; the panel shows when it lands */
 .docs-page[data-morph] .docs-assistant {
 	opacity: 0;

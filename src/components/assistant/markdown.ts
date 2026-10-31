@@ -84,6 +84,66 @@ export const loadHighlighter = () =>
 			}
 		))
 
+// href -> [title, pageTitle?], from link-titles.json
+let titles: Record<string, [string, string?]> | undefined
+let loadingTitles: Promise<unknown> | undefined
+
+export const loadTitles = () =>
+	(loadingTitles ??= fetch(
+		// bun test has no Astro env
+		`${import.meta.env.BASE_URL ?? '/'}link-titles.json`
+	)
+		.then((response) => {
+			if (!response.ok)
+				throw new Error(`link-titles.json ${response.status}`)
+			return response.json()
+		})
+		.then(
+			(loaded) => (titles = loaded),
+			(error) => {
+				loadingTitles = undefined
+				throw error
+			}
+		))
+
+const V1_ORIGIN = 'https://elysiajs.com'
+
+const fileText = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="flex-none"><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M9 9l1 0" /><path d="M9 13l6 0" /><path d="M9 17l6 0" /></svg>`
+
+/**
+ * A bare docs link, its text is the URL, reads better as the page or section title.
+ * v1 links count when the same path exists here
+ */
+function chip(href: string, base: string, onLoad?: () => void) {
+	let url: URL
+	try {
+		url = new URL(href)
+	} catch {
+		return
+	}
+	if (url.origin !== DOCS_ORIGIN && url.origin !== V1_ORIGIN) return
+	if (!titles) {
+		loadTitles().then(onLoad, () => {})
+		return
+	}
+
+	const link = safeLink(
+		url.pathname.replace(/\.html$/, '') + url.search + url.hash,
+		base
+	)
+	if (!link || link.external) return
+
+	const { pathname, hash } = new URL(link.href, base)
+	const entry = titles[pathname + hash] ?? titles[pathname]
+	if (!entry) return
+
+	const [title, pageTitle] = entry
+	const label = escape(pageTitle ? `${title} · ${pageTitle}` : title)
+
+	// prose styles every a, its descendant selectors beat a single class
+	return `<a href="${escape(link.href)}" title="${label}" data-chip class="inline-flex h-6 min-w-0 max-w-56 items-center gap-1.5 rounded-full! bg-surface-2 px-2.5 align-middle font-sans text-xs font-medium text-ink-soft! no-underline! transition-[background-color,color] duration-(--dur-fast) ease-out hover:bg-surface-raised hover:text-ink! focus-ring">${fileText}<span class="truncate">${escape(title)}</span></a>`
+}
+
 const highlighted = new Map<string, string>()
 
 function highlight(code: string, lang: string) {
@@ -164,7 +224,7 @@ export function splitSources(
 export function renderMarkdown(
 	markdown: string,
 	base: string,
-	onHighlighter?: () => void
+	onLoad?: () => void
 ) {
 	return new Marked({
 		gfm: true,
@@ -193,8 +253,7 @@ export function renderMarkdown(
 				// marked runs an unclosed fence to the end of the answer
 				const closed = /\n {0,3}(`{3,}|~{3,})\s*$/.test(raw)
 				if (lang && closed)
-					if (!highlighter)
-						loadHighlighter().then(onHighlighter, () => {})
+					if (!highlighter) loadHighlighter().then(onLoad, () => {})
 					else if (highlighter.getLoadedLanguages().includes(lang))
 						html = highlight(text, lang)
 
@@ -209,7 +268,10 @@ export function renderMarkdown(
 			table(token: Tokens.Table) {
 				return `<div class="my-2.5 rounded-3xl has-[>:focus-visible]:focus-ring"><div class="spica-markdown-table spica-surface outline-none" tabindex="0" role="group" aria-label="Scrollable table">${Renderer.prototype.table.call(this, token)}</div></div>`
 			},
-			link({ href, tokens }: Tokens.Link) {
+			link({ href, text: raw, tokens }: Tokens.Link) {
+				const html = raw === href && chip(href, base, onLoad)
+				if (html) return html
+
 				const text = this.parser.parseInline(tokens)
 				const link = safeLink(href, base)
 				if (!link) return text

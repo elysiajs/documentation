@@ -64,26 +64,32 @@ function copyCode(event: MouseEvent) {
 
 const Answer = memo(function Answer({
 	markdown,
-	complete
+	complete,
+	streaming
 }: {
 	markdown: string
 	complete: boolean
+	streaming: boolean
 }) {
-	// Shiki loads on the first closed fence, then colors what's already shown
-	const [highlighter, loaded] = useReducer(() => true, false)
+	// Shiki and docs titles load on first use, each load renders what's already shown again
+	const [loads, loaded] = useReducer((n: number) => n + 1, 0)
 	const { body, sources } = useMemo(
 		() => splitSources(markdown, location.href, complete),
 		[markdown, complete]
 	)
 	const html = useMemo(
 		() => renderMarkdown(body, location.href, loaded),
-		[body, highlighter]
+		[body, loads]
 	)
 
 	return (
 		<>
 			<div
-				className={prose}
+				className={cn(
+					prose,
+					streaming &&
+						'transition-[opacity,translate] duration-(--dur-base) ease-(--ease-out) starting:translate-y-1 starting:opacity-0 motion-reduce:starting:translate-none'
+				)}
 				onClick={copyCode}
 				dangerouslySetInnerHTML={{ __html: html }}
 			/>
@@ -144,11 +150,21 @@ function Exchange({
 
 	return (
 		<article className="grid gap-3">
-			<p className="m-0 ms-auto max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-ee-md bg-surface-2 px-3.5 py-2 text-[15px] leading-relaxed text-ink">
+			<p
+				className={cn(
+					'm-0 ms-auto max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-ee-md bg-surface-2 px-3.5 py-2 text-[15px] leading-relaxed text-ink',
+					streaming &&
+						'transition-[opacity,translate] duration-(--dur-base) ease-(--ease-out) starting:translate-y-2 starting:opacity-0 motion-reduce:starting:translate-none'
+				)}
+			>
 				{turn.message}
 			</p>
 			{turn.response && (
-				<Answer markdown={turn.response} complete={!!turn.checksum} />
+				<Answer
+					markdown={turn.response}
+					complete={!!turn.checksum}
+					streaming={streaming}
+				/>
 			)}
 			{streaming && (
 				<p
@@ -167,10 +183,12 @@ function Exchange({
 				</p>
 			)}
 			{turn.stopped && (
-				<p className="m-0 text-sm text-ink-muted">Stopped.</p>
+				<p className="m-0 text-sm text-ink-muted transition-opacity duration-(--dur-fast) ease-out starting:opacity-0">
+					Stopped.
+				</p>
 			)}
 			{turn.error && (
-				<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border border-solid border-danger bg-danger-soft px-3 py-2 text-sm text-ink">
+				<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border border-solid border-danger bg-danger-soft px-3 py-2 text-sm text-ink transition-opacity duration-(--dur-fast) ease-out starting:opacity-0">
 					<p className="m-0">{turn.error}</p>
 					{turn.invalid && (
 						<Button size="sm" variant="secondary" onClick={reset}>
@@ -180,7 +198,7 @@ function Exchange({
 				</div>
 			)}
 			{!streaming && (turn.response || retryable) && (
-				<div className="-mt-1 flex items-center gap-0.5">
+				<div className="-mt-1 flex items-center gap-0.5 transition-opacity duration-(--dur-fast) ease-out starting:opacity-0">
 					{turn.response && (
 						<IconButton
 							size="sm"
@@ -422,6 +440,10 @@ export default function Panel() {
 				className="flex flex-1 flex-col gap-6 overflow-y-auto overscroll-contain px-4 py-5"
 				onScroll={(event) => {
 					const element = event.currentTarget
+					dialog.current!.toggleAttribute(
+						'data-scrolled',
+						element.scrollTop > 24
+					)
 					// a scroll follow() didn't make is the user's, stay put until the next question
 					if (Math.abs(element.scrollTop - view.scrollTop) > 1)
 						view.stick = false

@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test'
+import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
 import { createHmac, timingSafeEqual } from 'crypto'
 
 import {
@@ -8,7 +8,12 @@ import {
 	type Exchange,
 	type HistoryItem
 } from './arona'
-import { loadHighlighter, renderMarkdown, splitSources } from './markdown'
+import {
+	loadHighlighter,
+	loadTitles,
+	renderMarkdown,
+	splitSources
+} from './markdown'
 
 // Arona's Checksum (src/modules/ai/service.ts) with a test secret
 const secret = 'test-secret'
@@ -330,6 +335,162 @@ describe('renderMarkdown', () => {
 		expect(uncolored(html)).toContain(
 			'<code>const a = &quot;&lt;/code&gt;&lt;img src=x onerror=alert(1)&gt;&quot;\n&lt;/code&gt;&lt;/pre&gt;&lt;img src=x onerror=alert(1)&gt;</code>'
 		)
+	})
+
+	describe('docs link chips', () => {
+		const realFetch = globalThis.fetch
+		beforeAll(() => {
+			globalThis.fetch = (async () =>
+				Response.json({
+					'/plugins/openapi/': ['OpenAPI plugin'],
+					'/plugins/openapi/#detail': ['Detail', 'OpenAPI plugin'],
+					'/patterns/escape/': ['<img src=x onerror=alert(1)>']
+				})) as unknown as typeof fetch
+		})
+		afterAll(() => {
+			globalThis.fetch = realFetch
+		})
+
+		const chips = (html: string) =>
+			[
+				...html.matchAll(
+					/<a href="([^"]*)" title="([^"]*)" data-chip[^>]*>.*?<span class="truncate">(.*?)<\/span><\/a>/g
+				)
+			].map(([, href, title, text]) => ({ href, title, text }))
+
+		// titles are fetched on the first bare docs link, the answer must not wait on them
+		test('a bare docs link stays a plain link until titles load, then asks for a render', async () => {
+			let rendered = false
+			const html = renderMarkdown(
+				'https://next.elysiajs.com/plugins/openapi#detail',
+				base,
+				() => (rendered = true)
+			)
+			await loadTitles()
+
+			expect(chips(html)).toEqual([])
+			expect(hrefs(html)).toEqual(['/plugins/openapi/#detail'])
+			expect(rendered).toBe(true)
+		})
+
+		// a pasted URL says nothing to the reader, the section title does
+		test.each([
+			'https://next.elysiajs.com/plugins/openapi#detail',
+			'<https://next.elysiajs.com/plugins/openapi#detail>',
+			'[https://next.elysiajs.com/plugins/openapi#detail](https://next.elysiajs.com/plugins/openapi#detail)'
+		])(
+			'%p shows the heading title and navigates in place',
+			async (markdown) => {
+				await loadTitles()
+
+				expect(chips(renderMarkdown(`See ${markdown}.`, base))).toEqual(
+					[
+						{
+							href: '/plugins/openapi/#detail',
+							title: 'Detail · OpenAPI plugin',
+							text: 'Detail'
+						}
+					]
+				)
+			}
+		)
+
+		test("a link in the model's own words keeps them", async () => {
+			await loadTitles()
+			const html = renderMarkdown(
+				'[the OpenAPI plugin](https://next.elysiajs.com/plugins/openapi)',
+				base
+			)
+
+			expect(chips(html)).toEqual([])
+			expect(html).toContain(
+				'<a href="/plugins/openapi/">the OpenAPI plugin</a>'
+			)
+		})
+
+		// v1 answers and old links point at elysiajs.com, the same page lives here
+		test('a v1 link to a page that exists here becomes a local chip', async () => {
+			await loadTitles()
+
+			expect(
+				chips(
+					renderMarkdown(
+						'https://elysiajs.com/plugins/openapi.html',
+						base
+					)
+				)
+			).toEqual([
+				{
+					href: '/plugins/openapi/',
+					title: 'OpenAPI plugin',
+					text: 'OpenAPI plugin'
+				}
+			])
+		})
+
+		test('an unknown section falls back to the page title and keeps the hash', async () => {
+			await loadTitles()
+
+			expect(
+				chips(
+					renderMarkdown(
+						'https://next.elysiajs.com/plugins/openapi#gone',
+						base
+					)
+				)
+			).toEqual([
+				{
+					href: '/plugins/openapi/#gone',
+					title: 'OpenAPI plugin',
+					text: 'OpenAPI plugin'
+				}
+			])
+		})
+
+		// a v1 page with no counterpart here would 404 in place
+		test('a v1 link to a page missing here stays external', async () => {
+			await loadTitles()
+			const html = renderMarkdown(
+				'https://elysiajs.com/integrations/gone.html',
+				base
+			)
+
+			expect(chips(html)).toEqual([])
+			expect(html).toContain(
+				'<a href="https://elysiajs.com/integrations/gone.html" target="_blank" rel="noopener noreferrer">'
+			)
+		})
+
+		// the path after // is a host, the chip would navigate off-site looking like a docs page
+		test('a protocol-relative docs path never becomes a chip', async () => {
+			await loadTitles()
+
+			expect(
+				chips(
+					renderMarkdown(
+						'https://next.elysiajs.com//evil.com/plugins/openapi/',
+						base
+					)
+				)
+			).toEqual([])
+		})
+
+		test('a title is text, never markup', async () => {
+			await loadTitles()
+			const html = renderMarkdown(
+				'https://next.elysiajs.com/patterns/escape',
+				base
+			)
+
+			expect(html).not.toMatch(/<img\b/i)
+			expect(chips(html)).toEqual([
+				{
+					href: '/patterns/escape/',
+					title: '&lt;img src=x onerror=alert(1)&gt;',
+					text: '&lt;img src=x onerror=alert(1)&gt;'
+				}
+			])
+		})
 	})
 })
 
