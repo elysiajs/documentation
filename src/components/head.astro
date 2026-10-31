@@ -15,6 +15,19 @@ import { ClientRouter } from 'astro:transitions'
 	::view-transition-old(docs-content),
 	::view-transition-old(docs-outline) { display: none; }
 
+	::view-transition-group(docs-ask-bar) {
+		z-index: 1;
+		animation: none;
+	}
+	::view-transition-old(docs-ask-bar) {
+		animation: none;
+		mix-blend-mode: normal;
+	}
+	::view-transition-new(docs-ask-bar) {
+		animation: none;
+		mix-blend-mode: normal;
+	}
+
 	@keyframes docs-content-enter {
 		from { opacity: 0; transform: translateY(32px); }
 		to { opacity: 1; transform: translateY(0); }

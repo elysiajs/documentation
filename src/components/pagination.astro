@@ -6,11 +6,35 @@ const { prev, next } = Astro.locals.starlightRoute.pagination;
 
 {(prev || next) && (
 	<nav class="spica-surface spica-pagination print:hidden" aria-label="Page navigation">
-		<StarlightPagination />
+		<spica-pagination>
+			<StarlightPagination />
+		</spica-pagination>
 	</nav>
 )}
 
+<script>
+	class SpicaPagination extends HTMLElement {
+		connectedCallback() {
+			for (const link of this.querySelectorAll(
+				'a[rel="prev"], a[rel="next"]'
+			)) {
+				if (link.querySelector(':scope > spica-ripple')) continue
+				const ripple = document.createElement('spica-ripple')
+				ripple.setAttribute('aria-hidden', 'true')
+				ripple.append(document.createElement('span'))
+				link.prepend(ripple)
+			}
+		}
+	}
+	if (!customElements.get('spica-pagination'))
+		customElements.define('spica-pagination', SpicaPagination)
+</script>
+
 <style>
+	spica-pagination {
+		display: contents;
+	}
+
 	.spica-pagination {
 		container: pagination / inline-size;
 		width: 100%;
@@ -24,6 +48,8 @@ const { prev, next } = Astro.locals.starlightRoute.pagination;
 	}
 
 	.spica-pagination :global(.pagination-links a) {
+		position: relative;
+		--ripple-color: var(--color-primary);
 		gap: 0.75rem;
 		padding: 1.125rem;
 		border: 1px solid var(--color-border);

@@ -243,7 +243,7 @@ export function Bar({ onIntent }: { onIntent(): void }) {
 				inert={!shown && !(open && focused)}
 				style={{ left: box.left, width: box.width }}
 				className={cn(
-					'fixed bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 transition-[translate,opacity] print:hidden [:where(body[data-docs-menu-open])_&]:hidden before:pointer-events-none before:absolute before:-inset-x-6 before:-top-6 before:-bottom-[max(1rem,env(safe-area-inset-bottom))] before:-z-1 before:bg-linear-to-t before:from-(--sl-color-bg) before:from-35% before:to-transparent before:[mask-image:linear-gradient(to_right,transparent,#000_1.5rem,#000_calc(100%-1.5rem),transparent)]',
+					'fixed bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 [view-transition-name:docs-ask-bar] transition-[translate,opacity] print:hidden [:where(body[data-docs-menu-open])_&]:hidden before:pointer-events-none before:absolute before:-inset-x-6 before:-top-6 before:-bottom-[max(1rem,env(safe-area-inset-bottom))] before:-z-1 before:bg-linear-to-t before:from-(--sl-color-bg) before:from-35% before:to-transparent before:[mask-image:linear-gradient(to_right,transparent,#000_1.5rem,#000_calc(100%-1.5rem),transparent)]',
 					shown
 						? landing
 							? 'opacity-0 transition-none'
@@ -253,7 +253,7 @@ export function Bar({ onIntent }: { onIntent(): void }) {
 			>
 				<form
 					ref={form}
-					className="relative spica-surface flex h-12 items-center gap-2.5 rounded-full border border-solid border-border-strong bg-glass light:bg-surface/85 pr-1.5 pl-4 shadow-lg [backdrop-filter:var(--glass-blur-small)] field-ring transition-[border-color] duration-(--dur-fast) ease-out"
+					className="relative spica-surface flex h-12 items-center gap-2.5 rounded-full border border-solid border-border-strong bg-glass light:bg-surface/85 pr-1.5 pl-4 shadow-lg supports-[-webkit-touch-callout:none]:pointer-coarse:shadow-none [backdrop-filter:var(--glass-blur-small)] field-ring transition-[border-color] duration-(--dur-fast) ease-out"
 					onSubmit={(event) => {
 						event.preventDefault()
 						submit()
@@ -281,7 +281,7 @@ export function Bar({ onIntent }: { onIntent(): void }) {
 						maxLength={4096}
 						placeholder="Ask a question..."
 						aria-label="Ask a question"
-						className="min-w-0 flex-1 border-0 bg-transparent p-0 font-sans text-[15px] pointer-coarse:text-[16px] text-ink outline-none placeholder:text-ink-muted overflow-hidden"
+						className="min-w-0 flex-1 border-0 bg-transparent p-0 font-sans pointer-coarse:text-[16px] text-ink outline-none placeholder:text-ink-muted overflow-hidden"
 						onChange={(event) => setDraft(event.target.value)}
 						// the panel takes Escape once it's there, until then the bar keeps focus
 						onKeyDown={(event) => {
