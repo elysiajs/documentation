@@ -310,6 +310,13 @@ describe('renderMarkdown', () => {
 		)
 	})
 
+	test('only a closed fence can be copied, half-streamed code would copy a fragment', () => {
+		const open = '```ts\nconst a = 1\n'
+
+		expect(renderMarkdown(open, base)).not.toContain('data-copy')
+		expect(renderMarkdown(`${open}\`\`\``, base)).toContain('data-copy')
+	})
+
 	test('a highlighted fence stays inert', async () => {
 		await loadHighlighter()
 		const html = renderMarkdown(

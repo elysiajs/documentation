@@ -5,7 +5,8 @@ import {
 	useMemo,
 	useReducer,
 	useRef,
-	useState
+	useState,
+	type MouseEvent
 } from 'react'
 import {
 	IconArrowUp,
@@ -19,6 +20,7 @@ import {
 } from '@tabler/icons-react'
 import { TextMorph } from 'torph/react'
 import { cn } from '../../lib/cn'
+import { HangingStars, sparkle } from '../hanging-stars'
 import { Button } from '../ui/button'
 import { IconButton } from '../ui/icon-button'
 import { renderMarkdown, splitSources } from './markdown'
@@ -38,7 +40,23 @@ import {
 } from './store'
 
 const prose =
-	'min-w-0 break-words text-[15px] leading-relaxed text-ink-soft [&>:first-child]:mt-0 [&>:last-child]:mb-0 [&_:is(p,ul,ol,blockquote,table)]:my-2.5 [&_:is(ul,ol)]:ps-5 [&_ul]:list-disc [&_ol]:list-decimal [&_li]:my-1 [&_li]:ps-0.5 [&_li::marker]:text-ink-muted [&_:is(h1,h2,h3,h4)]:mt-4 [&_:is(h1,h2,h3,h4)]:mb-2 [&_:is(h1,h2,h3,h4)]:font-sans [&_:is(h1,h2,h3,h4)]:text-[15px] [&_:is(h1,h2,h3,h4)]:font-bold [&_:is(h1,h2,h3,h4,strong)]:text-ink [&_strong]:font-semibold [&_a]:text-primary-ink [&_a]:underline [&_a]:decoration-primary-line [&_a]:underline-offset-2 [&_a]:rounded-sm [&_a]:focus-underline [&_a:hover]:decoration-primary [&_:not(pre)>code]:rounded-md [&_:not(pre)>code]:bg-surface-2 [&_:not(pre)>code]:px-1 [&_:not(pre)>code]:py-px [&_:not(pre)>code]:font-mono [&_:not(pre)>code]:text-[0.84em] [&_:not(pre)>code]:text-ink [&_pre]:my-3 [&_pre]:overflow-x-auto [&_pre]:px-3.5 [&_pre]:py-3 [&_pre]:font-mono [&_pre]:text-[13px] [&_pre]:leading-[1.55] [&_pre]:text-ink [&_blockquote]:border-s-2 [&_blockquote]:border-border-strong [&_blockquote]:ps-3 [&_blockquote]:text-ink-muted [&_hr]:my-4 [&_hr]:border-border [&_table]:block [&_table]:overflow-x-auto [&_table]:border-collapse [&_table]:text-sm [&_:is(th,td)]:border [&_:is(th,td)]:border-border [&_:is(th,td)]:px-2 [&_:is(th,td)]:py-1 [&_th]:text-start [&_th]:text-ink'
+	'min-w-0 break-words text-[15px] leading-relaxed text-ink-soft [&>:first-child]:mt-0 [&>:last-child]:mb-0 [&_:is(p,ul,ol,blockquote)]:my-2.5 [&_:is(ul,ol)]:ps-5 [&_ul]:list-disc [&_ol]:list-decimal [&_li]:my-1 [&_li]:ps-0.5 [&_li::marker]:text-ink-muted [&_:is(h1,h2,h3,h4)]:mt-4 [&_:is(h1,h2,h3,h4)]:mb-2 [&_:is(h1,h2,h3,h4)]:font-sans [&_:is(h1,h2,h3,h4)]:text-[15px] [&_:is(h1,h2,h3,h4)]:font-bold [&_:is(h1,h2,h3,h4,strong)]:text-ink [&_strong]:font-semibold [&_a]:text-primary-ink [&_a]:underline [&_a]:decoration-primary-line [&_a]:underline-offset-2 [&_a]:rounded-sm [&_a]:focus-underline [&_a:hover]:decoration-primary [&_:not(pre)>code]:rounded-md [&_:not(pre)>code]:bg-surface-2 [&_:not(pre)>code]:px-1 [&_:not(pre)>code]:py-px [&_:not(pre)>code]:font-mono [&_:not(pre)>code]:text-[0.84em] [&_:not(pre)>code]:text-ink [&_pre]:m-0 [&_pre]:overflow-x-auto [&_pre]:px-[13px] [&_pre]:py-[11px] [&_pre]:font-mono [&_pre]:text-[13.5px] [&_pre]:leading-[1.55] [&_pre]:text-ink [&_blockquote]:border-s-2 [&_blockquote]:border-border-strong [&_blockquote]:ps-3 [&_blockquote]:text-ink-muted [&_hr]:my-4 [&_hr]:border-border'
+
+// the answer is an HTML string, so its code blocks' copy buttons are handled here
+function copyCode(event: MouseEvent) {
+	const button = (event.target as Element).closest<HTMLElement>('[data-copy]')
+	const code = button?.parentElement?.querySelector('code')?.textContent
+	if (!button || code == null) return
+
+	navigator.clipboard?.writeText(code).then(() => {
+		button.dataset.copied = ''
+		button.ariaLabel = 'Copied'
+		setTimeout(() => {
+			delete button.dataset.copied
+			button.ariaLabel = 'Copy code'
+		}, 1500)
+	}, () => {})
+}
 
 const Answer = memo(function Answer({
 	markdown,
@@ -60,7 +78,11 @@ const Answer = memo(function Answer({
 
 	return (
 		<>
-			<div className={prose} dangerouslySetInnerHTML={{ __html: html }} />
+			<div
+				className={prose}
+				onClick={copyCode}
+				dangerouslySetInnerHTML={{ __html: html }}
+			/>
 			{sources.length > 0 && (
 				<ul
 					aria-label="Sources"
@@ -163,7 +185,10 @@ function Exchange({
 							onClick={() =>
 								navigator.clipboard
 									?.writeText(turn.response)
-									.then(() => setCopied(true), () => {})
+									.then(
+										() => setCopied(true),
+										() => {}
+									)
 							}
 						>
 							{copied ? (
@@ -199,9 +224,6 @@ function Exchange({
 		</article>
 	)
 }
-
-const sparkle =
-	'M0 -1C0 -.35 .35 0 1 0C.35 0 0 .35 0 1C0 .35 -.35 0 -1 0C-.35 0 0 -.35 0 -1Z'
 
 // a quiet corner of the star chart, one star breathing
 const StarChart = () => (
@@ -347,6 +369,7 @@ export default function Panel() {
 				setOpen(false)
 			}}
 		>
+			<HangingStars />
 			<header className="flex flex-none items-center gap-1 ps-3 pe-1.5 py-2">
 				<img
 					src="/assets/elysia.svg"

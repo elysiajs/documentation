@@ -122,6 +122,59 @@
 	.expressive-code .copy button:active { scale: 1; }
 }
 
+/* The ask panel's code copy, Tabler IconCopy / IconCheck like the docs' Expressive Code button */
+.spica-code-copy {
+	position: absolute;
+	top: 0.75rem;
+	inset-inline-end: 0.75rem;
+	display: grid;
+	place-items: center;
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	border: 0;
+	border-radius: 0.75rem;
+	background: transparent;
+	color: var(--color-ink-soft);
+	cursor: pointer;
+	opacity: 0;
+	transition:
+		opacity var(--dur-fast) var(--ease-out),
+		background-color var(--dur-fast) var(--ease-out),
+		scale var(--dur-fast) var(--ease-out);
+	@apply focus-ring;
+}
+
+.spica-code-copy::before {
+	content: '';
+	width: 18px;
+	height: 18px;
+	background-color: currentColor;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666'/%3E%3Cpath d='M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.spica-code-copy[data-copied]::before {
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5l10 -10'/%3E%3C/svg%3E");
+}
+
+.spica-code-copy:hover { background: var(--color-surface-2); }
+.spica-code-copy:active { scale: 0.98; }
+
+.spica-code-frame:hover .spica-code-copy,
+.spica-code-copy:focus-visible,
+.spica-code-copy[data-copied] {
+	opacity: 1;
+}
+
+@media (hover: none) {
+	.spica-code-copy { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.spica-code-copy { transition: none; }
+	.spica-code-copy:active { scale: 1; }
+}
+
 html[data-theme='dark'] {
 	--spica-code-string: var(--color-harmony-left);
 	--spica-code-number: var(--color-harmony-center);

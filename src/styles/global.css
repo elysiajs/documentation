@@ -4,6 +4,7 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 @import './spica.css';
 @import './spica-code.css';
+@import './spica-table.css';
 @import './theme-transition.css';
 
 @source not "../spica";
@@ -408,6 +409,26 @@ a.spica-card[href]:active {
 .content-layout,
 .docs-page .sl-container > footer {
 	@apply max-w-2xl mx-auto w-full;
+}
+
+/* Hanging stars sway from their anchors and twinkle: on docs pages, and in the panel only while it's open */
+@keyframes hanging-sway {
+	from {
+		rotate: -1.5deg;
+	}
+	to {
+		rotate: 1.5deg;
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	:is(.main-frame, .docs-assistant[open]) .hanging-string {
+		animation: hanging-sway 8s ease-in-out infinite alternate;
+	}
+
+	:is(.main-frame, .docs-assistant[open]) .hanging-twinkle {
+		animation: var(--animate-spica-twinkle);
+	}
 }
 
 /* The ask bar's surface is still travelling into place; the panel shows when it lands */

@@ -1,4 +1,4 @@
-import { Marked, type Tokens } from 'marked'
+import { Marked, Renderer, type Tokens } from 'marked'
 import type { HighlighterCore } from 'shiki/core'
 import { DOCS_ORIGIN } from './arona'
 
@@ -191,13 +191,23 @@ export function renderMarkdown(
 				let html = escape(text)
 
 				// marked runs an unclosed fence to the end of the answer
-				if (lang && /\n {0,3}(`{3,}|~{3,})\s*$/.test(raw))
+				const closed = /\n {0,3}(`{3,}|~{3,})\s*$/.test(raw)
+				if (lang && closed)
 					if (!highlighter)
 						loadHighlighter().then(onHighlighter, () => {})
 					else if (highlighter.getLoadedLanguages().includes(lang))
 						html = highlight(text, lang)
 
-				return `<pre class="spica-code-surface"><code>${html}</code></pre>`
+				// the panel copies on click, half-streamed code gets no button
+				const copy = closed
+					? `<button type="button" class="spica-code-copy" data-copy aria-label="Copy code"></button>`
+					: ''
+
+				return `<div class="spica-code-frame relative my-3"><pre class="spica-code-surface"><code>${html}</code></pre>${copy}</div>`
+			},
+			// table.astro's markup, the docs' Spica table
+			table(token: Tokens.Table) {
+				return `<div class="my-2.5 rounded-3xl has-[>:focus-visible]:focus-ring"><div class="spica-markdown-table spica-surface outline-none" tabindex="0" role="group" aria-label="Scrollable table">${Renderer.prototype.table.call(this, token)}</div></div>`
 			},
 			link({ href, tokens }: Tokens.Link) {
 				const text = this.parser.parseInline(tokens)

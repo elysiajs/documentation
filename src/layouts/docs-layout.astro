@@ -17,6 +17,7 @@ import { productOf } from '../lib/product'
 
 import Aurora from '../components/aurora.astro'
 import Assistant from '../components/assistant/assistant'
+import { HangingStars } from '../components/hanging-stars'
 
 const { hasSidebar } = Astro.locals.starlightRoute
 // production can't reach Arona without a Turnstile site key
@@ -189,6 +190,10 @@ const contentAnimation = {
 					backwards: contentAnimation
 				}}
 			>
+				{/* zero height so it takes no space; hangs from the page top, above max-xl:pt-8 */}
+				<div class="relative h-0 max-xl:-top-8 print:hidden">
+					<HangingStars composition="page" />
+				</div>
 				<Fragment set:html={content} />
 			</div>
 			<dialog
