@@ -25,7 +25,11 @@ import { Button } from '../ui/button'
 import { IconButton } from '../ui/icon-button'
 import { renderMarkdown, splitSources } from './markdown'
 import {
+	allowComposerFocus,
+	blurActiveTextField,
+	canFocusComposer,
 	hostTurnstile,
+	primaryTouch,
 	reset,
 	retry,
 	send,
@@ -204,8 +208,7 @@ function Exchange({
 							label="Retry"
 							className="text-ink-muted"
 							onClick={() => {
-								// the button goes while the new answer streams, the composer keeps focus
-								if (retry())
+								if (retry() && !primaryTouch())
 									document
 										.querySelector<HTMLElement>(
 											'.docs-assistant textarea'
@@ -293,6 +296,7 @@ export default function Panel() {
 	const dialog = useRef<HTMLDialogElement>(null)
 	const list = useRef<HTMLDivElement>(null)
 	const composer = useRef<HTMLTextAreaElement>(null)
+	const presenting = useRef(false)
 	const last = turns.at(-1)
 	// shown before and mounted open: a navigation rebuilt the shell, the user didn't open anything
 	const restored = useRef(open && view.shown)
@@ -312,19 +316,27 @@ export default function Panel() {
 
 			element.close()
 			if (restoring) element.style.transition = 'none'
-			if (media.matches) element.show()
-			else element.showModal()
+			presenting.current = true
+			try {
+				if (media.matches) element.show()
+				else element.showModal()
+			} finally {
+				presenting.current = false
+			}
 
 			if (view.stick) follow(list.current!)
 			else list.current!.scrollTop = view.scrollTop
 
-			if (!restoring) {
+			const focusAllowed = canFocusComposer()
+			if (!focusAllowed) blurActiveTextField()
+
+			if (!restoring && focusAllowed) {
 				// typing that arrived while the panel loaded goes on after the draft, not before
 				const field = composer.current!
 				field.focus()
 				field.setSelectionRange(field.value.length, field.value.length)
 			}
-			else {
+			else if (restoring) {
 				element.getBoundingClientRect()
 				element.style.transition = ''
 				// show() focuses inside the dialog, a docked panel shouldn't take focus from the page
@@ -390,6 +402,7 @@ export default function Panel() {
 					disabled={!turns.length}
 					onClick={() => {
 						reset()
+						allowComposerFocus()
 						composer.current!.focus()
 					}}
 				>
@@ -470,6 +483,9 @@ export default function Panel() {
 					placeholder="Ask a question..."
 					aria-label="Ask a question"
 					className="block w-full max-h-48 resize-none border-0 bg-transparent px-3.5 pt-3 pb-1 font-sans text-[15px] pointer-coarse:text-[16px] leading-6 text-ink outline-none placeholder:text-ink-muted"
+					onFocus={() => {
+						if (!presenting.current) allowComposerFocus()
+					}}
 					onChange={(event) => setDraft(event.target.value)}
 					onKeyDown={(event) => {
 						if (

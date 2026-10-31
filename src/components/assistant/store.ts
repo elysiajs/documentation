@@ -53,8 +53,24 @@ export const useAssistant = () =>
 // the panel docks beside the content from here, below it's a modal sheet
 export const wide = () => matchMedia('(min-width: 64rem)')
 
+export const primaryTouch = () =>
+	typeof matchMedia !== 'undefined' &&
+	matchMedia('(hover: none) and (pointer: coarse)').matches
+
+export function blurActiveTextField() {
+	const element = document.activeElement as HTMLElement | null
+	if (element?.tagName === 'INPUT' || element?.tagName === 'TEXTAREA')
+		element.blur()
+}
+
 // survives the island remounting when a navigation rebuilds the docs shell
 export const view = { scrollTop: 0, stick: true, shown: false }
+
+let composerFocusAllowed = true
+export const canFocusComposer = () => composerFocusAllowed
+export const allowComposerFocus = () => {
+	composerFocusAllowed = true
+}
 
 let opener: HTMLElement | null = null
 export const takeOpener = () => {
@@ -64,9 +80,11 @@ export const takeOpener = () => {
 }
 
 export function setOpen(open: boolean, from?: HTMLElement | null) {
+	if (!open) allowComposerFocus()
 	if (open === state.open) return
 
 	if (open) {
+		allowComposerFocus()
 		opener = from ?? (document.activeElement as HTMLElement | null)
 		document.dispatchEvent(new Event('docs:close-outline'))
 		prefetch()
@@ -335,6 +353,11 @@ export function send(text: string, seed?: number) {
 	const message = text.trim()
 	if (!message || state.busy) return false
 
+	if (primaryTouch()) {
+		composerFocusAllowed = false
+		blurActiveTextField()
+	}
+
 	const id = ++request
 	const { history, anchor } = windowHistory(state.turns)
 	const { pathname } = location
@@ -425,11 +448,12 @@ if (typeof document !== 'undefined') {
 
 	// every entry ends in the composer, an already open panel included
 	const enter = (query?: string, from?: HTMLElement | null) => {
-		if (state.open)
+		if (state.open) {
+			allowComposerFocus()
 			document
 				.querySelector<HTMLElement>('.docs-assistant[open] textarea')
 				?.focus()
-		else setOpen(true, from)
+		} else setOpen(true, from)
 
 		// mid-answer, the question waits in the composer instead of getting lost
 		if (query && !send(query)) setDraft(query)

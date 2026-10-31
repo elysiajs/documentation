@@ -1,10 +1,10 @@
-import { afterAll, expect, test } from 'bun:test'
+import { afterAll, afterEach, beforeEach, describe, expect, test } from 'bun:test'
 import { createHmac } from 'crypto'
 
 // Just enough browser for store.ts: Turnstile, the PoW worker and Arona are deferred by hand
 const globals = globalThis as Record<string, unknown>
 const saved = Object.fromEntries(
-	['document', 'window', 'location', 'Worker', 'fetch'].map((key) => [
+	['document', 'window', 'location', 'Worker', 'fetch', 'matchMedia'].map((key) => [
 		key,
 		globals[key]
 	])
@@ -30,7 +30,18 @@ const workers: { onmessage(event: { data: string }): void }[] = []
 const challenges: number[] = []
 const listeners: Record<string, (event: unknown) => void> = {}
 let focused = 0
-const composer = { focus: () => focused++ }
+let touch = false
+let activeElement: { tagName: string; blur(): void } | null = null
+const composer = {
+	tagName: 'TEXTAREA',
+	focus() {
+		focused++
+		activeElement = this
+	},
+	blur() {
+		activeElement = null
+	}
+}
 const asks: {
 	message: string
 	body: Record<string, unknown>
@@ -40,6 +51,7 @@ const asks: {
 
 Object.assign(globalThis, {
 	document: {
+		get activeElement() { return activeElement },
 		createElement: () => ({ remove() {} }),
 		head: { append: (script: { onload(): void }) => script.onload() },
 		querySelector: (selector: string) =>
@@ -58,6 +70,9 @@ Object.assign(globalThis, {
 		}
 	},
 	location: { pathname: '/essential/route/' },
+	matchMedia: (query: string) => ({
+		matches: touch && query === '(hover: none) and (pointer: coarse)'
+	}),
 	Worker: class {
 		onmessage!: (event: { data: string }) => void
 		constructor() {
@@ -100,6 +115,8 @@ Object.assign(globalThis, {
 
 process.env.PUBLIC_TURNSTILE_SITE_KEY = 'test'
 const {
+	allowComposerFocus,
+	canFocusComposer,
 	hostTurnstile,
 	mount,
 	prefetch,
@@ -282,4 +299,106 @@ test('retry leaves an invalid history alone, a new chat is the way out', async (
 	expect(retry()).toBe(false)
 	await flush()
 	expect(asks).toHaveLength(count)
+})
+
+describe('composer focus after a question send', () => {
+	beforeEach(() => {
+		reset()
+		setOpen(false)
+		touch = false
+		activeElement = null
+	})
+	afterEach(() => {
+		reset()
+		setOpen(false)
+		takeOpener()
+		touch = false
+		activeElement = null
+	})
+
+	test('a normal open allows composer focus across presentations', () => {
+		setOpen(true)
+		expect(canFocusComposer()).toBe(true)
+		expect(canFocusComposer()).toBe(true)
+	})
+
+	test('an accepted touch send blurs the current field and keeps automatic focus suppressed after busy ends', () => {
+		touch = true
+		for (const tagName of ['INPUT', 'TEXTAREA']) {
+			setOpen(false)
+			activeElement = { tagName, blur() { activeElement = null } }
+			setOpen(true)
+			expect(send('Question')).toBe(true)
+			expect(activeElement).toBeNull()
+			stop()
+			expect(canFocusComposer()).toBe(false)
+			expect(canFocusComposer()).toBe(false)
+		}
+	})
+
+	test('deliberate composer interaction allows focus again without reopening', () => {
+		touch = true
+		setOpen(true)
+		composer.focus()
+		expect(send('Question')).toBe(true)
+		expect(activeElement).toBeNull()
+		expect(canFocusComposer()).toBe(false)
+		allowComposerFocus()
+		expect(canFocusComposer()).toBe(true)
+	})
+
+	test('empty and busy touch submissions retain focus and its policy', () => {
+		touch = true
+		setOpen(true)
+		composer.focus()
+		expect(send('   ')).toBe(false)
+		expect(activeElement).toBe(composer)
+		expect(canFocusComposer()).toBe(true)
+
+		setOpen(false)
+		expect(send('First question')).toBe(true)
+		setOpen(true)
+		composer.focus()
+		expect(send('Second question')).toBe(false)
+		expect(activeElement).toBe(composer)
+		expect(canFocusComposer()).toBe(true)
+	})
+
+	test('an accepted desktop send retains text focus and its policy', () => {
+		setOpen(true)
+		composer.focus()
+		expect(send('Question')).toBe(true)
+		expect(activeElement).toBe(composer)
+		expect(canFocusComposer()).toBe(true)
+	})
+
+	test('closing and reopening clears automatic focus suppression', () => {
+		touch = true
+		setOpen(true)
+		expect(send('Question')).toBe(true)
+		expect(canFocusComposer()).toBe(false)
+		setOpen(false)
+		expect(canFocusComposer()).toBe(true)
+		setOpen(true)
+		expect(canFocusComposer()).toBe(true)
+	})
+
+	test('search allows deliberate focus and suppresses it again only for an accepted touch question', () => {
+		touch = true
+		setOpen(true)
+		expect(send('Question')).toBe(true)
+		expect(canFocusComposer()).toBe(false)
+		const unmount = mount()
+		try {
+			listeners['docs:ask']({ detail: { query: 'While busy' } })
+			expect(activeElement).toBe(composer)
+			expect(canFocusComposer()).toBe(true)
+			stop()
+			listeners['docs:ask']({ detail: { query: 'Next question' } })
+			expect(activeElement).toBeNull()
+			expect(canFocusComposer()).toBe(false)
+		} finally {
+			unmount()
+		}
+	})
 })
