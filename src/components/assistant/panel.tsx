@@ -469,7 +469,7 @@ export default function Panel() {
 					maxLength={4096}
 					placeholder="Ask a question..."
 					aria-label="Ask a question"
-					className="block w-full max-h-48 resize-none border-0 bg-transparent px-3.5 pt-3 pb-1 font-sans text-[15px] leading-6 text-ink outline-none placeholder:text-ink-muted"
+					className="block w-full max-h-48 resize-none border-0 bg-transparent px-3.5 pt-3 pb-1 font-sans text-[15px] pointer-coarse:text-[16px] leading-6 text-ink outline-none placeholder:text-ink-muted"
 					onChange={(event) => setDraft(event.target.value)}
 					onKeyDown={(event) => {
 						if (

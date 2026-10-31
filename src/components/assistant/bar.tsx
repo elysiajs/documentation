@@ -1,4 +1,4 @@
-import { IconArrowUp, IconSparkles } from '@tabler/icons-react'
+import { IconArrowUp, IconMessage, IconSparkles } from '@tabler/icons-react'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { cn } from '../../lib/cn'
 import { IconButton } from '../ui/icon-button'
@@ -281,7 +281,7 @@ export function Bar({ onIntent }: { onIntent(): void }) {
 						maxLength={4096}
 						placeholder="Ask a question..."
 						aria-label="Ask a question"
-						className="min-w-0 flex-1 border-0 bg-transparent p-0 font-sans text-[15px] text-ink outline-none placeholder:text-ink-muted overflow-hidden"
+						className="min-w-0 flex-1 border-0 bg-transparent p-0 font-sans text-[15px] pointer-coarse:text-[16px] text-ink outline-none placeholder:text-ink-muted overflow-hidden"
 						onChange={(event) => setDraft(event.target.value)}
 						// the panel takes Escape once it's there, until then the bar keeps focus
 						onKeyDown={(event) => {
@@ -299,14 +299,19 @@ export function Bar({ onIntent }: { onIntent(): void }) {
 						<kbd className={kbd}>{mac ? '⌘' : '^'}</kbd>
 						<kbd className={kbd}>I</kbd>
 					</span>
+					{/* an empty draft just opens the panel, the only way in on a phone without ⌘I */}
 					<IconButton
 						type="submit"
 						size="sm"
 						variant="primary"
-						label="Ask"
+						label={draft.trim() ? 'Ask' : 'Open assistant'}
 						className="rounded-full"
 					>
-						<IconArrowUp size={16} stroke={2} />
+						{draft.trim() ? (
+							<IconArrowUp size={16} stroke={2} />
+						) : (
+							<IconMessage size={16} stroke={2} />
+						)}
 					</IconButton>
 				</form>
 			</div>
