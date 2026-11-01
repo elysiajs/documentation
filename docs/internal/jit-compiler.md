@@ -27,13 +27,13 @@ Elysia is fast and will likely remain *one of the fastest web frameworks for Jav
 	<Benchmark />
 </section>
 
-Elysia speed is not only acheived by optimization for specific runtime eg. Bun native features like `Bun.serve.routes`. But also the way Elysia handles route registration and request handling.
+Elysia speed is not only achieved by optimization for specific runtime eg. Bun native features like `Bun.serve.routes`. But also the way Elysia handles route registration and request handling.
 
-Elysia has an **JIT "compiler"** embedded within its core since [Elysia 0.4](/blog/elysia-04) (30 Mar 2023) at (*src/compose.ts*) using `new Function(...)` or also known as `eval(...)`.
+Elysia has a **JIT "compiler"** embedded within its core since [Elysia 0.4](/blog/elysia-04) (30 Mar 2023) at (*src/compose.ts*) using `new Function(...)` or also known as `eval(...)`.
 
 The *"compiler"* is not a traditional compiler that translates code from one language to another. Instead, it dynamically generates optimized code for handling requests based on the defined routes and middleware. *(Which is why we put compiler in quotes.)*
 
-When request is made to Elysia application for the first time for each route, Elysia dynamically generates optimized code specifically tailored to handle that route efficiently on the fly avoiding unnecessary overhead as much as possible.
+When a request is made to the Elysia application for the first time for each route, Elysia dynamically generates optimized code specifically tailored to handle that route efficiently on the fly avoiding unnecessary overhead as much as possible.
 
 ## Static Code Analysis (Sucrose)
 
@@ -58,7 +58,7 @@ const app = new Elysia()
 
 In this code, we can clearly see that this handler only need a `params` to be parsed.
 
-Sucrose looks at code and tells the *"compiler"* to only parse **params** and skip parsing other parts of the request like **body**, **query**, **headers** entirely as it's not need.
+Sucrose looks at code and tells the *"compiler"* to only parse **params** and skip parsing other parts of the request like **body**, **query**, **headers** entirely as it's not needed.
 
 JIT "compiler" then generates code like this:
 
@@ -127,13 +127,13 @@ When `set` or `status` is not used, Elysia will use `mapCompactResponse` to map 
 
 Elysia is originally made specifically for Bun but also works on [Node.js](/integrations/node), [Deno](/integrations/deno), [Cloudflare Workers](/integrations/cloudflare-workers) and more.
 
-There are a big difference between being **compatible** and being **optimized** for a specific platform.
+There is a big difference between being **compatible** and being **optimized** for a specific platform.
 
 Elysia can take advantage of platform-specific features and optimizations to further enhance performance, for example `Bun.serve.routes` is used when running on Bun to leverage Bun's native routing capabilities which is written in Zig for maximum performance.
 
-Using the **inline response** for maximum performance for static responses which made Elysia the rank at #14 on [TechEmpower Framework Benchmarks](https://www.techempower.com/benchmarks/#section=data-r23&hw=ph&test=plaintext) among the world's fastest backend frameworks.
+Using **inline responses** for maximum performance on static responses has ranked Elysia at #14 on [TechEmpower Framework Benchmarks](https://www.techempower.com/benchmarks/#section=data-r23&hw=ph&test=plaintext) among the world's fastest backend frameworks.
 
-There are more various smaller optimization like
+There are various smaller optimization like
 - using **Bun.websocket** when running on Bun for optimal WebSocket performance
 - `Elysia.file` conditionally use `Bun.file` when available for faster file handling
 - using `Headers.toJSON()` when running on Bun to reduce overhead when dealing headers
@@ -147,7 +147,7 @@ Elysia JIT *"compiler"* is designed for peak performance in mind. However, the d
 ### Initial Request Overhead
 The first time a request is made to a specific route, Elysia needs to analyze the route handler code and generate the optimized code.
 
-This process is relatively **very fast** and usually takes < 0.005ms per route in most cases on a modern CPU and happend only **once per route**. But it is still an overhead.
+This process is **very fast** and usually takes < 0.005ms per route in most cases on a modern CPU and happens only **once per route**. But it is still an overhead.
 
 <JIT />
 
@@ -156,7 +156,7 @@ This process can be moved to the startup phase by settings `precompile: true` to
 ### Memory Usage
 The dynamically generated code is stored in memory for subsequent requests. This can lead to increased memory usage, especially for applications with a large number of routes but is relatively low.
 
-### Bigger Bundle Size
+### Increased Bundle Size
 The JIT "compiler" and Sucrose module add some additional code to the Elysia core library, which can increase the overall bundle size of the application. However, the performance benefits often outweigh the cost of a slightly larger bundle size.
 
 ### Maintainability
@@ -165,9 +165,9 @@ The use of dynamic code generation can make the codebase more complex and harder
 ### Security Considerations
 Using `new Function(...)` or `eval(...)` can introduce security risks **if not handled properly**.
 
-But that's only "if not handled properly" part.
+But that's only true if not handled properly.
 
-Elysia takes precautions to ensure that the generated code is safe and does not expose vulnerabilities by make sure that only trusted code is executed. The **input is almost never user-controlled** and produced by Elysia (sucrose) itself.
+Elysia takes precautions to ensure that the generated code is safe and does not expose vulnerabilities by making sure that only trusted code is executed. The **input is almost never user-controlled** and produced by Elysia (sucrose) itself.
 
 ## Libraries that `eval`
 Elysia is not the only framework that use `new Function` and `eval`.
