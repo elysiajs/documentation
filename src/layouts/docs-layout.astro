@@ -183,7 +183,7 @@ const contentAnimation = {
 			{/* before the content, so Tab meets the ask bar while it shows at the top */}
 			{assistant && <Assistant client:load />}
 			<div
-				class="main-frame w-full max-w-[70.5rem] mx-auto lg:max-xl:pe-60 max-xl:pt-8 xl:w-[calc(100%_-_32rem)] xl:ms-[max(16rem,calc((100%_-_70.5rem)/2))] transition-[width,margin-inline-start,padding-inline-end] duration-(--dur-base) ease-out motion-reduce:transition-none lg:max-xl:group-data-assistant-docked/docs:pe-[25.5rem] xl:group-data-assistant-docked/docs:w-[calc(100%_-_41.5rem)] xl:group-data-assistant-docked/docs:ms-[16rem] print:w-full! print:m-0! print:p-0!"
+				class="main-frame w-full max-w-[70.5rem] mx-auto lg:max-xl:pe-60 max-xl:pt-8 xl:w-[calc(100%_-_32rem)] xl:ms-[max(16rem,calc((100%_-_70.5rem)/2))] transition-[width,margin-inline-start,padding-inline-end] duration-(--dur-base) ease-out motion-reduce:transition-none lg:max-xl:group-data-assistant-docked/docs:pe-[25.5rem] xl:group-data-assistant-docked/docs:w-[calc(100%_-_41.5rem)] xl:group-data-assistant-docked/docs:ms-[max(16rem,min(calc((100%_-_70.5rem)/2),calc(100%_-_96rem)))] print:w-full! print:m-0! print:p-0!"
 				transition:name="docs-content"
 				transition:animate={{
 					forwards: contentAnimation,
