@@ -1,0 +1,144 @@
+---
+title: Type safety แบบ end-to-end
+description: แชร์ type ระหว่างเซิร์ฟเวอร์ Elysia กับ client ด้วย Eden
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Type safety แบบ end-to-end</h1>
+
+ลองนึกภาพชุดรถไฟของเล่น
+
+รางรถไฟแต่ละชิ้นต้องต่อกับชิ้นถัดไปได้พอดี เหมือนจิ๊กซอว์
+
+type safety แบบ end-to-end ก็เหมือนการทำให้รางทุกชิ้นต่อกันได้ถูกต้อง รถไฟจะได้ไม่ตกรางหรือติดค้าง
+
+สำหรับเฟรมเวิร์ก การมี type safety แบบ end-to-end หมายความว่าคุณเชื่อมต่อ client กับเซิร์ฟเวอร์ได้อย่าง type-safe
+
+Elysia มี type safety แบบ end-to-end **โดยไม่ต้อง generate โค้ด** มาให้ตั้งแต่ต้น ผ่านตัวเชื่อมต่อแบบ RPC ที่ชื่อ **Eden**
+
+<video muted controls preload="metadata" aria-label="ตัวอย่างการอนุมาน type ของ Eden Treaty" style={{ aspectRatio: "16 / 9" }}>
+  <source src="/eden/eden-treaty.mp4" type="video/mp4" />
+  [ดาวน์โหลดวิดีโอตัวอย่าง Eden Treaty](/eden/eden-treaty.mp4)
+</video>
+
+เฟรมเวิร์กอื่นที่รองรับ type safety แบบ e2e:
+- tRPC
+- Remix
+- SvelteKit
+- Nuxt
+- TS-Rest
+
+
+
+Elysia ให้คุณเปลี่ยน type ฝั่งเซิร์ฟเวอร์ แล้วการเปลี่ยนแปลงจะสะท้อนไปยังฝั่ง client ทันที ช่วยทั้งเรื่อง auto-completion และการบังคับ type
+
+## Eden
+Eden คือ client แบบ RPC สำหรับเชื่อมต่อกับ Elysia ด้วย **type safety แบบ end-to-end** โดยใช้แค่การอนุมาน type ของ TypeScript ไม่ต้อง generate โค้ด
+
+Eden แชร์ type ของเซิร์ฟเวอร์ให้ client ผ่านการ import แค่ type ไม่มี client ที่ generate ขึ้นมาให้ต้องคอยอัปเดตให้ตรงกัน
+
+Eden มี 2 โมดูล:
+1. Eden Treaty **(แนะนำ)**: เวอร์ชัน RPC ที่ปรับปรุงจาก [Eden Treaty 1](/eden/treaty/legacy) (edenTreaty)
+2. Eden Fetch: client แบบ fetch ที่มี type safety
+
+ด้านล่างนี้คือภาพรวมของแต่ละโมดูล
+
+## Eden Treaty (แนะนำ)
+Eden Treaty แทนเซิร์ฟเวอร์ Elysia ในรูปแบบ object ให้ type safety แบบ end-to-end และประสบการณ์การพัฒนาที่ดีขึ้นมาก
+
+ด้วย Eden Treaty เราเรียกใช้เซิร์ฟเวอร์ Elysia ได้โดยมี type และ auto-completion ครบถ้วน จัดการ error ด้วยการแยกแยะ type และเขียน unit test แบบ type-safe ได้
+
+ตัวอย่างการใช้ Eden Treaty:
+**server.ts**
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hi')
+    .get('/users', () => 'Skadi')
+    .put('/nendoroid/:id', {
+        body: t.Object({
+            name: t.String(),
+            from: t.String()
+        })
+    }, ({ body }) => body)
+    .get('/nendoroid/:id/name', () => 'Skadi')
+    .listen(3000)
+
+export type App = typeof app
+```
+
+**index.ts**
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// Call [GET] at '/'
+const { data } = await app.get()
+
+// Call [PUT] at '/nendoroid/:id'
+const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
+    name: 'Skadi',
+    from: 'Arknights'
+})
+```
+
+## Eden Fetch
+ทางเลือกแบบ fetch นอกเหนือจาก Eden Treaty สำหรับนักพัฒนาที่ชอบ syntax ของ fetch
+
+สำหรับตัวอย่างนี้ ให้ export เซิร์ฟเวอร์ที่มี route ตรงกัน:
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/name/:name', {
+        body: t.Object({ branch: t.String(), type: t.String() })
+    }, ({ params, body }) => ({ name: params.name, ...body }))
+    .listen(3000)
+
+export type App = typeof app
+```
+
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+const { data } = await fetch('/name/:name', {
+    method: 'POST',
+    params: {
+        name: 'Saori'
+    },
+    body: {
+        branch: 'Arius',
+        type: 'Striker'
+    }
+})
+```
+
+:::tip[หมายเหตุ]
+
+Eden Fetch ต่างจาก Eden Treaty ตรงที่ไม่มี implementation ของ WebSocket สำหรับเซิร์ฟเวอร์ Elysia
+:::
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

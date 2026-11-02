@@ -1,0 +1,668 @@
+---
+title: Best practice
+description: จัดระเบียบ controller, service และ model ของ Elysia โดยไม่เสีย type inference
+template: splash
+---
+
+import { FileTree } from '../../../../components/ui/file-tree'
+import '../../../../styles/routing.css'
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro'
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro'
+import InteractiveStep from '../../../../components/interactive-code/step.astro'
+
+export const steps = [
+    {
+        label: 'Controller (index.ts)',
+        code: `// src/routes/greet/index.ts
+import { Elysia } from 'elysia'
+import { greet } from './service'
+import * as GreetModel from './model'
+
+export const greeting = new Elysia({ prefix: '/greet' })
+    .post('/', {
+        body: GreetModel.Post.Body
+    }, ({ body }) => greet(body))`
+    },
+    {
+        label: 'Model (model.ts)',
+        code: `// src/routes/greet/model.ts
+import { t, type UnwrapModels } from 'elysia'
+
+export const Post = {
+    Body: t.Object({ name: t.String() })
+}
+
+export type Post = UnwrapModels<typeof Post>`
+    },
+    {
+        label: 'Service (service.ts)',
+        code: `// src/routes/greet/service.ts
+import type * as GreetModel from './model'
+
+export function greet({ name }: GreetModel.Post['Body']) {
+    return 'Hello ' + name
+}`
+    },
+    {
+        label: 'Instance หลัก (app.ts)',
+        code: `// src/app.ts
+import { Elysia } from 'elysia'
+import { greeting } from './routes/greet'
+import { auth } from './routes/auth'
+import { user } from './routes/user'
+
+export const app = new Elysia()
+    .use(greeting)
+    .use(auth)
+    .use(user)`
+    }
+]
+
+export const tree = [
+    {
+        id: 'src',
+        name: 'src',
+        children: [
+            {
+                id: 'src/index.ts',
+                name: 'index.ts',
+                meta: 'จุดเริ่มต้นของเซิร์ฟเวอร์ เริ่ม listen'
+            },
+            {
+                id: 'src/app.ts',
+                name: 'app.ts',
+                meta: 'ประกอบ instance ของ Elysia ใช้โดย index.ts และเทสต์'
+            },
+            {
+                id: 'src/env.ts',
+                name: 'env.ts',
+                meta: 'environment variable ที่ผ่านการตรวจสอบแล้ว'
+            },
+            {
+                id: 'src/libs',
+                name: 'libs',
+                meta: 'client และ helper ที่ใช้ร่วมกัน ไม่ขึ้นกับ context ของ request',
+                children: [
+                    {
+                        id: 'src/libs/db',
+                        name: 'db',
+                        meta: 'database client และ schema (เช่น Prisma, Drizzle ฯลฯ)',
+                        children: [
+                            {
+                                id: 'src/libs/db/index.ts',
+                                name: 'index.ts'
+                            },
+                            {
+                                id: 'src/libs/db/table.ts',
+                                name: 'table.ts'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'src/libs/message.ts',
+                        name: 'message.ts',
+                        meta: 'helper ล้วน ๆ ที่ไม่ได้ import Elysia'
+                    }
+                ]
+            },
+            {
+                id: 'src/plugins',
+                name: 'plugins',
+                meta: 'ปลั๊กอิน Elysia ที่ใช้ร่วมกันและพฤติกรรมใน lifecycle ของ request',
+                children: [
+                    {
+                        id: 'src/plugins/macro.ts',
+                        name: 'macro.ts',
+                        meta: 'ปลั๊กอิน macro ที่เขียนเองสำหรับ Elysia'
+                    }
+                ]
+            },
+            {
+                id: 'src/routes',
+                name: 'routes',
+                meta: 'route ที่จัดกลุ่มตามฟีเจอร์',
+                children: [
+                    {
+                        id: 'src/routes/auth',
+                        name: 'auth',
+                        children: [
+                            {
+                                id: 'src/routes/auth/index.ts',
+                                name: 'index.ts',
+                                meta: 'เชื่อม HTTP เข้ากับ business logic'
+                            },
+                            {
+                                id: 'src/routes/auth/service.ts',
+                                name: 'service.ts',
+                                meta: 'กฎทางธุรกิจและการเข้าถึงข้อมูล ไม่ขึ้นกับ context ของ request'
+                            },
+                            {
+                                id: 'src/routes/auth/model.ts',
+                                name: 'model.ts',
+                                meta: 'DTO, validation schema และ type ของ TypeScript'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'src/routes/user',
+                        name: 'user',
+                        children: [
+                            {
+                                id: 'src/routes/user/index.ts',
+                                name: 'index.ts',
+                                meta: 'เชื่อม HTTP เข้ากับ business logic'
+                            },
+                            {
+                                id: 'src/routes/user/service.ts',
+                                name: 'service.ts',
+                                meta: 'กฎทางธุรกิจและการเข้าถึงข้อมูล ไม่ขึ้นกับ context ของ request'
+                            },
+                            {
+                                id: 'src/routes/user/model.ts',
+                                name: 'model.ts',
+                                meta: 'DTO, validation schema และ type ของ TypeScript'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'test',
+        name: 'test',
+        children: [
+            {
+                id: 'test/auth.test.ts',
+                name: 'auth.test.ts',
+                meta: 'เทสต์ของ controller และ service ในฟีเจอร์'
+            },
+            { id: 'test/user.test.ts', name: 'user.test.ts' }
+        ]
+    }
+]
+
+export const treeFolders = [
+    'src',
+    'src/libs',
+    'src/plugins',
+    'src/routes',
+    'src/routes/auth',
+    'src/routes/user',
+    'test'
+]
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Best practice</h1>
+
+Elysia ไม่ได้บังคับรูปแบบการเขียนโค้ดแบบใดแบบหนึ่ง
+
+คู่มือนี้ใช้โครงสร้างแบบแบ่งตามฟีเจอร์ ซึ่งได้แรงบันดาลใจจาก MVC และหลักการแยกหน้าที่ (separation of concerns) โดย controller จัดการเรื่อง HTTP, service ทำงานตามกฎทางธุรกิจ และ model อธิบายข้อมูลที่ API รับเข้าและส่งออก
+
+สำหรับ JSON API มักไม่มี view layer แยกต่างหาก ในที่นี้ `model.ts` หมายถึง schema ของ request และ response ไม่ใช่ model ของฐานข้อมูล นี่เป็นเพียงแนวทางจัดโค้ด Elysia โดยไม่เสีย type inference ให้ปรับใช้ตามแอปพลิเคชันของคุณ
+
+## โครงสร้างโฟลเดอร์
+
+Elysia ไม่ได้กำหนดโครงสร้างโฟลเดอร์ตายตัว คุณตัดสินใจเองได้ว่าจะจัดโค้ดอย่างไร
+
+ถ้ายังไม่มีโครงสร้างในใจ เราแนะนำโครงสร้างแบบแบ่งตามฟีเจอร์
+
+<FileTree
+    client:load
+    variant="card"
+    mono
+    dense
+    nodes={tree}
+    defaultExpanded={treeFolders}
+    className="not-content my-6"
+/>
+
+## ตั้งค่าแอปพลิเคชัน
+
+`src/index.ts` คือจุดเริ่มต้นของ process ให้ import แอปพลิเคชัน เริ่ม listen และแสดงข้อมูลตอนเริ่มทำงานที่ไฟล์นี้
+
+```ts title="src/index.ts"
+import { app } from './app'
+import { env } from './env'
+
+app.listen(env.PORT)
+```
+
+`src/app.ts` สร้างและ export แอปพลิเคชัน Elysia ให้ประกอบ controller ของแต่ละฟีเจอร์และปลั๊กอินที่ใช้ทั้งแอป เช่น CORS หรือ OpenAPI ไว้ที่นี่ ส่วน handler และกฎทางธุรกิจของแต่ละฟีเจอร์ให้อยู่ในโฟลเดอร์ route ของมัน
+
+```ts title="src/app.ts"
+import { Elysia } from 'elysia'
+import { auth } from './routes/auth'
+import { user } from './routes/user'
+
+export const app = new Elysia().use(auth).use(user)
+
+export type App = typeof app
+```
+
+การเก็บ `.listen()` ไว้ที่จุดเริ่มต้นทำให้เทสต์ import `app` ได้โดยไม่ต้องเปิดพอร์ต และทำให้ [Eden](/eden/) import type ของมันได้ ทั้งนี้การ import แอปยังอาจทำให้ dependency อย่างการตั้งค่าและ database client ถูก initialize ขึ้นมาด้วย
+
+## โค้ดที่ใช้ร่วมกัน
+
+ไฟล์โค้ดควรอยู่ใน `libs/` หรือ `plugins/` ก็ต่อเมื่อถูกใช้ร่วมกันหลายฟีเจอร์ ไม่อย่างนั้นให้อยู่กับฟีเจอร์ที่เป็นเจ้าของ
+
+### Libraries
+
+ใช้ `libs/` สำหรับโค้ดที่ใช้ร่วมกันและไม่เกี่ยวกับ Elysia
+
+| ไฟล์               | สิ่งที่อยู่ข้างใน                                                 |
+| ------------------ | -------------------------------------------------------- |
+| `libs/db/index.ts` | สร้างและ export database client                       |
+| `libs/db/table.ts` | ประกาศ table และ relation สำหรับ ORM หรือ query builder ของคุณ |
+| `libs/message.ts`  | helper ทั่วไปที่ใช้ร่วมกัน เช่น การจัดรูปแบบข้อความ     |
+
+สร้าง database client เพียงครั้งเดียวแล้ว import ไปใช้ในจุดที่ต้องการ query เฉพาะของแต่ละฟีเจอร์ควรอยู่กับ business logic ของฟีเจอร์นั้น `libs/db/index.ts` ไม่ควรกลายเป็นที่รวม query ทุกตัวของแอปพลิเคชัน
+
+เก็บ helper ไว้ในฟีเจอร์ของมันจนกว่าฟีเจอร์อื่นจะต้องใช้ ไฟล์ไม่จำเป็นต้องอยู่ใน `libs/` เพียงเพราะมีฟังก์ชันอยู่ข้างใน
+
+### Plugins
+
+ใช้ `plugins/` สำหรับพฤติกรรมของ Elysia ที่นำกลับมาใช้ซ้ำได้และเกี่ยวข้องกับ HTTP/lifecycle event เช่น macro สำหรับ authentication หรือ metadata ของ request
+
+```ts title="src/plugins/macro.ts"
+import { Elysia } from 'elysia'
+
+export const metadata = new Elysia({ name: 'request-metadata' }).macro({
+    requestId: {
+        derive: () => ({ requestId: crypto.randomUUID() })
+    }
+})
+```
+
+เหตุผลคือเพื่อแยกเรื่องของ HTTP และ Elysia ออกจาก business logic ตัว service หรือ `libs` ไม่จำเป็นต้องรู้เรื่อง request ID, cookie หรือ header
+
+## Routes
+
+แต่ละโฟลเดอร์ใน `routes/` เป็นเจ้าของฟีเจอร์หนึ่ง เช่น `auth` หรือ `user` ให้เก็บ route, business logic และ API schema ของฟีเจอร์ไว้ด้วยกัน เพื่อที่การแก้ไขฟีเจอร์หนึ่งจะได้ไม่ต้องไล่หาในโฟลเดอร์ controller, service และ model ที่รวมของทั้งแอปไว้
+
+ไฟล์ทั้งสามมีหน้าที่ต่างกัน:
+
+| ไฟล์         | สิ่งที่อยู่ข้างใน                                 | สิ่งที่ควรอยู่ที่อื่น                                 |
+| ------------ | ---------------------------------------- | ----------------------------------------- |
+| `index.ts`   | controller ของ Elysia พฤติกรรมที่เกี่ยวกับ HTTP | รายละเอียดการ implement เชิงเทคนิค         |
+| `service.ts` | การทำงานทางธุรกิจ transaction        | context ของ request การจัดการ cookie          |
+| `model.ts`   | DTO, schema, type ของ TypeScript          | การเชื่อมต่อฐานข้อมูล การทำงานทางธุรกิจ |
+
+เริ่มจากสิ่งที่ฟีเจอร์ต้องการก่อน route เล็ก ๆ อยู่แค่ใน `index.ts` ก็ได้ และฟีเจอร์ที่ไม่มี schema ใช้ร่วมกันก็ไม่ต้องมี `model.ts` ตัวอย่างด้านล่างจะไล่ดูฟีเจอร์ทักทายตั้งแต่ controller, model ไปจนถึง service แล้วแสดงว่าแอปหลักประกอบ controller ของแต่ละฟีเจอร์เข้าด้วยกันอย่างไร ฟีเจอร์ทักทายไม่ได้ต้องมีถึงสามไฟล์เพียงเพื่อคืนค่า string
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+### Controller (index.ts)
+
+instance ของ Elysia มีหน้าที่จัดการเรื่องที่เกี่ยวกับ HTTP และเชื่อมต่อไปยัง business logic จาก Model และ Service
+
+ทุกอย่างที่เกี่ยวกับ HTTP ควรทำที่นี่ เช่น ตั้งค่า header, cookie และ redirect
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Model (model.ts)
+
+ชุดของ schema และ type ของ TypeScript ที่ `Controller` ใช้และ `Service` นำไป derive ต่อ
+
+ใช้ตรวจสอบ schema ตอน runtime และ derive type ของ TypeScript จาก schema นั้น แทนที่จะต้องดูแล interface ที่ตรงกันเองด้วยมือ
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Service (service.ts)
+
+รายละเอียดการ implement กฎทางธุรกิจ การเข้าถึงข้อมูล และ transaction
+
+ควรเป็นอิสระจาก HTTP context ยกเว้น `status` ของ Elysia หรือ class `HTTPError` สำหรับกำหนด HTTP status code เมื่อจำเป็น
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Main instance (app.ts)
+
+ถอยออกมาดูภาพรวมที่ `src/app.ts` ซึ่งแต่ละฟีเจอร์ถูกเพิ่มเข้ามาด้วย `.use()` instance หลักทำหน้าที่ประกอบ controller เข้าด้วยกัน ส่วน handler, service และ model ยังอยู่ในโฟลเดอร์ route ของตัวเอง
+
+ในที่นี้ `auth` และ `user` เป็นตัวแทนของ controller ฟีเจอร์อื่นที่มีโครงสร้างเหมือน `greeting` แต่ละ `.use()` เพิ่ม controller คนละตัว ให้ export แอปไว้ที่นี่ แล้วเริ่ม listen ใน `src/index.ts`
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## Controller
+
+เชื่อมเรื่องที่เกี่ยวกับ HTTP เข้ากับ business logic ทุกอย่างที่เกี่ยวกับ HTTP ควรทำที่นี่
+
+ตัวอย่างต่อไปนี้อ่านโปรไฟล์สาธารณะของผู้ใช้ controller จะเลือก route ผูก validation schema ตั้งค่า header ของ response และส่ง ID ของผู้ใช้ไปให้ service
+
+```ts title="src/routes/user/index.ts"
+import { Elysia } from 'elysia'
+
+import { metadata } from '../../plugins/macro'
+
+import * as UserModel from './model'
+import { getUser } from './service'
+
+export const user = new Elysia({ prefix: '/user' })
+    .use(metadata)
+    .get(
+        '/:id',
+        {
+            requestId: true,
+            params: UserModel.ByIdGet.Params,
+            response: UserModel.ByIdGet.Response
+        },
+        ({ set, params, requestId }) => {
+            set.headers['x-request-id'] = requestId
+
+            return getUser(params.id)
+        }
+    )
+```
+
+cookie, header, redirect และรายละเอียดอื่น ๆ ของ HTTP ควรอยู่ที่นี่ หรือในปลั๊กอินที่รู้จัก request
+
+ตัวอย่างเช่น controller สำหรับ sign-in ตั้ง session cookie ได้หลังจากที่ service สร้าง session แล้ว ตัว service ไม่จำเป็นต้องใช้ object ของ cookie ในการทำงาน
+
+- ส่งเฉพาะค่าที่ service ต้องใช้ เช่น `params.id`, `body`, `user.id`
+- หลีกเลี่ยงการส่ง context ทั้งก้อน หรือการกำหนด type ให้ handler ที่แยกออกมาด้วย `Context` เปล่า ๆ
+
+แนะนำให้ใช้ปลั๊กอินของ Elysia (จากโฟลเดอร์ `plugins`) เพื่อช่วยในการอนุมาน type เหมือนกับ `requestId: true` ด้านบน ปลั๊กอินจะเพิ่ม property ลงใน context และ controller ก็ใช้ได้โดยไม่ต้อง type assertion
+
+:::tip[ทำไม]
+    Elysia บังคับรูปแบบนี้ไว้ เพื่อให้ instance ของ Elysia รู้จักเฉพาะ
+    property ของ Context ที่ต้องใช้จริง และบังคับให้คุณส่ง implementation
+    จริงเข้าไปเพื่อ type soundness
+:::
+
+instance ของ Elysia จัดกลุ่ม route และรักษา type ไว้ให้อยู่แล้ว การมี base controller class หรือ controller อีกตัวที่แค่ส่งต่อ argument ไปให้ service จึงไม่ได้ช่วยแยกหน้าที่ให้ดีขึ้น
+
+## Model
+
+ชุดของ schema และ type ของ TypeScript ที่ Controller ใช้และ Service นำไป derive ต่อ
+
+ใช้ตรวจสอบ schema ตอน runtime ให้ `Controller` และให้ type ของ TypeScript กับ `Service`
+
+model ในที่นี้มักประกอบด้วย DTO ที่ประกาศด้วย `t` (named export จาก `elysia`) หรือ Standard Schema (Zod, Valibot ฯลฯ) เพื่อตรวจสอบข้อมูลตอน runtime และ derive type ของ TypeScript จาก schema แทนที่จะต้องดูแล interface ที่ตรงกันเองด้วยมือ
+
+### หลักการตั้งชื่อ
+
+หลักการตั้งชื่อควรตกลงกันเองในทีม (หรือตัวคุณเอง) และใช้ให้สม่ำเสมอทั้งโปรเจกต์ แต่ถ้ายังไม่มีหลักการในใจ เราแนะนำแบบนี้:
+
+#### จัดกลุ่มตาม path ของ route และ HTTP method
+
+- export object หนึ่งตัวต่อหนึ่ง route ตั้งชื่อเป็น `[Pathname][Method]` แบบ PascalCase
+- ใช้ path ของ route ที่อ้างอิงจาก prefix ของ controller แล้วต่อท้ายด้วย HTTP method
+- ไม่ต้องใส่ prefix ของ instance เพราะ namespace ของ model บอกไว้แล้ว สำหรับ path ราก `/` ให้ใช้แค่ชื่อ method และแทนที่ segment แบบ dynamic แต่ละตัวด้วย `By[ParameterName]`
+
+| Prefix ของ controller | Route ภายใน    | กลุ่มของ model   |
+| ----------------- | -------------- | ------------- |
+| `/greet`          | `POST /`       | `Post`        |
+| `/user`           | `GET /:id`     | `ByIdGet`     |
+| ไม่มี              | `GET /:userId` | `ByUserIdGet` |
+
+#### จัดกลุ่มตามประเภทของ schema
+- ตั้งชื่อ property ของ schema แต่ละตัวแบบ PascalCase เช่น `Body`, `Params`, `Query` หรือ `Response`
+- export type ที่มีชื่อเดียวกับกลุ่ม schema แต่ละกลุ่มด้วย `UnwrapModels<typeof Group>`
+
+```ts title="src/routes/user/model.ts"
+import { t, type UnwrapModels } from 'elysia'
+
+export const ByIdGet = {
+    Params: t.Object({
+        id: t.String({ format: 'uuid' })
+    }),
+    Response: {
+        200: t.Object({
+            id: t.String({ format: 'uuid' }),
+            name: t.String()
+        }),
+        404: t.Object({
+            type: t.String(),
+            code: t.Literal('USER_NOT_FOUND'),
+            title: t.String(),
+            status: t.Literal(404),
+            detail: t.String()
+        })
+    }
+}
+
+export type ByIdGet = UnwrapModels<typeof ByIdGet>
+```
+
+#### การใช้งาน
+
+- import ไฟล์เป็น `import * as UserModel from './model'` โดยใช้ชื่อโฟลเดอร์ของ route ตามด้วย `Model`
+- เข้าถึง schema ผ่าน namespace นั้น เช่น `UserModel.ByIdGet.Params`
+
+```ts
+import { Elysia } from 'elysia'
+import * as GreetModel from './model'
+
+function greet({ name }: GreetModel.Post['Body']) {
+    return 'Hello ' + name
+}
+
+export const greeting = new Elysia({ prefix: '/greet' })
+    .post('/', {
+        body: GreetModel.Post.Body
+    }, ({ body }) => greet(body))
+```
+
+วิธีนี้ทำให้ทุกอย่างรู้จัก type และไม่ต้องประกาศ type ซ้ำ
+
+เมื่อ schema ถูกอัปเดต type ของ TypeScript ก็อัปเดตตามโดยอัตโนมัติ service จะถูกตรวจสอบ type เทียบกับ schema นั้น และ Elysia ก็จะตรวจสอบ body ของ request ตอน runtime ด้วย
+
+ข้อควรรู้:
+- การกำหนด type อย่างเดียวไม่ได้ตรวจสอบข้อมูลตอน runtime
+- response schema เป็นตัวเลือกเสริม ใช้เมื่อต้องการข้อตกลงที่เข้มงวดสำหรับ response (ถ้ามี schema ให้ Elysia ก็จะ normalize และตรวจสอบ response ให้ด้วย)
+
+schema ที่ใช้แค่ route เดียวก็วางไว้ข้าง route นั้นได้ ใช้ [reference model](/patterns/openapi/#reference-model) ถ้าต้องการลงทะเบียนชื่อของ schema แต่การจะใช้ schema ร่วมกันข้ามไฟล์ไม่จำเป็นต้องลงทะเบียน
+
+### Model กับ database schema
+
+`Database schema` อธิบายว่าแอปพลิเคชันเก็บข้อมูลอย่างไร ส่วน `Model` อธิบายว่า API รับเข้าและส่งออกอะไร ทั้งสองมีหน้าที่ต่างกัน แต่บางครั้งก็ทับซ้อนกัน
+
+ไลบรารีสมัยใหม่อย่าง Prisma และ Drizzle แปลง database schema เป็น TypeBox หรือ Standard Schema ที่นำมาใช้ซ้ำใน Elysia ได้
+
+ดังนั้นแทนที่จะประกาศ schema ซ้ำ คุณนำ database schema มาใช้เป็น model ได้เลย
+
+วิธีนี้ทำให้ Elysia ตรวจสอบข้อมูลตาม database schema แต่ต้องระวังไม่ให้เปิดเผย field ที่เป็นข้อมูลสำคัญ หรือ field ที่ไม่เกี่ยวข้องกับ API
+
+ดูวิธีนำ database schema มาใช้ซ้ำใน Elysia ได้ที่ [Prisma](/integrations/prisma/) และ [Drizzle](/integrations/drizzle/)
+
+## Service
+
+ฟังก์ชันธรรมดาที่รับ input อย่างชัดเจน
+
+service อาจ query ฐานข้อมูลโดยตรง ตรวจสอบความเป็นเจ้าของ ประสานงานกับ service อื่น และรัน transaction เมื่อมีการเขียนหลายครั้งที่ต้องสำเร็จพร้อมกัน คุณไม่จำเป็นต้องมี repository layer เพียงเพื่อครอบการเรียกฐานข้อมูลแต่ละครั้ง
+
+ให้ service เป็นอิสระจาก context ของ request สำหรับ error ที่ API ของคุณเป็นเจ้าของ ให้ใช้ `HTTPError.id(code, status)` เพื่อให้แต่ละ error มีตัวระบุที่คงที่และ HTTP status ที่ชัดเจน
+
+```ts title="src/routes/user/service.ts"
+import { HTTPError } from 'elysia'
+import { db } from '../../libs/db'
+import type * as UserModel from './model'
+
+export class UserNotFound extends HTTPError.id('USER_NOT_FOUND', 404) {}
+
+export async function getUser(id: UserModel.ByIdGet['Params']['id']) {
+    const user = await db.users.findById(id)
+
+    if (!user) return new UserNotFound('User not found')
+
+    return {
+        id: user.id,
+        name: user.name
+    } satisfies UserModel.ByIdGet['Response'][200]
+}
+```
+
+นำ type ที่ derive มาจาก model กลับมาใช้กับพารามิเตอร์และข้อมูลที่ service คืนค่า เหมือนตัวอย่างด้านบน เมื่อ schema เปลี่ยน ข้อตกลงของ service ก็จะอัปเดตตามไปด้วย
+
+### ใช้ custom class แทน status
+
+ถ้า service ของคุณคืน error แบบเดียวกันในหลายจุด ให้ใช้ custom error class แทน `status()` จาก context ของ handler เพราะ class นำกลับมาใช้ซ้ำและขยายต่อได้ และยังให้ตัวระบุที่คงที่สำหรับให้ client ใช้ตรวจสอบ
+
+```ts
+import { HTTPError } from 'elysia'
+import { db } from '../../libs/db'
+
+class UserNotFound extends HTTPError.id('USER_NOT_FOUND', 404) {
+	detail: string
+
+	constructor(public username: string) {
+		super()
+		this.detail = `User ${username} not found`
+	}
+}
+
+function getUser(name: string) {
+	if (!db.users.has(name)) return new UserNotFound(name)
+
+	return db.users.get(name)
+}
+```
+
+`HTTPError.id` จะจัดการ property ที่เกี่ยวกับ HTTP ให้ โดยที่คุณยังควบคุมได้ทั้งหมด ดูรายละเอียดเพิ่มเติมที่ [การจัดการ error](/patterns/error-handling)
+
+แนะนำให้ `return` error เมื่อทำได้ เพื่อให้อนุมาน type ได้ดีกว่า ถ้า throw error ออกไป TypeScript จะอนุมานไม่ได้ และทำให้ Eden กับ OpenAPI Type Gen ได้ type เป็น unknown
+
+:::tip[ทำไม]
+	ถึงเราจะบอกว่า "service ไม่ควรจัดการข้อมูลที่เกี่ยวกับ HTTP" แต่ในกรณีนี้จำเป็นเพื่อให้อนุมาน type ได้แม่นยำ ลองมองว่าทั้ง `status` และ `HTTPError` เป็น type แบบ "Result" ที่ Elysia แปลงเป็น HTTP response ได้
+:::
+
+### เมื่อฟีเจอร์ใหญ่ขึ้น
+
+เมื่อ `service.ts` เริ่มอ่านยาก ให้แยกตามหน้าที่ภายในโฟลเดอร์เดียวกัน
+
+ตัวอย่างเช่น ฟีเจอร์ asset ให้ `service.ts` ทำหน้าที่ประสานงานการประมวลผลภาพ การจัดเก็บไฟล์ metadata และสิทธิ์การเข้าถึง:
+
+<FileTree
+    client:load
+    variant="card"
+    mono
+    dense
+    nodes={[
+        {
+            id: 'src/routes/asset',
+            name: 'src/routes/asset',
+            children: [
+                { id: 'asset/index.ts', name: 'index.ts', meta: 'Controller' },
+                { id: 'asset/model.ts', name: 'model.ts', meta: 'schema ของ request และ response' },
+                { id: 'asset/service.ts', name: 'service.ts', meta: 'ประสานงานการจัดการ asset' },
+                { id: 'asset/image.ts', name: 'image.ts', meta: 'ประมวลผลภาพ' },
+                { id: 'asset/storage.ts', name: 'storage.ts', meta: 'จัดเก็บไฟล์' },
+                { id: 'asset/metadata.ts', name: 'metadata.ts', meta: 'metadata ของ asset' },
+                { id: 'asset/permissions.ts', name: 'permissions.ts', meta: 'กฎการเข้าถึง' }
+            ]
+        }
+    ]}
+    defaultExpanded={['src/routes/asset']}
+    className="not-content my-6"
+/>
+
+## Dependency Injection
+
+Elysia **ไม่ใช่** เฟรมเวิร์กแบบ Dependency Injection แต่ใกล้เคียงกับ **"Context Propagation"** แบบ type-safe มากกว่า หรือพูดในเชิงเทคนิคคือ:
+
+> Elysia คือ composition root ที่มี context พร้อม type ไม่ใช่ container
+
+```ts {15-24}
+import { Elysia } from 'elysia'
+
+class Dependency {
+	doThing() { return 'Hi!' }
+}
+
+class Service {
+	constructor(protected dependency: Dependency) {}
+
+	doSomething() {
+		return this.dependency.doThing()
+	}
+}
+
+new Elysia()
+	.decorate({
+		dependency: new Dependency()
+	})
+	// Singleton, alive for the entire app
+	.decorate((deps) => ({
+		...deps,
+		service: new Service(deps.dependency)
+	}))
+	.get('/', ({ service }) => service.doSomething())  
+```
+
+หรือใช้ `derive` เพื่อสร้าง `Service` ใหม่ในแต่ละ request:
+
+```ts
+new Elysia()
+	.decorate({
+		dependency: new Dependency()
+	})
+	// Per request, alive for each request
+	.derive(({ dependency }) => ({
+		service: new Service(dependency)
+	}))
+	.get('/', ({ service }) => service.doSomething())
+```
+
+- `decorate` ใช้กับ dependency แบบ singleton ที่อยู่ตลอดอายุของแอป
+- `derive` ใช้กับ dependency แบบต่อ request ที่อยู่เฉพาะในแต่ละ request
+
+สิ่งที่ Elysia ไม่ได้ทำให้คือการจัดการ dependency graph คุณต้องส่ง dependency เข้าไปเองอย่างชัดเจน
+
+### การคืนทรัพยากร
+
+ค่าจาก `derive` ที่มี `Symbol.asyncDispose` หรือ `Symbol.dispose` จะถูกปล่อยเมื่อ request ทำงานเสร็จ
+
+```ts
+class Service {
+	constructor(protected dependency: Dependency) {}
+
+	async [Symbol.asyncDispose]() {
+		// Cleanup logic here
+	}
+}
+
+new Elysia()
+	.decorate({ dependency: new Dependency() })
+	.derive(({ dependency }) => ({
+		service: new Service(dependency)
+	}))
+```
+
+จะ dispose เฉพาะสิ่งที่ derive สร้างขึ้น `dependency` เป็น singleton จาก `decorate` จึงยังอยู่ต่อ ส่วน `decorate` และ `state` จะไม่ถูก dispose ให้ปล่อยค่าเหล่านี้ใน `onStop`
+
+ดูรายละเอียดที่ [dispose](/essential/life-cycle/#dispose)
+
+## การทดสอบ
+
+จัดเทสต์แยกตามฟีเจอร์ เช่น `test/user.test.ts`
+
+- ใช้ `Service` เพื่อทดสอบกฎทางธุรกิจโดยไม่ต้องสร้าง HTTP request
+- ใช้ `app.handle(url, RequestInit?)` สำหรับเทสต์ระดับ server/integration
+
+ดูการตั้งค่าเทสต์และตัวอย่าง `.handle()` ได้ที่ [unit testing](/patterns/unit-test/)
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

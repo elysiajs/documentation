@@ -1,0 +1,710 @@
+---
+title: Validation
+description: ตรวจสอบ request และ response ด้วย schema ที่ให้ type ของ TypeScript กับ handler ไปพร้อมกัน
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import { Card } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+
+export const examples = {
+    "body": [
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"name\":\"Elysia\"}",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Elysia\"\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"name\":1}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"/name\"\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"alias\":\"Elysia\"}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "query": [
+        {
+            "method": "GET",
+            "displayPath": "/query?name=Elysia",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Elysia\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?name=1",
+            "response": "HTTP 200\n\n{\n  \"name\": \"1\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?alias=Elysia",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "coercion": [
+        {
+            "method": "GET",
+            "displayPath": "/query?id=1",
+            "response": "HTTP 200\n\n1"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?id=salt",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"/id\"\n}"
+        }
+    ],
+    "params": [
+        {
+            "method": "GET",
+            "displayPath": "/id/1",
+            "response": "HTTP 200\n\n{\n  \"id\": 1\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/id/a",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"params\",\n  \"property\": \"/id\"\n}"
+        }
+    ],
+    "headers": [
+        {
+            "method": "GET",
+            "displayPath": "/headers · Authorization: Bearer 12345",
+            "response": "HTTP 200\n\nBearer 12345"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/headers · no Authorization",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"headers\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "responseStatus": [
+        {
+            "method": "GET",
+            "displayPath": "/response",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Jane Doe\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/response?fail=true",
+            "response": "HTTP 400\n\n{\n  \"error\": \"Something went wrong\"\n}"
+        }
+    ],
+    "guard": [
+        {
+            "method": "GET",
+            "displayPath": "/none",
+            "response": "HTTP 200\n\nhi"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"root\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?name=a",
+            "response": "HTTP 200\n\na"
+        }
+    ],
+    "override": [
+        {
+            "method": "POST",
+            "displayPath": "/age · {\"age\":18}",
+            "response": "HTTP 200\n\n{\n  \"age\": 18\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/age · {\"name\":\"Elysia\"}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"root\"\n}"
+        }
+    ]
+};
+
+export const steps = [
+    {
+        label: 'เริ่มจากพารามิเตอร์',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'เพิ่ม schema',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)`,
+        highlight: [5, 6, 7],
+    },
+    {
+        label: 'ตรวจสอบ field อื่นเพิ่ม',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        }),
+        query: t.Object({
+            name: t.String()
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)`,
+        highlight: [8, 9, 10, 11],
+    },
+    {
+        label: 'ตรวจสอบ response',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        }),
+        query: t.Object({
+            name: t.String()
+        }),
+        response: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)`,
+        highlight: [11, 12, 13, 14],
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Validation</h1>
+
+Elysia รองรับการตรวจสอบข้อมูลด้วย schema แบบ declarative
+
+แค่บอกว่าข้อมูลควรมีหน้าตาแบบไหน ที่เหลือ Elysia จัดการให้
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## เริ่มจากพารามิเตอร์
+
+ถ้าไม่มี schema `/id/:id` จะเก็บค่าเป็น string
+
+- `/id/42` ส่ง `"42"` ให้ handler
+- `/id/hello` ส่ง `"hello"` ให้ handler
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## เพิ่ม schema
+
+เมื่อเพิ่ม `t.Number()` ลงใน schema ของ `params` แล้ว Elysia จะแปลงค่าใน path ที่เป็นตัวเลขและตรวจสอบให้
+
+- `/id/42` ส่งตัวเลข `42` ให้ handler
+- `/id/hello` ไม่ผ่านการตรวจสอบและได้ status `422`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## ตรวจสอบ field อื่นเพิ่ม
+
+เพิ่ม `query` เพื่อบังคับให้ต้องมี query parameter ชื่อ `name` ด้วย
+
+- `/id/42?name=Elysia` คืนค่า `{ id: 42, name: 'Elysia' }`
+- `/id/42` ไม่ผ่านการตรวจสอบเพราะไม่มี `name`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## ตรวจสอบ response
+
+เพิ่ม `response` เพื่อบังคับรูปแบบของข้อมูลที่ handler คืนกลับมา
+
+ถ้า handler คืนค่า field เกินมา Elysia จะตัด field เหล่านั้นออกจาก response ให้ด้วย
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## TypeBox
+
+Elysia มี `t` ซึ่งเป็น named export จาก `elysia` เป็นตัวสร้าง schema เริ่มต้น `t` ครอบ [TypeBox](https://github.com/sinclairzx81/typebox) ไว้และเพิ่มความสามารถสำหรับตรวจสอบ API
+
+schema เหล่านี้ใช้ได้ทั้งตรวจสอบตอน runtime อนุมาน type ของ TypeScript และสร้าง schema สำหรับ [OpenAPI](/plugins/openapi/) คุณไม่ต้องเขียน interface แยกสำหรับข้อมูลชุดเดียวกันอีก
+
+## Standard Schema
+
+คุณใช้ไลบรารีที่ implement [Standard Schema](https://github.com/standard-schema/standard-schema) ได้ด้วย รวมถึงเวอร์ชันที่รองรับของ **Zod**, **Valibot**, ArkType, Effect Schema, Yup และ Joi และใช้สลับกันได้
+
+```ts
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
+
+new Elysia()
+    .get('/id/:id', {
+        params: z.object({
+            id: z.coerce.number()
+        }),
+        query: v.object({
+            name: v.literal('Lilith')
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)
+```
+
+`/id/42?name=Lilith` ผ่านทั้งสอง schema ถ้าต้องการแปลง string จาก URL เป็น type อื่น ให้ใช้ API สำหรับ coerce ของไลบรารีที่คุณเลือก
+
+## ประเภทของ schema
+
+เลือก property ให้ตรงกับข้อมูลที่ต้องการตรวจสอบ:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card id="body-schema" href="#body" title="Body schema">
+
+Body ตรวจสอบ body ของ HTTP request ที่ parse แล้ว เช่น JSON หรือ field ของฟอร์ม
+
+</Card>
+
+<Card id="query-schema" href="#query" title="Query schema">
+
+Query ตรวจสอบ query string ที่อยู่หลัง `?` ใน URL
+
+</Card>
+
+<Card id="params-schema" href="#params" title="Params schema">
+
+Params ตรวจสอบค่าที่ดึงมาจาก path ของ route
+
+</Card>
+
+<Card id="headers-schema" href="#headers" title="Headers schema">
+
+Headers ตรวจสอบ header ของ request ที่เข้ามา
+
+</Card>
+
+<Card id="cookie-schema" href="/patterns/cookie/#cookie-schema" title="Cookie schema">
+
+Cookie ตรวจสอบค่า cookie ที่เข้ามา
+
+</Card>
+
+<Card id="response-schema" href="#response" title="Response schema">
+
+Response ตรวจสอบข้อมูลที่ handler คืนกลับมา
+
+</Card>
+
+</div>
+
+ใส่ property เหล่านี้ไว้ใน argument ตัวที่สองของ route ก่อน handler:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        query: t.Object({ name: t.String() }),
+        params: t.Object({ id: t.Number() })
+    }, () => 'Hello World!')
+    .listen(3000)
+```
+
+| URL | Query schema | Params schema |
+| --- | --- | --- |
+| `/id/a` | ไม่ผ่าน | ไม่ผ่าน |
+| `/id/1?name=Elysia` | ผ่าน | ผ่าน |
+| `/id/1?alias=Elysia` | ไม่ผ่าน | ผ่าน |
+| `/id/a?name=Elysia` | ผ่าน | ไม่ผ่าน |
+| `/id/a?alias=Elysia` | ไม่ผ่าน | ไม่ผ่าน |
+
+handler จะทำงานได้ก็ต่อเมื่อผ่านทั้งสอง schema ตารางนี้แสดงผลการตรวจสอบแต่ละส่วนแยกกัน ส่วน error response อาจรายงานเฉพาะส่วนแรกที่ไม่ผ่าน
+
+## Body
+
+body ของ [HTTP Message](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages) ซึ่งอาจเป็น JSON, field ของฟอร์ม หรือไฟล์
+
+<CodePlayground examples={examples.body}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/body', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => body)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| JSON body | Validation |
+| --- | --- |
+| `{ "name": "Elysia" }` | ผ่าน |
+| `{ "name": 1 }` | ไม่ผ่าน |
+| `{ "alias": "Elysia" }` | ไม่ผ่าน |
+| ไม่มี body | ไม่ผ่าน |
+
+### File
+
+ใช้ [t.File()](/patterns/typebox/#file) สำหรับไฟล์เดียว และ [t.Files()](/patterns/typebox/#files) สำหรับหลายไฟล์
+
+การตรวจสอบ `type` ต้องใช้ตัวตรวจจับชนิดไฟล์ ให้ติดตั้ง `file-type` แล้วลงทะเบียนครั้งเดียวด้วย `setFileTypeDetector` ถ้าไม่มีตัวตรวจจับ ไฟล์ทุกไฟล์ที่ตรวจสอบด้วย `type` จะไม่ผ่าน
+
+```ts
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+    .post('/body', {
+        body: t.Object({
+            file: t.File({ type: 'image/*' }),
+            multipleFiles: t.Files()
+        })
+    }, ({ body }) => ({
+        file: body.file.name,
+        count: body.multipleFiles.length
+    }))
+    .listen(3000)
+```
+
+### File (Standard Schema)
+
+ไลบรารี Standard Schema ไม่ได้รับการตรวจสอบไฟล์ของ Elysia มาโดยอัตโนมัติ ให้เพิ่ม refinement ด้วย helper `fileType()` แบบ asynchronous และระบุให้ parse แบบ multipart อย่างชัดเจน:
+
+```ts
+import { Elysia, fileType, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+import { z } from 'zod'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+    .post('/body', {
+        parse: 'formdata',
+        body: z.object({
+            file: z.file().refine(
+                (file) => fileType(file, 'image/jpeg'),
+                'Expected a JPEG file'
+            )
+        })
+    }, ({ body }) => ({ name: body.file.name }))
+```
+
+ตัวตรวจจับที่ลงทะเบียนไว้จะตรวจสอบระดับไบต์ให้ในกรณีนี้ด้วย validator ที่อ่านแค่ `file.type` ไม่ได้ยืนยันว่าไฟล์ที่อัปโหลดมีเนื้อหาเป็นอะไรจริง ๆ
+
+## Query
+
+query parameter คือส่วนที่ตามหลัง `?` ใน URL อธิบายรูปแบบของมันด้วย object schema:
+
+<CodePlayground examples={examples.query}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({ name: t.String() })
+    }, ({ query }) => query)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| Request | Validation |
+| --- | --- |
+| `/query?name=Elysia` | ผ่าน |
+| `/query?name=1` | ผ่าน โดย `name` เป็น string |
+| `/query?alias=Elysia` | ไม่ผ่าน |
+| `/query?name=ElysiaJS&alias=Elysia` | ผ่าน |
+| `/query` | ไม่ผ่าน |
+
+<span id="specs-1" />
+
+### Coercion
+
+Elysia แปลงค่าตาม TypeBox schema ที่ใช้กับ `query` ได้ให้อัตโนมัติ เช่น `t.Number()` รับ string ที่เป็นตัวเลขแล้วส่งให้ handler เป็น number:
+
+<CodePlayground examples={examples.coercion}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({ id: t.Number() })
+    }, ({ query: { id } }) => id)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| Request | ผลลัพธ์ |
+| --- | --- |
+| `/query?id=1` | ตัวเลข `1` |
+| `/query?id=salt` | validation error, status `422` |
+
+ดูการแปลงค่าอัตโนมัติแบบอื่นได้ที่ [พฤติกรรมของ type ใน Elysia](/patterns/typebox/#elysia-behavior)
+
+### Array
+
+ประกาศ array schema เพื่อตรวจสอบค่าแต่ละตัว และรองรับค่าที่คั่นด้วยเครื่องหมายจุลภาค:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({
+            name: t.Array(t.String()),
+            squad: t.String()
+        })
+    }, ({ query }) => query)
+    .listen(3000)
+```
+
+ทั้งสอง request ด้านล่างจะได้ผลเป็น `{ name: ['rapi', 'anis', 'neon'], squad: 'counter' }` กับ schema นี้
+
+#### รูปแบบของ nuqs
+
+ใช้เครื่องหมายจุลภาคคั่นค่า ตามรูปแบบ array ของ [nuqs](https://nuqs.47ng.com):
+
+```text
+/query?name=rapi,anis,neon&squad=counter
+```
+
+array schema บอกให้ Elysia แยกค่าของ `name` ถ้าไม่มี schema นี้ ค่าที่คั่นด้วยจุลภาคจะยังเป็น string เหมือนเดิม
+
+#### รูปแบบของ HTML form
+
+ใส่ key ซ้ำเพื่อส่งหลายค่า เหมือนกับที่ HTML form ทำกับ input ที่มีชื่อเดียวกัน:
+
+```text
+/query?name=rapi&name=anis&name=neon&squad=counter
+```
+
+ประกาศ array schema เพื่อเก็บและตรวจสอบค่าที่ซ้ำกันทุกตัว ถ้าไม่มี property ของ query ทั่วไปจะเป็น string ตัวเดียว และ key ที่ซ้ำจะเก็บแค่ค่าสุดท้าย
+
+## Params
+
+path parameter ดึงค่าจาก route เช่น `/id/:id` ใช้ object schema เพื่อตรวจสอบ field ที่ดึงมาได้:
+
+<CodePlayground examples={examples.params}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({ id: t.Number() })
+    }, ({ params }) => params)
+```
+
+</CodePlayground>
+
+| Request | ผลลัพธ์ |
+| --- | --- |
+| `/id/1` | `{ "id": 1 }` |
+| `/id/a` | validation error, status `422` |
+
+## Headers
+
+ใช้ `headers` เพื่อบังคับให้ request ต้องมี header ที่กำหนด:
+
+<CodePlayground examples={examples.headers}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/headers', {
+        headers: t.Object({ authorization: t.String() })
+    }, ({ headers }) => headers.authorization)
+```
+
+</CodePlayground>
+
+schema ของ header ยอมให้มี property อื่นเพิ่มได้โดยค่าเริ่มต้น client ยังส่ง header อย่าง `accept` มาได้ ขอแค่ field ที่ประกาศไว้ผ่าน schema ของมัน
+
+ถ้าต้องการปฏิเสธ header ที่เกินมาทั้งหมด ให้ตั้งค่า `additionalProperties: false`:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/headers', {
+        headers: t.Object(
+            { authorization: t.String() },
+            { additionalProperties: false }
+        )
+    }, ({ headers }) => headers.authorization)
+```
+
+## Response
+
+ใช้ `response` เพื่อตรวจสอบข้อมูลที่ handler คืนกลับมา:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/response', {
+        response: t.Object({ name: t.String() })
+    }, () => ({ name: 'Jane Doe (ZZZ)' }))
+```
+
+TypeScript จะตรวจสอบ type ของค่าที่ handler คืน และ Elysia จะตรวจสอบ response ตอน runtime
+
+### Response แยกตาม status
+
+กำหนด schema ให้แต่ละ status code เมื่อผลลัพธ์แต่ละแบบมีรูปแบบ response ต่างกัน:
+
+<CodePlayground examples={examples.responseStatus}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/response', {
+        response: {
+            200: t.Object({ name: t.String() }),
+            400: t.Object({ error: t.String() })
+        }
+    }, ({ query, status }) => {
+        if (query.fail === 'true')
+            return status(400, { error: 'Something went wrong' })
+
+        return { name: 'Jane Doe (ZZZ)' }
+    })
+```
+
+</CodePlayground>
+
+`/response` คืนค่าตามรูปแบบของ `200` ส่วน `/response?fail=true` คืนค่าตามรูปแบบของ `400` ใช้ `status()` เพื่อรักษาความสัมพันธ์ระหว่าง status code กับ type ของ body
+
+## Validation error
+
+ปรับแต่ง[ข้อความ validation](/patterns/error-handling/#schema-messages) ของ schema จัดการเมื่อไม่ผ่านด้วย [error hook](/patterns/error-handling/#error-hook) หรือดู[รายการ error](/patterns/error-handling/#error-list)
+
+สำหรับ schema ที่มีชื่อและใช้ร่วมกันระหว่าง route และเอกสาร OpenAPI ดู [reference model](/patterns/openapi/#reference-model)
+
+## TypeScript
+
+ใช้ `UnwrapSchema` เพื่อดึง type ของ TypeScript ที่อนุมานได้จาก schema:
+
+```ts
+import { t, type UnwrapSchema } from 'elysia'
+
+const MyType = t.Object({
+    hello: t.Literal('Elysia')
+})
+
+type MyType = UnwrapSchema<typeof MyType>
+```
+
+schema หนึ่งตัวให้ได้ทั้ง validation ตอน runtime, coercion, type ของ TypeScript และ metadata ของ OpenAPI ประกาศไว้ที่เดียวแล้วให้ทุกจุดที่ใช้อ้างอิงตามนั้น
+
+## Guard
+
+ใช้ `.guard()` เพื่อใช้ schema กับหลาย route มันจะมีผลกับ route ที่ลงทะเบียนหลังจากนั้น:
+
+<CodePlayground examples={examples.guard}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/none', () => 'hi')
+    .guard({
+        query: t.Object({ name: t.String() })
+    })
+    .get('/query', ({ query: { name } }) => name)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| Request | ผลลัพธ์ |
+| --- | --- |
+| `/none` | `hi` |
+| `/none?name=a` | `hi` |
+| `/query` | validation error, status `422` |
+| `/query?name=a` | `a` |
+
+สำหรับ property ของ schema ตัวเดียวกัน guard ที่อยู่ทีหลังจะมีผลเหนือกว่า guard ก่อนหน้า และ schema ของ route เองจะมีผลเหนือกว่า schema ที่รับมาจาก guard
+
+### ประเภทของ guard schema
+
+guard จัดการ schema ที่ซ้อนทับกันได้สองแบบ
+
+#### Override (ค่าเริ่มต้น)
+
+schema ที่อยู่ใกล้กว่าจะแทนที่ schema ที่รับมาสำหรับ property นั้น เช่น `body` ของ route จะแทนที่ `body` ของ guard โดยไม่รวม field เข้าด้วยกัน
+
+<CodePlayground examples={examples.override}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({ body: t.Object({ name: t.String() }) })
+    .post('/age', {
+        body: t.Object({ age: t.Number() })
+    }, ({ body }) => body)
+```
+
+</CodePlayground>
+
+`{ "age": 18 }` ผ่าน `/age` ได้แม้ไม่มี field `name`
+
+#### Merge
+
+ตั้งค่า `schema: 'merge'` เมื่อต้องผ่านทั้ง schema ของ guard และของ route:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        schema: 'merge',
+        response: t.Object({ title: t.String() })
+    })
+    .get('/article', {
+        response: t.Object({ title: t.String(), author: t.String() })
+    }, () => ({ title: 'Hello Elysia', author: 'Nagisa' }))
+```
+
+response ต้องผ่านทั้ง schema ของ guard และของ route การ merge จะรวมเงื่อนไขของทั้งสองเข้าด้วยกัน แทนที่จะแทนที่ schema ที่รับมา
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

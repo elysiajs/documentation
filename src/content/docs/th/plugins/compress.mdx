@@ -1,0 +1,136 @@
+---
+title: ปลั๊กอิน Compress
+description: เอกสารอ้างอิงและตัวอย่างของปลั๊กอิน Compress
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro'
+import '../../../../styles/routing.css'
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ปลั๊กอิน Compress</h1>
+
+ปลั๊กอิน [`@elysia/compress`](https://github.com/elysiajs/elysia-compress) อย่างเป็นทางการใช้บีบอัด HTTP response ที่เข้าเงื่อนไข โดยเลือก encoding จาก header `Accept-Encoding` ของ request ส่วน codec ที่ใช้ได้ขึ้นอยู่กับ runtime
+
+## การติดตั้ง
+
+```bash
+bun add @elysia/compress@rc
+```
+
+## การใช้งานพื้นฐาน
+
+ลงทะเบียน `compress` ไว้ก่อน route ที่จะใช้งาน:
+
+```ts
+import { Elysia } from 'elysia'
+import { compress } from '@elysia/compress'
+
+new Elysia()
+	.use(compress())
+	.get('/', () => 'Hello Elysia! '.repeat(100))
+	.listen(3000)
+```
+
+โดยค่าเริ่มต้น ปลั๊กอินใช้เกณฑ์ขั้นต่ำ 1,024 ไบต์สำหรับ response ที่รู้ความยาวและ response ที่ถูกบัฟเฟอร์ไว้ response ต้องผ่านการตรวจสอบ media type ด้วย ถ้า client ไม่รับ encoding ที่มีให้ ปลั๊กอินจะคืน response โดยไม่บีบอัด
+
+## ควบคุมราย route
+
+ตัวเลือก `compress` ของ route อยู่ใน argument ของ hook ก่อน handler ปิดการบีบอัดเฉพาะ route เดียวโดยที่ route อื่นยังใช้พฤติกรรมเริ่มต้นได้แบบนี้:
+
+```ts
+new Elysia()
+	.use(compress())
+	.get('/compressed', () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', { compress: false }, () => 'Hello Elysia! '.repeat(100))
+```
+
+ตั้ง `default` เป็น `false` เพื่อบังคับให้แต่ละ route ต้องเลือกเปิดเอง:
+
+```ts
+new Elysia()
+	.use(compress({ default: false }))
+	.get('/compressed', { compress: true }, () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', () => 'Hello Elysia! '.repeat(100))
+```
+
+route ที่เลือกเปิดแล้วยังต้องเป็นไปตาม media type, เกณฑ์ขั้นต่ำ, การเลือก encoding และเงื่อนไขการข้ามที่ตั้งค่าไว้
+
+## ตัวเลือก
+
+```ts
+new Elysia().use(
+	compress({
+		encodings: ['gzip', 'deflate'],
+		threshold: 2048,
+		options: {
+			gzip: { level: 6 }
+		}
+	})
+)
+```
+
+| ตัวเลือก      | ค่าเริ่มต้น                             | คำอธิบาย                                                                                                                                                          |
+| ----------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default`   | `true`                              | บีบอัดทุก route ยกเว้น route ที่ตั้ง `compress: false` ตั้งเป็น `false` เพื่อบังคับให้ต้องใช้ `compress: true`                                                                |
+| `encodings` | `['br', 'zstd', 'gzip', 'deflate']` | กำหนดลำดับความต้องการของเซิร์ฟเวอร์ ปลั๊กอินจะตัด codec ที่ runtime ไม่รองรับออก ค่า quality ของ client มีผลก่อน และใช้ลำดับของเซิร์ฟเวอร์ตัดสินเมื่อเท่ากัน |
+| `threshold` | `1024`                              | กำหนดจำนวนไบต์ขั้นต่ำสำหรับ response ที่รู้ความยาวและ response ที่ถูกบัฟเฟอร์ไว้                                                                            |
+| `types`     | predicate ที่มีมาให้                  | คืนค่า `true` สำหรับ media type ที่ปลั๊กอินบีบอัดได้ predicate จะได้รับ media type ตัวพิมพ์เล็กที่ไม่มีพารามิเตอร์ และจะแทนที่ predicate ที่มีมาให้    |
+| `stream`    | `true`                              | บีบอัด response ที่มี `Transfer-Encoding: chunked` ตั้งเป็น `false` เพื่อไม่บีบอัด response เหล่านั้น                                                |
+| `options`   | `{}`                                | กำหนดตัวเลือกสำหรับ `br`, `zstd`, `gzip` หรือ `deflate` โดย Brotli และ Zstandard รับพารามิเตอร์ของ codec ส่วน `gzip` และ deflate รับตัวเลือกของ zlib เช่น `level`      |
+
+predicate `types` ที่มีมาให้จะถือว่า media type เหล่านี้บีบอัดได้:
+
+- `text/*`
+- `application/json`
+- media type ที่ลงท้ายด้วย `+json`
+
+ปลั๊กอินจะไม่บีบอัด `text/event-stream` เสมอ
+
+เกณฑ์ขั้นต่ำใช้กับ `Content-Length` ที่ประกาศไว้หรือ body ที่ถูกบัฟเฟอร์ไว้ response แบบ chunked ที่ไม่รู้ความยาวอาจเริ่มบีบอัดก่อนที่ปลั๊กอินจะรู้ขนาดสุดท้าย
+
+## Codec ที่ runtime รองรับ
+
+runtime เป็นตัวกำหนดว่าปลั๊กอินใช้ codec ไหนได้ ปลั๊กอินจะใช้ Brotli, gzip และ deflate เมื่อ runtime มี zlib codec ที่ตรงกันและมี Web stream bridge ส่วน Zstandard ก็ต้องมี zlib codec ที่ตรงกันเช่นกัน ถ้าไม่มี zlib ทาง Web API `CompressionStream` จะให้ gzip และ deflate ได้
+
+fallback ผ่าน `CompressionStream` จะไม่ใช้ `options` ของ gzip หรือ deflate ที่กำหนดเอง อย่าสันนิษฐานว่าทุก runtime รองรับครบทั้งสี่ encoding
+
+## เมื่อไรที่ไม่บีบอัด
+
+ปลั๊กอินจะไม่บีบอัด response เมื่อเข้าเงื่อนไขข้อใดข้อหนึ่งต่อไปนี้:
+
+- method ของ request คือ `HEAD`
+- status คือ `204`, `205`, `206` หรือ `304`
+- response มี `Content-Encoding` อยู่แล้ว
+- `Cache-Control` มี `no-transform`
+- response ไม่มี body หรือใช้ `text/event-stream`
+- predicate `types` ไม่รับ media type นั้น
+- body ที่รู้ขนาดหรือถูกบัฟเฟอร์ไว้มีขนาดเล็กกว่า `threshold`
+- response เป็นแบบ chunked และ `stream` เป็น `false`
+
+## Header ของ response
+
+response ที่ถูกบีบอัดจะได้ `Content-Encoding` และมี `Accept-Encoding` อยู่ใน `Vary` ปลั๊กอินจะลบ `Content-Length`, `Content-Range`, `Accept-Ranges` และ `Transfer-Encoding` ออก เพราะค่าเหล่านั้นอธิบาย response ก่อนบีบอัด และยังเปลี่ยน `ETag` แบบ strong เป็น `ETag` แบบ weak ด้วย
+
+ถ้า response ที่เข้าเงื่อนไขไม่มี encoding ที่ client รับได้ response จะไม่ถูกบีบอัด และมี `Accept-Encoding` อยู่ใน `Vary`
+
+## ป้องกัน response ที่มีข้อมูลลับ
+
+การบีบอัดอาจทำให้ข้อมูลลับรั่วไหลผ่านการโจมตีแบบ BREACH ที่อาศัยขนาดของ response เมื่อ response เดียวมีทั้งข้อมูลลับและ input ที่ผู้โจมตีควบคุมได้ ให้เพิ่ม `no-transform` ให้ response นั้น:
+
+```ts
+app.get('/secret', ({ query, set }) => {
+	set.headers['cache-control'] = 'private, no-transform'
+
+	return { echo: query.q, token: session.token }
+})
+```
+
+ปลั๊กอินจะตรวจเจอ `no-transform` และคืน response โดยไม่บีบอัด
+
+</div>
+</InteractiveDocLayout>
+</div>

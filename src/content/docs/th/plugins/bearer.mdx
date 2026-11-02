@@ -1,0 +1,50 @@
+---
+title: ปลั๊กอิน Bearer
+description: เอกสารอ้างอิงและตัวอย่างของปลั๊กอิน Bearer
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ปลั๊กอิน Bearer</h1>
+
+ปลั๊กอินของ [elysia](https://github.com/elysiajs/elysia) สำหรับดึง Bearer token
+
+ติดตั้งด้วยคำสั่ง:
+```bash
+bun add @elysia/bearer@rc
+```
+
+จากนั้นนำไปใช้:
+```ts
+import { Elysia } from 'elysia'
+import { bearer } from '@elysia/bearer'
+
+const app = new Elysia()
+    .use(bearer())
+    .get('/sign', {
+        beforeHandle({ bearer, set, status }) {
+            if (!bearer) {
+                set.headers[
+                    'WWW-Authenticate'
+                ] = `Bearer realm="sign"`
+
+                return status(401, 'Unauthorized')
+            }
+        }
+    }, ({ bearer }) => bearer)
+    .listen(3000)
+```
+
+ปลั๊กอินนี้ใช้ดึง Bearer token ตามที่ระบุไว้ใน [RFC6750](https://www.rfc-editor.org/rfc/rfc6750#section-2)
+
+ปลั๊กอินนี้แค่ดึง token ออกมา ไม่ได้ทำ authentication ให้ request หรือตรวจสอบความถูกต้องของ token คุณต้องเพิ่มการตรวจสอบเหล่านั้นในแอปพลิเคชันเอง
+
+</div>
+</InteractiveDocLayout>
+</div>

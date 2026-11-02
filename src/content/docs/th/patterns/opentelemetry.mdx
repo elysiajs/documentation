@@ -1,0 +1,240 @@
+---
+title: OpenTelemetry
+description: บันทึก span ของ request ส่งออก trace และติดตั้ง instrumentation ให้แอปพลิเคชัน Elysia
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">OpenTelemetry</h1>
+
+ใช้ปลั๊กอิน OpenTelemetry ของ Elysia v2 เพื่อบันทึก span ของ request และส่งออกไปยัง tracing backend ตัวอย่างในหน้านี้ใช้ API ของปลั๊กอิน v2 ไม่ใช่ integration แบบเก่าของ v1
+
+```bash
+bun add @elysia/opentelemetry@rc
+```
+
+ลงทะเบียนปลั๊กอินในแอปพลิเคชันของคุณ:
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+new Elysia()
+	.use(opentelemetry())
+```
+
+![การแสดงผล OpenTelemetry ผ่าน Axiom](/assets/axiom.webp)
+
+ทำไมต้องใช้ OpenTelemetry กับ Elysia?
+- ลงทะเบียนปลั๊กอินครั้งเดียว
+- ชื่อ span คือชื่อฟังก์ชัน
+- จัดกลุ่ม lifecycle event ที่เกี่ยวข้องไว้ด้วยกัน
+- ครอบโค้ดเพื่อบันทึกเฉพาะบางส่วนได้
+- รองรับ server-sent events และ response streaming
+- ใช้ร่วมกับไลบรารีที่รองรับ OpenTelemetry ได้ทุกตัว
+
+คุณส่งข้อมูล telemetry ไปยัง Jaeger, Zipkin, New Relic, Axiom หรือ backend อื่นที่รองรับ OpenTelemetry ได้
+
+### ส่งออกข้อมูล OpenTelemetry
+เราส่งข้อมูล OpenTelemetry ไปยัง backend ใดก็ได้ที่รองรับ OpenTelemetry protocol
+
+นี่คือตัวอย่างการส่ง telemetry ไปยัง [Axiom](https://axiom.co)
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
+
+new Elysia().use(
+	opentelemetry({
+		spanProcessors: [
+			new BatchSpanProcessor(
+				new OTLPTraceExporter({
+					url: 'https://api.axiom.co/v1/traces',
+					headers: {
+						Authorization: `Bearer ${Bun.env.AXIOM_TOKEN}`,
+						'X-Axiom-Dataset': Bun.env.AXIOM_DATASET
+					}
+				})
+			)
+		]
+	})
+)
+```
+
+## OpenTelemetry SDK
+
+Elysia OpenTelemetry มีไว้ใช้ OpenTelemetry กับเซิร์ฟเวอร์ Elysia เท่านั้น
+
+คุณยังใช้ OpenTelemetry SDK ได้ตามปกติ ถ้า span ทำงานอยู่ภายใต้ request span ของ Elysia มันจะไปปรากฏใน trace ของ Elysia ให้อัตโนมัติ
+
+ใช้ utility `getTracer` และ `record` ของปลั๊กอินเมื่อต้องการเพิ่ม span ครอบงานของคุณเอง ในตัวอย่างถัดไป `db` คือ database client ของแอปพลิเคชันคุณ
+
+```ts
+import { Elysia } from 'elysia'
+import { record } from '@elysia/opentelemetry'
+
+export const plugin = new Elysia().get('/users', () => {
+	return record('database.query', () => {
+		return db.query('SELECT * FROM users')
+	})
+})
+```
+
+## Record utility
+
+`record` เทียบเท่ากับ `startActiveSpan` ของ OpenTelemetry แต่จะปิด span และเก็บ exception ให้อัตโนมัติ
+
+ลองมอง `record` เป็นป้ายชื่อของโค้ดคุณที่จะแสดงใน trace
+
+### เตรียมโค้ดให้พร้อมสำหรับ observability
+
+Elysia OpenTelemetry จัดกลุ่มงานใน lifecycle และใช้**ชื่อฟังก์ชัน**ของแต่ละ hook เป็นชื่อ span ในที่นี้ `getProfile` คือฟังก์ชันค้นหาโปรไฟล์ในแอปพลิเคชันของคุณ
+
+ถึงเวลา**ตั้งชื่อฟังก์ชัน**ของคุณแล้ว
+
+ถ้า hook handler เป็น arrow function คุณอาจ refactor ให้เป็นฟังก์ชันที่มีชื่อ เพื่อให้อ่าน trace ได้ง่ายขึ้น ไม่อย่างนั้น span ใน trace จะมีชื่อเป็น `anonymous`
+
+```ts
+const bad = new Elysia()
+	// Note: span name will be anonymous
+	.derive(async ({ cookie: { session } }) => {
+		return {
+			user: await getProfile(session.value)
+		}
+	})
+
+const good = new Elysia()
+	// Yes span name will be loadProfile
+	.derive(async function loadProfile({ cookie: { session } }) {
+		return {
+			user: await getProfile(session.value)
+		}
+	})
+```
+
+## getCurrentSpan
+
+`getCurrentSpan` คือ utility สำหรับดึง span ปัจจุบันของ request เมื่ออยู่นอก handler
+
+```ts
+import { getCurrentSpan } from '@elysia/opentelemetry'
+
+function utility() {
+	const span = getCurrentSpan()
+	span?.setAttributes({
+		'custom.attribute': 'value'
+	})
+}
+```
+
+utility นี้ใช้ OpenTelemetry context ที่ active อยู่ เมื่ออยู่นอก request หรือ span ที่ active อาจคืนค่าเป็น `undefined` จึงควรตรวจสอบก่อนใช้งาน
+
+## setAttributes
+
+`setAttributes` คือ utility สำหรับกำหนด attribute ให้ span ปัจจุบัน
+
+```ts
+import { setAttributes } from '@elysia/opentelemetry'
+
+function utility() {
+	setAttributes({
+		'custom.attribute': 'value'
+	})
+}
+```
+
+นี่คือ syntax sugar ของ `getCurrentSpan()?.setAttributes` จึงไม่ทำอะไรเลยเมื่ออยู่นอก span ที่ active
+
+## การตั้งค่า
+
+ดูตัวเลือกและคำอธิบายการตั้งค่าได้ที่ [ปลั๊กอิน opentelemetry](/plugins/opentelemetry/)
+
+## Instrumentations 
+
+ไลบรารี instrumentation หลายตัว**ต้อง**ให้ SDK ทำงานก่อน import โมดูล
+
+ตัวอย่างเช่น ถ้าจะใช้ `PgInstrumentation` ต้องให้ `OpenTelemetry SDK` ทำงานก่อน import โมดูล `pg`
+
+บน Bun ทำได้ด้วยการ
+
+1. แยกการตั้งค่า OpenTelemetry ไปไว้อีกไฟล์
+2. สร้าง `bunfig.toml` เพื่อ preload ไฟล์ตั้งค่า OpenTelemetry
+
+มาสร้างไฟล์ใหม่ที่ `src/instrumentation.ts` กัน
+
+```ts
+import { opentelemetry } from '@elysia/opentelemetry'
+import { PgInstrumentation } from '@opentelemetry/instrumentation-pg'
+
+export const instrumentation = opentelemetry({
+	instrumentations: [new PgInstrumentation()]
+})
+```
+
+จากนั้นนำปลั๊กอิน `instrumentation` นี้ไปใช้กับ instance หลักใน `src/index.ts`
+
+```ts
+import { Elysia } from 'elysia'
+import { instrumentation } from './instrumentation.ts'
+
+new Elysia().use(instrumentation).listen(3000)
+```
+
+แล้วสร้าง `bunfig.toml` ที่มีเนื้อหาดังนี้:
+
+`bunfig.toml`
+
+```toml
+preload = ["./src/instrumentation.ts"]
+```
+
+ไฟล์นี้บอกให้ Bun โหลดและตั้งค่า `instrumentation` ก่อนรัน `src/index.ts` เพื่อให้ OpenTelemetry ตั้งค่าตามที่ต้องการได้
+
+### Deploy ขึ้น production 
+ถ้าคุณใช้ `bun build` หรือ bundler อื่น OpenTelemetry อาศัยการ monkey-patch `node_modules/<library>` เพื่อให้ instrumentation ทำงานได้ถูกต้อง ต้องระบุไลบรารีที่จะ instrument เป็น external module เพื่อไม่ให้ถูก bundle รวมเข้าไป
+
+ตัวอย่างเช่น ถ้าใช้ `@opentelemetry/instrumentation-pg` เพื่อ instrument ไลบรารี `pg` ต้องไม่ bundle `pg` และต้องแน่ใจว่าโค้ด import มาจาก `node_modules/pg`
+
+วิธีทำคือระบุ `pg` เป็น external module ด้วย `--external pg`
+```bash
+bun build --compile --external pg --outfile server src/index.ts
+```
+
+คำสั่งนี้บอก Bun ไม่ให้ bundle `pg` ลงในไฟล์ผลลัพธ์ ไลบรารีจะถูก import จากไดเรกทอรี **node_modules** ตอน runtime ดังนั้นบนเซิร์ฟเวอร์ production คุณต้องเก็บไดเรกทอรี **node_modules** ไว้ด้วย
+
+แนะนำให้ระบุแพ็กเกจที่ต้องมีบนเซิร์ฟเวอร์ production ไว้เป็น **dependencies** ใน **package.json** และใช้ `bun install --production` เพื่อติดตั้งเฉพาะ dependency สำหรับ production
+
+แพ็กเกจทุกตัวที่ปล่อยเป็น external ต้องอยู่ใน `dependencies`:
+
+```json
+{
+	"dependencies": {
+		"pg": "^8.15.6"
+	},
+	"devDependencies": {
+		"@elysia/opentelemetry": "2.0.0-beta.2",
+		"@opentelemetry/instrumentation-pg": "^0.52.0",
+		"@types/pg": "^8.11.14",
+		"elysia": "2.0.0-beta.32"
+	}
+}
+```
+
+จากนั้นหลังจากรันคำสั่ง build แล้ว ให้รันคำสั่งนี้บนเซิร์ฟเวอร์ production:
+```bash
+bun install --production
+```
+
+ถ้าไดเรกทอรี node_modules ยังมี development dependency อยู่ ให้ลบไดเรกทอรี node_modules ทิ้งแล้วติดตั้งเฉพาะ dependency สำหรับ production ใหม่อีกครั้ง
+
+</div>
+</InteractiveDocLayout>
+</div>

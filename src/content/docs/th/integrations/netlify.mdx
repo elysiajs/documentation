@@ -1,0 +1,58 @@
+---
+title: "ใช้งานร่วมกับ Netlify Edge Function"
+description: "Elysia สร้างบน Request/Response แบบ Web Standard เราจึงรัน Elysia บน Netlify Edge Function ได้"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ใช้งานร่วมกับ Netlify Edge Function</h1>
+
+[Netlify Edge Functions](https://docs.netlify.com/build/edge-functions/overview/) ทำงานบน [Deno](/integrations/deno) ซึ่งเป็นหนึ่งใน runtime ที่ Elysia รองรับ เพราะ Elysia สร้างบน Web Standard
+
+Netlify Edge Functions ต้องใช้ไดเรกทอรีเฉพาะในการรันฟังก์ชัน ค่าเริ่มต้นคือ **\<directory\>/netlify/edge-functions**
+
+ถ้าต้องการสร้างฟังก์ชันที่ **/hello** ให้สร้างไฟล์ที่ `netlify/edge-functions/hello.ts` แล้ว export ฟังก์ชันที่ส่งต่อ request ไปให้ Elysia
+
+
+```typescript title="netlify/edge-functions/hello.ts"
+import { Elysia } from 'elysia'
+
+export const config = { path: '/hello' }
+
+const app = new Elysia({ prefix: '/hello' })
+	.get('/', () => 'Hello Elysia')
+
+export default (request: Request) => app.handle(request)
+```
+
+
+### รันบนเครื่อง
+ถ้าต้องการทดสอบเซิร์ฟเวอร์ Elysia บน Netlify Edge Functions ในเครื่อง ให้ติดตั้ง [Netlify CLI](https://docs.netlify.com/build/edge-functions/get-started/#test-locally) เพื่อจำลองการเรียกฟังก์ชัน
+
+ติดตั้ง Netlify CLI:
+```bash
+bun add -g netlify-cli
+```
+
+รัน development environment:
+```bash
+netlify dev
+```
+
+ดูข้อมูลเพิ่มเติมได้ที่[เอกสารของ Netlify Edge Functions](https://docs.netlify.com/build/edge-functions)
+
+### pnpm
+ถ้าการตั้งค่า pnpm ของคุณไม่ได้ติดตั้ง peer dependency ให้ ให้เพิ่ม peer ที่ Elysia v2 ต้องใช้อย่างชัดเจน:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

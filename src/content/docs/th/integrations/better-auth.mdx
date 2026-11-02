@@ -1,0 +1,178 @@
+---
+title: "Better Auth"
+description: "เราใช้ @better-auth/cli สร้าง auth schema และ migrate ฐานข้อมูลได้ด้วย"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Better Auth</h1>
+
+Better Auth คือเฟรมเวิร์กสำหรับ authentication (และ authorization) ของ TypeScript ที่ไม่ผูกกับเฟรมเวิร์กใด
+มีฟีเจอร์ครบชุดมาให้ตั้งแต่ต้น และมีระบบนิเวศของปลั๊กอินที่ช่วยให้เพิ่มความสามารถขั้นสูงได้ง่ายขึ้น
+เราแนะนำให้อ่าน[การตั้งค่าพื้นฐานของ Better Auth](https://www.better-auth.com/docs/installation)ก่อนอ่านหน้านี้
+การตั้งค่าพื้นฐานของเราจะมีหน้าตาแบบนี้:
+```ts title="auth.ts"
+import { betterAuth } from 'better-auth'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool()
+})
+```
+## Handler
+หลังจากตั้งค่า instance ของ Better Auth แล้ว เรา mount มันเข้ากับ Elysia ได้ผ่าน [mount](/patterns/mount)
+เราต้อง mount handler เข้ากับ endpoint ของ Elysia
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+const app = new Elysia()
+	.mount(auth.handler)
+	.listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+จากนั้นเราจะเข้าถึง Better Auth ได้ที่ `http://localhost:3000/api/auth`
+### กำหนด endpoint เอง
+เราแนะนำให้กำหนด prefix ของ path เมื่อใช้ [mount](/patterns/mount)
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+
+const app = new Elysia()
+	.mount('/auth', auth.handler)
+	.listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+จากนั้นเราจะเข้าถึง Better Auth ได้ที่ `http://localhost:3000/auth/api/auth`
+แต่ URL นี้ดูซ้ำซ้อน เราจึงเปลี่ยน prefix `/api/auth` เป็นอย่างอื่นใน instance ของ Better Auth ได้
+```ts
+import { betterAuth } from 'better-auth'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool(),
+    basePath: '/api'
+})
+```
+จากนั้นเราจะเข้าถึง Better Auth ได้ที่ `http://localhost:3000/auth/api`
+น่าเสียดายที่เราตั้ง `basePath` ของ instance ของ Better Auth ให้ว่างหรือเป็น `/` ไม่ได้
+## OpenAPI
+Better Auth รองรับ `openapi` ผ่าน `better-auth/plugins`
+แต่ถ้าเราใช้ [@elysia/openapi](/plugins/openapi) อยู่ คุณอาจต้องการดึงเอกสารออกมาจาก instance ของ Better Auth
+เริ่มจากเพิ่มปลั๊กอิน `openAPI` ให้ instance ของ Better Auth:
+```ts title="auth.ts"
+import { betterAuth } from 'better-auth'
+import { openAPI } from 'better-auth/plugins'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool(),
+    plugins: [openAPI()]
+})
+```
+
+:::tip
+
+ต้องมีปลั๊กอิน `openAPI()` จึงจะใช้ `auth.api.generateOpenAPISchema` ได้ ถ้าไม่มีจะเจอ type error: `Property 'generateOpenAPISchema' does not exist`
+
+:::
+
+จากนั้นเราดึง OpenAPI schema ออกมาได้ด้วยโค้ดต่อไปนี้:
+```ts title="auth.ts"
+let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>
+const getSchema = async () => (_schema ??= auth.api.generateOpenAPISchema())
+export const OpenAPI = {
+    getPaths: (prefix = '/api/auth') =>
+        getSchema().then(({ paths }) => {
+            const reference: typeof paths = Object.create(null)
+            for (const path of Object.keys(paths)) {
+                const key = prefix + path
+                reference[key] = paths[path]
+                for (const method of Object.keys(paths[path])) {
+                    const operation = (reference[key] as any)[method]
+                    operation.tags = ['Better Auth']
+                }
+            }
+            return reference
+        }) as Promise<any>,
+    components: getSchema().then(({ components }) => components) as Promise<any>
+} as const
+```
+แล้วนำไปใช้ใน instance ของ Elysia ที่ใช้ `@elysia/openapi`:
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+import { OpenAPI } from './auth'
+const app = new Elysia().use(
+    openapi({
+        documentation: {
+            components: await OpenAPI.components,
+            paths: await OpenAPI.getPaths()
+        }
+    })
+)
+```
+## CORS
+ถ้าต้องการตั้งค่า CORS ให้ใช้ปลั๊กอิน `cors` จาก `@elysia/cors`
+```ts
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+import { auth } from './auth'
+const app = new Elysia()
+    .use(
+        cors({
+            origin: 'http://localhost:3001',
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            credentials: true,
+            allowedHeaders: ['Content-Type', 'Authorization']
+        })
+    )
+    .mount(auth.handler)
+    .listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+## Macro
+คุณใช้ [macro](/patterns/macro/) ร่วมกับ [derive](/patterns/macro#derive) เพื่อเตรียมข้อมูล session และผู้ใช้ไว้ก่อนส่งต่อไปยัง view ได้
+```ts
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+// user middleware (compute user and session and pass to routes)
+const betterAuth = new Elysia({ name: 'better-auth' })
+    .mount(auth.handler)
+    .macro({
+        auth: {
+            async derive({ status, request: { headers } }) {
+                const session = await auth.api.getSession({
+                    headers
+                })
+                if (!session) return status(401, 'Unauthorized')
+                return {
+                    user: session.user,
+                    session: session.session
+                }
+            }
+        }
+    })
+const app = new Elysia()
+    .use(betterAuth)
+    .get('/user', {
+        auth: true
+    }, ({ user }) => user)
+    .listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+วิธีนี้ทำให้คุณเข้าถึง `user` และ `session` ได้ใน route ที่เปิดใช้ `auth: true`
+
+</div>
+</InteractiveDocLayout>
+</div>

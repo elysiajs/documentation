@@ -1,0 +1,206 @@
+---
+title: ปลั๊กอิน HTML
+description: เอกสารอ้างอิงและตัวอย่างของปลั๊กอิน HTML
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ปลั๊กอิน HTML</h1>
+
+ช่วยให้คุณใช้ [JSX](#jsx) และ HTML พร้อม header และการรองรับที่ถูกต้อง
+
+ติดตั้งด้วยคำสั่ง:
+
+```bash
+bun add @elysia/html@rc
+```
+
+จากนั้นนำไปใช้:
+
+```tsx
+import { Elysia } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.get(
+		'/html',
+		() => `
+            <html lang='en'>
+                <head>
+                    <title>Hello World</title>
+                </head>
+                <body>
+                    <h1>Hello World</h1>
+                </body>
+            </html>`
+	)
+	.get('/jsx', () => (
+		<html lang="en">
+			<head>
+				<title>Hello World</title>
+			</head>
+			<body>
+				<h1>Hello World</h1>
+			</body>
+		</html>
+	))
+	.listen(3000)
+```
+
+ปลั๊กอินนี้จะเพิ่ม header `Content-Type: text/html; charset=utf8` ให้ response เพิ่ม `<!doctype html>` และแปลงเป็น object Response ให้อัตโนมัติ
+
+## JSX
+
+Elysia HTML สร้างบน [@kitajs/html](https://github.com/kitajs/html) ซึ่งแปลง JSX เป็น string ตั้งแต่ตอน compile เพื่อให้ได้ประสิทธิภาพสูง
+
+ไฟล์ที่ต้องใช้ JSX ให้ตั้งชื่อลงท้ายด้วย **"x"**:
+
+- .js -> .jsx
+- .ts -> .tsx
+
+ถ้าต้องการลงทะเบียน type ของ TypeScript ให้เพิ่มสิ่งต่อไปนี้ลงใน **tsconfig.json**:
+
+```jsonc
+// tsconfig.json
+{
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "Html.createElement",
+		"jsxFragmentFactory": "Html.Fragment"
+	}
+}
+```
+
+แค่นี้คุณก็ใช้ JSX เป็น template engine ได้แล้ว:
+
+```tsx
+import { Elysia } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.get('/', () => (
+		<html lang="en">
+			<head>
+				<title>Hello World</title>
+			</head>
+			<body>
+				<h1>Hello World</h1>
+			</body>
+		</html>
+	))
+	.listen(3000)
+```
+
+ถ้าเจอ error `Cannot find name 'Html'. Did you mean 'html'?` ต้องเพิ่ม import นี้ลงใน JSX template:
+
+```tsx
+import { Html } from '@elysia/html'
+```
+
+สำคัญคือต้องเขียนเป็นตัวพิมพ์ใหญ่
+
+## XSS
+
+Kita HTML จะ escape ค่าที่มี `safe` กำกับ และ TypeScript plugin ของมันช่วยแจ้งเตือน JSX expression ที่อาจไม่ปลอดภัยได้ระหว่างที่คุณแก้โค้ด
+
+ใช้ attribute `safe` เพื่อ escape ข้อความที่ไม่น่าเชื่อถือก่อนใส่ลงใน HTML:
+
+```tsx
+import { Elysia, t } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.post(
+		'/',
+		{
+			body: t.String()
+		}, ({ body }) => (
+			<html lang="en">
+				<head>
+					<title>Hello World</title>
+				</head>
+				<body>
+					<h1 safe>{body}</h1>
+				</body>
+			</html>
+		)
+	)
+	.listen(3000)
+```
+
+แต่ถ้าสร้างแอปขนาดใหญ่ ควรมี type คอยเตือนเพื่อตรวจหาช่องโหว่ XSS ที่อาจเกิดขึ้นใน codebase
+
+ถ้าต้องการเพิ่ม type ที่คอยเตือน ให้ติดตั้ง:
+
+```sh
+bun add @kitajs/ts-html-plugin
+```
+
+จากนั้นเพิ่มสิ่งต่อไปนี้ลงใน **tsconfig.json**
+
+```jsonc
+// tsconfig.json
+{
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "Html.createElement",
+		"jsxFragmentFactory": "Html.Fragment",
+		"plugins": [{ "name": "@kitajs/ts-html-plugin" }]
+	}
+}
+```
+
+## ตัวเลือก
+
+### contentType
+
+- Type: `string`
+- ค่าเริ่มต้น: `'text/html; charset=utf8'`
+
+content-type ของ response
+
+### autoDetect
+
+- Type: `boolean`
+- ค่าเริ่มต้น: `true`
+
+กำหนดว่าจะตรวจจับเนื้อหา HTML และตั้งค่า content-type ให้อัตโนมัติหรือไม่
+
+### autoDoctype
+
+- Type: `boolean | 'full'`
+- ค่าเริ่มต้น: `true`
+
+กำหนดว่าจะเพิ่ม `<!doctype html>` ให้ response ที่ขึ้นต้นด้วย `<html>` อัตโนมัติหรือไม่ ถ้ายังไม่มี
+
+ใช้ `full` เพื่อเพิ่ม doctype ให้ HTML response ที่ไม่ได้คืนค่าผ่าน helper `html()` ด้วย
+
+```ts
+// Automatic response detection with html({ autoDoctype: 'full' })
+app.get('/', () => '<html></html>')
+
+// Explicit html helper
+app.get('/', ({ html }) => html('<html></html>'))
+```
+
+### isHtml
+
+- Type: `(value: string) => boolean`
+- ค่าเริ่มต้น: `isHtml` (ฟังก์ชันที่ export ไว้)
+
+ฟังก์ชันที่ใช้ตรวจว่า string เป็น HTML หรือไม่ ตัวตรวจจับที่มีมาให้จะตัด whitespace ออก ต้องมีอย่างน้อย 7 ตัวอักษร และตรวจว่า string ขึ้นต้นด้วย `<` และลงท้ายด้วย `>`
+
+นี่เป็นวิธีประมาณการ ไม่ใช่ HTML validator การตรวจจับ response อัตโนมัติจะใช้ฟังก์ชันที่คุณส่งเข้ามาตรงนี้
+
+</div>
+</InteractiveDocLayout>
+</div>

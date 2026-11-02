@@ -1,0 +1,154 @@
+---
+title: "ใช้งานร่วมกับ Expo"
+description: "ด้วย App Router ของ Expo คุณรัน Elysia บน route ของ Expo ได้ และ Elysia จะทำงานได้ตามปกติเพราะเป็นไปตามมาตรฐาน WinterTC"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ใช้งานร่วมกับ Expo</h1>
+
+ตั้งแต่ Expo SDK 50 และ App Router v3 เป็นต้นไป Expo ให้เราสร้าง API routes ในแอป Expo ได้โดยตรง
+
+1. สร้างไฟล์ **app/[...slugs]+api.ts**
+2. ประกาศเซิร์ฟเวอร์ Elysia
+3. export **Elysia.fetch** ด้วยชื่อของ HTTP method ที่ต้องการใช้
+
+
+```typescript title="app/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hello Expo')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+คุณใช้เซิร์ฟเวอร์ Elysia ได้เหมือน API route ทั่วไปของ Expo
+
+### pnpm
+ถ้าการตั้งค่า pnpm ของคุณไม่ได้ติดตั้ง peer dependency ให้ ให้เพิ่ม peer ที่ Elysia v2 ต้องใช้อย่างชัดเจน:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefix
+ถ้าคุณไม่ได้วางเซิร์ฟเวอร์ Elysia ไว้ที่รากของไดเรกทอรี app router ต้องระบุ prefix ให้เซิร์ฟเวอร์ Elysia
+
+ตัวอย่างเช่น ถ้าวางเซิร์ฟเวอร์ Elysia ไว้ที่ **app/api/[...slugs]+api.ts** ต้องระบุ prefix เป็น **/api** ให้เซิร์ฟเวอร์ Elysia
+
+
+```typescript title="app/api/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', 'Hello Expo')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+วิธีนี้ทำให้ routing ของ Elysia ทำงานได้ถูกต้องไม่ว่าจะวางไว้ที่ไหน
+
+## Eden
+
+เราเพิ่ม [Eden](/eden) เพื่อ **type safety แบบ end-to-end** คล้ายกับ tRPC ได้
+
+1. export `type` จากเซิร์ฟเวอร์ Elysia
+
+
+```typescript title="app/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.get('/', 'Hello Expo')
+	.post(
+		'/user',
+		{
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body }) => body
+	)
+
+export type app = typeof app
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+2. สร้าง Treaty client
+
+
+```typescript title="lib/eden.ts"
+import { treaty } from '@elysia/eden'
+import type { app } from '../app/[...slugs]+api'
+
+export const api = treaty<app>('http://localhost:8081')
+```
+
+
+สำหรับอุปกรณ์จริง ให้แทนที่ `localhost` ด้วย origin ที่อุปกรณ์เข้าถึงได้ เช่น LAN address ของเครื่องที่ใช้พัฒนา และใช้ origin ของ API ที่ deploy แล้วบน production
+
+3. ใช้ client ในหน้าจอของ Expo
+
+
+```tsx title="app/index.tsx"
+import { useEffect, useState } from 'react'
+import { Text } from 'react-native'
+import { api } from '../lib/eden'
+
+export default function Page() {
+	const [message, setMessage] = useState<string | null>(null)
+
+	useEffect(() => {
+		api.get().then(({ data }) => setMessage(data))
+	}, [])
+
+	return <Text>{message ?? 'Loading…'}</Text>
+}
+```
+
+
+## การ deploy
+คุณจะใช้ API route กับ Elysia โดยตรงแล้ว deploy เหมือนแอป Elysia ทั่วไปก็ได้ หรือจะใช้ [Expo server runtime แบบทดลอง](https://docs.expo.dev/router/reference/api-routes/#deployment) ก็ได้
+
+ถ้าใช้ Expo server runtime ให้ใช้คำสั่ง `expo export` เพื่อสร้าง build ที่ปรับแต่งแล้วสำหรับแอป Expo ซึ่งจะมีฟังก์ชันของ Expo ที่ใช้ Elysia อยู่ใน `dist/server/_expo/functions/`
+
+
+:::tip
+
+ฟังก์ชัน API ที่ export ออกมาต้องมี server adapter เพื่อรับ request การ import ฟังก์ชันที่สร้างขึ้นอย่างเดียวไม่ได้เปิดพอร์ตให้
+
+:::
+
+
+คุณใช้ function adapter ที่ Expo มีให้เพื่อ deploy Edge Function ได้
+
+คู่มือการ deploy ของ Expo ครอบคลุม adapter เหล่านี้:
+- [Express](https://docs.expo.dev/router/reference/api-routes/#express)
+- [Netlify](https://docs.expo.dev/router/reference/api-routes/#netlify)
+- [Vercel](https://docs.expo.dev/router/reference/api-routes/#vercel)
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,51 @@
+---
+title: "ใช้งานร่วมกับ Deno"
+description: "Elysia สร้างบน Request/Response แบบ Web Standard เราจึงรัน Elysia ด้วย Deno.serve ได้โดยตรง"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ใช้งานร่วมกับ Deno</h1>
+
+Elysia สร้างบน Request/Response แบบ Web Standard เราจึงรัน Elysia ด้วย Deno.serve ได้โดยตรง
+
+เพิ่ม Elysia ลงในโปรเจกต์ Deno ด้วย `deno add npm:elysia@rc` แล้วส่ง `app.fetch` ให้ `Deno.serve`:
+
+```typescript
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.get('/', () => 'Hello Elysia')
+
+Deno.serve(app.fetch)
+```
+
+จากนั้นรันโมดูลพร้อมสิทธิ์ใช้งานเครือข่าย:
+```bash
+deno run --allow-net --watch src/index.ts
+```
+
+แค่นี้ก็รัน Elysia บน Deno ได้แล้ว
+
+### เปลี่ยนหมายเลขพอร์ต
+คุณกำหนดหมายเลขพอร์ตได้ใน `Deno.serve`
+
+```ts
+Deno.serve({ port: 8787 }, app.fetch)
+```
+
+### pnpm
+ถ้าการตั้งค่า pnpm ของคุณไม่ได้ติดตั้ง peer dependency ให้ ให้เพิ่ม peer ที่ Elysia v2 ต้องใช้อย่างชัดเจน:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

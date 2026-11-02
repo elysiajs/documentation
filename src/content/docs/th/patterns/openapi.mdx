@@ -1,0 +1,643 @@
+---
+title: OpenAPI
+description: อธิบาย route และสร้างเอกสาร OpenAPI จาก schema และ type
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">OpenAPI</h1>
+
+สร้างเอกสาร OpenAPI และหน้าอ้างอิง API ที่เปิดดูได้จาก route ของ Elysia โดย schema จะอธิบายข้อมูล ส่วนรายละเอียดของ route จะอธิบายว่าแต่ละ endpoint ทำอะไร
+
+ถ้าต้องการสร้างหน้าเอกสาร ให้ติดตั้งปลั๊กอินนี้:
+
+```bash
+bun add @elysia/openapi@rc
+```
+
+แล้วลงทะเบียนปลั๊กอินให้เซิร์ฟเวอร์:
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+```
+
+เมื่อเข้า `/openapi` คุณจะเห็น Scalar UI ที่แสดงเอกสารของ endpoint ซึ่งสร้างจากเซิร์ฟเวอร์ Elysia
+
+ดูการตั้งค่าปลั๊กอิน OpenAPI ได้ที่[หน้าปลั๊กอิน OpenAPI](/plugins/openapi/)
+
+## OpenAPI from types
+
+> ส่วนนี้ไม่บังคับ แต่เราแนะนำอย่างยิ่ง เพราะทำให้เอกสารดีขึ้นมาก
+
+โดยค่าเริ่มต้น Elysia ใช้ runtime schema ในการสร้างเอกสาร OpenAPI
+
+แต่คุณสร้างเอกสาร OpenAPI จาก type ได้ด้วย โดยใช้ generator จากปลั๊กอิน OpenAPI ดังนี้:
+
+1. ระบุไฟล์รากของ Elysia (ถ้าไม่ระบุ Elysia จะใช้ `src/index.ts`) และ export instance ออกมา
+
+2. import generator แล้วส่ง**path ของไฟล์นับจากรากของโปรเจกต์**ให้ type generator
+```ts {7}
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes()
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+Elysia จะพยายามสร้างเอกสาร OpenAPI ด้วยการอ่าน type ของ instance ที่ export ออกมา
+
+วิธีนี้ใช้ร่วมกับ runtime schema ได้ โดย runtime schema จะมีผลเหนือกว่านิยามของ type
+
+### Production
+ในสภาพแวดล้อม production คุณอาจคอมไพล์ Elysia เป็น[ไฟล์ executable ไฟล์เดียวด้วย Bun](/patterns/deploy) หรือ [bundle เป็นไฟล์ JavaScript ไฟล์เดียว](/patterns/deploy#compile-to-javascript)
+
+แนะนำให้สร้าง declaration file (**.d.ts**) ไว้ล่วงหน้า เพื่อให้ generator มี type declaration ใช้งาน
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes(
+            	process.env.NODE_ENV === 'production'
+             		? 'dist/index.d.ts'
+               		: 'src/index.ts'
+            )
+        })
+    )
+```
+
+<details>
+
+<summary>มีปัญหากับการสร้าง type?</summary>
+
+### ข้อควรระวัง: type แบบระบุชัดเจน
+OpenAPI Type Gen ทำงานได้ดีที่สุดกับ type ที่อนุมานโดยอัตโนมัติ
+
+บางครั้ง type ที่ระบุเองอย่างชัดเจนอาจทำให้เกิดปัญหา เพราะ generator หา type นั้นได้ไม่ถูกต้อง
+
+ในกรณีนี้ให้ใช้ `Prettify` เพื่อแตก type ออกมาแบบ inline:
+```ts
+import { Elysia, t } from 'elysia'
+
+// Your custom type
+interface User {
+	id: number
+	name: string
+}
+
+// Type helper to inline the type
+type Prettify<T> = {
+	[K in keyof T]: T[K]
+} & {}
+
+// Add Prettify to inline the type
+function getUser(): Prettify<User> {
+    return { id: 1, name: 'Nagisa' }
+}
+```
+
+วิธีนี้น่าจะแก้ปัญหาที่ type ไม่แสดงขึ้นมาได้
+
+### ข้อควรระวัง: Root path
+การเดาว่ารากของโปรเจกต์อยู่ที่ไหนนั้นไม่แน่นอน จึงแนะนำให้ระบุ path ของรากโปรเจกต์ เพื่อให้ generator ทำงานได้ถูกต้อง โดยเฉพาะเมื่อใช้ monorepo
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+import path from 'node:path'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts', {
+            	projectRoot: path.join(import.meta.dir, '..')
+            })
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+### กำหนด tsconfig.json เอง
+ถ้ามี `tsconfig.json` หลายไฟล์ คุณต้องระบุ `tsconfig.json` ที่ถูกต้องสำหรับใช้สร้าง type
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+import path from 'node:path'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts', {
+            	// This is reference from root of the project
+            	tsconfigPath: 'tsconfig.dts.json'
+            })
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+</details>
+
+## Standard Schema กับ OpenAPI
+Elysia จะพยายามใช้ method ที่มีมาในแต่ละ schema เพื่อแปลงเป็น OpenAPI schema
+
+แต่ถ้า schema ไม่มี method นั้น คุณส่ง schema ที่กำหนดเองให้ OpenAPI ได้ด้วยการกำหนด `mapJsonSchema` ดังนี้:
+
+
+### Zod OpenAPI
+ใช้ mapper ให้ตรงกับเวอร์ชันของ Zod โดย Zod 4 export `toJSONSchema` มาให้ ส่วน Zod 3 ใช้แพ็กเกจแยกชื่อ `zod-to-json-schema`
+
+**Zod 4**
+
+```ts
+import openapi from '@elysia/openapi'
+import * as z from 'zod'
+
+openapi({
+	mapJsonSchema: {
+		zod: z.toJSONSchema
+	}
+})
+```
+
+**Zod 3**
+
+```ts
+import openapi from '@elysia/openapi'
+import { zodToJsonSchema } from 'zod-to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+		zod: zodToJsonSchema
+	}
+})
+```
+
+
+### Valibot OpenAPI
+Valibot ใช้แพ็กเกจแยก (`@valibot/to-json-schema`) เพื่อแปลง Valibot schema เป็น JSON Schema
+
+```ts
+import openapi from '@elysia/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+		valibot: toJsonSchema
+	}
+})
+```
+
+
+### Effect OpenAPI
+Effect ไม่มี method `toJSONSchema` บน schema เราจึงต้องเขียน mapper เองเพื่อแปลง Effect schema เป็น OpenAPI schema
+
+```ts
+import openapi from '@elysia/openapi'
+import { JSONSchema } from 'effect'
+
+openapi({
+ 	mapJsonSchema: {
+   		effect: JSONSchema.make
+ 	}
+})
+```
+
+
+## อธิบาย route
+
+เราเพิ่มข้อมูลของ route ได้ด้วยการกำหนด schema type
+
+แต่บางครั้งการกำหนดแค่ type ก็ไม่ได้ทำให้ชัดเจนว่า route นั้นทำอะไร คุณใช้ field [detail](/plugins/openapi/#detail) เพื่ออธิบาย route อย่างชัดเจนได้
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.post(
+		'/sign-in',
+		{
+    		body: t.Object(
+      		{
+	            username: t.String(),
+	            password: t.String({
+	                minLength: 8,
+	                description: 'User password (at least 8 characters)'
+	            })
+	        },
+	        {
+	            description: 'Expected a username and password'
+	        }
+	    ),
+	    detail: {
+	        summary: 'Sign in the user',
+	        tags: ['authentication']
+	    }
+	}, ({ body }) => body.username)
+```
+
+field ของ detail เป็นไปตามนิยามของ OpenAPI V3 และมี auto-completion กับ type-safety มาให้ตั้งแต่ต้น
+
+ปลั๊กอินจะใส่รายละเอียดเหล่านี้ลงใน operation ที่สร้างขึ้น ตัวอย่างนี้อธิบาย request สำหรับ sign-in แต่ logic ของ sign-in จริงต้องตรวจสอบ credential ไม่ใช่แค่คืนค่า username กลับไป
+
+## Response header
+เราเพิ่ม response header ได้ด้วยการครอบ schema ด้วย `withHeaders`:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, withHeaders } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.get(
+		'/thing',
+		{
+		    response: withHeaders(
+				t.Literal('Hi'),
+				{
+					'x-powered-by': t.Literal('Elysia')
+				}
+			)
+		}, ({ set }) => {
+			set.headers['x-powered-by'] = 'Elysia'
+
+			return 'Hi'
+		}
+	)
+```
+
+`withHeaders` เป็นเพียง annotation เท่านั้น ไม่ได้บังคับหรือตรวจสอบ header ของ response จริง คุณต้องตั้งค่า header เอง
+
+## ซ่อน route
+
+คุณซ่อน route จากหน้าเอกสาร API ได้ด้วยการตั้งค่า `detail.hide` เป็น `true`
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.post(
+		'/sign-in',
+		{
+		    body: t.Object(
+		        {
+		            username: t.String(),
+		            password: t.String()
+		        },
+		        {
+		            description: 'Expected a username and password'
+		        }
+		    ),
+		    detail: {
+		        hide: true
+		    }
+		}, ({ body }) => ({ username: body.username })
+	)
+```
+
+## Tags
+
+Elysia แยก endpoint ออกเป็นกลุ่มได้ด้วยระบบ tag ของ OpenAPI
+
+เริ่มจากประกาศ tag ที่มีในการตั้งค่า OpenAPI
+
+```ts
+new Elysia().use(
+    openapi({
+        documentation: {
+            tags: [
+                { name: 'App', description: 'General endpoints' },
+                { name: 'Auth', description: 'Authentication endpoints' }
+            ]
+        }
+    })
+)
+```
+
+จากนั้นกำหนด tag ในตัวเลือกของ route ในตัวอย่างนี้ `db` คือ database client ของแอปพลิเคชันคุณ:
+
+```ts
+new Elysia()
+    .get('/', {
+        detail: {
+            tags: ['App']
+        }
+    }, () => 'Hello Elysia')
+    .group('/auth', (app) =>
+        app.post(
+            '/sign-up',
+            {
+                body: t.Object({
+                    username: t.String(),
+                    password: t.String()
+                }),
+                detail: {
+                    tags: ['Auth']
+                }
+            }, ({ body }) =>
+                db.user.create({
+                    data: body,
+                    select: {
+                        id: true,
+                        username: true
+                    }
+                })
+        )
+    )
+```
+
+route จะแสดงอยู่ภายใต้ tag ที่กำหนดไว้:
+![route ของ OpenAPI ที่จัดกลุ่มตาม tag](/assets/swagger-demo.webp)
+
+### Tags group
+
+Elysia รับ tag เพื่อเพิ่ม instance ทั้งตัวหรือกลุ่มของ route เข้าไปใน tag ที่กำหนดได้
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia({
+    tags: ['user']
+})
+    .get('/user', 'user')
+    .get('/admin', 'admin')
+```
+
+## Reference model
+
+<span id="models" />
+
+model ที่ลงทะเบียนไว้จะแสดงเป็น schema component ที่มีชื่อในเอกสาร OpenAPI ที่สร้างขึ้น และ route จะอ้างอิง component เหล่านั้น
+
+เมื่อหลาย route ใช้ schema เดียวกัน ให้ตั้งชื่อแล้วนำกลับมาใช้ซ้ำ เริ่มจากรูปแบบที่ซ้ำกันอยู่:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/profile', {
+        body: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        }),
+        response: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    }, ({ body }) => body)
+```
+
+ถ้าต้องการแค่นั้น ก็แยกออกมาเป็นตัวแปรได้เลย:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const Profile = t.Object({
+    username: t.String(),
+    displayName: t.String()
+})
+
+new Elysia()
+    .post('/profile', {
+        body: Profile,
+        response: Profile
+    }, ({ body }) => body)
+```
+
+ถ้าต้องการอ้างอิงด้วยชื่อและมี autocomplete ข้าม route ให้ลงทะเบียนด้วย `.model()`:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .model({
+        profile: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    })
+    .post('/profile', {
+        body: 'profile',
+        response: 'profile'
+    }, ({ body }) => body)
+```
+
+### แชร์ model ผ่านปลั๊กอิน
+
+เมื่อหลาย controller ต้องใช้ model ที่เกี่ยวข้องกัน ให้รวมไว้ในปลั๊กอิน:
+
+```ts
+// profile.model.ts
+import { Elysia, t } from 'elysia'
+
+export const profileModel = new Elysia()
+    .model({
+        profile: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    })
+```
+
+ให้ import ปลั๊กอินแล้วลงทะเบียนไว้ก่อน route ที่ใช้ model ของมัน:
+
+```ts
+// index.ts
+import { Elysia } from 'elysia'
+import { profileModel } from './profile.model'
+
+new Elysia()
+    .use(profileModel)
+    .post('/profile', {
+        body: 'profile',
+        response: 'profile'
+    }, ({ body }) => body)
+```
+
+วิธีนี้ทำให้นิยามของ model อยู่รวมกัน และ route กับการสร้าง OpenAPI ก็ใช้ชื่อเหล่านั้นได้ ตัวอย่างโปรไฟล์ใช้ field สาธารณะ ส่วน response ของ sign-in ไม่ควรส่งรหัสผ่านที่ผู้ใช้ส่งมากลับไป
+
+### หลาย model
+
+ส่ง object ที่มี key เป็นชื่อ model และ value เป็น schema:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+export const authModel = new Elysia()
+    .model({
+        number: t.Number(),
+        sign: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+```
+
+### หลักการตั้งชื่อ
+
+ใช้ namespace เมื่อแต่ละส่วนของแอปลงทะเบียน model ที่มีชื่อคล้ายกัน ชื่ออย่าง `admin.auth` และ `user.auth` ทำให้รู้ชัดว่าเป็นของส่วนไหน:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+export const adminModels = new Elysia()
+    .model({
+        'admin.auth': t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+
+export const userModels = new Elysia()
+    .model({
+        'user.auth': t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+```
+
+ตกลงหลักการตั้งชื่อกับทีม และหลีกเลี่ยงการลงทะเบียน schema ที่ไม่เกี่ยวข้องกันไว้ภายใต้ชื่อเดียวกัน
+
+## Guard
+
+ใช้ guard เพื่อกำหนด `detail` เดียวกันให้ทุก route ที่ลงทะเบียนหลังจากนั้น
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        detail: {
+            description: 'Require user to be logged in'
+        }
+    })
+    .get('/user', 'user')
+    .get('/admin', 'admin')
+```
+
+## เปลี่ยน endpoint ของ OpenAPI
+
+คุณเปลี่ยน endpoint ของ OpenAPI ได้ด้วยการกำหนด [path](/plugins/openapi/#path) ในการตั้งค่าปลั๊กอิน
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(
+        openapi({
+            path: '/v2/openapi'
+        })
+    )
+    .listen(3000)
+```
+
+## ปรับแต่งข้อมูลของ OpenAPI
+
+เราปรับแต่งข้อมูลของ OpenAPI ได้ด้วยการกำหนด [documentation.info](/plugins/openapi/#documentation) ในการตั้งค่าปลั๊กอิน
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(
+        openapi({
+            documentation: {
+                info: {
+                    title: 'Elysia Documentation',
+                    version: '1.0.0'
+                }
+            }
+        })
+    )
+    .listen(3000)
+```
+
+ใช้ประโยชน์ได้สำหรับ
+
+- เพิ่มชื่อเรื่อง
+- กำหนดเวอร์ชันของ API
+- เพิ่มคำอธิบายว่า API ของเราเกี่ยวกับอะไร
+- อธิบายว่ามี tag อะไรบ้าง และแต่ละ tag หมายถึงอะไร
+
+## การตั้งค่าความปลอดภัย
+
+เพื่อป้องกัน endpoint ของ API คุณประกาศ security scheme ในการตั้งค่า OpenAPI ได้ ตัวอย่างด้านล่างเขียนเอกสาร Bearer Authentication (JWT) ให้ endpoint ของคุณ:
+
+```ts
+new Elysia().use(
+    openapi({
+        documentation: {
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: 'http',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT'
+                    }
+                }
+            }
+        }
+    })
+)
+
+export const addressController = new Elysia({
+    prefix: '/address',
+    detail: {
+        tags: ['Address'],
+        security: [
+            {
+                bearerAuth: []
+            }
+        ]
+    }
+})
+```
+
+ตัวอย่างนี้เป็นเพียงเอกสารของ bearer authentication สำหรับ route ภายใต้ `/address` ไม่ได้ตรวจสอบ JWT หรือปฏิเสธการเข้าถึง ให้เพิ่ม authentication hook ที่ตรวจสอบ token ก่อน handler ทำงาน และลงทะเบียน `addressController` ไว้บนแอปที่มีปลั๊กอิน OpenAPI ซึ่งใช้สร้างเอกสาร
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,104 @@
+---
+title: ปลั๊กอิน GraphQL Apollo
+description: เอกสารอ้างอิงและตัวอย่างของปลั๊กอิน GraphQL Apollo
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ปลั๊กอิน GraphQL Apollo</h1>
+
+ปลั๊กอินของ [elysia](https://github.com/elysiajs/elysia) สำหรับใช้ GraphQL Apollo
+
+ติดตั้งด้วยคำสั่ง:
+
+```bash
+bun add graphql @elysia/apollo@next @apollo/server
+```
+
+จากนั้นนำไปใช้:
+
+```ts
+import { Elysia } from 'elysia'
+import { apollo, gql } from '@elysia/apollo'
+
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs: gql`
+				type Book {
+					title: String
+					author: String
+				}
+
+				type Query {
+					books: [Book]
+				}
+			`,
+			resolvers: {
+				Query: {
+					books: () => {
+						return [
+							{
+								title: 'Elysia',
+								author: 'saltyAom'
+							}
+						]
+					}
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+เมื่อเข้า `/graphql` คุณจะเห็น Apollo GraphQL playground พร้อมให้ใช้งาน
+
+## Context
+
+callback `context` ได้รับ context ของ Elysia ให้อ่าน `request` จาก context นั้น
+
+```ts
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs,
+			resolvers,
+			context: async ({ request }) => {
+				const authorization = request.headers.get('Authorization')
+
+				return {
+					authorization
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+## Config
+
+ปลั๊กอินนี้ขยายมาจาก [ApolloServerOptions](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#options) ของ Apollo (ซึ่งเป็นพารามิเตอร์ของ constructor ของ `ApolloServer`)
+
+ด้านล่างนี้คือพารามิเตอร์ที่เพิ่มเข้ามาสำหรับตั้งค่า Apollo Server กับ Elysia
+
+### path
+
+ค่าเริ่มต้น: `"/graphql"`
+
+path ที่เปิดให้เข้าถึง Apollo Server
+
+### enablePlayground
+
+ค่าเริ่มต้น: `process.env.ENV !== 'production'`
+
+กำหนดว่า Apollo จะเปิดให้ใช้ Apollo Playground หรือไม่
+
+</div>
+</InteractiveDocLayout>
+</div>

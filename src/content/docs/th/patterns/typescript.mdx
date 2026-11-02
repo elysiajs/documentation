@@ -1,0 +1,170 @@
+---
+title: TypeScript
+description: อนุมาน type จาก schema และตรวจหาสาเหตุเมื่อ TypeScript ทำงานช้า
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">TypeScript</h1>
+
+Elysia รองรับ TypeScript อย่างเต็มรูปแบบมาตั้งแต่แรก
+
+ส่วนใหญ่แล้วคุณไม่จำเป็นต้องเขียน type annotation เองเลย
+
+## การอนุมาน type
+Elysia อนุมาน type ของ request และ response จาก schema ที่คุณกำหนด
+
+```ts
+import { Elysia, t } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+    .post('/user/:id', {
+        body: t.Object({
+            id: t.String()
+        }),
+        query: z.object({
+            name: z.string()
+        })
+    }, ({ body }) => body)
+```
+
+Elysia อนุมาน type ได้อัตโนมัติจาก schema อย่าง TypeBox และ[ไลบรารี validation ที่คุณชอบ](/essential/validation#standard-schema) เช่น:
+- Zod
+- Valibot
+- ArkType
+- Effect Schema
+- Yup
+- Joi
+
+### แปลง schema เป็น type
+
+ไลบรารี schema ทุกตัวที่ Elysia รองรับแปลงเป็น type ของ TypeScript ได้
+
+
+#### TypeBox
+
+
+```ts
+import { Elysia, t, type UnwrapSchema } from 'elysia'
+
+const User = t.Object({
+  	id: t.String(),
+  	name: t.String()
+})
+
+type User = UnwrapSchema<typeof User>
+```
+
+
+#### Zod
+
+
+```ts
+import { z } from 'zod'
+
+const User = z.object({
+  	id: z.string(),
+  	name: z.string()
+})
+
+type User = z.infer<typeof User>
+```
+
+
+#### Valibot
+
+
+```ts
+import * as v from 'valibot'
+
+const User = v.object({
+  	id: v.string(),
+  	name: v.string()
+})
+
+type User = v.InferOutput<typeof User>
+```
+
+
+#### ArkType
+
+
+```ts
+import { type } from 'arktype'
+
+const User = type({
+  	id: 'string',
+  	name: 'string'
+})
+
+type User = typeof User.infer
+```
+
+
+## ประสิทธิภาพของ type
+
+Elysia ออกแบบโดยคำนึงถึงประสิทธิภาพของการอนุมาน type ตั้งแต่ต้น
+
+ก่อนออกทุกเวอร์ชัน เราจะรัน benchmark บนเครื่องเพื่อให้มั่นใจว่าการอนุมาน type ยังรวดเร็ว และไม่ทำให้ IDE ของคุณเจอ error "Type instantiation is excessively deep and possibly infinite"
+
+โดยทั่วไปเวลาเขียน Elysia คุณจะไม่เจอปัญหาเรื่องประสิทธิภาพของ type
+
+แต่ถ้าเจอ นี่คือวิธีไล่หาว่าอะไรทำให้การอนุมาน type ช้าลง:
+
+1. ไปที่รากของโปรเจกต์แล้วรัน
+```
+tsc --generateTrace trace --noEmit --incremental false
+```
+
+คำสั่งนี้จะสร้างโฟลเดอร์ `trace` ไว้ในรากของโปรเจกต์
+
+2. เปิด [Perfetto UI](https://ui.perfetto.dev) แล้วลากไฟล์ `trace/trace.json` เข้าไป
+
+![Perfetto](/assets/perfetto.webp)
+
+> คุณจะเห็น flame graph หน้าตาประมาณนี้
+
+จากนั้นหาส่วนที่ใช้เวลาประมวลผลนาน คลิกเข้าไปแล้วจะเห็นว่าการอนุมานใช้เวลานานเท่าไร และมาจากไฟล์และบรรทัดไหน
+
+วิธีนี้ช่วยให้คุณหาจุดคอขวดของการอนุมาน type ได้
+
+### Eden
+
+ถ้าการอนุมาน type ช้าเมื่อใช้ [Eden](/eden/) ลองใช้ sub app ของ Elysia เพื่อแยกการอนุมาน type ออกมา
+
+```ts
+import { Elysia } from 'elysia'
+import { plugin1, plugin2, plugin3 } from './plugin'
+
+const app = new Elysia()
+	.use([plugin1, plugin2, plugin3])
+  	.listen(3000)
+
+export type app = typeof app
+
+// Export sub app
+export type subApp = typeof plugin1
+```
+
+แล้วในฝั่ง frontend ให้ import เฉพาะ sub app แทนที่จะ import ทั้งแอป
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { subApp } from 'backend/src'
+
+const api = treaty<subApp>('localhost:3000')
+```
+
+วิธีนี้ทำให้อนุมาน type ได้เร็วขึ้น เพราะไม่ต้องประมวลผลทั้งแอป
+
+ดูข้อมูลเพิ่มเติมเกี่ยวกับ Eden ได้ที่ [Eden Treaty](/eden/)
+
+</div>
+</InteractiveDocLayout>
+</div>

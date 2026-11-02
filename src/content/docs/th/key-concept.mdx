@@ -1,0 +1,290 @@
+---
+title: แนวคิดหลัก
+description: ทำความเข้าใจ encapsulation, dependency, ลำดับการลงทะเบียน และการอนุมาน type ใน Elysia
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import '../../../styles/routing.css';
+
+export const steps = [
+    {
+        label: 'สร้าง instance',
+        code: `import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/profile', () => 'Hi there!')
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+    {
+        label: 'ใช้ hook เฉพาะภายใน',
+        code: `import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+    .onBeforeHandle(({ status }) => status(401, 'Sign in first'))
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+    {
+        label: 'แชร์ hook ออกไป',
+        code: `import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+    .onBeforeHandle('global', ({ status }) => status(401, 'Sign in first'))
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+];
+
+<div class="essential-page key-concept-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">แนวคิดหลัก</h1>
+
+<Card>
+
+<CardTitle>สำคัญ</CardTitle>
+
+เราแนะนำให้อ่านบท[แนวคิดพื้นฐาน](/essential/route/)ให้จบก่อนเริ่มโปรเจกต์ Elysia แรกของคุณ
+
+แต่ถ้าอยากลงมือเขียนโค้ดเลย หน้านี้สรุปแนวคิดหลักของ Elysia ไว้อย่างย่อ
+
+</Card>
+
+</div>
+
+<div class="content-layout">
+
+## Encapsulation
+
+lifecycle hook ของ Elysia มีลักษณะ **encapsulated** หมายความว่า hook ที่เพิ่มไว้ในปลั๊กอินจะไม่มีผลกับ instance ที่เรียกใช้ปลั๊กอินนั้น เว้นแต่คุณจะแชร์ออกไปอย่างชัดเจน
+
+```ts
+import { Elysia } from 'elysia'
+import { throwIfNotSignIn, updateProfile } from './profile'
+
+const profile = new Elysia()
+    .onBeforeHandle(({ cookie }) => {
+        throwIfNotSignIn(cookie)
+    })
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    // This route does not inherit the local sign-in check.
+    .patch('/rename', ({ body }) => updateProfile(body))
+```
+
+ในตัวอย่างนี้ `throwIfNotSignIn` มีผลกับ `/profile` แต่ไม่มีผลกับ `/rename`
+
+---
+
+ถ้าต้องการให้ hook มีผลต่อไปถึงภายนอก คุณต้องบอก Elysia ให้แชร์มันออกไป
+
+เช่นเดียวกับ keyword `export` เมื่อ instance อื่นต้องใช้ hook นี้ ให้ระบุการแชร์อย่างชัดเจน
+
+วิธี *export* hook ทำได้ง่าย ๆ เพียงเพิ่ม [scope](/essential/plugin/#scope-level):
+
+```ts "'global'"
+import { Elysia } from 'elysia'
+import { throwIfNotSignIn, updateProfile } from './profile'
+
+const profile = new Elysia()
+    .onBeforeHandle('global', ({ cookie }) => {
+        throwIfNotSignIn(cookie)
+    })
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    // This route inherits the sign-in check.
+    .patch('/rename', ({ body }) => updateProfile(body))
+```
+
+## Method chaining
+
+ใช้ **method chaining** เพื่อให้ Elysia คง type ที่อนุมานได้ไว้:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('build', 1)
+    .get('/', ({ store: { build } }) => build)
+    .listen(3000)
+```
+
+`state` คืนค่า type ของ instance ที่มี property `build` พร้อม type กำกับ การเรียก method ต่อกันเป็นสายจึงทำให้ยังใช้ property นี้ได้
+
+ถ้าไม่ใช้ method chaining type ใหม่จะไม่ถูกเก็บไว้ ตัวอย่างนี้ตั้งใจให้เกิด error ของ TypeScript:
+
+```ts error-preview
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+
+app.state('build', 1)
+
+app.get('/', ({ store: { ~~build~~ } }) => build) //! Property 'build' does not exist on type '{}'
+
+app.listen(3000)
+```
+
+instance ยังถูกเปลี่ยนแปลงได้ตอน runtime ปัญหาอยู่ที่ static type ของตัวแปรไม่ได้เปลี่ยนตาม ให้เรียก method ต่อกันเป็นสาย หรือเก็บ instance ที่คืนกลับมาไว้ในตัวแปรใหม่
+
+## Dependency
+
+ทุก instance มี context เป็นของตัวเอง
+
+เมื่อ instance หนึ่งต้องใช้ context ของอีก instance หนึ่ง จะถือว่าเป็น dependency ผ่าน `.use()`
+
+```ts error-preview
+import { Elysia, t } from 'elysia'
+
+class Auth {
+    getProfile() {
+        return { name: 'Elysia User' }
+    }
+}
+
+const auth = new Elysia()
+    .decorate({
+        auth: new Auth()
+    })
+
+const main = new Elysia()
+    // Intentional type error: auth has not been registered here.
+    .get('/', ({ ~~auth~~ }) => auth.getProfile()) //! Property 'auth' does not exist on type '{ body: unknown; ... store: {}; }'
+    .use(auth)
+    .get('/profile', ({ auth }) => auth.getProfile())
+```
+
+นี่คือ **Context Propagation** แต่ละ instance มี context ของตัวเอง และ `.use()` จะส่งต่อ context จาก instance หนึ่งไปยังอีก instance หนึ่ง instance `auth` เป็น dependency ของ `main` ดังนั้น `main` จึงใช้ service และ type ของมันได้
+
+การออกแบบนี้ตั้งใจให้ทุกอย่างชัดเจนและไม่มี type context ระดับ global เพราะ:
+1. Type soundness: เพื่อรับประกัน type ทั้งตอน runtime และในระดับ type ทาง Elysia ต้องรู้ dependency อย่างชัดเจน การประกาศ type context แบบ global จะทำให้การรับประกันนี้ใช้ไม่ได้
+2. Dependency Tracking: เมื่อ dependency เปลี่ยน Elysia ติดตามได้และอัปเดต type context ของฝั่งที่ใช้งานให้ตามไปด้วย
+3. Modularity: ทุกส่วนควรนำไปใช้แยกกันได้โดยไม่ต้องพึ่ง type context แบบ global
+
+### Deduplication
+
+ปลั๊กอินอาจถูกลงทะเบียนมากกว่าหนึ่งครั้งเมื่อหลาย instance ใช้ร่วมกัน เพื่อไม่ให้ซ้ำ ให้ตั้ง `name` ที่ไม่ซ้ำกับใครให้ปลั๊กอิน แล้ว Elysia จะตัดตัวที่ซ้ำออกให้
+
+```ts
+import { Elysia } from 'elysia'
+
+const ip = new Elysia({ name: 'ip' })
+    .derive('global', ({ server, request }) => ({
+        ip: server?.requestIP(request)
+    }))
+    .get('/ip', ({ ip }) => ip)
+
+const router1 = new Elysia()
+    .use(ip)
+    .get('/ip-1', ({ ip }) => ip)
+
+const router2 = new Elysia()
+    .use(ip)
+    .get('/ip-2', ({ ip }) => ip)
+
+const server = new Elysia()
+    .use(router1)
+    .use(router2)
+```
+
+วิธีนี้ทำให้ derive hook ที่แชร์กันทำงานเพียงครั้งเดียวต่อหนึ่ง request
+
+สำหรับปลั๊กอินที่ตั้งค่าได้ ให้เพิ่ม `seed` เพื่อระบุการตั้งค่าของมัน
+
+การลงทะเบียนที่มีค่า `name` และ `seed` ตรงกันจะถูกนับเป็นตัวเดียวกัน ส่วน seed ที่ต่างกันจะทำให้การตั้งค่าแต่ละชุดแยกจากกัน
+
+ดูเพิ่มเติมเกี่ยวกับ [deduplication ของปลั๊กอิน](/essential/plugin/#deduplication)
+
+## ลำดับของโค้ด
+
+สำหรับ route ที่ประกาศบน instance โดยตรง hook จะมีผลกับ route ที่ลงทะเบียน**หลังจาก** hook นั้น:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log('1')
+    })
+    .get('/', () => 'hi')
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+request ไปที่ `/` จะแสดง log:
+
+```text
+1
+```
+
+ไม่มี `2` แสดงออกมา เพราะ hook นั้นลงทะเบียนหลัง route ที่ประกาศโดยตรง
+
+:::note[Route ที่ mount และ hook ที่อยู่ก่อน]
+
+route ของปลั๊กอินที่ mount ไว้จะรับ hook ของ parent ที่ลงทะเบียนก่อน `.use(plugin)` ดังนั้น error handler ของ parent ที่วางไว้ตรงนั้นจะจัดการ error ที่เกิดจาก route ของปลั๊กอินนั้นได้ ส่วนขั้นตอน `request` ทำงานก่อนการจับคู่ route จึงไม่ได้ยึดลำดับการลงทะเบียนแบบเดียวกับ route
+
+:::
+
+ควรวาง hook ที่ใช้ร่วมกันไว้ใกล้ ๆ จุดเริ่มต้นของ instance ดูตัวอย่างของ route ที่ประกาศโดยตรงและปลั๊กอินที่ mount ไว้ได้ที่ [ลำดับของโค้ด](/essential/life-cycle/#order-of-code)
+
+## การอนุมาน type
+
+Elysia อนุมาน context ของ handler จาก schema ของ route:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => body)
+```
+
+ใช้ handler แบบ inline เพื่อให้ TypeScript อนุมาน context ได้ตั้งแต่ตอนประกาศ route
+
+ถ้าต้องแยกเป็นฟังก์ชัน เช่น method ของ controller ให้ส่งเฉพาะค่าที่ฟังก์ชันนั้นต้องใช้ผ่าน handler แบบ inline:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+abstract class Controller {
+    static greet({ name }: { name: string }) {
+        return 'hello ' + name
+    }
+}
+
+const app = new Elysia()
+    .post('/', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => Controller.greet(body))
+```
+
+ดู [best practice: controller](/essential/best-practice/#controller)
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

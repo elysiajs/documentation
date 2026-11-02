@@ -1,0 +1,170 @@
+---
+title: "ใช้งานร่วมกับ TanStack Start"
+description: "Elysia รันใน API server routes ของ TanStack Start ได้ และใช้ได้ทั้งใน Data Loader และกับ TanStack React Query พร้อม type safety ผ่าน Eden"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ใช้งานร่วมกับ TanStack Start</h1>
+
+Elysia รันใน server routes ของ TanStack Start ได้
+
+1. สร้างไฟล์ **src/routes/api.$.ts**
+2. ประกาศเซิร์ฟเวอร์ Elysia
+3. export handler ของ Elysia ไว้ใน **server.handlers**
+
+
+```typescript title="src/routes/api.$.ts"
+import { Elysia } from 'elysia'
+
+import { createFileRoute } from '@tanstack/react-router'
+
+const app = new Elysia({
+	prefix: '/api'
+}).get('/', 'Hello Elysia!')
+
+const handle = ({ request }: { request: Request }) => app.fetch(request)
+
+export const Route = createFileRoute('/api/$')({
+	server: {
+		handlers: {
+			GET: handle,
+			POST: handle
+		}
+	}
+})
+```
+
+
+ตอนนี้ Elysia ควรทำงานอยู่ที่ **/api** แล้ว
+
+เราเพิ่ม method อื่นลงใน **server.handlers** เพื่อรองรับ HTTP method อื่นตามต้องการได้
+
+### pnpm
+ถ้าการตั้งค่า pnpm ของคุณไม่ได้ติดตั้ง peer dependency ให้ ให้เพิ่ม peer ที่ Elysia v2 ต้องใช้อย่างชัดเจน:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Eden
+
+เราเพิ่ม [Eden](/eden) เพื่อ **type safety แบบ end-to-end** คล้ายกับ tRPC ได้
+
+ย้าย instance ของ Elysia ไปไว้ในโมดูลของตัวเอง เพื่อไม่ให้คอมโพเนนต์ของหน้าเว็บ import ไฟล์ route:
+
+```typescript title="src/elysia.ts"
+import { Elysia } from 'elysia'
+
+export const app = new Elysia({
+	prefix: '/api'
+}).get('/', 'Hello Elysia!')
+```
+
+ให้ไฟล์ route มีแค่การ export route เท่านั้น:
+
+```typescript title="src/routes/api.$.ts"
+import { createFileRoute } from '@tanstack/react-router'
+
+import { app } from '../elysia'
+
+const handle = ({ request }: { request: Request }) => app.fetch(request)
+
+export const Route = createFileRoute('/api/$')({
+	server: {
+		handlers: {
+			GET: handle,
+			POST: handle
+		}
+	}
+})
+```
+
+จากนั้นสร้าง client ของ Eden Treaty ไว้ในโมดูลแยก:
+
+```typescript title="src/lib/eden.ts"
+import { treaty } from '@elysia/eden'
+import { createIsomorphicFn } from '@tanstack/react-start'
+
+import { app } from '../elysia'
+
+export const getTreaty = createIsomorphicFn()
+	.server(() => treaty(app).api)
+	.client(() => treaty<typeof app>('localhost:3000').api)
+```
+
+
+สังเกตว่าเราใช้ **createIsomorphicFn** สร้าง instance ของ Eden Treaty แยกกันสำหรับทั้งเซิร์ฟเวอร์และ client:
+1. บนเซิร์ฟเวอร์ Elysia จะถูกเรียกโดยตรงโดยไม่มีภาระของ HTTP
+2. บน client เราเรียกเซิร์ฟเวอร์ Elysia ผ่าน HTTP
+
+TanStack Start จะตัด implementation ของ `.server()` ออกจาก build ฝั่ง client เบราว์เซอร์จึงใช้แค่ type ของแอป
+
+ในคอมโพเนนต์ React เราใช้ `getTreaty` เรียกเซิร์ฟเวอร์ Elysia ได้อย่าง type safe
+
+## ข้อมูลจาก Loader
+TanStack Start รองรับ **Loader** สำหรับดึงข้อมูลก่อนแสดงผลคอมโพเนนต์
+
+
+```tsx title="src/routes/index.tsx"
+import { createFileRoute } from '@tanstack/react-router'
+
+import { getTreaty } from '../lib/eden'
+
+export const Route = createFileRoute('/')({
+	component: App,
+	loader: () => getTreaty().get().then((res) => res.data)
+})
+
+function App() {
+	const data = Route.useLoaderData()
+
+	return data
+}
+```
+
+
+การเรียก Elysia ใน loader จะทำงานบนเซิร์ฟเวอร์ระหว่าง SSR และไม่มีภาระของ HTTP
+เมื่อเปลี่ยนจากหน้าหนึ่งไปอีกหน้าหนึ่ง loader จะทำงานฝั่ง client และส่ง HTTP request ไปยัง endpoint
+
+Eden Treaty จะรับประกัน type safety ทั้งฝั่งเซิร์ฟเวอร์และ client
+
+## React Query
+เรายังใช้ React Query เพื่อสื่อสารกับเซิร์ฟเวอร์ Elysia ฝั่ง client ได้ด้วย
+
+
+```tsx title="src/routes/index.tsx"
+import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+
+import { getTreaty } from '../lib/eden'
+
+export const Route = createFileRoute('/')({
+	component: App
+})
+
+function App() {
+	const { data: response } = useQuery({
+		queryKey: ['get'],
+		queryFn: () => getTreaty().get()
+	})
+
+	return response?.data
+}
+```
+
+
+ใช้ได้กับฟีเจอร์ทุกอย่างของ React Query เช่น caching, pagination, infinite query และอื่น ๆ
+
+---
+
+ดูข้อมูลเพิ่มเติมเกี่ยวกับ TanStack Start ได้ที่[เอกสารของ TanStack Start](https://tanstack.com/start)
+
+</div>
+</InteractiveDocLayout>
+</div>
