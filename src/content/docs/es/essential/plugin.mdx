@@ -1,0 +1,632 @@
+---
+title: Plugin
+description: Divide una app de Elysia en plugins reutilizables, declara sus dependencias y elige cómo se comparten los hooks.
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import '../../../../styles/routing.css';
+import { NumberedCards } from '../../../../components/ui/numbered-cards';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import { DependencyStory } from '../../../../components/plugin-tree/dependency';
+import { DeduplicationStory } from '../../../../components/plugin-tree/deduplication';
+import { ScopeStory } from '../../../../components/plugin-tree/scope';
+
+export const pluginDemo = new Elysia()
+    .use(new Elysia()
+        .decorate('plugin', 'hi')
+        .get('/plugin', ({ plugin }) => plugin))
+    .get('/', ({ plugin }) => plugin);
+
+export const callbackDemo = new Elysia()
+    .use((app) => app
+        .state('counter', 0)
+        .get('/plugin', () => 'Hi'))
+    .get('/counter', ({ store: { counter } }) => counter);
+
+export const scopeSteps = [
+    {
+        label: 'Scope local',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('local', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11],
+    },
+    {
+        label: 'Scope plugin',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('plugin', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11, 15],
+    },
+    {
+        label: 'Scope global',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('global', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11, 15, 19],
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Plugin</h1>
+
+Un **plugin** es una pieza desacoplada de la instancia principal. Cada instancia de Elysia puede ejecutarse por su cuenta o usarse como parte de otra instancia.
+
+Pongamos una app pequeña dentro de otra.
+
+</div>
+
+<div class="content-layout">
+
+Aquí, el plugin decora una propiedad `plugin`, y tanto el plugin como la app principal la leen. Elige cualquiera de las dos rutas para ver su respuesta.
+
+<CodePlayground elysia={pluginDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .decorate('plugin', 'hi')
+    .get('/plugin', ({ plugin }) => plugin)
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/', ({ plugin }) => plugin)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+## Dependencias
+
+Elysia está formada por varias mini apps de Elysia que pueden ejecutarse por su cuenta, de forma parecida a los microservicios que se comunican entre sí.
+
+Cuando una instancia necesita un servicio de otra instancia, **tienes que declarar la dependencia de forma explícita**.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+class Auth {
+    getProfile() {
+        return { name: 'Elysia User' }
+    }
+}
+
+const auth = new Elysia()
+    .decorate({
+        auth: new Auth()
+    })
+
+const main = new Elysia()
+    .use(auth)
+    .get('/profile', ({ auth }) => auth.getProfile())
+```
+
+Sin `.use(auth)`, el handler no sabe nada de `Auth`. Registrarlo en alguna otra instancia no hace que esté disponible aquí.
+
+Aquí puedes ver en movimiento el momento en que la dependencia pasa de faltar a estar disponible. Avanza con los botones de cada etapa.
+
+<DependencyStory client:visible={{ rootMargin: '200px' }} />
+
+Esto se parece a la **inyección de dependencias**: cada instancia declara lo que necesita. Ser explícito hace que las dependencias sean más fáciles de seguir y los módulos más fáciles de reutilizar.
+
+<span id="plugin-deduplication"></span>
+
+### Deduplicación
+
+Los hooks de un plugin sin nombre se pueden registrar más de una vez cuando el plugin se comparte entre instancias.
+
+Dale al plugin un `name` único para que Elysia pueda deduplicar sus hooks del ciclo de vida.
+
+```ts
+import { Elysia } from 'elysia'
+
+const ip = new Elysia({ name: 'ip' })
+    .derive('global', ({ server, request }) => ({
+        ip: server?.requestIP(request)
+    }))
+    .get('/ip', ({ ip }) => ip)
+
+const router1 = new Elysia()
+    .use(ip)
+    .get('/ip-1', ({ ip }) => ip)
+
+const router2 = new Elysia()
+    .use(ip)
+    .get('/ip-2', ({ ip }) => ip)
+
+const server = new Elysia()
+    .use(router1)
+    .use(router2)
+```
+
+`'global'` comparte el hook con todas las instancias que usan el plugin, ya sea directamente o a través de otro plugin; consulta [scope](#scope). El hook compartido `ip` se ejecuta una sola vez por petición, aunque los dos routers lo usen. `requestIP` está disponible cuando un adaptador de servidor compatible proporciona `server`; si no, `ip` es `undefined`.
+
+Aquí tienes ese ejemplo en movimiento. Mira cómo `ip` se une a los dos routers y luego se registra una sola vez cuando `server` usa ambos.
+
+<DeduplicationStory client:visible={{ rootMargin: '200px' }} />
+
+Para un plugin configurable, incluye sus opciones como `seed`. La combinación de `name` y `seed` identifica a un plugin: las configuraciones iguales se deduplican, mientras que los seeds distintos se mantienen separados.
+
+```ts
+import { Elysia } from 'elysia'
+
+const version = (value = 1) => new Elysia({
+    name: 'version',
+    seed: value
+})
+    .get('/version', value)
+```
+
+Ponerle nombre a un plugin deduplica su registro, pero no impide que la función que lo crea se ejecute cada vez que la llamas. Deja fuera de esas llamadas repetidas el trabajo que solo debe hacerse una vez.
+
+### Dependencia global vs. explícita
+
+Algunas dependencias tienen más sentido de forma global. Otras deberían declararse en cada instancia que las usa.
+
+| Usa una dependencia global para | Usa una dependencia explícita para |
+| --- | --- |
+| Plugins que no agregan tipos, como CORS, compresión o headers de seguridad | Plugins que agregan tipos, como macros, estado o modelos |
+| Hooks del ciclo de vida que deben aplicarse a toda la app, como tracing o logging | Lógica de negocio con la que interactúan los handlers, como la autenticación o una base de datos |
+
+Algunos ejemplos globales son la documentación con OpenAPI, el tracing con OpenTelemetry y el logging. Algunos ejemplos explícitos son los stores y las sesiones, los modelos de un ORM u ODM, los servicios de autenticación y de base de datos, y los módulos de funcionalidades como un chat o las notificaciones.
+
+Si tu dependencia no necesita ser global, prefiere una dependencia explícita.
+
+## Scope
+
+Los hooks del ciclo de vida de Elysia están **encapsulados** dentro de su propia instancia. Los hooks de un plugin no se aplican automáticamente a las rutas de la instancia que lo usa.
+
+<span id="descendant"></span>
+
+En el ejemplo de abajo, `current.use(child)` convierte a `child` en un **descendiente** de `current`. En la otra dirección, `parent.use(current)` convierte a `parent` en su **padre** directo, y `main.use(parent)` agrega otro padre por encima.
+
+### Nivel de scope
+
+Elige hasta dónde llega un hook con el primer argumento de `onBeforeHandle`: `local`, `plugin` o `global`.
+
+Cada paso usa el mismo árbol de plugins; solo cambia el scope. El hook imprime `hi` en el log sin devolver ningún valor, así que cada ruta sigue devolviendo la respuesta `hi` de su handler.
+
+</div>
+
+<InteractiveDoc steps={scopeSteps}>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(60dvh,44rem)]">
+
+### Scope local
+
+`local` se aplica a la instancia actual y a sus descendientes.
+- Las peticiones a `/current` y `/child` imprimen `hi` en el log. 
+- Las peticiones a `/parent` y `/main` no ejecutan el hook.
+
+Este es el scope por defecto. Puedes omitir `'local'` y escribir `onBeforeHandle(() => { ... })`.
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(60dvh,44rem)]">
+
+### Scope plugin
+
+`plugin` llega también al padre directo.
+
+- Las peticiones a `/child`, `/current` y `/parent` imprimen `hi` en el log.
+
+El hook se detiene en `parent`, así que `/main` no lo ejecuta.
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(45dvh,33rem)]">
+
+### Scope global
+
+`global` sigue subiendo por cada padre que usa el plugin. Las cuatro rutas imprimen `hi` en el log, incluida `/main`.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+Las rutas que ejecutan el hook en cada scope son:
+
+| Scope | `/child` | `/current` | `/parent` | `/main` |
+| --- | --- | --- | --- | --- |
+| `local` | Sí | Sí | No | No |
+| `plugin` | Sí | Sí | Sí | No |
+| `global` | Sí | Sí | Sí | Sí |
+
+El orden de registro sigue importando. Un hook se aplica a las rutas y los plugins que se registran después de él. Compartir un hook con `.use()` no lo aplica a las rutas que la instancia receptora registró antes.
+
+Usa el diagrama para seguir el mismo hook a través del árbol de plugins.
+
+<ScopeStory client:visible={{ rootMargin: '200px' }} />
+
+Para promover hooks que ya están registrados en una instancia, consulta [Cambio de scope](#instance-as) para ver `.as('plugin')` y `.as('global')`.
+
+## Configuración
+
+Para que un plugin sea reutilizable, deja que quien lo usa configure las partes que necesitan cambiar. Una función puede recibir opciones y devolver una instancia de Elysia.
+
+```ts
+import { Elysia } from 'elysia'
+
+const version = (version = 1) => new Elysia()
+    .get('/version', version)
+
+const app = new Elysia()
+    .use(version(1))
+    .listen(3000)
+```
+
+Aquí `/version` devuelve `1`. Pasa otro valor para crear un plugin con otra configuración.
+
+### Callback funcional
+
+Siempre que puedas, prefiere una nueva instancia de plugin. Los callbacks funcionales reciben directamente la instancia principal, lo que hace más difícil razonar sobre la encapsulación y el scope.
+
+Para definir uno, escribe una función que reciba Elysia y devuelva la instancia extendida.
+
+<CodePlayground elysia={callbackDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = (app: Elysia) => app
+    .state('counter', 0)
+    .get('/plugin', () => 'Hi')
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/counter', ({ store: { counter } }) => counter)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+El callback asigna propiedades directamente a la instancia principal. `/plugin` devuelve `Hi`, y `/counter` devuelve `0`.
+
+En Elysia 2 ya no existe el getter `app.store` de la instancia. Usa `store` del contexto del handler para leer el estado.
+
+:::tip[Elige la forma más clara]
+
+No necesitas elegir un callback por rendimiento. Las instancias de Elysia son livianas, y usar una instancia aparte también le da a TypeScript un límite más claro para la inferencia.
+
+:::
+
+## Guard
+
+Un guard aplica hooks y schemas a varias rutas a la vez. Pon las rutas protegidas dentro de su callback.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { signUp, signIn, isUserExists } from './auth'
+
+new Elysia()
+    .guard(
+        {
+            body: t.Object({
+                username: t.String(),
+                password: t.String()
+            })
+        },
+        (app) => app
+            .post('/sign-up', ({ body }) => signUp(body))
+            .post('/sign-in', {
+                beforeHandle: isUserExists
+            }, ({ body }) => signIn(body))
+    )
+    .get('/', 'hi')
+    .listen(3000)
+```
+
+El schema del body se aplica a `/sign-up` y `/sign-in`, pero no a `/`. Las funciones importadas contienen la lógica de cuentas de tu aplicación.
+
+| Ruta | Valida el body |
+| --- | --- |
+| `/sign-up` | Sí |
+| `/sign-in` | Sí |
+| `/` | No |
+
+Guard acepta las mismas opciones de schema y de hooks que una ruta. La diferencia es que las aplica a todas las rutas de su callback.
+
+El ejemplo equivale a repetir esas opciones en cada ruta:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { signUp, signIn, isUserExists } from './auth'
+
+new Elysia()
+    .post('/sign-up', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body }) => signUp(body))
+    .post('/sign-in', {
+        beforeHandle: isUserExists,
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body }) => signIn(body))
+    .get('/', 'hi')
+    .listen(3000)
+```
+
+En Elysia 2, el schema de una ruta reemplaza por defecto al schema correspondiente que hereda del guard. Agrega `schema: 'merge'` al guard si se deben cumplir ambos schemas. Consulta [validación](/essential/validation/#merge) para ver más.
+
+### Guard agrupado
+
+Un [grupo](/essential/route/#group) puede recibir tres argumentos: un prefijo, las opciones del guard y el callback de la app.
+
+Empieza con un grupo y un guard anidados:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group('/v1', (app) =>
+        app.guard(
+            { body: t.Literal('Rikuhachima Aru') },
+            (app) => app.post('/student', ({ body }) => body)
+        )
+    )
+    .listen(3000)
+```
+
+Mueve las opciones del guard al segundo argumento del grupo para obtener el mismo comportamiento con menos anidación:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group(
+        '/v1',
+        { body: t.Literal('Rikuhachima Aru') },
+        (app) => app.post('/student', ({ body }) => body)
+    )
+    .listen(3000)
+```
+
+Las dos versiones registran `POST /v1/student`. Un body JSON con el string `"Rikuhachima Aru"` pasa la validación y el handler lo devuelve.
+
+## Cambio de scope
+
+
+Para aplicar hooks a un padre, elige cuánto quieres compartir:
+
+</div>
+
+
+<NumberedCards items={[
+    { title: 'En línea', children: 'Define un scope en línea para un solo hook del ciclo de vida.' },
+    { title: 'Guard', children: 'Usa el scope de un guard para un conjunto de hooks y schemas.' },
+    { title: 'Instancia', children: 'Usa el scope de la instancia para promover sus hooks y schemas existentes.' },
+]} />
+
+<div class="content-layout">
+
+### Inline as
+
+Pasa un string de scope antes del callback para compartir un solo hook del ciclo de vida.
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive('plugin', () => ({ hi: 'ok' }))
+    .get('/child', ({ hi }) => hi)
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', ({ hi }) => hi)
+```
+
+La propiedad derivada `hi` está disponible en las dos rutas. Esta forma solo cambia el scope de este hook.
+
+### Guard as
+
+Pasa un string de scope antes de las opciones del guard para compartir varios hooks y schemas juntos.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+    .guard('plugin', {
+        response: t.String(),
+        beforeHandle() {
+            console.log('ok')
+        }
+    })
+    .get('/child', 'ok')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', 'hello')
+```
+
+El schema de respuesta y el hook se aplican a las dos rutas. Para una propiedad derivada con tipo, usa `.derive('plugin', callback)` en lugar de ponerla en este guard.
+
+### Instance as
+
+`.as()` promueve el scope de los hooks y schemas que ya están registrados en la instancia actual.
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive(() => ({ hi: 'ok' }))
+    .get('/child', ({ hi }) => hi)
+    .as('plugin')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', ({ hi }) => hi)
+```
+
+El scope `plugin` llega solo a un padre. Para llevarlo un nivel más arriba, promueve también la instancia padre.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+    .guard({ response: t.String() })
+    .onBeforeHandle(() => { console.log('called') })
+    .get('/child', 'ok')
+    .as('plugin')
+
+const instance = new Elysia()
+    .use(plugin)
+    .get('/parent', 'still ok')
+    .as('plugin')
+
+const parent = new Elysia()
+    .use(instance)
+    .get('/grandparent', 'also ok')
+```
+
+Ahora el schema de respuesta de tipo string llega hasta `/grandparent`. Devolver un número desde cualquiera de estas rutas no cumple el schema: TypeScript te lo va a señalar, y la validación de la respuesta lo revisa en runtime.
+
+## Carga diferida
+
+Por defecto, los módulos se cargan de inmediato, así que los plugins síncronos se registran antes de que arranque el servidor. Un módulo pesado de calcular o que bloquea puede retrasar el arranque.
+
+Un plugin asíncrono registra sus rutas cuando su promesa se resuelve. `.listen()` y `app.fetch` esperan a todos los módulos pendientes antes de atender peticiones; solo `app.handle()` puede ejecutarse antes.
+
+### Módulo diferido
+
+Un módulo diferido es un plugin asíncrono. Este ejemplo espera tu lista de archivos antes de registrar sus rutas:
+
+```ts title="plugin.ts"
+import { Elysia, file } from 'elysia'
+import { loadAllFiles } from './files'
+
+export const loadStatic = async (app: Elysia) => {
+    const files = await loadAllFiles()
+
+    for (const asset of files) {
+        app.get(asset, file(asset))
+    }
+
+    return app
+}
+```
+
+Aquí, `loadAllFiles` devuelve un array de rutas de archivos locales que también sirven como rutas de la app. En tu archivo principal:
+
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { loadStatic } from './plugin'
+
+const app = new Elysia()
+    .use(loadStatic)
+    .listen(3000)
+```
+
+### Módulo con import dinámico
+
+Un `import()` dinámico puede cargar de forma diferida un plugin síncrono o asíncrono. Exporta el plugin como el export por defecto del módulo:
+
+```ts title="plugin.ts"
+import { Elysia } from 'elysia'
+
+export default new Elysia()
+    .get('/plugin', 'Hi')
+```
+
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .use(import('./plugin'))
+    .listen(3000)
+```
+
+Esto es útil cuando cargar el módulo en sí es costoso. `.listen()` espera a `app.modules` por su cuenta, así que el servidor nunca arranca con una ruta faltante. Espera tú mismo a `app.modules` solo cuando llames directamente a `app.handle()`, como en los tests.
+
+### Tests
+
+En los tests, espera a `app.modules` antes de hacer una petición a una ruta diferida o cargada con import dinámico.
+
+```ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Modules', () => {
+    it('inline async', async () => {
+        const app = new Elysia()
+            .use(async (app) => app.get('/async', 'async'))
+
+        await app.modules
+
+        const response = await app.handle(
+            new Request('http://localhost/async')
+        )
+
+        expect(await response.text()).toBe('async')
+    })
+})
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
