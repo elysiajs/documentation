@@ -8,7 +8,11 @@ import { defaultHandlers, toMdast } from 'hast-util-to-mdast'
 import { toMarkdown } from 'mdast-util-to-markdown'
 import { gfmToMarkdown } from 'mdast-util-gfm'
 import { load } from 'js-yaml'
-import { isTranslated, stripLocale } from '../src/lib/locales.mjs'
+import {
+	defaultLocale,
+	isTranslated,
+	stripLocale
+} from '../src/lib/locales.mjs'
 import { siteUrl } from '../site.config.mjs'
 
 const skipped = new Set(['design-system/index.html', 'i18n/index.html'])
@@ -79,6 +83,7 @@ export function docToMarkdown(html: string) {
 export async function exportDocs(
 	directory = new URL('../dist/', import.meta.url)
 ) {
+	const markdownOwners = new Map<string, string>()
 	const pages: {
 		title: string
 		description?: string
@@ -112,14 +117,35 @@ export async function exportDocs(
 			'---',
 			''
 		].join('\n')
-		for (const markdownPath of [
+		const markdownPaths = [
 			path.replace(/\.html$/, '.md'),
 			`${route}.md`
-		])
+		]
+		const legacyRoute = stripLocale(route)
+		if (
+			route.startsWith(`${defaultLocale}/`) &&
+			legacyRoute &&
+			legacyRoute !== route
+		)
+			markdownPaths.push(
+				stripLocale(path).replace(/\.html$/, '.md'),
+				`${legacyRoute}.md`
+			)
+
+		for (const markdownPath of new Set(markdownPaths)) {
+			const owner = markdownOwners.get(markdownPath)
+			if (owner && owner !== path)
+				throw new Error(
+					`Markdown output "${markdownPath}" is claimed by both "${owner}" and "${path}".`
+				)
+			markdownOwners.set(markdownPath, path)
+			const markdownUrl = new URL(markdownPath, directory)
+			await mkdir(new URL('.', markdownUrl), { recursive: true })
 			await writeFile(
-				new URL(markdownPath, directory),
+				markdownUrl,
 				`${frontmatter}\n${page.markdown}`
 			)
+		}
 
 		const link = `<link rel="alternate" type="text/markdown" href="${href}.md">`
 		if (!html.includes(link) && html.includes('</head>'))

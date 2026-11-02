@@ -6,18 +6,28 @@ import { defaultLocale, locales } from './locales.mjs'
 
 const docs = fileURLToPath(new URL('../content/docs/', import.meta.url))
 
+/** Match Starlight's URL for a docs source file. TypeDoc lowercases its generated reference routes. */
+export function canonicalDocSlug(/** @type {string} */ file) {
+	const slug = file
+		.split('\\')
+		.join('/')
+		.replace(/\.mdx?$/, '')
+		.replace(/(^|\/)index$/, '')
+
+	return slug.startsWith('reference/') ? slug.toLowerCase() : slug
+}
+
 /** Every docs page as a locale-free slug: 'essential/route', 'eden', ... */
-export const docSlugs = new Set(
-	readdirSync(docs + defaultLocale, { recursive: true, encoding: 'utf8' })
-		.filter((file) => /\.mdx?$/.test(file))
-		.map((file) =>
-			file
-				.split('\\')
-				.join('/')
-				.replace(/\.mdx?$/, '')
-				.replace(/(^|\/)index$/, '')
-		)
-)
+export const docSlugs = new Set()
+for (const file of readdirSync(docs + defaultLocale, {
+	recursive: true,
+	encoding: 'utf8'
+}).filter((file) => /\.mdx?$/.test(file))) {
+	const slug = canonicalDocSlug(file)
+	if (docSlugs.has(slug))
+		throw new Error(`Multiple docs pages resolve to /${slug}/`)
+	docSlugs.add(slug)
+}
 
 /** '/essential/route#group' -> '/th/essential/route/#group' when the page lives in docs. */
 export function localizeHref(/** @type {string} */ href, /** @type {string} */ locale) {

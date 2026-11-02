@@ -1,5 +1,6 @@
 import { Marked, Renderer, type Tokens } from 'marked'
 import type { HighlighterCore } from 'shiki/core'
+import { defaultLocale, stripLocale } from '../../lib/locales.mjs'
 import { DOCS_ORIGIN } from './arona'
 
 const entities: Record<string, string> = {
@@ -134,7 +135,15 @@ function chip(href: string, base: string, onLoad?: () => void) {
 	if (!link || link.external) return
 
 	const { pathname, hash } = new URL(link.href, base)
-	const entry = titles[pathname + hash] ?? titles[pathname]
+	const keys = [pathname + hash, pathname]
+	if (stripLocale(pathname) === pathname) {
+		const localized =
+			pathname === '/'
+				? `/${defaultLocale}/`
+				: `/${defaultLocale}${pathname}`
+		keys.push(localized + hash, localized)
+	}
+	const entry = keys.map((key) => titles?.[key]).find(Boolean)
 	if (!entry) return
 
 	const [title, pageTitle] = entry
