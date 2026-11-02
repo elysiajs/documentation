@@ -30,7 +30,7 @@ Status comes from git history: a translation is outdated when its English source
 
 ### Voice and terminology
 
-Translate the meaning and tone, not each word. Write as if one developer were helping another. Keep it clear, friendly, and slightly conversational. Avoid language that sounds stiff, corporate, or like an official manual. Keep the technical meaning unchanged.
+Translate the meaning and voice, not each word. Spica's docs sound warm, playful, and quietly confident. Imagine a helpful older sister or mentor who's genuinely glad the reader is here, then use the closest natural equivalent in your language. Speak directly to the reader and follow conversational patterns that feel natural in your language. Keep playful or warm asides brief. Never sound smug, condescending, corporate, or like an official manual. Use personality lightly. Clarity and technical accuracy always come first.
 
 Keep API identifiers such as `beforeHandle`, `derive`, and `status` unchanged. If a technical term is unfamiliar, you can ask AI to clarify what it means. Use the explanation to choose the wording developers naturally use in your language. Treat AI as a clarification tool, not a source of truth. If it conflicts with the current English docs, follow the docs.
 
