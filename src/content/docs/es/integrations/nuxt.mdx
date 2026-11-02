@@ -1,0 +1,108 @@
+---
+title: "Integración con Nuxt"
+description: "Con el plugin de la comunidad 'nuxt-elysia', podemos ejecutar Elysia en las API routes de Nuxt con Eden Treaty configurado automáticamente."
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integración con Nuxt</h1>
+
+Podemos usar [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia), un plugin de la comunidad para Nuxt, para configurar Elysia en las API routes de Nuxt con Eden Treaty.
+
+:::note[Integración de la comunidad]
+
+Usa un release de `nuxt-elysia` que soporte tu versión de Elysia. Su configuración y el cliente de Eden que genera pertenecen al paquete de la comunidad; verifica esa compatibilidad antes de usarlo con la v2.
+
+:::
+
+1. Instala el plugin con el siguiente comando:
+
+```bash
+bun add elysia@rc @elysia/eden@next
+bun add -d nuxt-elysia
+```
+
+2. Agrega `nuxt-elysia` a tu configuración de Nuxt:
+
+```ts
+export default defineNuxtConfig({
+    modules: [
+        'nuxt-elysia'
+    ],
+    nitro: {
+        preset: 'bun'
+    }
+})
+```
+
+
+:::tip
+
+La configuración `nitro.preset: 'bun'` es recomendada, pero no obligatoria. Le indica a Nitro, el motor de servidor de Nuxt, que use Bun como runtime del servidor en lugar del runtime de Node.js por defecto.
+
+:::
+
+
+3. Crea `api.ts` en la raíz del proyecto:
+
+```typescript title="api.ts"
+import { Elysia } from 'elysia'
+
+export default () => new Elysia()
+  .get('/hello', () => ({ message: 'Hello world!' }))
+```
+
+4. Usa Eden Treaty en tu app de Nuxt:
+
+```vue
+<template>
+    <div>
+        <p>{{ data.message }}</p>
+    </div>
+</template>
+<script setup lang="ts">
+const { $api } = useNuxtApp()
+
+const { data } = await useAsyncData(async () => {
+    const { data, error } = await $api.hello.get()
+
+    if (error)
+        throw new Error('Failed to call API')
+
+    return data
+})
+</script>
+```
+
+Esto configurará automáticamente Elysia para ejecutarse en las API routes de Nuxt.
+
+### pnpm
+Si tu configuración de pnpm no instala las peer dependencies, agrega explícitamente las que necesita Elysia v2:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefijo
+
+Por defecto, Elysia se monta en **/_api**, pero podemos personalizarlo con la configuración de `nuxt-elysia`.
+```ts
+export default defineNuxtConfig({
+	nuxtElysia: {
+		path: '/api'
+	}
+})
+```
+
+Esto montará Elysia en **/api** en lugar de **/_api**.
+
+Para ver más opciones de configuración, escha un vistazo a [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia).
+
+</div>
+</InteractiveDocLayout>
+</div>
