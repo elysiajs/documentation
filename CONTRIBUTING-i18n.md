@@ -26,7 +26,7 @@ Status comes from git history: a translation is outdated when its English source
 3. Keep frontmatter keys, code blocks, components and link targets as they are. Translate prose, headings and `title`/`description`.
    - Translated files sit one folder deeper, so add one `../` to every relative import: `'../../components/ui/card'` becomes `'../../../components/ui/card'`. The build fails with `Could not resolve` if you miss one.
    - Commit the file before running `bun run build` locally, otherwise the status page is skipped.
-4. Open a PR. One locale per PR keeps review easy.
+4. Open a PR to `next` branch. One locale per PR keeps review easy.
 
 ### Voice and terminology
 
