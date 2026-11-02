@@ -60,6 +60,14 @@ export const getStaticPaths = (async () => {
 				title: blogPageTitle(blogIndexMeta.title),
 				description: blogIndexMeta.description
 			}
+		},
+		{
+			params: { slug: 'i18n' },
+			props: {
+				title: 'Translation status',
+				description:
+					'Which Elysia documentation pages are translated, outdated, or missing in each language.'
+			}
 		}
 	]
 }) satisfies GetStaticPaths

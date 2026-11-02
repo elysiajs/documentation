@@ -13,3 +13,9 @@ test('Eden owns its root and descendants without matching similarly named routes
 	for (const pathname of ['/eden-other/', '/edens/', '/essential/route/'])
 		expect(productOf(pathname)).toBe('elysia')
 })
+
+test('a locale prefix keeps the product of the English page it translates', () => {
+	expect(productOf('/ja/eden/treaty/overview/')).toBe('eden')
+	expect(productOf('/zh-cn/reference/classes/elysia/')).toBe('reference')
+	expect(productOf('/th/essential/route/')).toBe('elysia')
+})

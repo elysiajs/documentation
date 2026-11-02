@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url'
 import { siteUrl } from './site.config.mjs'
 import { spicaTables } from './src/lib/spica-tables.mjs'
 import { lazyBlogImages } from './src/lib/lazy-blog-images.mjs'
+import { locales } from './src/lib/locales.mjs'
 import { spicaDark, spicaLight } from './src/spica/code-themes.mjs'
 
 // monaco-editor-auto-typings (tutorial playground) is CommonJS and requires Node's `path` in the
@@ -56,6 +57,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Elysia Interactive',
+			locales,
 			lastUpdated: true,
 			editLink: {
 				baseUrl: 'https://github.com/elysiajs/documentation/edit/main/'
@@ -69,7 +71,9 @@ export default defineConfig({
 				Sidebar: './src/components/sidebar.astro',
 				MobileMenuFooter: './src/components/sidebar-footer.astro',
 				PageTitle: './src/components/page-title.astro',
-				Pagination: './src/components/pagination.astro'
+				Pagination: './src/components/pagination.astro',
+				// the untranslated notice sits above the breadcrumb in page-title.astro
+				FallbackContentNotice: './src/components/empty.astro'
 			},
 			expressiveCode: {
 				themes: [spicaDark, spicaLight],

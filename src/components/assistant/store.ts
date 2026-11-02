@@ -7,6 +7,7 @@ import {
 	type AskOptions,
 	type Exchange
 } from './arona'
+import { stripLocale } from '../../lib/locales.mjs'
 
 export interface Turn extends Exchange {
 	id: number
@@ -360,7 +361,7 @@ export function send(text: string, seed?: number) {
 
 	const id = ++request
 	const { history, anchor } = windowHistory(state.turns)
-	const { pathname } = location
+	const pathname = stripLocale(location.pathname)
 	// the API reference isn't indexed by Arona
 	const reference = !pathname.startsWith('/reference/')
 		? pathname.replace(/^\/+|\/+$/g, '') || undefined

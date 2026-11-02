@@ -1,4 +1,5 @@
 import { getCollection, render } from 'astro:content'
+import { stripLocale } from '../lib/locales.mjs'
 import { productOf } from '../lib/product'
 import { searchDocuments } from '../search/build'
 
@@ -8,7 +9,10 @@ export const prerender = true
 export async function GET() {
 	const docs = await getCollection(
 		'docs',
-		({ id, data }) => !data.draft && productOf(`/${id}/`) !== 'reference'
+		({ id, data }) =>
+			!data.draft &&
+			stripLocale(id) === id &&
+			productOf(`/${id}/`) !== 'reference'
 	)
 	const documents = (
 		await Promise.all(

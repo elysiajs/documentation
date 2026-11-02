@@ -1,0 +1,55 @@
+---
+import { getEntry } from 'astro:content'
+import { IconLanguage } from '@tabler/icons-react'
+
+import { Select } from './ui/select'
+import { locales, stripLocale } from '../lib/locales.mjs'
+
+const route = Astro.locals.starlightRoute
+const pathname = stripLocale(Astro.url.pathname)
+// pages outside the docs collection (the /i18n/ dashboard) have no localized copies to switch to
+const translatable = await getEntry('docs', stripLocale(route.id))
+---
+
+{
+	translatable && (
+		<spica-language-select class="relative block">
+			<IconLanguage
+				size={17}
+				stroke={1.5}
+				aria-hidden="true"
+				className="pointer-events-none absolute top-1/2 left-3 z-1 -translate-y-1/2 text-ink-muted"
+			/>
+			<Select
+				variant="ghost"
+				aria-label="Language"
+				className="pl-9"
+				options={Object.entries(locales).map(([locale, { label }]) => ({
+					value: locale === 'root' ? pathname : `/${locale}${pathname}`,
+					label
+				}))}
+				value={
+					route.locale ? `/${route.locale}${pathname}` : pathname
+				}
+			/>
+		</spica-language-select>
+	)
+}
+
+<script>
+	customElements.define(
+		'spica-language-select',
+		class extends HTMLElement {
+			connectedCallback() {
+				const select = this.querySelector('select')!
+				select.onchange = () => (location.pathname = select.value)
+				// a back-forward cache restore keeps the language picked before leaving
+				addEventListener('pageshow', () => {
+					select.value =
+						select.querySelector<HTMLOptionElement>('option[selected]')
+							?.value ?? select.value
+				})
+			}
+		}
+	)
+</script>

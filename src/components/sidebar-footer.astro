@@ -3,9 +3,12 @@ import config from 'virtual:starlight/user-config';
 import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
 import { IconBrandGithub, IconBrandX, IconBrandDiscord } from '@tabler/icons-react';
 import { ThemeTabs } from './theme-tabs';
+import LanguageSelect from './language-select.astro';
 
 const github = config.social?.find(({ icon }) => icon === 'github');
 ---
+
+<LanguageSelect />
 
 <div class="spica-surface flex items-center justify-between gap-1 pb-1.5">
 	{github && (

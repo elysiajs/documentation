@@ -41,6 +41,6 @@ export const onRequest = defineRouteMiddleware(({ locals, url, site }) => {
 	const route = locals.starlightRoute
 	if (site && route.id !== '404')
 		route.head.push(
-			...ogImageHead(route.id, route.entry.data.title, site, route.head)
+			...ogImageHead(route.entry.id, route.entry.data.title, site, route.head)
 		)
 })

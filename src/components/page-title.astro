@@ -1,10 +1,13 @@
 ---
 import StarlightPageTitle from '@astrojs/starlight/components/PageTitle.astro'
 import Breadcrumb from './breadcrumb'
+import UntranslatedNotice from './untranslated-notice.astro'
 
 const { entry, sidebar, hasSidebar } = Astro.locals.starlightRoute
 const hasInlineTitle = entry.data.template === 'splash'
 ---
+
+<UntranslatedNotice />
 
 {
 	!hasInlineTitle && (
@@ -23,13 +26,20 @@ const hasInlineTitle = entry.data.template === 'splash'
 
 <style is:global>
 	@layer starlight.core {
+		/* the interactive layout renders its own breadcrumb and untranslated notice */
 		main:has([data-interactive-doc-layout])
-			> .content-panel:has(> .sl-container:empty) {
+			> :is(
+				.content-panel:has(> .sl-container:empty),
+				.content-panel:has(> .sl-container > [data-untranslated-notice]:only-child)
+			) {
 			display: none;
 		}
 
 		main:has([data-interactive-doc-layout])
-			> .content-panel:has(> .sl-container:empty)
+			> :is(
+				.content-panel:has(> .sl-container:empty),
+				.content-panel:has(> .sl-container > [data-untranslated-notice]:only-child)
+			)
 			+ .content-panel {
 			border-top: 0;
 		}

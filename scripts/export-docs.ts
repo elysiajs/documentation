@@ -6,6 +6,7 @@ import { toString } from 'hast-util-to-string'
 import { defaultHandlers, toMdast } from 'hast-util-to-mdast'
 import { toMarkdown } from 'mdast-util-to-markdown'
 import { gfmToMarkdown } from 'mdast-util-gfm'
+import { stripLocale } from '../src/lib/locales.mjs'
 
 export function docToMarkdown(html: string) {
 	const tree = fromHtml(html)
@@ -52,7 +53,12 @@ export async function exportDocs(
 ) {
 	const pages: { title: string; path: string; markdown: string }[] = []
 	for (const path of (await readdir(directory, { recursive: true })).sort()) {
-		if (!path.endsWith('.html') || path === '404.html') continue
+		if (
+			!path.endsWith('.html') ||
+			path === '404.html' ||
+			stripLocale(path) !== path
+		)
+			continue
 
 		const page = docToMarkdown(
 			await readFile(new URL(path, directory), 'utf8')

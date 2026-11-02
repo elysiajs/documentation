@@ -1,0 +1,128 @@
+---
+import { execSync } from 'node:child_process'
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro'
+import { getCollection } from 'astro:content'
+import { createLunaria } from '@lunariajs/core'
+
+import Table from '../components/ui/table.astro'
+import { locales, translatedLocales } from '../lib/locales.mjs'
+
+// Lunaria process.exit()s on docs without commits, which only happens to local drafts
+const untracked = execSync(
+	'git ls-files --others --exclude-standard src/content/docs',
+	{ encoding: 'utf8' }
+).trim()
+if (untracked)
+	console.warn(`[i18n] skipping translation status, uncommitted docs:\n${untracked}`)
+
+const lunaria = await createLunaria()
+const status = untracked ? [] : await lunaria.getFullStatus()
+const links = lunaria.gitHostingLinks()
+
+const titles = new Map(
+	(await getCollection('docs')).map(({ filePath, data }) => [
+		filePath,
+		data.title
+	])
+)
+
+const pages = status.map(({ source, localizations }) => {
+	const slug = source.path
+		.replace(/^src\/content\/docs\//, '')
+		.replace(/\.mdx?$/, '')
+		.replace(/(^|\/)index$/, '')
+
+	return {
+		href: slug ? `/${slug}/` : '/',
+		title: titles.get(source.path) ?? slug,
+		cells: translatedLocales.map((lang) => {
+			const localization = localizations.find((l) => l.lang === lang)!
+			if (localization.status === 'missing')
+				return { label: 'Missing', href: links.create(localization.path) }
+			if (localization.status === 'outdated')
+				return {
+					label: 'Outdated',
+					href: links.history(
+						source.path,
+						localization.git.latestTrackedCommit.date.toISOString()
+					)
+				}
+			return { label: 'Done' }
+		})
+	}
+})
+
+const count = (index: number, label: string) =>
+	pages.filter(({ cells }) => cells[index]!.label === label).length
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'Translation status',
+		description: 'Which Elysia documentation pages are translated, outdated, or missing in each language.',
+		head: [{ tag: 'meta', attrs: { name: 'robots', content: 'noindex' } }]
+	}}
+>
+	<p>
+		Help translate the Elysia documentation. Pick a language and a page
+		marked <strong>Missing</strong> or <strong>Outdated</strong>, translate
+		it, and open a pull request. Read the <a
+			href="https://github.com/elysiajs/documentation/blob/next/CONTRIBUTING-i18n.md"
+			>translation guide</a
+		> before you start.
+	</p>
+
+	<h2 id="summary">Summary</h2>
+	<Table>
+		<thead>
+			<tr>
+				<th>Language</th>
+				<th>Done</th>
+				<th>Outdated</th>
+				<th>Missing</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				translatedLocales.map((lang, index) => (
+					<tr>
+						<td>
+							{locales[lang].label} <code>{lang}</code>
+						</td>
+						<td>{count(index, 'Done')}</td>
+						<td>{count(index, 'Outdated')}</td>
+						<td>{count(index, 'Missing')}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</Table>
+
+	<h2 id="pages">Pages</h2>
+	<p>
+		<em>Outdated</em> links to the English changes made since the
+		translation was last updated.
+	</p>
+	<Table>
+		<thead>
+			<tr>
+				<th>Page</th>
+				{translatedLocales.map((lang) => <th>{lang}</th>)}
+			</tr>
+		</thead>
+		<tbody>
+			{
+				pages.map(({ href, title, cells }) => (
+					<tr>
+						<td>
+							<a href={href}>{title}</a>
+						</td>
+						{cells.map(({ label, href }) => (
+							<td>{href ? <a href={href}>{label}</a> : label}</td>
+						))}
+					</tr>
+				))
+			}
+		</tbody>
+	</Table>
+</StarlightPage>

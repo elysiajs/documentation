@@ -5,6 +5,7 @@ template: splash
 ---
 
 import '../../../styles/routing.css';
+import { Card } from '../../../components/ui/card';
 import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
 import InteractiveDoc from '../../../components/interactive-code/doc.astro';
 import InteractiveStep from '../../../components/interactive-code/step.astro';
@@ -132,9 +133,31 @@ Without `?preview=true` the request returns `403` with `Preview is closed`, and 
 
 <div class="content-layout">
 
+## No need to understand all at once
+
+There are a lot of hook for precise control but you don't need to use them all or understand them all at once.
+
+`beforeHandle` is a good starting point for most use cases, it's a tradition "run before handler", use for authorization/authentication, and can short-circuit the handler if needed.
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="#before-handle" title="Before handle">
+
+Run authorization and other checks after validation but before the route handler.
+
+</Card>
+
+<Card href="/essential/validation/" title="Validation">
+
+Use schemas to check request data before the handler runs.
+
+</Card>
+
+</div>
+
 ## Hook Registration
 
-Split into 2 types:
+You can register a hook in two ways:
 
 1. [Local hook](#local-hook): runs on a specific route.
 2. [Interceptor hook](#interceptor-hook): runs after registration in the current instance, subject to plugin scope.
@@ -149,7 +172,7 @@ Hooks receive context, just like a handler. Which fields are ready depends on th
 
 Put a hook in the route's options to apply it to that route only:
 
-```ts
+```ts {5-7}
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -171,7 +194,7 @@ new Elysia()
 
 Register a hook on the instance to apply it to the handlers that follow. The method is usually the event name with an `on` prefix, such as `.onAfterHandle()` or `.onBeforeHandle()`. `.mapResponse()` and `.derive()` are the exceptions: they have no `on` form.
 
-```ts
+```ts {5-8}
 import { Elysia } from 'elysia'
 
 new Elysia()
@@ -269,12 +292,15 @@ Returning a value responds early and skips the route's parsing, validation, and 
 ### Pre context
 
 The request hook receives the early request context. It includes:
-- `request`
-- `set`
-- `store`
-- `status` and `redirect`
-- values added with `.decorate()`, spread onto the context
-- `server` (if available)
+
+| Context value | What it provides |
+| --- | --- |
+| `request` | The original Web Standard `Request`. |
+| `set` | Outgoing response headers and a default status. |
+| `store` | Shared mutable state registered with `.state()`. |
+| `status` and `redirect` | Helpers for returning a specific HTTP status or redirect response. |
+| Values from `.decorate()` | Shared helpers or services, spread onto the context. |
+| `server` | The running server instance, when the runtime provides one. |
 
 `body` and `headers` aren't parsed yet in this stage.
 
@@ -286,11 +312,13 @@ The request hook receives the early request context. It includes:
 
 Built-in parsers cover:
 
-- `text/plain`
-- `application/json`
-- `multipart/form-data`
-- `application/x-www-form-urlencoded`
-- `application/octet-stream`
+| Content type | Parsed value |
+| --- | --- |
+| `text/plain` | String |
+| `application/json` | Parsed JSON value |
+| `multipart/form-data` | Object containing form fields and files |
+| `application/x-www-form-urlencoded` | Object containing form fields |
+| `application/octet-stream` | `ArrayBuffer` |
 
 Use a custom parser when your content type isn't supported.
 

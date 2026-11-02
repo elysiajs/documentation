@@ -39,7 +39,7 @@ const contentAnimation = {
 	hasSidebar ? (
 		<div
 			class="page docs-page relative isolate bg-(--sl-color-bg) group/docs [--sl-content-width:72rem] [--sl-content-inline-start:0rem] [--sl-sidebar-width:15rem] [--docs-drawer-width:calc(min(19rem,100dvw_-_3rem)_-_0.375rem)] [--docs-drawer-height:calc(100dvh_-_1.375rem)] min-h-dvh print:p-0"
-			transition:persist={`docs-shell-${productOf(Astro.url.pathname)}`}
+			transition:persist={`docs-shell-${Astro.locals.starlightRoute.locale ?? 'root'}-${productOf(Astro.url.pathname)}`}
 			transition:animate="none"
 		>
 			<Aurora variant="static" />

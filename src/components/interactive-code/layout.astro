@@ -1,6 +1,7 @@
 ---
 import PageActions from '../page-actions'
 import Breadcrumb from '../breadcrumb'
+import UntranslatedNotice from '../untranslated-notice.astro'
 import { IconX } from '@tabler/icons-react'
 import { IconButton } from '../ui/icon-button'
 import { docToMarkdown } from '../../../scripts/export-docs'
@@ -136,6 +137,7 @@ const pageHeadings = [
 	{
 		Astro.locals.starlightRoute.hasSidebar && (
 			<div class="content-layout not-content">
+				<UntranslatedNotice />
 				<Breadcrumb
 					client:load
 					sidebar={Astro.locals.starlightRoute.sidebar}
