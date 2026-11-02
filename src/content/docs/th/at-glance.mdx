@@ -137,7 +137,7 @@ new Elysia()
 
 ส่วน `:id` จะกลายเป็น `params.id` ทั้งตอน runtime และใน type ของ handler โดยไม่ต้องประกาศเอง และมี type เป็น `string`
 
-Tแนะนำให้ใช้ TypeScript แต่ไม่ได้บังคับนะ type inference ช่วยตอนเขียนโค้ด ถ้าต้องการ validate ค่าตอน runtime ด้วย ให้ใช้ schema
+แนะนำให้ใช้ TypeScript แต่ไม่ได้บังคับนะ type inference ช่วยตอนเขียนโค้ด ถ้าต้องการ validate ค่าตอน runtime ด้วย ให้ใช้ schema
 
 ## Type integrity
 
@@ -228,13 +228,13 @@ export const app = new Elysia()
     .listen(3000)
 ```
 
-นี่คือแนวทางแบบ FastAPI สำหรับ TypeScript: ใช้ type ในโค้ดเป็น input ในการสร้างเอกสาร แทนที่จะต้องเขียน annotation ซ้ำเอง ดูวิธีตั้งค่าและ type ที่รองรับได้ที่ OpenAPI จาก type
+นี่คือแนวทางแบบ FastAPI สำหรับ TypeScript: ใช้ type ในโค้ดเป็น input ในการสร้างเอกสาร แทนที่จะต้องเขียน annotation ซ้ำเอง ดูวิธีตั้งค่าและ type ที่รองรับได้ที่ [OpenAPI จาก type](/patterns/openapi/#openapi-from-types)
 
 ## Type safety แบบ end-to-end
 
-Type safety ไม่ได้หยุดอยู่แค่ฝั่งเซิร์ฟเวอร์ Eden ไลบรารีฝั่ง client ของ Elysia ช่วยให้ frontend ใช้ type ของเซิร์ฟเวอร์ได้ด้วย คล้ายกับการทำงานของ tRPC
+Type safety ไม่ได้หยุดอยู่แค่ฝั่งเซิร์ฟเวอร์ **Eden** ไลบรารีฝั่ง client ของ Elysia ช่วยให้ frontend ใช้ type ของเซิร์ฟเวอร์ได้ด้วย คล้ายกับการทำงานของ tRPC
 
-export type ของเซิร์ฟเวอร์จาก server.ts แล้ว import ไปใช้ใน `client.ts`:
+export type ของเซิร์ฟเวอร์จาก `server.ts` แล้ว import ไปใช้ใน `client.ts`:
 
 <FileCodeBlock>
 <TabItem label="server.ts">
@@ -339,7 +339,7 @@ client จัดการได้ทั้งผลลัพธ์ที่ส�
 
 Elysia ปรับแต่งมาให้ใช้ฟีเจอร์ native ของ Bun ได้เต็มที่ แต่ไม่ได้จำกัดอยู่แค่ Bun เพราะ interface Request/Response ที่รองรับ[WinterTC](https://wintertc.org/) ทำให้ต่อกับรันไทม์อื่นได้ด้วย
 
-คุณสามารถใช้ Elysia ได้กับ::
+คุณสามารถใช้ Elysia ได้กับ:
 
 - Bun.
 - [Node.js](/integrations/node/).
