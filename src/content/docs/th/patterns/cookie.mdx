@@ -1,0 +1,377 @@
+---
+title: Cookie
+description: อ่าน อัปเดต ตรวจสอบ และเซ็น cookie ด้วย cookie jar แบบ reactive ของ Elysia
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+
+export const attributesSteps = [
+    {
+        "label": "Assign property",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia()\n    .get('/', ({ cookie: { name } }) => {\n        // get\n        name.domain\n\n        // set\n        name.domain = 'millennium.sh'\n        name.httpOnly = true\n    })"
+    },
+    {
+        "label": "set",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia()\n    .get('/', ({ cookie: { name } }) => {\n        name.set({\n            domain: 'millennium.sh',\n            httpOnly: true\n        })\n    })"
+    },
+    {
+        "label": "update",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia()\n    .get('/', ({ cookie: { name } }) => {\n        name.update({ httpOnly: true })\n    })"
+    },
+    {
+        "label": "remove",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia()\n    .get('/', ({ cookie: { name } }) => {\n        name.remove()\n    })"
+    }
+];
+
+export const schemaSteps = [
+    {
+        "label": "Cookie schema",
+        "code": "import { Elysia, t } from 'elysia'\n\nnew Elysia()\n    .get('/', {\n        cookie: t.Cookie({\n            name: t.Object({\n                id: t.Numeric(),\n                name: t.String()\n            })\n        })\n    }, ({ cookie: { name } }) => {\n        // Set\n        name.value = {\n            id: 617,\n            name: 'Summoning 101'\n        }\n    })"
+    },
+    {
+        "label": "Optional cookie",
+        "code": "import { Elysia, t } from 'elysia'\n\nnew Elysia()\n    .get('/', {\n        cookie: t.Cookie({\n            name: t.Optional(\n                t.Object({\n                    id: t.Numeric(),\n                    name: t.String()\n                })\n            )\n        })\n    }, ({ cookie: { name } }) => {\n        // Set\n        name.value = {\n            id: 617,\n            name: 'Summoning 101'\n        }\n    })"
+    }
+];
+
+export const signatureSteps = [
+    {
+        "label": "Using cookie signatures",
+        "code": "import { Elysia, t } from 'elysia'\n\nnew Elysia()\n    .get('/', {\n        cookie: t.Cookie({\n            profile: t.Optional(t.Object({\n                id: t.Numeric(),\n                name: t.String()\n            }))\n        }, {\n            secrets: 'Fischl von Luftschloss Narfidort',\n            sign: ['profile']\n        })\n    }, ({ cookie: { profile } }) => {\n        profile.value = {\n            id: 617,\n            name: 'Summoning 101'\n        }\n    })"
+    },
+    {
+        "label": "Constructor",
+        "code": "import { Elysia, t } from 'elysia'\n\nnew Elysia({\n    cookie: {\n        secrets: 'Fischl von Luftschloss Narfidort',\n        sign: ['profile']\n    }\n})\n    .get('/', {\n        cookie: t.Cookie({\n            profile: t.Optional(t.Object({\n                id: t.Numeric(),\n                name: t.String()\n            }))\n        })\n    }, ({ cookie: { profile } }) => {\n        profile.value = {\n            id: 617,\n            name: 'Summoning 101'\n        }\n    })"
+    },
+    {
+        "label": "Cookie rotation",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia({\n    cookie: {\n        secrets: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']\n    }\n})"
+    },
+    {
+        "label": "Unsigned cookie transition",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia({\n    cookie: {\n        secrets: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort', null]\n    }\n})"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Cookie</h1>
+
+อ่านและอัปเดต cookie ได้ผ่าน object `cookie` ใน handler
+
+ดึง cookie ที่ต้องการออกมาตามชื่อ แล้วใช้ `.value` เพื่ออ่านหรือเปลี่ยนค่า
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ cookie: { name } }) => {
+        // Get
+        name.value
+
+        // Set
+        name.value = "New Value"
+    })
+```
+
+Elysia จะ encode และ decode ค่าที่เป็น object ให้เอง คุณจึงใช้งาน cookie เหมือนเป็น object ได้เลย
+
+:::note[cookie อาจไม่มีค่า]
+
+การอ่าน cookie ตามชื่อจะได้ object `Cookie` กลับมาเสมอ แม้ request จะไม่มี cookie ชื่อนั้นก็ตาม และ `.value` ของมันอาจเป็น `undefined` ได้ ใช้ [schema ของ cookie](#cookie-schema) เพื่อกำหนดหน้าตาของค่า และให้ TypeScript ยังช่วยตรวจให้ได้ต่อไป
+
+:::
+
+## Reactivity
+แค่เปลี่ยนค่าหรือ attribute ของ cookie ก็จะมี header `Set-Cookie` เตรียมไว้ใน response ให้แล้ว ไม่ต้องประกอบ header เอง
+
+cookie jar เป็น proxy เมื่ออ่านชื่อไหนก็จะได้ object `Cookie` กลับมา และเมื่ออ่าน `.value` ก็จะได้ค่าของมัน ส่วนการวนลูปใน jar จะไล่ผ่านเฉพาะชื่อ cookie ที่มีอยู่จริง
+
+## การจัดการ cookie
+จัดการ cookie ได้ 2 วิธี:
+
+1. กำหนด property โดยตรง
+2. ใช้ `set` หรือ `update` เพื่ออัปเดตหลาย property พร้อมกัน
+
+ดูรายละเอียดเพิ่มเติมได้ที่ [การตั้งค่า attribute ของ cookie](#config)
+
+</div>
+
+<InteractiveDoc steps={attributesSteps}>
+
+<InteractiveStep>
+
+### กำหนด property
+อ่านหรือกำหนด attribute ของ cookie ได้เหมือน property ของ object ทั่วไป แล้ว Elysia จะใช้ attribute ที่อัปเดตแล้วตอนเขียน cookie
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### set
+`set` จะสร้าง object property ของ cookie ขึ้นมาใหม่จาก property เริ่มต้นและค่าปัจจุบัน แล้วค่อยใส่ property ที่คุณส่งมา ถ้าอยากรวมเข้ากับ property ที่มีอยู่ ให้ใช้ `update`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### update
+
+ใช้ `update` เพื่อรวม attribute เข้ากับ cookie ปัจจุบัน โดยไม่รีเซ็ต property อื่น เอกสารเวอร์ชันเก่าเรียก operation นี้ว่า `add` แต่ใน Elysia 2 method นี้ชื่อ `update`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### remove
+เรียก `.remove()` เพื่อทำให้ cookie หมดอายุ โดยใช้ path และ domain เดียวกับตอนที่ตั้ง cookie นั้น ถ้า cookie ไม่มีค่า `remove()` จะไม่ทำอะไรเลย
+
+ใน Elysia 2 การเขียน `delete cookie.name` ใน JavaScript จะไม่ทำให้ cookie ในเบราว์เซอร์หมดอายุ ให้ใช้ `.remove()` แทน เพื่อให้ response มี attribute สำหรับการหมดอายุติดไปด้วย
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<InteractiveDoc steps={schemaSteps}>
+
+<InteractiveStep>
+
+## Schema ของ cookie
+ใช้ `cookie` เพื่อตรวจสอบค่าของ cookie ที่ส่งเข้ามา และ infer type ให้ใน handler รองรับทั้ง `t.Cookie()` และ `t.Object()` และโดยค่าเริ่มต้นจะยอมให้มี cookie ชื่ออื่นเพิ่มเข้ามาได้
+
+อ่านหรืออัปเดต cookie ที่ตรวจสอบแล้วผ่าน property `.value` ตัวอย่างนี้ต้องมี cookie `name` อยู่แล้ว และต้องมีหน้าตา object ตามที่กำหนดไว้
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Cookie แบบ optional
+ครอบ field ของ cookie ด้วย `t.Optional` เพื่อให้ไม่มี cookie นั้นก็ได้ ซึ่งจะยอมรับ `undefined` แต่ถ้าอยากรับ `null` ให้ใช้ `t.Nullable`
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## สเปกของ cookie
+
+cookie คือค่าเล็ก ๆ ที่เบราว์เซอร์เก็บไว้ แล้วส่งไปพร้อมกับ request ที่ตรงเงื่อนไข เหมาะกับ state ที่ต้องติดตัว client ไปด้วย เช่น session identifier
+
+`fetch` ในเบราว์เซอร์จะจัดการ header `Cookie` เอง ถ้า request ต้องใช้ cookie ของเบราว์เซอร์ ให้ใส่ `credentials`:
+
+```ts
+fetch('http://localhost:3000/cookie', {
+    credentials: 'include'
+})
+```
+
+กฎเรื่อง cookie และ cross-origin ของเบราว์เซอร์ก็ยังมีผลเหมือนเดิม
+
+## t.Cookie
+
+`t.Cookie()` ใช้กำหนด object ของค่า cookie และรับ [ตัวเลือกเฉพาะของ cookie](#config) เป็น argument ตัวที่สอง:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/cookie', {
+        cookie: t.Cookie({
+            name: t.String()
+        }, {
+            secure: true,
+            httpOnly: true
+        })
+    }, ({ cookie }) => cookie.name.value)
+```
+
+`secure` และ `httpOnly` ใช้ตั้งค่า cookie ที่เซิร์ฟเวอร์ส่งออกไป ไม่ใช่ property ที่จะพิสูจน์ได้จาก string ของ cookie ที่ส่งเข้ามา
+
+## Codec ของ cookie
+
+Elysia อ่าน cookie จาก request และเขียนกลับไปด้วย ดังนั้น codec ของ field ใน cookie ต้องทำงานได้ทั้งสองทาง ให้ใช้ `t.Codec` โดย decode จะทำงานกับค่าที่ส่งเข้ามา ส่วน encode จะทำงานตอนที่คุณกำหนด `.value`:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/cookie', {
+        cookie: t.Object({
+            visit: t.Optional(
+                t.Codec(t.String())
+                    .Decode((value) => new Date(value))
+                    .Encode((date) => date.toISOString())
+            )
+        })
+    }, ({ cookie: { visit } }) => {
+        const last = visit.value // Date | undefined
+
+        visit.value = new Date() // sent as an ISO string
+
+        return last
+    })
+```
+
+`t.Encode` และ `t.Decode` ทำงานทางเดียว: `t.Encode` จะ throw เมื่อ request ส่ง cookie นั้นมา และ `t.Decode` จะ throw เมื่อคุณกำหนดค่าให้มัน
+
+## การเซ็น cookie
+signature ของ cookie ช่วยให้ Elysia ตรวจได้ว่าค่าของ cookie เซ็นด้วย secret ของคุณจริง และไม่ได้ถูกแก้ไข Elysia จะเซ็นค่าที่ส่งออกไปและตรวจ signature ที่ส่งเข้ามาให้อัตโนมัติ
+
+การเซ็นไม่ได้เข้ารหัสค่านั้น client ยังอ่านเนื้อหาข้างในได้อยู่
+
+</div>
+
+<InteractiveDoc steps={signatureSteps}>
+
+<InteractiveStep>
+
+## ใช้งานการเซ็น cookie
+ใส่ `secrets` แล้วใช้ `sign` เลือกชื่อ cookie ที่จะเซ็นและตรวจสอบ cookie profile ด้านล่างเป็นแบบ optional เพื่อให้ request แรกสร้างมันขึ้นมาได้
+
+Elysia จะเซ็น profile ที่อัปเดตแล้ว และตรวจ signature ของมันใน request ถัด ๆ ไป secret ในตัวอย่างมีไว้ประกอบการอธิบายเท่านั้น ส่วน secret ที่ใช้เซ็นจริงต้องเก็บเป็นความลับ
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Constructor
+กำหนด `cookie.secrets` และ `cookie.sign` ใน constructor ของ Elysia เพื่อใช้การตั้งค่าการเซ็นร่วมกันทุก route
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## การหมุนเวียน secret ของ cookie
+Elysia จัดการการหมุนเวียน secret ของ cookie ให้อัตโนมัติ
+
+ใส่ secret ใหม่ไว้ตัวแรก แล้วเก็บ secret ก่อนหน้าไว้ถัดจากนั้น Elysia จะตรวจ signature ที่เข้ามากับทุกตัวในรายการ และเซ็นค่าใหม่ด้วยตัวแรก ซึ่งต้องเป็น string ที่ไม่ว่าง
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### เปลี่ยนจาก cookie ที่ไม่ได้เซ็น
+Elysia รองรับการค่อย ๆ เปลี่ยนจาก cookie ที่ไม่ได้เซ็นมาเป็น cookie ที่เซ็นแล้วได้อย่างราบรื่น
+
+ถ้าใส่ `null` ไว้ใน array ของ `cookie.secrets` Elysia จะปล่อยให้ cookie ที่ไม่ได้เซ็นผ่านไปได้ แต่ถ้ามี signature ก็ยังตรวจว่าถูกต้องหรือไม่
+
+Elysia จะเซ็นค่า cookie ใหม่ด้วยตัวแรกเสมอ จึงต้องวาง `null` ไว้หลัง secret ที่ใช้เซ็น
+
+พอเปลี่ยนผ่านเสร็จแล้ว ให้เอา `null` ออก เพื่อปฏิเสธ cookie ที่ไม่ได้เซ็น
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## Config
+ใช้ตัวเลือกเหล่านี้ได้ใน constructor หรือใน `t.Cookie` และทุกตัวยกเว้น `secrets` กับ `sign` ยังส่งตอนอัปเดต attribute ของ cookie ได้ด้วย เพราะการเซ็นต้องตั้งค่าที่ระดับแอปหรือ route ไม่ใช่ตอนเขียน cookie แต่ละครั้ง
+
+### secrets
+key ที่ใช้เซ็นและตรวจสอบ cookie ชื่อตัวเลือกคือ `secrets` ไม่ใช่ `secret`
+
+รับได้ทั้ง string หรือ array ของ string ถ้าเป็น array จะเปิดใช้ [การหมุนเวียน key](#cookie-rotation) ได้ ใน constructor `secrets` จะเป็น `null` หรือมีค่านี้ปนอยู่ด้วยก็ได้ เพื่อยอมรับ cookie ที่ไม่ได้เซ็นในช่วงเปลี่ยนผ่าน แต่ `t.Cookie` จะไม่รับ `null`
+
+### domain
+กำหนดค่าให้กับ [attribute Domain ของ Set-Cookie](https://tools.ietf.org/html/rfc6265#section-5.2.3)
+
+โดยค่าเริ่มต้นจะไม่ได้ตั้ง domain ไว้ และ client ส่วนใหญ่จะถือว่า cookie นี้ใช้ได้เฉพาะ domain ปัจจุบันเท่านั้น
+
+
+### encode
+
+Elysia 2 ไม่มีตัวเลือก `encode` สำหรับกำหนดวิธี encode cookie เอง Elysia จะ encode ค่าของ cookie ให้ตอน serialize ให้กำหนดค่าผ่าน `.value` ได้เลย
+
+### expires
+กำหนด object Date ที่จะใช้เป็นค่าของ [attribute Expires ของ Set-Cookie](https://tools.ietf.org/html/rfc6265#section-5.2.1)
+
+โดยค่าเริ่มต้นจะไม่ได้ตั้งวันหมดอายุไว้ และ client ส่วนใหญ่จะถือว่าเป็น "non-persistent cookie" แล้วลบทิ้งเมื่อเกิดเหตุการณ์อย่างการปิดเบราว์เซอร์
+
+:::tip
+
+[สเปกของ cookie storage model](https://tools.ietf.org/html/rfc6265#section-5.3) ระบุว่าถ้าตั้งทั้ง `expires` และ `maxAge` ไว้ `maxAge` จะมีผลก่อน แต่ client บางตัวอาจไม่ทำตามนี้ ถ้าตั้งทั้งคู่ จึงควรให้ชี้ไปที่วันและเวลาเดียวกัน
+
+:::
+
+### httpOnly
+ค่าเริ่มต้น: `false`
+
+กำหนดค่า boolean ให้กับ [attribute HttpOnly ของ Set-Cookie](https://tools.ietf.org/html/rfc6265#section-5.2.6)
+
+ถ้าเป็น truthy จะตั้ง attribute HttpOnly ไว้ ถ้าไม่ใช่ก็จะไม่ตั้ง
+
+โดยค่าเริ่มต้นจะไม่ได้ตั้ง attribute HttpOnly ไว้
+
+:::tip
+
+เมื่อ `httpOnly` เป็น `true` JavaScript ฝั่ง client จะอ่าน cookie ผ่าน `document.cookie` ไม่ได้
+
+:::
+
+### maxAge
+ค่าเริ่มต้น: `undefined`
+
+กำหนดตัวเลข (หน่วยเป็นวินาที) ที่จะใช้เป็นค่าของ [attribute Max-Age ของ Set-Cookie](https://tools.ietf.org/html/rfc6265#section-5.2.2)
+
+ตัวเลขที่ส่งมาจะปัดเศษลงเป็นจำนวนเต็ม โดยค่าเริ่มต้นจะไม่ได้ตั้งอายุสูงสุดไว้
+
+:::tip
+
+[สเปกของ cookie storage model](https://tools.ietf.org/html/rfc6265#section-5.3) ระบุว่าถ้าตั้งทั้ง `expires` และ `maxAge` ไว้ `maxAge` จะมีผลก่อน แต่ client บางตัวอาจไม่ทำตามนี้ ถ้าตั้งทั้งคู่ จึงควรให้ชี้ไปที่วันและเวลาเดียวกัน
+
+:::
+
+### path
+กำหนดค่าให้กับ [attribute Path ของ Set-Cookie](https://tools.ietf.org/html/rfc6265#section-5.2.4)
+
+ถ้าไม่ได้ระบุ `path` Elysia จะตั้งเป็น `Path=/` ทำให้ cookie ใช้ได้ทั้งเว็บไซต์
+
+### priority
+กำหนด string ที่จะใช้เป็นค่าของ [attribute Priority ของ Set-Cookie](https://tools.ietf.org/html/draft-west-cookie-priority-00#section-4.1)
+`low` จะตั้ง attribute Priority เป็น Low
+`medium` จะตั้ง attribute Priority เป็น Medium ซึ่งเป็น priority เริ่มต้นเมื่อไม่ได้ตั้งค่าไว้
+`high` จะตั้ง attribute Priority เป็น High
+
+ดูรายละเอียดเพิ่มเติมของ priority แต่ละระดับได้ใน [สเปก](https://tools.ietf.org/html/draft-west-cookie-priority-00#section-4.1)
+
+:::tip
+
+client แต่ละตัวรองรับ attribute นี้ไม่เหมือนกัน ลองตรวจดูการทำงานในเบราว์เซอร์ที่แอปของคุณรองรับด้วย
+
+:::
+
+### sameSite
+กำหนด boolean หรือ string ที่จะใช้เป็นค่าของ [attribute SameSite ของ Set-Cookie](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-09#section-5.4.7)
+`true` จะตั้ง attribute SameSite เป็น Strict เพื่อบังคับ same-site แบบเข้มงวด
+`false` จะไม่ตั้ง attribute SameSite
+`'lax'` จะตั้ง attribute SameSite เป็น Lax เพื่อบังคับ same-site แบบผ่อนปรน
+`'none'` จะตั้ง attribute SameSite เป็น None เพื่อระบุชัดว่าเป็น cookie แบบ cross-site
+`'strict'` จะตั้ง attribute SameSite เป็น Strict เพื่อบังคับ same-site แบบเข้มงวด
+ดูรายละเอียดเพิ่มเติมของการบังคับแต่ละระดับได้ใน [สเปก](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-09#section-5.4.7)
+
+:::tip
+
+client แต่ละตัวรองรับ attribute นี้ไม่เหมือนกัน ลองตรวจดูการทำงานในเบราว์เซอร์ที่แอปของคุณรองรับด้วย
+
+:::
+
+### secure
+กำหนดค่า boolean ให้กับ [attribute Secure ของ Set-Cookie](https://tools.ietf.org/html/rfc6265#section-5.2.5) ถ้าเป็น truthy จะตั้ง attribute นี้ไว้ ถ้าไม่ใช่ก็จะไม่ตั้ง โดยค่าเริ่มต้นจะไม่ได้ตั้งไว้
+
+:::tip
+
+ระวังตอนตั้งค่านี้เป็น true ด้วยนะ เพราะ client ที่ทำตามสเปกจะไม่ส่ง cookie กลับมาที่เซิร์ฟเวอร์อีก ถ้าเบราว์เซอร์ไม่ได้เชื่อมต่อผ่าน HTTPS
+
+:::
+
+</div>
+</InteractiveDocLayout>
+</div>

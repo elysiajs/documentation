@@ -1,0 +1,54 @@
+---
+title: Unit test
+description: ทดสอบ instance ของ Elysia โดยตรงด้วย Eden Treaty
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Unit test</h1>
+
+ตามที่อธิบายไว้ใน [การตั้งค่า Eden Treaty](/eden/treaty/config#urlorinstance) และ [Unit Test](/patterns/unit-test) เราส่ง instance ของ Elysia ให้ Eden Treaty โดยตรงได้ เพื่อติดต่อกับเซิร์ฟเวอร์ Elysia ได้ทันทีโดยไม่ต้องส่ง network request
+
+เราใช้ pattern นี้เขียน unit test ที่มีทั้ง end-to-end type safety และการทดสอบระดับ type ได้ในคราวเดียว
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia().get('/hello', 'hi')
+const api = treaty(app)
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const { data } = await api.hello.get()
+
+        expect(data).toBe('hi')
+
+    })
+})
+```
+
+## ทดสอบ type safety
+เพิ่มโฟลเดอร์ test ของคุณเข้าไปใน `tsconfig.json` แล้วรัน TypeScript ด้วยตัวเลือกคอมไพเลอร์ของโปรเจกต์
+
+```bash
+bunx tsc --noEmit
+```
+
+วิธีนี้ช่วยให้มั่นใจว่า type ของทั้ง client และเซิร์ฟเวอร์ยังตรงกันอยู่ โดยเฉพาะตอนที่กำลัง migrate
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

@@ -1,0 +1,76 @@
+---
+title: Mount
+description: รันแอปพลิเคชันที่ทำงานบน Request และ Response ร่วมกับ Elysia
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Mount</h1>
+
+[WinterTC](https://wintertc.org/) คือมาตรฐานสำหรับสร้างเซิร์ฟเวอร์ HTTP ที่อยู่เบื้องหลัง Cloudflare, Deno, Vercel และอื่น ๆ
+
+มาตรฐานนี้ทำให้เว็บเซิร์ฟเวอร์ทำงานร่วมกันข้าม runtime ได้ ด้วยการใช้ [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) และ [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response)
+
+Elysia รองรับมาตรฐาน WinterTC โดยปรับแต่งมาให้รันบน Bun เป็นหลัก แต่ก็รองรับ runtime อื่นด้วยเท่าที่ทำได้
+
+ทำให้เฟรมเวิร์กหรือโค้ดอะไรก็ตามที่รองรับ WinterTC รันร่วมกันได้ เฟรมเวิร์กอย่าง Elysia, Hono, Remix, Itty Router จึงรันด้วยกันได้ในฟังก์ชันง่าย ๆ ตัวเดียว
+
+## Mount
+ส่งฟังก์ชัน `fetch` ให้ `.mount`:
+```ts
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const hono = new Hono()
+	.get('/', (c) => c.text('Hello from Hono!'))
+
+const app = new Elysia()
+    .get('/', () => 'Hello from Elysia')
+    .mount('/hono', hono.fetch)
+```
+
+เฟรมเวิร์กไหนก็ตามที่ใช้ `Request` และ `Response` ทำงานร่วมกับ Elysia ได้ เช่น:
+- Hono
+- Nitro
+- H3
+- [API Route ของ Next.js](/integrations/nextjs/)
+- [API Route ของ Nuxt](/integrations/nuxt/)
+- [API Route ของ SvelteKit](/integrations/sveltekit/)
+
+และใช้ได้บนหลาย runtime เช่น:
+- Bun
+- Deno
+- Vercel Edge Runtime
+- Cloudflare Worker
+- Netlify Edge Function
+
+ถ้าเฟรมเวิร์กนั้นรองรับฟังก์ชัน **.mount** คุณก็ mount Elysia ไว้ในเฟรมเวิร์กอื่นได้เหมือนกัน:
+```ts
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const elysia = new Elysia()
+    .get('/', () => 'Hello from Elysia inside Hono inside Elysia')
+
+const hono = new Hono()
+    .get('/', (c) => c.text('Hello from Hono!'))
+    .mount('/elysia', elysia.fetch)
+
+const main = new Elysia()
+    .get('/', () => 'Hello from Elysia')
+    .mount('/hono', hono.fetch)
+    .listen(3000)
+```
+
+แอปที่ถูก mount จะได้รับ Request มาตรฐานและคืน Response กลับไป ถ้าจะรวม instance ของ Elysia สองตัวเข้าด้วยกัน ใช้ `.use()` ดีกว่า เพื่อให้ Elysia รักษา type และ scope ของ plugin ไว้ได้
+
+</div>
+</InteractiveDocLayout>
+</div>

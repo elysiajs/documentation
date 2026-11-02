@@ -1,0 +1,250 @@
+---
+title: Plugin JWT
+description: ข้อมูลอ้างอิงและตัวอย่างการใช้งาน plugin JWT
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin JWT</h1>
+
+plugin นี้ช่วยให้ใช้ JWT ใน handler ของ Elysia ได้
+
+ติดตั้งด้วยคำสั่ง:
+```bash
+bun add @elysia/jwt@rc
+```
+
+ตั้ง `JWT_SECRET` เป็น secret ส่วนตัวสำหรับใช้ sign ก่อนเริ่มเซิร์ฟเวอร์ route ด้านล่างแค่สาธิตการ sign และการตรวจสอบ token ส่วน endpoint สำหรับ sign-in ของจริงต้องตรวจสอบข้อมูลยืนยันตัวตนให้เรียบร้อยก่อนออก token เสมอ
+
+จากนั้นก็นำไปใช้ได้เลย:
+
+
+```ts title="cookie"
+import { Elysia } from 'elysia'
+import { jwt } from '@elysia/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', async ({ jwt, params: { name }, cookie: { auth } }) => {
+    	const value = await jwt.sign({ name })
+
+        auth!.set({
+            value,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 7 * 86400,
+            path: '/profile',
+        })
+
+        return `Sign in as ${value}`
+    })
+    .get('/profile', async ({ jwt, status, cookie: { auth } }) => {
+        const profile = await jwt.verify(auth!.value)
+
+        if (!profile)
+            return status(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+```ts title="headers"
+import { Elysia } from 'elysia'
+import { jwt } from '@elysia/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', ({ jwt, params: { name } }) => {
+    	return jwt.sign({ name })
+    })
+    .get('/profile', async ({ jwt, status, headers: { authorization } }) => {
+        const profile = await jwt.verify(authorization?.startsWith('Bearer ') ? authorization.slice(7) : undefined)
+
+        if (!profile)
+            return status(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+
+การตั้งค่า cookie แบบนี้ต้องใช้ HTTPS ส่วนตัวอย่างแบบ header ต้องส่ง `Authorization: Bearer <token>` มาด้วย
+
+## การตั้งค่า
+plugin นี้ต่อยอด config มาจาก [jose](https://github.com/panva/jose)
+
+ด้านล่างนี้คือ config ที่ plugin รองรับ
+
+### name
+ชื่อที่จะใช้ลงทะเบียนฟังก์ชัน `jwt`
+
+ตัวอย่างเช่น ลงทะเบียนฟังก์ชัน `jwt` ด้วยชื่อที่กำหนดเอง
+```ts
+app
+    .use(
+        jwt({
+            name: 'myJWTNamespace',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', ({ myJWTNamespace, params }) => {
+        return myJWTNamespace.sign(params)
+    })
+```
+
+เพราะบางคนอาจต้องใช้ `jwt` หลาย instance ที่ตั้งค่าต่างกันในเซิร์ฟเวอร์เดียว จึงต้องลงทะเบียนฟังก์ชัน JWT ด้วยชื่อที่ต่างกันให้ชัดเจน
+
+### secret
+private key ที่ใช้ sign payload ของ JWT
+
+### schema
+ตรวจสอบ type ของ payload ใน JWT แบบเข้มงวด
+
+---
+ตัวเลือกต่อไปนี้คือ claim ของ JWT และ header ของ JWS ที่ jose รองรับ
+
+### alg
+ค่าเริ่มต้น: `HS256`
+
+อัลกอริทึมที่ใช้ sign payload ของ JWT
+
+ค่าที่ใช้ได้กับ jose มีดังนี้:
+HS256
+HS384
+HS512
+PS256
+PS384
+PS512
+RS256
+RS384
+RS512
+ES256
+ES256K
+ES384
+ES512
+EdDSA
+
+### iss
+claim issuer ใช้ระบุว่าใครเป็นผู้ออก JWT นี้ ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.1)
+
+สรุปสั้น ๆ: ส่วนใหญ่ก็คือชื่อ (โดเมน) ของผู้ที่ sign นั่นเอง
+
+### sub
+claim subject ใช้ระบุว่า JWT นี้พูดถึงใคร
+
+โดยปกติ claim ต่าง ๆ ใน JWT จะเป็นข้อความที่กล่าวถึง subject นั้น ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.2)
+
+### aud
+claim audience ใช้ระบุผู้รับที่ JWT นี้ตั้งใจส่งถึง
+
+ผู้รับแต่ละรายที่จะประมวลผล JWT นี้ต้องระบุตัวเองด้วยค่าใน claim audience ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.3)
+
+### jti
+claim JWT ID ใช้กำหนดตัวระบุที่ไม่ซ้ำกันให้ JWT ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.7)
+
+### nbf
+claim "not before" ระบุเวลาที่ JWT เริ่มใช้ได้ ก่อนเวลานั้นต้องไม่รับ JWT ไปประมวลผล ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.5)
+
+### exp
+claim expiration time ระบุเวลาหมดอายุ ตั้งแต่เวลานั้นเป็นต้นไปต้องไม่รับ JWT ไปประมวลผลเด็ดขาด ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.4)
+
+### iat
+claim "issued at" ระบุเวลาที่ออก JWT
+
+ใช้ claim นี้หาอายุของ JWT ได้ ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.6)
+
+### b64
+Header Parameter ส่วนขยายของ JWS ตัวนี้จะเปลี่ยนรูปแบบการแสดง Payload ของ JWS และวิธีคำนวณ Signing input ของ JWS ตาม [RFC7797](https://www.rfc-editor.org/rfc/rfc7797)
+
+### kid
+ตัวช่วยบอกว่าใช้ key ไหนในการปกป้อง JWS
+
+parameter นี้ช่วยให้ผู้ส่งแจ้งผู้รับได้อย่างชัดเจนว่ามีการเปลี่ยน key ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.4)
+
+### x5t
+header parameter (X.509 certificate SHA-1 thumbprint) คือ SHA-1 digest ที่เข้ารหัสแบบ base64url ของ DER encoding ของใบรับรอง X.509 [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) ที่ตรงกับ key ที่ใช้ลงลายเซ็นดิจิทัลให้ JWS ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.7)
+
+### x5c
+header parameter (X.509 certificate chain) เก็บใบรับรอง public key แบบ X.509 หรือ certificate chain [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) ที่ตรงกับ key ที่ใช้ลงลายเซ็นดิจิทัลให้ JWS ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.6)
+
+### x5u
+header parameter (X.509 URL) คือ URI [RFC3986](https://www.rfc-editor.org/rfc/rfc3986) ที่ชี้ไปยัง resource ของใบรับรอง public key แบบ X.509 หรือ certificate chain [RFC5280] ที่ตรงกับ key ที่ใช้ลงลายเซ็นดิจิทัลให้ JWS ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.5)
+
+### jwk
+header `jwk` เก็บ public JSON Web Key ที่คู่กับ key ที่ใช้ sign ส่วน header `jku` ที่แยกออกมาต่างหากคือ URL ของ JWK Set ดูเพิ่มเติมได้ที่ [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.3)
+
+### typ
+แอปพลิเคชันที่ใช้ JWS จะใช้ Header Parameter `typ` (type) เพื่อประกาศ media type [IANA.MediaTypes] ของ JWS ทั้งก้อนนี้
+
+มีไว้ให้แอปพลิเคชันใช้ในกรณีที่โครงสร้างข้อมูลของแอปซึ่งบรรจุ JWS ได้นั้น อาจมี object ได้มากกว่าหนึ่งชนิด ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9)
+
+### cty
+แอปพลิเคชันที่ใช้ JWS จะใช้ parameter Content-Type เพื่อประกาศ media type [IANA.MediaTypes] ของเนื้อหาที่ถูกปกป้อง (ก็คือ payload)
+
+มีไว้ให้แอปพลิเคชันใช้ในกรณีที่ Payload ของ JWS อาจมี object ได้มากกว่าหนึ่งชนิด ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9)
+
+## Handler
+ด้านล่างนี้คือค่าที่เพิ่มเข้ามาใน handler
+
+### jwt.sign
+sign payload เพื่อสร้าง JWT
+
+Type:
+```ts
+sign(payload: Omit<Claims, 'nbf' | 'exp' | 'iat'> & JWTPayloadInput): Promise<string>
+```
+
+`Claims` คือโครงสร้างตาม [schema](#schema) หรือเป็น record อะไรก็ได้ถ้าไม่ได้ตั้ง schema ไว้ ส่วน `JWTPayloadInput` เก็บ registered claim ได้แก่ [iss](#iss), [sub](#sub), [aud](#aud), [jti](#jti), [nbf](#nbf), [exp](#exp) และ [iat](#iat) ค่าที่ตั้งตรงนี้จะทับค่าจาก config
+
+### jwt.verify
+ตรวจสอบ token ด้วย config ของ JWT ที่ตั้งไว้
+
+Type:
+```ts
+verify(jwt?: string, options?: JWTVerifyOptions): Promise<(Claims & Omit<JWTPayloadSpec, keyof Claims>) | false>
+```
+
+คืน payload ที่ decode แล้ว หรือคืน `false` ถ้าไม่มี token หรือ token ไม่ถูกต้อง `JWTPayloadSpec` เก็บ registered claim `iss`, `sub`, `aud`, `jti`, `nbf`, `exp` และ `iat` ในรูปค่าที่ decode แล้ว ส่วน `options` จะถูกส่งต่อให้ `jwtVerify` ของ jose
+
+## รูปแบบการใช้งาน
+ด้านล่างนี้คือรูปแบบการใช้ plugin ที่พบบ่อย
+
+## ตั้งวันหมดอายุของ JWT
+ตั้ง `exp` เพื่อกำหนดเวลาหมดอายุของ token อายุของ cookie กับเวลาหมดอายุของ JWT เป็นการตั้งค่าคนละตัวกันนะ
+
+```ts
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!,
+            exp: '7d'
+        })
+    )
+    .get('/sign/:name', async ({ jwt, params }) => jwt.sign(params))
+```
+
+โค้ดนี้จะ sign JWT ที่หมดอายุในอีก 7 วันนับจากตอนนี้
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,790 @@
+---
+title: Life cycle
+description: ใช้ lifecycle hook ของ Elysia เพื่อ parse request ตรวจสอบสิทธิ์การเข้าถึง และปรับแต่ง response
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import { Card } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import { LifecyclePlayground } from '../../../../components/lifecycle-playground/lifecycle-playground';
+
+export const steps = [
+    {
+        label: 'Return HTML',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => '<h1>Hello World</h1>')
+    .listen(3000)`,
+    },
+    {
+        label: 'Add header',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .mapResponse(({ responseValue }) => {
+        if (typeof responseValue === 'string' && /<[a-z][\\s\\S]*>/i.test(responseValue))
+            return new Response(responseValue, {
+                headers: { 'content-type': 'text/html; charset=utf-8' }
+            })
+    })
+    .get('/', () => '<h1>Hello World</h1>')
+    .listen(3000)`,
+    },
+    {
+        label: 'Allow only preview',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .mapResponse(({ responseValue }) => {
+        if (typeof responseValue === 'string' && /<[a-z][\\s\\S]*>/i.test(responseValue))
+            return new Response(responseValue, {
+                headers: { 'content-type': 'text/html; charset=utf-8' }
+            })
+    })
+    .get('/', {
+        beforeHandle({ query, status }) {
+            if (query.preview !== 'true')
+                return status(403, 'Preview is closed')
+        }
+    }, () => '<h1>Hello World</h1>')
+    .listen(3000)`,
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Life cycle</h1>
+
+pipeline ของ request แบ่งออกเป็นขั้นตอนต่าง ๆ ที่เรียกว่า **lifecycle event** แต่ละขั้นตอนมีหน้าที่ของตัวเอง ตั้งแต่อ่าน request ไปจนถึงเตรียม response
+
+lifecycle event ของ Elysia ละเอียดกว่า middleware แบบดั้งเดิม คุณรันโค้ดก่อนหรือหลัง handler ได้ หรือจะข้าม handler ไปเลยก็ยังได้
+
+</div>
+
+<div class="max-w-3xl mx-auto">
+
+<LifecyclePlayground client:visible />
+
+</div>
+
+<div class="content-layout">
+
+| ขั้นตอน | เกิดอะไรขึ้น |
+| --- | --- |
+| [Request](#request) | รับ request ใหม่เข้ามา |
+| [Parse](#parse) | อ่าน body มาเก็บไว้ใน `body` |
+| [Transform](#transform) | เปลี่ยนแปลง context ก่อน validation |
+| Validation | ตรวจสอบข้อมูลของ request ตาม schema ของ route |
+| [Before handle](#before-handle) | ตรวจสอบสิทธิ์ และคำนวณค่าของ request ด้วย `derive` |
+| Handler | รัน handler ของ route ที่ตรงกัน |
+| [After handle](#after-handle) | ตรวจดูหรือแทนที่ค่าที่ส่งกลับมา |
+| [Map response](#map-response) | แปลงค่าให้เป็น `Response` ตาม Web Standard |
+| [After response](#after-response) | ทำงานหลังส่ง response ไปแล้ว เช่น logging |
+
+- ถ้า return ออกไปก่อน ก็จะข้าม handler ไปเลย
+- error จะวิ่งไปที่ [การจัดการ error](#error-error-handling) แยกต่างหาก ไม่ได้เป็นอีกขั้นตอนหนึ่งที่ต่อท้าย response ที่สำเร็จ
+- [Trace](/patterns/trace/) ใช้ดูเวลาที่ใช้ไปในแต่ละ lifecycle event
+
+### ทำไม
+
+ลองดูสถานการณ์ตัวอย่างกัน สมมติว่าเราอยากส่ง HTML กลับไป ปกติเราก็จะตั้ง `content-type` เป็น `text/html` เพื่อให้เบราว์เซอร์ render ออกมาได้
+
+แต่จะมานั่งตั้งเองทีละ route ก็น่าเบื่อ hook สามารถตรวจดูค่าที่ส่งกลับมาแล้วเลือก header ให้เราได้ ส่วน handler ก็โฟกัสแค่ว่าจะส่งอะไรกลับไป
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## คืนค่าเป็น HTML
+
+handler ของเราคืนค่าเป็น string ของ HTML แต่ยังไม่มีอะไรตั้ง `content-type` ให้ ขั้นต่อไปเราจะตั้งค่านี้ เพื่อให้เบราว์เซอร์รู้ว่าต้อง render เป็น HTML
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## เพิ่ม header
+
+เราใช้ `mapResponse` ตั้ง header ให้ได้ hook นี้มีไว้แปลงค่าที่ return ออกมาให้เป็น `Response` โดยเฉพาะ
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## อนุญาตเฉพาะ preview
+
+`beforeHandle` มีไว้ตรวจสอบก่อนที่ handler จะทำงาน เหมาะมากสำหรับ authorization
+
+ถ้าไม่มี `?preview=true` request จะได้ `403` พร้อมข้อความ `Preview is closed` กลับไป และ handler ของ route จะไม่ทำงาน
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## ไม่ต้องเข้าใจทั้งหมดในครั้งเดียว
+
+มี hook ให้ใช้หลายตัวเพื่อควบคุมได้อย่างละเอียด แต่ไม่จำเป็นต้องใช้ทั้งหมดหรือเข้าใจทั้งหมดในทีเดียวหรอกนะ
+
+`beforeHandle` เป็นจุดเริ่มต้นที่ดีสำหรับ use case ส่วนใหญ่ เพราะเป็น hook แบบ "รันก่อน handler" ที่คุ้นเคยกันดี ใช้กับ authorization/authentication ได้ และ short-circuit ข้าม handler ไปได้ถ้าจำเป็น
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="#before-handle" title="Before handle">
+
+รัน authorization และการตรวจสอบอื่น ๆ หลัง validation แต่ก่อนถึง handler ของ route
+
+</Card>
+
+<Card href="/essential/validation/" title="Validation">
+
+ใช้ schema ตรวจสอบข้อมูลของ request ก่อนที่ handler จะทำงาน
+
+</Card>
+
+</div>
+
+## การลงทะเบียน hook
+
+ลงทะเบียน hook ได้สองแบบ:
+
+1. [Local hook](#local-hook): ทำงานกับ route ที่กำหนดเท่านั้น
+2. [Interceptor hook](#interceptor-hook): ทำงานกับ route ที่ลงทะเบียนตามหลังมาใน instance ปัจจุบัน โดยขึ้นอยู่กับ scope ของ plugin
+
+:::tip
+
+hook ได้รับ context เหมือนกับ handler เลย แต่ field ไหนพร้อมใช้บ้างขึ้นอยู่กับขั้นตอน: `request` ทำงานก่อน parse body ส่วน [derive](#derive) ทำงานหลังตรวจสอบ request แล้ว
+
+:::
+
+### Local hook
+
+ใส่ hook ไว้ในตัวเลือกของ route เพื่อให้มีผลกับ route นั้นเท่านั้น:
+
+```ts {5-7}
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', {
+        afterHandle({ set }) {
+            set.headers['content-type'] = 'text/html; charset=utf-8'
+        }
+    }, () => '<h1>Hello World</h1>')
+    .get('/hi', () => '<h1>Hello World</h1>')
+    .listen(3000)
+```
+
+| Path | Content type |
+| --- | --- |
+| `/` | `text/html; charset=utf-8` |
+| `/hi` | ไม่ได้ตั้งไว้ |
+
+### Interceptor hook
+
+ลงทะเบียน hook ไว้บน instance เพื่อให้มีผลกับ handler ที่ตามมาทั้งหมด ชื่อ method มักจะเป็นชื่อ event ที่มี `on` นำหน้า เช่น `.onAfterHandle()` หรือ `.onBeforeHandle()` ส่วน `.mapResponse()` และ `.derive()` เป็นข้อยกเว้น เพราะไม่มีแบบที่ขึ้นต้นด้วย `on`
+
+```ts {5-8}
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/none', () => '<h1>Hello World</h1>')
+    .onAfterHandle(({ responseValue, set }) => {
+        if (typeof responseValue === 'string' && responseValue.startsWith('<h1>'))
+            set.headers['content-type'] = 'text/html; charset=utf-8'
+    })
+    .get('/', () => '<h1>Hello World</h1>')
+    .get('/hi', () => '<h1>Hello World</h1>')
+    .listen(3000)
+```
+
+เงื่อนไขในตัวอย่างนี้จับได้แค่ markup ของหัวข้อที่ใช้ในตัวอย่างเท่านั้น ไม่ใช่ตัวตรวจจับ HTML แบบทั่วไปหรือ sanitizer
+
+| Path | Content type |
+| --- | --- |
+| `/none` | ไม่ได้ตั้งไว้ |
+| `/` | `text/html; charset=utf-8` |
+| `/hi` | `text/html; charset=utf-8` |
+
+hook จาก plugin ก็อาจมีผลด้วยเช่นกัน ดูว่า route ไหนจะได้รับ hook เหล่านั้นบ้างที่ [scope ของ plugin](/essential/plugin/#scope)
+
+## ลำดับของโค้ด
+
+ลงทะเบียน hook ไว้ก่อน route ที่ต้องการให้มีผล
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log('1')
+    })
+    .get('/', () => 'hi')
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+request ที่ไปยัง `/` จะ log แค่ `1` เพราะ hook ตัวที่สองลงทะเบียนหลัง route
+
+route ที่ mount ด้วย `.use()` ก็ใช้กฎเดียวกัน hook ของ parent จะไปถึง route เหล่านั้นก็ต่อเมื่อลงทะเบียนไว้ก่อน `.use()`:
+
+```ts
+import { Elysia } from 'elysia'
+
+const someRouter = new Elysia().get('/', () => 'hi')
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log('1')
+    })
+    .use(someRouter)
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+สำหรับ route ที่ mount เข้ามานี้ จะ log แค่ `1` hook ที่ลงทะเบียนหลัง `.use(someRouter)` จะไปไม่ถึง route ของมัน ไม่ว่าจะตั้ง scope ไว้แบบไหนก็ตาม ให้วาง hook ของ parent ที่ใช้ร่วมกันไว้ก่อน `.use()` และการลงทะเบียน hook บน plugin ก็ไม่ได้ export hook นั้นไปให้ทุก route ของ parent โดยอัตโนมัติ ดูเพิ่มที่ [scope](/essential/plugin/#scope)
+
+---
+
+## Request
+
+`request` คือ lifecycle hook แรกของ request ใหม่ ใช้กับงานที่ไม่ต้องใช้ข้อมูลที่ parse หรือตรวจสอบแล้ว:
+
+- การทำ cache
+- rate limiting หรือการตรวจสอบ IP/ภูมิภาค
+- การทำ analytics
+- header ของ response เช่น CORS
+
+### ตัวอย่าง
+
+rate limiter ปฏิเสธ request ได้ตั้งแต่ก่อน parse body ในที่นี้ `rateLimiter` แทน service ของคุณเอง และ `requestIP()` ใช้ได้เฉพาะบน Bun:
+
+```ts
+import { Elysia } from 'elysia'
+import { rateLimiter } from './rate-limiter'
+
+new Elysia()
+    .onRequest(({ request, server, status }) => {
+        const ip = server?.requestIP(request)?.address
+        if (ip && rateLimiter.isLimited(ip))
+            return status(429, 'Too many requests')
+    })
+    .get('/', () => 'hi')
+    .listen(3000)
+```
+
+การ return ค่าจะตอบกลับทันที และข้ามการ parse, validation และ handler ของ route ไปเลย `request` ต่างจาก hook ที่ผูกกับ route ตรงที่มันทำงานก่อนการจับคู่ route จึงครอบคลุม route ที่ประกาศไว้ก่อนหน้ามันได้ด้วย ลงทะเบียนไว้ช่วงต้นของ instance จะได้เห็นพฤติกรรมนี้ได้ชัด ๆ
+
+### Pre context
+
+request hook จะได้รับ context ช่วงแรกของ request ซึ่งประกอบด้วย:
+
+| ค่าใน context | สิ่งที่ให้มา |
+| --- | --- |
+| `request` | `Request` ต้นฉบับตาม Web Standard |
+| `set` | header ของ response ที่จะส่งออกไป และ status เริ่มต้น |
+| `store` | state ที่ใช้ร่วมกันและแก้ไขได้ ซึ่งลงทะเบียนไว้ด้วย `.state()` |
+| `status` และ `redirect` | helper สำหรับคืน HTTP status ที่ต้องการ หรือ response แบบ redirect |
+| ค่าจาก `.decorate()` | helper หรือ service ที่ใช้ร่วมกัน ซึ่ง spread เข้ามาใน context |
+| `server` | instance ของเซิร์ฟเวอร์ที่กำลังทำงาน ถ้า runtime มีให้ |
+
+ในขั้นตอนนี้ `body` และ `headers` ยังไม่ได้ parse
+
+---
+
+## Parse
+
+`parse` คือขั้นตอนของ body parser ค่าที่ parser คืนออกมาจะกลายเป็น `body` ถ้าคืน `undefined` จะข้ามไปยัง parser ตัวถัดไป และถ้าไม่มี parser ตัวไหนให้ค่าออกมาเลย `body` จะเป็น `undefined`
+
+parser ที่มีมาให้ในตัวรองรับ:
+
+| Content type | ค่าที่ได้จากการ parse |
+| --- | --- |
+| `text/plain` | String |
+| `application/json` | ค่า JSON ที่ parse แล้ว |
+| `multipart/form-data` | object ที่มี field ของฟอร์มและไฟล์ |
+| `application/x-www-form-urlencoded` | object ที่มี field ของฟอร์ม |
+| `application/octet-stream` | `ArrayBuffer` |
+
+ใช้ custom parser ถ้า content type ที่ใช้ยังไม่รองรับ
+
+### ตัวอย่าง
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onParse(({ request, contentType }) => {
+        if (contentType === 'application/custom-type')
+            return request.text()
+    })
+    .post('/', ({ body }) => body)
+    .listen(3000)
+```
+
+`POST` ที่มี `content-type: application/custom-type` จะได้ข้อความของ request กลับมา และเมื่อ parser ตัวไหนให้ค่าออกมาแล้ว parser ที่เหลือจะถูกข้ามไป
+
+### Context
+
+parse hook จะเพิ่ม `contentType` ซึ่งก็คือ header content-type ของ request เข้าไปใน context ณ จุดนี้ body ยังอยู่ระหว่างการอ่าน และยังไม่ได้ตรวจสอบ request
+
+### ระบุ parser เอง
+
+กำหนด `parse` เพื่อเลือก parser ที่ต้องการเอง:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .post('/', { parse: 'json' }, ({ body }) => body)
+    .listen(3000)
+```
+
+| ชื่อย่อ | Content type |
+| --- | --- |
+| `text` | `text/plain` |
+| `json` | `application/json` |
+| `formdata` | `multipart/form-data` |
+| `urlencoded` | `application/x-www-form-urlencoded` |
+| `arrayBuffer` | `application/octet-stream` |
+| `none` | ข้ามการ parse body |
+
+ใช้ได้ทั้งชื่อย่อหรือ content type แบบเต็ม
+
+### ข้ามการ parse body
+
+body ของ `Request` ตาม Web Standard อ่านได้แค่ครั้งเดียว ไลบรารีอย่าง tRPC หรือ oRPC อาจต้องอ่าน body ต้นฉบับเอง
+
+ใช้ `parse: 'none'` เพื่อเว้นไว้ให้ไลบรารีอ่านเอง:
+
+```ts
+import { Elysia } from 'elysia'
+import { library } from './library'
+
+new Elysia()
+    .post('/', { parse: 'none' }, ({ request }) => library.handle(request))
+    .listen(3000)
+```
+
+ในที่นี้ `library.handle` แทน HTTP handler จาก third-party ที่คุณกำลังเชื่อมต่อเข้ามา
+
+### สร้าง parser เอง
+
+ลงทะเบียน parser พร้อมตั้งชื่อด้วย `.parser()` แล้วเรียกใช้จาก route:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .parser('custom', ({ request, contentType }) => {
+        if (contentType === 'application/elysia') return request.text()
+    })
+    .post('/', { parse: ['custom', 'json'] }, ({ body }) => body)
+    .listen(3000)
+```
+
+custom parser นี้จัดการ `application/elysia` และเมื่อมันคืน `undefined` ก็จะถึงตาของ JSON parser
+
+---
+
+## Transform
+
+`transform` ทำงานก่อนตรวจสอบ request ใช้เพื่อเปลี่ยนค่าที่มีอยู่แล้วใน context ให้ตรงกับ schema
+
+### ตัวอย่าง
+
+```ts
+import { Elysia, t } from 'elysia'
+import * as z from 'zod'
+
+new Elysia()
+    .get('/id/:id', {
+        params: z.object({ id: z.number() }),
+        transform({ params }) {
+            const id = Number(params.id)
+            if (!Number.isNaN(id)) params.id = id
+        }
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+hook นี้แปลง path parameter ที่เป็นตัวเลขก่อนตรวจสอบ `/id/42` จะคืน `42` ส่วน `/id/hello` จะไม่ผ่าน validation
+
+ถ้าต้องการเพิ่ม property ที่มี type เข้าไปใน context ให้ใช้ [derive](#derive) หลัง validation แทน
+
+### Coerce Schema
+
+`transform` มีขึ้นมาตั้งแต่สมัยที่ schema coercion ยังไม่ใช่ฟีเจอร์ที่ไลบรารี schema ส่วนใหญ่มีให้
+
+ทุกวันนี้ไลบรารี schema ส่วนใหญ่ใช้ schema coercion แปลงค่าได้โดยตรงแล้ว เช่น Zod มี `z.coerce.number()` และ `z.coerce.date()`
+
+```diff lang="ts"
+import { Elysia, t } from 'elysia'
+import * as z from 'zod'
+
+new Elysia()
+    .get('/id/:id', {
++        params: z.object({ id: z.coerce.number() }),
+-        params: z.object({ id: z.number() }),
+-        transform({ params }) {
+-            const id = Number(params.id)
+-            if (!Number.isNaN(id)) params.id = id
+-        }
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+---
+
+## Before handle
+
+ทำงานหลังตรวจสอบ request แต่ก่อนถึง handler ของ route
+
+ใช้สำหรับการตรวจสอบเพิ่มเติมหลัง validation เช่น:
+- Authorization
+- การตรวจสอบ session
+
+การ return ค่าจะข้าม handler ไป แต่ [afterHandle](#after-handle) ยังตรวจดูหรือแทนที่ response ที่ตอบกลับก่อนกำหนดนี้ได้อยู่
+
+### ตัวอย่าง
+
+```ts
+import { Elysia, t } from 'elysia'
+import { validateSession } from './user'
+
+new Elysia()
+    .get('/', {
+    	cookie: t.Object({
+            session: t.String()
+        }),
+        beforeHandle({ cookie: { session }, status }) {
+            if (!validateSession(session?.value))
+                return status(401, 'Unauthorized')
+        }
+    }, () => 'hi')
+    .listen(3000)
+```
+
+## Derive
+
+เพิ่มค่าที่ **มี type** เข้าไปใน context ให้ __ทุก request__ สำหรับ handler ที่ตามมา
+
+ใช้คำนวณค่าจากข้อมูลของ request เช่น หา object ของผู้ใช้จาก session token
+
+```ts
+import { Elysia, t } from 'elysia'
+import { validateSession } from './user'
+
+new Elysia()
+	.guard({
+ 		cookie: t.Object({
+            session: t.String()
+        })
+    })
+    .derive(({ cookie: { session }, status }) => {
+        const user = validateSession(session?.value)
+        if (!user) return status(401, 'Unauthorized')
+
+        return { user }
+    })
+    .get('/', ({ user }) => user.id)
+    .listen(3000)
+```
+
+### Derive กับ State/Decorate
+
+| Derive | State/Decorate |
+| --- | --- |
+| แยกกันในแต่ละ request | singleton ใช้ร่วมกันทุก request |
+| ทำงานหลัง validation | ทำงานครั้งเดียวตอนเซิร์ฟเวอร์เริ่มทำงาน |
+
+### คิวการทำงาน
+
+`derive` และ `beforeHandle` ใช้คิวเดียวกัน และทำงานตามลำดับที่ลงทะเบียน
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => { console.log(1) })
+    .derive(() => {
+        console.log(2)
+        return {}
+    })
+    .onBeforeHandle(() => { console.log(3) })
+    .get('/', () => 'hi')
+    .listen(3000)
+```
+
+### Dispose
+
+ค่าจาก `derive` ที่มี `Symbol.asyncDispose` หรือ `Symbol.dispose` จะถูก release เมื่อส่ง response ออกไปแล้ว
+
+```ts
+import { Elysia } from 'elysia'
+import { pool } from './db'
+
+class Transaction {
+    constructor(private client = pool.connect()) {}
+
+    async query(sql: string) {
+        return (await this.client).query(sql)
+    }
+
+    async [Symbol.asyncDispose]() {
+        (await this.client).release()
+    }
+}
+
+new Elysia()
+    .derive(() => ({
+        tx: new Transaction()
+    }))
+    .get('/', ({ tx }) => tx.query('SELECT 1'))
+    .listen(3000)
+```
+
+- ทำงานหลัง [after response](#after-response) และ `defer` โดยเรียงลำดับย้อนกลับ ถ้ามีทั้งสองแบบ Elysia จะเลือกใช้ `Symbol.asyncDispose`
+- ทำงานด้วยเช่นกันเมื่อมีการ throw, เมื่อ `beforeHandle` short-circuit และเมื่อ client ตัดการเชื่อมต่อ ส่วน stream จะถูก release เมื่อจบ
+- dispose เฉพาะค่าที่ derive สร้างขึ้นเท่านั้น ค่าจาก `decorate` หรือ `store` ที่ derive คืนออกมาหรือ spread เข้าไปจะไม่ถูกแตะ
+- error ที่เกิดใน disposer จะถูก log ไว้ เพราะ response ส่งออกไปแล้ว
+
+`decorate` และ `state` จะไม่ถูก dispose เลย ให้ release เองใน `onStop`
+
+## After handle
+
+ทำงานหลัง handler หรือหลังจากที่ `beforeHandle` short-circuit
+
+ใช้ตรวจดูหรือแทนที่ค่าที่ส่งกลับมา ถ้า return ค่าที่ไม่ใช่ `undefined` ค่านั้นจะแทนที่ค่าของ response
+
+### ตัวอย่าง
+
+```ts
+import { Elysia } from 'elysia'
+import { badWords } from './libs'
+
+new Elysia()
+    .get('/', {
+        afterHandle({ responseValue }) {
+            if (typeof responseValue === 'string' && badWords.includes(responseValue))
+                return 'Cheek pinched!'
+        }
+    }, () => 'Erpin')
+    .listen(3000)
+```
+
+การ return ค่าจะข้าม hook `afterHandle` ที่เหลือไป
+
+การ return `Error` ทำงานเหมือนกับ return จาก handler คือจะผ่าน [การจัดการ error](#error-error-handling) รวมถึง handler ของ `.onError(Class)` ด้วย ถ้าไม่มี hook ไหนจัดการเลย error ที่มี status อย่าง `HTTPError` จะถูกส่งออกไปพร้อม status นั้น
+
+### Context
+
+อ่านค่าที่ส่งกลับมาในตอนนั้นได้จาก `responseValue` ซึ่งอาจเป็น string, object, ค่าจาก `status()` หรือ `Response` ขึ้นอยู่กับ handler และ hook ก่อนหน้า
+
+---
+
+## Map response
+
+ใช้แปลงค่าที่ส่งกลับมาให้เป็น `Response` ตาม Web Standard
+
+### ตัวอย่าง
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .mapResponse(({ responseValue }) => {
+        if (typeof responseValue === 'string' && /<[a-z][\s\S]*>/i.test(responseValue))
+            return new Response(responseValue, {
+                headers: { 'content-type': 'text/html; charset=utf-8' }
+            })
+    })
+    .get('/html', () => '<h1>Hello World</h1>')
+    .listen(3000)
+```
+
+การ return ค่าจะข้าม hook `mapResponse` ที่เหลือไป
+
+Elysia จะรวม `set.headers` เข้าไปใน response ให้อัตโนมัติ ไม่ต้องส่งเข้าไปใน constructor ของ `Response` เอง
+
+---
+
+## Error (การจัดการ error)
+
+จัดการ error ที่เกิดระหว่างประมวลผล request คุณจะส่ง response ที่กำหนดเอง, log ความผิดพลาดไว้ หรือจัดการเฉพาะ error class ที่ต้องการก็ได้
+
+### ตัวอย่าง
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onError(({ error, status }) => {
+        console.error(error)
+
+        return status(503, 'Server is under maintenance')
+    })
+    .get('/', () => {
+        return new Error('Maintenance window')
+    })
+    .listen(3000)
+```
+
+`Error` ใด ๆ ที่ handler return หรือ throw ออกมา จะถูก error hook จับไว้
+
+การ return `status()` หรือ `problem()` จะส่ง response ธรรมดาออกไป ส่วนการ throw จะเข้าสู่การจัดการ error ถ้าเป็นการปฏิเสธที่คาดไว้อยู่แล้ว ให้ return status แทน
+
+การ return `Error` จาก error hook จะส่ง error นั้นออกไปเหมือนไม่มี hook ไหนจัดการ ด้วย status ของ error นั้นเอง `HTTPError` จะส่ง problem document ของมัน ส่วน `Error` ที่ไม่มี status จะกลายเป็น `500` และจะไม่ถูกส่งต่อไปยัง error hook ตัวอื่น
+
+### Context
+
+error hook จะได้รับ `error` ซึ่งเป็นค่าที่ถูก throw ออกมา พร้อมกับ context ของ request ที่มีอยู่ ณ ตอนที่เกิดความผิดพลาด
+
+ถ้าต้องการแยกประเภท error ใน hook แบบทั่วไป ให้ใช้ `instanceof`
+
+### ดักจับ error เฉพาะแบบ
+
+เราดักจับ error เฉพาะแบบได้ด้วยการส่ง error class เข้าไปใน `.onError()`:
+
+```ts
+import { Elysia, NotFound, ValidationError } from 'elysia'
+
+new Elysia()
+	.onError(NotFound, ({ status }) => status(404, 'Not Found :('))
+	.onError(ValidationError, ({ status }) => status(400, 'Invalid request'))
+	.listen(3000)
+```
+
+นี่คือความผิดพลาดที่พบบ่อยและ error class ของแต่ละแบบ:
+
+| Error class | สาเหตุ |
+| --- | --- |
+| `NotFound` | ไม่มี route ที่ตรงกัน |
+| `ParseError` | syntax ของ body ใน request ไม่ถูกต้อง |
+| `ValidationError` | ตรวจสอบตาม schema ไม่ผ่าน |
+| `InternalServerError` | ความผิดพลาดภายในเซิร์ฟเวอร์ที่ระบุไว้ชัดเจน |
+| `InvalidCookie` | signed cookie ไม่ถูกต้อง |
+
+ใช้ error hook แบบ catch-all เพื่อจัดการความผิดพลาดที่ไม่คาดคิดได้
+
+```ts
+import { Elysia, InternalServerError } from 'elysia'
+
+new Elysia()
+    .onError(({ error, status }) => {
+        if (error instanceof InternalServerError)
+            return status(503, 'Oh')
+    })
+    .listen(3000)
+```
+
+### Custom Error
+
+Elysia มี `HTTPError` ไว้สำหรับประกาศ custom error พร้อม status code, header และข้อความ error ใดก็ตามที่ implement interface ของ `HTTPError` (โดยไม่จำเป็นต้อง extend) ก็นำมาใช้ในการจัดการ error ได้ interface นี้บังคับให้มี `type` และควรใส่ `status` ให้ error ด้วย ไม่อย่างนั้น response จะใช้ค่าเริ่มต้นเป็น `500`
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+// using syntax sugar
+class WithSyntaxSugar extends HTTPError.id('SUGAR_ERROR', 400) {
+    // optional
+    headers = { 'x-error': 'sugar' }
+
+    // replaces the whole response body
+    value() {
+        return { message: 'With syntax sugar' }
+    }
+}
+
+// No need to extend HTTPError, just implement the interface
+class CustomError extends Error implements HTTPError<'CUSTOM_ERROR'> {
+    type = 'CUSTOM_ERROR' as const
+    // status must be const (or statically analyzable) for type narrowing
+    status = 409 as const
+    headers = { 'x-error': 'custom' }
+
+    // `detail` of the RFC 9457 problem document, in place of the message
+    detail = 'Custom error'
+}
+```
+
+เมื่อใช้ interface ของ HTTPError แล้ว Elysia จะใช้ property เหล่านี้ใน response แทนค่าเริ่มต้น `500 Internal Server Error`
+
+แปลว่าถ้าอยากคืน response ของ error ที่กำหนดเอง ก็ไม่จำเป็นต้องลงทะเบียนกับ `.onError()`
+
+---
+
+## After response
+
+ทำงานหลังส่ง response ออกไปแล้ว
+
+ใช้สำหรับงานเก็บกวาด, logging และ analytics
+
+### ตัวอย่าง
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onAfterResponse(() => {
+        console.log('Response', performance.now())
+    })
+    .get('/', () => 'Hello')
+    .listen(3000)
+```
+
+### Response
+
+อ่าน `responseValue` เพื่อตรวจดูค่าที่ได้จาก handler และ response hook:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onAfterResponse(({ responseValue }) => {
+        console.log(responseValue)
+    })
+    .get('/', () => 'Hello')
+    .listen(3000)
+```
+
+ตัวอย่างนี้จะ log `Hello` ออกมา `responseValue` ไม่จำเป็นต้องเป็น `Response` ตาม Web Standard เสมอไป อาจยังเป็นค่าเดิมจาก handler อยู่ก็ได้
+
+อ่าน `set` เพื่อดู status และ header ที่ตั้งผ่าน context:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onAfterResponse(({ set }) => {
+        console.log(set.status, set.headers)
+    })
+    .get('/', ({ set }) => {
+        set.status = 201
+        set.headers['x-example'] = 'life-cycle'
+        return 'Hello'
+    })
+    .listen(3000)
+```
+
+`set` แสดงค่าที่ตั้งไว้ตรงนี้ อย่าเข้าใจว่ามันเป็น snapshot ที่ครบทุก header ที่ runtime สร้างขึ้น หรือที่ return มากับ `Response` โดยตรง
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

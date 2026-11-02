@@ -1,0 +1,104 @@
+---
+title: Plugin GraphQL Apollo
+description: ข้อมูลอ้างอิงและตัวอย่างการใช้งาน plugin GraphQL Apollo
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin GraphQL Apollo</h1>
+
+plugin สำหรับ [elysia](https://github.com/elysiajs/elysia) เพื่อใช้งาน GraphQL Apollo
+
+ติดตั้งด้วยคำสั่ง:
+
+```bash
+bun add graphql @elysia/apollo@next @apollo/server
+```
+
+จากนั้นก็นำไปใช้ได้เลย:
+
+```ts
+import { Elysia } from 'elysia'
+import { apollo, gql } from '@elysia/apollo'
+
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs: gql`
+				type Book {
+					title: String
+					author: String
+				}
+
+				type Query {
+					books: [Book]
+				}
+			`,
+			resolvers: {
+				Query: {
+					books: () => {
+						return [
+							{
+								title: 'Elysia',
+								author: 'saltyAom'
+							}
+						]
+					}
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+เมื่อเปิด `/graphql` ก็จะเห็น Apollo GraphQL playground ให้ลองเล่นได้เลย
+
+## Context
+
+callback `context` จะได้รับ context ของ Elysia เพราะฉะนั้นอ่าน `request` จากตรงนั้นได้เลย
+
+```ts
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs,
+			resolvers,
+			context: async ({ request }) => {
+				const authorization = request.headers.get('Authorization')
+
+				return {
+					authorization
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+## การตั้งค่า
+
+plugin นี้ต่อยอด [ApolloServerOptions](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#options) ของ Apollo (ซึ่งเป็น parameter ของ constructor ของ `ApolloServer`)
+
+ด้านล่างนี้คือ parameter ที่เพิ่มเข้ามาสำหรับตั้งค่า Apollo Server กับ Elysia
+
+### path
+
+ค่าเริ่มต้น: `"/graphql"`
+
+path สำหรับเปิดใช้ Apollo Server
+
+### enablePlayground
+
+ค่าเริ่มต้น: `process.env.ENV !== 'production'`
+
+กำหนดว่าจะให้ Apollo เปิด Apollo Playground หรือไม่
+
+</div>
+</InteractiveDocLayout>
+</div>

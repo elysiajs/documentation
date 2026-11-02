@@ -1,0 +1,136 @@
+---
+title: Plugin Compress
+description: ข้อมูลอ้างอิงและตัวอย่างการใช้งาน plugin Compress
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro'
+import '../../../../styles/routing.css'
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin Compress</h1>
+
+plugin ทางการ [`@elysia/compress`](https://github.com/elysiajs/elysia-compress) จะบีบอัด HTTP response ที่เข้าเงื่อนไข โดยเลือก encoding ตาม header `Accept-Encoding` ของ request ส่วน codec ที่ใช้ได้จะขึ้นอยู่กับ runtime
+
+## การติดตั้ง
+
+```bash
+bun add @elysia/compress@rc
+```
+
+## การใช้งานพื้นฐาน
+
+ลงทะเบียน `compress` ไว้ก่อน route ที่จะใช้งาน:
+
+```ts
+import { Elysia } from 'elysia'
+import { compress } from '@elysia/compress'
+
+new Elysia()
+	.use(compress())
+	.get('/', () => 'Hello Elysia! '.repeat(100))
+	.listen(3000)
+```
+
+โดยค่าเริ่มต้น plugin จะใช้เกณฑ์ขั้นต่ำ 1,024 ไบต์กับ response ที่รู้ความยาวและ response ที่ถูก buffer ไว้ ซึ่งต้องผ่านการตรวจ media type ด้วย ถ้า client ไม่รับ encoding ที่มีให้เลย ก็จะส่งกลับไปโดยไม่บีบอัด
+
+## ควบคุมราย route
+
+ตัวเลือก `compress` ระดับ route ต้องใส่ใน argument ของ hook ที่อยู่ก่อน handler ลองปิดการบีบอัดเฉพาะ route เดียว แล้วให้ route อื่นทำงานตามค่าเริ่มต้นเหมือนเดิม:
+
+```ts
+new Elysia()
+	.use(compress())
+	.get('/compressed', () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', { compress: false }, () => 'Hello Elysia! '.repeat(100))
+```
+
+ตั้ง `default` เป็น `false` ถ้าอยากให้แต่ละ route ต้องเลือกเปิดใช้เอง:
+
+```ts
+new Elysia()
+	.use(compress({ default: false }))
+	.get('/compressed', { compress: true }, () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', () => 'Hello Elysia! '.repeat(100))
+```
+
+route ที่เลือกเปิดใช้แล้วก็ยังต้องเป็นไปตาม media type, threshold, การเลือก encoding และเงื่อนไขการข้ามที่ตั้งไว้อยู่ดี
+
+## ตัวเลือก
+
+```ts
+new Elysia().use(
+	compress({
+		encodings: ['gzip', 'deflate'],
+		threshold: 2048,
+		options: {
+			gzip: { level: 6 }
+		}
+	})
+)
+```
+
+| ตัวเลือก      | ค่าเริ่มต้น                             | คำอธิบาย |
+| ----------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default`   | `true`                              | บีบอัดทุก route ยกเว้น route ที่ตั้ง `compress: false` ไว้ ตั้งเป็น `false` ถ้าอยากให้แต่ละ route ต้องใส่ `compress: true` เอง |
+| `encodings` | `['br', 'zstd', 'gzip', 'deflate']` | กำหนดลำดับ encoding ที่เซิร์ฟเวอร์อยากใช้ plugin จะตัด codec ที่ runtime ไม่รองรับออก ค่า quality ของ client มีความสำคัญกว่า และถ้าเท่ากันก็จะตัดสินตามลำดับของเซิร์ฟเวอร์ |
+| `threshold` | `1024`                              | กำหนดจำนวนไบต์ขั้นต่ำสำหรับ response ที่รู้ความยาวและ response ที่ถูก buffer ไว้ |
+| `types`     | predicate ในตัว                  | คืน `true` สำหรับ media type ที่ให้ plugin บีบอัดได้ predicate จะได้รับ media type ที่เป็นตัวพิมพ์เล็กและไม่มี parameter และจะใช้แทน predicate ในตัว |
+| `stream`    | `true`                              | บีบอัด response ที่มี `Transfer-Encoding: chunked` ตั้งเป็น `false` ถ้าไม่อยากให้บีบอัด response พวกนั้น |
+| `options`   | `{}`                                | ตั้งค่าตัวเลือกให้ `br`, `zstd`, `gzip` หรือ `deflate` โดย Brotli และ Zstandard รับ parameter ของ codec ตัวเอง ส่วน `gzip` และ deflate รับตัวเลือกของ zlib อย่าง `level` |
+
+predicate `types` ในตัวจะให้ media type เหล่านี้บีบอัดได้:
+
+- `text/*`
+- `application/json`
+- media type ที่ลงท้ายด้วย `+json`
+
+plugin จะไม่บีบอัด `text/event-stream` เสมอ
+
+threshold ใช้กับ `Content-Length` ที่ประกาศไว้ หรือกับ body ที่ถูก buffer ไว้ ส่วน response แบบ chunked ที่ไม่รู้ความยาวอาจเริ่มบีบอัดไปก่อนที่ plugin จะรู้ขนาดสุดท้ายของมัน
+
+## codec ที่แต่ละ runtime รองรับ
+
+codec ที่ plugin ใช้ได้ขึ้นอยู่กับ runtime โดย plugin จะใช้ Brotli, gzip และ deflate เมื่อ runtime มี codec ของ zlib ที่ตรงกันและมีตัวเชื่อมกับ Web stream ส่วน Zstandard ก็ต้องมี codec ของ zlib ที่ตรงกันเช่นกัน ถ้าไม่มี zlib ก็ยังใช้ API `CompressionStream` ของ Web สำหรับ gzip และ deflate แทนได้
+
+ทางสำรองที่ใช้ `CompressionStream` จะไม่นำ `options` ที่ตั้งเองของ gzip หรือ deflate ไปใช้ และอย่าเหมาว่าทุก runtime จะรองรับครบทั้งสี่ encoding
+
+## กรณีที่ข้ามการบีบอัด
+
+plugin จะไม่บีบอัด response ถ้าเข้าเงื่อนไขข้อใดข้อหนึ่งต่อไปนี้:
+
+- method ของ request เป็น `HEAD`
+- status เป็น `204`, `205`, `206` หรือ `304`
+- response มี `Content-Encoding` อยู่แล้ว
+- `Cache-Control` มี `no-transform`
+- response ไม่มี body หรือใช้ `text/event-stream`
+- predicate `types` ไม่ยอมรับ media type นั้น
+- body ที่รู้ขนาดหรือถูก buffer ไว้มีขนาดเล็กกว่า `threshold`
+- response เป็นแบบ chunked และ `stream` เป็น `false`
+
+## Header ของ response
+
+response ที่บีบอัดแล้วจะได้ header `Content-Encoding` และมี `Accept-Encoding` อยู่ใน `Vary` plugin จะลบ `Content-Length`, `Content-Range`, `Accept-Ranges` และ `Transfer-Encoding` ออก เพราะค่าเหล่านี้อธิบาย response ก่อนบีบอัด และยังเปลี่ยน `ETag` แบบ strong ให้เป็น `ETag` แบบ weak ด้วย
+
+ถ้า response เข้าเงื่อนไขทุกอย่าง แต่ไม่มี encoding ที่ client ยอมรับ response นั้นจะไม่ถูกบีบอัด แต่ยังมี `Accept-Encoding` อยู่ใน `Vary`
+
+## ปกป้อง response ที่มีข้อมูลลับ
+
+การบีบอัดอาจทำให้ข้อมูลลับรั่วไหลผ่านการโจมตีแบบ BREACH ที่อาศัยขนาดของ response เมื่อ response เดียวกันมีทั้งข้อมูลลับและ input ที่ผู้โจมตีควบคุมได้ ให้เพิ่ม `no-transform` ใน response นั้น:
+
+```ts
+app.get('/secret', ({ query, set }) => {
+	set.headers['cache-control'] = 'private, no-transform'
+
+	return { echo: query.q, token: session.token }
+})
+```
+
+plugin จะเห็น `no-transform` แล้วส่ง response กลับไปโดยไม่บีบอัด
+
+</div>
+</InteractiveDocLayout>
+</div>

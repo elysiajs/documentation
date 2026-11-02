@@ -1,0 +1,60 @@
+---
+title: WebSocket
+description: subscribe ข้อความ WebSocket ที่มี type กำกับด้วย Eden Treaty
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">WebSocket</h1>
+
+Eden Treaty รองรับ WebSocket ผ่าน method `subscribe`
+
+```ts
+import { Elysia, t } from "elysia";
+import { websocket } from 'elysia/websocket'
+import { treaty } from "@elysia/eden";
+
+const app = new Elysia()
+  .use(websocket())
+  .ws("/chat", {
+    body: t.String(),
+    response: t.String(),
+    message({ body }) {
+            return body
+        },
+  })
+  .listen(3000);
+
+const api = treaty<typeof app>("localhost:3000");
+
+const chat = api.chat.subscribe();
+
+chat.subscribe((message) => {
+  console.log("got", message.data);
+});
+
+chat.on("open", () => {
+  chat.send("hello from client");
+});
+```
+
+`subscribe()` รับ query parameter ผ่าน options ของมันได้ แต่ WebSocket บนเบราว์เซอร์ส่ง request header อะไรก็ได้ตามใจไม่ได้ ให้ใช้ cookie หรือ flow การยืนยันตัวตนที่เซิร์ฟเวอร์รับรองแทน
+
+## Response
+`subscribe()` จะคืนค่าเป็น wrapper `EdenWS` ซึ่งมี helper `send`, `subscribe`, `on`, `off` และ `close` ที่มี type กำกับ
+
+ใช้ `chat.ws` เพื่อเข้าถึง WebSocket แบบ native ที่อยู่ข้างใต้ ตัว wrapper ไม่ได้เป็น subclass ที่มีทุก property ของ WebSocket แบบ native
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

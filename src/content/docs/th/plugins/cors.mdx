@@ -1,0 +1,174 @@
+---
+title: Plugin CORS
+description: ข้อมูลอ้างอิงและตัวอย่างการใช้งาน plugin CORS
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin CORS</h1>
+
+plugin นี้ช่วยให้ปรับแต่งพฤติกรรมของ [Cross-Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) ได้
+
+ติดตั้งด้วยคำสั่ง:
+
+```bash
+bun add @elysia/cors@rc
+```
+
+จากนั้นก็นำไปใช้ได้เลย:
+
+```ts
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+
+new Elysia().use(cors()).listen(3000)
+```
+
+แบบนี้ Elysia จะรับ request จากทุก origin
+
+## การตั้งค่า
+
+ด้านล่างนี้คือ config ที่ plugin รองรับ
+
+### origin
+
+ค่าเริ่มต้น: `true`
+
+บอกว่าจะแชร์ response ให้โค้ดที่ส่ง request มาจาก origin ที่กำหนดได้หรือไม่
+
+ค่าที่ใช้ได้มีดังนี้:
+
+- **string** - origin ที่จะนำไปเทียบกับ header `Origin` ของ request (ไม่ใส่ scheme ก็ได้ เช่น `'example.com'`) ถ้าตรงกัน จะส่ง origin ของ request กลับไปใน header [Access-Control-Allow-Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) ถ้าไม่ตรงก็จะไม่ใส่ header นี้ ส่วน `'*'` คืออนุญาตทุก origin
+- **boolean** - `true` จะรับทุก origin และสะท้อน header `Origin` ของ request กลับไป ถ้าไม่มี header นี้ก็จะใช้ `*` แทน ส่วน `false` จะปิด header allow-origin
+- **RegExp** - pattern ที่จะนำไปจับคู่กับ header `Origin` ของ request ถ้าตรงก็อนุญาต
+- **Function** - logic ที่เขียนเองเพื่อตัดสินว่าจะอนุญาตให้แชร์ resource หรือไม่ ถ้าคืน `true` ก็อนุญาต
+    - ควรมี type เป็น:
+    ```ts
+    type OriginCheck = (request: Request) => boolean | void
+    ```
+- `Array<string | RegExp | Function>` - ไล่ตรวจทุกกรณีด้านบนตามลำดับ ถ้ามีค่าใดเป็น `true` ก็อนุญาต
+
+---
+
+### methods
+
+ค่าเริ่มต้น: `true`
+
+method ที่อนุญาตสำหรับ request แบบ cross-origin ค่าเริ่มต้น `true` จะสะท้อน method ที่ preflight ร้องขอกลับไป ตั้งเป็น `false` ถ้าไม่ต้องการใส่ header นี้
+
+กำหนด header [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods)
+
+ค่าที่ใช้ได้มีดังนี้:
+
+- **false | null | ''** - ไม่ใส่ header allow-methods ถ้าปล่อยตัวเลือกนี้เป็น `undefined` จะใช้ค่าเริ่มต้น
+- **\*** - อนุญาตทุก method
+- **string** - รับได้ทั้ง method เดียว หรือ string ที่คั่นด้วยคอมมา
+    - (เช่น `'GET, PUT, POST'`)
+- **string[]** - อนุญาตหลาย HTTP method
+    - เช่น `['GET', 'PUT', 'POST']`
+
+---
+
+### allowedHeaders
+
+ค่าเริ่มต้น: `true`
+
+header ที่อนุญาตสำหรับ request ที่เข้ามา ค่าเริ่มต้น `true` จะสะท้อน `Access-Control-Request-Headers` ของ preflight request กลับไป
+
+กำหนด header [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers)
+
+ค่าที่ใช้ได้มีดังนี้:
+
+- **string** - รับได้ทั้ง header เดียว หรือ string ที่คั่นด้วยคอมมา
+    - เช่น `'Content-Type, Authorization'`
+- **string[]** - อนุญาตหลาย HTTP header
+    - เช่น `['Content-Type', 'Authorization']`
+
+---
+
+### exposeHeaders
+
+ค่าเริ่มต้น: `true`
+
+เปิดให้ JavaScript ในเบราว์เซอร์เข้าถึง header ที่กำหนด ค่าเริ่มต้น `true` จะสะท้อนชื่อ header ของ request ที่เข้ามากลับไปในทุก response รวมถึง preflight ด้วย ถ้าอยากระบุชื่อเองให้ใส่เป็น string หรือ array
+
+กำหนด header [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers)
+
+ค่าที่ใช้ได้มีดังนี้:
+
+- **string** - รับได้ทั้ง header เดียว หรือ string ที่คั่นด้วยคอมมา
+    - เช่น `'Content-Type, X-Powered-By'`
+- **string[]** - อนุญาตหลาย HTTP header
+    - เช่น `['Content-Type', 'X-Powered-By']`
+
+---
+
+### credentials
+
+ค่าเริ่มต้น: `true`
+
+header Access-Control-Allow-Credentials ใน response จะบอกเบราว์เซอร์ว่าจะเปิดให้โค้ด JavaScript ฝั่ง frontend เข้าถึง response หรือไม่ เมื่อ credentials mode [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials) ของ request เป็น `include`
+
+เมื่อ credentials mode [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials) ของ request เป็น `include` เบราว์เซอร์จะเปิดให้โค้ด JavaScript ฝั่ง frontend เข้าถึง response ก็ต่อเมื่อค่า Access-Control-Allow-Credentials เป็น true เท่านั้น
+
+credential ในที่นี้คือ cookie, header สำหรับ authorization หรือ TLS client certificate
+
+กำหนด header [Access-Control-Allow-Credentials](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials)
+
+---
+
+### maxAge
+
+ค่าเริ่มต้น: `5`
+
+บอกว่าผลลัพธ์ของ [preflight request](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) (ก็คือข้อมูลใน header [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods) และ [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers)) จะ cache ไว้ได้นานแค่ไหน
+
+กำหนด header [Access-Control-Max-Age](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age)
+
+---
+
+### preflight
+
+ค่าเริ่มต้น: `true`
+
+preflight request คือ request ที่ส่งไปเช็กว่าเซิร์ฟเวอร์เข้าใจโปรโตคอล CORS และรู้จักการใช้ method และ header ที่ระบุหรือไม่
+
+โดยจะส่งเป็น request แบบ **OPTIONS** พร้อม HTTP request header 3 ตัว:
+
+- **Access-Control-Request-Method**
+- **Access-Control-Request-Headers**
+- **Origin**
+
+config นี้กำหนดว่าเซิร์ฟเวอร์ควรตอบ preflight request หรือไม่
+
+## รูปแบบการใช้งาน
+
+ด้านล่างนี้คือรูปแบบการใช้ plugin ที่พบบ่อย
+
+## อนุญาต CORS ตามโดเมน
+
+```typescript
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+
+const app = new Elysia()
+	.use(
+		cors({
+			origin: /^https:\/\/(?:[a-z0-9-]+\.)*saltyaom\.com$/i
+		})
+	)
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+แบบนี้จะอนุญาต origin ที่เป็น HTTPS ของ `saltyaom.com` และ subdomain ทั้งหมดของมัน ส่วนตัว anchor ของ regex จะกันไม่ให้ hostname อื่นที่ไม่เกี่ยวข้องจับคู่ผ่านได้
+
+</div>
+</InteractiveDocLayout>
+</div>

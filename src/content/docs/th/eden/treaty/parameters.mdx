@@ -1,0 +1,188 @@
+---
+title: Parameters
+description: ส่ง body, query parameter, header และไฟล์ด้วย Eden Treaty
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Parameters</h1>
+
+ยังไงสุดท้ายเราก็ต้องส่ง payload ไปที่เซิร์ฟเวอร์อยู่ดี
+
+method ของ Eden Treaty จึงรับ parameter 2 ตัวสำหรับส่งข้อมูลไปยังเซิร์ฟเวอร์
+
+parameter ทั้งสองตัวเป็น type-safe และ TypeScript จะคอยบอกให้อัตโนมัติ:
+
+1. body
+2. parameter เพิ่มเติม
+    - query
+    - headers
+    - fetch
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .post('/user', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+// works
+api.user.post({
+    name: 'Elysia'
+})
+
+// also works
+api.user.post({
+    name: 'Elysia'
+}, {
+    // This is optional as not specified in schema
+    headers: {
+        authorization: 'Bearer 12345'
+    },
+    query: {
+        id: 2
+    }
+})
+```
+
+ถ้า method เป็น **"GET"** หรือ **"HEAD"**:
+
+1. parameter เพิ่มเติม
+    -   query
+    -   headers
+    -   fetch
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/hello', () => 'hi')
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+// works
+api.hello.get({
+    // This is optional as not specified in schema
+    headers: {
+        hello: 'world'
+    }
+})
+```
+
+## Body ว่าง
+ถ้า body ไม่บังคับหรือไม่จำเป็นต้องส่ง แต่ต้องส่ง query หรือ headers คุณส่ง body เป็น `null` หรือ `undefined` แทนได้
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .post('/user', {
+        query: t.Object({
+            name: t.String()
+        })
+    }, () => 'hi')
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+api.user.post(null, {
+    query: {
+        name: 'Ely'
+    }
+})
+```
+
+## Parameter ของ fetch
+
+Eden Treaty เป็น wrapper ของ fetch เราเพิ่ม parameter ของ [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) ที่ใช้ได้ตัวไหนก็ได้ให้ Eden ด้วยการส่งเข้าไปใน `fetch`:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/hello', () => 'hi')
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+const controller = new AbortController()
+
+const cancelRequest = setTimeout(() => {
+    controller.abort()
+}, 5000)
+
+await api.hello.get({
+    fetch: {
+        signal: controller.signal
+    }
+})
+
+clearTimeout(cancelRequest)
+```
+
+## การอัปโหลดไฟล์
+ส่งอย่างใดอย่างหนึ่งต่อไปนี้เพื่อแนบไฟล์ได้:
+- **File**
+- **File[]**
+- **FileList**
+- **Blob**
+
+การแนบไฟล์จะทำให้ **content-type** เป็น **multipart/form-data** แต่ schema ของ route ยังเป็นตัวกำหนด type ของ TypeScript ที่รับได้อยู่ดี สำหรับ `t.Files()` ให้แปลง `FileList` จาก input เป็น `File[]` และถ้า schema ต้องการไฟล์ ให้ใช้ `File` แทนที่จะเป็น `Blob` ธรรมดา
+
+สมมติว่าเรามีเซิร์ฟเวอร์แบบนี้:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/image', {
+        body: t.Object({
+            title: t.String(),
+            image: t.Files()
+        })
+    }, ({ body: { image, title } }) => title)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+จากนั้นอัปโหลดจากฝั่ง client:
+```ts
+// client.ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const api = treaty<App>('localhost:3000')
+
+const images = document.getElementById('images') as HTMLInputElement
+
+const { data } = await api.image.post({
+    title: "Misono Mika",
+    image: Array.from(images.files ?? []),
+})
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

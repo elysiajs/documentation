@@ -1,0 +1,170 @@
+---
+title: TypeScript
+description: Infer type จาก schema และไล่หาปัญหาประสิทธิภาพของ TypeScript
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">TypeScript</h1>
+
+Elysia รองรับ TypeScript อย่างเต็มที่ ใช้ได้ทันทีโดยไม่ต้องตั้งค่าอะไรเพิ่ม
+
+ส่วนใหญ่แล้วคุณแทบไม่ต้องเขียน type annotation ของ TypeScript เองเลย
+
+## การ infer type
+Elysia จะ infer type ของ request และ response จาก schema ที่คุณกำหนด
+
+```ts
+import { Elysia, t } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+    .post('/user/:id', {
+        body: t.Object({
+            id: t.String()
+        }),
+        query: z.object({
+            name: z.string()
+        })
+    }, ({ body }) => body)
+```
+
+Elysia infer type จาก schema อย่าง TypeBox ได้อัตโนมัติ รวมถึง [ไลบรารี validation ตัวโปรดของคุณ](/essential/validation#standard-schema) เช่น:
+- Zod
+- Valibot
+- ArkType
+- Effect Schema
+- Yup
+- Joi
+
+### แปลง schema เป็น type
+
+ไลบรารี schema ทุกตัวที่ Elysia รองรับ แปลงเป็น TypeScript type ได้ทั้งหมด
+
+
+#### TypeBox
+
+
+```ts
+import { Elysia, t, type UnwrapSchema } from 'elysia'
+
+const User = t.Object({
+  	id: t.String(),
+  	name: t.String()
+})
+
+type User = UnwrapSchema<typeof User>
+```
+
+
+#### Zod
+
+
+```ts
+import { z } from 'zod'
+
+const User = z.object({
+  	id: z.string(),
+  	name: z.string()
+})
+
+type User = z.infer<typeof User>
+```
+
+
+#### Valibot
+
+
+```ts
+import * as v from 'valibot'
+
+const User = v.object({
+  	id: v.string(),
+  	name: v.string()
+})
+
+type User = v.InferOutput<typeof User>
+```
+
+
+#### ArkType
+
+
+```ts
+import { type } from 'arktype'
+
+const User = type({
+  	id: 'string',
+  	name: 'string'
+})
+
+type User = typeof User.infer
+```
+
+
+## ประสิทธิภาพของ type
+
+Elysia ออกแบบมาโดยคำนึงถึงประสิทธิภาพของ type inference ตั้งแต่ต้น
+
+ก่อนออกทุก release เราจะรัน benchmark ในเครื่องเพื่อให้มั่นใจว่า type inference ยังลื่นและเร็วเสมอ และไม่ทำให้ IDE ของคุณพังด้วย error "Type instantiation is excessively deep and possibly infinite"
+
+ส่วนใหญ่แล้วตอนเขียน Elysia คุณจะไม่เจอปัญหาประสิทธิภาพของ type เลย
+
+แต่ถ้าเจอ นี่คือวิธีไล่หาว่าอะไรทำให้ type inference ช้าลง:
+
+1. ไปที่ root ของโปรเจกต์แล้วรัน
+```
+tsc --generateTrace trace --noEmit --incremental false
+```
+
+คำสั่งนี้จะสร้างโฟลเดอร์ `trace` ไว้ที่ root ของโปรเจกต์
+
+2. เปิด [Perfetto UI](https://ui.perfetto.dev) แล้วลากไฟล์ `trace/trace.json` ลงไป
+
+![Perfetto](/assets/perfetto.webp)
+
+> จะเห็น flame graph หน้าตาแบบนี้
+
+จากนั้นหาส่วนที่ใช้เวลาประเมินนาน ๆ คลิกที่ส่วนนั้นแล้วจะเห็นว่าการ infer ใช้เวลาเท่าไร และมาจากไฟล์ไหน บรรทัดที่เท่าไร
+
+วิธีนี้จะช่วยให้คุณหาคอขวดของ type inference เจอ
+
+### Eden
+
+ถ้าเจอปัญหา type inference ช้าตอนใช้ [Eden](/eden/) ลองใช้ sub app ของ Elysia เพื่อแยก type inference ออกมาดู
+
+```ts
+import { Elysia } from 'elysia'
+import { plugin1, plugin2, plugin3 } from './plugin'
+
+const app = new Elysia()
+	.use([plugin1, plugin2, plugin3])
+  	.listen(3000)
+
+export type app = typeof app
+
+// Export sub app
+export type subApp = typeof plugin1
+```
+
+แล้วฝั่ง frontend ก็ import แค่ sub app แทนการ import ทั้งแอป
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { subApp } from 'backend/src'
+
+const api = treaty<subApp>('localhost:3000')
+```
+
+วิธีนี้จะทำให้ type inference เร็วขึ้น เพราะไม่ต้องประเมินทั้งแอป
+
+ดูรายละเอียดเพิ่มเติมเกี่ยวกับ Eden ได้ที่ [Eden Treaty](/eden/)
+
+</div>
+</InteractiveDocLayout>
+</div>

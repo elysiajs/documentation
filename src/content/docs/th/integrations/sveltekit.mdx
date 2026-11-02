@@ -1,0 +1,77 @@
+---
+title: "Integration กับ SvelteKit"
+description: "ด้วย SvelteKit คุณรัน Elysia บน server route ได้"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration กับ SvelteKit</h1>
+
+ด้วย SvelteKit คุณรัน Elysia บน server route ได้
+
+1. สร้างไฟล์ **src/routes/[...slugs]/+server.ts**
+2. สร้างเซิร์ฟเวอร์ Elysia
+3. export ฟังก์ชัน **fallback** ที่เรียก `app.handle`
+
+```typescript
+// src/routes/[...slugs]/+server.ts
+import { Elysia, t } from 'elysia';
+
+const app = new Elysia()
+    .get('/', 'hello SvelteKit')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+interface WithRequest {
+	request: Request
+}
+
+export const fallback = ({ request }: WithRequest) => app.handle(request)
+```
+
+คุณใช้งานเซิร์ฟเวอร์ Elysia ได้เหมือนเป็น server route ปกติของ SvelteKit
+
+### pnpm
+ถ้า pnpm ของคุณตั้งค่าไว้ไม่ให้ติดตั้ง peer dependencies อัตโนมัติ ก็เพิ่ม peer ที่ Elysia v2 ต้องใช้เองได้เลย:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefix
+ถ้าไม่ได้วางเซิร์ฟเวอร์ Elysia ไว้ที่ root ของโฟลเดอร์ routes ต้องกำหนด prefix ให้เซิร์ฟเวอร์ Elysia ด้วย
+
+ตัวอย่างเช่น ถ้าวางเซิร์ฟเวอร์ Elysia ไว้ที่ **src/routes/api/[...slugs]/+server.ts** ต้องกำหนด prefix เป็น **/api** ให้เซิร์ฟเวอร์ Elysia
+
+```typescript
+// src/routes/api/[...slugs]/+server.ts
+import { Elysia, t } from 'elysia';
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', () => 'hi')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
+
+export const fallback: RequestHandler = ({ request }) => app.handle(request)
+```
+
+แบบนี้ routing ของ Elysia จะทำงานได้ถูกต้อง ไม่ว่าจะวางไว้ตรงไหน
+
+ดูข้อมูลเพิ่มเติมได้ที่ [SvelteKit Routing](https://kit.svelte.dev/docs/routing#server)
+
+</div>
+</InteractiveDocLayout>
+</div>

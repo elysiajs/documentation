@@ -1,0 +1,127 @@
+---
+title: "Integration กับ Node.js"
+description: "Elysia มี runtime adapter ให้รัน Elysia ได้บนหลาย runtime ทั้ง Node.js, Cloudflare Workers และอื่น ๆ"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration กับ Node.js</h1>
+
+Elysia มี runtime adapter ให้รัน Elysia ได้บนหลาย runtime รวมถึง Node.js
+
+ถ้าจะรัน Elysia v2 บน Node.js ให้ติดตั้ง Node adapter ของ v2 เพราะ adapter ของ v1 แยกเป็นอีกสาย release หนึ่ง
+
+
+```bash title="bun"
+bun add elysia@rc @elysia/node@rc
+```
+
+```bash title="pnpm"
+pnpm add elysia@rc @elysia/node@rc
+```
+
+```bash title="npm"
+npm install elysia@rc @elysia/node@rc
+```
+
+```bash title="yarn"
+yarn add elysia@rc @elysia/node@rc
+```
+
+
+จากนั้นใส่ Node adapter ให้ instance หลักของ Elysia
+
+```typescript
+import { Elysia } from 'elysia'
+import { node } from '@elysia/node'
+
+const app = new Elysia({ adapter: node() })
+	.get('/', () => 'Hello Elysia')
+	.listen(3000)
+```
+
+แค่นี้ก็รัน Elysia บน Node.js ได้แล้ว
+
+### การตั้งค่าเพิ่มเติม (ไม่บังคับ)
+เพื่อประสบการณ์ที่ดีที่สุด เราแนะนำให้ติดตั้ง `tsx`
+
+`tsx` เป็น CLI ที่ transpile TypeScript เป็น JavaScript พร้อม hot-reload และฟีเจอร์อื่น ๆ อีกหลายอย่างที่คุณคาดหวังจาก environment สำหรับพัฒนาสมัยใหม่
+
+
+```bash title="bun"
+bun add -d tsx @types/node typescript
+```
+
+```bash title="pnpm"
+pnpm add -D tsx @types/node typescript
+```
+
+```bash title="npm"
+npm install --save-dev tsx @types/node typescript
+```
+
+```bash title="yarn"
+yarn add -D tsx @types/node typescript
+```
+
+
+จากนั้นเปิดไฟล์ `package.json` ตั้งค่าให้แพ็กเกจใช้ ES modules แล้วเพิ่มสคริปต์ต่อไปนี้:
+
+```json
+{
+   	"type": "module",
+   	"scripts": {
+  		"dev": "tsx watch src/index.ts",
+    	"build": "tsc -p tsconfig.json",
+  		"start": "NODE_ENV=production node dist/index.js"
+   	}
+}
+```
+
+สคริปต์เหล่านี้ใช้กับแต่ละช่วงของการพัฒนาแอปพลิเคชัน:
+
+- **dev** - รัน Elysia ในโหมด development พร้อม auto-reload เมื่อโค้ดเปลี่ยน
+- **build** - build แอปพลิเคชันสำหรับใช้งานจริงบน production
+- **start** - รันเซิร์ฟเวอร์ Elysia สำหรับ production
+
+อย่าลืมสร้าง `tsconfig.json`:
+
+```bash
+tsc --init
+```
+
+จากนั้นตั้งค่าตัวเลือกเหล่านี้ใน `tsconfig.json`:
+```json
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "types": ["node"],
+        "rootDir": "src",
+        "outDir": "dist",
+        "strict": true,
+        "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts"]
+}
+```
+
+สคริปต์ build จะอ่านการตั้งค่านี้ รวมถึง `strict` และโฟลเดอร์ output ด้วย เวลา import module ของคุณเองด้วย NodeNext ให้ใช้นามสกุล `.js` ส่วน `tsx watch` จะ reload เมื่อโค้ดเปลี่ยน ให้ประสบการณ์ใกล้เคียงกับ `bun dev`
+
+### pnpm
+ถ้า pnpm ของคุณตั้งค่าไว้ไม่ให้ติดตั้ง peer dependencies อัตโนมัติ ก็เพิ่ม peer ที่ Elysia v2 ต้องใช้เองได้เลย:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

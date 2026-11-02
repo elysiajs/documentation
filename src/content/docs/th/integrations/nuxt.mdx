@@ -1,0 +1,108 @@
+---
+title: "Integration กับ Nuxt"
+description: "ด้วย plugin จากคอมมูนิตี้ อย่าง 'nuxt-elysia' เรารัน Elysia บน API route ของ Nuxt ได้ พร้อมตั้งค่า Eden Treaty ให้อัตโนมัติ"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration กับ Nuxt</h1>
+
+เราใช้ [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia) ซึ่งเป็น plugin จากคอมมูนิตี้ สำหรับ Nuxt เพื่อตั้งค่า Elysia บน API route ของ Nuxt พร้อม Eden Treaty ได้
+
+:::note[Integration จากคอมมูนิตี้]
+
+ใช้ `nuxt-elysia` เวอร์ชันที่รองรับ Elysia เวอร์ชันที่คุณใช้ ทั้งการตั้งค่าและ Eden client ที่ generate ออกมาล้วนเป็นของแพ็กเกจจากคอมมูนิตี้ ดังนั้นตรวจสอบให้แน่ใจว่าเข้ากันได้ก่อนนำไปใช้กับ v2
+
+:::
+
+1. ติดตั้ง plugin ด้วยคำสั่งต่อไปนี้:
+
+```bash
+bun add elysia@rc @elysia/eden@next
+bun add -d nuxt-elysia
+```
+
+2. เพิ่ม `nuxt-elysia` ลงใน config ของ Nuxt:
+
+```ts
+export default defineNuxtConfig({
+    modules: [
+        'nuxt-elysia'
+    ],
+    nitro: {
+        preset: 'bun'
+    }
+})
+```
+
+
+:::tip
+
+แนะนำให้ตั้งค่า `nitro.preset: 'bun'` แต่ไม่บังคับ การตั้งค่านี้บอกให้ Nitro ของ Nuxt ใช้ Bun เป็น runtime ของเซิร์ฟเวอร์ แทน runtime Node.js ที่เป็นค่าเริ่มต้น
+
+:::
+
+
+3. สร้าง `api.ts` ไว้ที่ root ของโปรเจกต์:
+
+```typescript title="api.ts"
+import { Elysia } from 'elysia'
+
+export default () => new Elysia()
+  .get('/hello', () => ({ message: 'Hello world!' }))
+```
+
+4. ใช้ Eden Treaty ในแอป Nuxt:
+
+```vue
+<template>
+    <div>
+        <p>{{ data.message }}</p>
+    </div>
+</template>
+<script setup lang="ts">
+const { $api } = useNuxtApp()
+
+const { data } = await useAsyncData(async () => {
+    const { data, error } = await $api.hello.get()
+
+    if (error)
+        throw new Error('Failed to call API')
+
+    return data
+})
+</script>
+```
+
+แค่นี้ Elysia ก็จะรันบน API route ของ Nuxt ได้โดยอัตโนมัติ
+
+### pnpm
+ถ้า pnpm ของคุณตั้งค่าไว้ไม่ให้ติดตั้ง peer dependencies อัตโนมัติ ก็เพิ่ม peer ที่ Elysia v2 ต้องใช้เองได้เลย:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefix
+
+โดยค่าเริ่มต้น Elysia จะ mount อยู่ที่ **/_api** แต่เราปรับเปลี่ยนได้ด้วย config ของ `nuxt-elysia`
+```ts
+export default defineNuxtConfig({
+	nuxtElysia: {
+		path: '/api'
+	}
+})
+```
+
+แบบนี้ Elysia จะ mount อยู่ที่ **/api** แทน **/_api**
+
+ดูตัวเลือกการตั้งค่าเพิ่มเติมได้ที่ [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia)
+
+</div>
+</InteractiveDocLayout>
+</div>

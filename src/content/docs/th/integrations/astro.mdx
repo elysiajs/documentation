@@ -1,0 +1,104 @@
+---
+title: "Integration กับ Astro"
+description: "คุณรัน Elysia บน Astro ได้ และ Elysia ก็ทำงานได้ตามปกติ เพราะเป็นไปตามมาตรฐาน WinterTC"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration กับ Astro</h1>
+
+ด้วย [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/) เรารัน Elysia บน Astro ได้โดยตรง
+
+ติดตั้ง [server adapter ของ Astro](https://docs.astro.build/en/guides/on-demand-rendering/) ให้ตรงกับแพลตฟอร์มที่จะ deploy จากนั้น:
+
+1. ตั้งค่า **output** เป็น **server** ใน **astro.config.mjs**
+
+```javascript
+// astro.config.mjs
+import { defineConfig } from 'astro/config'
+
+// https://astro.build/config
+export default defineConfig({
+    output: 'server'
+})
+```
+
+2. สร้างไฟล์ **src/pages/[...slugs].ts**
+3. สร้างเซิร์ฟเวอร์ Elysia ใหม่ หรือ import ตัวที่มีอยู่แล้วเข้ามาใน **[...slugs].ts**
+4. export handler โดยตั้งชื่อตาม method ที่ต้องการเปิดให้เรียกใช้
+
+```typescript
+// src/pages/[...slugs].ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/api', () => 'hi')
+    .post('/api', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+const handle = ({ request }: { request: Request }) => app.handle(request)
+
+export const GET = handle
+export const POST = handle
+```
+
+Elysia จะทำงานได้ตามปกติ เพราะเป็นไปตามมาตรฐาน WinterTC
+
+ถ้ารันบน Bun เราแนะนำ [Astro บน Bun](https://docs.astro.build/en/recipes/bun)
+
+
+:::tip
+
+เพราะรองรับ WinterTC คุณจึงรันเซิร์ฟเวอร์ Elysia ได้ แม้จะไม่ได้รัน Astro บน Bun ก็ตาม
+
+:::
+
+
+แบบนี้คุณจะวาง frontend และ backend ไว้ด้วยกันใน repository เดียว และได้ end-to-end type safety ด้วย Eden
+
+### pnpm
+ถ้า pnpm ของคุณตั้งค่าไว้ไม่ให้ติดตั้ง peer dependencies อัตโนมัติ ก็เพิ่ม peer ที่ Elysia v2 ต้องใช้เองได้เลย:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefix
+
+ถ้าไม่ได้วางเซิร์ฟเวอร์ Elysia ไว้ที่ root ของโฟลเดอร์ pages ต้องกำหนด prefix ให้เซิร์ฟเวอร์ Elysia ด้วย
+
+ตัวอย่างเช่น ถ้าวางเซิร์ฟเวอร์ Elysia ไว้ที่ **src/pages/api/[...slugs].ts** ต้องกำหนด prefix เป็น **/api** ให้เซิร์ฟเวอร์ Elysia
+
+```typescript
+// src/pages/api/[...slugs].ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', () => 'hi')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+const handle = ({ request }: { request: Request }) => app.handle(request)
+
+export const GET = handle
+export const POST = handle
+```
+
+แบบนี้ routing ของ Elysia จะทำงานได้ถูกต้อง ไม่ว่าจะวางไว้ตรงไหน
+
+ดูข้อมูลเพิ่มเติมได้ที่ [Astro Endpoints](https://docs.astro.build/en/core-concepts/endpoints/)
+
+</div>
+</InteractiveDocLayout>
+</div>

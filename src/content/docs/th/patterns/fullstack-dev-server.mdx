@@ -1,0 +1,371 @@
+---
+title: Fullstack dev server ของ Bun
+description: รัน frontend กับ API ของ Elysia ไปพร้อมกันด้วย Bun และ static plugin
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import InteractiveDoc from "../../../../components/interactive-code/doc.astro";
+import InteractiveStep from "../../../../components/interactive-code/step.astro";
+import "../../../../styles/routing.css";
+
+export const setupSteps = [
+    {
+        label: 'Set up the server',
+        code: `import { Elysia } from 'elysia'
+import { staticPlugin } from '@elysia/static'
+
+new Elysia()
+	.use(await staticPlugin({ bunFullstack: true }))
+	.listen(3000)`,
+    },
+    {
+        label: 'public/index.html',
+        lang: 'html',
+        code: `<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Elysia React App</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="module" src="./index.tsx"></script>
+	</body>
+</html>`,
+    },
+    {
+        label: 'public/index.tsx',
+        lang: 'tsx',
+        code: `import { useState } from 'react'
+import { createRoot } from 'react-dom/client'
+
+function App() {
+	const [count, setCount] = useState(0)
+	const increase = () => setCount((c) => c + 1)
+
+	return (
+		<main>
+			<h2>{count}</h2>
+			<button onClick={increase}>
+				Increase
+			</button>
+		</main>
+	)
+}
+
+const root = createRoot(document.getElementById('root')!)
+root.render(<App />)`,
+    },
+    {
+        label: 'tsconfig.json',
+        lang: 'json',
+        code: `{
+  "compilerOptions": {
+	"jsx": "react-jsx"
+  }
+}`,
+    },
+    {
+        label: 'Custom prefix path',
+        code: `import { Elysia } from 'elysia'
+import { staticPlugin } from '@elysia/static'
+
+new Elysia()
+  	.use(
+  		await staticPlugin({
+  			prefix: '/',
+            bunFullstack: true
+   		})
+   )
+  .listen(3000)`,
+    },
+];
+
+export const tailwindSteps = [
+    {
+        label: 'bunfig.toml',
+        lang: 'toml',
+        code: `[serve.static]
+plugins = ["bun-plugin-tailwind"]`,
+    },
+    {
+        label: 'public/global.css',
+        lang: 'css',
+        code: `@import "tailwindcss";`,
+    },
+    {
+        label: 'public/index.html',
+        lang: 'html',
+        code: `<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Elysia React App</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="./global.css">
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="module" src="./index.tsx"></script>
+	</body>
+</html>`,
+        highlight: [8],
+    },
+    {
+        label: 'public/index.tsx',
+        lang: 'tsx',
+        code: `import { useState } from 'react'
+import { createRoot } from 'react-dom/client'
+
+import './global.css'
+
+function App() {
+	const [count, setCount] = useState(0)
+	const increase = () => setCount((c) => c + 1)
+
+	return (
+		<main>
+			<h2>{count}</h2>
+			<button onClick={increase}>
+				Increase
+			</button>
+		</main>
+	)
+}
+
+const root = createRoot(document.getElementById('root')!)
+root.render(<App />)`,
+        highlight: [4],
+    },
+];
+
+export const pathAliasSteps = [
+    {
+        label: 'tsconfig.json',
+        lang: 'json',
+        code: `{
+  "compilerOptions": {
+	"baseUrl": ".",
+	"paths": {
+	  "@public/*": ["public/*"]
+	}
+  }
+}`,
+    },
+    {
+        label: 'public/index.tsx',
+        lang: 'tsx',
+        code: `import { useState } from 'react'
+import { createRoot } from 'react-dom/client'
+
+import '@public/global.css'
+
+function App() {
+	const [count, setCount] = useState(0)
+	const increase = () => setCount((c) => c + 1)
+
+	return (
+		<main>
+			<h2>{count}</h2>
+			<button onClick={increase}>
+				Increase
+			</button>
+		</main>
+	)
+}
+
+const root = createRoot(document.getElementById('root')!)
+root.render(<App />)`,
+        highlight: [4],
+    },
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Fullstack dev server ของ Bun</h1>
+
+[fullstack dev server](https://bun.com/docs/bundler/fullstack) ของ Bun จะ bundle asset ฝั่ง frontend ให้ และรองรับ hot module replacement (HMR) คู่มือนี้ใช้ Bun 1.3 ขึ้นไป และ static plugin ของ Elysia v2
+
+เราเลยใช้ React ได้โดยตรง ไม่ต้องพึ่ง bundler อย่าง Vite หรือ Webpack
+
+<video muted controls preload="metadata" aria-label="Bun fullstack development demonstration" style={{aspectRatio: "3736 / 1630"}}>
+  <source src="/assets/bun-fullstack.mp4" type="video/mp4" />
+  โหลดวิดีโอไม่สำเร็จ
+</video>
+
+ลองใช้ [ตัวอย่างนี้](https://github.com/saltyaom/elysia-fullstack-example) เพื่อเริ่มลองเล่นได้เร็ว ๆ
+
+หรือจะติดตั้งเองก็ได้:
+
+</div>
+
+<InteractiveDoc steps={setupSteps}>
+
+<InteractiveStep>
+
+## ตั้งค่าเซิร์ฟเวอร์
+
+ติดตั้ง static plugin ของ Elysia v2:
+
+```bash
+bun add elysia@rc @elysia/static@next react react-dom
+bun add -d @types/react @types/react-dom
+```
+
+:::tip
+
+ตั้ง `bunFullstack: true` และ await `staticPlugin()` ก่อนเริ่มเซิร์ฟเวอร์ โดยค่าเริ่มต้น plugin นี้จะ serve ไฟล์ static แบบธรรมดา แค่ await อย่างเดียวจะไม่ได้เปิดใช้ HTML bundler
+
+:::
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### สร้าง entry point ที่เป็น HTML
+
+สร้าง `public/index.html` แล้วโหลด `public/index.tsx` เป็น module
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### สร้างแอป React
+
+สร้าง `public/index.tsx` ที่มี component ตัวนับเลข
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### เปิดใช้ JSX
+
+เปิดใช้ JSX ใน `tsconfig.json`
+
+เปิด `http://localhost:3000/public` แล้วดูผลลัพธ์ได้เลย
+
+Bun จัดการ bundle ฝั่ง frontend ไปพร้อมกับ API เลย จึงไม่ต้องรัน process ของ bundler แยก
+
+ตัวอย่างต้นฉบับรวม HMR, [Tailwind](#tailwind-css), TanStack Query, [Eden Treaty](/eden/) และ path alias ไว้ด้วยกัน ใช้เวอร์ชันที่เข้ากันได้กับ Bun และ Elysia รุ่นที่คุณใช้อยู่
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## กำหนด prefix path เอง
+
+เราเปลี่ยน prefix เริ่มต้น `/public` ได้ด้วยการส่งตัวเลือก `prefix` ให้ `staticPlugin`
+
+แบบนี้ไฟล์ static จะ serve ที่ `/` แทน `/public`
+
+ดูตัวเลือกการตั้งค่าเพิ่มเติมได้ที่ [static plugin](/plugins/static/)
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## Tailwind CSS
+
+เราใช้ Tailwind CSS กับ Bun Fullstack Dev Server ได้ด้วย
+
+</div>
+
+<InteractiveDoc steps={tailwindSteps}>
+
+<InteractiveStep>
+
+### ตั้งค่า plugin ของ Tailwind
+
+ติดตั้ง dependency:
+
+```bash
+bun add tailwindcss@4
+bun add -d bun-plugin-tailwind
+```
+
+สร้าง `bunfig.toml` แล้วใส่ plugin ของ Tailwind
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### เพิ่ม directive ของ Tailwind
+
+สร้าง `public/global.css` แล้วใส่ directive ของ Tailwind
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### เพิ่ม stylesheet ใน HTML
+
+เพิ่มลิงก์ stylesheet ใน `public/index.html`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Import stylesheet ใน React
+
+อีกทางหนึ่งคือ import `public/global.css` ใน `public/index.tsx` แทนการเพิ่มลิงก์ stylesheet ใน HTML
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## การใช้ path alias
+
+เราใช้ path alias ใน Bun Fullstack Dev Server ได้ด้วย
+
+</div>
+
+<InteractiveDoc steps={pathAliasSteps}>
+
+<InteractiveStep>
+
+### ตั้งค่า path alias
+
+เพิ่ม `paths` ใน `tsconfig.json`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### ใช้ alias
+
+ใช้ alias ในโค้ดของคุณได้เลย
+
+ใช้ได้ทันทีโดยไม่ต้องตั้งค่าอะไรเพิ่ม
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## Build สำหรับ production
+
+build เซิร์ฟเวอร์ fullstack ได้เหมือนเซิร์ฟเวอร์ Elysia ปกติเลย
+
+```bash
+bun build --compile --target bun --outfile server src/index.ts
+```
+
+คำสั่งนี้จะสร้างไฟล์ executable ชื่อ `server` อย่าลืมทดสอบ build ของ production ด้วย ไม่ใช่แค่ HMR ตอน development
+
+ตอนรัน executable **server** อย่าลืมเอาโฟลเดอร์ **public** ไปด้วยเหมือนตอน development
+
+ดูรายละเอียดเพิ่มเติมได้ที่ [Deploy ขึ้น production](/patterns/deploy)
+
+</div>
+</InteractiveDocLayout>
+</div>

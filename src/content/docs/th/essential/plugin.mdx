@@ -1,0 +1,632 @@
+---
+title: Plugin
+description: แยกแอป Elysia ออกเป็น plugin ที่นำกลับมาใช้ซ้ำได้ ประกาศ dependency และเลือกว่าจะแชร์ hook กันแบบไหน
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import '../../../../styles/routing.css';
+import { NumberedCards } from '../../../../components/ui/numbered-cards';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import { DependencyStory } from '../../../../components/plugin-tree/dependency';
+import { DeduplicationStory } from '../../../../components/plugin-tree/deduplication';
+import { ScopeStory } from '../../../../components/plugin-tree/scope';
+
+export const pluginDemo = new Elysia()
+    .use(new Elysia()
+        .decorate('plugin', 'hi')
+        .get('/plugin', ({ plugin }) => plugin))
+    .get('/', ({ plugin }) => plugin);
+
+export const callbackDemo = new Elysia()
+    .use((app) => app
+        .state('counter', 0)
+        .get('/plugin', () => 'Hi'))
+    .get('/counter', ({ store: { counter } }) => counter);
+
+export const scopeSteps = [
+    {
+        label: 'Local scope',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('local', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11],
+    },
+    {
+        label: 'Plugin scope',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('plugin', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11, 15],
+    },
+    {
+        label: 'Global scope',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('global', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11, 15, 19],
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Plugin</h1>
+
+**plugin** คือส่วนที่แยกตัวออกมาจาก instance หลัก ทุก instance ของ Elysia ทำงานเดี่ยว ๆ ได้ หรือจะเอาไปเป็นส่วนหนึ่งของ instance อื่นก็ได้
+
+ลองเอาแอปเล็ก ๆ ไปใส่ไว้ในอีกแอปหนึ่งกัน
+
+</div>
+
+<div class="content-layout">
+
+ในตัวอย่างนี้ plugin จะ decorate property ชื่อ `plugin` แล้วให้ทั้งตัว plugin เองและแอปหลักอ่านค่านั้น ลองเลือก route ไหนก็ได้เพื่อดู response
+
+<CodePlayground elysia={pluginDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .decorate('plugin', 'hi')
+    .get('/plugin', ({ plugin }) => plugin)
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/', ({ plugin }) => plugin)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+## Dependency
+
+Elysia ประกอบขึ้นจากแอป Elysia ย่อย ๆ หลายตัวที่ทำงานแยกกันได้ คล้ายกับ microservice ที่สื่อสารกันไปมา
+
+เมื่อ instance หนึ่งต้องใช้ service ของอีก instance หนึ่ง คุณ **ต้องประกาศ dependency ให้ชัดเจน**
+
+```ts
+import { Elysia, t } from 'elysia'
+
+class Auth {
+    getProfile() {
+        return { name: 'Elysia User' }
+    }
+}
+
+const auth = new Elysia()
+    .decorate({
+        auth: new Auth()
+    })
+
+const main = new Elysia()
+    .use(auth)
+    .get('/profile', ({ auth }) => auth.getProfile())
+```
+
+ถ้าไม่มี `.use(auth)` handler จะไม่รู้จัก `Auth` และการไปลงทะเบียนไว้ที่ instance อื่นก็ไม่ได้ทำให้ใช้ที่นี่ได้
+
+มาดูภาพเคลื่อนไหวตอนที่ dependency จากที่ยังไม่มีกลายเป็นใช้ได้กัน กดปุ่มเลื่อนขั้นเพื่อไล่ดูทีละขั้นได้เลย
+
+<DependencyStory client:visible={{ rootMargin: '200px' }} />
+
+แนวคิดนี้คล้ายกับ **dependency injection**: แต่ละ instance ประกาศสิ่งที่ตัวเองต้องใช้ การระบุให้ชัดเจนแบบนี้ช่วยให้ติดตาม dependency ได้ง่ายขึ้น และนำ module กลับมาใช้ซ้ำได้ง่ายขึ้นด้วย
+
+<span id="plugin-deduplication"></span>
+
+### Deduplication
+
+ถ้า plugin ไม่มีชื่อแล้วถูกแชร์ใช้ในหลาย instance ตัว hook ของมันก็อาจถูกลงทะเบียนซ้ำหลายรอบ
+
+ตั้ง `name` ที่ไม่ซ้ำกันให้ plugin เพื่อให้ Elysia ตัด lifecycle hook ที่ซ้ำออกได้
+
+```ts
+import { Elysia } from 'elysia'
+
+const ip = new Elysia({ name: 'ip' })
+    .derive('global', ({ server, request }) => ({
+        ip: server?.requestIP(request)
+    }))
+    .get('/ip', ({ ip }) => ip)
+
+const router1 = new Elysia()
+    .use(ip)
+    .get('/ip-1', ({ ip }) => ip)
+
+const router2 = new Elysia()
+    .use(ip)
+    .get('/ip-2', ({ ip }) => ip)
+
+const server = new Elysia()
+    .use(router1)
+    .use(router2)
+```
+
+`'global'` จะแชร์ hook ให้ทุก instance ที่ใช้ plugin นี้ ไม่ว่าจะใช้ตรง ๆ หรือผ่าน plugin อื่นก็ตาม (ดู [scope](#scope)) hook `ip` ที่แชร์กันนี้จะทำงานแค่ครั้งเดียวต่อ request ถึงแม้ router ทั้งสองตัวจะใช้มันก็ตาม `requestIP` จะใช้ได้เมื่อ server adapter ที่รองรับส่ง `server` มาให้ ไม่อย่างนั้น `ip` จะเป็น `undefined`
+
+นี่คือตัวอย่างเดียวกันในแบบภาพเคลื่อนไหว ดูตอนที่ `ip` เข้าไปอยู่ใน router ทั้งสองตัว แล้วถูกลงทะเบียนแค่ครั้งเดียวเมื่อ `server` ใช้ router ทั้งสองตัว
+
+<DeduplicationStory client:visible={{ rootMargin: '200px' }} />
+
+สำหรับ plugin ที่ตั้งค่าได้ ให้ใส่ตัวเลือกของมันเป็น `seed` ด้วย Elysia ระบุตัว plugin จาก `name` คู่กับ `seed`: ถ้าการตั้งค่าเหมือนกันก็จะถูกตัดตัวซ้ำออก ส่วน seed ที่ต่างกันจะนับเป็นคนละตัว
+
+```ts
+import { Elysia } from 'elysia'
+
+const version = (value = 1) => new Elysia({
+    name: 'version',
+    seed: value
+})
+    .get('/version', value)
+```
+
+การตั้งชื่อ plugin ช่วยตัดการลงทะเบียนที่ซ้ำออก แต่ไม่ได้หยุดไม่ให้ plugin factory ของคุณทำงานเมื่อถูกเรียก งานที่ควรเกิดขึ้นแค่ครั้งเดียวจึงควรอยู่นอก factory ที่ถูกเรียกซ้ำ ๆ
+
+### Dependency แบบ global กับแบบระบุชัดเจน
+
+dependency บางตัวเหมาะกับการใช้แบบ global มากกว่า ส่วนบางตัวควรให้ทุก instance ที่ใช้มันประกาศเอง
+
+| ใช้ dependency แบบ global กับ | ใช้ dependency แบบระบุชัดเจนกับ |
+| --- | --- |
+| plugin ที่ไม่ได้เพิ่ม type เช่น CORS, compression หรือ security header | plugin ที่เพิ่ม type เช่น macro, state หรือ model |
+| lifecycle hook ที่ควรมีผลทั่วทั้งแอป เช่น tracing หรือ logging | business logic ที่ handler ต้องใช้งาน เช่น authentication หรือฐานข้อมูล |
+
+ตัวอย่างแบบ global ได้แก่ เอกสาร OpenAPI, tracing ด้วย OpenTelemetry และ logging ส่วนตัวอย่างแบบระบุชัดเจนได้แก่ store และ session, model ของ ORM หรือ ODM, service ด้าน authentication และฐานข้อมูล รวมถึง module ของฟีเจอร์อย่างแชตหรือการแจ้งเตือน
+
+ถ้า dependency ของคุณไม่จำเป็นต้องเป็น global ก็เลือกแบบระบุชัดเจนไว้ก่อนดีกว่า
+
+## Scope
+
+lifecycle hook ของ Elysia จะถูก **encapsulate** ไว้ใน instance ของตัวเอง hook ของ plugin จึงไม่ได้มีผลกับ route ของ instance ที่ใช้ plugin นั้นโดยอัตโนมัติ
+
+<span id="descendant"></span>
+
+ในตัวอย่างด้านล่าง `current.use(child)` ทำให้ `child` เป็น **descendant** ของ `current` ส่วนในทางกลับกัน `parent.use(current)` ทำให้ `parent` เป็น **parent** ชั้นถัดขึ้นไปโดยตรงของมัน และ `main.use(parent)` ก็เพิ่ม parent อีกชั้นไว้ข้างบน
+
+### ระดับของ scope
+
+เลือกว่า hook จะไปได้ไกลแค่ไหนผ่าน argument ตัวแรกของ `onBeforeHandle`: `local`, `plugin` หรือ `global`
+
+ทุกขั้นใช้ plugin tree เดียวกัน เปลี่ยนแค่ scope เท่านั้น hook จะ log `hi` โดยไม่ return ค่าอะไร ทุก route จึงยังคืน response `hi` จาก handler ของตัวเองเหมือนเดิม
+
+</div>
+
+<InteractiveDoc steps={scopeSteps}>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(60dvh,44rem)]">
+
+### Local scope
+
+`local` มีผลกับ instance ปัจจุบันและ descendant ของมัน
+- request ที่ไปยัง `/current` และ `/child` จะ log `hi`
+- request ที่ไปยัง `/parent` และ `/main` จะไม่รัน hook นี้
+
+นี่คือ scope เริ่มต้น จะละ `'local'` แล้วเขียนแค่ `onBeforeHandle(() => { ... })` ก็ได้
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(60dvh,44rem)]">
+
+### Plugin scope
+
+`plugin` จะไปถึง parent ชั้นถัดไปโดยตรงด้วย
+
+- request ที่ไปยัง `/child`, `/current` และ `/parent` จะ log `hi`
+
+hook จะหยุดอยู่ที่ `parent` ดังนั้น `/main` จะไม่รัน hook นี้
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(45dvh,33rem)]">
+
+### Global scope
+
+`global` จะส่งต่อไปยังทุก parent ที่ใช้ plugin นี้ route ทั้งสี่จึง log `hi` ทั้งหมด รวมถึง `/main` ด้วย
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+route ที่รัน hook ในแต่ละ scope มีดังนี้:
+
+| Scope | `/child` | `/current` | `/parent` | `/main` |
+| --- | --- | --- | --- | --- |
+| `local` | รัน | รัน | ไม่รัน | ไม่รัน |
+| `plugin` | รัน | รัน | รัน | ไม่รัน |
+| `global` | รัน | รัน | รัน | รัน |
+
+ลำดับการลงทะเบียนยังสำคัญอยู่ hook จะมีผลกับ route และ plugin ที่ลงทะเบียนหลังจากมันเท่านั้น และการแชร์ hook ผ่าน `.use()` ก็ไม่ได้ทำให้ hook มีผลกับ route ที่ลงทะเบียนไว้ก่อนหน้าบน instance ที่รับ hook ไป
+
+ใช้แผนภาพนี้ไล่ดู hook ตัวเดียวกันผ่าน plugin tree ได้เลย
+
+<ScopeStory client:visible={{ rootMargin: '200px' }} />
+
+ถ้าต้องการเลื่อน scope ของ hook ที่ลงทะเบียนไว้บน instance แล้ว ดู `.as('plugin')` และ `.as('global')` ได้ที่ [Scope cast](#instance-as)
+
+## Config
+
+ถ้าอยากให้ plugin นำกลับมาใช้ซ้ำได้ ให้ผู้เรียกใช้ตั้งค่าส่วนที่ต้องเปลี่ยนได้เอง โดยเขียนเป็นฟังก์ชันที่รับตัวเลือกเข้ามาแล้วคืน instance ของ Elysia
+
+```ts
+import { Elysia } from 'elysia'
+
+const version = (version = 1) => new Elysia()
+    .get('/version', version)
+
+const app = new Elysia()
+    .use(version(1))
+    .listen(3000)
+```
+
+ในตัวอย่างนี้ `/version` จะคืน `1` ลองส่งค่าอื่นเข้าไปเพื่อสร้าง plugin ที่ตั้งค่าต่างออกไป
+
+### Callback แบบฟังก์ชัน
+
+ถ้าเป็นไปได้ ให้สร้าง plugin เป็น instance ใหม่ดีกว่า เพราะ callback แบบฟังก์ชันจะได้รับ instance หลักไปโดยตรง ทำให้ไล่ทำความเข้าใจเรื่อง encapsulation และ scope ได้ยากขึ้น
+
+วิธีเขียนคือสร้างฟังก์ชันที่รับ Elysia เข้ามา แล้วคืน instance ที่ต่อเติมแล้วออกไป
+
+<CodePlayground elysia={callbackDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = (app: Elysia) => app
+    .state('counter', 0)
+    .get('/plugin', () => 'Hi')
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/counter', ({ store: { counter } }) => counter)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+callback นี้กำหนด property ลงบน instance หลักโดยตรง `/plugin` จะคืน `Hi` และ `/counter` จะคืน `0`
+
+ใน Elysia 2 getter `app.store` แบบเดิมบน instance ถูกเอาออกไปแล้ว ให้ใช้ `store` จาก context ของ handler เพื่ออ่าน state แทน
+
+:::tip[เลือกแบบที่อ่านง่ายกว่า]
+
+ไม่จำเป็นต้องเลือก callback เพราะเรื่องประสิทธิภาพ instance ของ Elysia เบามากอยู่แล้ว และการแยกเป็น instance ต่างหากยังช่วยให้ TypeScript เห็นขอบเขตชัดขึ้นเวลา infer type ด้วย
+
+:::
+
+## Guard
+
+guard ใช้ใส่ hook และ schema ให้หลาย route ได้ในครั้งเดียว ให้วาง route ที่ต้องการครอบด้วย guard ไว้ใน callback ของมัน
+
+```ts
+import { Elysia, t } from 'elysia'
+import { signUp, signIn, isUserExists } from './auth'
+
+new Elysia()
+    .guard(
+        {
+            body: t.Object({
+                username: t.String(),
+                password: t.String()
+            })
+        },
+        (app) => app
+            .post('/sign-up', ({ body }) => signUp(body))
+            .post('/sign-in', {
+                beforeHandle: isUserExists
+            }, ({ body }) => signIn(body))
+    )
+    .get('/', 'hi')
+    .listen(3000)
+```
+
+schema ของ body มีผลกับ `/sign-up` และ `/sign-in` แต่ไม่มีผลกับ `/` ส่วนฟังก์ชันที่ import เข้ามาคือ logic เรื่องบัญชีผู้ใช้ของแอปพลิเคชันคุณ
+
+| Path | ตรวจสอบ body หรือไม่ |
+| --- | --- |
+| `/sign-up` | ใช่ |
+| `/sign-in` | ใช่ |
+| `/` | ไม่ |
+
+guard รับตัวเลือกของ schema และ hook แบบเดียวกับ route ต่างกันตรงที่ guard จะใช้ตัวเลือกเหล่านั้นกับทุก route ใน callback ของมัน
+
+ตัวอย่างนี้ให้ผลเหมือนกับการใส่ตัวเลือกเดิมซ้ำในทุก route:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { signUp, signIn, isUserExists } from './auth'
+
+new Elysia()
+    .post('/sign-up', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body }) => signUp(body))
+    .post('/sign-in', {
+        beforeHandle: isUserExists,
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body }) => signIn(body))
+    .get('/', 'hi')
+    .listen(3000)
+```
+
+ใน Elysia 2 โดยค่าเริ่มต้น schema ของ route จะเข้าไปแทนที่ schema ส่วนเดียวกันที่สืบทอดมาจาก guard ถ้าต้องการให้ข้อมูลผ่านทั้งสอง schema ให้เพิ่ม `schema: 'merge'` ให้ guard ดูเพิ่มเติมได้ที่ [validation](/essential/validation/#merge)
+
+### Guard ร่วมกับ group
+
+[group](/essential/route/#group) รับ argument ได้สามตัว: prefix, ตัวเลือกของ guard และ callback ของแอป
+
+เริ่มจาก group ที่มี guard ซ้อนอยู่ข้างใน:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group('/v1', (app) =>
+        app.guard(
+            { body: t.Literal('Rikuhachima Aru') },
+            (app) => app.post('/student', ({ body }) => body)
+        )
+    )
+    .listen(3000)
+```
+
+ย้ายตัวเลือกของ guard ไปไว้ใน argument ตัวที่สองของ group จะได้ผลเหมือนเดิมแต่ซ้อนกันน้อยลง:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group(
+        '/v1',
+        { body: t.Literal('Rikuhachima Aru') },
+        (app) => app.post('/student', ({ body }) => body)
+    )
+    .listen(3000)
+```
+
+ทั้งสองแบบลงทะเบียน `POST /v1/student` เหมือนกัน body ที่เป็น JSON string `"Rikuhachima Aru"` จะผ่าน validation และ handler จะคืนค่านั้นกลับไป
+
+## Scope cast
+
+
+ถ้าต้องการให้ hook มีผลกับ parent ด้วย ให้เลือกว่าจะแชร์มากน้อยแค่ไหน:
+
+</div>
+
+
+<NumberedCards items={[
+    { title: 'Inline', children: 'Define an inline scope for a single lifecycle hook.' },
+    { title: 'Guard', children: 'Use guard scope for a set of hooks and schemas.' },
+    { title: 'Instance', children: 'Use instance scope to promote its existing hooks and schemas.' },
+]} />
+
+<div class="content-layout">
+
+### Inline as
+
+ส่ง string ของ scope ไว้ก่อน callback เพื่อแชร์ lifecycle hook ตัวเดียว
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive('plugin', () => ({ hi: 'ok' }))
+    .get('/child', ({ hi }) => hi)
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', ({ hi }) => hi)
+```
+
+property `hi` ที่ derive มาจะใช้ได้ในทั้งสอง route รูปแบบนี้เปลี่ยนแค่ scope ของ hook ตัวนี้ตัวเดียว
+
+### Guard as
+
+ส่ง string ของ scope ไว้ก่อนตัวเลือกของ guard เพื่อแชร์ hook และ schema หลายตัวไปพร้อมกัน
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+    .guard('plugin', {
+        response: t.String(),
+        beforeHandle() {
+            console.log('ok')
+        }
+    })
+    .get('/child', 'ok')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', 'hello')
+```
+
+schema ของ response และ hook จะมีผลกับทั้งสอง route ถ้าต้องการ property ที่ derive มาพร้อม type ให้ใช้ `.derive('plugin', callback)` แทนการใส่ไว้ใน guard นี้
+
+### Instance as
+
+`.as()` จะเลื่อน scope ของ hook และ schema ที่ลงทะเบียนไว้แล้วบน instance ปัจจุบัน
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive(() => ({ hi: 'ok' }))
+    .get('/child', ({ hi }) => hi)
+    .as('plugin')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', ({ hi }) => hi)
+```
+
+scope `plugin` ไปถึง parent ได้แค่ชั้นเดียว ถ้าต้องการส่งต่อขึ้นไปอีกชั้น ให้เลื่อน scope ของ instance ที่เป็น parent ด้วย
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+    .guard({ response: t.String() })
+    .onBeforeHandle(() => { console.log('called') })
+    .get('/child', 'ok')
+    .as('plugin')
+
+const instance = new Elysia()
+    .use(plugin)
+    .get('/parent', 'still ok')
+    .as('plugin')
+
+const parent = new Elysia()
+    .use(instance)
+    .get('/grandparent', 'also ok')
+```
+
+ตอนนี้ schema ของ response ที่เป็น string ไปถึง `/grandparent` แล้ว ถ้า route ไหนในนี้คืนค่าเป็นตัวเลขก็จะผิด schema ทันที TypeScript จะเตือนให้เห็น และ response validation ก็จะตรวจสอบตอน runtime ด้วย
+
+## Lazy load
+
+โดยค่าเริ่มต้น module จะถูกโหลดแบบ eager ดังนั้น plugin แบบ synchronous จะลงทะเบียนเสร็จก่อนเซิร์ฟเวอร์เริ่มทำงาน module ที่คำนวณหนักหรือ block การทำงานจึงอาจทำให้เซิร์ฟเวอร์เริ่มช้าลง
+
+plugin แบบ asynchronous จะลงทะเบียน route ของมันเมื่อ promise ทำงานเสร็จ `.listen()` และ `app.fetch` จะรอ module ที่ค้างอยู่ทั้งหมดก่อนเริ่มรับ request มีแค่ `app.handle()` เท่านั้นที่รันก่อนได้
+
+### Deferred module
+
+deferred module ก็คือ plugin แบบ async ตัวอย่างนี้จะรอรายการไฟล์ให้พร้อมก่อนลงทะเบียน route:
+
+```ts title="plugin.ts"
+import { Elysia, file } from 'elysia'
+import { loadAllFiles } from './files'
+
+export const loadStatic = async (app: Elysia) => {
+    const files = await loadAllFiles()
+
+    for (const asset of files) {
+        app.get(asset, file(asset))
+    }
+
+    return app
+}
+```
+
+ในที่นี้ `loadAllFiles` คืน array ของ path ไฟล์ asset ในเครื่อง ซึ่งใช้เป็น path ของ route ได้ด้วย ส่วนในไฟล์หลัก:
+
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { loadStatic } from './plugin'
+
+const app = new Elysia()
+    .use(loadStatic)
+    .listen(3000)
+```
+
+### Lazy load module
+
+dynamic `import()` ใช้โหลด plugin ทั้งแบบ synchronous และ asynchronous แบบ lazy ได้ ให้ export plugin เป็น default export ของ module:
+
+```ts title="plugin.ts"
+import { Elysia } from 'elysia'
+
+export default new Elysia()
+    .get('/plugin', 'Hi')
+```
+
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .use(import('./plugin'))
+    .listen(3000)
+```
+
+วิธีนี้มีประโยชน์เมื่อการโหลด module เองกินทรัพยากรมาก `.listen()` จะรอ `app.modules` ให้เอง เซิร์ฟเวอร์จึงไม่มีทางเริ่มทำงานโดยที่ route ยังมาไม่ครบ ให้ await `app.modules` เองเฉพาะตอนที่เรียก `app.handle()` ตรง ๆ เช่นในการทดสอบ
+
+### การทดสอบ
+
+ใน test ให้ await `app.modules` ก่อนส่ง request ไปยัง route ที่เป็น deferred หรือ lazy-load
+
+```ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Modules', () => {
+    it('inline async', async () => {
+        const app = new Elysia()
+            .use(async (app) => app.get('/async', 'async'))
+
+        await app.modules
+
+        const response = await app.handle(
+            new Request('http://localhost/async')
+        )
+
+        expect(await response.text()).toBe('async')
+    })
+})
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

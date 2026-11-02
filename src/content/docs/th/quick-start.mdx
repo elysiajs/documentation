@@ -1,0 +1,483 @@
+---
+title: เริ่มต้นใช้งาน
+description: เริ่มรันเซิร์ฟเวอร์ Elysia v2 ด้วย Bun, Node.js หรือ runtime ที่รองรับ Web Standard
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import FileCodeBlock from '../../../components/interactive-code/file-code-block.astro';
+import PageTabs from '../../../components/interactive-code/page-tabs.astro';
+import TabItem from '../../../components/interactive-code/tab-item.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">เริ่มต้นใช้งาน</h1>
+
+Elysia คือเฟรมเวิร์ก backend สำหรับ TypeScript ที่ปรับแต่งมาเพื่อ Bun โดยเฉพาะ และยังรันบน Node.js หรือ runtime ใดก็ได้ที่รองรับ Request แบบ Web Standard
+
+<PageTabs label="Runtime">
+<TabItem label="Bun">
+
+## Bun
+
+ติดตั้ง Bun ด้วยคำสั่งตามระบบปฏิบัติการที่คุณใช้
+
+<FileCodeBlock label="Bun operating system">
+<TabItem label="macOS / Linux">
+
+```bash
+curl -fsSL https://bun.com/install | bash
+```
+
+</TabItem>
+<TabItem label="Windows (PowerShell)">
+
+```powershell
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
+
+</TabItem>
+</FileCodeBlock>
+
+เปิด terminal ใหม่ แล้วเช็กว่าติดตั้งเรียบร้อยแล้ว:
+
+```bash
+bun --version
+```
+
+<PageTabs label="Bun installation method">
+<TabItem label="Automatic installation">
+
+### ติดตั้งอัตโนมัติ
+
+สร้างโปรเจกต์ได้ด้วย `bun create elysia`
+
+template จะใช้เวอร์ชัน `latest` แต่เราอยากใช้ Elysia v2 เวอร์ชัน `rc` แทน
+
+```bash
+bun create elysia
+cd app
+bun add elysia@rc
+```
+
+รันเซิร์ฟเวอร์:
+
+```bash
+bun run dev
+```
+
+เปิด [localhost:3000](http://localhost:3000) แล้วจะเห็นข้อความ `Hello Elysia`
+
+:::tip[เปิดเซิร์ฟเวอร์ทิ้งไว้ได้เลย]
+
+flag `--watch` จะรีสตาร์ตเซิร์ฟเวอร์ให้เมื่อไฟล์มีการเปลี่ยนแปลง ส่วน `dev` เป็น script ที่คุณเพิ่มไว้ในโปรเจกต์เอง ไม่ใช่คำสั่งที่มากับแพ็กเกจ Elysia
+
+:::
+
+</TabItem>
+<TabItem label="Manual installation">
+
+### ติดตั้งเอง
+
+ถ้าอยากเริ่มจากไฟล์ของตัวเอง ให้สร้างโปรเจกต์เปล่าแล้วติดตั้ง Elysia:
+
+```bash
+mkdir app
+cd app
+bun init -y
+bun add elysia@rc
+bun add -d @types/bun typescript
+```
+
+สร้างไฟล์ `src/index.ts`:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .listen(3000, ({ hostname, port }) => {
+        console.log(`Elysia is running at ${hostname}:${port}`)
+    })
+```
+
+รวม script เหล่านี้เข้าไปใน `package.json` ของคุณ:
+
+```json
+{
+    "scripts": {
+        "dev": "bun --watch src/index.ts",
+        "build": "bun build src/index.ts --target bun --outdir ./dist",
+        "start": "NODE_ENV=production bun dist/index.js",
+        "test": "bun test"
+    }
+}
+```
+
+| Script | ทำอะไร |
+| --- | --- |
+| `bun run dev` | รันเซิร์ฟเวอร์และ reload ใหม่เมื่อโค้ดเปลี่ยน |
+| `bun run build` | bundle เซิร์ฟเวอร์สำหรับ production |
+| `bun run start` | รัน bundle ที่ build ไว้ก่อนหน้า |
+| `bun run test` | รันเทสต์ด้วย test runner ของ Bun |
+
+เปิด `strict` ไว้ใน `tsconfig.json` เพื่อให้ Elysia infer type ได้ถูกต้อง:
+
+```json
+{
+    "compilerOptions": {
+        "strict": true
+    }
+}
+```
+
+รวมตัวเลือกนี้เข้าไปในการตั้งค่าที่ `bun init` สร้างไว้ โดยคงการตั้งค่าอื่นไว้ตามเดิม จากนั้นรัน `bun run dev` แล้วเปิด [localhost:3000](http://localhost:3000)
+
+</TabItem>
+</PageTabs>
+</TabItem>
+<TabItem label="Node.js">
+
+## Node.js
+
+ใช้ Node.js เวอร์ชันที่ยังอยู่ในระยะซัพพอร์ตร่วมกับ Node adapter โดย Elysia 2 ต้องใช้เวอร์ชัน `22.18` ขึ้นไป เลือกเวอร์ชัน LTS ที่ยังมีการดูแลอยู่ได้จาก[หน้าดาวน์โหลด Node.js](https://nodejs.org/en/download)
+
+ถ้าคุณใช้ package manager ของระบบอยู่แล้ว ใช้คำสั่งติดตั้งตามนี้ได้เลย:
+
+<FileCodeBlock label="Node.js operating system">
+<TabItem label="macOS (Homebrew)">
+
+```bash
+brew install node
+```
+
+</TabItem>
+<TabItem label="Windows (Chocolatey)">
+
+```powershell
+choco install nodejs
+```
+
+</TabItem>
+<TabItem label="Debian / Ubuntu (apt)">
+
+```bash
+sudo apt install nodejs npm
+```
+
+</TabItem>
+<TabItem label="Arch Linux (pacman)">
+
+```bash
+sudo pacman -S nodejs npm
+```
+
+</TabItem>
+</FileCodeBlock>
+
+จากนั้นเช็กด้วย `node --version` แพ็กเกจเริ่มต้นของบาง distro อาจเก่ากว่าที่ Elysia ต้องการ ถ้าเป็นแบบนั้นให้ใช้ตัวติดตั้งของเวอร์ชันที่ยังซัพพอร์ตอยู่แทน
+
+<PageTabs label="Node.js language">
+<TabItem label="TypeScript">
+
+### ตั้งค่าสำหรับ TypeScript
+
+เริ่มจากโฟลเดอร์โปรเจกต์ใหม่ที่มี `package.json` (เช่น รัน `npm init -y`) แล้วเลือกคำสั่งตาม package manager ที่คุณใช้:
+
+<FileCodeBlock>
+<TabItem label="Bun">
+
+```bash
+bun add elysia@rc @elysia/node@rc
+bun add -d tsx @types/node typescript
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```bash
+pnpm add elysia@rc @elysia/node@rc typebox exact-mirror openapi-types
+pnpm add -D tsx @types/node typescript
+```
+
+</TabItem>
+<TabItem label="npm">
+
+```bash
+npm install elysia@rc @elysia/node@rc
+npm install --save-dev tsx @types/node typescript
+```
+
+</TabItem>
+<TabItem label="Yarn">
+
+```bash
+yarn add elysia@rc @elysia/node@rc typebox exact-mirror openapi-types
+yarn add -D tsx @types/node typescript
+```
+
+</TabItem>
+</FileCodeBlock>
+
+คำสั่งของ pnpm และ Yarn ระบุ peer dependency ที่ Elysia ต้องใช้ตอน runtime ไว้ครบ จึงใช้ได้แม้จะปิดการติดตั้ง peer อัตโนมัติไว้ อีกเรื่องคือ Elysia v2 ใช้ `typebox` ไม่ใช่ `@sinclair/typebox`
+
+`tsx` ใช้รัน TypeScript ระหว่างพัฒนาและมี watch mode ให้ ส่วน TypeScript เองจะตรวจ type และสร้าง JavaScript สำหรับ production
+
+สร้างไฟล์ `src/index.ts`:
+
+```ts
+import { Elysia } from 'elysia'
+import { node } from '@elysia/node'
+
+new Elysia({ adapter: node() })
+    .get('/', () => 'Hello Elysia')
+    .listen(3000, ({ hostname, port }) => {
+        console.log(`Elysia is running at ${hostname}:${port}`)
+    })
+```
+
+ตั้งค่าแพ็กเกจให้ใช้ ES modules แล้วเพิ่ม script เหล่านี้:
+
+```json
+{
+    "type": "module",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "build": "tsc -p tsconfig.json",
+        "start": "node dist/index.js"
+    }
+}
+```
+
+สร้างไฟล์การตั้งค่า TypeScript ด้วย `npx tsc --init` แล้วตั้งค่าตัวเลือกเหล่านี้ใน `tsconfig.json`:
+
+```json
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "types": ["node"],
+        "rootDir": "src",
+        "outDir": "dist",
+        "strict": true,
+        "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts"]
+}
+```
+
+script สำหรับ build จะอ่านการตั้งค่านี้ รวมถึง `strict` และโฟลเดอร์ output ด้วย เวลา import module ของตัวเองแบบ NodeNext ให้ใส่นามสกุล `.js` เสมอ แม้จะเป็นไฟล์ซอร์ส TypeScript ก็ตาม
+
+รัน dev server:
+
+```bash
+npm run dev
+```
+
+จะใช้ `bun run dev`, `pnpm dev` หรือ `yarn dev` แทนก็ได้ เปิด [localhost:3000](http://localhost:3000) แล้วจะเห็น `Hello Elysia`
+
+| Script | ทำอะไร |
+| --- | --- |
+| `dev` | รัน TypeScript และรีสตาร์ตให้อัตโนมัติเมื่อมีการเปลี่ยนแปลง |
+| `build` | ตรวจ type และสร้าง JavaScript ไว้ใน `dist` |
+| `start` | รัน JavaScript ที่ build แล้วด้วย Node.js |
+
+ตั้ง `NODE_ENV=production` ใน environment ที่ deploy ก่อนรัน `start` ถ้าใช้ POSIX shell สั่ง `NODE_ENV=production npm run start` ได้เลย ส่วนใน PowerShell ให้ตั้ง `$env:NODE_ENV = 'production'` ก่อน
+
+</TabItem>
+<TabItem label="JavaScript">
+
+### ตั้งค่าสำหรับ JavaScript
+
+จะใช้ JavaScript ก็ได้เหมือนกัน การจัดการ request เหมือนเดิมทุกอย่าง เพียงแต่ TypeScript จะเพิ่ม schema inference และการตรวจ type แบบ end-to-end ให้ระหว่างที่คุณเขียนโค้ด
+
+เลือก package manager ที่ใช้:
+
+**Bun**
+
+```bash
+bun add elysia@rc @elysia/node@rc
+```
+
+**pnpm**
+
+```bash
+pnpm add elysia@rc @elysia/node@rc typebox exact-mirror openapi-types
+```
+
+**npm**
+
+```bash
+npm install elysia@rc @elysia/node@rc
+```
+
+**Yarn**
+
+```bash
+yarn add elysia@rc @elysia/node@rc typebox exact-mirror openapi-types
+```
+
+สร้างไฟล์ `src/index.js`:
+
+```js
+import { Elysia } from 'elysia'
+import { node } from '@elysia/node'
+
+new Elysia({ adapter: node() })
+    .get('/', () => 'Hello Elysia')
+    .listen(3000, ({ hostname, port }) => {
+        console.log(`Elysia is running at ${hostname}:${port}`)
+    })
+```
+
+เพิ่มการรองรับ ES module และ script ต่อไปนี้ลงใน `package.json`:
+
+```json
+{
+    "type": "module",
+    "scripts": {
+        "dev": "node --watch src/index.js",
+        "start": "node src/index.js"
+    }
+}
+```
+
+รัน `npm run dev` เพื่อพัฒนาโดยมีการรีสตาร์ตอัตโนมัติ และใช้ `npm run start` บน production โดยตั้ง `NODE_ENV=production` ไว้ใน environment
+
+:::tip[ค่อยเพิ่ม type ทีหลังก็ได้]
+
+JavaScript ใช้งานได้เลยโดยไม่ต้องคอมไพล์ ถ้าอยากให้ editor ช่วยตรวจได้มากขึ้น ให้เริ่มจากการตั้งค่า TypeScript ด้านบน ทั้งสองตัวอย่างมี route เดียวกัน
+
+:::
+
+</TabItem>
+</PageTabs>
+</TabItem>
+<TabItem label="Web Standard">
+
+## Web Standard
+
+Elysia มี request handler ที่รับ `Request` แบบ Web Standard แล้วคืน `Response` กลับมา ใช้กับเฟรมเวิร์กหรือ runtime ฝั่งเซิร์ฟเวอร์ที่รองรับได้เลย โดยไม่ต้องเปิด listener แยกต่างหาก
+
+ติดตั้ง Elysia ด้วย package manager ที่ใช้:
+
+<FileCodeBlock label="Web Standard package manager">
+<TabItem label="Bun">
+
+```bash
+bun add elysia@rc
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```bash
+pnpm add elysia@rc typebox exact-mirror openapi-types
+```
+
+</TabItem>
+<TabItem label="npm">
+
+```bash
+npm install elysia@rc
+```
+
+</TabItem>
+<TabItem label="Yarn">
+
+```bash
+yarn add elysia@rc typebox exact-mirror openapi-types
+```
+
+</TabItem>
+</FileCodeBlock>
+
+เลือก integration เพื่อดูว่า runtime นั้นเชื่อมต่อกับ Elysia อย่างไร:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="/integrations/cloudflare-worker">
+<CardTitle id="cloudflare-workers">Cloudflare Workers</CardTitle>
+
+รัน API ที่เขียนด้วย Elysia บน Cloudflare Workers
+
+</Card>
+
+<Card href="/integrations/nextjs">
+<CardTitle id="nextjs">Next.js</CardTitle>
+
+ใช้ Elysia ใน route handler ของ Next.js
+
+</Card>
+
+<Card href="/integrations/expo">
+<CardTitle id="expo">Expo</CardTitle>
+
+ใช้ Elysia ใน API routes ของ Expo
+
+</Card>
+
+<Card href="/integrations/astro">
+<CardTitle id="astro">Astro</CardTitle>
+
+ใช้ Elysia ใน API routes ของ Astro
+
+</Card>
+
+<Card href="/integrations/nuxt">
+<CardTitle id="nuxt">Nuxt</CardTitle>
+
+ใช้ Elysia ใน server routes ของ Nuxt
+
+</Card>
+
+<Card href="/integrations/sveltekit">
+<CardTitle id="sveltekit">SvelteKit</CardTitle>
+
+ใช้ Elysia ใน API routes ของ SvelteKit
+
+</Card>
+
+<Card href="/integrations/tanstack-start">
+<CardTitle id="tanstack-start">TanStack Start</CardTitle>
+
+ใช้ Elysia ใน server routes ของ TanStack Start
+
+</Card>
+
+</div>
+
+### ไม่มีในรายการ?
+
+ให้ export `app.fetch` แล้วส่ง request ที่เข้ามาต่อให้มันผ่าน server API ของ runtime ที่ใช้:
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Elysia')
+
+export default app.fetch
+```
+
+อย่าเรียก `.listen()` ถ้าเฟรมเวิร์กหลักเป็นคนดูแลเซิร์ฟเวอร์อยู่แล้ว ถ้าส่ง request ตรงไปที่ handler นี้ ก็จะได้คำทักทายเดิมกลับมา:
+
+```ts
+const response = await app.fetch(new Request('http://localhost/'))
+console.log(await response.text()) // Hello Elysia
+```
+
+ความเข้ากันได้ของ request และ response เป็นแค่จุดเริ่มต้น การตั้งค่าเฉพาะของแต่ละ runtime และฟีเจอร์ที่รองรับ ให้ดูในคู่มือ integration
+
+</TabItem>
+</PageTabs>
+
+</div>
+</InteractiveDocLayout>
+</div>

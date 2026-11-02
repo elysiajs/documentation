@@ -1,0 +1,50 @@
+---
+title: Plugin Bearer
+description: ข้อมูลอ้างอิงและตัวอย่างการใช้งาน plugin Bearer
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin Bearer</h1>
+
+plugin สำหรับ [elysia](https://github.com/elysiajs/elysia) ที่ใช้ดึง Bearer token
+
+ติดตั้งด้วยคำสั่ง:
+```bash
+bun add @elysia/bearer@rc
+```
+
+จากนั้นก็นำไปใช้ได้เลย:
+```ts
+import { Elysia } from 'elysia'
+import { bearer } from '@elysia/bearer'
+
+const app = new Elysia()
+    .use(bearer())
+    .get('/sign', {
+        beforeHandle({ bearer, set, status }) {
+            if (!bearer) {
+                set.headers[
+                    'WWW-Authenticate'
+                ] = `Bearer realm="sign"`
+
+                return status(401, 'Unauthorized')
+            }
+        }
+    }, ({ bearer }) => bearer)
+    .listen(3000)
+```
+
+plugin นี้ใช้ดึง Bearer token ตามที่กำหนดไว้ใน [RFC6750](https://www.rfc-editor.org/rfc/rfc6750#section-2)
+
+plugin นี้แค่ดึง token ออกมาให้ ไม่ได้ยืนยันตัวตนของ request หรือตรวจสอบ token ให้ ส่วนนั้นต้องเพิ่มเองในแอปพลิเคชันของคุณ
+
+</div>
+</InteractiveDocLayout>
+</div>
