@@ -19,6 +19,8 @@ import '../../../../styles/routing.css';
 
 ด้วย Eden Fetch สามารถช่วยให้คุณคุยกับเซิร์ฟเวอร์ Elysia แบบ type-safe ผ่าน Fetch API ได้
 
+---
+
 เริ่มจาก export type ของเซิร์ฟเวอร์ Elysia ที่มีอยู่ออกมาก่อน:
 ```ts
 // server.ts
@@ -38,7 +40,7 @@ const app = new Elysia()
 export type App = typeof app
 ```
 
-จากนั้น import type ของเซิร์ฟเวอร์ แล้วเรียกใช้ API ของ Elysia ฝั่ง client :
+จากนั้น import type ของเซิร์ฟเวอร์ แล้วเรียกใช้ API ของ Elysia ฝั่ง client ได้เลย:
 ```ts
 import { edenFetch } from '@elysia/eden'
 import type { App } from './server'
@@ -104,13 +106,11 @@ const { id, name } = nendoroid
 ```
 
 ## ควรใช้ Eden Fetch แทน Eden Treaty เมื่อไหร่
-เลือกตามสไตล์ที่คุณชอบ: เลือกรูปแบบ Request syntax ที่เข้ากับโครงสร้างโปรเจกต์ทีมของคุณ
+เลือกรูปแบบการเขียน request ที่เข้ากับโปรเจกต์ของคุณได้เลย ไม่มี client ตัวไหนที่ type-check เร็วกว่าเสมอไป
 
-ประสิทธิภาพไม่ต่างกัน: ไม่มี Client ตัวไหนที่ระบบ Type-check จะทำงานได้เร็วกว่ากันอย่างมีนัยสำคัญ
+จะเลือกใช้ตัวไหนก็ขึ้นอยู่กับที่ตกลงกันในทีม แต่ก็ขอแนะนำให้ใช้ [Eden Treaty](/eden/treaty/overview) มากกว่านะ
 
-จะเลือกใช้ตัวไหนก็ขึ้นอยู่กับที่ตกลงกันในทีม แต่ก็ขอแนะนำให้ใช้ [Eden Treaty](/eden/treaty/overview) มากกว่านะ.
-
-สำหรับ API ที่ใหญ่มาก เช่น มีมากกว่า 500 route ที่ frontend ตัวเดียวเรียกใช้ ลองเทียบความเร็วของการตรวจ TypeScript และความลื่นของ editor ในโปรเจกต์จริงของคุณดูก่อน Eden Fetch อาจคุ้มที่จะลองเมื่อการ infer type ของ Treaty เริ่มหนัก (route อย่างเดียวก็ไม่ได้รับประกันเรื่องประสิทธิภาพ) 
+สำหรับ API ที่ใหญ่มาก เช่น **มีมากกว่า 500 route** ที่ frontend ตัวเดียวเรียกใช้ ลองเทียบความเร็วของการตรวจ TypeScript และความลื่นของ editor ในโปรเจกต์จริงของคุณดูก่อน Eden Fetch อาจคุ้มที่จะลองเมื่อการ infer type ของ Treaty เริ่มหนัก (จำนวน route อย่างเดียวไม่ได้รับประกันเรื่องประสิทธิภาพ)
 
 </div>
 
