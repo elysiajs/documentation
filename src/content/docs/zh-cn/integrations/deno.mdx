@@ -1,0 +1,51 @@
+---
+title: "集成 Deno"
+description: "Elysia 基于 Web 标准的 Request/Response 构建，因此可以直接通过 Deno.serve 运行。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">集成 Deno</h1>
+
+Elysia 基于 Web 标准的 Request/Response 构建，因此可以直接通过 Deno.serve 运行。
+
+使用 `deno add npm:elysia@rc` 将 Elysia 添加到 Deno 项目，然后将 `app.fetch` 传给 `Deno.serve`：
+
+```typescript
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.get('/', () => 'Hello Elysia')
+
+Deno.serve(app.fetch)
+```
+
+接着使用网络权限运行模块：
+```bash
+deno run --allow-net --watch src/index.ts
+```
+
+这样就可以在 Deno 上运行 Elysia 了。
+
+### 更改端口号
+你可以在 `Deno.serve` 中指定端口号。
+
+```ts
+Deno.serve({ port: 8787 }, app.fetch)
+```
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

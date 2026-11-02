@@ -1,0 +1,250 @@
+---
+title: 目录
+description: 从合适的起点开始，了解 Elysia 的核心概念，并找到你需要的指南。
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">目录</h1>
+
+学习 Elysia 没有固定的方法。不妨先通过交互式教程熟悉它：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card wash href="/tutorial/">
+<CardTitle as="div">交互式教程</CardTitle>
+
+在浏览器中的编辑器和 Playground 里学习 Elysia。
+
+</Card>
+
+</div>
+
+## 从这里开始
+先阅读这两篇，了解核心概念和推荐实践：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/key-concept">
+<CardTitle>核心概念</CardTitle>
+
+了解 Elysia 的核心概念，以及如何有效地使用它们
+</Card>
+<Card href="/essential/best-practice">
+<CardTitle>最佳实践</CardTitle>
+
+了解编写 Elysia 应用的推荐模式
+</Card>
+</div>
+
+### AI 辅助编程
+
+Elysia 提供 `llms.txt` 和供 **Claude Code**、**OpenCode** 等 AI 编程工具使用的 skills。请选择与项目中 Elysia 版本相匹配的 skill 版本。
+
+```
+bunx skills add elysiajs/skills
+```
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/llms.txt">
+<CardTitle>llms.txt</CardTitle>
+
+查看本站 Elysia v2 文档索引，供 LLM 使用。
+</Card>
+<Card href="/llms-full.txt">
+<CardTitle>llms-full.txt</CardTitle>
+
+在一个 Markdown 文件中查看本站完整的 Elysia v2 文档。
+</Card>
+</div>
+
+## 如果你用过其他框架
+
+如果你熟悉 Express、Fastify 或 Hono 等流行框架，就会发现 Elysia 用起来也很顺手，只是有些细节不同。
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/migrate/from-express">
+<CardTitle>从 Express 迁移</CardTitle>
+
+比较 Express 与 Elysia
+</Card>
+<Card href="/migrate/from-fastify">
+<CardTitle>从 Fastify 迁移</CardTitle>
+
+比较 Fastify 与 Elysia
+</Card>
+<Card href="/migrate/from-hono">
+<CardTitle>从 Hono 迁移</CardTitle>
+
+比较 Hono 与 Elysia
+</Card>
+<Card href="/migrate/from-trpc">
+<CardTitle>从 tRPC 迁移</CardTitle>
+
+比较 tRPC 与 Elysia
+</Card>
+</div>
+
+## 基础章节
+
+以下是 Elysia 的基础内容。我们强烈建议你先读完这些页面，再继续了解其他主题：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/essential/route">
+<CardTitle>路由</CardTitle>
+
+了解 Elysia 中的路由机制
+</Card>
+<Card href="/essential/handler">
+<CardTitle>处理器</CardTitle>
+
+学习如何处理请求并返回响应
+</Card>
+<Card href="/essential/validation">
+<CardTitle>校验</CardTitle>
+
+了解如何通过 Elysia 保证类型安全
+</Card>
+<Card href="/essential/life-cycle">
+<CardTitle>生命周期</CardTitle>
+
+了解请求生命周期的各个阶段
+</Card>
+<Card href="/essential/plugin">
+<CardTitle>插件</CardTitle>
+
+学习如何使用插件组合 Elysia 应用
+</Card>
+</div>
+
+## 更多模式
+
+想进一步探索 Elysia 的功能？可以看看：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/essential/handler">
+<CardTitle>Handler</CardTitle>
+
+学习如何发送文件、流式传输响应，以及使用服务器发送事件
+</Card>
+<Card href="/patterns/websocket">
+<CardTitle>WebSocket</CardTitle>
+
+使用 Elysia 构建实时应用
+</Card>
+<Card href="/eden">
+<CardTitle>Eden</CardTitle>
+
+了解更多 Eden 的内容，以及如何有效地使用它
+</Card>
+<Card href="/patterns/opentelemetry">
+<CardTitle>OpenTelemetry</CardTitle>
+
+使用 OpenTelemetry 监控应用
+</Card>
+<Card href="/patterns/deploy">
+<CardTitle>部署到生产环境</CardTitle>
+
+学习如何将 Elysia 部署到生产环境
+</Card>
+</div>
+
+## 与元框架集成
+
+你也可以将 Elysia 与 Next.js、Nuxt、Astro 等元框架搭配使用。
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/integrations/astro">
+<CardTitle>Astro</CardTitle>
+
+在 Astro 端点中使用 Elysia
+</Card>
+<Card href="/integrations/expo">
+<CardTitle>Expo</CardTitle>
+
+在 Expo API 路由中使用 Elysia
+</Card>
+<Card href="/integrations/nextjs">
+<CardTitle>Next.js</CardTitle>
+
+在 Next.js 路由处理器中使用 Elysia
+</Card>
+<Card href="/integrations/nuxt">
+<CardTitle>Nuxt</CardTitle>
+
+在 Nuxt 服务器路由中使用 Elysia
+</Card>
+<Card href="/integrations/sveltekit">
+<CardTitle>SvelteKit</CardTitle>
+
+在 SvelteKit 端点中使用 Elysia
+</Card>
+</div>
+
+## 与常用工具集成
+
+Elysia 也能与许多常用工具集成：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/integrations/ai-sdk">
+<CardTitle>AI SDK</CardTitle>
+
+学习如何在 Elysia 中使用 Vercel AI SDK
+</Card>
+<Card href="/integrations/better-auth">
+<CardTitle>Better Auth</CardTitle>
+
+学习如何在 Elysia 中使用 Better Auth
+</Card>
+<Card href="/integrations/drizzle">
+<CardTitle>Drizzle</CardTitle>
+
+Elysia 为 Drizzle 提供类型安全的实用工具
+</Card>
+<Card href="/integrations/prisma">
+<CardTitle>Prisma</CardTitle>
+
+学习如何在 Elysia 中使用 Prisma
+</Card>
+<Card href="/integrations/react-email">
+<CardTitle>React Email</CardTitle>
+
+使用 JSX 创建邮件模板
+</Card>
+</div>
+
+## 社区与支持
+
+遇到问题时，欢迎在 GitHub Discussions、Discord 或 Twitter 上向社区求助。
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="https://discord.gg/eaFJ2KDJck">
+<CardTitle>Discord</CardTitle>
+
+ElysiaJS 官方 Discord 社区服务器
+</Card>
+<Card href="https://twitter.com/elysiajs">
+<CardTitle>Twitter</CardTitle>
+
+关注 Elysia 的更新和动态
+</Card>
+<Card href="https://github.com/elysiajs">
+<CardTitle>GitHub</CardTitle>
+
+源代码与开发
+</Card>
+</div>
+
+---
+
+希望你也能像我们一样喜欢 Elysia！
+
+</div>
+</InteractiveDocLayout>
+</div>

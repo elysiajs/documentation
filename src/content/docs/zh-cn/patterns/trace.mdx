@@ -1,0 +1,205 @@
+---
+title: 跟踪
+description: 测量生命周期和处理器的耗时，找出请求中的性能瓶颈。
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">跟踪</h1>
+
+使用 `.trace()` 测量请求生命周期各阶段及其处理器的耗时，先找出耗时环节，再决定如何调整代码。
+
+## 跟踪
+Trace 使用回调监听器报告各生命周期事件的开始和结束时间。下一生命周期事件运行前，`onStop` 回调会先执行完毕。
+
+首先从 `elysia/trace` 导入 `trace`，并通过 `.use(trace())` 启用跟踪功能。然后在实例上注册 `.trace()` 回调，以订阅生命周期事件。
+
+在生命周期名称前加上 `on` 前缀即可监听对应事件，例如使用 `onHandle` 监听 `handle` 事件。
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+    .trace(async ({ onHandle }) => {
+	    onHandle(({ begin, onStop }) => {
+			onStop(({ end }) => {
+        		console.log('handle took', end - begin, 'ms')
+			})
+	    })
+    })
+    .get('/', () => 'Hi')
+    .listen(3000)
+```
+
+更多信息请参阅[生命周期事件](/essential/life-cycle/)：
+
+## 子事件
+生命周期组会公开其中已注册钩子的子事件。`handle` 表示路由处理器本身；要测量组内各个钩子的耗时，请在钩子组上使用 `onEvent`。
+
+你可以使用 `onEvent` 依次监听每个子事件
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const sleep = (time = 1000) =>
+    new Promise((resolve) => setTimeout(resolve, time))
+
+const app = new Elysia()
+    .use(trace())
+    .trace(async ({ onBeforeHandle }) => {
+        onBeforeHandle(({ total, onEvent }) => {
+            console.log('total children:', total)
+
+            onEvent(({ onStop }) => {
+                onStop(({ elapsed }) => {
+                    console.log('child took', elapsed, 'ms')
+                })
+            })
+        })
+    })
+    .get('/', {
+        beforeHandle: [
+            function prepare() {},
+            async function delay() {
+                await sleep()
+            }
+        ]
+    }, () => 'Hi')
+    .listen(3000)
+```
+
+在此例中，`beforeHandle` 事件有 `2` 个子事件，因此 `total children` 为 `2`。
+
+接着使用 `onEvent` 监听每个子事件，并打印各自的耗时。
+
+## Trace 回调参数
+传给 `.trace()` 的回调会收到请求的跟踪上下文：
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	// This is trace parameter
+	// hover to view the type
+	.trace((parameter) => {
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+`trace` 接受以下参数：
+
+<span id="id---number" />
+
+### id - `string`
+每个请求独有的 UUID 字符串，可用于关联日志。
+
+### context - `Context`
+Elysia 的 [Context](/essential/handler#context)，例如 `set`、`store`、`query`、`params`
+
+### set - `Context.set`
+`context.set` 的快捷方式，用于设置响应头或上下文状态
+
+### store - `Singleton.store`
+`context.store` 的快捷方式，用于访问上下文中的数据
+
+### time - `number`
+请求到达时的时间戳
+
+<span id="onevent---tracelistener" />
+
+### onEvent 事件监听器
+用于监听各个生命周期事件。
+
+你可以监听以下生命周期事件：
+-   **onRequest** - 收到每个新请求时通知
+-   **onParse** - 解析请求体的函数数组
+-   **onTransform** - 在校验前转换请求和上下文
+-   **onBeforeHandle** - 主处理器运行前执行自定义检查，若返回响应，则可跳过主处理器。
+-   **onHandle** - 分配给该路径的处理器
+-   **onAfterHandle** - 在响应发回客户端前对其进行处理
+-   **onMapResponse** - 将返回值映射为 Web Standard Response
+-   **onError** - 处理请求期间抛出的错误
+-   **onAfterResponse** - 响应发送后执行的清理函数
+
+## Trace 事件监听器
+用于监听各个生命周期事件
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	.trace(({ onBeforeHandle }) => {
+		// This is trace listener
+		// hover to view the type
+		onBeforeHandle((parameter) => {
+
+		})
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+每个生命周期监听器都会收到以下参数：
+
+### name - `string`
+函数名称。匿名函数的名称为 `anonymous`
+
+### begin - `number`
+函数开始运行的时间
+
+### end - `Promise<number>`
+函数结束的时间。函数结束时，该 Promise 会兑现
+
+### error - `Promise<Error | null>`
+生命周期中抛出的错误。函数结束时，该 Promise 会兑现
+
+### onStop - `callback?: (detail: TraceEndDetail) => any`
+生命周期结束时执行的回调
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	.trace(({ onBeforeHandle, set }) => {
+		onBeforeHandle(({ onStop }) => {
+			onStop(({ elapsed }) => {
+				set.headers['X-Elapsed'] = elapsed.toString()
+			})
+		})
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+建议在此函数中修改上下文，因为框架会通过锁机制确保上下文成功更新后，才进入下一个生命周期事件。
+
+## TraceEndDetail
+传给 `onStop` 回调的参数
+
+### end - `number`
+函数结束的时间
+
+### error - `Error | null`
+生命周期中抛出的错误
+
+### elapsed - `number`
+生命周期耗时，即 `end - begin`
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,243 @@
+---
+title: 插件概览
+description: Elysia 官方插件与社区插件的参考信息
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import { Card, CardTitle } from '../../../../components/ui/card';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">插件概览</h1>
+
+Elysia 的设计注重模块化与轻量化。
+
+这与 Arch Linux 的理念相同（顺便说一句，我用 Arch）：
+
+> 设计决策由开发者针对具体情况协商确定
+
+这样开发者就能按自己的需要构建高性能 Web 服务器。因此，Elysia 也提供了一些常见模式的预构建插件，方便使用：
+
+## 官方插件
+
+以下是由 Elysia 团队维护的一些官方插件：
+
+
+<div className="grid gap-4 sm:grid-cols-2">
+
+<Card href="/plugins/bearer">
+<CardTitle>Bearer</CardTitle>
+
+从请求头中提取 Bearer 令牌。
+
+</Card>
+
+<Card href="/plugins/cors">
+<CardTitle>CORS</CardTitle>
+
+配置跨源资源共享。
+
+</Card>
+
+<Card href="/plugins/compress">
+<CardTitle>Compress</CardTitle>
+
+使用客户端支持的编码压缩 HTTP 响应。
+
+</Card>
+
+<Card href="/plugins/cron">
+<CardTitle>Cron</CardTitle>
+
+运行定时任务。
+
+</Card>
+
+<Card href="/eden">
+<CardTitle>Eden</CardTitle>
+
+使用 Elysia 的端到端类型安全客户端。
+
+</Card>
+
+<Card href="/plugins/graphql-apollo">
+<CardTitle>GraphQL Apollo</CardTitle>
+
+在 Elysia 中运行 Apollo GraphQL。
+
+</Card>
+
+<Card href="/plugins/graphql-yoga">
+<CardTitle>GraphQL Yoga</CardTitle>
+
+在 Elysia 中运行 GraphQL Yoga。
+
+</Card>
+
+<Card href="/plugins/html">
+<CardTitle>HTML</CardTitle>
+
+返回 HTML 响应。
+
+</Card>
+
+<Card href="/plugins/jwt">
+<CardTitle>JWT</CardTitle>
+
+签发并验证 JSON Web Token。
+
+</Card>
+
+<Card href="/plugins/openapi">
+<CardTitle>OpenAPI</CardTitle>
+
+为 Elysia 应用生成 OpenAPI 文档。
+
+</Card>
+
+<Card href="/plugins/opentelemetry">
+<CardTitle>OpenTelemetry</CardTitle>
+
+使用 OpenTelemetry 收集追踪数据。
+
+</Card>
+
+<Card href="/plugins/server-timing">
+<CardTitle>Server Timing</CardTitle>
+
+通过 Server-Timing 响应头测量请求生命周期性能。
+
+</Card>
+
+<Card href="/plugins/static">
+<CardTitle>Static</CardTitle>
+
+提供静态文件和目录。
+
+</Card>
+
+</div>
+
+:::note[插件版本]
+
+请使用 Elysia peer 依赖与应用版本匹配的插件。Elysia 2 插件分支使用预发布版本；较早的插件版本可能依赖已移除的 Elysia 1 API。下方的社区插件列表仅供查找，不保证兼容性。
+
+:::
+
+## 社区插件
+
+-   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - 轻松搭建 Elysia 项目环境（支持 ORM、代码检查工具和插件）！
+-   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - 简洁清晰的身份验证
+-   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - 非官方 Clerk 身份验证插件
+-   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - 在 Node.js 和 Deno 上运行 Elysia 生态
+-   [Vite server](https://github.com/kravetsone/elysia-vite-server) - 在 `development` 和 `production` 模式下启动并扩展 [`vite`](https://vitejs.dev/) 开发服务器，也可按需提供静态文件
+-   [Vite](https://github.com/timnghg/elysia-vite) - 注入 Vite 脚本并提供入口 HTML 文件
+-   [Nuxt](https://github.com/trylovetom/elysiajs-nuxt) - 轻松将 Elysia 集成到 Nuxt！
+-   [Remix](https://github.com/kravetsone/elysia-remix) - 使用支持 `HMR` 的 [Remix](https://remix.run/)（由 [`vite`](https://vitejs.dev/) 提供支持）！实现了期待已久的插件请求 [#12](https://github.com/elysiajs/elysia/issues/12)
+-   [Sync](https://github.com/johnny-woodtke/elysiajs-sync) - 基于 [Dexie.js](https://dexie.org/) 的轻量级离线优先数据同步框架
+-   [Connect middleware](https://github.com/kravetsone/elysia-connect-middleware) - 允许在 Elysia 中直接使用 [`express`](https://www.npmjs.com/package/express)/[`connect`](https://www.npmjs.com/package/connect) 中间件的插件！
+-   [Elysia HTTP Exception](https://github.com/codev911/elysia-http-exception) - 使用结构化异常类处理 HTTP 4xx/5xx 错误的 Elysia 插件
+-   [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - 使用各种 HTTP 响应头增强 Elysia 应用的安全性
+-   [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - 使用 Elysia 服务器的 Vite SSR 插件
+-   [OAuth 2.0](https://github.com/kravetsone/elysia-oauth2) - 支持超过 **42** 个提供方并提供**类型安全**的 [OAuth 2.0](https://en.wikipedia.org/wiki/OAuth) 授权流程插件！
+-   [OAuth2](https://github.com/bogeychan/elysia-oauth2) - 处理 OAuth 2.0 授权码流程
+-   [OAuth2 Resource Server](https://github.com/ap-1/elysia-oauth2-resource-server) - 根据 JWKS 端点验证 OAuth2 提供方 JWT 令牌的插件，支持校验签发者、受众和范围
+-   [Elysia OpenID Client](https://github.com/macropygia/elysia-openid-client) - 基于 [openid-client](https://github.com/panva/node-openid-client) 的 OpenID 客户端
+-   [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - 简单轻量的速率限制器
+-   [Elysia Nazli](https://github.com/esbuker/elysia-nazli) - 使用方便、支持可插拔存储的速率限制器，可配置全局和逐路由规则。
+-   [LLMs.txt](https://github.com/opuu/elysia-llms-txt) - 根据 OpenAPI/Swagger 生成 `/llms.txt`，让文档更适合 LLM 使用
+-   [Logysia](https://github.com/tristanisham/logysia) - 经典的日志中间件
+-   [Logestic](https://github.com/cybercoder-naj/logestic) - 面向 ElysiaJS 的高级可定制日志库
+-   [Logger](https://github.com/bogeychan/elysia-logger) - 基于 [pino](https://github.com/pinojs/pino) 的日志中间件
+-   [Elysia Line](https://github.com/KrataiB/elysia-line) - 将 LINE Messaging API 和 LINE Login 集成到 Elysia 中（封装官方 [@line/bot-sdk](https://github.com/line/line-bot-sdk-nodejs)）
+-   [Elylog](https://github.com/eajr/elylog) - 简单且可进行一定程度自定义的 stdout 日志库
+-   [Logify for Elysia.js](https://github.com/0xrasla/logify) - 面向 Elysia.js 应用的美观、高速且类型安全的日志中间件
+-   [Nice Logger](https://github.com/tanishqmanuja/nice-logger) - 不敢说最出色，但确实相当不错又轻巧的 Elysia 日志工具
+-   [LogTape for Elysia](https://logtape.org/manual/integrations#elysia) - 通过 [LogTape](https://logtape.org/) 支持多个输出目标（传输器）的结构化日志中间件
+-   [Sentry](https://github.com/johnny-woodtke/elysiajs-sentry) - 使用此 [Sentry](https://docs.sentry.io/) 插件捕获追踪数据和错误
+-   [Apitally](https://github.com/apitally/apitally-js) - 在 [Apitally](https://apitally.io/elysia) 中收集指标、日志和追踪数据；这是一个简单的 API 监控与分析工具
+-   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - 部署到 AWS Lambda
+-   [Decorators](https://github.com/gaurishhs/elysia-decorators) - 使用 TypeScript 装饰器
+-   [Elysia FSR](https://github.com/deadlinecode/elysia-fsr) - 文件系统路由，支持与 Eden 兼容的类型生成、monorepo/workspace，以及逻辑路由分组
+-   [Autoload](https://github.com/kravetsone/elysia-autoload) - 基于目录结构的文件系统路由器，可为 [Eden](/eden) 生成类型，并支持 [`Bun.build`](https://github.com/kravetsone/elysia-autoload?tab=readme-ov-file#bun-build-usage)
+-   [Msgpack](https://github.com/kravetsone/elysia-msgpack) - 支持使用 [MessagePack](https://msgpack.org)
+-   [XML](https://github.com/kravetsone/elysia-xml) - 支持处理 XML
+-   [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - 文件系统路由
+-   [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - 基于文件系统和目录的分组路由器
+-   [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - 基本 HTTP 身份验证
+-   [Body Limit](https://github.com/hexadecimal233/elysia-body-limit) - 限制 Elysia 中的请求体大小
+-   [ETag](https://github.com/bogeychan/elysia-etag) - 自动生成 HTTP [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag)
+-   [CDN Cache](https://github.com/johnny-woodtke/elysiajs-cdn-cache) - Elysia 的 Cache-Control 插件，无需再手动设置 HTTP 响应头
+-   [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - 基本 HTTP 身份验证（使用 `request` 事件）
+-   [i18n](https://github.com/eelkevdbos/elysia-i18next) - 基于 [i18next](https://www.i18next.com/) 的 [i18n](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/i18n) 封装
+-   [Intlify](https://github.com/intlify/srvmid/blob/main/packages/elysia/README.md) - 国际化服务端中间件与工具
+-   [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - 添加或转发请求 ID（`X-Request-ID` 或自定义值）
+-   [Elysia HTMX](https://github.com/gtramontina/elysia-htmx) - [HTMX](https://htmx.org/) 上下文辅助工具
+-   [Elysia HMR HTML](https://github.com/gtrabanco/elysia-hmr-html) - 目录中的任意文件变更时自动重新加载 HTML 文件
+-   [Elysia Inject HTML](https://github.com/gtrabanco/elysia-inject-html) - 将 HTML 代码注入 HTML 文件
+-   [Elysia HTTP Error](https://github.com/yfrans/elysia-http-error) - 在 Elysia 处理器中返回 HTTP 错误
+-   [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - 集成 HTTP 状态码
+-   [NoCache](https://github.com/gaurishhs/elysia-nocache) - 禁用缓存
+-   [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - 在插件中编译 [Tailwindcss](https://tailwindcss.com/)。
+-   [tailwind-serve](https://github.com/Moshyfawn/tailwind-serve) - 在运行时编译并提供 [Tailwind CSS v4](https://tailwindcss.com/)，无需构建步骤，适用于任何服务器框架
+-   [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - 压缩响应
+-   [Elysia IP](https://github.com/gaurishhs/elysia-ip) - 获取 IP 地址
+-   [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - 使用 Elysia 开发 OAuth2 服务器
+-   [Elysia Flash Messages](https://github.com/gtramontina/elysia-flash-messages) - 启用 Flash 消息
+-   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - 非官方 [WorkOS AuthKit](https://www.authkit.com/) 身份验证
+-   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - 更简洁的错误处理
+-   [Elysia env](https://github.com/yolk-oss/elysia-env) - 使用 TypeBox 实现类型安全的环境变量
+-   [Elysia Drizzle Schema](https://github.com/Edsol/elysia-drizzle-schema) - 帮助在 Elysia OpenAPI 模型中使用 Drizzle ORM schema
+-   [Unify-Elysia](https://github.com/qlaffont/unify-elysia) - 统一 Elysia 的错误码
+-   [Unify-Elysia-GQL](https://github.com/qlaffont/unify-elysia-gql) - 统一 Elysia GraphQL 服务器（Yoga 和 Apollo）的错误码
+-   [Elysia Auth Drizzle](https://github.com/qlaffont/elysia-auth-drizzle) - 使用 JWT（请求头/Cookie/查询参数）处理身份验证的库
+-   [graceful-server-elysia](https://github.com/qlaffont/graceful-server-elysia) - 灵感来自 [graceful-server](https://github.com/gquittet/graceful-server) 的库
+-   [Logixlysia](https://github.com/PunGrumpy/logixlysia) - 美观简洁的 ElysiaJS 日志中间件，支持颜色和时间戳。
+-   [Elysia Fault](https://github.com/vitorpldev/elysia-fault) - 简单且可定制的错误处理中间件，还可创建自定义 HTTP 错误
+-   [Elysia Compress](https://github.com/vermaysha/elysia-compress) - 受 [@fastify/compress](https://github.com/fastify/fastify-compress) 启发、用于压缩响应的 ElysiaJS 插件
+-   [@labzzhq/compressor](https://github.com/labzzhq/compressor/) - 简洁高效的 Elysia 和 Bunnyhop HTTP 压缩器，支持 gzip、deflate 和 brotli。
+-   [Elysia Accepts](https://github.com/morigs/elysia-accepts) - 用于解析 Accept 请求头并进行内容协商的 Elysia 插件
+-   [Elysia Compression](https://github.com/chneau/elysia-compression) - 用于压缩响应的 Elysia 插件
+-   [Elysia Logger](https://github.com/chneau/elysia-logger) - 受 [hono/logger](https://hono.dev/docs/middleware/builtin/logger) 启发、用于记录 HTTP 请求和响应的 Elysia 插件
+-   [Elysia CQRS](https://github.com/jassix/elysia-cqrs) - 用于 CQRS 模式的 Elysia 插件
+-   [Elysia Supabase](https://github.com/mastermakrela/elysia-supabase) - 将 [Supabase](https://supabase.com/) 身份验证和数据库功能无缝集成到 Elysia，轻松访问已验证用户的数据和 Supabase 客户端实例。尤其适用于 [Edge Functions](https://supabase.com/docs/guides/functions)。
+-   [Elysia XSS](https://www.npmjs.com/package/elysia-xss) - 通过清理请求体数据，为 Elysia.js 提供 XSS（跨站脚本）防护的插件。
+-   [Elysiajs Helmet](https://www.npmjs.com/package/elysiajs-helmet) - 通过设置各种 HTTP 响应头来保护 Elysia.js 应用的全面安全中间件。
+-   [Decorators for Elysia.js](https://github.com/Ateeb-Khan-97/better-elysia) - 使用这个小巧的库轻松开发和集成 API、WebSocket 与流式 API。
+-   [Elysia Protobuf](https://github.com/ilyhalight/elysia-protobuf) - 为 Elysia 提供 Protobuf 支持。
+-   [Elysia Prometheus](https://github.com/m1handr/elysia-prometheus) - 用于向 Prometheus 暴露 HTTP 指标的 Elysia 插件。
+-   [Elysia Remote DTS](https://github.com/rayriffy/elysia-remote-dts) - 远程提供 `.d.ts` 类型供 Eden Treaty 使用的插件。
+-   [Cap Checkpoint plugin for Elysia](https://capjs.js.org/guide/middleware/elysia.html) - 面向 Cap 的类 Cloudflare 中间件；Cap 是一款轻量、现代的开源 CAPTCHA 替代方案，采用 SHA-256 PoW 设计。
+-   [Elysia Background](https://github.com/staciax/elysia-background) - Elysia.js 后台任务处理插件
+-   [Elysia External Session - TS only GitHub package](https://github.com/extend-therapy/elysia-external-session) - 用于 Redis 和 SQLite 的会话包，支持扩展并采用当前 Elysia 架构。
+-   [@fedify/elysia](https://github.com/fedify-dev/fedify/tree/main/packages/elysia) - 将 Elysia 无缝集成到 [Fedify](https://fedify.dev/)（ActivityPub 服务器框架）的插件。
+-   [elysia-healthcheck](https://github.com/iam-medvedev/elysia-healthcheck) - Elysia.js 健康检查插件
+-   [elysia-csrf](https://github.com/lauhon/elysia-csrf) - 从 [express-csrf](https://github.com/expressjs/csurf) 移植的 CSRF 插件
+-   [elysia-local-https](https://github.com/mrtcmn/elysia-local-https) - 为 Elysia 自动配置本地 HTTPS，一行命令即可生成、管理和刷新证书。
+-   [elysia-circuit-breaker](https://github.com/camargo-leonardo/elysia-circuit-breaker) - 为 Elysia.js 提供容错能力的断路器插件。
+-   [Eden TanStack Query](https://github.com/xkelxmc/eden-tanstack-query) - Eden 的类型安全 TanStack Query 集成，类似于面向 Elysia 的 @trpc/react-query
+-   [Socket.IO Proxy](https://www.npmjs.com/package/@synchjs/elysocket) - 面向 Elysia 的 Socket.IO 代理。
+-   [ModernCSRF](https://github.com/auto-medica-labs/modern-csrf) - 轻量、无令牌的 ElysiaJS CSRF 防护中间件
+-   [elysia-wide-event](https://github.com/choiexe1/elysia-wide-event) - 用于请求级结构化可观测性的宽事件日志插件。
+- [elysia-beta-headers](https://github.com/P0u4a/elysia-beta-headers) - 通过类型安全的 API 请求头控制应用的 Beta/实验性功能的 Elysia 插件
+-   [elysia-better-session](https://github.com/0x0arash/elysia-better-session) - 支持不同存储适配器的 Elysia 服务端会话管理插件。
+
+## 配套项目
+
+-   [prismabox](https://github.com/m1212e/prismabox) - 根据数据库模型生成 TypeBox schema，与 Elysia 配合良好
+
+## 项目模板
+
+-   [ElysiaTemplate](https://github.com/QLing-yes/ElysiaTemplate) - MVC 后端、自动路由与中间件，更多功能即将推出。
+
+---
+
+如果你为 Elysia 编写了插件，欢迎通过[在 GitHub 上编辑插件列表](https://github.com/elysiajs/documentation/edit/main/docs/plugins/overview.md)将它添加进来。
+
+</div>
+</InteractiveDocLayout>
+</div>

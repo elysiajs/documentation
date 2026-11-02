@@ -1,0 +1,77 @@
+---
+title: "集成 SvelteKit"
+description: "使用 SvelteKit，可以在服务端路由中运行 Elysia。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">集成 SvelteKit</h1>
+
+使用 SvelteKit，可以在服务端路由中运行 Elysia。
+
+1. 创建 **src/routes/[...slugs]/+server.ts**。
+2. 定义 Elysia 服务。
+3. 导出一个调用 `app.handle` 的 **fallback** 函数。
+
+```typescript
+// src/routes/[...slugs]/+server.ts
+import { Elysia, t } from 'elysia';
+
+const app = new Elysia()
+    .get('/', 'hello SvelteKit')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+interface WithRequest {
+	request: Request
+}
+
+export const fallback = ({ request }: WithRequest) => app.handle(request)
+```
+
+你可以像使用普通 SvelteKit 服务端路由一样使用 Elysia 服务。
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## 前缀
+如果 Elysia 服务不在 routes 目录的根目录下，你需要在 Elysia 服务上设置前缀。
+
+例如，如果将 Elysia 服务放在 **src/routes/api/[...slugs]/+server.ts**，就需要在 Elysia 服务上将前缀设为 **/api**。
+
+```typescript
+// src/routes/api/[...slugs]/+server.ts
+import { Elysia, t } from 'elysia';
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', () => 'hi')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
+
+export const fallback: RequestHandler = ({ request }) => app.handle(request)
+```
+
+这样无论将 Elysia 放在哪里，路由都能正常工作。
+
+更多信息请参阅 [SvelteKit 路由](https://kit.svelte.dev/docs/routing#server)。
+
+</div>
+</InteractiveDocLayout>
+</div>

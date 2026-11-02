@@ -1,0 +1,290 @@
+---
+title: 核心概念
+description: 了解 Elysia 中的封装、依赖、注册顺序和类型推断。
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import '../../../styles/routing.css';
+
+export const steps = [
+    {
+        label: '创建实例',
+        code: `import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/profile', () => 'Hi there!')
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+    {
+        label: '将钩子限制在本地',
+        code: `import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+    .onBeforeHandle(({ status }) => status(401, 'Sign in first'))
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+    {
+        label: '共享钩子',
+        code: `import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+    .onBeforeHandle('global', ({ status }) => status(401, 'Sign in first'))
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+];
+
+<div class="essential-page key-concept-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">核心概念</h1>
+
+<Card>
+
+<CardTitle>提示</CardTitle>
+
+开始第一个 Elysia 项目之前，我们建议先读完[基础概念](/essential/route/)章节。
+
+如果你想直接动手写代码，也可以先通过这篇内容快速了解 Elysia 的核心概念。
+
+</Card>
+
+</div>
+
+<div class="content-layout">
+
+## 封装
+
+Elysia 的生命周期钩子具有**封装性**。也就是说，插件中添加的钩子不会自动作用于使用该插件的实例，除非你明确共享它。
+
+```ts
+import { Elysia } from 'elysia'
+import { throwIfNotSignIn, updateProfile } from './profile'
+
+const profile = new Elysia()
+    .onBeforeHandle(({ cookie }) => {
+        throwIfNotSignIn(cookie)
+    })
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    // This route does not inherit the local sign-in check.
+    .patch('/rename', ({ body }) => updateProfile(body))
+```
+
+这里，`throwIfNotSignIn` 会作用于 `/profile`，但不会作用于 `/rename`。
+
+---
+
+若要让钩子继续传递，你需要明确告诉 Elysia 共享它。
+
+就像使用 `export` 关键字一样，其他实例需要使用某项内容时，应明确地将它共享出去。
+
+要*导出*钩子，只需添加一个[作用域](/essential/plugin/#scope-level)：
+
+```ts "'global'"
+import { Elysia } from 'elysia'
+import { throwIfNotSignIn, updateProfile } from './profile'
+
+const profile = new Elysia()
+    .onBeforeHandle('global', ({ cookie }) => {
+        throwIfNotSignIn(cookie)
+    })
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    // This route inherits the sign-in check.
+    .patch('/rename', ({ body }) => updateProfile(body))
+```
+
+## 方法链式调用
+
+使用**方法链式调用**，保留 Elysia 推断出的类型：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('build', 1)
+    .get('/', ({ store: { build } }) => build)
+    .listen(3000)
+```
+
+`state` 会返回一个带有类型化 `build` 属性的实例类型。继续链式调用，就能保留这个属性。
+
+如果不使用方法链式调用，新类型就不会保留下来。下面的示例会故意触发 TypeScript 错误：
+
+```ts error-preview
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+
+app.state('build', 1)
+
+app.get('/', ({ store: { ~~build~~ } }) => build) //! Property 'build' does not exist on type '{}'
+
+app.listen(3000)
+```
+
+实例在运行时仍然可以修改；问题在于变量的静态类型没有随之更新。请使用链式调用，或将返回的实例保存到新变量中。
+
+## 依赖
+
+每个实例都有自己的上下文。
+
+当一个实例需要另一个实例的上下文时，可以通过 `.use()` 将后者作为依赖引入。
+
+```ts error-preview
+import { Elysia, t } from 'elysia'
+
+class Auth {
+    getProfile() {
+        return { name: 'Elysia User' }
+    }
+}
+
+const auth = new Elysia()
+    .decorate({
+        auth: new Auth()
+    })
+
+const main = new Elysia()
+    // Intentional type error: auth has not been registered here.
+    .get('/', ({ ~~auth~~ }) => auth.getProfile()) //! Property 'auth' does not exist on type '{ body: unknown; ... store: {}; }'
+    .use(auth)
+    .get('/profile', ({ auth }) => auth.getProfile())
+```
+
+这就是**上下文传播**。每个实例都有自己的上下文，而 `.use()` 会将一个实例的上下文传递给另一个实例。`auth` 是 `main` 的依赖，因此 `main` 可以使用它提供的服务和类型。
+
+这种设计刻意要求依赖关系显式声明，并且不提供全局类型上下文，原因如下：
+1. 类型可靠性：要确保运行时和类型层面的类型一致，Elysia 必须明确知道依赖关系。声明全局类型上下文会破坏这一保证。
+2. 依赖追踪：依赖项发生变化时，Elysia 可以追踪依赖关系，并相应更新依赖方的类型上下文。
+3. 模块化：任何部分都应能独立使用，而不依赖全局类型上下文。
+
+### 去重
+
+多个实例共享同一个插件时，插件可能会被重复注册。为插件设置唯一的 `name`，Elysia 就会自动为你去重。
+
+```ts
+import { Elysia } from 'elysia'
+
+const ip = new Elysia({ name: 'ip' })
+    .derive('global', ({ server, request }) => ({
+        ip: server?.requestIP(request)
+    }))
+    .get('/ip', ({ ip }) => ip)
+
+const router1 = new Elysia()
+    .use(ip)
+    .get('/ip-1', ({ ip }) => ip)
+
+const router2 = new Elysia()
+    .use(ip)
+    .get('/ip-2', ({ ip }) => ip)
+
+const server = new Elysia()
+    .use(router1)
+    .use(router2)
+```
+
+这样，共享的 derive 钩子每个请求只会运行一次。
+
+对于可配置的插件，可以添加 `seed` 来标识其配置。
+
+`name` 和 `seed` 都相同的注册会被去重；不同的 `seed` 则会保留为不同配置。
+
+了解更多[插件去重](/essential/plugin/#deduplication)的内容。
+
+## 代码顺序
+
+对于直接声明在实例上的路由，钩子只会作用于**在它之后**注册的路由：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log('1')
+    })
+    .get('/', () => 'hi')
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+请求 `/` 时会输出：
+
+```text
+1
+```
+
+不会输出 `2`，因为该钩子是在这个直接路由之后注册的。
+
+:::note[挂载路由与提前注册的钩子]
+
+已挂载的插件路由会继承父实例在 `.use(plugin)` 之前注册的钩子，因此放在这里的父级错误处理器可以处理插件路由抛出的错误。`request` 阶段在路由匹配之前运行，因此它也不遵循针对具体路由的注册顺序。
+
+:::
+
+尽量在实例开头附近注册共享钩子。直接路由和已挂载插件的示例请参阅[代码顺序](/essential/life-cycle/#order-of-code)。
+
+## 类型推断
+
+Elysia 会根据路由的 schema 推断处理器上下文：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => body)
+```
+
+使用内联处理器，让 TypeScript 能在声明路由时推断上下文。
+
+如果需要使用独立函数（例如控制器方法），可以通过内联处理器只传入它所需的值：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+abstract class Controller {
+    static greet({ name }: { name: string }) {
+        return 'hello ' + name
+    }
+}
+
+const app = new Elysia()
+    .post('/', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => Controller.greet(body))
+```
+
+请参阅[最佳实践：控制器](/essential/best-practice/#controller)。
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

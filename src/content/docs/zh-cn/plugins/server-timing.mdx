@@ -1,0 +1,96 @@
+---
+title: Server Timing 插件
+description: Server Timing 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Server Timing 插件</h1>
+
+此插件支持使用 Server Timing API 排查性能瓶颈。
+
+安装：
+```bash
+bun add @elysia/server-timing@rc
+```
+
+然后这样使用：
+```ts
+import { Elysia } from 'elysia'
+import { serverTiming } from '@elysia/server-timing'
+
+new Elysia()
+    .use(serverTiming())
+    .get('/', () => 'hello')
+    .listen(3000)
+```
+
+Server Timing 会在响应中追加 `Server-Timing` 响应头，记录每个生命周期函数的耗时、函数名称和详情。
+
+查看方法：打开浏览器开发者工具，依次选择“网络”>“通过 Elysia 服务器发出的请求”>“计时”。
+
+![Developer tools showing Server Timing](/assets/server-timing.webp)
+
+根据计时条目找出耗时最长的生命周期阶段。
+
+## 配置
+以下是插件支持的配置选项
+
+### enabled
+默认值：`NODE_ENV !== 'production'`
+
+指定是否启用 Server Timing
+
+### allow
+默认值：`undefined`
+
+决定是否记录 server timing 的条件
+
+### trace
+默认值：启用所有事件
+
+指定 Server Timing 要记录的生命周期事件：
+
+Trace 接受一个布尔值对象，每项默认均为 `true`；设为 `false` 可将其排除：
+- request：记录请求阶段的耗时
+- parse：记录解析阶段的耗时
+- transform：记录转换阶段的耗时
+- beforeHandle：记录 beforeHandle 阶段的耗时
+- handle：记录处理阶段的耗时
+- afterHandle：记录 afterHandle 阶段的耗时
+- error：记录错误阶段的耗时
+- mapResponse：记录 mapResponse 阶段的耗时
+- total：记录从开始到结束的总耗时
+
+## 用法模式
+以下是此插件的常见用法。
+
+- [允许条件](#allow-condition)
+
+<a id="allow-condition" />
+## 允许条件
+你可以通过 `allow` 属性在特定路由上禁用 Server Timing。
+
+```ts
+import { Elysia } from 'elysia'
+import { serverTiming } from '@elysia/server-timing'
+
+new Elysia()
+    .use(
+        serverTiming({
+            allow: ({ request }) => {
+                return new URL(request.url).pathname !== '/no-trace'
+            }
+        })
+    )
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

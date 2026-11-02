@@ -1,0 +1,170 @@
+---
+title: TypeScript
+description: 从 schema 推断类型，并排查 TypeScript 性能问题。
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">TypeScript</h1>
+
+Elysia 开箱即提供一流的 TypeScript 支持。
+
+大多数情况下，你无需手动添加 TypeScript 类型注解。
+
+## 类型推断
+Elysia 会根据你提供的 schema 推断请求和响应的类型。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+    .post('/user/:id', {
+        body: t.Object({
+            id: t.String()
+        }),
+        query: z.object({
+            name: z.string()
+        })
+    }, ({ body }) => body)
+```
+
+Elysia 可以从 TypeBox 等 schema，以及你喜欢的[校验库](/essential/validation#standard-schema)中自动推断类型，例如：
+- Zod
+- Valibot
+- ArkType
+- Effect Schema
+- Yup
+- Joi
+
+### 将 schema 转换为类型
+
+Elysia 支持的所有 schema 库都可以转换为 TypeScript 类型。
+
+
+#### TypeBox
+
+
+```ts
+import { Elysia, t, type UnwrapSchema } from 'elysia'
+
+const User = t.Object({
+  	id: t.String(),
+  	name: t.String()
+})
+
+type User = UnwrapSchema<typeof User>
+```
+
+
+#### Zod
+
+
+```ts
+import { z } from 'zod'
+
+const User = z.object({
+  	id: z.string(),
+  	name: z.string()
+})
+
+type User = z.infer<typeof User>
+```
+
+
+#### Valibot
+
+
+```ts
+import * as v from 'valibot'
+
+const User = v.object({
+  	id: v.string(),
+  	name: v.string()
+})
+
+type User = v.InferOutput<typeof User>
+```
+
+
+#### ArkType
+
+
+```ts
+import { type } from 'arktype'
+
+const User = type({
+  	id: 'string',
+  	name: 'string'
+})
+
+type User = typeof User.infer
+```
+
+
+## 类型推断性能
+
+Elysia 在设计时就充分考虑了类型推断性能。
+
+每次发布前，我们都会在本地进行基准测试，确保类型推断始终快速灵敏，不会让 IDE 因“类型实例化过深，可能无限递归”而报错。
+
+编写 Elysia 应用时，大多数情况下你不会遇到类型性能问题。
+
+如果确实遇到了，可以按以下方式找出拖慢类型推断的原因：
+
+1. 进入项目根目录并运行
+```
+tsc --generateTrace trace --noEmit --incremental false
+```
+
+这会在项目根目录生成 `trace` 文件夹。
+
+2. 打开 [Perfetto UI](https://ui.perfetto.dev)，将 `trace/trace.json` 文件拖入页面
+
+![Perfetto](/assets/perfetto.webp)
+
+> 页面会显示类似这样的火焰图。
+
+接着找到耗时较长的代码块并点击，即可查看类型推断耗时，以及对应的文件和行号。
+
+这样就能帮助你定位类型推断的瓶颈。
+
+### Eden
+
+如果使用 [Eden](/eden/) 时类型推断较慢，可以尝试使用 Elysia 的子应用来隔离类型推断。
+
+```ts
+import { Elysia } from 'elysia'
+import { plugin1, plugin2, plugin3 } from './plugin'
+
+const app = new Elysia()
+	.use([plugin1, plugin2, plugin3])
+  	.listen(3000)
+
+export type app = typeof app
+
+// Export sub app
+export type subApp = typeof plugin1
+```
+
+然后在前端导入子应用，而不是整个应用。
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { subApp } from 'backend/src'
+
+const api = treaty<subApp>('localhost:3000')
+```
+
+这样无需分析整个应用，类型推断通常会更快。
+
+更多信息请参阅 [Eden Treaty](/eden/)。
+
+</div>
+</InteractiveDocLayout>
+</div>

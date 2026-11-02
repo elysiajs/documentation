@@ -1,0 +1,171 @@
+---
+title: "Prisma"
+description: "借助 prismabox，可以使用 Prisma 在数据库、校验和前端之间实现端到端类型安全"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Prisma</h1>
+
+[Prisma](https://prisma.io) 是一个 ORM，让你能够以类型安全的方式与数据库交互。
+
+它允许你通过 Prisma schema 文件定义数据库 schema，并据此生成 TypeScript 类型。
+
+:::note[生成器兼容性]
+
+请按下方示例配置 Prismabox，从 `elysia` 导入 `t`，并确认生成器版本支持 Elysia v2 的 TypeBox 1.x schema。Prisma 和 Prismabox 是独立集成；这些示例并不保证它们与所有版本在运行时都兼容。
+
+:::
+
+### Prismabox
+[Prismabox](https://github.com/m1212e/prismabox) 是一个可根据 Prisma schema 生成 TypeBox 或 Elysia 校验模型的库。
+
+你可以使用 Prismabox 将 Prisma schema 转换为 Elysia 校验模型，再用它们校验 Elysia 中的数据类型。
+
+### 工作原理
+1. 在 Prisma Schema 中定义数据库 schema。
+2. 添加 `prismabox` 生成器来生成 Elysia schema。
+3. 使用转换后的 Elysia 校验模型进行类型校验。
+4. 根据 Elysia 校验模型生成 OpenAPI schema。
+5. 添加 [Eden Treaty](/eden)，为前端提供类型安全。
+
+```text
+                                                    * ——————————————— *
+                                                    |                 |
+                                               | -> |  Documentation  |
+* ————————— *             * ———————— * OpenAPI |    |                 |
+|           |  prismabox  |          | ——————— |    * ——————————————— *
+|  Prisma   | —————————-> |  Elysia  |
+|           |             |          | ——————— |    * ——————————————— *
+* ————————— *             * ———————— *   Eden  |    |                 |
+                                               | -> |  Frontend Code  |
+												    |                 |
+												    * ——————————————— *
+
+```
+
+## 安装
+运行以下命令安装 Prisma：
+
+```bash
+bun add @prisma/client prismabox prisma-adapter-bun-sqlite && \
+bun add -d prisma
+```
+
+## Prisma schema
+假设你已经有一个 `prisma/schema.prisma` 文件。
+
+这里的 datasource 没有 `url`，因为 Prisma 7 会从 `prisma.config.ts` 读取数据库 URL。请参阅 Prisma 的[配置参考](https://www.prisma.io/docs/orm/reference/prisma-config-reference)进行设置。
+
+可以按如下方式将 `prismabox` 生成器添加到 Prisma schema 文件中：
+
+```prisma title="prisma/schema.prisma"
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  // Note: In Prisma 7+, datasource URL is configured in prisma.config.ts (for Prisma CLI),
+  // and when using driver adapters you also pass the runtime URL in adapter setup.
+}
+
+generator prismabox {
+  provider = "prismabox"
+  typeboxImportDependencyName = "elysia"
+  typeboxImportVariableName = "t"
+  inputModel = true
+  output   = "../generated/prismabox"
+}
+
+model User {
+  id    String  @id @default(cuid())
+  email String  @unique
+  name  String?
+  posts Post[]
+}
+
+model Post {
+  id    	String  @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+```
+
+这会在 `generated/prismabox` 目录中生成 Elysia 校验模型。
+
+每个模型都会有独立文件，文件名根据 Prisma 模型名称生成。
+
+例如：
+- `User` 模型会生成到 `generated/prismabox/User.ts`
+- `Post` 模型会生成到 `generated/prismabox/Post.ts`
+
+## 使用生成的模型
+接着，在 Elysia 应用中导入生成的模型：
+
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+
+import { PrismaBunSqlite } from 'prisma-adapter-bun-sqlite';
+import { PrismaClient } from '../generated/prisma/client'
+import { UserPlain, UserPlainInputCreate } from '../generated/prismabox/User'
+
+const adapter = new PrismaBunSqlite({ url: process.env.DATABASE_URL });
+export const prisma = new PrismaClient({ adapter });
+
+const app = new Elysia()
+    .put(
+        '/',
+        {
+            body: UserPlainInputCreate,
+            response: UserPlain
+        }, async ({ body }) =>
+            prisma.user.create({
+                data: body
+            })
+    )
+    .get(
+        '/id/:id',
+        {
+            response: {
+                200: UserPlain,
+                404: t.String()
+            }
+        }, async ({ params: { id }, status }) => {
+            const user = await prisma.user.findUnique({
+                where: { id }
+            })
+
+            if (!user) return status(404, 'User not found')
+
+            return user
+        }
+    )
+    .listen(3000)
+
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+
+
+这样就可以在 Elysia 校验模型中复用数据库 schema。
+
+---
+
+更多信息请参阅 [Prisma](https://prisma.io) 和 [Prismabox](https://github.com/m1212e/prismabox) 文档。
+
+</div>
+</InteractiveDocLayout>
+</div>

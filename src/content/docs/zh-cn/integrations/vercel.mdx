@@ -1,0 +1,82 @@
+---
+title: "在 Vercel 上部署 Elysia"
+description: "Vercel Functions 默认支持基于 Web 标准的框架，因此无需额外配置即可在 Vercel Functions 上运行 Elysia。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">在 Vercel 上部署 Elysia</h1>
+
+使用 Bun 或 Node 运行时，都可以无需配置直接在 Vercel 上部署 Elysia。
+
+1. 在 **src/index.ts** 中创建或导入现有的 Elysia 服务
+2. 将 Elysia 服务作为默认导出
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+export default new Elysia()
+    .get('/', () => 'Hello Vercel Function')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+```
+
+3. 使用 Vercel CLI 在本地开发
+
+```bash
+vc dev
+```
+
+4. 部署到 Vercel
+
+```bash
+vc deploy
+```
+
+完成了。你的 Elysia 应用现在已经运行在 Vercel 上。
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+### 使用 Node.js
+
+要使用 Node.js 部署，请确保在 `package.json` 中设置 `type: module`。
+
+
+```json title="package.json"
+{
+  "name": "elysia-app",
+  "type": "module"
+}
+```
+
+
+### 使用 Bun
+要使用 Bun 部署，请确保在 `vercel.json` 中将运行时设为 Bun。
+
+
+```json title="vercel.json"
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "bunVersion": "1.x"
+}
+```
+
+## 如果遇到问题
+Vercel 支持无需配置即可运行 Elysia。更多配置请参阅 [Vercel 文档](https://vercel.com/docs/frameworks/backend/elysia)。
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,456 @@
+---
+title: 宏
+description: 将生命周期钩子、校验和上下文封装在带类型的路由选项中。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import { Elysia, t } from 'elysia';
+
+export const wrapMacroSchema = (payload) =>
+    t.Object({
+        code: t.Number(),
+        data: t.Union([payload ?? t.Null(), t.Null()])
+    });
+
+export const macroSchemaDemo = new Elysia()
+    .macro({
+        res: (payload) => ({
+            response: wrapMacroSchema(payload)
+        })
+    })
+    .get('/count', { res: t.Number() }, () => ({ code: 0, data: 1 }))
+    .get('/name', { res: t.String() }, () => ({ code: 0, data: 'Elysia' }));
+
+export const steps = [
+    {
+        "label": "定义宏",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        hi: (word: string) => ({\n            beforeHandle() {\n                console.log(word)\n            }\n        })\n    })"
+    },
+    {
+        "label": "在路由中启用宏",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        hi: (word: string) => ({\n            beforeHandle() {\n                console.log(word)\n            }\n        })\n    })\n\nconst app = new Elysia()\n    .use(plugin)\n    .get('/', { hi: 'Elysia' }, () => 'hi')"
+    },
+    {
+        "label": "添加上下文属性",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        greeting: (name: string) => ({\n            derive: () => ({ greeting: `Hello ${name}` })\n        })\n    })\n\nconst app = new Elysia()\n    .use(plugin)\n    .get('/', { greeting: 'Elysia' }, ({ greeting }) => greeting)"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">宏</h1>
+
+**宏**通过带类型的路由选项来控制生命周期钩子、schema 和上下文。定义一次后，就可以在需要的路由中启用它。
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## 定义宏
+
+宏将钩子、schema 和上下文扩展封装在路由选项中。这个宏接收要记录的文本。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 在路由中启用宏
+
+注册插件后，将 `hi` 添加到路由选项中。访问 `/` 时会记录 `Elysia` 并返回 `hi`。宏选项位于处理器之前。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 添加上下文属性
+
+从宏中返回 `derive` 函数，即可添加带类型的上下文属性。这个路由会返回 `Hello Elysia`。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## 属性简写
+
+宏对象中的每个属性都可以是函数或对象。如果只需启用或禁用某项功能，可以使用对象形式：
+
+```ts
+import { Elysia } from 'elysia'
+
+const auth = new Elysia()
+    .macro({
+        isAuth: {
+            derive: () => ({ user: 'saltyaom' })
+        }
+    })
+    .get('/', { isAuth: true }, ({ user }) => user)
+```
+
+设置 `isAuth: false` 即可禁用它。对象形式相当于检查布尔值的函数简写：
+
+```ts
+import { Elysia } from 'elysia'
+
+const auth = new Elysia()
+    .macro({
+        isAuth(enabled: boolean) {
+            if (!enabled) return
+
+            return {
+                derive: () => ({ user: 'saltyaom' })
+            }
+        }
+    })
+```
+
+这些示例使用固定用户来展示上下文类型推断；在实际应用中，请将该值替换为自己的身份验证逻辑。
+
+## 错误处理
+
+在宏钩子中返回 `status()`，即可用 HTTP 状态码终止请求。
+
+```ts
+import { Elysia, status } from 'elysia'
+
+new Elysia()
+    .macro({
+        auth: {
+            derive({ headers }) {
+                if (!headers.authorization)
+                    return status(401, 'Unauthorized')
+
+                return { user: 'SaltyAom' }
+            }
+        }
+    })
+    .get('/', { auth: true }, ({ user }) => `Hello ${user}`)
+```
+
+这里缺少 authorization 请求头时会返回 `401`。示例只检查请求头是否存在；在返回用户信息前，你的身份验证函数还必须验证该请求头。
+
+对于预期的 HTTP 结果，请返回 `status()`。直接抛出未处理的普通 `Error` 默认会产生 `500` 响应。
+
+返回状态而不是抛出错误，也能让 [Eden](/eden/) 和 [OpenAPI 类型生成](/patterns/openapi/#openapi-from-types)推断路由可能返回的响应。
+
+<span id="resolve"></span>
+
+## Derive
+
+返回包含 [`derive`](/essential/life-cycle/#derive) 函数的对象，即可向上下文添加属性。在 Elysia 2 中，它取代了旧的宏 `resolve` 选项。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .macro({
+        withUser: {
+            derive: () => ({ user: 'Pardofelis' })
+        }
+    })
+    .get('/', { withUser: true }, ({ user }) => user)
+```
+
+路由会收到带类型的 `user` 属性。当你需要验证用户身份、加载相关数据库数据，或计算其他请求级上下文值时，这很有用。
+
+<span id="macro-extension-with-resolve"></span>
+
+<a id="macro-extension-with-derive" />
+### 使用 derive 扩展宏
+
+一个宏可以启用另一个宏，并添加自身派生的属性。路由会收到合并后的结果：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .macro({
+        withUser: {
+            derive: () => ({ user: 'lilith' as const })
+        }
+    })
+    .macro({
+        withMember: {
+            withUser: true,
+            derive: () => ({ role: 'member' as const })
+        }
+    })
+    .get('/', { withMember: true }, ({ user, role }) => ({ user, role }))
+```
+
+宏自身的钩子会推断自身的 schema，但不会自动推断另一个宏派生的上下文。如果某项计算需要另一项计算的结果，请将它们放在同一个 `derive` 回调中，或者在路由处理器中读取合并后的属性。
+
+Elysia 2 已移除旧的 `.macro(name, definition)` 变通写法。请使用上面的对象形式。
+
+## Schema
+
+宏可以为启用了它的路由定义 schema。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        withFriends: {
+            body: t.Object({
+                friends: t.Tuple([t.Literal('Fouco'), t.Literal('Sartre')])
+            })
+        }
+    })
+    .post('/', {
+        body: t.Object({ name: t.Literal('Lilith') }),
+        withFriends: true
+    }, ({ body }) => body.friends)
+```
+
+该路由会校验 `name` 和 `friends` 两个属性。有效的 JSON 请求体如下：
+
+```json
+{
+    "name": "Lilith",
+    "friends": ["Fouco", "Sartre"]
+}
+```
+
+宏 schema 会与路由 schema 及其他已启用宏的 schema 合并。它们也可以与 [Standard Schema 校验器](/essential/validation/#standard-schema)搭配使用。
+
+### 在同一宏中定义 schema 和生命周期钩子
+
+对象形式的宏可以在生命周期钩子中推断自身的 schema：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        withFriends: {
+            body: t.Object({
+                friends: t.Tuple([t.Literal('Fouco'), t.Literal('Sartre')])
+            }),
+            beforeHandle({ body: { friends } }) {
+                console.log(friends)
+            }
+        }
+    })
+    .post('/', { withFriends: true }, ({ body }) => body)
+```
+
+这里的 `friends` 类型来自此宏的请求体 schema。无需使用具名的单宏重载。这与推断其他宏提供的属性不同，详见[上文](#macro-extension-with-derive)。
+
+## 扩展
+
+一个宏可以启用多个宏，并添加自身的其他功能。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        sartre: {
+            body: t.Object({ sartre: t.Literal('Sartre') })
+        },
+        fouco: {
+            body: t.Object({ fouco: t.Literal('Fouco') })
+        },
+        lilith: {
+            fouco: true,
+            sartre: true,
+            body: t.Object({ lilith: t.Literal('Lilith') })
+        }
+    })
+    .post('/', { lilith: true }, ({ body }) => body)
+```
+
+启用 `lilith` 也会启用 `fouco` 和 `sartre`。请求体必须同时满足这三个 schema。
+
+## 去重
+
+Elysia 会对重复的宏钩子去重，避免某个已启用的依赖仅因被多个宏使用就重复运行。
+
+对于函数形式的宏，其选项值就是默认 seed。返回自定义 `seed` 可以指定去重标识：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        sartre: (role: string) => ({
+            seed: role,
+            body: t.Object({ sartre: t.Literal('Sartre') })
+        })
+    })
+```
+
+宏名称和 seed 共同标识函数形式的展开结果。请保持 seed 稳定；除非另行提供基本类型的 seed，否则避免使用循环对象值。
+
+为避免无限循环，Elysia 将宏嵌套展开限制为 16 层。请避免循环依赖，而不要依赖这一限制。
+
+当路由和宏都提供 OpenAPI `detail` 时，Elysia 会合并两者，并优先采用路由的 detail。
+
+## 类型 lambda
+
+类型 lambda 是宏的一项可选高级功能。
+
+它可以根据路由设置的值计算宏的类型。当你想根据路由选项值收窄上下文属性的类型时，这会很有用。
+
+要使用它，请从宏中返回 `$type: macroType<Lambda>()`：
+
+```ts
+import { Elysia, macroType, type MacroTypeLambda } from 'elysia'
+
+interface Role extends MacroTypeLambda {
+    output: Record<'role', this['input']>
+}
+
+new Elysia()
+    .macro({
+        role: (role: 'admin' | 'member') => ({
+            $type: macroType<Role>(),
+            derive: () => ({ role })
+        })
+    })
+    .get('/admin', { role: 'admin' }, ({ role }) => role)
+    .get('/member', { role: 'member' }, ({ role }) => role)
+```
+
+这里 `/admin` 中的 `role` 类型是 `'admin'`，`/member` 中则是 `'member'`，而不是 `'admin' | 'member'`。
+
+- `this['input']` - 路由选项中赋给此宏的值
+- `output` - 要添加到路由上下文的值
+
+只有当宏参数类型包含字面量时，`this['input']` 才会保留字面量类型，例如 `'admin' | 'member'` 或模板字面量 `` `room:${string}` ``。
+
+注意：
+- Lambda 只会改变类型
+- Elysia 在运行时会忽略 `$type`。宏仍需通过 `derive` 提供该值
+- TypeScript 不会检查 `derive` 是否返回了 `output` 所声明的值
+- TypeScript 不允许在嵌套对象中使用 `this`。请改用 `Record` 类型
+
+### 根据路由为选项添加类型
+
+使用 lambda 的 `option` 和 `this['context']`，为路由传入的函数形式宏回调添加类型：
+
+```ts
+import { Elysia, macroType, t, type Context, type MacroTypeLambda } from 'elysia'
+
+interface Log extends MacroTypeLambda {
+    option: (context: this['context']) => string
+}
+
+new Elysia()
+    .macro({
+        log: (message: (context: Context) => string) => ({
+            $type: macroType<Log>(),
+            beforeHandle(context) {
+                console.log(message(context))
+            }
+        })
+    })
+    .post('/user/:id', {
+        body: t.Object({ name: t.String() }),
+        log: ({ params, body }) => `${params.id} is now ${body.name}`
+    }, ({ body }) => body)
+```
+
+在 `log` 中，`params.id` 和 `body.name` 都是字符串。没有 lambda 时，`body` 的类型是 `unknown`。
+
+`message` 保留其声明类型 `(context: Context) => string`，因此宏可以用钩子的上下文调用它。路由选项使用 lambda 的 `option` 类型。请确保这些类型相互兼容。
+
+`this['context']` 包含：
+
+- 路由的 schema 和路径参数
+- 先前的 `decorate`、`derive` 值，以及先前 `guard` 中的宏所提供的值
+
+它不包含同时启用的其他宏所添加的内容，也不包含此宏自身的 `derive`、`output` 和 schema。
+
+这同样适用于 `guard`、`group` 和 `ws`。`group` 包含其前缀中的路径参数，不包含子路由的路径参数。
+
+在 `output` 中使用 `this['input']`，在 `option` 中使用 `this['context']`。在对方的类型定义中，它们都是 `unknown`。lambda 可以同时设置两者。
+
+### 从泛型宏生成 schema
+
+没有类型 lambda 时，TypeScript 会按 `AnySchema` 约束来计算泛型宏的返回值。因此，即使 Elysia 会使用运行时 schema 校验响应，它仍会将响应的 `data` 字段推断为 `unknown`。
+
+使用类型 lambda 应用路由中的宏值：
+
+<CodePlayground elysia={macroSchemaDemo}>
+
+```ts
+import { Elysia, macroType, t, type AnySchema, type MacroTypeLambda } from 'elysia'
+
+const wrap = <T extends AnySchema>(payload?: T) =>
+    t.Object({
+        code: t.Number(),
+        data: t.Union([payload ?? t.Null(), t.Null()])
+    })
+
+interface Res extends MacroTypeLambda {
+    response: ReturnType<typeof wrap<Extract<this['input'], AnySchema>>>
+}
+
+new Elysia()
+    .macro({
+        res: <T extends AnySchema>(payload?: T) => ({
+            $type: macroType<Res>(),
+            response: wrap(payload)
+        })
+    })
+    .get('/count', { res: t.Number() }, () => ({ code: 0, data: 1 }))
+    .get('/name', { res: t.String() }, () => ({ code: 0, data: 'Elysia' }))
+```
+
+</CodePlayground>
+
+这样就能强制使用宏定义的响应类型。
+
+- `/count` 必须返回 `number | null`
+- `/name` 必须返回 `string | null`
+- `/count` 返回字符串会导致类型错误
+
+lambda 的 `body`、`headers`、`query`、`params`、`cookie` 和 `response` 成员会替换宏返回的对应 schema 类型。宏仍必须返回每个 schema，以便 Elysia 在运行时进行校验。
+
+注意，`this` 在嵌套类型字面量中不起作用。响应状态映射请改用类型别名：
+
+```ts
+import { Elysia, macroType, t, type AnySchema, type MacroTypeLambda } from 'elysia'
+
+const wrap = <T extends AnySchema>(payload?: T) =>
+    t.Object({
+        code: t.Number(),
+        data: t.Union([payload ?? t.Null(), t.Null()])
+    })
+
+type ResStatus<Input> = {
+    200: ReturnType<typeof wrap<Extract<Input, AnySchema>>>
+    404: ReturnType<typeof t.String>
+}
+
+interface Res extends MacroTypeLambda {
+    response: ResStatus<this['input']>
+}
+
+new Elysia()
+    .macro({
+        res: <T extends AnySchema>(payload?: T) => ({
+            $type: macroType<Res>(),
+            response: { 200: wrap(payload), 404: t.String() }
+        })
+    })
+    .get('/user/:id', { res: t.String() }, ({ params: { id }, status }) =>
+        id === '0' ? status(404, 'Not found') : { code: 0, data: id }
+    )
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

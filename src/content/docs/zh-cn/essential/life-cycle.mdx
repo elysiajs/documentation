@@ -1,0 +1,803 @@
+---
+title: 生命周期
+description: 使用 Elysia 生命周期钩子解析请求、校验访问权限并处理响应。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import { Card } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import { LifecyclePlayground } from '../../../../components/lifecycle-playground/lifecycle-playground';
+
+export const steps = [
+    {
+        label: '返回 HTML',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => '<h1>Hello World</h1>')
+    .listen(3000)`,
+    },
+    {
+        label: '添加响应头',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .mapResponse(({ responseValue }) => {
+        if (typeof responseValue === 'string' && /<[a-z][\\s\\S]*>/i.test(responseValue))
+            return new Response(responseValue, {
+                headers: { 'content-type': 'text/html; charset=utf-8' }
+            })
+    })
+    .get('/', () => '<h1>Hello World</h1>')
+    .listen(3000)`,
+    },
+    {
+        label: '仅允许预览',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .mapResponse(({ responseValue }) => {
+        if (typeof responseValue === 'string' && /<[a-z][\\s\\S]*>/i.test(responseValue))
+            return new Response(responseValue, {
+                headers: { 'content-type': 'text/html; charset=utf-8' }
+            })
+    })
+    .get('/', {
+        beforeHandle({ query, status }) {
+            if (query.preview !== 'true')
+                return status(403, 'Preview is closed')
+        }
+    }, () => '<h1>Hello World</h1>')
+    .listen(3000)`,
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">生命周期</h1>
+
+请求流程分为多个阶段，称为**生命周期事件**。从读取请求到准备响应，每个阶段各司其职。
+
+与传统中间件不同，Elysia 的生命周期事件划分得更细。你可以在处理器运行前后执行代码，甚至完全跳过处理器。
+
+</div>
+
+<div class="max-w-3xl mx-auto">
+
+<LifecyclePlayground client:visible />
+
+</div>
+
+<div class="content-layout">
+
+| 阶段 | 作用 |
+| --- | --- |
+| [请求](#request) | 接收新请求。 |
+| [解析](#parse) | 将请求体读取到 `body`。 |
+| [转换](#transform) | 在校验前修改上下文。 |
+| 校验 | 根据路由的 schema 检查请求数据。 |
+| [处理前](#before-handle) | 检查访问权限，并使用 `derive` 计算请求值。 |
+| 处理器 | 运行匹配路由的处理器。 |
+| [处理后](#after-handle) | 检查或替换返回值。 |
+| [映射响应](#map-response) | 将值映射为 Web 标准的 `Response`。 |
+| [响应后](#after-response) | 执行响应后的工作，例如日志记录。 |
+
+- 提前返回会跳过处理器。
+- 错误会进入[错误处理](#error-error-handling)，而不是作为成功响应后的另一个步骤。
+- [Trace](/patterns/trace/) 可以观察生命周期事件耗时。
+
+### 为什么要这样设计
+
+来看一个例子：假设我们要返回 HTML。通常需要将 `content-type` 设为 `text/html`，浏览器才能正确渲染。
+
+但为每条路由手动设置响应头很麻烦。钩子可以检查返回值并替我们选择响应头，让处理器专注于要返回的内容。
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## 返回 HTML
+
+处理器返回了 HTML 字符串，但还没有设置 `content-type`。接下来我们会设置它，让浏览器知道应将内容作为 HTML 渲染。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 添加响应头
+
+我们可以使用 `mapResponse` 来设置响应头。它专门用于将返回值映射为 `Response`。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 仅允许预览
+
+`beforeHandle` 用于在处理器运行前进行检查，非常适合执行授权。
+
+如果没有 `?preview=true`，请求会返回 `403` 和 `Preview is closed`，路由处理器也不会运行。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## 不必一口气全部弄懂
+
+钩子很多，可以让你精细控制流程，但不必全部使用，也不必一次全弄明白。
+
+对于大多数场景，`beforeHandle` 都是很好的起点。顾名思义，它会在处理器前运行，可用于授权或身份验证，并能按需提前结束处理流程。
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="#before-handle" title="处理前">
+
+在校验后、路由处理器运行前执行授权和其他检查。
+
+</Card>
+
+<Card href="/essential/validation/" title="校验">
+
+使用 schema 在处理器运行前检查请求数据。
+
+</Card>
+
+</div>
+
+## 注册钩子
+
+你可以通过两种方式注册钩子：
+
+1. [局部钩子](#local-hook)：仅在指定路由上运行。
+2. [拦截器钩子](#interceptor-hook)：注册后在当前实例中运行，具体范围取决于插件作用域。
+
+:::tip
+
+钩子和处理器一样会接收上下文。哪些字段已就绪取决于所处阶段：`request` 在解析请求体前运行，而 [derive](#derive) 在请求校验后运行。
+
+:::
+
+<a id="local-hook" />
+### 局部钩子
+
+将钩子放在路由选项中，即可只对该路由生效：
+
+```ts {5-7}
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', {
+        afterHandle({ set }) {
+            set.headers['content-type'] = 'text/html; charset=utf-8'
+        }
+    }, () => '<h1>Hello World</h1>')
+    .get('/hi', () => '<h1>Hello World</h1>')
+    .listen(3000)
+```
+
+| 路径 | 内容类型 |
+| --- | --- |
+| `/` | `text/html; charset=utf-8` |
+| `/hi` | 未显式设置 |
+
+<a id="interceptor-hook" />
+### 拦截器钩子
+
+在实例上注册钩子，会使其应用于后续处理器。方法通常是在事件名前加上 `on` 前缀，例如 `.onAfterHandle()` 或 `.onBeforeHandle()`。`.mapResponse()` 和 `.derive()` 是例外，没有对应的 `on` 形式。
+
+```ts {5-8}
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/none', () => '<h1>Hello World</h1>')
+    .onAfterHandle(({ responseValue, set }) => {
+        if (typeof responseValue === 'string' && responseValue.startsWith('<h1>'))
+            set.headers['content-type'] = 'text/html; charset=utf-8'
+    })
+    .get('/', () => '<h1>Hello World</h1>')
+    .get('/hi', () => '<h1>Hello World</h1>')
+    .listen(3000)
+```
+
+此检查能识别本例中的标题标记，但它不是通用的 HTML 检测器或净化器。
+
+| 路径 | 内容类型 |
+| --- | --- |
+| `/none` | 未显式设置 |
+| `/` | `text/html; charset=utf-8` |
+| `/hi` | `text/html; charset=utf-8` |
+
+插件中的钩子也可能生效。哪些路由会继承这些钩子，请参阅[插件作用域](/essential/plugin/#scope)。
+
+<a id="order-of-code" />
+## 代码顺序
+
+请在需要受其影响的路由之前注册钩子。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log('1')
+    })
+    .get('/', () => 'hi')
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+请求 `/` 时只会记录 `1`。第二个钩子是在该路由注册之后才注册的。
+
+通过 `.use()` 挂载的路由也遵循相同规则。只有在 `.use()` 之前注册的父级钩子才会作用于这些路由：
+
+```ts
+import { Elysia } from 'elysia'
+
+const someRouter = new Elysia().get('/', () => 'hi')
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log('1')
+    })
+    .use(someRouter)
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+对于这个挂载的路由，只会记录 `1`。无论作用域如何，在 `.use(someRouter)` 之后注册的钩子都不会作用于其中的路由。请将共享的父级钩子放在 `.use()` 之前。为插件注册钩子不会自动将其导出到所有父级路由；请参阅[作用域](/essential/plugin/#scope)。
+
+---
+
+<a id="request" />
+## 请求
+
+`request` 是新请求触发的第一个生命周期钩子。适合用于不依赖已解析或已校验数据的工作：
+
+- 缓存
+- 速率限制或 IP/区域检查
+- 分析统计
+- 响应头设置，例如 CORS
+
+### 示例
+
+速率限制器可以在解析请求体前拒绝请求。这里的 `rateLimiter` 代表你自己的服务，而 `requestIP()` 是 Bun 专用 API：
+
+```ts
+import { Elysia } from 'elysia'
+import { rateLimiter } from './rate-limiter'
+
+new Elysia()
+    .onRequest(({ request, server, status }) => {
+        const ip = server?.requestIP(request)?.address
+        if (ip && rateLimiter.isLimited(ip))
+            return status(429, 'Too many requests')
+    })
+    .get('/', () => 'hi')
+    .listen(3000)
+```
+
+返回一个值会提前响应，并跳过该路由的解析、校验和处理器。与特定路由的钩子不同，`request` 在路由匹配前运行，也能覆盖在它之前声明的路由。将它注册在实例靠前的位置，行为会更直观。
+
+### 初始上下文
+
+请求钩子接收请求早期阶段的上下文，其中包括：
+
+| 上下文值 | 提供内容 |
+| --- | --- |
+| `request` | 原始的 Web 标准 `Request`。 |
+| `set` | 发出的响应头和默认状态码。 |
+| `store` | 使用 `.state()` 注册的共享可变状态。 |
+| `status` 和 `redirect` | 用于返回特定 HTTP 状态码或重定向响应的辅助方法。 |
+| `.decorate()` 提供的值 | 展开放入上下文的共享辅助方法或服务。 |
+| `server` | 运行中的服务器实例（运行时提供时）。 |
+
+此阶段尚未解析 `body` 和 `headers`。
+
+---
+
+<a id="parse" />
+## 解析
+
+`parse` 是请求体解析阶段。解析器返回的值会成为 `body`。返回 `undefined` 会继续尝试下一个解析器。如果没有解析器产生值，`body` 就是 `undefined`。
+
+内置解析器支持以下类型：
+
+| 内容类型 | 解析后的值 |
+| --- | --- |
+| `text/plain` | 字符串 |
+| `application/json` | 解析后的 JSON 值 |
+| `multipart/form-data` | 包含表单字段和文件的对象 |
+| `application/x-www-form-urlencoded` | 包含表单字段的对象 |
+| `application/octet-stream` | `ArrayBuffer` |
+
+如果当前 Content-Type 不受支持，可以使用自定义解析器。
+
+### 示例
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onParse(({ request, contentType }) => {
+        if (contentType === 'application/custom-type')
+            return request.text()
+    })
+    .post('/', ({ body }) => body)
+    .listen(3000)
+```
+
+携带 `content-type: application/custom-type` 的 `POST` 请求会返回请求文本。一旦某个解析器产生值，其余解析器就会跳过。
+
+### 上下文
+
+解析钩子会将请求的 content-type 字段 `contentType` 添加到上下文中。此时请求体仍在读取，尚未进行请求校验。
+
+### 显式指定解析器
+
+设置 `parse`，即可显式选择解析器：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .post('/', { parse: 'json' }, ({ body }) => body)
+    .listen(3000)
+```
+
+| 简写 | 内容类型 |
+| --- | --- |
+| `text` | `text/plain` |
+| `json` | `application/json` |
+| `formdata` | `multipart/form-data` |
+| `urlencoded` | `application/x-www-form-urlencoded` |
+| `arrayBuffer` | `application/octet-stream` |
+| `none` | 跳过请求体解析 |
+
+你可以使用简写，也可以填写完整的 Content-Type。
+
+### 跳过请求体解析
+
+Web 标准的 `Request` 请求体只能读取一次。tRPC 或 oRPC 等库可能需要自行读取原始请求体。
+
+使用 `parse: 'none'`，将请求体留给该库处理：
+
+```ts
+import { Elysia } from 'elysia'
+import { library } from './library'
+
+new Elysia()
+    .post('/', { parse: 'none' }, ({ request }) => library.handle(request))
+    .listen(3000)
+```
+
+这里的 `library.handle` 代表你正在集成的第三方 HTTP 处理器。
+
+### 自定义解析器
+
+使用 `.parser()` 注册一个命名解析器，然后在路由中引用它：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .parser('custom', ({ request, contentType }) => {
+        if (contentType === 'application/elysia') return request.text()
+    })
+    .post('/', { parse: ['custom', 'json'] }, ({ body }) => body)
+    .listen(3000)
+```
+
+自定义解析器会处理 `application/elysia`。如果它返回 `undefined`，就会轮到 JSON 解析器。
+
+---
+
+<a id="transform" />
+## 转换
+
+`transform` 在请求校验前运行。可以用它修改现有上下文值，使其符合 schema。
+
+### 示例
+
+```ts
+import { Elysia, t } from 'elysia'
+import * as z from 'zod'
+
+new Elysia()
+    .get('/id/:id', {
+        params: z.object({ id: z.number() }),
+        transform({ params }) {
+            const id = Number(params.id)
+            if (!Number.isNaN(id)) params.id = id
+        }
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+该钩子会在校验前将路径参数转换为数字。`/id/42` 会返回 `42`；`/id/hello` 则无法通过校验。
+
+如果要向上下文添加带类型的属性，请改用校验后运行的 [derive](#derive)。
+
+### Schema 类型转换
+
+`transform` 最初用于弥补当时各 schema 库尚未普遍支持的 schema 类型转换功能。
+
+如今，大多数 schema 库都支持直接通过 schema 转换值。例如，Zod 提供了 `z.coerce.number()` 和 `z.coerce.date()`。
+
+```diff lang="ts"
+import { Elysia, t } from 'elysia'
+import * as z from 'zod'
+
+new Elysia()
+    .get('/id/:id', {
++        params: z.object({ id: z.coerce.number() }),
+-        params: z.object({ id: z.number() }),
+-        transform({ params }) {
+-            const id = Number(params.id)
+-            if (!Number.isNaN(id)) params.id = id
+-        }
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+---
+
+<a id="before-handle" />
+## 处理前
+
+在请求校验后、路由处理器运行前执行。
+
+用于在校验后执行额外检查，例如：
+- 授权
+- 会话校验
+
+返回一个值会跳过处理器。[afterHandle](#after-handle) 仍可检查或替换这个提前返回的响应。
+
+### 示例
+
+```ts
+import { Elysia, t } from 'elysia'
+import { validateSession } from './user'
+
+new Elysia()
+    .get('/', {
+    	cookie: t.Object({
+            session: t.String()
+        }),
+        beforeHandle({ cookie: { session }, status }) {
+            if (!validateSession(session?.value))
+                return status(401, 'Unauthorized')
+        }
+    }, () => 'hi')
+    .listen(3000)
+```
+
+<a id="derive" />
+## 派生值
+
+为后续处理器的**每个请求**向上下文添加一个带类型的值。
+
+可以用它根据请求数据计算值，例如通过会话令牌获取用户对象。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { validateSession } from './user'
+
+new Elysia()
+	.guard({
+ 		cookie: t.Object({
+            session: t.String()
+        })
+    })
+    .derive(({ cookie: { session }, status }) => {
+        const user = validateSession(session?.value)
+        if (!user) return status(401, 'Unauthorized')
+
+        return { user }
+    })
+    .get('/', ({ user }) => user.id)
+    .listen(3000)
+```
+
+### Derive 与 State/Decorate 的区别
+
+| Derive | State/Decorate |
+| --- | --- |
+| 每个请求各自独立 | 单例，在请求间共享 |
+| 校验后运行 | 服务器启动时运行一次 |
+
+### 队列
+
+`derive` 和 `beforeHandle` 共用同一个队列，并按注册顺序运行。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => { console.log(1) })
+    .derive(() => {
+        console.log(2)
+        return {}
+    })
+    .onBeforeHandle(() => { console.log(3) })
+    .get('/', () => 'hi')
+    .listen(3000)
+```
+
+<a id="dispose" />
+### 释放资源
+
+`derive` 返回的值如果实现了 `Symbol.asyncDispose` 或 `Symbol.dispose`，会在响应发送后释放。
+
+```ts
+import { Elysia } from 'elysia'
+import { pool } from './db'
+
+class Transaction {
+    constructor(private client = pool.connect()) {}
+
+    async query(sql: string) {
+        return (await this.client).query(sql)
+    }
+
+    async [Symbol.asyncDispose]() {
+        (await this.client).release()
+    }
+}
+
+new Elysia()
+    .derive(() => ({
+        tx: new Transaction()
+    }))
+    .get('/', ({ tx }) => tx.query('SELECT 1'))
+    .listen(3000)
+```
+
+- 在 [after response](#after-response) 和 `defer` 之后按相反顺序运行。如果两者都存在，优先使用 `Symbol.asyncDispose`。
+- 抛出错误、`beforeHandle` 提前结束处理或客户端断开连接时也会运行。流会在结束时释放。
+- 只会释放 derive 创建的值。它返回或展开的 `decorate`、`store` 值不会被释放。
+- 释放函数出错时会记录错误；此时响应已经发送。
+
+`decorate` 和 `state` 永远不会自动释放，请在 `onStop` 中释放它们。
+
+<a id="after-handle" />
+## 处理后
+
+在处理器运行后执行；如果 `beforeHandle` 提前结束处理，则在其后执行。
+
+可用它检查或替换返回值。返回非 `undefined` 的值会替换响应值。
+
+### 示例
+
+```ts
+import { Elysia } from 'elysia'
+import { badWords } from './libs'
+
+new Elysia()
+    .get('/', {
+        afterHandle({ responseValue }) {
+            if (typeof responseValue === 'string' && badWords.includes(responseValue))
+                return 'Cheek pinched!'
+        }
+    }, () => 'Erpin')
+    .listen(3000)
+```
+
+返回一个值会跳过其余的 `afterHandle` 钩子。
+
+返回 `Error` 的效果与处理器返回它相同：会进入[错误处理](#error-error-handling)，包括 `.onError(Class)` 处理器。如果没有钩子处理它，带有状态码的错误（例如 `HTTPError`）会以该状态码发送。
+
+### 上下文
+
+通过 `responseValue` 读取当前返回值。根据处理器和前序钩子的不同，它可能是字符串、对象、`status()` 值或 `Response`。
+
+---
+
+<a id="map-response" />
+## 映射响应
+
+使用它将返回值转换为 Web 标准的 `Response`。
+
+### 示例
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .mapResponse(({ responseValue }) => {
+        if (typeof responseValue === 'string' && /<[a-z][\s\S]*>/i.test(responseValue))
+            return new Response(responseValue, {
+                headers: { 'content-type': 'text/html; charset=utf-8' }
+            })
+    })
+    .get('/html', () => '<h1>Hello World</h1>')
+    .listen(3000)
+```
+
+返回一个值会跳过其余的 `mapResponse` 钩子。
+
+Elysia 会自动将 `set.headers` 合并到响应中，无需将它传给 `Response` 构造函数。
+
+---
+
+<a id="error-error-handling" />
+## 错误（错误处理）
+
+处理请求过程中的错误。你可以提供自定义响应、记录错误，或处理特定错误类。
+
+### 示例
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onError(({ error, status }) => {
+        console.error(error)
+
+        return status(503, 'Server is under maintenance')
+    })
+    .get('/', () => {
+        return new Error('Maintenance window')
+    })
+    .listen(3000)
+```
+
+处理器返回或抛出的任何 `Error` 都会被错误钩子捕获。
+
+返回 `status()` 或 `problem()` 会发送普通响应，而抛出它们则会进入错误处理。对于预期中的拒绝情况，请返回状态响应。
+
+错误钩子返回 `Error` 时，会像没有钩子处理它一样，以该错误自身的状态码发送。`HTTPError` 会发送其 problem 文档；没有状态码的 `Error` 则会变为 `500`。它不会再传给其他错误钩子。
+
+### 上下文
+
+错误钩子会接收 `error`（被抛出的值），以及错误发生时可用的请求上下文。
+
+如果需要在通用钩子中区分错误类型，请使用 `instanceof`。
+
+### 捕获特定错误
+
+将错误类传给 `.onError()`，即可捕获特定错误：
+
+```ts
+import { Elysia, NotFound, ValidationError } from 'elysia'
+
+new Elysia()
+	.onError(NotFound, ({ status }) => status(404, 'Not Found :('))
+	.onError(ValidationError, ({ status }) => status(400, 'Invalid request'))
+	.listen(3000)
+```
+
+以下是一些常见错误及其对应的错误类：
+
+| 错误类 | 原因 |
+| --- | --- |
+| `NotFound` | 没有匹配的路由 |
+| `ParseError` | 请求体语法无效 |
+| `ValidationError` | 未通过 schema 校验 |
+| `InternalServerError` | 显式的内部服务器错误 |
+| `InvalidCookie` | 签名 Cookie 无效 |
+
+你可以使用兜底错误钩子处理意外错误。
+
+```ts
+import { Elysia, InternalServerError } from 'elysia'
+
+new Elysia()
+    .onError(({ error, status }) => {
+        if (error instanceof InternalServerError)
+            return status(503, 'Oh')
+    })
+    .listen(3000)
+```
+
+### 自定义错误
+
+Elysia 提供了 `HTTPError`，用于声明包含状态码、响应头和消息的自定义错误。任何实现 `HTTPError` 接口的错误（不一定要继承它）都可用于错误处理。该接口要求提供 `type`；同时也要为错误设置 `status`，否则响应默认使用 `500`。
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+// using syntax sugar
+class WithSyntaxSugar extends HTTPError.id('SUGAR_ERROR', 400) {
+    // optional
+    headers = { 'x-error': 'sugar' }
+
+    // replaces the whole response body
+    value() {
+        return { message: 'With syntax sugar' }
+    }
+}
+
+// No need to extend HTTPError, just implement the interface
+class CustomError extends Error implements HTTPError<'CUSTOM_ERROR'> {
+    type = 'CUSTOM_ERROR' as const
+    // status must be const (or statically analyzable) for type narrowing
+    status = 409 as const
+    headers = { 'x-error': 'custom' }
+
+    // `detail` of the RFC 9457 problem document, in place of the message
+    detail = 'Custom error'
+}
+```
+
+实现 `HTTPError` 接口后，Elysia 会使用这些属性构造响应，而不是默认的 `500 Internal Server Error`。
+
+这意味着如果要返回自定义错误响应，无需将它注册到 `.onError()`。
+
+---
+
+<a id="after-response" />
+## 响应后
+
+在响应发送后运行。
+
+可用于清理、日志记录和分析统计。
+
+### 示例
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onAfterResponse(() => {
+        console.log('Response', performance.now())
+    })
+    .get('/', () => 'Hello')
+    .listen(3000)
+```
+
+### 响应值
+
+读取 `responseValue`，即可检查处理器和响应钩子产生的值：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onAfterResponse(({ responseValue }) => {
+        console.log(responseValue)
+    })
+    .get('/', () => 'Hello')
+    .listen(3000)
+```
+
+这里会记录 `Hello`。`responseValue` 不一定是 Web 标准的 `Response`，也可能仍是处理器返回的原始值。
+
+读取 `set`，即可查看通过上下文设置的状态码和响应头：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onAfterResponse(({ set }) => {
+        console.log(set.status, set.headers)
+    })
+    .get('/', ({ set }) => {
+        set.status = 201
+        set.headers['x-example'] = 'life-cycle'
+        return 'Hello'
+    })
+    .listen(3000)
+```
+
+`set` 显示的是在此处赋予它的值。不要认为它完整记录了运行时生成的所有响应头，也不要认为它包含直接在 `Response` 中返回的响应头。
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

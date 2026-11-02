@@ -1,0 +1,334 @@
+---
+title: 配置
+description: 配置 Eden Treaty 请求、请求头、响应处理和日期。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">配置</h1>
+
+Eden Treaty 接受两个参数：
+- **urlOrInstance** - URL 端点或 Elysia 实例
+- **options**（可选）- 自定义 fetch 行为
+
+## urlOrInstance
+接受字符串形式的 URL 端点，或 Elysia 实例。
+
+Eden 会根据类型采用以下行为：
+
+### URL 端点（字符串）
+如果传入 URL 端点，Eden Treaty 会使用 `fetch` 或 `config.fetcher` 向 Elysia 实例发送网络请求。
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const api = treaty<App>('localhost:3000')
+```
+
+URL 端点可以指定协议，也可以不指定。
+
+Eden Treaty 会按以下规则自动添加协议：
+1. 如果已指定协议，直接使用该 URL
+2. 如果 URL 指向 localhost 或受支持的本地地址，使用 http
+3. 其他情况使用 https
+
+选择 **ws://** 或 **wss://** 时，WebSocket 也遵循此规则。
+
+---
+
+### Elysia 实例
+如果传入 Elysia 实例，Eden Treaty 会创建 `Request` 类并直接传给 `Elysia.handle`，不会发起网络请求。
+
+这样就能直接与 Elysia 服务器交互，既没有请求开销，也无需启动服务器。
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/hi', 'Hi Elysia')
+
+const api = treaty(app)
+```
+
+传入实例时无需泛型，因为 Eden Treaty 可以直接从参数推断类型。
+
+推荐在编写单元测试，或创建类型安全的反向代理服务器和微服务时使用此模式。
+
+## 选项
+可选的第二个参数用于自定义 Eden Treaty 的 fetch 行为，支持以下参数：
+- [fetch](#fetch) - 为 fetch 初始化设置默认参数（RequestInit）
+- [fetcher](#fetcher) - 与 `fetch` 接口相同的自定义函数
+- [headers](#headers) - 设置默认请求头
+- [onRequest](#onrequest) - 在发送请求前拦截并修改 fetch 请求
+- [onResponse](#onresponse) - 拦截并修改 fetch 响应
+- [parseDate](#parsedate) - 自动将日期字符串解析为 Date 对象
+- [throwHttpError](#throwhttperror) - 响应状态不是成功状态（2xx）时自动抛出错误
+
+## Fetch
+设置默认的 `RequestInit` 选项，例如凭据或缓存。请求头请通过 `headers` 设置；当前配置类型中的 `fetch` 不包含 `headers` 和 `method`。以下示例假设已导入 `treaty` 和导出的 `App` 类型。
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+treaty<App>('localhost:3000', {
+    fetch: {
+        credentials: 'include'
+    }
+})
+```
+
+传给 fetch 的所有参数都会传给 fetcher，效果等同于：
+```ts
+fetch('http://localhost:3000', {
+    credentials: 'include'
+})
+```
+
+## Fetcher
+提供自定义 fetcher 函数，替代运行环境默认的 fetch。
+
+```ts
+treaty<App>('localhost:3000', {
+    fetcher(url, options) {
+        return fetch(url, options)
+    }
+})
+```
+
+自定义 fetcher 必须接受与 `fetch` 相同的参数，并返回 Web 标准 `Response`。Axios 等客户端需要适配器，不能直接传入。
+
+<a id="headers" />
+## 请求头
+使用 `options.headers` 设置默认请求头。
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+传给 fetch 的所有参数都会传给 fetcher，效果等同于：
+```ts
+fetch('http://localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+请求头参数可以是以下类型：
+- 对象
+- 函数
+
+### 请求头对象
+如果传入对象，会直接传给 fetch。
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+### 函数
+可以将请求头指定为函数，根据条件返回自定义请求头。
+
+```ts
+treaty<App>('localhost:3000', {
+    headers(path, options) {
+        if(path.startsWith('/user'))
+            return {
+                authorization: 'Bearer 12345'
+            }
+    }
+})
+```
+
+可以返回对象，将其值附加到 fetch 请求头中。
+
+请求头函数接受两个参数：
+- path `string` - 将传入该参数的路径
+  - 注意：不包含主机名，例如 (/user/griseo)
+- options `RequestInit`: 通过 fetch 的第二个参数传入的选项
+
+### 数组
+如果需要多个条件，可以将请求头函数定义为数组。
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: [
+      (path, options) => {
+        if(path.startsWith('/user'))
+            return {
+                authorization: 'Bearer 12345'
+            }
+        }
+    ]
+})
+```
+
+即使已经返回值，Eden Treaty 仍会**运行所有函数**。
+
+## 请求头优先级
+Eden Treaty 按以下顺序处理重复的请求头：
+1. 内联方法 - 直接传入方法函数
+2. headers - 通过 `config.headers` 传入
+  - 如果 `config.headers` 是数组，后面的参数优先级更高
+
+例如：
+```ts
+const api = treaty<App>('localhost:3000', {
+    headers: {
+        authorization: 'Bearer Aponia'
+    }
+})
+
+api.profile.get({
+    headers: {
+        authorization: 'Bearer Griseo'
+    }
+})
+```
+
+最终效果如下：
+```ts
+fetch('http://localhost:3000', {
+    headers: {
+        authorization: 'Bearer Griseo'
+    }
+})
+```
+
+如果内联函数未指定请求头，最终值则为 "**Bearer Aponia**"。
+
+## onRequest
+在发送 fetch 请求前拦截并修改请求。
+
+可以返回对象，将值合并到 **RequestInit** 中。
+
+```ts
+treaty<App>('localhost:3000', {
+    onRequest(path, options) {
+        if(path.startsWith('/user'))
+            return {
+                headers: {
+                    authorization: 'Bearer 12345'
+                }
+            }
+    }
+})
+```
+
+如果返回了值，Eden Treaty 会将其**浅合并**到当前的 `RequestInit` 中，并将其中的 `headers` 与现有请求头合并。
+
+**onRequest** 接受两个参数：
+- path `string` - 将传入该参数的路径
+  - 注意：不包含主机名，例如 (/user/griseo)
+- options `RequestInit`: 通过 fetch 的第二个参数传入的选项
+
+### 数组
+如果需要多个条件，可以将 onRequest 函数定义为数组。
+
+```ts
+treaty<App>('localhost:3000', {
+    onRequest: [
+      (path, options) => {
+        if(path.startsWith('/user'))
+            return {
+                headers: {
+                    authorization: 'Bearer 12345'
+                }
+            }
+        }
+    ]
+})
+```
+
+即使已经返回值，Eden Treaty 仍会**运行所有函数**。
+
+## onResponse
+拦截 fetch 响应。第一个非 null 返回值会成为 `data`。
+
+```ts
+treaty<App>('localhost:3000', {
+    onResponse(response) {
+        if(response.ok && response.headers.get('content-type')?.includes('application/json'))
+            return response.json()
+    }
+})
+```
+
+**onResponse** 接受一个参数：
+- response `Response` - 通常由 `fetch` 返回的 Web 标准 Response
+
+### 数组
+如果需要多个条件，可以将 onResponse 函数定义为数组。
+
+```ts
+treaty<App>('localhost:3000', {
+    onResponse: [
+        (response) => {
+            if(response.ok && response.headers.get('content-type')?.includes('application/json'))
+                return response.json()
+        }
+    ]
+})
+```
+与 [headers](#headers) 和 [onRequest](#onrequest) 不同，Eden Treaty 会依次执行函数，直到找到返回值或抛出错误。第一个非 null 返回值会成为 `data`。
+
+## parseDate
+
+- default: `true`
+
+自动将日期字符串解析为 Date 对象。
+
+```ts
+treaty<App>('localhost:3000', {
+	parseDate: true
+})
+```
+
+## throwHttpError
+
+- default: `false`
+
+如果响应状态不是成功状态（2xx），则自动抛出错误。
+
+```ts
+treaty<App>('localhost:3000', {
+	throwHttpError: true
+})
+```
+
+默认情况下，如果响应状态不是成功状态（2xx），Eden 不会抛出错误，而是返回 `{ error }`。
+
+也可以传入一个接收 `EdenFetchError` 的谓词函数：
+```ts
+treaty<App>('localhost:3000', {
+	throwHttpError: (error) => {
+		return error.status === 418
+	}
+})
+```
+
+如果 `throwHttpError` 返回 `true`，Eden 会抛出错误；否则会返回 `{ error }`。
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
