@@ -1,0 +1,238 @@
+---
+title: การติดตั้ง Eden
+description: ติดตั้ง Eden และทำให้การอนุมาน type ของ client กับเซิร์ฟเวอร์ตรงกัน
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">การติดตั้ง Eden</h1>
+
+เริ่มจากติดตั้ง Eden ในฝั่ง frontend:
+```bash
+bun add @elysia/eden@rc
+# Need Elysia to infer utility types
+bun add -d elysia@rc
+```
+
+
+จากนั้น export type ของเซิร์ฟเวอร์ Elysia ที่มีอยู่:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+แล้วเรียกใช้ API ของ Elysia ฝั่ง client:
+
+**client.ts**
+
+```ts
+// client.ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const client = treaty<App>('localhost:3000')
+
+// response: Hi Elysia
+const { data: index } = await client.get()
+
+// response: 1895
+const { data: id } = await client.id({ id: 1895 }).get()
+
+// response: { id: 1895, name: 'Skadi' }
+const { data: nendoroid } = await client.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+```
+
+## ข้อควรระวัง
+บางครั้ง Eden อาจอนุมาน type จาก Elysia ได้ไม่ถูกต้อง ต่อไปนี้คือวิธีแก้ที่พบบ่อยที่สุดสำหรับปัญหาการอนุมาน type ของ Eden
+
+### Type strict
+ตรวจสอบให้แน่ใจว่าเปิด strict mode ไว้ใน **tsconfig.json**
+```json
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+
+### เวอร์ชันของ Elysia ไม่ตรงกัน
+Eden อาศัย class ของ Elysia ในการ import instance ของ Elysia และอนุมาน type ให้ถูกต้อง
+
+ตรวจสอบให้แน่ใจว่าทั้ง client และเซิร์ฟเวอร์ใช้ Elysia เวอร์ชันเดียวกัน
+
+ตรวจสอบได้ด้วยคำสั่ง [`npm why`](https://docs.npmjs.com/cli/v10/commands/npm-explain):
+
+```bash
+npm why elysia
+```
+
+ตรวจสอบว่า dependency ของ client, เซิร์ฟเวอร์ และปลั๊กอินใช้ Elysia v2 รุ่นเดียวกัน
+
+ผลลัพธ์ที่ได้ขึ้นอยู่กับ dependency tree ของคุณ ให้มองหา Elysia ที่มีหลายเวอร์ชันซ้ำกัน peer range ที่เข้ากันไม่ได้ หรือเวอร์ชันฝั่ง frontend ที่ต่างจากฝั่งเซิร์ฟเวอร์
+
+
+### เวอร์ชันของ TypeScript
+Elysia ใช้ฟีเจอร์และ syntax ใหม่ ๆ ของ TypeScript เพื่ออนุมาน type ได้อย่างมีประสิทธิภาพที่สุด ฟีเจอร์อย่าง Const Generics และ Template Literals ถูกใช้อย่างหนัก
+
+ใช้ TypeScript เวอร์ชันที่ Elysia v2 รุ่นของคุณรองรับ แพ็กเกจ v2 ใช้ฟีเจอร์สมัยใหม่ของ TypeScript สำหรับตัวอย่างในหน้านี้ให้ใช้ TypeScript 5.9 ขึ้นไป
+
+### Method chaining
+Eden จะทำงานได้ Elysia ต้องใช้ **method chaining**
+
+ระบบ type ของ Elysia ซับซ้อน โดยทั่วไป method จะเพิ่ม type ใหม่ให้ instance
+
+การใช้ method chaining ช่วยเก็บ reference ของ type ใหม่นั้นไว้
+
+ตัวอย่างเช่น:
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('build', 1)
+    // Store is strictly typed
+    .get('/', ({ store: { build } }) => build)
+    .listen(3000)
+```
+เมื่อใช้แบบนี้ **state** จะคืน type ของ **Elysia** ตัวใหม่ที่เพิ่ม **build** เข้าไปใน store และแทนที่ type ปัจจุบัน
+
+ถ้าไม่ใช้ method chaining Elysia จะไม่เก็บ type ใหม่ที่เพิ่มเข้ามา ทำให้อนุมาน type ไม่ได้
+```ts
+// Expected type error: the earlier call did not retain its new type.
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+
+app.state('build', 1)
+
+app.get('/', ({ store: { build } }) => build)
+
+app.listen(3000)
+```
+
+### Type definition
+ถ้าคุณใช้ฟีเจอร์เฉพาะของ Bun อย่าง `Bun.file` หรือ API ที่คล้ายกัน แล้วคืนค่าจาก handler อาจต้องติดตั้ง type definition ของ Bun ให้ฝั่ง client ด้วย
+
+```bash
+bun add -d @types/bun
+```
+
+### Path alias (monorepo)
+ถ้าคุณใช้ path alias ใน monorepo ตรวจสอบให้แน่ใจว่าฝั่ง frontend หา path ได้แบบเดียวกับฝั่ง backend
+
+:::tip
+
+การตั้งค่า path alias ใน monorepo อาจยุ่งยาก คุณ fork template ตัวอย่างของเรา [Kozeki Template](https://github.com/SaltyAom/kozeki-template) แล้วปรับแก้ตามต้องการได้
+:::
+
+
+ตัวอย่างเช่น ถ้าคุณมี path alias สำหรับ backend ใน **tsconfig.json** ดังนี้:
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@/*": ["./src/*"]
+	}
+  }
+}
+```
+
+และโค้ด backend เป็นแบบนี้:
+```ts
+import { Elysia } from 'elysia'
+import { a, b } from '@/controllers'
+
+const app = new Elysia()
+	.use(a)
+	.use(b)
+	.listen(3000)
+
+export type app = typeof app
+```
+
+คุณ**ต้อง**ทำให้โค้ด frontend หา path alias เดียวกันได้ ไม่อย่างนั้น type ที่อนุมานได้จะเป็น any
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { app } from '@/index'
+
+const client = treaty<app>('localhost:3000')
+
+// This should be able to resolve the same module in both frontend and backend, and not `any`
+import { a, b } from '@/controllers'
+```
+
+วิธีแก้คือทำให้ path alias ชี้ไปยังไฟล์เดียวกันทั้งใน frontend และ backend
+
+ดังนั้นต้องเปลี่ยน path alias ใน **tsconfig.json** ของ frontend (`apps/frontend`) เป็น:
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@/*": ["../backend/src/*"]
+	}
+  }
+}
+```
+
+ถ้าตั้งค่าถูกต้อง ทั้ง frontend และ backend จะหาโมดูลเดียวกันได้
+```ts
+// This should be able to resolve the same module in both frontend and backend, and not `any`
+import { a, b } from '@/controllers'
+```
+
+#### Namespace
+เราแนะนำให้เพิ่ม prefix ที่เป็น **namespace** ให้แต่ละโมดูลใน monorepo เพื่อหลีกเลี่ยงความสับสนและการชนกันที่อาจเกิดขึ้น
+
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@frontend/*": ["./apps/frontend/src/*"],
+	  "@backend/*": ["./apps/backend/src/*"]
+	}
+  }
+}
+```
+
+จากนั้นคุณ import โมดูลได้แบบนี้:
+```ts
+// Should work in both frontend and backend and not return `any`
+import { a, b } from '@backend/controllers'
+```
+
+เราแนะนำให้สร้าง **tsconfig.json ไฟล์เดียว** ที่กำหนด `baseUrl` เป็นรากของ repo และกำหนด path ตามตำแหน่งของโมดูล แล้วสร้าง **tsconfig.json** ให้แต่ละโมดูลที่สืบทอดจาก **tsconfig.json** ที่รากซึ่งมี path alias อยู่
+
+ดูตัวอย่างที่ใช้งานได้จริงได้ที่ [repo ตัวอย่าง path alias](https://github.com/SaltyAom/elysia-monorepo-path-alias) หรือ [Kozeki Template](https://github.com/SaltyAom/kozeki-template)
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

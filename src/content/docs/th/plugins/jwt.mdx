@@ -1,0 +1,250 @@
+---
+title: ปลั๊กอิน JWT
+description: เอกสารอ้างอิงและตัวอย่างของปลั๊กอิน JWT
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ปลั๊กอิน JWT</h1>
+
+ปลั๊กอินนี้ช่วยให้ใช้ JWT ใน handler ของ Elysia ได้
+
+ติดตั้งด้วยคำสั่ง:
+```bash
+bun add @elysia/jwt@rc
+```
+
+ตั้งค่า `JWT_SECRET` เป็น signing secret ส่วนตัวก่อนเริ่มเซิร์ฟเวอร์ route ด้านล่างแสดงการ sign และ verify เท่านั้น endpoint สำหรับ sign-in จริงต้องตรวจสอบ credential ก่อนออก token
+
+จากนั้นนำไปใช้:
+
+
+```ts title="cookie"
+import { Elysia } from 'elysia'
+import { jwt } from '@elysia/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', async ({ jwt, params: { name }, cookie: { auth } }) => {
+    	const value = await jwt.sign({ name })
+
+        auth!.set({
+            value,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 7 * 86400,
+            path: '/profile',
+        })
+
+        return `Sign in as ${value}`
+    })
+    .get('/profile', async ({ jwt, status, cookie: { auth } }) => {
+        const profile = await jwt.verify(auth!.value)
+
+        if (!profile)
+            return status(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+```ts title="headers"
+import { Elysia } from 'elysia'
+import { jwt } from '@elysia/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', ({ jwt, params: { name } }) => {
+    	return jwt.sign({ name })
+    })
+    .get('/profile', async ({ jwt, status, headers: { authorization } }) => {
+        const profile = await jwt.verify(authorization?.startsWith('Bearer ') ? authorization.slice(7) : undefined)
+
+        if (!profile)
+            return status(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+
+การตั้งค่า cookie เหล่านี้ต้องใช้ HTTPS ส่วนตัวอย่างที่ใช้ header ต้องส่ง `Authorization: Bearer <token>` มา
+
+## Config
+ปลั๊กอินนี้ขยายการตั้งค่ามาจาก [jose](https://github.com/panva/jose)
+
+ด้านล่างนี้คือการตั้งค่าที่ปลั๊กอินรองรับ
+
+### name
+ชื่อที่ใช้ลงทะเบียนฟังก์ชัน `jwt`
+
+ตัวอย่างเช่น ฟังก์ชัน `jwt` จะถูกลงทะเบียนด้วยชื่อที่กำหนดเอง
+```ts
+app
+    .use(
+        jwt({
+            name: 'myJWTNamespace',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', ({ myJWTNamespace, params }) => {
+        return myJWTNamespace.sign(params)
+    })
+```
+
+เนื่องจากบางคนอาจต้องใช้ `jwt` หลาย instance ที่ตั้งค่าต่างกันในเซิร์ฟเวอร์เดียว จึงต้องลงทะเบียนฟังก์ชัน JWT ด้วยชื่ออื่นอย่างชัดเจน
+
+### secret
+private key ที่ใช้ sign payload ของ JWT
+
+### schema
+ตรวจสอบ type ของ payload ใน JWT อย่างเข้มงวด
+
+---
+ตัวเลือกต่อไปนี้อธิบาย claim ของ JWT และ header ของ JWS ที่ jose รองรับ
+
+### alg
+ค่าเริ่มต้น: `HS256`
+
+algorithm ที่ใช้ sign payload ของ JWT
+
+ค่าที่ jose รองรับได้แก่:
+HS256
+HS384
+HS512
+PS256
+PS384
+PS512
+RS256
+RS384
+RS512
+ES256
+ES256K
+ES384
+ES512
+EdDSA
+
+### iss
+claim issuer ใช้ระบุผู้ที่ออก JWT ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.1)
+
+สรุปสั้น ๆ คือ ปกติจะเป็นชื่อ (domain) ของผู้ sign
+
+### sub
+claim subject ใช้ระบุผู้ที่เป็นเจ้าของเรื่องใน JWT
+
+claim ใน JWT ปกติเป็นข้อความที่กล่าวถึง subject ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.2)
+
+### aud
+claim audience ใช้ระบุผู้รับที่ JWT นี้ตั้งใจส่งให้
+
+ผู้ที่จะประมวลผล JWT แต่ละรายต้องระบุตัวเองด้วยค่าใน claim audience ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.3)
+
+### jti
+claim JWT ID ให้ตัวระบุที่ไม่ซ้ำกันของ JWT ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.7)
+
+### nbf
+claim "not before" ระบุเวลาที่ห้ามรับ JWT ไปประมวลผลก่อนหน้านั้น ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.5)
+
+### exp
+claim expiration time ระบุเวลาหมดอายุ ซึ่งตั้งแต่เวลานั้นเป็นต้นไปห้ามรับ JWT ไปประมวลผล ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.4)
+
+### iat
+claim "issued at" ระบุเวลาที่ออก JWT
+
+ใช้ claim นี้ดูอายุของ JWT ได้ ตาม [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.6)
+
+### b64
+JWS Extension Header Parameter นี้เปลี่ยนรูปแบบการแสดง JWS Payload และการคำนวณ JWS Signing input ตาม [RFC7797](https://www.rfc-editor.org/rfc/rfc7797)
+
+### kid
+คำใบ้ว่าใช้ key ตัวไหนป้องกัน JWS
+
+พารามิเตอร์นี้ช่วยให้ผู้ส่งแจ้งผู้รับได้อย่างชัดเจนว่ามีการเปลี่ยน key ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.4)
+
+### x5t
+header parameter (X.509 certificate SHA-1 thumbprint) คือ SHA-1 digest แบบ base64url-encoded ของ DER encoding ของ X.509 certificate [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) ที่ตรงกับ key ที่ใช้ sign JWS แบบดิจิทัล ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.7)
+
+### x5c
+header parameter (X.509 certificate chain) มี X.509 public key certificate หรือ certificate chain [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) ที่ตรงกับ key ที่ใช้ sign JWS แบบดิจิทัล ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.6)
+
+### x5u
+header parameter (X.509 URL) คือ URI [RFC3986](https://www.rfc-editor.org/rfc/rfc3986) ที่อ้างถึง resource ของ X.509 public key certificate หรือ certificate chain [RFC5280] ที่ตรงกับ key ที่ใช้ sign JWS แบบดิจิทัล ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.5)
+
+### jwk
+header `jwk` มี public JSON Web Key ที่ตรงกับ signing key ส่วน header `jku` เป็น URL ของ JWK Set แยกต่างหาก ดู [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.3)
+
+### typ
+Header Parameter `typ` (type) ใช้ในแอปพลิเคชัน JWS เพื่อประกาศ media type [IANA.MediaTypes] ของ JWS ทั้งก้อน
+
+มีไว้ให้แอปพลิเคชันใช้เมื่อโครงสร้างข้อมูลที่มี JWS อาจมี object ได้มากกว่าหนึ่งชนิด ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9)
+
+### cty
+พารามิเตอร์ Content-Type ใช้ในแอปพลิเคชัน JWS เพื่อประกาศ media type [IANA.MediaTypes] ของเนื้อหาที่ถูกป้องกัน (payload)
+
+มีไว้ให้แอปพลิเคชันใช้เมื่อ JWS Payload อาจมี object ได้มากกว่าหนึ่งชนิด ตาม [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9)
+
+## Handler
+ด้านล่างนี้คือค่าที่ถูกเพิ่มเข้าไปใน handler
+
+### jwt.sign
+sign payload เพื่อสร้าง JWT
+
+Type:
+```ts
+sign(payload: Omit<Claims, 'nbf' | 'exp' | 'iat'> & JWTPayloadInput): Promise<string>
+```
+
+`Claims` มีรูปแบบตาม [schema](#schema) หรือเป็น record ใดก็ได้เมื่อไม่ได้กำหนด schema ส่วน `JWTPayloadInput` เก็บ registered claim ได้แก่ [iss](#iss), [sub](#sub), [aud](#aud), [jti](#jti), [nbf](#nbf), [exp](#exp) และ [iat](#iat) ค่าที่กำหนดตรงนี้จะทับค่าจากการตั้งค่า
+
+### jwt.verify
+verify token ด้วยการตั้งค่า JWT ที่กำหนดไว้
+
+Type:
+```ts
+verify(jwt?: string, options?: JWTVerifyOptions): Promise<(Claims & Omit<JWTPayloadSpec, keyof Claims>) | false>
+```
+
+คืนค่า payload ที่ decode แล้ว หรือ `false` เมื่อไม่มี token หรือ token ไม่ถูกต้อง `JWTPayloadSpec` เก็บ registered claim `iss`, `sub`, `aud`, `jti`, `nbf`, `exp` และ `iat` ในรูปค่าที่ decode แล้ว ส่วน `options` จะถูกส่งต่อให้ `jwtVerify` ของ jose
+
+## Pattern
+ด้านล่างนี้คือรูปแบบการใช้งานปลั๊กอินที่พบบ่อย
+
+## กำหนดวันหมดอายุของ JWT
+กำหนด `exp` เพื่อควบคุมการหมดอายุของ token อายุของ cookie กับวันหมดอายุของ JWT เป็นการตั้งค่าที่แยกกัน
+
+```ts
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!,
+            exp: '7d'
+        })
+    )
+    .get('/sign/:name', async ({ jwt, params }) => jwt.sign(params))
+```
+
+ตัวอย่างนี้จะ sign JWT ที่หมดอายุในอีก 7 วันนับจากนี้
+
+</div>
+</InteractiveDocLayout>
+</div>

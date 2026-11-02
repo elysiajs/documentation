@@ -1,0 +1,79 @@
+---
+title: Unit test
+description: ทดสอบ handler ของ Elysia ด้วย Request, Response และ test runner ของ Bun
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Unit test</h1>
+
+ทดสอบ route ด้วย object `Request` และ `Response` แบบ Web Standard การทดสอบ handler ไม่จำเป็นต้องเปิดพอร์ต
+
+Elysia มี method **Elysia.handle** ที่รับ [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) แบบ Web Standard และคืนค่าเป็น promise ของ [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) เพื่อจำลอง HTTP Request
+
+Bun มี [test runner](https://bun.sh/docs/cli/test) ในตัว ซึ่งมี API คล้าย Jest ผ่านโมดูล `bun:test` ช่วยให้เขียน unit test ได้สะดวก
+
+สร้างไฟล์ **test/index.test.ts** ในรากของโปรเจกต์ โดยมีเนื้อหาดังนี้:
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const app = new Elysia().get('/', () => 'hi')
+
+        const response = await app
+            .handle(new Request('http://localhost/'))
+            .then((res) => res.text())
+
+        expect(response).toBe('hi')
+    })
+})
+```
+
+จากนั้นรันเทสต์ด้วย **bun test**
+
+```bash
+bun test
+```
+
+ให้ส่ง URL แบบเต็มเข้าไปใน `new Request()` path แบบสัมพัทธ์อย่าง `/user` อย่างเดียวไม่พอ
+
+เราใช้ไลบรารีทดสอบอื่นอย่าง Jest เขียน unit test ให้ Elysia ได้เช่นกัน
+
+## ทดสอบด้วย Eden Treaty
+
+เราใช้ Eden Treaty เขียนเทสต์ที่มี type safety แบบ end-to-end ให้เซิร์ฟเวอร์ Elysia ได้ดังนี้:
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia().get('/hello', 'hi')
+
+const api = treaty(app)
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const { data, error } = await api.hello.get()
+
+        expect(error).toBeNull()
+        expect(data).toBe('hi')
+    })
+})
+```
+
+ดูการตั้งค่าและข้อมูลเพิ่มเติมได้ที่ [Eden Treaty Unit Test](/eden/treaty/unit-test/)
+
+</div>
+</InteractiveDocLayout>
+</div>

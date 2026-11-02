@@ -1,0 +1,59 @@
+---
+title: เปรียบเทียบ
+description: เปรียบเทียบ Elysia กับ Express, Fastify, Hono และ tRPC ผ่านตัวอย่าง
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">เปรียบเทียบกับเฟรมเวิร์กอื่น</h1>
+
+Elysia ออกแบบมาให้รู้สึกคุ้นเคยถ้าคุณเคยใช้เว็บเฟรมเวิร์กอื่นมาก่อน คู่มือเหล่านี้เปรียบเทียบ routing, validation, middleware และ type safety ผ่านตัวอย่าง
+
+## ก่อนเริ่ม
+
+อ่าน[แนวคิดหลัก](/key-concept/)เพื่อทำความเข้าใจแนวคิดหลักเบื้องหลัง Elysia ใช้เวลาประมาณห้านาที
+
+## เลือกเฟรมเวิร์กของคุณ
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="/migrate/from-express/">
+<CardTitle>จาก Express</CardTitle>
+
+เปรียบเทียบ request handler และ middleware ของ Express กับ route และ lifecycle hook ของ Elysia
+
+</Card>
+
+<Card href="/migrate/from-fastify/">
+<CardTitle>จาก Fastify</CardTitle>
+
+เปรียบเทียบ validation, lifecycle hook, encapsulation ของปลั๊กอิน และการอนุมาน type
+
+</Card>
+
+<Card href="/migrate/from-hono/">
+<CardTitle>จาก Hono</CardTitle>
+
+เปรียบเทียบ routing, context ของ middleware, validation และ client ที่มี type
+
+</Card>
+
+<Card href="/migrate/from-trpc/">
+<CardTitle>จาก tRPC</CardTitle>
+
+เปรียบเทียบ RPC procedure กับ HTTP route และ type safety แบบ end-to-end ของ Eden
+
+</Card>
+
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>

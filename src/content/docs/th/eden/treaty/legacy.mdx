@@ -1,0 +1,322 @@
+---
+title: Eden Treaty รุ่นเก่า
+description: เอกสารอ้างอิง API ของ client edenTreaty รุ่นแรก
+template: splash
+pagefind: false
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Treaty รุ่นเก่า</h1>
+
+:::tip[หมายเหตุ]
+
+นี่คือ API ของ client รุ่นเก่า Eden Treaty 1 (`edenTreaty`) ตัวอย่างฝั่งเซิร์ฟเวอร์ใช้ Elysia v2 ส่วน `$query`, `$fetch` และการเข้าถึง property แบบ dynamic เป็นของ interface ของ client รุ่นเก่านี้
+
+สำหรับโปรเจกต์ใหม่ เราแนะนำให้เริ่มด้วย [Eden Treaty 2](/eden/treaty/overview) (treaty) แทน
+:::
+
+
+Eden Treaty แทนเซิร์ฟเวอร์ Elysia ในรูปแบบ object
+
+มี accessor เหมือน object ทั่วไปที่ได้ type มาจากเซิร์ฟเวอร์โดยตรง จึงมี autocomplete และการตรวจสอบ type ตอนเรียกจากฝั่ง client
+
+---
+
+การใช้ Eden Treaty ให้เริ่มจาก export type ของเซิร์ฟเวอร์ Elysia ที่มีอยู่:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+จากนั้น import type ของเซิร์ฟเวอร์ แล้วเรียกใช้ API ของ Elysia ฝั่ง client:
+```ts
+// client.ts
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = edenTreaty<App>('http://localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data: pong, error: pongError } = await app.get()
+
+// response type: 1895
+const { data: id, error: idError } = await app.id['1895'].get()
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+```
+
+:::tip
+
+Eden Treaty เป็น type-safe เต็มรูปแบบและรองรับ auto-completion
+:::
+
+
+## โครงสร้าง
+Eden Treaty จะแปลงทุก path ที่มีอยู่ให้เป็นรูปแบบ object ซึ่งอธิบายได้ดังนี้:
+```text
+EdenTreaty.<1>.<2>.<n>.<method>({
+    ...body,
+    $query?: {},
+    $fetch?: RequestInit
+})
+```
+
+### Path
+Eden จะแปลง `/` เป็น `.` ซึ่งเรียกด้วย `method` ที่ลงทะเบียนไว้ได้ เช่น:
+- **/path** -> .path
+- **/nested/path** -> .nested.path
+
+### Path parameter
+path parameter จะถูกจับคู่ให้อัตโนมัติตามชื่อใน URL
+
+- **/id/:id** -> .id.`<anyThing>`
+- เช่น: .id.hi
+- เช่น: .id['123']
+
+:::tip
+
+ถ้า path ไม่รองรับ path parameter TypeScript จะแสดง error
+:::
+
+
+### Query
+คุณต่อท้าย query ให้ path ได้ด้วย `$query`:
+```ts
+app.get({
+    $query: {
+        name: 'Eden',
+        code: 'Gold'
+    }
+})
+```
+
+### Fetch
+Eden Treaty เป็น wrapper ของ fetch คุณเพิ่มพารามิเตอร์ของ [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) ที่ถูกต้องตัวใดก็ได้ให้ Eden ด้วยการส่งเข้าไปใน `$fetch`:
+```ts
+app.post({
+    $fetch: {
+        headers: {
+            'x-organization': 'MANTIS'
+        }
+    }
+})
+```
+
+## การจัดการ error
+Eden Treaty จะคืนค่า `data` และ `error` เป็นผลลัพธ์ ซึ่งมี type ครบทั้งคู่
+```ts
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            warnUser(error.value)
+            break
+
+        case 500:
+        case 502:
+            emergencyCallDev(error.value)
+            break
+
+        default:
+            reportError(error.value)
+            break
+    }
+
+    throw error
+}
+
+const { id, name } = nendoroid
+```
+
+ทั้ง **data** และ **error** จะมี type เป็น nullable จนกว่าคุณจะยืนยันสถานะด้วย type guard
+
+พูดง่าย ๆ คือ ถ้า fetch สำเร็จ data จะมีค่าและ error จะเป็น null และในทางกลับกัน
+
+:::tip
+
+error ถูกครอบด้วย `Error` และค่าที่เซิร์ฟเวอร์คืนมาดึงได้จาก `Error.value`
+:::
+
+
+### type ของ error ตาม status
+ทั้ง Eden Treaty และ Eden Fetch แยกแยะ type ของ error ตาม status code ได้ โดยอนุมานจาก response ที่เซิร์ฟเวอร์คืนด้วย `status()`
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .model({
+        nendoroid: t.Object({
+            id: t.Number(),
+            name: t.String()
+        }),
+        error: t.Object({
+            message: t.String()
+        })
+    })
+    .get('/', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: 'nendoroid',
+        response: {
+            200: 'nendoroid',
+            400: 'error',
+            401: 'error'
+        }
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+และในฝั่ง client:
+```ts
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            // narrow down to type 'error' described in the server
+            warnUser(error.value)
+            break
+
+        default:
+            // other declared error statuses
+            reportError(error.value)
+            break
+    }
+
+    throw error
+}
+```
+
+## WebSocket
+Eden รองรับ WebSocket ด้วย API แบบเดียวกับ route ทั่วไป
+```ts
+// Server
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+const app = new Elysia()
+    .use(websocket())
+    .ws('/chat', {
+        message({ body }) {
+            return body
+        },
+        body: t.String(),
+        response: t.String()
+    })
+    .listen(3000)
+
+export type App = typeof app
+```
+
+เมื่อต้องการเริ่มรับข้อมูลแบบ real-time ให้เรียก method `.subscribe`:
+```ts
+// Client
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+const app = edenTreaty<App>('http://localhost:3000')
+
+const chat = app.chat.subscribe()
+
+chat.subscribe((message) => {
+    console.log('got', message)
+})
+
+chat.on('open', () => {
+    chat.send('hello from client')
+})
+```
+
+เราใช้ [schema](/integrations/cheat-sheet#schema) บังคับ type-safety บน WebSocket ได้เหมือนกับ route ทั่วไป
+
+---
+
+`subscribe()` คืนค่าเป็น wrapper `EdenWS` ที่มี helper สำหรับข้อความพร้อม type อย่าง `send`, `subscribe` และ `on`
+
+ใช้ `chat.ws` เพื่อเข้าถึง WebSocket แบบ native ที่อยู่เบื้องหลัง รวมถึง API ที่ wrapper ไม่ได้เปิดให้ใช้
+
+## อัปโหลดไฟล์
+ส่งค่าต่อไปนี้ให้ field เพื่อแนบไฟล์ได้:
+- **File**
+- **FileList**
+- **Blob**
+
+การแนบไฟล์จะทำให้ **content-type** เป็น **multipart/form-data**
+
+สมมติว่าเรามีเซิร์ฟเวอร์ดังนี้:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/image', {
+        body: t.Object({
+            title: t.String(),
+            image: t.Files(),
+        })
+    }, ({ body: { image, title } }) => title)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+เราใช้ client ได้ดังนี้:
+```ts
+// client.ts
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+
+export const client = edenTreaty<App>('http://localhost:3000')
+
+const id = <T extends HTMLElement = HTMLElement>(id: string) =>
+    document.getElementById(id)! as T
+
+const { data } = await client.image.post({
+    title: "Misono Mika",
+    image: id<HTMLInputElement>('picture').files!,
+})
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

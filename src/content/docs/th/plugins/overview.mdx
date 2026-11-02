@@ -1,0 +1,244 @@
+---
+title: ภาพรวมปลั๊กอิน
+description: เอกสารอ้างอิงและตัวอย่างของปลั๊กอิน Elysia ทั้งแบบทางการและจากคอมมิวนิตี้
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import { Card, CardTitle } from '../../../../components/ui/card';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ภาพรวมปลั๊กอิน</h1>
+
+Elysia ออกแบบมาให้เป็นโมดูลและมีขนาดเบา
+
+ตามแนวคิดเดียวกับ Arch Linux (btw, I use Arch):
+
+> การตัดสินใจด้านการออกแบบทำเป็นกรณีไป โดยอาศัยฉันทามติของนักพัฒนา
+
+เพื่อให้นักพัฒนาได้เว็บเซิร์ฟเวอร์ที่มีประสิทธิภาพตามที่ตั้งใจสร้าง Elysia จึงมีปลั๊กอินสำเร็จรูปสำหรับรูปแบบการใช้งานทั่วไปมาให้ใช้งานได้สะดวก:
+
+## ปลั๊กอินอย่างเป็นทางการ
+
+นี่คือปลั๊กอินอย่างเป็นทางการบางส่วนที่ทีม Elysia ดูแล:
+
+
+<div className="grid gap-4 sm:grid-cols-2">
+
+<Card href="/plugins/bearer">
+<CardTitle>Bearer</CardTitle>
+
+ดึง Bearer token จาก header ของ request
+
+</Card>
+
+<Card href="/plugins/cors">
+<CardTitle>CORS</CardTitle>
+
+ตั้งค่า cross-origin resource sharing
+
+</Card>
+
+<Card href="/plugins/compress">
+<CardTitle>Compress</CardTitle>
+
+บีบอัด HTTP response ด้วย encoding ที่ client รองรับ
+
+</Card>
+
+<Card href="/plugins/cron">
+<CardTitle>Cron</CardTitle>
+
+รัน job ตามกำหนดเวลา
+
+</Card>
+
+<Card href="/eden">
+<CardTitle>Eden</CardTitle>
+
+ใช้ client ที่มี type safety แบบ end-to-end สำหรับ Elysia
+
+</Card>
+
+<Card href="/plugins/graphql-apollo">
+<CardTitle>GraphQL Apollo</CardTitle>
+
+รัน Apollo GraphQL บน Elysia
+
+</Card>
+
+<Card href="/plugins/graphql-yoga">
+<CardTitle>GraphQL Yoga</CardTitle>
+
+รัน GraphQL Yoga บน Elysia
+
+</Card>
+
+<Card href="/plugins/html">
+<CardTitle>HTML</CardTitle>
+
+คืน response เป็น HTML
+
+</Card>
+
+<Card href="/plugins/jwt">
+<CardTitle>JWT</CardTitle>
+
+sign และ verify JSON Web Token
+
+</Card>
+
+<Card href="/plugins/openapi">
+<CardTitle>OpenAPI</CardTitle>
+
+สร้างเอกสาร OpenAPI ให้แอปพลิเคชัน Elysia
+
+</Card>
+
+<Card href="/plugins/opentelemetry">
+<CardTitle>OpenTelemetry</CardTitle>
+
+เก็บ trace ด้วย OpenTelemetry
+
+</Card>
+
+<Card href="/plugins/server-timing">
+<CardTitle>Server Timing</CardTitle>
+
+วัดประสิทธิภาพของ lifecycle ของ request ด้วย response header Server-Timing
+
+</Card>
+
+<Card href="/plugins/static">
+<CardTitle>Static</CardTitle>
+
+ให้บริการไฟล์และโฟลเดอร์ static
+
+</Card>
+
+</div>
+
+:::note[เวอร์ชันของปลั๊กอิน]
+
+ใช้ปลั๊กอินเวอร์ชันที่ peer dependency ของ Elysia ตรงกับแอปพลิเคชันของคุณ branch ของปลั๊กอินสำหรับ Elysia 2 ใช้เวอร์ชัน prerelease ส่วนปลั๊กอินรุ่นเก่าอาจพึ่ง API ของ Elysia 1 ที่ถูกเอาออกไปแล้ว รายการจากคอมมิวนิตี้ด้านล่างเป็นเพียงรายชื่อ ไม่ได้รับประกันความเข้ากันได้
+
+:::
+
+## ปลั๊กอินจากคอมมิวนิตี้
+
+-   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - สร้างโปรเจกต์ Elysia พร้อมสภาพแวดล้อมได้ง่าย ๆ (ช่วยเรื่อง ORM, Linter และปลั๊กอิน)!
+-   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication ที่เรียบง่ายและสะอาดตา
+-   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - ปลั๊กอิน authentication ของ Clerk แบบไม่เป็นทางการ
+-   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - รันระบบนิเวศของ Elysia บน Node.js และ Deno
+-   [Vite server](https://github.com/kravetsone/elysia-vite-server) - ปลั๊กอินที่เริ่มและ decorate dev server ของ [`vite`](https://vitejs.dev/) ทั้งในโหมด `development` และ `production` และให้บริการไฟล์ static (ถ้าจำเป็น)
+-   [Vite](https://github.com/timnghg/elysia-vite) - ให้บริการไฟล์ HTML entry พร้อม script ของ Vite ที่ inject ไว้
+-   [Nuxt](https://github.com/trylovetom/elysiajs-nuxt) - เชื่อม Elysia เข้ากับ Nuxt ได้ง่าย ๆ!
+-   [Remix](https://github.com/kravetsone/elysia-remix) - ใช้ [Remix](https://remix.run/) พร้อมรองรับ `HMR` (ขับเคลื่อนด้วย [`vite`](https://vitejs.dev/))! ปิดคำขอปลั๊กอินที่ค้างมานานมาก [#12](https://github.com/elysiajs/elysia/issues/12)
+-   [Sync](https://github.com/johnny-woodtke/elysiajs-sync) - เฟรมเวิร์กซิงก์ข้อมูลแบบ offline-first ขนาดเบา ขับเคลื่อนด้วย [Dexie.js](https://dexie.org/)
+-   [Connect middleware](https://github.com/kravetsone/elysia-connect-middleware) - ปลั๊กอินที่ทำให้ใช้ middleware ของ [`express`](https://www.npmjs.com/package/express)/[`connect`](https://www.npmjs.com/package/connect) ใน Elysia ได้โดยตรง!
+-   [Elysia HTTP Exception](https://github.com/codev911/elysia-http-exception) - ปลั๊กอิน Elysia สำหรับจัดการ error HTTP 4xx/5xx ด้วย exception class ที่มีโครงสร้าง
+-   [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - ป้องกันแอป Elysia ด้วย HTTP header หลากหลายแบบ
+-   [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - ปลั๊กอิน SSR ของ Vite ที่ใช้เซิร์ฟเวอร์ Elysia
+-   [OAuth 2.0](https://github.com/kravetsone/elysia-oauth2) - ปลั๊กอินสำหรับ Authorization Flow ของ [OAuth 2.0](https://en.wikipedia.org/wiki/OAuth) รองรับผู้ให้บริการมากกว่า **42** ราย พร้อม **type-safety**!
+-   [OAuth2](https://github.com/bogeychan/elysia-oauth2) - จัดการ authorization code flow ของ OAuth 2.0
+-   [OAuth2 Resource Server](https://github.com/ap-1/elysia-oauth2-resource-server) - ปลั๊กอินสำหรับตรวจสอบ JWT token จากผู้ให้บริการ OAuth2 กับ JWKS endpoint รองรับการตรวจสอบ issuer, audience และ scope
+-   [Elysia OpenID Client](https://github.com/macropygia/elysia-openid-client) - OpenID client ที่สร้างบน [openid-client](https://github.com/panva/node-openid-client)
+-   [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - rate limiter ที่เรียบง่ายและเบา
+-   [Elysia Nazli](https://github.com/esbuker/elysia-nazli) - rate limiter ที่ใช้งานง่าย เปลี่ยน store ได้ และมีกฎทั้งแบบ global และแยกราย route
+-   [LLMs.txt](https://github.com/opuu/elysia-llms-txt) - สร้าง `/llms.txt` สำหรับเอกสารที่ LLM อ่านง่ายจาก OpenAPI/Swagger
+-   [Logysia](https://github.com/tristanisham/logysia) - logging middleware แบบคลาสสิก
+-   [Logestic](https://github.com/cybercoder-naj/logestic) - ไลบรารี logging ขั้นสูงที่ปรับแต่งได้สำหรับ ElysiaJS
+-   [Logger](https://github.com/bogeychan/elysia-logger) - logging middleware ที่สร้างบน [pino](https://github.com/pinojs/pino)
+-   [Elysia Line](https://github.com/KrataiB/elysia-line) - integration ของ LINE Messaging API และ LINE Login สำหรับ Elysia (ครอบ [@line/bot-sdk](https://github.com/line/line-bot-sdk-nodejs) อย่างเป็นทางการ)
+-   [Elylog](https://github.com/eajr/elylog) - ไลบรารี logging ออก stdout แบบเรียบง่ายที่ปรับแต่งได้บ้าง
+-   [Logify for Elysia.js](https://github.com/0xrasla/logify) - logging middleware ที่สวย เร็ว และ type-safe สำหรับแอปพลิเคชัน Elysia.js
+-   [Nice Logger](https://github.com/tanishqmanuja/nice-logger) - อาจไม่ใช่ logger ที่ดีที่สุด แต่ก็เป็น logger ที่ดีและน่ารักสำหรับ Elysia
+-   [LogTape for Elysia](https://logtape.org/manual/integrations#elysia) - logging middleware แบบมีโครงสร้าง รองรับหลาย sink (transport) ผ่าน [LogTape](https://logtape.org/)
+-   [Sentry](https://github.com/johnny-woodtke/elysiajs-sentry) - เก็บ trace และ error ด้วยปลั๊กอิน [Sentry](https://docs.sentry.io/) นี้
+-   [Apitally](https://github.com/apitally/apitally-js) - เก็บ metric, log และ trace ใน [Apitally](https://apitally.io/elysia) เครื่องมือ monitoring และ analytics ของ API ที่ใช้งานง่าย
+-   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - deploy บน AWS Lambda
+-   [Decorators](https://github.com/gaurishhs/elysia-decorators) - ใช้ decorator ของ TypeScript
+-   [Elysia FSR](https://github.com/deadlinecode/elysia-fsr) - routing แบบ file-system พร้อมสร้าง type ที่ใช้กับ Eden ได้ รองรับ monorepo/workspace และจัดกลุ่ม route ตามตรรกะ
+-   [Autoload](https://github.com/kravetsone/elysia-autoload) - router แบบ filesystem ตามโครงสร้างไดเรกทอรี สร้าง type ให้ [Eden](/eden) และรองรับ [`Bun.build`](https://github.com/kravetsone/elysia-autoload?tab=readme-ov-file#bun-build-usage)
+-   [Msgpack](https://github.com/kravetsone/elysia-msgpack) - ทำให้ใช้งาน [MessagePack](https://msgpack.org) ได้
+-   [XML](https://github.com/kravetsone/elysia-xml) - ทำให้ใช้งาน XML ได้
+-   [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - route แบบ filesystem
+-   [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - router แบบ filesystem และตามโฟลเดอร์สำหรับ group
+-   [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - HTTP authentication แบบ basic
+-   [Body Limit](https://github.com/hexadecimal233/elysia-body-limit) - จำกัดขนาด body ใน Elysia
+-   [ETag](https://github.com/bogeychan/elysia-etag) - สร้าง [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) ของ HTTP อัตโนมัติ
+-   [CDN Cache](https://github.com/johnny-woodtke/elysiajs-cdn-cache) - ปลั๊กอิน Cache-Control สำหรับ Elysia ไม่ต้องตั้ง HTTP header เองอีกต่อไป
+-   [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - HTTP authentication แบบ basic (ใช้ event `request`)
+-   [i18n](https://github.com/eelkevdbos/elysia-i18next) - wrapper ของ [i18n](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/i18n) ที่สร้างบน [i18next](https://www.i18next.com/)
+-   [Intlify](https://github.com/intlify/srvmid/blob/main/packages/elysia/README.md) - server middleware และ utility สำหรับรองรับหลายภาษา
+-   [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - เพิ่ม/ส่งต่อ request ID (`X-Request-ID` หรือที่กำหนดเอง)
+-   [Elysia HTMX](https://github.com/gtramontina/elysia-htmx) - helper ของ context สำหรับ [HTMX](https://htmx.org/)
+-   [Elysia HMR HTML](https://github.com/gtrabanco/elysia-hmr-html) - รีโหลดไฟล์ HTML เมื่อไฟล์ใดในไดเรกทอรีเปลี่ยน
+-   [Elysia Inject HTML](https://github.com/gtrabanco/elysia-inject-html) - inject โค้ด HTML ลงในไฟล์ HTML
+-   [Elysia HTTP Error](https://github.com/yfrans/elysia-http-error) - คืน HTTP error จาก handler ของ Elysia
+-   [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - รวม HTTP status code ไว้ให้ใช้งาน
+-   [NoCache](https://github.com/gaurishhs/elysia-nocache) - ปิด caching
+-   [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - คอมไพล์ [Tailwindcss](https://tailwindcss.com/) ในปลั๊กอิน
+-   [tailwind-serve](https://github.com/Moshyfawn/tailwind-serve) - คอมไพล์และให้บริการ [Tailwind CSS v4](https://tailwindcss.com/) ตอน runtime โดยไม่ต้อง build ใช้ได้กับ server framework ทุกตัว
+-   [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - บีบอัด response
+-   [Elysia IP](https://github.com/gaurishhs/elysia-ip) - ดึง IP Address
+-   [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - พัฒนา OAuth2 server ด้วย Elysia
+-   [Elysia Flash Messages](https://github.com/gtramontina/elysia-flash-messages) - เปิดใช้ flash message
+-   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - authentication ด้วย [AuthKit ของ WorkOS](https://www.authkit.com/) แบบไม่เป็นทางการ
+-   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - จัดการ error ได้ง่ายขึ้น
+-   [Elysia env](https://github.com/yolk-oss/elysia-env) - environment variable แบบ typesafe ด้วย typebox
+-   [Elysia Drizzle Schema](https://github.com/Edsol/elysia-drizzle-schema) - ช่วยให้ใช้ schema ของ Drizzle ORM ใน model ของ Elysia OpenAPI ได้
+-   [Unify-Elysia](https://github.com/qlaffont/unify-elysia) - รวม error code ของ Elysia ให้เป็นแบบเดียวกัน
+-   [Unify-Elysia-GQL](https://github.com/qlaffont/unify-elysia-gql) - รวม error code ของ Elysia GraphQL Server (Yoga และ Apollo) ให้เป็นแบบเดียวกัน
+-   [Elysia Auth Drizzle](https://github.com/qlaffont/elysia-auth-drizzle) - ไลบรารีจัดการ authentication ด้วย JWT (Header/Cookie/QueryParam)
+-   [graceful-server-elysia](https://github.com/qlaffont/graceful-server-elysia) - ไลบรารีที่ได้แรงบันดาลใจจาก [graceful-server](https://github.com/gquittet/graceful-server)
+-   [Logixlysia](https://github.com/PunGrumpy/logixlysia) - logging middleware ที่สวยและเรียบง่ายสำหรับ ElysiaJS พร้อมสีและ timestamp
+-   [Elysia Fault](https://github.com/vitorpldev/elysia-fault) - middleware จัดการ error ที่เรียบง่ายและปรับแต่งได้ สร้าง HTTP error ของคุณเองได้
+-   [Elysia Compress](https://github.com/vermaysha/elysia-compress) - ปลั๊กอิน ElysiaJS สำหรับบีบอัด response ได้แรงบันดาลใจจาก [@fastify/compress](https://github.com/fastify/fastify-compress)
+-   [@labzzhq/compressor](https://github.com/labzzhq/compressor/) - HTTP Compressor สำหรับ Elysia และ Bunnyhop ขนาดกะทัดรัดแต่ได้ผลเกินตัว รองรับ gzip, deflate และ brotli
+-   [Elysia Accepts](https://github.com/morigs/elysia-accepts) - ปลั๊กอิน Elysia สำหรับ parse accept header และ content negotiation
+-   [Elysia Compression](https://github.com/chneau/elysia-compression) - ปลั๊กอิน Elysia สำหรับบีบอัด response
+-   [Elysia Logger](https://github.com/chneau/elysia-logger) - ปลั๊กอิน Elysia สำหรับ log HTTP request และ response ได้แรงบันดาลใจจาก [hono/logger](https://hono.dev/docs/middleware/builtin/logger)
+-   [Elysia CQRS](https://github.com/jassix/elysia-cqrs) - ปลั๊กอิน Elysia สำหรับรูปแบบ CQRS
+-   [Elysia Supabase](https://github.com/mastermakrela/elysia-supabase) - เชื่อม authentication และฐานข้อมูลของ [Supabase](https://supabase.com/) เข้ากับ Elysia อย่างราบรื่น เข้าถึงข้อมูลของผู้ใช้ที่ยืนยันตัวตนแล้วและ instance ของ Supabase client ได้ง่าย เหมาะเป็นพิเศษกับ [Edge Functions](https://supabase.com/docs/guides/functions)
+-   [Elysia XSS](https://www.npmjs.com/package/elysia-xss) - ปลั๊กอินสำหรับ Elysia.js ที่ป้องกัน XSS (Cross-Site Scripting) ด้วยการ sanitize ข้อมูลใน body ของ request
+-   [Elysiajs Helmet](https://www.npmjs.com/package/elysiajs-helmet) - security middleware ครบเครื่องสำหรับแอปพลิเคชัน Elysia.js ช่วยป้องกันแอปด้วยการตั้งค่า HTTP header หลากหลายแบบ
+-   [Decorators for Elysia.js](https://github.com/Ateeb-Khan-97/better-elysia) - พัฒนาและเชื่อมต่อ API, WebSocket และ Streaming API ได้อย่างราบรื่นด้วยไลบรารีขนาดเล็กนี้
+-   [Elysia Protobuf](https://github.com/ilyhalight/elysia-protobuf) - รองรับ protobuf สำหรับ Elysia
+-   [Elysia Prometheus](https://github.com/m1handr/elysia-prometheus) - ปลั๊กอิน Elysia สำหรับเปิด HTTP metric ให้ Prometheus
+-   [Elysia Remote DTS](https://github.com/rayriffy/elysia-remote-dts) - ปลั๊กอินที่ให้ type .d.ts จากระยะไกลสำหรับให้ Eden Treaty ใช้งาน
+-   [Cap Checkpoint plugin for Elysia](https://capjs.js.org/guide/middleware/elysia.html) - middleware คล้ายของ Cloudflare สำหรับ Cap ทางเลือกแทน CAPTCHA แบบโอเพนซอร์สที่เบาและทันสมัย ออกแบบด้วย SHA-256 PoW
+-   [Elysia Background](https://github.com/staciax/elysia-background) - ปลั๊กอินประมวลผลงานเบื้องหลังสำหรับ Elysia.js
+-   [Elysia External Session - TS only GitHub package](https://github.com/extend-therapy/elysia-external-session) - แพ็กเกจ session สำหรับ Redis และ SQLite ที่ขยายต่อได้และใช้สถาปัตยกรรมปัจจุบันของ Elysia
+-   [@fedify/elysia](https://github.com/fedify-dev/fedify/tree/main/packages/elysia) - ปลั๊กอินที่เชื่อมต่อกับ [Fedify](https://fedify.dev/) เฟรมเวิร์กสำหรับ ActivityPub server ได้อย่างราบรื่น
+-   [elysia-healthcheck](https://github.com/iam-medvedev/elysia-healthcheck) - ปลั๊กอิน healthcheck สำหรับ Elysia.js
+-   [elysia-csrf](https://github.com/lauhon/elysia-csrf) - ปลั๊กอิน CSRF ที่พอร์ตมาจาก [express-csrf](https://github.com/expressjs/csurf)
+-   [elysia-local-https](https://github.com/mrtcmn/elysia-local-https) - HTTPS บนเครื่องสำหรับ Elysia แบบอัตโนมัติ สร้าง จัดการ และต่ออายุ cert ได้ในบรรทัดเดียว
+-   [elysia-circuit-breaker](https://github.com/camargo-leonardo/elysia-circuit-breaker) - ปลั๊กอิน Circuit Breaker ที่เพิ่มความทนทานต่อความผิดพลาดให้ Elysia.js
+-   [Eden TanStack Query](https://github.com/xkelxmc/eden-tanstack-query) - integration ของ TanStack Query แบบ type-safe สำหรับ Eden คล้ายกับ
+  @trpc/react-query แต่สำหรับ Elysia
+-   [Socket.IO Proxy](https://www.npmjs.com/package/@synchjs/elysocket) - Socket.IO Proxy สำหรับ Elysia
+-   [ModernCSRF](https://github.com/auto-medica-labs/modern-csrf) - middleware ป้องกัน CSRF แบบไม่ใช้ token ที่เบาสำหรับ ElysiaJS
+-   [elysia-wide-event](https://github.com/choiexe1/elysia-wide-event) - ปลั๊กอิน logging แบบ wide event เพื่อ observability แบบมีโครงสร้างในระดับ request
+- [elysia-beta-headers](https://github.com/P0u4a/elysia-beta-headers) - ปลั๊กอิน Elysia สำหรับจำกัดการเข้าถึงฟีเจอร์ beta/ทดลองของแอปผ่าน API header แบบ type-safe
+-   [elysia-better-session](https://github.com/0x0arash/elysia-better-session) - ปลั๊กอิน Elysia สำหรับจัดการ session ฝั่งเซิร์ฟเวอร์ รองรับ store adapter หลายแบบ
+
+## โปรเจกต์ที่ใช้ร่วมกันได้
+
+-   [prismabox](https://github.com/m1212e/prismabox) - generator สำหรับสร้าง TypeBox schema จาก model ของฐานข้อมูล ใช้กับ Elysia ได้ดี
+
+## Template โปรเจกต์
+
+-   [ElysiaTemplate](https://github.com/QLing-yes/ElysiaTemplate) - backend แบบ MVC พร้อม auto route และ middleware และยังมีอีกมากตามมา
+
+---
+
+ถ้าคุณเขียนปลั๊กอินสำหรับ Elysia ไว้ เพิ่มปลั๊กอินของคุณลงในรายการนี้ได้เลยด้วยการ[แก้ไขรายการปลั๊กอินบน GitHub](https://github.com/elysiajs/documentation/edit/main/docs/plugins/overview.md)
+
+</div>
+</InteractiveDocLayout>
+</div>

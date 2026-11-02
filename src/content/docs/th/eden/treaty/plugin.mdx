@@ -1,0 +1,111 @@
+---
+title: ปลั๊กอินของ Eden
+description: ขยาย Eden Treaty ด้วย method ของ client ที่เขียนเองและ hook สำหรับ mutation
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">ปลั๊กอินของ Eden</h1>
+
+ปลั๊กอินของ Eden ใช้เพิ่ม method ที่เขียนเองและ hook สำหรับ mutation ให้ client ของ Eden Treaty
+
+API ของปลั๊กอินมีให้ใช้ใน Eden v2 beta ดูวิธีติดตั้ง Eden และ Elysia เวอร์ชันที่ตรงกันได้ที่[การติดตั้ง Eden](/eden/installation/)
+
+## เพิ่ม method เอง
+
+`createPlugin` อนุมาน call signature ของแต่ละ verb แล้วเพิ่มให้ทุก route argument ที่เป็น context มี `path`, `paths`, `domain` และ `config` และจะมี `elysia` ด้วยเมื่อคุณส่ง instance ของ Elysia เข้าไป
+
+### ควบคุม type ของ method ด้วย `PluginTypeFn`
+
+ประกาศ `PluginTypeFn` แล้วใช้เป็นพารามิเตอร์ของ type `TreatyPlugin` เพื่อเพิ่ม method ให้เฉพาะ route ที่ตรงเงื่อนไข type เป็นตัวกำหนดว่า method ใช้ได้ที่ไหน ส่วน `verbs` คือ implementation ตอน runtime ตัวอย่างนี้เพิ่ม `routePath` ให้ route แบบ GET ที่มี `live: true`:
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import type { PluginTypeFn, TreatyPlugin } from '@elysia/eden'
+
+const app = new Elysia()
+	.macro({ live: { meta: { live: true } as const } })
+	.get('/users/:id', { live: true }, ({ params }) => params.id)
+	.get('/health', () => 'ok')
+
+interface RouteInfoTypeFn extends PluginTypeFn {
+	output: this['node'] extends { get: { meta: { live: true } } }
+		? { routePath: () => string }
+		: {}
+}
+
+const routeInfo: TreatyPlugin<RouteInfoTypeFn> = {
+	name: 'route-info',
+	verbs: {
+		routePath(context) {
+			return context.path
+		}
+	}
+}
+
+const api = treaty(app).use(routeInfo)
+
+api.users({ id: 1 }).routePath() // '/users/1'
+api.health.get()
+// @ts-expect-error This route is not marked live.
+api.health.routePath()
+```
+
+ให้เก็บ client ที่ได้จาก `.use(plugin)` ไว้ใช้ เพราะ client ตัวเดิมไม่มีปลั๊กอินนี้ method ที่เขียนเองจะรันโค้ดของปลั๊กอินโดยไม่ส่ง HTTP request
+
+## ติดตาม mutation
+
+`before` ทำงานก่อน request ที่เป็น mutation ส่วน `after` ได้รับผลลัพธ์และ call context ชุดเดียวกัน
+
+```ts
+import { Elysia, t } from 'elysia'
+import { createPlugin, treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/message', {
+		body: t.Object({ text: t.String() })
+	}, ({ body }) => body)
+
+const logger = createPlugin({
+	name: 'mutation-logger',
+	before(context) {
+		console.log('Sending', context.method, context.paths)
+	},
+	after(result, context) {
+		console.log('Received', context.method, result.status)
+	}
+})
+
+const api = treaty(app).use(logger)
+
+await api.message.post({ text: 'Hello' })
+// Sending post [ 'message' ]
+// Received post 200
+```
+
+hook เหล่านี้ทำงานกับ `post`, `put`, `patch` และ `delete` ไม่ทำงานกับการอ่านข้อมูล การ subscribe WebSocket หรือ method ที่เขียนเอง call context มี `paths`, `method` ตัวพิมพ์เล็ก, `options` ของ request, `config` และ `domain` ส่วนผลลัพธ์มี `data`, `error`, `status`, `response` และ `headers` โดยสองตัวหลังอาจเป็น `undefined` ถ้า request ไปไม่ถึงเซิร์ฟเวอร์
+
+## กฎการลงทะเบียน
+
+ปลั๊กอินต้องมี `name` ที่ไม่ว่าง และต้องมี object `verbs`, `before` หรือ `after` อย่างใดอย่างหนึ่ง
+
+method ของปลั๊กอินแทนที่ HTTP method ของ Treaty, `subscribe`, `use`, `~path`, `then`, `catch` หรือ `finally` ไม่ได้ การลงทะเบียนชื่อที่สงวนไว้หรือ method ที่ปลั๊กอินอื่นลงทะเบียนไปแล้วจะ throw error
+
+เรียก `.use` ต่อกันเพื่อรวมหลายปลั๊กอิน hook ของ mutation จะทำงานตามลำดับการลงทะเบียน
+
+`.use` ของ Eden ใช้ขยาย client ถ้าต้องการเพิ่ม route หรือ hook ให้เซิร์ฟเวอร์ ให้ใช้[ปลั๊กอินของ Elysia](/essential/plugin/)แทน
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

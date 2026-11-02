@@ -1,0 +1,400 @@
+---
+title: ภาพรวม
+description: ทำความรู้จักระบบ routing, validation, OpenAPI และการรองรับ TypeScript แบบ end-to-end ของ Elysia
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import { Card, CardTitle } from '../../../components/ui/card';
+import '../../../styles/routing.css';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../components/playground/code.astro';
+import FileCodeBlock from '../../../components/interactive-code/file-code-block.astro';
+import TabItem from '../../../components/interactive-code/tab-item.astro';
+
+export const helloDemo = new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .post('/form', ({ body }) => body);
+
+export const paramsDemo = new Elysia()
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/abc', () => 'abc');
+
+export const steps = [
+    {
+        label: 'ทักทาย',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'อ่านค่า path parameter',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .listen(3000)`,
+        highlight: [5],
+    },
+    {
+        label: 'รับค่า body',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .post('/form', ({ body }) => body)
+    .listen(3000)`,
+        highlight: [6],
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">ภาพรวม</h1>
+
+Elysia คือเว็บเฟรมเวิร์กสำหรับสร้างเซิร์ฟเวอร์ฝั่ง backend ที่ใช้งานง่าย ออกแบบมาให้เรียบง่ายและมี type safety พร้อม API ที่คุ้นมือ รองรับ TypeScript อย่างครบถ้วน และปรับแต่งมาให้ทำงานบน Bun ได้เต็มประสิทธิภาพ
+
+มาเริ่มจากเซิร์ฟเวอร์เล็ก ๆ กันก่อน
+
+<CodePlayground
+    elysia={helloDemo}
+    alias={{ '/user/:id': '/user/1' }}
+    mock={{
+        '/user/:id': { GET: '1' },
+        '/form': { POST: JSON.stringify({ hello: 'Elysia' }) },
+    }}
+>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .post('/form', ({ body }) => body)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+## ประสิทธิภาพ
+
+Elysia ใช้ Bun ร่วมกับการปรับแต่งอย่าง static code analysis เพื่อสร้างโค้ดที่จัดการ request ได้อย่างมีประสิทธิภาพ
+
+ผลลัพธ์ด้านล่างมาจาก [Bun HTTP Framework Benchmark](https://github.com/SaltyAom/bun-http-framework-benchmark/tree/f654bcd175165bce2e3c83b65eaecd8e34294ffd#results) ค่าเฉลี่ยคือค่าเฉลี่ยเลขคณิตของจำนวน request ต่อวินาที เวลาเริ่มต้นมีหน่วยเป็นมิลลิวินาที ส่วนหน่วยความจำคือ RSS ของเซิร์ฟเวอร์ก่อนและหลังการทดสอบโหลด หน่วยเป็น MB ดู[เงื่อนไขการทดสอบ](#ref-1)
+
+| Framework | Runtime | Request/วินาที | เวลาเริ่มต้น | หน่วยความจำ |
+| ----------------- | ------- | ----------: | -------: | ------------------: |
+| elysia | bun | 214,518.67 | 16.0 ms | 36.3 / 48.7 MB |
+| h3 | bun | 172,978.673 | 7.3 ms | 33.6 / 50.0 MB |
+| hono | bun | 169,752.09 | 7.4 ms | 33.5 / 44.3 MB |
+| effect | bun | 123,353.122 | 32.5 ms | 48.8 / 73.6 MB |
+| fastify | bun | 122,655.538 | 76.8 ms | 74.9 / 193.8 MB |
+| fastify | node | 103,292.998 | 69.7 ms | 95.7 / 205.0 MB |
+| h3 | node | 98,758.288 | 45.5 ms | 85.3 / 190.1 MB |
+| hono | node | 93,107.478 | 48.9 ms | 97.0 / 220.6 MB |
+| elysia | node | 92,489.338 | 58.6 ms | 93.0 / 181.3 MB |
+| effect | node | 88,635.68 | 53.5 ms | 93.0 / 177.6 MB |
+| express | bun | 63,217.945 | 42.5 ms | 64.9 / 152.4 MB |
+| koa | node | 44,591.625 | 51.7 ms | 96.1 / 192.2 MB |
+| express | node | 42,293.953 | 44.2 ms | 87.2 / 208.8 MB |
+| nest | node | 31,939.89 | 116.5 ms | 118.7 / 224.3 MB |
+
+Elysia ยังเคยถูกนำไปเทียบกับเฟรมเวิร์กของ Go และ Rust ใน [TechEmpower รอบที่ 22](#ref-2) ด้วย ทั้งนี้ประสิทธิภาพขึ้นอยู่กับลักษณะงาน runtime ฮาร์ดแวร์ และเวอร์ชันของเฟรมเวิร์ก ควรวัดผลกับงานของคุณเองก่อนตัดสินใจเลือกเฟรมเวิร์ก
+
+## TypeScript
+
+Elysia ออกแบบมาให้คุณเขียน TypeScript น้อยลง โดยจะอนุมาน type จาก route ให้เอง คุณจึงโฟกัสกับ business logic ได้เต็มที่ แทนที่จะต้องประกาศ type ซ้ำไปซ้ำมา
+
+<CodePlayground
+    elysia={paramsDemo}
+    alias={{ '/user/:id': '/user/123' }}
+    mock={{ '/user/:id': { GET: '123' } }}
+>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/abc', () => 'abc')
+    .listen(3000)
+```
+
+</CodePlayground>
+
+ส่วน `:id` ใน path จะกลายเป็น `params.id` ทั้งตอน runtime และใน type ของ handler โดยไม่ต้องประกาศเอง และมี type เป็น `string`
+
+แนะนำให้ใช้ TypeScript แต่ไม่จำเป็นต้องใช้ก็ใช้งาน Elysia ได้ การอนุมาน type ช่วยคุณระหว่างเขียนโค้ด ส่วนถ้าต้องการตรวจสอบข้อมูลตอน runtime ด้วย ให้ใช้ schema
+
+## Type integrity
+
+ใช้ `t` จาก Elysia เพื่อสร้าง schema ที่ตรวจสอบค่าตอน runtime และให้ type ของ TypeScript ไปพร้อมกัน ข้อมูลที่รับเข้ามาจึงมีแหล่งความจริงเพียงแหล่งเดียว
+
+ลองเปลี่ยน path parameter จาก string เป็น number กัน:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/user/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+ใน Elysia 2 schema จะอยู่ก่อน handler เมื่อส่ง request ไปที่ `/user/123` handler จะได้รับค่าเป็นตัวเลข `123` ส่วน `/user/abc` จะไม่ผ่านการตรวจสอบ ลองเลื่อนเมาส์ไปวางบน `id` ใน editor เพื่อดู type `number` ที่อนุมานได้
+
+schema เดียวกันนี้ใช้ทั้งตรวจสอบตอน runtime และกำหนด type ของข้อมูลที่ handler รับเข้ามา
+
+## Standard Schema
+
+Elysia รองรับ [Standard Schema](https://github.com/standard-schema/standard-schema) คุณจึงใช้ไลบรารี validation ที่ชอบได้ ขอแค่เป็นเวอร์ชันที่รองรับ
+
+ในระบบนิเวศมีทั้ง Zod, Valibot, ArkType, Effect Schema, Yup, Joi และ[ตัวอื่น ๆ ที่รองรับ](https://github.com/standard-schema/standard-schema) ตรวจสอบให้แน่ใจว่าไลบรารีหรือ adapter ที่ใช้ implement interface ของ Standard Schema
+
+```ts
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
+
+new Elysia()
+    .get('/id/:id', {
+        params: z.object({
+            id: z.coerce.number()
+        }),
+        query: v.object({
+            name: v.literal('Lilith')
+        })
+    }, ({ params: { id }, query: { name } }) => id)
+    .listen(3000)
+```
+
+ในตัวอย่างนี้ Zod แปลง path parameter เป็นตัวเลข ส่วน Valibot บังคับให้ต้องมี `?name=Lilith` และ Elysia ก็อนุมาน type ที่ผ่านการตรวจสอบแล้วจาก schema ทั้งสองได้
+
+## OpenAPI
+
+Elysia ทำงานร่วมกับมาตรฐานอย่าง OpenAPI, WinterTC และ Standard Schema คุณจึงเชื่อมต่อกับเครื่องมือที่ใช้อยู่แล้วได้ทันที
+
+เพิ่ม [ปลั๊กอิน OpenAPI](/plugins/openapi/) เพื่อสร้างเอกสาร API จาก route และ schema ของคุณ:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(openapi())
+    .get('/user/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+ปลั๊กอินนี้สร้างหน้าเอกสารที่แชร์ให้ทีมดูได้ ให้ใช้เวอร์ชันที่รองรับ Elysia 2 และดูวิธีติดตั้งและตั้งค่าได้ในหน้าอ้างอิงของปลั๊กอิน
+
+## OpenAPI Type Gen
+
+Elysia ยังสร้าง OpenAPI schema จาก type ของ TypeScript ได้ด้วย `fromTypes()`:
+
+```ts {6}
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(openapi({
+        references: fromTypes()
+    }))
+    .get('/user/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+นี่คือแนวทางแบบ FastAPI ในโลก TypeScript คือใช้ type ในโค้ดเป็นข้อมูลตั้งต้นในการสร้างเอกสาร แทนที่จะต้องเขียน annotation ซ้ำด้วยมือ ดูวิธีตั้งค่าและ type ที่รองรับได้ที่ [OpenAPI from types](/patterns/openapi/#openapi-from-types)
+
+## Type safety แบบ end-to-end
+
+type safety ไม่ได้จบแค่ฝั่งเซิร์ฟเวอร์ **Eden** ไลบรารีฝั่ง client ของ Elysia ช่วยให้ frontend ใช้ type ของเซิร์ฟเวอร์ได้ ด้วย workflow ที่คล้ายกับ tRPC
+
+ให้ export type ของเซิร์ฟเวอร์จาก `server.ts` แล้ว import ไปใช้ใน `client.ts`:
+
+<FileCodeBlock>
+<TabItem label="server.ts">
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(openapi({
+        references: fromTypes()
+    }))
+    .get('/user/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+</TabItem>
+<TabItem label="client.ts">
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// Request /user/617
+const { data } = await app.user({ id: 617 }).get()
+
+console.log(data)
+```
+
+</TabItem>
+</FileCodeBlock>
+
+Eden ใช้ type ของ Elysia ที่มีอยู่แล้ว ไม่ต้องมีขั้นตอน generate โค้ดฝั่ง client แยก และเนื่องจาก client import มาแค่ type ของเซิร์ฟเวอร์ โค้ดที่ทำงานบนเซิร์ฟเวอร์จึงไม่หลุดเข้าไปใน bundle
+
+Elysia พร้อมช่วยให้คุณสร้าง backend ได้อย่างมั่นใจ รวมถึงทุกอย่างที่เชื่อมต่อกับมัน
+
+## Type soundness
+
+response ที่สำเร็จเป็นเพียงส่วนหนึ่งของ API เท่านั้น Elysia อนุมาน **response ที่เป็นไปได้ทุกแบบ** รวมถึง error ด้วย client ของคุณจึงจัดการได้อย่างปลอดภัย
+
+```ts title="server.ts"
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+    .macro({
+        auth: {
+            cookie: t.Cookie({
+                session: t.String()
+            }),
+            beforeHandle({ cookie: { session }, status }) {
+                if (session.value !== 'valid')
+                    return status(401)
+            }
+        }
+    })
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/user/:id', {
+        auth: true,
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id }, status }) => {
+        if (Math.random() > 0.1)
+            return status(420)
+
+        return id
+    })
+    .listen(3000)
+
+export type App = typeof app
+```
+
+ตัวอย่างนี้ Elysia คืนค่า `number` เมื่อ request สำเร็จ และยังอนุมาน error `401` หรือ `420` ไว้ในระดับ type ด้วย client จึงจัดการได้ครบทั้งสามกรณีอย่าง type-safe
+
+```ts title="client.ts"
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+const { data, error } = await app.user({ id: 617 }).get()
+
+if (error)
+    console.log(error.status, error.value)
+else
+    console.log(data)
+```
+
+client จัดการได้ทั้งผลลัพธ์ที่สำเร็จและ error ที่มี type กำกับ ดู API ของ client ได้ที่ [Eden](/eden/) และดูวิธีสร้างพฤติกรรมของ route ที่นำกลับมาใช้ซ้ำได้ที่ [macro](/patterns/macro/)
+
+## ใช้ได้หลายแพลตฟอร์ม
+
+Elysia ปรับแต่งมาให้ใช้ความสามารถเฉพาะของ Bun แต่ไม่ได้จำกัดอยู่แค่ Bun เพราะ interface ของ Request/Response ที่[เข้ากันได้กับ WinterTC](https://wintertc.org/) ทำให้เชื่อมต่อกับ runtime อื่นได้
+
+คุณใช้ Elysia ได้กับ:
+
+- Bun
+- [Node.js](/integrations/node/)
+- [Deno](/integrations/deno/)
+- [Cloudflare Workers](/integrations/cloudflare-worker/)
+- [Vercel](/integrations/vercel/)
+- API routes ของ [Expo](/integrations/expo/)
+- API routes ของ [Next.js](/integrations/nextjs/)
+- API routes ของ [Astro](/integrations/astro/)
+
+หน้า integration แต่ละหน้าอธิบายทั้ง adapter และการตั้งค่าสำหรับ deploy และยังมีสภาพแวดล้อมอื่น ๆ ที่รองรับอีกในหมวด integration
+
+## คอมมิวนิตี้ของเรา
+
+เราอยากให้ Elysia เป็นมิตรและต้อนรับทุกคน ด้วยดีไซน์ที่สดใส สนุกสนาน และมาสคอตสไตล์อนิเมะที่วาดด้วยมืออย่าง *Elysia chan*
+
+เราเชื่อว่าเทคโนโลยีเข้าถึงง่ายได้ และเติมความสุขเล็ก ๆ ให้ชีวิตผู้คนได้ แต่เราก็ยังจริงจังกับตัวเฟรมเวิร์กเสมอ เพราะความเสถียรและประสิทธิภาพเป็นเรื่องสำคัญเมื่อคุณไว้ใจให้มันดูแลโปรเจกต์ถัดไปของคุณ
+
+สมาชิกในคอมมิวนิตี้ได้แชร์ประสบการณ์การใช้งานจริงบน production ไว้ ทั้ง [X](https://x.com/shlomiatar/status/1822381556142362734), [ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (ธ.ก.ส.)](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13924470), [Cluely](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-14420139), [CS.Money](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13913513) และ [Abacate Pay](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13922081)
+
+ครั้งหนึ่งเคยมีโปรเจกต์โอเพนซอร์สมากกว่า 10,000 โปรเจกต์ที่ใช้ Elysia ดูรายชื่อโปรเจกต์ล่าสุดได้ที่ [GitHub dependents](https://github.com/elysiajs/elysia/network/dependents) Elysia เริ่มพัฒนาตั้งแต่ปี 2022 และพัฒนาต่อเนื่องมาด้วยการมีส่วนร่วมจากคอมมิวนิตี้
+
+มาร่วมพูดคุยกับเราได้ที่:
+
+<div class="grid gap-3 sm:grid-cols-3">
+
+<Card href="https://discord.gg/eaFJ2KDJck">
+<CardTitle>Discord</CardTitle>
+
+เซิร์ฟเวอร์คอมมิวนิตี้อย่างเป็นทางการของ Elysia
+
+</Card>
+
+<Card href="https://twitter.com/elysiajs">
+<CardTitle>Twitter</CardTitle>
+
+ติดตามข่าวสารและประกาศของ Elysia
+
+</Card>
+
+<Card href="https://github.com/elysiajs">
+<CardTitle>GitHub</CardTitle>
+
+สำรวจซอร์สโค้ดและร่วมพัฒนา
+
+</Card>
+
+</div>
+
+---
+
+<p id="ref-1">1. throughput เฉลี่ย เวลาเริ่มต้น และหน่วยความจำของเซิร์ฟเวอร์ ดู<a href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/f654bcd175165bce2e3c83b65eaecd8e34294ffd#results" target="_blank">เงื่อนไขและผลการทดสอบที่ commit f654bcd</a></p>
+
+<p id="ref-2">2. การเปรียบเทียบข้ามภาษาอ้างอิงจาก <a href="https://www.techempower.com/benchmarks/#section=data-r22&amp;hw=ph&amp;test=composite" target="_blank">TechEmpower benchmark รอบที่ 22</a></p>
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,1291 @@
+---
+title: จาก Hono มาเป็น Elysia
+description: เปรียบเทียบ routing, validation, hook และ type safety ของ Hono กับ Elysia
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import '../../../../styles/comparison.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">จาก Hono มาเป็น Elysia</h1>
+
+:::note[Elysia v2]
+
+ตัวอย่างฝั่ง Elysia ใช้ v2 คือตัวเลือกของ route อยู่ก่อน handler, lifecycle method ใช้ชื่อตาม event และค่าที่ได้จาก request ใช้ `derive` ส่วนตัวอย่างของเฟรมเวิร์กอื่นแสดงการตั้งค่าที่ใช้กันทั่วไปของเฟรมเวิร์กนั้น เป็นตัวอย่างสำหรับการ migrate ไม่ใช่การสำรวจความสามารถปัจจุบันทั้งหมด integration ของแต่ละเฟรมเวิร์กมีความเข้ากันได้ของเวอร์ชันแยกกัน ให้ตรวจสอบแพ็กเกจเหล่านั้นเมื่อ migrate แอปพลิเคชัน
+
+:::
+
+คู่มือนี้สำหรับผู้ใช้ Hono ที่อยากเห็นความแตกต่างจาก Elysia รวมถึง syntax และวิธี migrate แอปพลิเคชันจาก Hono มาเป็น Elysia ผ่านตัวอย่าง
+
+**Hono** เป็นเว็บเฟรมเวิร์กที่เร็วและเบา สร้างบน Web Standard และเข้ากันได้กับหลาย runtime อย่าง Deno, Bun, Cloudflare Workers และ Node.js
+
+**Elysia** เป็นเว็บเฟรมเวิร์กที่ใช้งานง่าย ออกแบบโดยเน้นประสบการณ์ของนักพัฒนา โดยให้ความสำคัญกับ **type safety ที่ถูกต้องสมบูรณ์ (sound type safety)** และประสิทธิภาพ Elysia ไม่ได้จำกัดอยู่แค่ Bun แต่ยังรองรับหลาย runtime อย่าง Node.js และ Cloudflare Workers
+
+## ควรใช้เมื่อไร
+นี่คือการเปรียบเทียบ Hono กับ Elysia แบบสรุปสั้น ๆ เพื่อช่วยในการตัดสินใจ:
+
+**Hono**
+- **เดิมสร้างมาเพื่อ Cloudflare Workers** จึงเชื่อมต่อกับระบบนิเวศของ Cloudflare ได้ดีกว่า
+- รองรับหลาย runtime ผ่าน Web Standard รวมถึง **Node.js** และ **Bun**
+- เบาและเรียบง่าย เหมาะกับสภาพแวดล้อมแบบ edge
+- รองรับ OpenAPI แต่ต้องใช้ความพยายามเพิ่มในการอธิบาย specification
+- เน้นแนวทางแบบ middleware ที่เรียบง่ายและเป็นเส้นตรง
+- type safety ดีกว่าเฟรมเวิร์กส่วนใหญ่ แต่ยังไม่ถูกต้องสมบูรณ์ในบางจุด
+- ค่อนข้างคล้ายกับ Express และ Koa ในด้านรูปแบบของ middleware และปลั๊กอิน
+
+**Elysia**
+- **เดิมสร้างมาเพื่อ Bun แบบ native** ใช้ความสามารถส่วนใหญ่ของ Bun ได้อย่างเต็มที่
+- รองรับหลาย runtime ผ่าน Web Standard รวมถึง **Node.js** และ **Cloudflare Workers**
+- **ประสิทธิภาพดีกว่า** เหมาะกับเซิร์ฟเวอร์ที่ทำงานต่อเนื่องเป็นเวลานานผ่าน JIT
+- **รองรับ OpenAPI ได้ดีกว่า** ใช้งานได้อย่างราบรื่น โดยเฉพาะกับ [OpenAPI Type Gen](/patterns/openapi#openapi-from-types)
+- เน้นแนวทาง lifecycle แบบ event-based เพื่อควบคุม request pipeline ได้ดีกว่า
+- type safety ที่ถูกต้องสมบูรณ์ทุกส่วน รวมถึง middleware และการจัดการ error
+- ค่อนข้างคล้ายกับ Fastify ในด้านรูปแบบของ middleware, encapsulation และปลั๊กอิน
+
+การ**ใช้งานร่วมกันได้กับการถูกสร้างมาเพื่อสิ่งนั้นโดยเฉพาะ**นั้น**ต่างกันมาก**
+
+ถ้าคุณตัดสินใจใช้ Elysia บน Cloudflare Workers คุณอาจไม่ได้ฟีเจอร์เฉพาะของ Cloudflare บางอย่างที่ Hono มีมาให้ตั้งแต่ต้น ในทำนองเดียวกัน ถ้าใช้ Hono บน Bun ก็อาจไม่ได้ประสิทธิภาพสูงสุดเท่ากับการใช้ Elysia
+
+## ประสิทธิภาพ
+ในอดีต Elysia ทำ benchmark ได้เร็วกว่า Hono เพราะ static code analysis
+
+การเปรียบเทียบนี้ใช้[ผลของ TechEmpower Round 23](https://www.techempower.com/benchmarks/#section=data-r23&test=json) ในอดีต ลงวันที่ 2025-02-24 สำหรับการทดสอบ JSON serialization ตัวเลขเหล่านี้เป็นชุดเฟรมเวิร์ก/runtime ที่บันทึกไว้ในตอนนั้น ไม่ใช่การวัดผลของ Elysia v2
+
+| Framework | Request ต่อวินาที |
+| --- | ---: |
+| Elysia | 1,837,294 |
+| Hono | 740,451 |
+
+## Routing
+
+Hono และ Elysia มี syntax ของ routing คล้ายกัน คือใช้ method `app.get()` และ `app.post()` ในการประกาศ route และมี syntax ของ path parameter คล้ายกัน
+
+ทั้งสองใช้พารามิเตอร์ `Context` ตัวเดียวในการจัดการ request และ response และคืน response โดยตรง
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+
+const app = new Hono()
+
+app.get('/', (c) => {
+    return c.text('Hello World')
+})
+
+app.post('/id/:id', (c) => {
+	c.status(201)
+    return c.text(c.req.param('id'))
+})
+
+export default app
+```
+
+> Hono ใช้ helper `c.text` และ `c.json` ในการคืน response
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .post(
+    	'/id/:id',
+     	({ status, params: { id } }) => {
+      		return status(201, id)
+      	}
+    )
+    .listen(3000)
+```
+
+> Elysia ใช้ `context` ตัวเดียว และคืน response โดยตรง
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Hono ใช้ `c.text` และ `c.json` ครอบ response ส่วน Elysia แปลงค่าเป็น response ให้อัตโนมัติ
+
+รูปแบบการเขียนต่างกันเล็กน้อย Elysia แนะนำให้ใช้ method chaining และ object destructuring
+
+การกำหนดพอร์ตของ Hono ขึ้นอยู่กับ runtime และ adapter ส่วน Elysia ใช้ method `listen` ตัวเดียวในการเริ่มเซิร์ฟเวอร์
+
+## Handler
+
+Hono ใช้ฟังก์ชันในการ parse query, header และ body เอง ส่วน Elysia parse property ให้อัตโนมัติ
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+
+const app = new Hono()
+
+app.post('/user', async (c) => {
+	const limit = c.req.query('limit')
+    const { name } = await c.req.json()
+    const auth = c.req.header('authorization')
+
+    return c.json({ limit, name, auth })
+})
+```
+
+> Hono อ่าน JSON ด้วย `c.req.json()` และมี accessor ของ query และ header อยู่บน `c.req`
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.post('/user', { body: t.Object({ name: t.String() }) }, (ctx) => {
+	    const limit = ctx.query.limit
+	    const name = ctx.body.name
+	    const auth = ctx.headers.authorization
+
+	    return { limit, name, auth }
+	})
+```
+
+> Elysia ใช้ static code analysis วิเคราะห์ว่าต้อง parse อะไร
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Elysia ใช้ **static code analysis** เพื่อตัดสินว่าต้อง parse อะไร และ parse เฉพาะ property ที่จำเป็นเท่านั้น
+
+ซึ่งดีทั้งต่อประสิทธิภาพและ type safety
+
+## Subrouter
+
+ทั้งสองสืบทอด instance อื่นมาเป็น router ได้ แต่ Elysia มองทุก instance เป็นคอมโพเนนต์ที่ใช้เป็น subrouter ได้
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+
+const subRouter = new Hono()
+
+subRouter.get('/user', (c) => {
+	return c.text('Hello User')
+})
+
+const app = new Hono()
+
+app.route('/api', subRouter)
+```
+
+> Hono **ต้อง**ใช้ prefix เพื่อแยก subrouter
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ prefix: '/api' })
+	.get('/user', 'Hello User')
+
+const app = new Elysia()
+	.use(subRouter)
+```
+
+> Elysia ใช้ prefix ใน constructor ซึ่งจะใส่หรือไม่ก็ได้ในการประกาศ subrouter
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ในขณะที่ Hono ต้องใช้ prefix เพื่อแยก subrouter Elysia ไม่จำเป็นต้องใช้ prefix
+
+## Validation
+ในขณะที่ Hono รองรับ validator หลากหลายผ่านแพ็กเกจภายนอก Elysia มี validation ในตัวด้วย **TypeBox** และรองรับ Standard Schema มาตั้งแต่ต้น คุณจึงใช้ไลบรารีที่ชอบอย่าง Zod, Valibot, ArkType, Effect Schema และอื่น ๆ ได้โดยไม่ต้องติดตั้งไลบรารีเพิ่ม Elysia ยังเชื่อมต่อกับ OpenAPI ได้อย่างราบรื่นและอนุมาน type ให้เบื้องหลังด้วย
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+import { zValidator } from '@hono/zod-validator'
+import { z } from 'zod'
+
+const app = new Hono()
+
+app.patch(
+	'/user/:id',
+	zValidator(
+		'param',
+		z.object({
+			id: z.coerce.number()
+		})
+	),
+	zValidator(
+		'json',
+		z.object({
+			name: z.string()
+		})
+	),
+	(c) => {
+		return c.json({
+			params: c.req.valid('param'),
+			body: c.req.valid('json')
+		})
+	}
+)
+```
+
+> Hono ใช้แนวทางแบบ pipe
+
+</div>
+<div>
+
+```ts title="Elysia TypeBox"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: t.Object({
+			id: t.Number()
+		}),
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Zod"
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Valibot"
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: v.object({
+			id: v.pipe(v.string(), v.transform(Number), v.number())
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+> Elysia ใช้ TypeBox ในการตรวจสอบและ coerce type ให้อัตโนมัติ พร้อมรองรับไลบรารี validation หลากหลายอย่าง Zod และ Valibot ด้วย syntax เดียวกัน
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ทั้งสองอนุมาน type จาก schema ไปยัง context ให้อัตโนมัติ
+
+## อัปโหลดไฟล์
+ทั้ง Hono และ Elysia ใช้ Web Standard API ในการจัดการการอัปโหลดไฟล์ และทั้งคู่ใช้ **file-type** ตรวจสอบ mimetype โดย Elysia ลงทะเบียนครั้งเดียวแล้วตรวจสอบแบบ declarative
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+import { z } from 'zod'
+import { zValidator } from '@hono/zod-validator'
+
+import { fileTypeFromBlob } from 'file-type'
+
+const app = new Hono()
+
+app.post(
+	'/upload',
+	zValidator(
+		'form',
+		z.object({
+			file: z.instanceof(File)
+		})
+	),
+	async (c) => {
+		const body = c.req.valid('form')
+
+		const type = await fileTypeFromBlob(body.file)
+		if (!type || !type.mime.startsWith('image/')) {
+			c.status(422)
+			return c.text('File is not a valid image')
+		}
+
+		return new Response(body.file)
+	}
+)
+```
+
+> Hono เรียก `file-type` ใน handler เพื่อตรวจสอบ mimetype
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+const app = new Elysia()
+	.post('/upload', {
+		body: t.Object({
+			file: t.File({
+				type: 'image/*'
+			})
+		})
+	}, ({ body }) => body.file)
+```
+
+> Elysia ลงทะเบียน `file-type` ครั้งเดียวและตรวจสอบ mimetype แบบ declarative
+
+</div>
+</div>
+
+<div class="content-layout">
+
+เนื่องจาก Web Standard API ไม่ได้ตรวจสอบ mimetype การเชื่อ `content-type` ที่ client ส่งมาจึงมีความเสี่ยงด้านความปลอดภัย ทั้งสองจึงใช้ `file-type` ตรวจสอบไบต์ของไฟล์ Elysia ลงทะเบียนตัวตรวจจับครั้งเดียวด้วย `setFileTypeDetector` แล้วตรวจสอบ type แบบ declarative ด้วย `t.File({ type })` ตัวตรวจจับนี้จำเป็นต้องมี ถ้าไม่มี ไฟล์ทุกไฟล์ที่ตรวจสอบด้วย `type` จะไม่ผ่าน
+
+## Middleware
+
+middleware ของ Hono ทำงานตามคิวเดียวคล้ายกับ Express ส่วน Elysia ให้คุณควบคุมได้ละเอียดกว่าด้วย lifecycle แบบ **event-based**
+
+Elysia เปิดให้ใช้ขั้นตอนต่าง ๆ ของ [lifecycle ของ request](/essential/life-cycle):
+
+| ขั้นตอน | หน้าที่ |
+| --- | --- |
+| Request | ตรวจดู request ที่เข้ามาก่อน parse |
+| Parse | decode body ของ request |
+| Transform และ validation | normalize และตรวจสอบ input ของ request |
+| Before handle | derive ค่าของ request หรือคืน response ก่อนกำหนด |
+| Handler | สร้าง response ของ route |
+| After handle และ map response | ปรับแต่งและ serialize response |
+| After response | ทำงานหลังส่ง response ไปแล้ว |
+
+error hook จัดการความผิดพลาดใน pipeline นี้
+
+ในขณะที่ Hono มี request pipeline ที่ไหลไปตามลำดับเส้นเดียว Elysia ดักจับแต่ละ event ใน request pipeline ได้
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+
+const app = new Hono()
+
+// Global middleware
+app.use(async (c, next) => {
+	console.log(`${c.req.method} ${c.req.url}`)
+
+	await next()
+})
+
+app.get(
+	'/protected',
+	// Route-specific middleware
+	async (c, next) => {
+	  	const token = c.req.header('authorization')
+
+	  	if (!token) {
+			c.status(401)
+	   		return c.text('Unauthorized')
+		}
+
+	  	await next()
+	},
+	(c) => c.text('Protected route')
+)
+```
+
+> Hono ใช้คิวเดียวสำหรับ middleware ซึ่งทำงานตามลำดับ
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	// Global middleware
+	.onRequest(({ request }) => {
+		console.log(request.method, new URL(request.url).pathname)
+	})
+	// Route-specific middleware
+	.get('/protected', {
+		beforeHandle({ status, headers }) {
+  			if (!headers.authorization)
+     			return status(401)
+		}
+	}, () => 'protected')
+```
+
+> Elysia ใช้ event interceptor เฉพาะสำหรับแต่ละจุดใน request pipeline
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Hono มีฟังก์ชัน `next` สำหรับเรียก middleware ถัดไป แต่ Elysia ไม่มี
+
+## Sound type safety
+Elysia ออกแบบมาเพื่อให้ type safety ที่ถูกต้องสมบูรณ์
+
+ตัวอย่างเช่น [derive](/essential/life-cycle#derive) เพิ่ม context เฉพาะของ request พร้อม type ที่อนุมานได้ ใน v2 ยังรับหน้าที่ของ context ที่ผ่านการตรวจสอบแล้ว ซึ่งเดิมเป็นหน้าที่ของ `resolve`
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+import { createMiddleware } from 'hono/factory'
+
+const app = new Hono()
+
+const getVersion = createMiddleware(async (c, next) => {
+	c.set('version', 2)
+
+	await next()
+})
+
+app.use(getVersion)
+
+app.get('/version', getVersion, (c) => {
+	return c.text(c.get('version') + '')
+})
+
+const authenticate = createMiddleware(async (c, next) => {
+	const token = c.req.header('authorization')
+
+	if (!token) {
+		c.status(401)
+		return c.text('Unauthorized')
+	}
+
+	c.set('token', token.split(' ')[1])
+
+	await next()
+})
+
+app.post('/user', authenticate, async (c) => {
+	c.get('version')
+
+	return c.text(c.get('token'))
+})
+```
+
+> Hono ใช้ middleware ขยาย context แต่ไม่ type safe
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.decorate('version', 2)
+	.get('/version', ({ version }) => version)
+	.derive(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+
+		return {
+			token: authorization.split(' ')[1]
+		}
+	})
+	// {  token: string, version: number }
+	.get('/token', ({ token, version }) => {
+		return token
+	})
+```
+
+> Elysia ใช้ `decorate` เพื่อขยาย context และใช้ `derive` เพื่อเพิ่ม property ของคุณเองลงใน context
+
+</div>
+</div>
+
+<div class="content-layout">
+
+การตรวจ prefix ของ Bearer ในตัวอย่างนี้ใช้แทนการตรวจสอบ credential จริง การตรวจแค่ header หรือ prefix ของ Bearer อย่างเดียวไม่ใช่ authentication
+
+แม้ Hono จะใช้ `declare module` เพื่อขยาย interface ของ `ContextVariableMap` ได้ แต่ก็มีผลแบบ global ไม่ได้มี type safety ที่ถูกต้องสมบูรณ์ และไม่ได้รับประกันว่า property นั้นจะมีอยู่ในทุก request handler
+
+```ts
+declare module 'hono' {
+  	interface ContextVariableMap {
+    	version: number
+  		token: string
+  	}
+}
+```
+> ส่วนนี้จำเป็นเพื่อให้ตัวอย่าง Hono ด้านบนทำงานได้ ซึ่งไม่ได้มี type safety ที่ถูกต้องสมบูรณ์
+
+## พารามิเตอร์ของ middleware
+Hono ใช้ callback function ในการประกาศ middleware เฉพาะ route ที่นำกลับมาใช้ซ้ำได้ ส่วน Elysia ใช้ [macro](/patterns/macro) ในการประกาศ hook ของคุณเอง
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { findUser } from './users'
+import { Hono } from 'hono'
+import { createMiddleware } from 'hono/factory'
+
+const app = new Hono()
+
+const role = (role: 'user' | 'admin') => createMiddleware(async (c, next) => {
+	const user = findUser(c.req.header('Authorization'))
+
+	if(!user || user.role !== role) {
+		c.status(401)
+		return c.text('Unauthorized')
+	}
+
+	c.set('user', user)
+
+	await next()
+})
+
+app.get('/user/:id', role('admin'), (c) => {
+	// Error: No overload matches this call.
+	return c.json(c.get('user'))
+})
+```
+
+> Hono ใช้ callback ที่คืนค่า `createMiddleware` เพื่อสร้าง middleware ที่นำกลับมาใช้ซ้ำได้ แต่ไม่ type safe
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { findUser } from './users'
+
+const app = new Elysia()
+	.macro({
+		role: (role: 'user' | 'admin') => ({
+			derive({ status, headers: { authorization } }) {
+				const user = findUser(authorization)
+
+				if (!user || user.role !== role)
+					return status(401)
+
+				return {
+					user
+				}
+			}
+		})
+	})
+	// { user: User }
+	.get('/token', {
+		role: 'admin'
+	}, ({ user }) => user)
+```
+
+> Elysia ใช้ macro เพื่อส่ง argument ของคุณเองให้ middleware ที่เขียนเอง
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ในตัวอย่างนี้ `findUser` คือโค้ดของแอปพลิเคชันที่ตรวจสอบ credential ที่ส่งมาแล้วคืนค่าผู้ใช้ที่มี `role` หรือไม่คืนผู้ใช้เลยเมื่อตรวจสอบไม่ผ่าน การตรวจแค่ header หรือ prefix ของ Bearer อย่างเดียวไม่ใช่ authentication
+
+## การจัดการ error
+
+Hono มีฟังก์ชัน `onError` ที่มีผลกับทุก route ส่วน Elysia ให้คุณควบคุมการจัดการ error ได้ละเอียดกว่า
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+
+const app = new Hono()
+
+class CustomError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'CustomError'
+	}
+}
+
+// global error handler
+app.onError((error, c) => {
+	if(error instanceof CustomError) {
+		c.status(500)
+
+		return c.json({
+			message: 'Something went wrong!',
+			error
+		})
+	}
+
+	return c.text('Internal Server Error', 500)
+})
+
+// This route throws an error handled by onError.
+app.get('/error', () => {
+	throw new CustomError('oh uh')
+})
+```
+
+> Hono ใช้ฟังก์ชัน `onError` จัดการ error โดยมี error handler ตัวเดียวสำหรับทุก route
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+class CustomError extends Error {
+    status = 500
+}
+
+const app = new Elysia()
+    .onError(CustomError, ({ error, status }) =>
+        status(500, { message: 'Something went wrong!', detail: error.message })
+    )
+    .get('/error', () => {
+        throw new CustomError('oh uh')
+    })
+    .get('/local-error', {
+        error({ error, status }) {
+            if (error instanceof RangeError)
+                return status(500, { message: 'Only for this route!' })
+        }
+    }, () => {
+        throw new RangeError('outside the allowed range')
+    })
+```
+
+> Elysia ให้คุณควบคุมการจัดการ error ได้ละเอียดกว่า และมีกลไกของ scope
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ในขณะที่ Hono มี `onError` ต่อหนึ่งแอป Elysia มีให้:
+
+1. error handler ทั้งแบบ global และแบบเฉพาะ route
+2. helper `status` สำหรับคืน response พร้อม HTTP status
+3. error ที่มี `status` (หรือ `HTTPError`) จะถูกแปลงเป็น HTTP status ของมัน
+
+route `/error` ใช้ handler ของ `CustomError` ที่ลงทะเบียนไว้ ส่วน route `/local-error` จัดการ error อีกแบบหนึ่งภายใน route เอง error hook ทำงานตามลำดับการลงทะเบียน และ hook ตัวแรกที่คืนค่าจะเป็นตัวส่ง response hook ที่ลงทะเบียนบนแอปไว้ก่อน route จะทำงานก่อน hook `error` ของ route นั้น route hook จึงทับ hook เหล่านั้นไม่ได้
+
+Elysia อนุมาน type ของ error ที่ลงทะเบียนไว้ใน handler แยกตาม class
+
+## Encapsulation
+
+Hono encapsulate side-effect ของปลั๊กอิน ส่วน Elysia ให้คุณควบคุม side-effect ของปลั๊กอินได้ผ่านกลไก scope ที่ชัดเจนและลำดับของโค้ด
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+
+const subRouter = new Hono()
+
+subRouter.use(async (c, next) => {
+	if (!c.req.header('authorization')?.startsWith('Bearer '))
+		return c.text('Unauthorized', 401)
+
+	await next()
+})
+
+subRouter.get('/user', (c) => {
+	return c.text('Hello User')
+})
+
+const app = new Hono()
+
+app.route('/api', subRouter)
+// doesn't have side-effect from subRouter
+app.get('/side-effect', (c) => c.text('hi'))
+```
+
+> Hono encapsulate side-effect ของปลั๊กอิน
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // doesn't have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+> Elysia encapsulate side-effect ของปลั๊กอิน เว้นแต่จะระบุไว้อย่างชัดเจน
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ทั้งสองมีกลไก encapsulation ของปลั๊กอินเพื่อป้องกัน side-effect
+
+แต่ Elysia ระบุได้อย่างชัดเจนว่าปลั๊กอินไหนควรมี side-effect ด้วยการประกาศ scope ของปลั๊กอิน ส่วน Hono จะเก็บ middleware ไว้กับ router ที่ลงทะเบียน
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	// Scoped to parent instance but not beyond
+	.as('plugin') // [!code ++]
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // [!code ++]
+    // now has side-effects from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+Elysia มีกลไก scope 3 แบบ:
+1. **local** - มีผลกับ instance ปัจจุบันและ descendant ของมัน (ค่าเริ่มต้น)
+2. **plugin** - แชร์ side-effect กับ instance ที่เป็น parent แต่ไม่เกินกว่านั้น
+3. **global** - แชร์ไปยังทุก instance ที่เป็น parent
+
+---
+
+เนื่องจาก Hono แชร์ middleware ของ sub-router ให้ parent ไม่ได้ ตัวอย่างด้านล่างจึงสร้างฟังก์ชันสำหรับแต่ละ hook แล้วเพิ่มเข้าไปเอง
+
+แต่วิธีนี้อาจทำให้ side-effect ซ้ำกันได้ถ้าไม่จัดการอย่างระมัดระวัง
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+import { createMiddleware } from 'hono/factory'
+
+const middleware = createMiddleware(async (c, next) => {
+	console.log('called')
+
+	await next()
+})
+
+const app = new Hono()
+const subRouter = new Hono()
+
+app.use(middleware)
+app.get('/main', (c) => c.text('Hello from main!'))
+
+subRouter.use(middleware)
+
+// This would log twice
+subRouter.get('/sub', (c) => c.text('Hello from sub router!'))
+
+app.route('/sub', subRouter)
+
+export default app
+```
+
+</div>
+<div>
+
+ในสถานการณ์นี้ Elysia มีกลไกตัดปลั๊กอินที่ซ้ำเพื่อป้องกัน side-effect ที่ซ้ำกัน
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ name: 'subRouter' }) // [!code ++]
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	.as('plugin')
+
+const app = new Elysia()
+	.get('/', 'Hello World')
+	.use(subRouter)
+	.use(subRouter) // [!code ++]
+	.use(subRouter) // [!code ++]
+	.use(subRouter) // [!code ++]
+	// side-effect only called once
+	.get('/side-effect', () => 'hi')
+```
+
+เมื่อใช้ `name` ที่ไม่ซ้ำ Elysia จะใช้ปลั๊กอินเพียงครั้งเดียว และไม่ทำให้เกิด side-effect ที่ซ้ำกัน
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## Cookie
+Hono มีฟังก์ชัน utility สำหรับ cookie ในตัวอยู่ใน `hono/cookie` ส่วน Elysia ใช้แนวทางแบบ signal ในการจัดการ cookie
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+import { getSignedCookie, setSignedCookie } from 'hono/cookie'
+
+const app = new Hono()
+
+app.get('/', async (c) => {
+	const name = await getSignedCookie(c, 'secret', 'name')
+
+	await setSignedCookie(
+		c,
+		'name',
+		'value',
+		'secret',
+		{
+			maxAge: 1000,
+		}
+	)
+})
+```
+
+> Hono ใช้ฟังก์ชัน utility ในการจัดการ cookie
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({
+    cookie: {
+        secrets: 'replace-with-a-private-secret',
+        sign: ['name']
+    }
+})
+    .get('/', {
+        cookie: t.Cookie({ name: t.Optional(t.String()) })
+    }, ({ cookie: { name } }) => {
+        const previous = name.value
+        name.set({
+            value: 'value',
+            maxAge: 60 * 60 * 24,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax'
+        })
+        return previous ?? 'unset'
+    })
+```
+
+> Elysia verify และ sign cookie ที่ตั้งค่าไว้ให้อัตโนมัติ `maxAge` ของ cookie มีหน่วยเป็นวินาที ให้แทนที่ secret ในตัวอย่างด้วยค่าส่วนตัว และส่ง secure cookie ผ่าน HTTPS
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## OpenAPI
+Hono ต้องใช้ความพยายามเพิ่มในการอธิบาย specification ส่วน Elysia ผสาน specification เข้ากับ schema ได้อย่างราบรื่น
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+import { describeRoute, openAPISpecs } from 'hono-openapi'
+import { resolver, validator as zodValidator } from 'hono-openapi/zod'
+import { swaggerUI } from '@hono/swagger-ui'
+
+import { z } from '@hono/zod-openapi'
+
+const app = new Hono()
+
+const model = z.array(
+	z.object({
+		name: z.string().openapi({
+			description: 'first name only'
+		}),
+		age: z.number()
+	})
+)
+
+const detail = await resolver(model).builder()
+
+console.log(detail)
+
+app.post(
+	'/',
+	zodValidator('json', model),
+	describeRoute({
+		validateResponse: true,
+		summary: 'Create user',
+		requestBody: {
+			content: {
+				'application/json': { schema: detail.schema }
+			}
+		},
+		responses: {
+			201: {
+				description: 'User created',
+				content: {
+					'application/json': { schema: resolver(model) }
+				}
+			}
+		}
+	}),
+	(c) => {
+		c.status(201)
+		return c.json(c.req.valid('json'))
+	}
+)
+
+app.get('/ui', swaggerUI({ url: '/doc' }))
+
+app.get(
+	'/doc',
+	openAPISpecs(app, {
+		documentation: {
+			info: {
+				title: 'Hono API',
+				version: '1.0.0',
+				description: 'Greeting API'
+			},
+			components: {
+				...detail.components
+			}
+		}
+	})
+)
+
+export default app
+```
+
+> Hono ต้องใช้ความพยายามเพิ่มในการอธิบาย specification
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi' // [!code ++]
+
+const app = new Elysia()
+	.use(openapi()) // [!code ++]
+	.model({
+		user: t.Array(
+			t.Object({
+				name: t.String(),
+				age: t.Number()
+			})
+		)
+	})
+	.post('/users', {
+		body: 'user',
+		response: {
+			201: 'user'
+		},
+		detail: {
+			summary: 'Create user'
+		}
+	}, ({ body, status }) => status(201, body))
+
+```
+
+> Elysia ผสาน specification เข้ากับ schema ได้อย่างราบรื่น
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Hono มีฟังก์ชันแยกสำหรับอธิบาย specification ของ route และ validation และต้องใช้ความพยายามพอสมควรในการตั้งค่าให้ถูกต้อง
+
+Elysia ใช้ schema ที่คุณกำหนดในการสร้าง OpenAPI specification ตรวจสอบ request/response และอนุมาน type ให้อัตโนมัติ ทั้งหมดจาก**แหล่งความจริงเพียงแหล่งเดียว**
+
+Elysia ยังเพิ่ม schema ที่ลงทะเบียนไว้ใน `model` ลงใน OpenAPI spec ให้คุณอ้างอิง model ในส่วนเฉพาะของ Swagger หรือ Scalar UI ได้ ส่วน Hono จะแทรก schema ไว้ใน route โดยตรง
+
+## การทดสอบ
+
+ทั้งสองสร้างบน Web Standard API จึงใช้กับไลบรารีทดสอบใดก็ได้
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+import { describe, it, expect } from 'vitest'
+
+const app = new Hono()
+	.get('/', (c) => c.text('Hello World'))
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const res = await app.request('/')
+
+		expect(res.status).toBe(200)
+		expect(await res.text()).toBe('Hello World')
+	})
+})
+```
+
+> Hono มี method `request` ในตัวสำหรับรัน request
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { describe, it, expect } from 'vitest'
+
+const app = new Elysia()
+	.get('/', 'Hello World')
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const res = await app.handle(
+			new Request('http://localhost')
+		)
+
+		expect(res.status).toBe(200)
+		expect(await res.text()).toBe('Hello World')
+	})
+})
+```
+
+> Elysia ใช้ Web Standard API ในการจัดการ request และ response
+
+</div>
+</div>
+
+<div class="content-layout">
+
+นอกจากนี้ Elysia ยังมีไลบรารี helper ชื่อ [Eden](/eden) สำหรับ type safety แบบ end-to-end ให้เราทดสอบได้พร้อม auto-completion และ type safety เต็มรูปแบบ
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import { describe, expect, it } from 'bun:test'
+
+const app = new Elysia().get('/hello', 'Hello World')
+const api = treaty(app)
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const { data, error, status } = await api.hello.get()
+
+		expect(status).toBe(200)
+		expect(data).toBe('Hello World')
+	})
+})
+```
+
+## Type safety แบบ end-to-end
+ทั้งสองมี type safety แบบ end-to-end แต่ดูเหมือน Hono จะไม่มีการจัดการ error แบบ type-safe ตาม status code
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Hono"
+import { Hono } from 'hono'
+import { hc } from 'hono/client'
+import { z } from 'zod'
+import { zValidator } from '@hono/zod-validator'
+
+const app = new Hono()
+	.post(
+		'/mirror',
+		zValidator(
+			'json',
+			z.object({
+				message: z.string()
+			})
+		),
+		(c) => c.json(c.req.valid('json'))
+	)
+
+const client = hc<typeof app>('/')
+
+const response = await client.mirror.$post({
+	json: {
+		message: 'Hello, world!'
+	}
+})
+
+// { message: string }
+const data = await response.json()
+```
+
+> Hono ใช้ `hc` รัน request และมี type safety แบบ end-to-end
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/mirror', {
+		body: t.Object({
+			message: t.String()
+		})
+	}, ({ body }) => body)
+
+const api = treaty(app)
+
+const { data, error } = await api.mirror.post({
+	message: 'Hello World'
+})
+
+if (error)
+	// error.status: 422
+	// error.value: { type: 'validation', title: 'Validation Error', status: 422, on: 'body', detail, errors: [...] }
+	throw error
+
+// { message: 'Hello World' }
+console.log(data)
+```
+
+> Elysia ใช้ `treaty` รัน request และมี type safety แบบ end-to-end
+
+</div>
+</div>
+
+<div class="content-layout">
+
+แม้ทั้งสองจะมี type safety แบบ end-to-end แต่ Elysia มีการจัดการ error แบบ type-safe ตาม status code มากกว่า ส่วน Hono ไม่มี
+
+เวลาที่ใช้อนุมาน type ต่อไปนี้บันทึกไว้กับเวอร์ชันและ schema ในภาพหน้าจอเหล่านี้ เป็นข้อสังเกตในอดีต ไม่ใช่ benchmark ของเวอร์ชันปัจจุบัน
+
+![ประสิทธิภาพการอนุมาน type ของ Elysia eden](/migrate/elysia-type-infer.webp)
+> Elysia ใช้เวลา 536ms ในการอนุมานทั้ง Elysia และ Eden
+
+![ประสิทธิภาพการอนุมาน type ของ Hono HC](/migrate/hono-type-infer.webp)
+> Hono ใช้เวลา 1.27s ในการอนุมานทั้ง Hono และ HC พร้อม error (ถูกยกเลิก)
+
+1.27 วินาทีไม่ใช่เวลาทั้งหมดของการอนุมาน แต่เป็นเวลาตั้งแต่เริ่มจนถูกยกเลิกด้วย error **"Type instantiation is excessively deep and possibly infinite."** ซึ่งเกิดขึ้นเมื่อ schema ใหญ่เกินไป
+
+![โค้ด Hono HC ที่แสดง error excessively deep](/migrate/hono-hc-infer.webp)
+> Hono HC แสดง error excessively deep
+
+ในการทดสอบนั้น Hono HC ชนขีดจำกัดของ instantiation ใน TypeScript เมื่อมีมากกว่า 100 route พร้อม schema ของ body และ response ที่ซับซ้อน นี่ไม่ใช่ขีดจำกัดจำนวน route ทั่วไป เพราะเวอร์ชันของ compiler โครงสร้างของ schema และ type ของ client ล้วนมีผลต่อผลลัพธ์
+
+![โค้ด Elysia Eden ที่อนุมาน type ได้โดยไม่มี error](/migrate/elysia-eden-infer.webp)
+> โค้ด Elysia Eden ที่อนุมาน type ได้โดยไม่มี error
+
+ผู้เขียนรายงานว่าการตั้งค่าของ Elysia และ Eden อนุมานได้สำเร็จกับ route สูงสุด 2,000 route แต่เนื่องจากการรันของ Hono ถูกยกเลิกกลางทาง เวลาที่ใช้จึงนำมาคำนวณอัตราส่วนความเร็วของการตรวจสอบที่เสร็จสมบูรณ์ไม่ได้
+
+เมื่อประเมิน type safety แบบ end-to-end ให้ทดสอบ client ทั้งสองกับโครงสร้าง route และ schema ของคุณเอง
+
+---
+
+ทั้งสองเป็นเว็บเฟรมเวิร์กรุ่นใหม่ที่สร้างบน Web Standard API และต่างกันเพียงเล็กน้อย
+
+Elysia ออกแบบมาให้ใช้งานง่ายและเป็นมิตรกับนักพัฒนา โดยเน้นที่ **type safety ที่ถูกต้องสมบูรณ์** และมีประสิทธิภาพดีกว่า Hono
+
+Hono เข้ากันได้กับหลาย runtime โดยเฉพาะ Cloudflare Workers และมีฐานผู้ใช้ที่ใหญ่กว่า
+
+หรือถ้าคุณมาจากเฟรมเวิร์กอื่น ลองดูหน้าเหล่านี้:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+	<Card href="/migrate/from-express">
+<CardTitle>จาก Express</CardTitle>
+
+เปรียบเทียบ Express กับ Elysia
+
+</Card>
+    <Card href="/migrate/from-fastify">
+<CardTitle>จาก Fastify</CardTitle>
+
+เปรียบเทียบ Fastify กับ Elysia
+
+</Card>
+    <Card href="/migrate/from-trpc">
+<CardTitle>จาก tRPC</CardTitle>
+
+เปรียบเทียบ tRPC กับ Elysia
+
+</Card>
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>

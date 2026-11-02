@@ -1,0 +1,333 @@
+---
+title: Config
+description: ตั้งค่า request, header, การจัดการ response และวันที่ของ Eden Treaty
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Config</h1>
+
+Eden Treaty รับพารามิเตอร์ 2 ตัว:
+- **urlOrInstance** - URL ของ endpoint หรือ instance ของ Elysia
+- **options** (ไม่บังคับ) - ปรับแต่งพฤติกรรมของ fetch
+
+## urlOrInstance
+รับได้ทั้ง URL ของ endpoint ที่เป็น string หรือ instance ของ Elysia โดยตรง
+
+Eden จะเปลี่ยนพฤติกรรมตาม type ที่ได้รับดังนี้:
+
+### URL ของ endpoint (string)
+ถ้าส่ง URL ของ endpoint เข้าไป Eden Treaty จะใช้ `fetch` หรือ `config.fetcher` สร้าง request ผ่านเครือข่ายไปยัง instance ของ Elysia
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const api = treaty<App>('localhost:3000')
+```
+
+จะระบุ protocol ให้ URL ของ endpoint หรือไม่ก็ได้
+
+Eden Treaty จะเติม protocol ให้อัตโนมัติดังนี้:
+1. ถ้าระบุ protocol ไว้ ให้ใช้ URL นั้นเลย
+2. ถ้า URL เป็น localhost หรือ local address ที่รองรับ ให้ใช้ http
+3. นอกนั้นใช้ https
+
+กฎนี้ใช้กับ WebSocket ด้วยในการเลือกระหว่าง **ws://** และ **wss://**
+
+---
+
+### Instance ของ Elysia
+ถ้าส่ง instance ของ Elysia เข้าไป Eden Treaty จะสร้าง class `Request` แล้วส่งให้ `Elysia.handle` โดยตรง โดยไม่ต้องสร้าง request ผ่านเครือข่าย
+
+ทำให้เราสื่อสารกับเซิร์ฟเวอร์ Elysia ได้โดยตรงโดยไม่มีภาระของ request และไม่ต้องเริ่มเซิร์ฟเวอร์
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/hi', 'Hi Elysia')
+
+const api = treaty(app)
+```
+
+ถ้าส่ง instance เข้าไปก็ไม่ต้องใส่ generic เพราะ Eden Treaty อนุมาน type จากพารามิเตอร์ได้โดยตรง
+
+แนะนำให้ใช้รูปแบบนี้กับการทำ unit test หรือการสร้าง reverse proxy server หรือ microservice แบบ type-safe
+
+## Options
+พารามิเตอร์ตัวที่ 2 ที่ไม่บังคับใช้ปรับแต่งพฤติกรรมของ fetch ใน Eden Treaty โดยรับพารามิเตอร์ดังนี้:
+- [fetch](#fetch) - เพิ่มพารามิเตอร์เริ่มต้นให้การ initialize ของ fetch (RequestInit)
+- [fetcher](#fetcher) - ฟังก์ชันที่เขียนเองซึ่งมี interface เหมือน `fetch`
+- [headers](#headers) - กำหนด header เริ่มต้น
+- [onRequest](#onrequest) - ดักและแก้ไข request ของ fetch ก่อนส่ง
+- [onResponse](#onresponse) - ดักและแก้ไข response ของ fetch
+- [parseDate](#parsedate) - แปลง string ของวันที่เป็น object Date อัตโนมัติ
+- [throwHttpError](#throwhttperror) - throw error อัตโนมัติถ้า status ของ response ไม่ใช่ ok (2xx)
+
+## Fetch
+กำหนดตัวเลือกเริ่มต้นของ `RequestInit` เช่น credentials หรือ caching ส่วน header ให้กำหนดผ่าน `headers` เพราะ type ของ config ปัจจุบันตัด `headers` และ `method` ออกจาก `fetch` ตัวอย่างต่อไปนี้สมมติว่า import `treaty` และ type `App` ที่ export ไว้แล้ว
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+treaty<App>('localhost:3000', {
+    fetch: {
+        credentials: 'include'
+    }
+})
+```
+
+พารามิเตอร์ทุกตัวที่ส่งให้ fetch จะถูกส่งต่อไปยัง fetcher ซึ่งเทียบเท่ากับ:
+```ts
+fetch('http://localhost:3000', {
+    credentials: 'include'
+})
+```
+
+## Fetcher
+กำหนดฟังก์ชัน fetcher ของคุณเองแทนการใช้ fetch เริ่มต้นของสภาพแวดล้อม
+
+```ts
+treaty<App>('localhost:3000', {
+    fetcher(url, options) {
+        return fetch(url, options)
+    }
+})
+```
+
+fetcher ที่เขียนเองต้องรับ argument แบบเดียวกับ `fetch` และคืนค่าเป็น `Response` แบบ Web Standard client อย่าง Axios ต้องมี adapter ส่งเข้าไปโดยตรงไม่ได้
+
+## Headers
+กำหนด header เริ่มต้นของ request ด้วย `options.headers`
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+พารามิเตอร์ทุกตัวที่ส่งให้ fetch จะถูกส่งต่อไปยัง fetcher ซึ่งเทียบเท่ากับ:
+```ts
+fetch('http://localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+headers รับพารามิเตอร์ได้ดังนี้:
+- Object
+- Function
+
+### Headers แบบ object
+ถ้าส่ง object เข้าไป จะถูกส่งให้ fetch โดยตรง
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+### Function
+คุณกำหนด headers เป็นฟังก์ชันเพื่อคืน header ตามเงื่อนไขได้
+
+```ts
+treaty<App>('localhost:3000', {
+    headers(path, options) {
+        if(path.startsWith('/user'))
+            return {
+                authorization: 'Bearer 12345'
+            }
+    }
+})
+```
+
+คืนค่าเป็น object เพื่อเพิ่มค่าเข้าไปใน header ของ fetch ได้
+
+ฟังก์ชัน headers รับพารามิเตอร์ 2 ตัว:
+- path `string` - path ที่จะส่งไปยังพารามิเตอร์
+  - หมายเหตุ: จะ**ไม่รวม** hostname เช่น (/user/griseo)
+- options `RequestInit`: พารามิเตอร์ที่ส่งผ่านมาในพารามิเตอร์ตัวที่ 2 ของ fetch
+
+### Array
+ถ้ามีหลายเงื่อนไข คุณกำหนดฟังก์ชัน headers เป็น array ได้
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: [
+      (path, options) => {
+        if(path.startsWith('/user'))
+            return {
+                authorization: 'Bearer 12345'
+            }
+        }
+    ]
+})
+```
+
+Eden Treaty จะ**รันทุกฟังก์ชัน**แม้จะมีค่าคืนกลับมาแล้วก็ตาม
+
+## ลำดับความสำคัญของ header
+Eden Treaty จะจัดลำดับความสำคัญของ header ที่ซ้ำกันดังนี้:
+1. Inline method - ส่งเข้าไปในฟังก์ชันของ method โดยตรง
+2. headers - ส่งเข้าไปใน `config.headers`
+  - ถ้า `config.headers` เป็น array ตัวที่อยู่ทีหลังจะมีลำดับความสำคัญสูงกว่า
+
+ตัวอย่างเช่น:
+```ts
+const api = treaty<App>('localhost:3000', {
+    headers: {
+        authorization: 'Bearer Aponia'
+    }
+})
+
+api.profile.get({
+    headers: {
+        authorization: 'Bearer Griseo'
+    }
+})
+```
+
+จะได้ผลลัพธ์เป็น:
+```ts
+fetch('http://localhost:3000', {
+    headers: {
+        authorization: 'Bearer Griseo'
+    }
+})
+```
+
+ถ้าฟังก์ชันแบบ inline ไม่ได้กำหนด header ผลลัพธ์จะเป็น "**Bearer Aponia**" แทน
+
+## onRequest
+ดักและแก้ไข request ของ fetch ก่อนส่ง
+
+คืนค่าเป็น object เพื่อเพิ่มค่าเข้าไปใน **RequestInit** ได้
+
+```ts
+treaty<App>('localhost:3000', {
+    onRequest(path, options) {
+        if(path.startsWith('/user'))
+            return {
+                headers: {
+                    authorization: 'Bearer 12345'
+                }
+            }
+    }
+})
+```
+
+ถ้ามีค่าคืนกลับมา Eden Treaty จะ**รวมแบบ shallow merge** เข้ากับ `RequestInit` ปัจจุบัน โดยรวม `headers` เข้ากับ header ที่มีอยู่
+
+**onRequest** รับพารามิเตอร์ 2 ตัว:
+- path `string` - path ที่จะส่งไปยังพารามิเตอร์
+  - หมายเหตุ: จะ**ไม่รวม** hostname เช่น (/user/griseo)
+- options `RequestInit`: พารามิเตอร์ที่ส่งผ่านมาในพารามิเตอร์ตัวที่ 2 ของ fetch
+
+### Array
+ถ้ามีหลายเงื่อนไข คุณกำหนดฟังก์ชัน onRequest เป็น array ได้
+
+```ts
+treaty<App>('localhost:3000', {
+    onRequest: [
+      (path, options) => {
+        if(path.startsWith('/user'))
+            return {
+                headers: {
+                    authorization: 'Bearer 12345'
+                }
+            }
+        }
+    ]
+})
+```
+
+Eden Treaty จะ**รันทุกฟังก์ชัน**แม้จะมีค่าคืนกลับมาแล้วก็ตาม
+
+## onResponse
+ดัก response ของ fetch ค่าแรกที่คืนกลับมาและไม่เป็น null จะกลายเป็น `data`
+
+```ts
+treaty<App>('localhost:3000', {
+    onResponse(response) {
+        if(response.ok && response.headers.get('content-type')?.includes('application/json'))
+            return response.json()
+    }
+})
+```
+
+**onResponse** รับพารามิเตอร์ 1 ตัว:
+- response `Response` - Response แบบ Web Standard ที่ปกติได้จาก `fetch`
+
+### Array
+ถ้ามีหลายเงื่อนไข คุณกำหนดฟังก์ชัน onResponse เป็น array ได้
+
+```ts
+treaty<App>('localhost:3000', {
+    onResponse: [
+        (response) => {
+            if(response.ok && response.headers.get('content-type')?.includes('application/json'))
+                return response.json()
+        }
+    ]
+})
+```
+Eden Treaty จะวนเรียกฟังก์ชันไปเรื่อย ๆ จนกว่าจะเจอค่าที่คืนกลับมาหรือเกิด error ซึ่งต่างจาก [headers](#headers) และ [onRequest](#onrequest) ค่าแรกที่คืนกลับมาและไม่เป็น null จะกลายเป็น `data`
+
+## parseDate
+
+- ค่าเริ่มต้น: `true`
+
+แปลง string ของวันที่เป็น object Date อัตโนมัติ
+
+```ts
+treaty<App>('localhost:3000', {
+	parseDate: true
+})
+```
+
+## throwHttpError
+
+- ค่าเริ่มต้น: `false`
+
+throw error อัตโนมัติถ้า status ของ response ไม่ใช่ ok (2xx)
+
+```ts
+treaty<App>('localhost:3000', {
+	throwHttpError: true
+})
+```
+
+โดยค่าเริ่มต้น Eden จะไม่ throw error แต่จะคืนค่า `{ error }` แทน ถ้า status ของ response ไม่ใช่ ok (2xx)
+
+คุณส่ง predicate ที่รับ `EdenFetchError` เข้าไปได้ด้วย:
+```ts
+treaty<App>('localhost:3000', {
+	throwHttpError: (error) => {
+		return error.status === 418
+	}
+})
+```
+
+ถ้า `throwHttpError` คืนค่า `true` Eden จะ throw error ไม่อย่างนั้นจะคืนค่า `{ error }` แทน
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

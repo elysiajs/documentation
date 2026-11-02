@@ -1,0 +1,175 @@
+---
+title: Response
+description: จัดการผลลัพธ์ที่สำเร็จ error, stream และ type ของ response ใน Eden Treaty
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Response</h1>
+
+เมื่อเรียก method ของ fetch แล้ว Eden Treaty จะคืนค่าเป็น `Promise` ของ object ที่มี property ต่อไปนี้:
+- data - ค่าที่ได้จาก response (2xx)
+- error - `{ status, value }` สำหรับ response ที่ไม่ใช่ 2xx โดยค่าที่เซิร์ฟเวอร์คืนมาอยู่ใน `error.value`
+- response `Response` - class Response แบบ Web Standard
+- status `number` - HTTP status code
+- headers `Headers` - header ของ response
+
+เมื่อได้ค่ากลับมาแล้ว คุณต้องจัดการ error ก่อน เพื่อให้ได้ค่า data ที่ไม่เป็น null ไม่อย่างนั้นค่าจะเป็น nullable Elysia มี helper `status()` สำหรับคืน response ตาม status และ Eden จะช่วยแยกแยะ type ของค่า error ให้
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .post('/user', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body: { name }, status }) => {
+        if(name === 'Otto') return status(400)
+
+        return name
+    })
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+const submit = async (name: string) => {
+    const { data, error } = await api.user.post({
+        name
+    })
+
+    // type: string | null
+    console.log(data)
+
+    if (error)
+        switch(error.status) {
+            case 400:
+                // Error type will be narrow down
+                throw error.value
+
+            default:
+                throw error.value
+        }
+
+    // Once the error is handled, type will be unwrapped
+    // type: string
+    return data
+}
+```
+
+โดยค่าเริ่มต้น Elysia จะอนุมาน type ของ `error` และ `response` ให้ TypeScript โดยอัตโนมัติ และ Eden จะมี auto-completion และการแยกแยะ type ที่ตรงกับพฤติกรรมจริง
+
+:::tip
+
+ถ้าเซิร์ฟเวอร์ตอบกลับด้วย HTTP status >= 300 ค่า `data` จะเป็น `null` และ `error` จะเป็น `{ status, value }` โดยค่าที่เซิร์ฟเวอร์คืนมาอยู่ใน `error.value`
+
+ไม่อย่างนั้น response ที่ parse แล้วจะอยู่ใน `data` ทั้งนี้ fetch จะตาม redirect โดยค่าเริ่มต้น การ redirect จึงอาจได้ response ของปลายทางมาก่อน
+:::
+
+
+## Stream response
+Eden จะตีความ stream response หรือ [Server-Sent Events](/essential/handler#server-sent-events) เป็น `AsyncGenerator` เราจึงใช้ลูป `for await` อ่าน stream ได้
+
+
+
+**Stream**
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield 1
+		yield 2
+		yield 3
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+```
+
+**Server-Sent Events**
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield sse({
+			event: 'message',
+			data: '1'
+		})
+		yield sse({
+			event: 'message',
+			data: '2'
+		})
+		yield sse({
+			event: 'end'
+		})
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+```
+
+
+
+
+
+## Utility type
+Eden Treaty มี utility type `Treaty.Data<T>` และ `Treaty.Error<T>` สำหรับดึง type ของ `data` และ `error` ออกจาก response
+
+```ts
+import { Elysia, t } from 'elysia'
+
+import { treaty, type Treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/user', {
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ body: { name }, status }) => {
+		if(name === 'Otto') return status(400)
+
+		return name
+	})
+	.listen(3000)
+
+const api =
+	treaty<typeof app>('localhost:3000')
+
+type UserData = Treaty.Data<typeof api.user.post>
+
+// Alternatively, you can also pass a response
+const response = await api.user.post({
+	name: 'Saltyaom'
+})
+
+type UserDataFromResponse = Treaty.Data<typeof response>
+
+type UserError = Treaty.Error<typeof api.user.post>
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

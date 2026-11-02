@@ -1,0 +1,197 @@
+---
+title: ปลั๊กอิน OpenAPI
+description: เอกสารอ้างอิงและตัวอย่างของปลั๊กอิน OpenAPI
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ปลั๊กอิน OpenAPI</h1>
+
+[Tutorial เรื่อง OpenAPI](/tutorial/features/openapi/)
+
+
+ปลั๊กอินของ [elysia](https://github.com/elysiajs/elysia) สำหรับสร้างหน้าเอกสาร API อัตโนมัติ
+
+ติดตั้งด้วยคำสั่ง:
+
+```bash
+bun add @elysia/openapi@rc
+```
+
+จากนั้นนำไปใช้:
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(openapi())
+    .get('/', () => 'hello')
+    .post('/hello', () => 'OpenAPI')
+    .listen(3000)
+```
+
+เมื่อเข้า `/openapi` คุณจะเห็น Scalar UI ที่แสดงเอกสารของ endpoint ซึ่งสร้างจากเซิร์ฟเวอร์ Elysia และยังเข้าถึง OpenAPI spec แบบดิบได้ที่ `/openapi/json`
+
+:::tip
+
+หน้านี้เป็นเอกสารอ้างอิงการตั้งค่าของปลั๊กอิน
+
+ถ้ากำลังมองหารูปแบบการใช้งานทั่วไปหรือการใช้ OpenAPI ขั้นสูง ดูได้ที่ [Patterns: OpenAPI](/patterns/openapi)
+
+:::
+
+## Detail
+
+`detail` ขยายมาจาก [OpenAPI Operation Object](https://spec.openapis.org/oas/v3.1.2.html#operation-object)
+
+field detail เป็น object ที่ใช้อธิบายข้อมูลของ route สำหรับเอกสาร API
+
+มี field ต่อไปนี้ได้:
+
+### detail.hide
+
+คุณซ่อน route จากเอกสารที่สร้างขึ้นได้ด้วยการตั้งค่า `detail.hide` เป็น `true`
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia().use(openapi()).post('/sign-in', {
+    body: t.Object(
+        {
+            username: t.String(),
+            password: t.String()
+        },
+        {
+            description: 'Expected a username and password'
+        }
+    ),
+    detail: {
+        hide: true
+    }
+}, ({ body }) => ({ username: body.username }))
+```
+
+### detail.deprecated
+
+ระบุว่า operation นี้เลิกใช้แล้ว (deprecated) ผู้ใช้ควรหลีกเลี่ยงการใช้ operation นี้ ค่าเริ่มต้นคือ `false`
+
+### detail.description
+
+คำอธิบายพฤติกรรมของ operation อย่างละเอียด
+
+### detail.summary
+
+สรุปสั้น ๆ ว่า operation นี้ทำอะไร
+
+## Config
+
+ด้านล่างนี้คือการตั้งค่าที่ปลั๊กอินรองรับ
+
+### enabled
+
+ค่าเริ่มต้น: true
+เปิด/ปิดการทำงานของปลั๊กอิน
+
+### documentation
+
+ข้อมูลของเอกสาร OpenAPI
+
+ดู https://spec.openapis.org/oas/v3.1.2.html
+
+### exclude
+
+การตั้งค่าสำหรับตัด path หรือ method ออกจากเอกสาร
+
+### exclude.methods
+
+รายการ method ที่จะตัดออกจากเอกสาร
+
+### exclude.paths
+
+รายการ path ที่จะตัดออกจากเอกสาร
+
+### exclude.staticFile
+
+ค่าเริ่มต้น: true
+
+ตัด route ของไฟล์ static ออกจากเอกสาร
+
+### exclude.tags
+
+รายการ tag ที่จะตัดออกจากเอกสาร
+
+### mapJsonSchema
+ฟังก์ชันที่เขียนเองสำหรับแปลง standard schema เป็น OpenAPI schema
+
+#### ตัวอย่าง
+```ts
+import { openapi } from '@elysia/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+	  	valibot: toJsonSchema
+  	}
+})
+```
+
+### path
+
+ค่าเริ่มต้น: '/openapi'
+
+endpoint ที่เปิดให้เข้าถึงหน้าเอกสาร OpenAPI
+
+### provider
+
+ค่าเริ่มต้น: 'scalar'
+
+ผู้ให้บริการหน้าเอกสาร OpenAPI เลือกได้ระหว่าง:
+
+- `scalar`: [Scalar](https://github.com/scalar/scalar)
+- `swagger-ui`: [Swagger UI](https://github.com/swagger-api/swagger-ui)
+- `null`: ปิดหน้าเอกสาร
+
+### references
+
+OpenAPI reference เพิ่มเติมของแต่ละ endpoint
+
+### scalar
+
+การตั้งค่าของ Scalar ดูได้ที่ [Scalar config](https://github.com/scalar/scalar/blob/main/documentation/configuration.md)
+
+#### โฮสต์ bundle ของ Scalar เอง
+
+โฮสต์ bundle ของ Scalar เองและปิดการโหลดฟอนต์จาก CDN
+
+หมายเหตุ: `cdn` เป็นตัวเลือกของปลั๊กอิน OpenAPI ของ Elysia (ไม่ใช่การตั้งค่าของ Scalar เอง) ใช้ทับ URI ของ bundle ของ Scalar
+
+```ts
+    openapi({ 
+      scalar: {
+        cdn: "/public/scalar-standalone.min.js", // plugin override for Scalar bundle URI (self-hosted)
+        withDefaultFonts: false, // disable Scalar’s default font CDN
+      },
+    })
+```
+
+### specPath
+
+ค่าเริ่มต้น: `${path}/json`
+
+endpoint ที่เปิดให้เข้าถึง OpenAPI specification ในรูปแบบ JSON
+
+### swagger
+
+การตั้งค่าของ Swagger ดูได้ที่ [Swagger config](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/)
+
+</div>
+</InteractiveDocLayout>
+</div>

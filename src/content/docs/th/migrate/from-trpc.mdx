@@ -1,0 +1,1087 @@
+---
+title: จาก tRPC มาเป็น Elysia
+description: เปรียบเทียบ routing, validation, hook และ type safety ของ tRPC กับ Elysia
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import '../../../../styles/comparison.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">จาก tRPC มาเป็น Elysia</h1>
+
+:::note[Elysia v2]
+
+ตัวอย่างฝั่ง Elysia ใช้ v2 คือตัวเลือกของ route อยู่ก่อน handler, lifecycle method ใช้ชื่อตาม event และค่าที่ได้จาก request ใช้ `derive` ส่วนตัวอย่างของเฟรมเวิร์กอื่นแสดงการตั้งค่าที่ใช้กันทั่วไปของเฟรมเวิร์กนั้น เป็นตัวอย่างสำหรับการ migrate ไม่ใช่การสำรวจความสามารถปัจจุบันทั้งหมด integration ของแต่ละเฟรมเวิร์กมีความเข้ากันได้ของเวอร์ชันแยกกัน ให้ตรวจสอบแพ็กเกจเหล่านั้นเมื่อ migrate แอปพลิเคชัน
+
+:::
+
+คู่มือนี้สำหรับผู้ใช้ tRPC ที่อยากเห็นความแตกต่างจาก Elysia รวมถึง syntax และวิธี migrate แอปพลิเคชันจาก tRPC มาเป็น Elysia ผ่านตัวอย่าง
+
+**tRPC** เป็นเฟรมเวิร์ก RPC แบบ typesafe สำหรับสร้าง API ด้วย TypeScript ช่วยสร้าง API ที่ type-safe แบบ end-to-end โดยมีข้อตกลงแบบ type-safe ระหว่าง frontend กับ backend
+
+**Elysia** เป็นเว็บเฟรมเวิร์กที่ใช้งานง่าย ออกแบบมาให้ใช้งานสะดวกและเป็นมิตรกับนักพัฒนา โดยเน้นที่ **type safety ที่ถูกต้องสมบูรณ์ (sound type safety)** และประสิทธิภาพ
+
+## ภาพรวม
+tRPC ออกแบบมาเพื่อการสื่อสารแบบ RPC เป็นหลัก โดยมี abstraction เฉพาะของตัวเองซ้อนอยู่บน RESTful API ส่วน Elysia เน้นที่ RESTful API
+
+ฟีเจอร์หลักของ tRPC คือข้อตกลงที่มี type safety แบบ end-to-end ระหว่าง frontend กับ backend ซึ่ง Elysia ก็มีให้ผ่าน [Eden](/eden)
+
+Elysia จึงเหมาะกว่าสำหรับสร้าง API แบบใช้งานได้ทั่วไปตามมาตรฐาน RESTful ที่นักพัฒนารู้จักอยู่แล้ว แทนที่จะต้องเรียนรู้ abstraction เฉพาะแบบใหม่ ในขณะที่ยังได้ type safety แบบ end-to-end เหมือนที่ tRPC มีให้
+
+## Routing
+
+Elysia ใช้ syntax คล้ายกับ Express และ Hono เช่น method `app.get()` และ `app.post()` ในการประกาศ route และมี syntax ของ path parameter คล้ายกัน
+
+tRPC ใช้แนวทาง router ซ้อนกันในการประกาศ route
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC } from '@trpc/server'
+import { createHTTPServer } from '@trpc/server/adapters/standalone'
+
+const t = initTRPC.create()
+
+const appRouter = t.router({
+	hello: t.procedure.query(() => 'Hello World'),
+	user: t.router({
+		getById: t.procedure
+			.input((id: string) => id)
+			.query(({ input }) => {
+				return { id: input }
+			})
+	})
+})
+
+const server = createHTTPServer({
+  	router: appRouter
+})
+
+server.listen(3000)
+```
+
+> tRPC ใช้ router และ procedure ที่ซ้อนกันในการประกาศ route
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .get('/user/:id', ({ params: { id } }) => ({ id }))
+    .listen(3000)
+```
+
+> Elysia ใช้ HTTP method และ path parameter ในการประกาศ route
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ในขณะที่ tRPC ใช้ abstraction เฉพาะที่ซ้อนอยู่บน RESTful API ด้วย procedure และ router Elysia ใช้ syntax คล้ายกับ Express และ Hono เช่น method `app.get()` และ `app.post()` ในการประกาศ route และมี syntax ของ path parameter คล้ายกัน
+
+## Handler
+
+handler ของ tRPC เรียกว่า `procedure` ซึ่งเป็นได้ทั้ง `query` หรือ `mutation` ส่วน Elysia ใช้ HTTP method อย่าง `get`, `post`, `put`, `delete` และอื่น ๆ
+
+tRPC ไม่มีแนวคิดเรื่อง property ของ HTTP อย่าง query, header, status code และอื่น ๆ มีแค่ `input` และ `output`
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC } from '@trpc/server'
+
+const t = initTRPC.create()
+
+const appRouter = t.router({
+	user: t.procedure
+		.input((val: { limit?: number; name: string; authorization?: string }) => val)
+		.mutation(({ input }) => {
+			const limit = input.limit
+			const name = input.name
+			const auth = input.authorization
+
+			return { limit, name, auth }
+		})
+})
+```
+
+> tRPC ใช้ `input` ตัวเดียวสำหรับทุก property
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.post('/user', { body: t.Object({ name: t.String() }) }, (ctx) => {
+	    const limit = ctx.query.limit
+	    const name = ctx.body.name
+	    const auth = ctx.headers.authorization
+
+	    return { limit, name, auth }
+	})
+```
+
+> Elysia ใช้ property เฉพาะสำหรับแต่ละ property ของ HTTP
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Elysia ใช้ **static code analysis** เพื่อตัดสินว่าต้อง parse อะไร และ parse เฉพาะ property ที่จำเป็นเท่านั้น
+
+ซึ่งดีทั้งต่อประสิทธิภาพและ type safety
+
+## Subrouter
+
+tRPC ใช้ router ที่ซ้อนกันในการประกาศ subrouter ส่วน Elysia ใช้ method `.use()` ในการประกาศ subrouter
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC } from '@trpc/server'
+
+const t = initTRPC.create()
+
+const subRouter = t.router({
+	user: t.procedure.query(() => 'Hello User')
+})
+
+const appRouter = t.router({
+	api: subRouter
+})
+```
+
+> tRPC ใช้ router ที่ซ้อนกันในการประกาศ subrouter
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ prefix: '/api' })
+	.get('/user', 'Hello User')
+
+const app = new Elysia()
+	.use(subRouter)
+```
+
+> Elysia ใช้ method `.use()` ในการประกาศ subrouter
+
+</div>
+</div>
+
+<div class="content-layout">
+
+แม้ tRPC จะเขียน subrouter แบบ inline ได้ แต่ Elysia ใช้ method `.use()` ในการประกาศ subrouter
+
+## Validation
+ทั้งสองรองรับ Standard Schema สำหรับ validation คุณจึงใช้ไลบรารี validation หลากหลายอย่าง Zod, Yup, Valibot และอื่น ๆ ได้
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC } from '@trpc/server'
+import { z } from 'zod'
+
+const t = initTRPC.create()
+
+const appRouter = t.router({
+	user: t.procedure
+		.input(
+			z.object({
+				id: z.number(),
+				name: z.string()
+			})
+		)
+		.mutation(({ input }) => input)
+//                    ^?
+})
+```
+
+> tRPC ใช้ `input` ในการประกาศ validation schema
+
+</div>
+<div>
+
+```ts title="Elysia TypeBox"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: t.Object({
+			id: t.Number()
+		}),
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Zod"
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Valibot"
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: v.object({
+			id: v.pipe(v.string(), v.transform(Number), v.number())
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+> Elysia ใช้ property เฉพาะในการประกาศ validation schema
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ทั้งสองอนุมาน type จาก schema ไปยัง context ให้อัตโนมัติ
+
+## อัปโหลดไฟล์
+ตัวอย่าง tRPC นี้ส่งไฟล์เป็น string แบบ base64 และตรวจสอบไบต์ของไฟล์เองอย่างชัดเจน วิธีนี้เพิ่มภาระในการ encode และตัวเลือกการอัปโหลดที่ใช้ได้ขึ้นอยู่กับเวอร์ชันและ transport ของ tRPC
+
+Elysia จัดการการอัปโหลดไฟล์ด้วย Web Standard API และตรวจสอบไบต์ด้วยไลบรารี `file-type` ตัวเดียวกัน โดยลงทะเบียนครั้งเดียว
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC, TRPCError } from '@trpc/server'
+import { z } from 'zod'
+
+import { fileTypeFromBuffer } from 'file-type'
+import { Buffer } from 'node:buffer'
+
+const t = initTRPC.create()
+
+export const uploadRouter = t.router({
+	uploadImage: t.procedure
+		.input(z.base64())
+		.mutation(async ({ input }) => {
+			const buffer = Buffer.from(input, 'base64')
+
+			const type = await fileTypeFromBuffer(buffer)
+			if (!type || !type.mime.startsWith('image/'))
+				throw new TRPCError({
+      				code: 'UNPROCESSABLE_CONTENT',
+       				message: 'Invalid file type',
+    			})
+
+			return input
+		})
+})
+```
+
+> tRPC ส่งไฟล์เป็น base64 และเรียก `file-type` ใน procedure
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+const app = new Elysia()
+	.post('/upload', {
+		body: t.Object({
+			file: t.File({
+				type: 'image/*'
+			})
+		})
+	}, ({ body }) => body.file)
+```
+
+> Elysia ลงทะเบียน `file-type` ครั้งเดียวและตรวจสอบ mimetype แบบ declarative
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ไม่มีตัวไหนตรวจสอบไบต์ของไฟล์เอง ทั้งสองจึงใช้ `file-type` โดย Elysia ลงทะเบียนตัวตรวจจับครั้งเดียวด้วย `setFileTypeDetector` แล้วตรวจสอบ type แบบ declarative ด้วย `t.File({ type })` ตัวตรวจจับนี้จำเป็นต้องมี ถ้าไม่มี ไฟล์ทุกไฟล์ที่ตรวจสอบด้วย `type` จะไม่ผ่าน
+
+## Middleware
+
+middleware ของ tRPC ทำงานตามคิวเดียวด้วย `next` คล้ายกับ Express ส่วน Elysia ให้คุณควบคุมได้ละเอียดกว่าด้วย lifecycle แบบ **event-based**
+
+Elysia เปิดให้ใช้ขั้นตอนต่าง ๆ ของ [lifecycle ของ request](/essential/life-cycle):
+
+| ขั้นตอน | หน้าที่ |
+| --- | --- |
+| Request | ตรวจดู request ที่เข้ามาก่อน parse |
+| Parse | decode body ของ request |
+| Transform และ validation | normalize และตรวจสอบ input ของ request |
+| Before handle | derive ค่าของ request หรือคืน response ก่อนกำหนด |
+| Handler | สร้าง response ของ route |
+| After handle และ map response | ปรับแต่งและ serialize response |
+| After response | ทำงานหลังส่ง response ไปแล้ว |
+
+error hook จัดการความผิดพลาดใน pipeline นี้
+
+ในขณะที่ tRPC มี request pipeline ที่ไหลไปตามลำดับเส้นเดียว Elysia ดักจับแต่ละ event ใน request pipeline ได้
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC } from '@trpc/server'
+
+const t = initTRPC.create()
+
+const log = t.middleware(async ({ ctx, next }) => {
+	console.log('Request started')
+
+	const result = await next()
+
+	console.log('Request ended')
+
+	return result
+})
+
+const appRouter = t.router({
+	hello: t.procedure.use(log).query(() => 'Hello World')
+})
+```
+
+> tRPC ใช้คิว middleware เดียวที่ประกาศเป็น procedure
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	// Global middleware
+	.onRequest(({ request }) => {
+		console.log(request.method, new URL(request.url).pathname)
+	})
+	// Route-specific middleware
+	.get('/protected', {
+		beforeHandle({ status, headers }) {
+  			if (!headers.authorization)
+     			return status(401)
+		}
+	}, () => 'protected')
+```
+
+> Elysia ใช้ event interceptor เฉพาะสำหรับแต่ละจุดใน request pipeline
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ในขณะที่ tRPC มีฟังก์ชัน `next` สำหรับเรียก middleware ถัดไปในคิว Elysia ใช้ event interceptor เฉพาะสำหรับแต่ละจุดใน request pipeline
+
+## Sound type safety
+Elysia ออกแบบมาเพื่อให้ type safety ที่ถูกต้องสมบูรณ์
+
+ตัวอย่างเช่น [derive](/essential/life-cycle#derive) เพิ่ม context เฉพาะของ request พร้อม type ที่อนุมานได้ ใน v2 ยังรับหน้าที่ของ context ที่ผ่านการตรวจสอบแล้ว ซึ่งเดิมเป็นหน้าที่ของ `resolve`
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC } from '@trpc/server'
+
+const t = initTRPC.context<{
+	version: number
+	token: string
+}>().create()
+
+const appRouter = t.router({
+	version: t.procedure.query(({ ctx: { version } }) => version),
+	token: t.procedure.query(({ ctx: { token, version } }) => {
+		return token
+	})
+})
+```
+
+> tRPC ใช้ `context` ขยาย context แต่ไม่ได้มี type safety ที่ถูกต้องสมบูรณ์
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.decorate('version', 2)
+	.get('/version', ({ version }) => version)
+	.derive(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+
+		return {
+			token: authorization.split(' ')[1]
+		}
+	})
+	// {  token: string, version: number }
+	.get('/token', ({ token, version }) => {
+		return token
+	})
+```
+
+> Elysia ใช้ `decorate` เพื่อขยาย context และใช้ `derive` เพื่อเพิ่ม property ของคุณเองลงใน context
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## พารามิเตอร์ของ middleware
+ทั้งสองรองรับ middleware ที่เขียนเอง แต่ Elysia ใช้ macro เพื่อส่ง argument ของคุณเองให้ middleware ส่วน tRPC ใช้ higher-order function
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC, TRPCError } from '@trpc/server'
+import { findUser } from './users'
+
+const t = initTRPC.context<{ authorization?: string }>().create()
+
+const role = (role: 'user' | 'admin') =>
+	t.middleware(({ ctx, next }) => {
+		const user = findUser(ctx.authorization)
+
+		if (!user || user.role !== role)
+			throw new TRPCError({
+      			code: 'UNAUTHORIZED',
+      			message: 'Unauthorized',
+    		})
+
+		return next({
+			ctx: {
+				user
+			}
+		})
+	})
+
+const appRouter = t.router({
+	token: t.procedure
+		.use(role('admin'))
+		.query(({ ctx: { user } }) => user)
+})
+```
+
+> tRPC ใช้ higher-order function เพื่อส่ง argument ของคุณเองให้ middleware ที่เขียนเอง
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { findUser } from './users'
+
+const app = new Elysia()
+	.macro({
+		role: (role: 'user' | 'admin') => ({
+			derive({ status, headers: { authorization } }) {
+				const user = findUser(authorization)
+
+				if (!user || user.role !== role)
+					return status(401)
+
+				return {
+					user
+				}
+			}
+		})
+	})
+	// The handler receives the user returned by the macro.
+	.get('/token', {
+		role: 'admin'
+	}, ({ user }) => user)
+```
+
+> Elysia ใช้ macro เพื่อส่ง argument ของคุณเองให้ middleware ที่เขียนเอง
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ในตัวอย่างนี้ `findUser` คือโค้ดของแอปพลิเคชันที่ตรวจสอบ credential ที่ส่งมาแล้วคืนค่าผู้ใช้ที่มี `role` หรือไม่คืนผู้ใช้เลยเมื่อตรวจสอบไม่ผ่าน การตรวจแค่ header หรือ prefix ของ Bearer อย่างเดียวไม่ใช่ authentication
+
+## การจัดการ error
+
+tRPC จัดการ error ด้วยแนวทางคล้าย middleware ส่วน Elysia มี custom error ที่ type safe และ error interceptor ทั้งแบบ global และเฉพาะ route
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC, TRPCError } from '@trpc/server'
+
+const t = initTRPC.create()
+
+class CustomError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'CustomError'
+	}
+}
+
+const procedure = t.procedure.use(async ({ next }) => {
+	const result = await next()
+
+	if (!result.ok) {
+		console.log(result.error)
+
+		throw new TRPCError({
+			code: 'INTERNAL_SERVER_ERROR',
+			message: result.error.message
+		})
+	}
+
+	return result
+})
+
+const appRouter = t.router({
+	error: procedure.query(() => {
+		throw new CustomError('oh uh')
+	})
+})
+```
+
+> tRPC จัดการ error ด้วยแนวทางคล้าย middleware
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+class CustomError extends Error {
+    status = 500
+}
+
+const app = new Elysia()
+    .onError(CustomError, ({ error, status }) =>
+        status(500, { message: 'Something went wrong!', detail: error.message })
+    )
+    .get('/error', () => {
+        throw new CustomError('oh uh')
+    })
+    .get('/local-error', {
+        error({ error, status }) {
+            if (error instanceof RangeError)
+                return status(500, { message: 'Only for this route!' })
+        }
+    }, () => {
+        throw new RangeError('outside the allowed range')
+    })
+```
+
+> Elysia ให้คุณควบคุมการจัดการ error ได้ละเอียดกว่า และมีกลไกของ scope
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ในขณะที่ tRPC จัดการ error ด้วยแนวทางคล้าย middleware Elysia มีให้:
+
+1. error handler ทั้งแบบ global และแบบเฉพาะ route
+2. helper `status` สำหรับคืน response พร้อม HTTP status
+3. error ที่มี `status` (หรือ `HTTPError`) จะถูกแปลงเป็น HTTP status ของมัน
+
+route `/error` ใช้ handler ของ `CustomError` ที่ลงทะเบียนไว้ ส่วน route `/local-error` จัดการ error อีกแบบหนึ่งภายใน route เอง error hook ทำงานตามลำดับการลงทะเบียน และ hook ตัวแรกที่คืนค่าจะเป็นตัวส่ง response hook ที่ลงทะเบียนบนแอปไว้ก่อน route จะทำงานก่อน hook `error` ของ route นั้น route hook จึงทับ hook เหล่านั้นไม่ได้
+
+Elysia อนุมาน type ของ error ที่ลงทะเบียนไว้ใน handler แยกตาม class
+
+## Encapsulation
+
+tRPC encapsulate side-effect ของ procedure หรือ router ไว้ ทำให้แยกขาดจากกันเสมอ ส่วน Elysia ให้คุณควบคุม side-effect ของปลั๊กอินได้ผ่านกลไก scope ที่ชัดเจนและลำดับของโค้ด
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC, TRPCError } from '@trpc/server'
+
+// Supply these headers from your adapter's createContext callback.
+type Context = { headers: { authorization?: string } }
+const t = initTRPC.context<Context>().create()
+
+const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+    if (!ctx.headers.authorization?.startsWith('Bearer '))
+        throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Unauthorized'
+        })
+
+    return next()
+})
+
+const subRouter = t.router({
+    sideEffect: protectedProcedure.mutation(() => 'hi')
+})
+
+const appRouter = t.router({
+    // This procedure does not use the protected middleware.
+    hello: t.procedure.query(() => 'Hello World'),
+    api: subRouter
+})
+```
+
+> tRPC encapsulate side-effect ของปลั๊กอินไว้ใน procedure หรือ router
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // doesn't have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+> Elysia encapsulate side-effect ของปลั๊กอิน เว้นแต่จะระบุไว้อย่างชัดเจน
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ทั้งสองมีกลไก encapsulation ของปลั๊กอินเพื่อป้องกัน side-effect
+
+แต่ Elysia ระบุได้อย่างชัดเจนว่าปลั๊กอินไหนควรมี side-effect ด้วยการประกาศ scope ของปลั๊กอิน ส่วน tRPC encapsulate ไว้เสมอ
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	// Scoped to parent instance but not beyond
+	.as('plugin') // [!code ++]
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // [!code ++]
+    // now have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+Elysia มีกลไก scope 3 แบบ:
+1. **local** - มีผลกับ instance นี้และ descendant ของมัน (ค่าเริ่มต้น)
+2. **plugin** - แชร์ side-effect กับ instance ที่เป็น parent แต่ไม่เกินกว่านั้น
+3. **global** - แชร์ไปยังทุก instance ที่เป็น parent
+
+## OpenAPI
+tRPC ไม่มี OpenAPI ของตัวเอง และต้องพึ่งไลบรารีภายนอกอย่าง `trpc-to-openapi` ซึ่งไม่ใช่วิธีที่ราบรื่นนัก
+
+Elysia มี OpenAPI ผ่านปลั๊กอิน [@elysia/openapi](/plugins/openapi) ในโค้ดบรรทัดเดียว
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC } from '@trpc/server'
+import { z } from 'zod'
+
+import { generateOpenApiDocument, type OpenApiMeta } from 'trpc-to-openapi'
+
+const t = initTRPC.meta<OpenApiMeta>().create()
+
+const appRouter = t.router({
+	user: t.procedure
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/users',
+				tags: ['User'],
+				summary: 'Create user',
+			}
+		})
+		.input(z.object({
+			users: z.array(z.object({
+				name: z.string(),
+				age: z.number()
+			}))
+		}))
+		.output(
+			z.array(
+				z.object({
+					name: z.string(),
+					age: z.number()
+				})
+			)
+		)
+		.mutation(({ input }) => input.users)
+})
+
+export const openApiDocument = generateOpenApiDocument(appRouter, {
+  	title: 'tRPC OpenAPI',
+  	version: '1.0.0',
+  	baseUrl: 'http://localhost:3000'
+})
+```
+
+> tRPC ต้องพึ่งไลบรารีภายนอกในการสร้าง OpenAPI specification ปลั๊กอินนี้ต้องการ input เป็น object สำหรับ mutation ตัวอย่างจึงครอบ array ของผู้ใช้ไว้ใน `users`
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi' // [!code ++]
+
+const app = new Elysia()
+	.use(openapi()) // [!code ++]
+	.model({
+		user: t.Array(
+			t.Object({
+				name: t.String(),
+				age: t.Number()
+			})
+		)
+	})
+	.post('/users', {
+		body: 'user',
+		response: {
+			201: 'user'
+		},
+		detail: {
+			summary: 'Create user'
+		}
+	}, ({ body, status }) => status(201, body))
+```
+
+> Elysia ผสาน specification เข้ากับ schema ได้อย่างราบรื่น
+
+</div>
+</div>
+
+<div class="content-layout">
+
+tRPC ต้องพึ่งไลบรารีภายนอกในการสร้าง OpenAPI spec และ**ต้อง**กำหนดชื่อ path และ HTTP method ที่ถูกต้องไว้ใน metadata ทำให้คุณต้อง**คอยระวังอยู่ตลอด**ว่าวาง router และ procedure ไว้อย่างไร
+
+Elysia ใช้ schema ที่คุณกำหนดในการสร้าง OpenAPI specification ตรวจสอบ request/response และอนุมาน type ให้อัตโนมัติ ทั้งหมดจาก**แหล่งความจริงเพียงแหล่งเดียว**
+
+Elysia ยังเพิ่ม schema ที่ลงทะเบียนไว้ใน `model` ลงใน OpenAPI spec ให้คุณอ้างอิง model ในส่วนเฉพาะของ Swagger หรือ Scalar UI ได้ ซึ่ง tRPC ไม่มี และจะแทรก schema ไว้ใน route โดยตรง
+
+## การทดสอบ
+
+Elysia ใช้ Web Standard API ในการจัดการ request และ response ส่วน tRPC ต้องเตรียมการหลายขั้นตอนในการรัน request ด้วย `createCallerFactory`
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { describe, it, expect } from 'vitest'
+
+import { initTRPC } from '@trpc/server'
+import { z } from 'zod'
+
+const t = initTRPC.create()
+
+const publicProcedure = t.procedure
+const { createCallerFactory, router } = t
+
+const appRouter = router({
+	post: router({
+		add: publicProcedure
+			.input(
+				z.object({
+					title: z.string().min(2)
+				})
+			)
+			.mutation(({ input }) => input)
+	})
+})
+
+const createCaller = createCallerFactory(appRouter)
+
+const caller = createCaller({})
+
+describe('post.add', () => {
+	it('should return the new post', async () => {
+		const newPost = await caller.post.add({
+			title: '74 Itoki Hana'
+		})
+
+		expect(newPost).toEqual({
+			title: '74 Itoki Hana'
+		})
+	})
+})
+```
+
+> tRPC ต้องใช้ `createCallerFactory` และเตรียมการหลายขั้นตอนในการรัน request
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { describe, it, expect } from 'vitest'
+
+const app = new Elysia()
+	.post('/add', {
+		body: t.Object({
+			title: t.String({ minLength: 2 })
+		})
+	}, ({ body }) => body)
+
+describe('POST /add', () => {
+	it('should return the new post', async () => {
+		const res = await app.handle(
+			new Request('http://localhost/add', {
+				method: 'POST',
+				body: JSON.stringify({ title: '74 Itoki Hana' }),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+		)
+
+		expect(res.status).toBe(200)
+		expect(await res.json()).toEqual({
+			title: '74 Itoki Hana'
+		})
+	})
+})
+```
+
+> Elysia ใช้ Web Standard API ในการจัดการ request และ response
+
+</div>
+</div>
+
+<div class="content-layout">
+
+นอกจากนี้ Elysia ยังมีไลบรารี helper ชื่อ [Eden](/eden) สำหรับ type safety แบบ end-to-end ซึ่งคล้ายกับ `tRPC.createCallerFactory` ให้เราทดสอบได้พร้อม auto-completion และ type safety เต็มรูปแบบเหมือน tRPC โดยไม่ต้องเตรียมการยุ่งยาก
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import { describe, expect, it } from 'bun:test'
+
+const app = new Elysia().get('/hello', 'Hello World')
+const api = treaty(app)
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const { data, error, status } = await api.hello.get()
+
+		expect(status).toBe(200)
+		expect(data).toBe('Hello World')
+	})
+})
+```
+
+## Type safety แบบ end-to-end
+ทั้งสองมี type safety แบบ end-to-end สำหรับการสื่อสารระหว่าง client กับเซิร์ฟเวอร์
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="tRPC"
+import { initTRPC } from '@trpc/server'
+import { createHTTPServer } from '@trpc/server/adapters/standalone'
+import { z }  from 'zod'
+
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
+
+const t = initTRPC.create()
+
+const appRouter = t.router({
+	mirror: t.procedure
+		.input(
+			z.object({
+				message: z.string()
+			})
+		)
+		.output(
+			z.object({
+				message: z.string()
+			})
+		)
+		.mutation(({ input }) => input)
+})
+
+const server = createHTTPServer({
+  	router: appRouter
+})
+
+server.listen(3000)
+
+const client = createTRPCProxyClient<typeof appRouter>({
+	links: [
+		httpBatchLink({
+			url: 'http://localhost:3000'
+		})
+	]
+})
+
+const { message } = await client.mirror.mutate({
+	message: 'Hello World'
+})
+
+message
+```
+
+> tRPC ใช้ `createTRPCProxyClient` สร้าง client ที่มี type safety แบบ end-to-end
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/mirror', {
+		body: t.Object({
+			message: t.String()
+		})
+	}, ({ body }) => body)
+
+const api = treaty(app)
+
+const { data, error } = await api.mirror.post({
+	message: 'Hello World'
+})
+
+if (error)
+	// error.status: 422
+	// error.value: { type: 'validation', title: 'Validation Error', status: 422, on: 'body', detail, errors: [...] }
+	throw error
+
+// { message: 'Hello World' }
+console.log(data)
+```
+
+> Elysia ใช้ `treaty` รัน request และมี type safety แบบ end-to-end
+
+</div>
+</div>
+
+<div class="content-layout">
+
+แม้ทั้งสองจะมี type safety แบบ end-to-end แต่ tRPC จัดการเฉพาะ **happy path** ที่ request สำเร็จ และไม่มี type soundness ในการจัดการ error จึงไม่ถูกต้องสมบูรณ์
+
+ถ้า type soundness สำคัญกับคุณ Elysia คือตัวเลือกที่ใช่
+
+---
+
+แม้ tRPC จะเป็นเฟรมเวิร์กที่ยอดเยี่ยมสำหรับสร้าง API แบบ type-safe แต่ก็มีข้อจำกัดในด้านการเป็นไปตาม RESTful และ type soundness
+
+Elysia ออกแบบมาให้ใช้งานง่ายและเป็นมิตรกับนักพัฒนา โดยเน้นประสบการณ์ของนักพัฒนาและ **type soundness** และเป็นไปตามมาตรฐาน RESTful, OpenAPI และ WinterCG จึงเหมาะกว่าสำหรับสร้าง API แบบใช้งานได้ทั่วไป
+
+หรือถ้าคุณมาจากเฟรมเวิร์กอื่น ลองดูหน้าเหล่านี้:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+	<Card href="/migrate/from-express">
+<CardTitle>จาก Express</CardTitle>
+
+เปรียบเทียบ Express กับ Elysia
+
+</Card>
+    <Card href="/migrate/from-fastify">
+<CardTitle>จาก Fastify</CardTitle>
+
+เปรียบเทียบ Fastify กับ Elysia
+
+</Card>
+    <Card href="/migrate/from-hono">
+<CardTitle>จาก Hono</CardTitle>
+
+เปรียบเทียบ Hono กับ Elysia
+
+</Card>
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>

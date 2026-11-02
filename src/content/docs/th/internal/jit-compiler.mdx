@@ -1,0 +1,212 @@
+---
+title: JIT compiler
+description: Elysia วิเคราะห์ handler และสร้างโค้ดสำหรับจัดการ request ของแต่ละ route อย่างไร
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">JIT "compiler"</h1>
+
+Elysia ปรับแต่งทั้งความสามารถของ runtime ที่ใช้ และงานที่ต้องทำในการจัดการ request route ที่อ่านแค่ path parameter ไม่ควรต้อง parse query หรือ body ที่ไม่ได้ใช้
+
+ตั้งแต่ [Elysia 0.4](/blog/elysia-04/) ซึ่งออกเมื่อวันที่ 30 มีนาคม 2023 เฟรมเวิร์กนี้สร้าง request handler ที่เป็น JavaScript ด้วย `new Function(...)`
+
+นี่ไม่ใช่ compiler แบบดั้งเดิมที่แปลภาษาโปรแกรมหนึ่งไปเป็นอีกภาษาหนึ่ง แต่เป็นการสร้างโค้ดที่ปรับให้เข้ากับ handler, schema และ hook ของแต่ละ route เราจึงใส่คำว่า "compiler" ไว้ในเครื่องหมายคำพูด
+
+ใน v2 ตัวสร้าง handler อยู่ใน `src/compile/handler/` รวมถึง `jit.ts` คำอธิบายรุ่นเก่าจะอ้างถึง `src/compose.ts` ส่วน Sucrose ยังอยู่ที่ `src/sucrose.ts`
+
+โดยค่าเริ่มต้น route จะถูกคอมไพล์ตอนถูกใช้งานครั้งแรก เมื่อสร้างแล้ว handler จะถูกนำกลับมาใช้ซ้ำ static response และ route ที่คอมไพล์ไว้ล่วงหน้าอาจใช้เส้นทางที่ต่างออกไป ไม่ใช่ทุก request หรือทุก route ที่ต้องวิเคราะห์แบบเดียวกัน
+
+## Static code analysis (Sucrose)
+
+*Sucrose* คือชื่อเล่นของโมดูลวิเคราะห์ที่ช่วยให้ compiler เข้าใจว่า handler ใช้ field ไหนใน context บ้าง
+
+Sucrose อ่านซอร์สของฟังก์ชันด้วย `Function.toString()` และใช้การวิเคราะห์เฉพาะทางเพื่อหารูปแบบการเข้าถึงที่เกี่ยวข้อง โดยไม่ได้รัน handler เพื่อดูว่าต้องใช้อะไร
+
+ลองดู route นี้:
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .patch('/user/:id', ({ params }) => ({ id: params.id }))
+```
+
+handler นี้อ่าน `params` แต่ไม่ได้อ่าน `body`, `query` หรือ `headers`
+
+Sucrose ส่งข้อมูลนี้ไปใช้ในการคอมไพล์ route ส่วน compiler ก็พิจารณา hook และ schema ด้วย เช่น body validation schema ยังต้องใช้ input แม้ handler จะไม่ได้อ่าน `body` โดยตรง
+
+ในเชิงแนวคิด โค้ดที่สร้างขึ้นทำแบบนี้ได้:
+
+```ts title="Route-specific handler, simplified"
+function tailoredHandler(request) {
+    const context = {
+        request,
+        params: parseParams(request.url)
+    }
+
+    return routeHandler(context)
+}
+```
+
+นี่เป็นเพียงภาพร่างเพื่ออธิบาย ไม่ใช่ซอร์สที่ Elysia สร้างขึ้นจริงหรือฟังก์ชัน helper ที่ export ออกมา ลองเทียบกับ handler กลางที่เตรียมทุก field ไว้ล่วงหน้า:
+
+```ts title="Eager central handler, simplified"
+async function centralHandler(request) {
+    const context = {
+        request,
+        params: parseParams(request.url),
+        body: await parseBody(request),
+        query: parseQuery(request.url),
+        headers: parseHeaders(request.headers)
+    }
+
+    return routeHandler(context)
+}
+```
+
+| Input | Route ที่ใช้แค่พารามิเตอร์ | ภาพร่างแบบเตรียมทุกอย่าง |
+| --- | --- | --- |
+| Path parameter | อ่าน | อ่าน |
+| Body | ข้าม เว้นแต่มีเงื่อนไขอื่นของ route ที่ต้องใช้ | อ่าน |
+| Query | ข้าม เว้นแต่จำเป็น | อ่าน |
+| Object ของ header | ข้าม เว้นแต่จำเป็น | อ่าน |
+
+วิธีนี้ลดงานที่ไม่จำเป็นในแต่ละ request เฟรมเวิร์กอื่นก็ parse แบบ lazy ได้เช่นกัน ภาพร่างนี้อธิบายการปรับแต่ง ไม่ได้อ้างว่าเฟรมเวิร์กอื่นทุกตัว parse ทุกอย่างเสมอ
+
+### ทำไมไม่ใช้ acorn, esprima หรือเครื่องมือวิเคราะห์แบบดั้งเดิมอื่น ๆ?
+
+parser แบบอเนกประสงค์เข้าใจ JavaScript มากกว่าที่การวิเคราะห์นี้ต้องการมาก และยังสร้าง AST ซึ่งเพิ่มงานและการจองหน่วยความจำ
+
+Elysia เจาะจงเฉพาะรูปแบบซอร์สของฟังก์ชันที่เกี่ยวกับการใช้ context โดยมองส่วนย่อยนั้นเป็นภาษา input ขนาดเล็กของตัวเอง และใช้การวิเคราะห์แบบระมัดระวังเมื่อการเข้าถึงนั้นระบุได้ยาก
+
+สิ่งที่แลกกันคือขอบเขตที่แคบลงเพื่อแลกกับงาน parse ที่น้อยลง Sucrose ไม่ได้มาแทน JavaScript parser แบบทั่วไป
+
+## การปรับแต่งของ compiler
+
+compiler จัดรูปแบบ control flow ตามเงื่อนไขจริงของ route ได้ เลือกการจัดการ response ที่เฉพาะเจาะจง และใช้การเข้าถึง property โดยตรงเมื่อทำได้
+
+ค่าคงที่และ schema ที่รู้อยู่แล้วยังให้ข้อมูลที่ request handler แบบทั่วไปตัวเดียวไม่มี การประหยัดเล็ก ๆ หลายจุดรวมกันเป็นผลลัพธ์ และผลที่ได้ขึ้นอยู่กับแต่ละ route
+
+### ตัวอย่าง: `mapResponse`, `mapCompactResponse`
+
+Elysia มี response mapper สำหรับ metadata ของ response ในปริมาณต่างกัน
+
+เมื่อ handler ไม่ได้แก้ไข `set` หรือใช้ status ที่กำหนดเอง mapper แบบ compact จะคืนค่าได้โดยไม่ต้องเตรียม state ของ status และ header เพิ่ม แต่เมื่อต้องใช้ state นั้น mapper แบบเต็มจะจัดการให้
+
+การสร้างและแปลง response ที่มี header กำหนดเองเป็นงานที่ต่างจากการคืนค่าธรรมดา การปรับแต่งนี้จะเลือกเส้นทางที่เหมาะกับ route แทนที่จะต้องจ่ายต้นทุนของกรณีทั่วไปเสมอ
+
+## การปรับแต่งเฉพาะแพลตฟอร์ม
+
+เดิม Elysia สร้างมาเพื่อ Bun และยังรองรับ [Node.js](/integrations/node/), [Deno](/integrations/deno/) และสภาพแวดล้อมอื่นผ่าน integration เฉพาะของแต่ละ runtime
+
+การเข้ากันได้กับแพลตฟอร์มกับการใช้ประโยชน์จาก API แบบ native ของแพลตฟอร์มเป็นงานคนละอย่าง ตัวอย่างเช่น routing แบบ native และเส้นทางของ static response ใน Bun ช่วยเลี่ยงงาน dispatch บางส่วนใน JavaScript ได้
+
+ตัวอย่างอื่น ๆ ได้แก่:
+
+- การจัดการ WebSocket แบบ native บน Bun ผ่าน[ปลั๊กอิน WebSocket](/patterns/websocket/) ของ Elysia
+- helper `file()` ที่ใช้การจัดการไฟล์เฉพาะแพลตฟอร์มเมื่อมีให้ใช้
+- operation ของ header แบบ native เมื่อ runtime เปิดให้ใช้
+
+Elysia ติดอยู่ใน [plaintext benchmark ของ TechEmpower Round 23](https://www.techempower.com/benchmarks/#section=data-r23&hw=ph&test=plaintext) ซึ่งเป็นผลในอดีตของการตั้งค่าแบบหนึ่ง ไม่ใช่การวัดผลของตัวอย่าง v2 ในหน้านี้
+
+ให้วัดผลกับงานและ runtime ที่ใช้จริง เพราะการเข้าถึงฐานข้อมูล serialization, middleware และสภาพเครือข่ายอาจมีผลมากกว่า routing benchmark เล็ก ๆ
+
+## ภาระของ JIT compiler
+
+การสร้าง handler แบบเฉพาะเจาะจงมีทั้งต้นทุนและประโยชน์
+
+### ภาระของ request แรก
+
+การใช้ route ครั้งแรกอาจต้องวิเคราะห์และสร้างโค้ด request ถัด ๆ ไปจะนำผลลัพธ์นั้นกลับมาใช้
+
+ลองวัดผลบนเครื่องกับเวอร์ชันและ runtime ที่คุณใช้:
+
+```ts title="Measure eager route compilation"
+import { Elysia } from 'elysia'
+
+const iterations = 10_000
+const start = performance.now()
+
+for (let index = 0; index < iterations; index++) {
+    new Elysia()
+        .post('/id/:id', ({ params }) => params.id)
+        .compile()
+}
+
+const elapsed = performance.now() - start
+console.log(`${elapsed.toFixed(1)} ms total`)
+console.log(`${(elapsed / iterations).toFixed(4)} ms per instance`)
+```
+
+ผลนี้รวมทั้งการสร้าง instance และการลงทะเบียน route นอกเหนือจากการคอมไพล์ ส่วน warmup, garbage collection, ความซับซ้อนของ route และฮาร์ดแวร์ล้วนมีผลต่อผลลัพธ์
+
+ใช้ `precompile: true` บนแอปพลิเคชันรากเพื่อย้ายการคอมไพล์ไปก่อนเริ่ม listen หรือเรียก `.compile()` เองอย่างชัดเจน:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ precompile: true })
+    .get('/hello/:name', ({ params }) => 'Hello ' + params.name)
+    .listen(3000)
+```
+
+คุณแลกเวลาเริ่มทำงานส่วนหนึ่งกับงานที่น้อยลงใน request แรก
+
+### การใช้หน่วยความจำ
+
+โค้ดที่สร้างขึ้นและ metadata ที่เกี่ยวข้องใช้หน่วยความจำ route ที่มากขึ้นอาจหมายถึง handler และ validator ที่คอมไพล์แล้วมากขึ้น ถ้าเรื่องนี้สำคัญกับการ deploy ของคุณ ให้วัดหน่วยความจำกับชุด route ที่ใกล้เคียงของจริง
+
+### ขนาด bundle ที่ใหญ่ขึ้น
+
+compiler และโค้ดวิเคราะห์ทำให้แพ็กเกจของ Elysia ใหญ่ขึ้น เครื่องมือ build แบบ ahead-of-time เปลี่ยนสิ่งที่ต้องใช้ตอน runtime ได้ แต่ bundle ที่เล็กกว่ากับ handler ที่เร็วกว่าไม่ได้เป็นการแลกเปลี่ยนแบบเดียวกันเสมอไป
+
+### การดูแลรักษา
+
+โค้ดที่สร้างขึ้นเพิ่มความซับซ้อนให้ผู้ดูแลเฟรมเวิร์ก การ debug ต้องเข้าใจทั้งการประกาศ route และเส้นทางการสร้างโค้ด
+
+การทำให้การสร้างโค้ดและการวิเคราะห์เป็นแบบเฉพาะทางช่วยเรื่องประสิทธิภาพตอน runtime แต่ก็หมายความว่าเส้นทางเหล่านั้นต้องมีเทสต์ของตัวเอง
+
+### ข้อพิจารณาด้านความปลอดภัย
+
+`new Function(...)` คอมไพล์ JavaScript ไม่ใช่ sandbox
+
+Elysia สร้างโค้ดจาก route ของแอปพลิเคชันและโครงสร้างที่ compiler ควบคุม โดยไม่ได้ตั้งใจจะประมวลผล string จาก request ตามใจเป็น JavaScript แต่ขอบเขตนี้ยังต้องระมัดระวังเมื่อจัดการ schema, การตั้งค่าปลั๊กอิน หรือ input อื่นที่มีผลต่อโค้ดที่สร้างขึ้น
+
+อย่ารับโค้ดของแอปพลิเคชันหรือการตั้งค่า schema ที่รันได้จากแหล่งที่ไม่น่าเชื่อถือ แล้วสันนิษฐานว่าการคอมไพล์ route จะทำให้ปลอดภัย ข้อจำกัดของ runtime เรื่องการสร้างโค้ดแบบ dynamic ก็มีผลแยกต่างหากจากความถูกต้องของแอปพลิเคชัน
+
+## ไลบรารีที่ใช้การสร้างโค้ดแบบ dynamic
+
+Elysia ไม่ได้เป็นตัวเดียวที่สร้างฟังก์ชันแบบเฉพาะเจาะจง [Ajv](https://ajv.js.org/guide/managing-schemas.html) และ [TypeBox](https://github.com/sinclairzx81/typebox) ก็ใช้เทคนิคการคอมไพล์สำหรับ validation เช่นกัน
+
+แนวคิดกว้าง ๆ เหมือนกันคือเตรียมการครั้งเดียว แล้วนำฟังก์ชันกลับมาใช้ซ้ำในเส้นทางที่ถูกเรียกบ่อย Elysia ใช้แนวคิดนี้กับการจัดการ request นอกเหนือจาก validation รายละเอียดการ implement ที่แท้จริงขึ้นอยู่กับ validator และเวอร์ชันที่คุณเลือก
+
+## การปิดใช้งาน
+
+:::note[Elysia v2]
+
+ตัวเลือก `new Elysia({ aot: false })` ของ v1 ใช้เลือก dynamic handler แบบเก่า constructor ของ v2 ไม่มีตัวเลือกนี้แล้ว การตั้งค่า `precompile: true` เปลี่ยนแค่เวลาที่คอมไพล์ ไม่ได้ปิดการสร้างโค้ด
+
+:::
+
+V2 มีปลั๊กอินสำหรับ build แบบ ahead-of-time อยู่ใน path อย่าง `elysia/plugin/aot/bun`, `elysia/plugin/aot/esbuild` และ `elysia/plugin/aot/vite` ปลั๊กอินเหล่านี้เตรียม handler ไว้ระหว่าง build แทนการใช้สวิตช์โหมด dynamic แบบเก่า
+
+เมื่อ deploy ไปยัง runtime ที่จำกัดการสร้างโค้ดแบบ dynamic ให้ตรวจสอบ[ข้อกำหนดในการ deploy](/patterns/deploy/) และ path ที่ปลั๊กอิน build รองรับ อย่าสันนิษฐานว่าการเปลี่ยน flag `aot` แบบเก่าจะทำให้แอปพลิเคชันเข้ากันได้
+
+## บทส่งท้าย
+
+compiler แลกงานตอนเริ่มทำงาน หน่วยความจำ และความซับซ้อนของ implementation ส่วนหนึ่งกับงานจัดการ request ที่ซ้ำ ๆ ที่น้อยลง การแลกเปลี่ยนนี้เป็นหัวใจของการออกแบบ Elysia
+
+โปรเจกต์ได้เผยแพร่[บทความวิชาการ 6 หน้าใน ACM Digital Library](https://dl.acm.org/doi/10.1145/3605098.3636068) เกี่ยวกับ JIT compiler รุ่นแรกและการปรับแต่งประสิทธิภาพ เป็นข้อมูลพื้นฐานของแนวทางนี้ ส่วน implementation ปัจจุบันก็พัฒนาต่อเนื่องมา
+
+ไลบรารีและ binding แบบ native รวมถึงระบบอย่าง uWebSockets มีการแลกเปลี่ยนที่ต่างออกไป และอาจมีประสิทธิภาพดีกว่าเฟรมเวิร์ก JavaScript ในงานบางประเภท ใช้ benchmark ตอบคำถามเกี่ยวกับงานที่เฉพาะเจาะจง แทนที่จะใช้เพื่อการันตีว่าใครชนะในทุกกรณี
+
+</div>
+</InteractiveDocLayout>
+</div>

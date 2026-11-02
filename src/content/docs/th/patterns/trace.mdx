@@ -1,0 +1,205 @@
+---
+title: Trace
+description: วัดเวลาที่ใช้ใน lifecycle และ handler เพื่อหาส่วนที่ทำงานช้าใน request
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Trace</h1>
+
+ใช้ `.trace()` เพื่อวัดเวลาที่ใช้ในแต่ละ lifecycle ของ request และ handler ของมัน ช่วยให้คุณหาส่วนที่ช้าเจอก่อนจะลงมือแก้โค้ด
+
+## Trace
+trace ใช้ callback listener เพื่อรายงานว่า lifecycle event แต่ละตัวเริ่มและจบเมื่อไร callback `onStop` จะทำงานเสร็จก่อนที่ lifecycle event ถัดไปจะเริ่ม
+
+เริ่มจากติดตั้งความสามารถ trace ด้วย `.use(trace())` ซึ่ง import มาจาก `elysia/trace` จากนั้นลงทะเบียน callback ของ `.trace()` บน instance เพื่อ subscribe lifecycle event
+
+คุณ listen แต่ละ lifecycle ได้ด้วยการใส่ prefix `on` ตามด้วยชื่อ lifecycle เช่น `onHandle` เพื่อ listen event `handle`
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+    .trace(async ({ onHandle }) => {
+	    onHandle(({ begin, onStop }) => {
+			onStop(({ end }) => {
+        		console.log('handle took', end - begin, 'ms')
+			})
+	    })
+    })
+    .get('/', () => 'Hi')
+    .listen(3000)
+```
+
+ดูข้อมูลเพิ่มเติมได้ที่ [Life Cycle Events](/essential/life-cycle/):
+
+## Children
+กลุ่มของ lifecycle จะมี child event สำหรับ hook ที่ลงทะเบียนไว้ `handle` แทนตัว handler ของ route เอง ส่วนถ้าต้องการวัด hook ทีละตัว ให้ใช้ `onEvent` บนกลุ่มของ hook
+
+คุณใช้ `onEvent` เพื่อ listen child event แต่ละตัวตามลำดับได้
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const sleep = (time = 1000) =>
+    new Promise((resolve) => setTimeout(resolve, time))
+
+const app = new Elysia()
+    .use(trace())
+    .trace(async ({ onBeforeHandle }) => {
+        onBeforeHandle(({ total, onEvent }) => {
+            console.log('total children:', total)
+
+            onEvent(({ onStop }) => {
+                onStop(({ elapsed }) => {
+                    console.log('child took', elapsed, 'ms')
+                })
+            })
+        })
+    })
+    .get('/', {
+        beforeHandle: [
+            function prepare() {},
+            async function delay() {
+                await sleep()
+            }
+        ]
+    }, () => 'Hi')
+    .listen(3000)
+```
+
+ในตัวอย่างนี้ จำนวน children ทั้งหมดคือ `2` เพราะ event `beforeHandle` มี child อยู่ 2 ตัว
+
+จากนั้นเรา listen child event แต่ละตัวด้วย `onEvent` แล้วแสดงระยะเวลาของแต่ละตัว
+
+## พารามิเตอร์ของ trace
+callback ที่ส่งให้ `.trace()` จะได้รับ trace context ของ request:
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	// This is trace parameter
+	// hover to view the type
+	.trace((parameter) => {
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+`trace` รับพารามิเตอร์ต่อไปนี้:
+
+<span id="id---number" />
+
+### id - `string`
+UUID string ของแต่ละ request มีประโยชน์สำหรับเชื่อมโยง log เข้าด้วยกัน
+
+### context - `Context`
+[Context](/essential/handler#context) ของ Elysia เช่น `set`, `store`, `query`, `params`
+
+### set - `Context.set`
+ทางลัดของ `context.set` สำหรับกำหนด header หรือ status ของ context
+
+### store - `Singleton.store`
+ทางลัดของ `context.store` สำหรับเข้าถึงข้อมูลใน context
+
+### time - `number`
+timestamp ของเวลาที่ request ถูกเรียก
+
+<span id="onevent---tracelistener" />
+
+### onEvent listeners
+event listener สำหรับ lifecycle event แต่ละตัว
+
+คุณ listen lifecycle event ต่อไปนี้ได้:
+-   **onRequest** - รับแจ้งเตือนทุกครั้งที่มี request ใหม่
+-   **onParse** - array ของฟังก์ชันสำหรับ parse body
+-   **onTransform** - แปลง request และ context ก่อน validation
+-   **onBeforeHandle** - เงื่อนไขเพิ่มเติมที่ตรวจสอบก่อน handler หลัก ถ้าคืน response กลับมาจะข้าม handler หลักได้
+-   **onHandle** - ฟังก์ชันที่ผูกไว้กับ path
+-   **onAfterHandle** - จัดการ response ก่อนส่งกลับไปให้ client
+-   **onMapResponse** - แปลงค่าที่คืนกลับมาเป็น Response แบบ Web Standard
+-   **onError** - จัดการ error ที่ถูก throw ระหว่างประมวลผล request
+-   **onAfterResponse** - ฟังก์ชันเก็บกวาดหลังส่ง response แล้ว
+
+## Trace listener
+listener สำหรับ lifecycle event แต่ละตัว
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	.trace(({ onBeforeHandle }) => {
+		// This is trace listener
+		// hover to view the type
+		onBeforeHandle((parameter) => {
+
+		})
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+listener ของแต่ละ lifecycle รับค่าต่อไปนี้
+
+### name - `string`
+ชื่อของฟังก์ชัน ถ้าเป็นฟังก์ชันนิรนาม ชื่อจะเป็น `anonymous`
+
+### begin - `number`
+เวลาที่ฟังก์ชันเริ่มทำงาน
+
+### end - `Promise<number>`
+เวลาที่ฟังก์ชันทำงานเสร็จ promise จะ resolve เมื่อฟังก์ชันทำงานเสร็จ
+
+### error - `Promise<Error | null>`
+error ที่ถูก throw ใน lifecycle promise จะ resolve เมื่อฟังก์ชันทำงานเสร็จ
+
+### onStop - `callback?: (detail: TraceEndDetail) => any`
+callback ที่จะทำงานเมื่อ lifecycle จบ
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	.trace(({ onBeforeHandle, set }) => {
+		onBeforeHandle(({ onStop }) => {
+			onStop(({ elapsed }) => {
+				set.headers['X-Elapsed'] = elapsed.toString()
+			})
+		})
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+แนะนำให้แก้ไข context ในฟังก์ชันนี้ เพราะมีกลไก lock ที่รับประกันว่า context จะถูกแก้ไขเสร็จก่อนไปยัง lifecycle event ถัดไป
+
+## TraceEndDetail
+พารามิเตอร์ที่ส่งเข้าไปใน callback `onStop`
+
+### end - `number`
+เวลาที่ฟังก์ชันทำงานเสร็จ
+
+### error - `Error | null`
+error ที่ถูก throw ใน lifecycle
+
+### elapsed - `number`
+เวลาที่ใช้ใน lifecycle หรือ `end - begin`
+
+</div>
+</InteractiveDocLayout>
+</div>

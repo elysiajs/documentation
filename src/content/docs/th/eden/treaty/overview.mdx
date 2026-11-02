@@ -1,0 +1,170 @@
+---
+title: Eden Treaty
+description: เรียก route ของ Elysia ผ่าน client ของ TypeScript ในรูปแบบ object
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+import InteractiveDoc from '../../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../../components/interactive-code/step.astro';
+
+export const steps = [
+    {
+        "label": "อ่าน route",
+        "code": "import { Elysia } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia().get('/hi', 'Hi Elysia')\nconst api = treaty(app)\n\nconst { data, error } = await api.hi.get()\nif (error) throw error\nconsole.log(data)"
+    },
+    {
+        "label": "ส่ง path parameter",
+        "code": "import { Elysia } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia()\n    .get('/hi', 'Hi Elysia')\n    .get('/id/:id', ({ params: { id } }) => id)\nconst api = treaty(app)\n\nconst { data, error } = await api.id({ id: 1895 }).get()\nif (error) throw error\nconsole.log(data)"
+    },
+    {
+        "label": "ส่ง body",
+        "code": "import { Elysia, t } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia()\n    .get('/hi', 'Hi Elysia')\n    .get('/id/:id', ({ params: { id } }) => id)\n    .post('/mirror', {\n        body: t.Object({ id: t.Number(), name: t.String() })\n    }, ({ body }) => body)\nconst api = treaty(app)\n\nconst { data, error } = await api.mirror.post({ id: 1895, name: 'Skadi' })\nif (error) throw error\nconsole.log(data)"
+    }
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Treaty</h1>
+
+Eden Treaty แทนเซิร์ฟเวอร์ในรูปแบบ object ที่ใช้สื่อสารกับเซิร์ฟเวอร์ พร้อม type safety, auto-completion และการจัดการ error
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## อ่าน route
+
+path จะกลายเป็น property บน client ตามด้วย HTTP method `api.hi.get()` จะเรียก `GET /hi` และได้ค่า `Hi Elysia`
+
+ในตัวอย่างนี้ การส่ง instance เข้าไปโดยตรงทำให้การเรียกอยู่ใน process เดียวกัน จึงไม่ต้องมีเซิร์ฟเวอร์ที่เปิด listen อยู่
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## ส่ง path parameter
+
+เรียก segment แบบ dynamic ด้วย object ที่มีชื่อพารามิเตอร์ `api.id({ id: 1895 }).get()` จะเรียก `GET /id/1895`
+
+TypeScript รู้ว่า route นี้รับพารามิเตอร์อะไร
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## ส่ง body
+
+ส่ง body ให้ method อย่าง `post` schema ของ route จะช่วยแนะนำ client ว่า request นี้ต้องมี `id` ที่เป็นตัวเลข และ `name` ที่เป็น string
+
+เซิร์ฟเวอร์จะคืน object เดียวกันกลับมา ตรวจสอบ `error` ก่อนใช้ `data`
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+ถ้าต้องการเรียกเซิร์ฟเวอร์ที่รันแยกอยู่ ให้เริ่มจาก export type ของเซิร์ฟเวอร์ Elysia ที่มีอยู่:
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+จากนั้น import type ของเซิร์ฟเวอร์ แล้วเรียกใช้ API ของ Elysia ฝั่ง client:
+
+**client.ts**
+
+```ts
+// client.ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data, error } = await app.hi.get()
+```
+
+## Syntax แบบ tree
+
+HTTP path คือตัวระบุ resource ใน tree ของ file system
+
+file system ประกอบด้วยโฟลเดอร์หลายชั้น เช่น:
+
+-   /documents/elysia
+-   /documents/kalpas
+-   /documents/kelvin
+
+แต่ละชั้นคั่นด้วย **/** (slash) และชื่อ
+
+แต่ใน JavaScript เราใช้ **"."** (dot) แทน **"/"** (slash) เพื่อเข้าถึง resource ที่ลึกลงไป
+
+Eden Treaty จึงเปลี่ยนเซิร์ฟเวอร์ Elysia ให้เป็น file system แบบ tree ที่เข้าถึงได้จาก frontend ที่เขียนด้วย JavaScript แทน
+
+| Path         | Treaty       |
+| ------------ | ------------ |
+| /            |              |
+| /hi          | .hi          |
+| /deep/nested | .deep.nested |
+
+เมื่อรวมกับ HTTP method เราก็สื่อสารกับเซิร์ฟเวอร์ Elysia ได้
+
+| Path         | Method | Treaty              |
+| ------------ | ------ | ------------------- |
+| /            | GET    | .get()              |
+| /hi          | GET    | .hi.get()           |
+| /deep/nested | GET    | .deep.nested.get()  |
+| /deep/nested | POST   | .deep.nested.post() |
+
+## Dynamic path
+
+path parameter แบบ dynamic ต้องมีทั้งชื่อและค่า สำหรับ client `api` ที่เซิร์ฟเวอร์ลงทะเบียน `/item/:name` ไว้ ให้ใช้การเรียกฟังก์ชันเพื่อระบุพารามิเตอร์
+
+```ts
+// Unclear what the value is supposed to represent?
+api.item['skadi'].get()
+```
+
+การเข้าถึงแบบ property นี้เป็นของ client [Eden Treaty 1 รุ่นเก่า](/eden/treaty/legacy) ใน Eden Treaty 2 จะเป็น type error
+
+วิธีแก้คือระบุ dynamic path ด้วยฟังก์ชันเพื่อส่ง key และค่าเข้าไปแทน
+
+```ts
+// Clear that the value is dynamic and the path is 'name'
+api.item({ name: 'Skadi' }).get()
+```
+
+| Path            | Treaty                           |
+| --------------- | -------------------------------- |
+| /item           | .item                            |
+| /item/:name | `.item({ name: 'Skadi' })` |
+| /item/:name/id | `.item({ name: 'Skadi' }).id` |
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

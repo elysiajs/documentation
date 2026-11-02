@@ -1,0 +1,343 @@
+---
+title: WebSocket
+description: สร้าง route ของ WebSocket ที่มี type ตรวจสอบข้อความ และควบคุม lifecycle ของการเชื่อมต่อ
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+
+export const steps = [
+    {
+        "label": "เปิด socket",
+        "code": "import { Elysia } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', ({ body }) => body)\n    .listen(3000)"
+    },
+    {
+        "label": "ตรวจสอบข้อความ",
+        "code": "import { Elysia, t } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', {\n        body: t.Object({ message: t.String() })\n    }, ({ body }) => body.message)\n    .listen(3000)"
+    },
+    {
+        "label": "ตอบกลับมากกว่าหนึ่งครั้ง",
+        "code": "import { Elysia, t } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', {\n        body: t.Object({ message: t.String() }),\n        response: t.String()\n    }, function* ({ body }) {\n        yield 'Message received'\n        yield body.message\n    })\n    .listen(3000)"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">WebSocket</h1>
+
+WebSocket เปิดการเชื่อมต่อค้างไว้เพื่อให้ client และเซิร์ฟเวอร์ส่งข้อความหากันได้ ต่างจากการส่ง HTTP request ซ้ำ ๆ ตรงที่แต่ละข้อความไม่ต้องมีการแลก request และ response ใหม่
+
+Elysia ใช้ความสามารถด้าน WebSocket ของ Bun ซึ่งสร้างบน [uWebSockets](https://github.com/uNetworking/uWebSockets) ส่วน Socket.IO ใช้ protocol ของตัวเองซ้อนอยู่บน transport อีกชั้น สำหรับ route เหล่านี้ให้ใช้ WebSocket client แบบมาตรฐาน
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## เปิด socket
+
+ลงทะเบียนปลั๊กอิน WebSocket ครั้งเดียว แล้วเพิ่ม route ด้วย `.ws()` เชื่อมต่อไปที่ `ws://localhost:3000/ws` แล้วทุกข้อความจะถูกส่งกลับไปยัง client ที่ส่งมา
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## ตรวจสอบข้อความ
+
+schema ของ `body` ใช้ตรวจสอบข้อความที่เข้ามา ส่ง `{"message":"Hello"}` เป็น JSON แล้วเซิร์ฟเวอร์จะตอบกลับด้วย `Hello`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## ตอบกลับมากกว่าหนึ่งครั้ง
+
+generator yield การตอบกลับได้หลายครั้ง แต่ละ yield คือข้อความแยกกัน และถูกตรวจสอบตาม response schema
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## ตรวจสอบข้อความของ WebSocket
+
+route ของ WebSocket รับ schema สำหรับข้อมูลของ request และ response ได้เหมือนกับ route ของ HTTP ให้ใส่ตัวเลือกไว้ก่อน message handler:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+const app = new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.Object({ message: t.String() }),
+        query: t.Object({ id: t.String() }),
+        response: t.Object({
+            id: t.String(),
+            message: t.String(),
+            time: t.Number()
+        })
+    }, ({ query, body }) => ({
+        id: query.id,
+        message: body.message,
+        time: Date.now()
+    }))
+    .listen(3000)
+```
+
+เชื่อมต่อไปที่ `ws://localhost:3000/ws?id=42` แล้วส่ง `{"message":"Hello"}` response จะมีข้อความนั้น ค่า `id` จาก query และ timestamp ปัจจุบัน
+
+ใน Elysia 2 property ของ context อย่าง `query` และ `params` อยู่บน argument ของ socket โดยตรง ให้ใช้ `ws.query` ไม่ใช่รูปแบบเดิม `ws.data.query`
+
+| Property ของ schema | ตรวจสอบ |
+| --- | --- |
+| `body` | ข้อความที่เข้ามา |
+| `query` | query string ของ URL ที่ใช้เชื่อมต่อ |
+| `params` | path parameter |
+| `headers` | header ของ upgrade request |
+| `cookie` | cookie ของ upgrade request |
+| `response` | ข้อความที่ handler return, yield หรือ send ออกไป |
+
+Elysia จะ parse ข้อความที่เป็น string รูปแบบ JSON ก่อนตรวจสอบ และยังรู้จัก boolean, `null` และ string ที่เป็นตัวเลขซึ่งแปลงได้อย่างปลอดภัยด้วย ข้อความอื่นจะยังเป็น string และข้อความ binary จะยังเป็น binary
+
+## การตั้งค่า
+
+ส่งตัวเลือกของ WebSocket ที่ใช้ทั้งเซิร์ฟเวอร์เข้าไปใน `websocket()`:
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket({ idleTimeout: 30 }))
+    .ws('/ws', ({ body }) => body)
+    .listen(3000)
+```
+
+วิธีนี้มาแทนตัวเลือก `websocket` ใน constructor แบบเดิม Bun adapter ของ Elysia ใช้[การตั้งค่า WebSocket ของ Bun](https://bun.sh/docs/api/websockets) ค่าเริ่มต้นด้านล่างนี้เป็นค่าเริ่มต้นของ Bun
+
+### perMessageDeflate
+
+ค่าเริ่มต้น: `false`
+
+เปิดการบีบอัดข้อมูลสำหรับ client ที่รองรับ การบีบอัดจะปิดอยู่จนกว่าคุณจะเปิดใช้
+
+### maxPayloadLength
+
+ขนาดสูงสุดของข้อความที่เข้ามา หน่วยเป็นไบต์ ค่าเริ่มต้นของ Bun คือ `16 * 1024 * 1024` (16 MiB)
+
+### idleTimeout
+
+ค่าเริ่มต้น: `120` วินาที
+
+ปิดการเชื่อมต่อที่ไม่มีการใช้งาน เมื่อไม่มีข้อความหรือ ping เกินเวลานี้
+
+### backpressureLimit
+
+ค่าเริ่มต้น: `16 * 1024 * 1024` ไบต์ (16 MiB)
+
+จำนวนไบต์สูงสุดที่บัฟเฟอร์ไว้ได้ต่อหนึ่งการเชื่อมต่อ
+
+### closeOnBackpressureLimit
+
+ค่าเริ่มต้น: `false`
+
+ปิดการเชื่อมต่อเมื่อถึง backpressure limit
+
+## Method
+
+ใช้ `.ws()` เพื่อลงทะเบียน route ของ WebSocket argument ของ socket มี method อย่าง `send`, `publish`, `subscribe` และ `close` พร้อมกับ property ของ context ของ route
+
+## ws
+
+`.ws(path, handler)` ลงทะเบียน message handler ใช้ `.ws(path, options, handler)` เมื่อต้องการ schema หรือ lifecycle hook ด้วย
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', ({ body }) => body)
+    .listen(3000)
+```
+
+แบบ object ที่รับสอง argument ก็ใช้ได้เช่นกัน:
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        message(ws, message) {
+            ws.send(message)
+        }
+    })
+    .listen(3000)
+```
+
+- `path` คือ route ที่เปิดให้ WebSocket client เชื่อมต่อ
+- `options` ใช้ตั้งค่า schema และ lifecycle callback
+- `handler` จัดการข้อความแต่ละข้อความที่เข้ามา ถ้าส่ง handler แยกแล้ว อย่าใส่ `options.message` ซ้ำอีก
+
+ถ้าทำได้ให้ return หรือ yield ค่าออกไป เพื่อให้อนุมาน type ของ response ได้ ส่วน `ws.send()` ยังใช้ได้เมื่อต้องการส่งเองอย่างชัดเจน
+
+## WebSocketHandler
+
+ตัวเลือกของ route มีได้ทั้ง callback ของการเชื่อมต่อ callback ของข้อความ schema และตัวเลือกสำหรับปรับแต่ง WebSocket โดย callback จะได้รับ socket wrapper ของ Elysia ที่มี context ของ request อยู่ระดับบนสุด
+
+หัวข้อต่อไปนี้อธิบาย callback เหล่านั้น
+
+## open
+
+ถูกเรียกเมื่อเปิดการเชื่อมต่อ โดยได้รับ argument ของ socket
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        open(ws) {
+            console.log('Connected', ws.id)
+        },
+        message: ({ body }) => body
+    })
+```
+
+`ws.id` ใช้ระบุการเชื่อมต่อ property อื่นของ socket ได้แก่ `remoteAddress`, `readyState` รวมถึง `query`, `params` และค่าที่ derive มาของ route
+
+## message
+
+ถูกเรียกทุกครั้งที่มีข้อความเข้ามา ค่าที่ parse และตรวจสอบแล้วอยู่ใน `ws.body` และเป็น argument ตัวที่สองของ callback
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.String(),
+        message(ws, message) {
+            return message.toUpperCase()
+        }
+    })
+```
+
+schema ของ `body` เป็นตัวกำหนด type ของข้อความ ถ้าไม่มี schema ให้จัดการค่าที่ parse แล้วแบบ unknown แทนที่จะสันนิษฐานว่าทุกข้อความเป็น string
+
+## close
+
+ถูกเรียกเมื่อการเชื่อมต่อถูกปิด โดยได้รับ socket, close code และเหตุผล
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        close(ws, code, reason) {
+            console.log('Disconnected', ws.id, code, reason)
+        },
+        message: ({ body }) => body
+    })
+```
+
+## drain
+
+ถูกเรียกเมื่อ socket พร้อมรับข้อมูลเพิ่มหลังจากเกิด backpressure โดยได้รับ socket ส่วน close code และเหตุผลเป็นของ `close` ไม่ใช่ `drain`
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        drain(ws) {
+            console.log('Ready for more data', ws.id)
+        },
+        message: ({ body }) => body
+    })
+```
+
+## parse
+
+hook `parse` ของ WebSocket ประมวลผลแต่ละข้อความหลัง parse ตามค่าเริ่มต้นแล้ว และก่อนการตรวจสอบข้อความ โดยได้รับ socket และค่าที่ parse แล้ว ให้คืนค่าใหม่มาแทน หรือคืน `undefined` เพื่อใช้ค่าเดิม
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.String(),
+        parse(_ws, message) {
+            if (typeof message === 'string') return message.trim()
+        }
+    }, ({ body }) => body)
+```
+
+hook นี้ต่างจาก HTTP body parser ของ upgrade request
+
+## beforeHandle
+
+ทำงานก่อนการ upgrade การเชื่อมต่อ และมีส่วนในการจัดการข้อความก่อน message handler คืนค่า status เพื่อปฏิเสธการ upgrade ก่อนเปิด socket
+
+```ts
+import { Elysia, status } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        beforeHandle() {
+            return status(403, 'This socket is closed to new connections')
+        }
+    }, ({ body }) => body)
+```
+
+สำหรับ authentication ให้ตรวจสอบ credential ของการเชื่อมต่อที่นี่ ส่วนการตรวจสอบข้อความควรอยู่ใน schema ของ `body`
+
+## transform
+
+ทำงานก่อน validation ใน lifecycle ของ WebSocket ปัจจุบัน hook นี้ทำงานตอน upgrade และทำงานอีกครั้งกับทุกข้อความ จึงอย่าสันนิษฐานว่ามันทำงานแค่ครั้งเดียวต่อการเชื่อมต่อ
+
+## transformMessage
+
+ตัวเลือก `transformMessage` แบบเดิมไม่ได้เป็นส่วนหนึ่งของตัวเลือก route ของ WebSocket ใน Elysia 2 แล้ว ให้ใช้ [`parse`](#parse) เพื่อแปลงข้อความแต่ละข้อความก่อน validation
+
+## upgrade
+
+ใช้ `upgrade` เพื่อเพิ่ม header ของ response ให้ WebSocket handshake รับได้ทั้ง object แบบคงที่หรือฟังก์ชันที่รับ context ของการ upgrade
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        upgrade: { 'x-powered-by': 'Elysia' }
+    }, ({ body }) => body)
+```
+
+ถ้าต้องการตรวจสอบ header ของ request ที่เข้ามา ให้ใช้ schema ของ `headers` แทน
+
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,171 @@
+---
+title: "Prisma"
+description: "เราใช้ Prisma ร่วมกับ prismabox เพื่อสร้าง type safety แบบ end-to-end ตั้งแต่ฐานข้อมูล validation ไปจนถึง frontend ได้"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Prisma</h1>
+
+[Prisma](https://prisma.io) คือ ORM ที่ช่วยให้เราใช้งานฐานข้อมูลได้แบบ type-safe
+
+Prisma ให้คุณประกาศ schema ของฐานข้อมูลด้วยไฟล์ Prisma schema แล้วสร้าง type ของ TypeScript จาก schema นั้นให้
+
+:::note[ความเข้ากันได้ของ generator]
+
+ตั้งค่า Prismabox ให้ import `t` จาก `elysia` ตามตัวอย่างด้านล่าง และตรวจสอบว่า generator เวอร์ชันที่ใช้รองรับ schema แบบ TypeBox 1.x ของ Elysia v2 แพ็กเกจ Prisma และ Prismabox เป็น integration แยกกัน ตัวอย่างเหล่านี้ไม่ได้ยืนยันความเข้ากันได้ตอน runtime กับทุกเวอร์ชัน
+
+:::
+
+### Prismabox
+[Prismabox](https://github.com/m1212e/prismabox) คือไลบรารีที่สร้าง TypeBox หรือ validation model ของ Elysia จาก Prisma schema
+
+เราใช้ Prismabox แปลง Prisma schema เป็น validation model ของ Elysia เพื่อใช้ตรวจสอบ type ใน Elysia ได้
+
+### ทำงานอย่างไร:
+1. ประกาศ schema ของฐานข้อมูลใน Prisma Schema
+2. เพิ่ม generator `prismabox` เพื่อสร้าง schema ของ Elysia
+3. ใช้ validation model ของ Elysia ที่แปลงแล้วในการตรวจสอบ type
+4. OpenAPI schema จะถูกสร้างจาก validation model ของ Elysia
+5. เพิ่ม [Eden Treaty](/eden) เพื่อเพิ่ม type-safety ให้ frontend
+
+```text
+                                                    * ——————————————— *
+                                                    |                 |
+                                               | -> |  Documentation  |
+* ————————— *             * ———————— * OpenAPI |    |                 |
+|           |  prismabox  |          | ——————— |    * ——————————————— *
+|  Prisma   | —————————-> |  Elysia  |
+|           |             |          | ——————— |    * ——————————————— *
+* ————————— *             * ———————— *   Eden  |    |                 |
+                                               | -> |  Frontend Code  |
+												    |                 |
+												    * ——————————————— *
+
+```
+
+## การติดตั้ง
+ติดตั้ง Prisma ด้วยคำสั่งต่อไปนี้:
+
+```bash
+bun add @prisma/client prismabox prisma-adapter-bun-sqlite && \
+bun add -d prisma
+```
+
+## Prisma schema
+สมมติว่าคุณมีไฟล์ `prisma/schema.prisma` อยู่แล้ว
+
+datasource ไม่มี `url` เพราะ Prisma 7 อ่าน URL ของฐานข้อมูลจาก `prisma.config.ts` ดูวิธีตั้งค่าได้ที่[เอกสารอ้างอิงการตั้งค่า](https://www.prisma.io/docs/orm/reference/prisma-config-reference)ของ Prisma
+
+เราเพิ่ม generator `prismabox` ลงในไฟล์ Prisma schema ได้ดังนี้:
+
+```prisma title="prisma/schema.prisma"
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  // Note: In Prisma 7+, datasource URL is configured in prisma.config.ts (for Prisma CLI),
+  // and when using driver adapters you also pass the runtime URL in adapter setup.
+}
+
+generator prismabox {
+  provider = "prismabox"
+  typeboxImportDependencyName = "elysia"
+  typeboxImportVariableName = "t"
+  inputModel = true
+  output   = "../generated/prismabox"
+}
+
+model User {
+  id    String  @id @default(cuid())
+  email String  @unique
+  name  String?
+  posts Post[]
+}
+
+model Post {
+  id    	String  @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+```
+
+การตั้งค่านี้จะสร้าง validation model ของ Elysia ไว้ในไดเรกทอรี `generated/prismabox`
+
+แต่ละ model จะมีไฟล์เป็นของตัวเอง และตั้งชื่อตามชื่อ model ใน Prisma
+
+ตัวอย่างเช่น:
+- model `User` จะถูกสร้างเป็น `generated/prismabox/User.ts`
+- model `Post` จะถูกสร้างเป็น `generated/prismabox/Post.ts`
+
+## ใช้ model ที่สร้างขึ้น
+จากนั้นเรา import model ที่สร้างขึ้นมาใช้ในแอปพลิเคชัน Elysia ได้:
+
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+
+import { PrismaBunSqlite } from 'prisma-adapter-bun-sqlite';
+import { PrismaClient } from '../generated/prisma/client'
+import { UserPlain, UserPlainInputCreate } from '../generated/prismabox/User'
+
+const adapter = new PrismaBunSqlite({ url: process.env.DATABASE_URL });
+export const prisma = new PrismaClient({ adapter });
+
+const app = new Elysia()
+    .put(
+        '/',
+        {
+            body: UserPlainInputCreate,
+            response: UserPlain
+        }, async ({ body }) =>
+            prisma.user.create({
+                data: body
+            })
+    )
+    .get(
+        '/id/:id',
+        {
+            response: {
+                200: UserPlain,
+                404: t.String()
+            }
+        }, async ({ params: { id }, status }) => {
+            const user = await prisma.user.findUnique({
+                where: { id }
+            })
+
+            if (!user) return status(404, 'User not found')
+
+            return user
+        }
+    )
+    .listen(3000)
+
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+
+
+วิธีนี้ทำให้เรานำ schema ของฐานข้อมูลกลับมาใช้ใน validation model ของ Elysia ได้
+
+---
+
+ดูข้อมูลเพิ่มเติมได้ที่เอกสารของ [Prisma](https://prisma.io) และ [Prismabox](https://github.com/m1212e/prismabox)
+
+</div>
+</InteractiveDocLayout>
+</div>

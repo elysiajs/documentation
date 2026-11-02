@@ -1,0 +1,95 @@
+---
+title: ปลั๊กอิน Server Timing
+description: เอกสารอ้างอิงและตัวอย่างของปลั๊กอิน Server Timing
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ปลั๊กอิน Server Timing</h1>
+
+ปลั๊กอินนี้ช่วยตรวจหาคอขวดด้านประสิทธิภาพด้วย Server Timing API
+
+ติดตั้งด้วยคำสั่ง:
+```bash
+bun add @elysia/server-timing@rc
+```
+
+จากนั้นนำไปใช้:
+```ts
+import { Elysia } from 'elysia'
+import { serverTiming } from '@elysia/server-timing'
+
+new Elysia()
+    .use(serverTiming())
+    .get('/', () => 'hello')
+    .listen(3000)
+```
+
+จากนั้น Server Timing จะเพิ่ม header 'Server-Timing' ที่มีระยะเวลา ชื่อฟังก์ชัน และรายละเอียดของฟังก์ชันในแต่ละ lifecycle
+
+วิธีตรวจดูคือเปิด developer tools ของเบราว์เซอร์ > Network > [Request ที่ส่งผ่านเซิร์ฟเวอร์ Elysia] > Timing
+
+![developer tools ที่แสดง Server Timing](/assets/server-timing.webp)
+
+ใช้ข้อมูล timing เพื่อดูว่าขั้นตอนไหนใน lifecycle ใช้เวลามากที่สุด
+
+## Config
+ด้านล่างนี้คือการตั้งค่าที่ปลั๊กอินรองรับ
+
+### enabled
+ค่าเริ่มต้น: `NODE_ENV !== 'production'`
+
+กำหนดว่าจะเปิดใช้ Server Timing หรือไม่
+
+### allow
+ค่าเริ่มต้น: `undefined`
+
+เงื่อนไขว่าจะบันทึก server timing หรือไม่
+
+### trace
+ค่าเริ่มต้น: เปิดทุก event
+
+ให้ Server Timing บันทึก lifecycle event ที่ระบุ:
+
+trace รับ object ของ boolean ซึ่งแต่ละตัวมีค่าเริ่มต้นเป็น `true` ตั้งค่าตัวใดเป็น `false` เพื่อไม่บันทึกตัวนั้น:
+- request: บันทึกระยะเวลาจาก request
+- parse: บันทึกระยะเวลาจาก parse
+- transform: บันทึกระยะเวลาจาก transform
+- beforeHandle: บันทึกระยะเวลาจาก beforeHandle
+- handle: บันทึกระยะเวลาจาก handle
+- afterHandle: บันทึกระยะเวลาจาก afterHandle
+- error: บันทึกระยะเวลาจาก error
+- mapResponse: บันทึกระยะเวลาจาก mapResponse
+- total: บันทึกระยะเวลาทั้งหมดตั้งแต่เริ่มจนจบ
+
+## Pattern
+ด้านล่างนี้คือรูปแบบการใช้งานปลั๊กอินที่พบบ่อย
+
+- [เงื่อนไข allow](#เงื่อนไข-allow)
+
+## เงื่อนไข allow
+คุณปิด Server Timing บาง route ได้ผ่าน property `allow`
+
+```ts
+import { Elysia } from 'elysia'
+import { serverTiming } from '@elysia/server-timing'
+
+new Elysia()
+    .use(
+        serverTiming({
+            allow: ({ request }) => {
+                return new URL(request.url).pathname !== '/no-trace'
+            }
+        })
+    )
+```
+
+</div>
+</InteractiveDocLayout>
+</div>
