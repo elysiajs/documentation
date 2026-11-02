@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
+Sitemap: https://next.elysiajs.com/sitemap-index.xml

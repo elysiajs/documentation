@@ -28,6 +28,12 @@ Status comes from git history: a translation is outdated when its English source
    - Commit the file before running `bun run build` locally, otherwise the status page is skipped.
 4. Open a PR. One locale per PR keeps review easy.
 
+### Voice and terminology
+
+Translate the meaning and tone, not each word. Write as if one developer were helping another. Keep it clear, friendly, and slightly conversational. Avoid language that sounds stiff, corporate, or like an official manual. Keep the technical meaning unchanged.
+
+Keep API identifiers such as `beforeHandle`, `derive`, and `status` unchanged. If a technical term is unfamiliar, you can ask AI to clarify what it means. Use the explanation to choose the wording developers naturally use in your language. Treat AI as a clarification tool, not a source of truth. If it conflicts with the current English docs, follow the docs.
+
 ## For English editors
 
 Every commit to an English page marks its translations outdated. For changes that don't affect meaning (typos, formatting), put `lunaria-ignore` or `fix typo` in the commit message to skip that.

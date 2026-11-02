@@ -1,4 +1,5 @@
 import { expect, test } from 'bun:test'
+import { createHash } from 'node:crypto'
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -6,78 +7,137 @@ import { pathToFileURL } from 'node:url'
 import { fromHtml } from 'hast-util-from-html'
 import { select, selectAll } from 'hast-util-select'
 import { toString } from 'hast-util-to-string'
+import { siteUrl } from '../site.config.mjs'
 import { docToMarkdown, exportDocs } from './export-docs'
 
 test('export writes a complete repeatable bundle of the indexed documentation pages', async () => {
 	const directory = await mkdtemp(join(tmpdir(), 'interdoc-export-'))
 	try {
-		await mkdir(join(directory, 'guide with space'))
+		await mkdir(join(directory, 'essential/guide with space'), {
+			recursive: true
+		})
 		await writeFile(
-			join(directory, 'guide with space/index.html'),
-			`<div data-interactive-doc-layout><h1>Runtime guide</h1>
+			join(directory, 'essential/guide with space/index.html'),
+			`<html><head><meta name="description" content="Run it &quot;anywhere&quot;."></head><body>
+			<div data-interactive-doc-layout><h1>Runtime guide</h1>
 			<p>Keep the complete example.</p>
 			<div role="tablist">Runtime selector</div>
 			<div role="tabpanel" hidden><h2>Node.js</h2>
 			<pre><code class="language-ts">const count = 1\n\nconsole.log(count)</code></pre>
-			</div></div>`
+			</div></div></body></html>`
 		)
+		await mkdir(join(directory, 'at-glance'))
 		await writeFile(
-			join(directory, 'at-glance.html'),
+			join(directory, 'at-glance/index.html'),
 			'<div class="sl-markdown-content"><h1>At a glance</h1><p>Start here.</p></div>'
+		)
+		await mkdir(join(directory, 'blog/post'), { recursive: true })
+		await writeFile(
+			join(directory, 'blog/post/index.html'),
+			'<div class="sl-markdown-content"><h1>Old post</h1><p>History.</p></div>'
+		)
+		await mkdir(join(directory, 'i18n'))
+		await writeFile(
+			join(directory, 'i18n/index.html'),
+			'<div class="sl-markdown-content"><h1>Translation status</h1></div>'
 		)
 		await writeFile(
 			join(directory, '404.html'),
 			'<div data-interactive-doc-layout><h1>Not found</h1></div>'
 		)
 		await writeFile(
-			join(directory, 'other.html'),
-			'<html><body>Not documentation</body></html>'
+			join(directory, 'index.html'),
+			'<div class="sl-markdown-content"><h1>Home</h1></div>'
 		)
 		const output = pathToFileURL(`${directory}/`)
 		await exportDocs(output)
 
 		const index = await readFile(join(directory, 'llms.txt'), 'utf8')
-		expect(index.match(/^- .+$/gm)).toEqual([
-			'- [At a glance](at-glance.md)',
-			'- [Runtime guide](guide%20with%20space/index.md)'
+		expect(index).toStartWith('# Elysia 2 Documentation\n')
+		// Agents read sections in order; old blog posts must stay behind Optional.
+		expect(index.match(/^(## .+|- .+)$/gm)).toEqual([
+			'## Getting started',
+			`- [At a glance](${siteUrl}/at-glance.md)`,
+			'## Essential',
+			`- [Runtime guide](${siteUrl}/essential/guide%20with%20space.md): Run it "anywhere".`,
+			'## Optional',
+			`- [Old post](${siteUrl}/blog/post.md)`
 		])
-		const full = await readFile(join(directory, 'llms-full.txt'), 'utf8')
-		expect(full).toBe(`# Elysia Interactive
 
-> Complete documentation for Elysia, a TypeScript web framework.
-
+		const guide = await readFile(
+			join(directory, 'essential/guide with space.md'),
+			'utf8'
+		)
+		expect(
+			await readFile(
+				join(directory, 'essential/guide with space/index.md'),
+				'utf8'
+			)
+		).toBe(guide)
+		expect(guide).toStartWith(`---
+title: "Runtime guide"
+description: "Run it \\"anywhere\\"."
+url: "${siteUrl}/essential/guide%20with%20space/"
 ---
 
-Source: [at-glance.md](at-glance.md)
+# Runtime guide
+`)
+
+		const full = await readFile(join(directory, 'llms-full.txt'), 'utf8')
+		expect(full).toContain(`---
+
+Source: [${siteUrl}/at-glance.md](${siteUrl}/at-glance.md)
 
 # At a glance
 
 Start here.
-
----
-
-Source: [guide with space/index.md](guide%20with%20space/index.md)
-
-# Runtime guide
-
-Keep the complete example.
-
-## Node.js
-
-\`\`\`ts
-const count = 1
-
-console.log(count)
-\`\`\`
 `)
-		for (const path of ['at-glance.md', 'guide with space/index.md'])
-			expect(full).toContain(await readFile(join(directory, path), 'utf8'))
-		expect(await readdir(directory)).not.toContain('404.md')
-		expect(await readdir(directory)).not.toContain('other.md')
+		expect(full).toContain(guide.slice(guide.indexOf('# Runtime guide')))
+		expect(full).not.toContain('Old post')
+
+		const html = await readFile(
+			join(directory, 'essential/guide with space/index.html'),
+			'utf8'
+		)
+		expect(html).toContain(
+			'<link rel="alternate" type="text/markdown" href="/essential/guide%20with%20space.md"></head>'
+		)
+		for (const path of ['404.md', 'index.md', '.md', 'i18n.md'])
+			expect(await readdir(directory)).not.toContain(path)
+		expect(await readdir(join(directory, 'i18n'))).toEqual(['index.html'])
+
+		const skill = await readFile(
+			join(directory, '.well-known/agent-skills/elysia-2/SKILL.md')
+		)
+		const { skills } = JSON.parse(
+			await readFile(
+				join(directory, '.well-known/agent-skills/index.json'),
+				'utf8'
+			)
+		)
+		expect(skills[0].digest).toBe(
+			`sha256:${createHash('sha256').update(skill).digest('hex')}`
+		)
 
 		await exportDocs(output)
-		expect(await readFile(join(directory, 'llms-full.txt'), 'utf8')).toBe(full)
+		expect(await readFile(join(directory, 'llms-full.txt'), 'utf8')).toBe(
+			full
+		)
 		expect(await readFile(join(directory, 'llms.txt'), 'utf8')).toBe(index)
+		expect(
+			await readFile(
+				join(directory, 'essential/guide with space/index.html'),
+				'utf8'
+			)
+		).toBe(html)
+
+		// A new top-level directory must be placed in llms.txt deliberately.
+		await mkdir(join(directory, 'unplaced'))
+		await writeFile(
+			join(directory, 'unplaced/index.html'),
+			'<div class="sl-markdown-content"><h1>Unplaced</h1></div>'
+		)
+		await expect(exportDocs(output)).rejects.toThrow('"unplaced"')
 	} finally {
 		await rm(directory, { recursive: true, force: true })
 	}
@@ -148,13 +208,18 @@ test('built Markdown pairs every explanation with its exact code in order (run b
 		'utf8'
 	)
 	const links = [...index.matchAll(/\]\(([^)]+)\)/g)].map((match) => match[1])
-	expect(links).toContain('essential/route/index.md')
-	expect(links).toContain('at-glance/index.md')
-	expect(links).not.toContain('404.md')
+	expect(links).toContain(`${siteUrl}/essential/route.md`)
+	expect(links).toContain(`${siteUrl}/at-glance.md`)
 	for (const link of links)
 		expect(
-			await readFile(new URL(`../dist/${link}`, import.meta.url), 'utf8')
-		).toMatch(/^# /)
+			await readFile(
+				new URL(
+					`../dist/${decodeURIComponent(link.slice(siteUrl.length + 1))}`,
+					import.meta.url
+				),
+				'utf8'
+			)
+		).toMatch(/^---\ntitle: .+\n[\s\S]*?\n---\n\n# /)
 })
 
 test('export keeps reference table headers, inline code and literal pipes readable', () => {

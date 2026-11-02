@@ -1,0 +1,5 @@
+/*
+  Link: </llms.txt>; rel="describedby"; type="text/markdown"
+  Link: </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"
+/.well-known/agent-skills/*
+  Access-Control-Allow-Origin: *

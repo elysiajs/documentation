@@ -28,5 +28,6 @@ video
 video-ref
 
 src/spica/components
-skills
+skills/*
+!skills/elysia-2/
 .audit
