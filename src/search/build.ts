@@ -4,6 +4,7 @@ import remarkParse from 'remark-parse'
 import remarkMdx from 'remark-mdx'
 import remarkGfm from 'remark-gfm'
 
+import { stripLocale } from '../lib/locales.mjs'
 import { productOf } from '../lib/product'
 import { createIndex } from './ranking'
 
@@ -145,7 +146,7 @@ export function searchDocuments(
 	const href = route ? `/${route}/` : '/'
 	const extracted = extractContent(body, headings, id)
 	const product = productOf(href)
-	const segments = id.split('/')
+	const segments = stripLocale(id).split('/')
 	const section =
 		segments.length > 1
 			? product === 'elysia'

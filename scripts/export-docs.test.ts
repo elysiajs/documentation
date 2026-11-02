@@ -13,11 +13,11 @@ import { docToMarkdown, exportDocs } from './export-docs'
 test('export writes a complete repeatable bundle of the indexed documentation pages', async () => {
 	const directory = await mkdtemp(join(tmpdir(), 'interdoc-export-'))
 	try {
-		await mkdir(join(directory, 'essential/guide with space'), {
+		await mkdir(join(directory, 'en/essential/guide with space'), {
 			recursive: true
 		})
 		await writeFile(
-			join(directory, 'essential/guide with space/index.html'),
+			join(directory, 'en/essential/guide with space/index.html'),
 			`<html><head><meta name="description" content="Run it &quot;anywhere&quot;."></head><body>
 			<div data-interactive-doc-layout><h1>Runtime guide</h1>
 			<p>Keep the complete example.</p>
@@ -59,25 +59,25 @@ test('export writes a complete repeatable bundle of the indexed documentation pa
 			'## Getting started',
 			`- [At a glance](${siteUrl}/at-glance.md)`,
 			'## Essential',
-			`- [Runtime guide](${siteUrl}/essential/guide%20with%20space.md): Run it "anywhere".`,
+			`- [Runtime guide](${siteUrl}/en/essential/guide%20with%20space.md): Run it "anywhere".`,
 			'## Optional',
 			`- [Old post](${siteUrl}/blog/post.md)`
 		])
 
 		const guide = await readFile(
-			join(directory, 'essential/guide with space.md'),
+			join(directory, 'en/essential/guide with space.md'),
 			'utf8'
 		)
-		expect(
-			await readFile(
-				join(directory, 'essential/guide with space/index.md'),
-				'utf8'
-			)
-		).toBe(guide)
+		for (const path of [
+			'en/essential/guide with space/index.md',
+			'essential/guide with space.md',
+			'essential/guide with space/index.md'
+		])
+			expect(await readFile(join(directory, path), 'utf8')).toBe(guide)
 		expect(guide).toStartWith(`---
 title: "Runtime guide"
 description: "Run it \\"anywhere\\"."
-url: "${siteUrl}/essential/guide%20with%20space/"
+url: "${siteUrl}/en/essential/guide%20with%20space/"
 ---
 
 # Runtime guide
@@ -96,11 +96,11 @@ Start here.
 		expect(full).not.toContain('Old post')
 
 		const html = await readFile(
-			join(directory, 'essential/guide with space/index.html'),
+			join(directory, 'en/essential/guide with space/index.html'),
 			'utf8'
 		)
 		expect(html).toContain(
-			'<link rel="alternate" type="text/markdown" href="/essential/guide%20with%20space.md"></head>'
+			'<link rel="alternate" type="text/markdown" href="/en/essential/guide%20with%20space.md"></head>'
 		)
 		for (const path of ['404.md', 'index.md', '.md', 'i18n.md'])
 			expect(await readdir(directory)).not.toContain(path)
@@ -126,7 +126,7 @@ Start here.
 		expect(await readFile(join(directory, 'llms.txt'), 'utf8')).toBe(index)
 		expect(
 			await readFile(
-				join(directory, 'essential/guide with space/index.html'),
+				join(directory, 'en/essential/guide with space/index.html'),
 				'utf8'
 			)
 		).toBe(html)
@@ -208,8 +208,19 @@ test('built Markdown pairs every explanation with its exact code in order (run b
 		'utf8'
 	)
 	const links = [...index.matchAll(/\]\(([^)]+)\)/g)].map((match) => match[1])
-	expect(links).toContain(`${siteUrl}/essential/route.md`)
-	expect(links).toContain(`${siteUrl}/at-glance.md`)
+	expect(links).toContain(`${siteUrl}/en/essential/route.md`)
+	expect(links).toContain(`${siteUrl}/en/at-glance.md`)
+	expect(
+		await readFile(
+			new URL('../dist/essential/route.md', import.meta.url),
+			'utf8'
+		)
+	).toBe(
+		await readFile(
+			new URL('../dist/en/essential/route.md', import.meta.url),
+			'utf8'
+		)
+	)
 	for (const link of links)
 		expect(
 			await readFile(

@@ -342,9 +342,12 @@ describe('renderMarkdown', () => {
 		beforeAll(() => {
 			globalThis.fetch = (async () =>
 				Response.json({
-					'/plugins/openapi/': ['OpenAPI plugin'],
-					'/plugins/openapi/#detail': ['Detail', 'OpenAPI plugin'],
-					'/patterns/escape/': ['<img src=x onerror=alert(1)>']
+					'/en/plugins/openapi/': ['OpenAPI plugin'],
+					'/en/plugins/openapi/#detail': [
+						'Detail',
+						'OpenAPI plugin'
+					],
+					'/en/patterns/escape/': ['<img src=x onerror=alert(1)>']
 				})) as unknown as typeof fetch
 		})
 		afterAll(() => {
