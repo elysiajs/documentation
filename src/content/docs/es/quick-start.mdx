@@ -1,6 +1,6 @@
 ---
 title: Inicio rápido
-description: Inicia un servidor Elysia v2 con Bun, Node.js o un entorno de ejecución compatible con Web Standard.
+description: Inicia un servidor Elysia v2 con Bun, Node.js o un runtime compatible con Web Standard.
 template: splash
 ---
 
@@ -17,14 +17,14 @@ import '../../../styles/routing.css';
 
 <h1 id="_top">Inicio rápido</h1>
 
-Elysia es un framework de backend en TypeScript optimizado para Bun. También puedes ejecutarlo en Node.js o en cualquier entorno de ejecución compatible con Request de Web Standard.
+Elysia es un framework de backend en TypeScript optimizado para Bun. También puedes ejecutarlo en Node.js o en cualquier runtime compatible con Request de Web Standard.
 
-<PageTabs label="Entorno de ejecución">
+<PageTabs label="Runtime">
 <TabItem label="Bun">
 
 ## Bun
 
-Instala Bun con el comando correspondiente a tu sistema operativo.
+Instala Bun con el comando para tu sistema operativo.
 
 <FileCodeBlock label="Sistema operativo para Bun">
 <TabItem label="macOS / Linux">
@@ -43,7 +43,7 @@ powershell -c "irm bun.sh/install.ps1 | iex"
 </TabItem>
 </FileCodeBlock>
 
-Abre una nueva terminal y comprueba la instalación:
+Abre otra terminal y comprueba que Bun está instalado:
 
 ```bash
 bun --version
@@ -72,9 +72,9 @@ bun run dev
 
 Abre [localhost:3000](http://localhost:3000). Deberías ver `Hello Elysia`.
 
-:::tip[Mantén el servidor en ejecución]
+:::tip[Deja el servidor en marcha]
 
-La opción `--watch` reinicia tu servidor cuando cambian los archivos. `dev` es un script que añades al proyecto, no un comando incluido en el propio paquete de Elysia.
+La opción `--watch` reinicia tu servidor cuando cambian los archivos. `dev` es un script que añades a tu proyecto, no un comando que venga con el paquete de Elysia.
 
 :::
 
@@ -105,7 +105,7 @@ new Elysia()
     })
 ```
 
-Incorpora estos scripts a tu `package.json`:
+Añade estos scripts a tu `package.json` sin borrar los que ya tengas:
 
 ```json
 {
@@ -121,9 +121,9 @@ Incorpora estos scripts a tu `package.json`:
 | Script | Qué hace |
 | --- | --- |
 | `bun run dev` | Inicia el servidor y lo recarga cuando cambia el código. |
-| `bun run build` | Empaqueta el servidor para producción. |
-| `bun run start` | Ejecuta el paquete generado previamente. |
-| `bun run test` | Ejecuta las pruebas con el ejecutor de pruebas de Bun. |
+| `bun run build` | Crea el bundle del servidor para producción. |
+| `bun run start` | Ejecuta el bundle que has generado con el build. |
+| `bun run test` | Ejecuta las pruebas con el test runner de Bun. |
 
 Mantén `strict` activado en `tsconfig.json` para que Elysia pueda inferir tus tipos correctamente:
 
@@ -135,7 +135,7 @@ Mantén `strict` activado en `tsconfig.json` para que Elysia pueda inferir tus t
 }
 ```
 
-Incorpora esta opción a la configuración que creó `bun init` y conserva los demás ajustes. Ejecuta `bun run dev` y abre [localhost:3000](http://localhost:3000).
+Añade esta opción a la configuración que creó `bun init` sin cambiar los demás ajustes. Ejecuta `bun run dev` y abre [localhost:3000](http://localhost:3000).
 
 </TabItem>
 </PageTabs>
@@ -144,9 +144,9 @@ Incorpora esta opción a la configuración que creó `bun init` y conserva los d
 
 ## Node.js
 
-Usa una versión de Node.js compatible con el adaptador de Node. Elysia 2 requiere Node `22.18` o posterior. Elige una versión LTS que siga recibiendo mantenimiento en la [página de descargas de Node.js](https://nodejs.org/en/download).
+Usa una versión de Node.js compatible con el adaptador de Node. Elysia 2 necesita Node `22.18` o superior. Elige una versión LTS que siga recibiendo mantenimiento en la [página de descargas de Node.js](https://nodejs.org/en/download).
 
-Si ya usas un gestor de paquetes del sistema, estos son los comandos de instalación correspondientes:
+Si ya usas un gestor de paquetes del sistema, puedes instalar Node.js con estos comandos:
 
 <FileCodeBlock label="Sistema operativo para Node.js">
 <TabItem label="macOS (Homebrew)">
@@ -179,14 +179,14 @@ sudo pacman -S nodejs npm
 </TabItem>
 </FileCodeBlock>
 
-Después, comprueba la versión con `node --version`. El paquete predeterminado de tu distribución puede ser anterior a la versión que requiere Elysia. Si es necesario, usa un instalador de una versión compatible.
+Después, comprueba la versión con `node --version`. Puede que el paquete que ofrece tu distribución sea demasiado antiguo para Elysia. Si es así, usa un instalador de una versión compatible.
 
 <PageTabs label="Lenguaje para Node.js">
 <TabItem label="TypeScript">
 
 ### Configuración de TypeScript
 
-Empieza en un nuevo directorio de proyecto con un `package.json`. Puedes crearlo con `npm init -y`. Elige los comandos de tu gestor de paquetes:
+Empieza en una carpeta nueva para tu proyecto y crea un `package.json`, por ejemplo con `npm init -y`. Elige los comandos para tu gestor de paquetes:
 
 <FileCodeBlock>
 <TabItem label="Bun">
@@ -223,9 +223,9 @@ yarn add -D tsx @types/node typescript
 </TabItem>
 </FileCodeBlock>
 
-Los comandos de pnpm y Yarn enumeran explícitamente las dependencias pares que Elysia necesita en tiempo de ejecución. Así también funcionan cuando la instalación automática de estas dependencias está desactivada. Elysia v2 usa `typebox`, no `@sinclair/typebox`.
+Los comandos de pnpm y Yarn incluyen las peer dependencies que Elysia necesita para ejecutarse. Así funcionan aunque tengas desactivada la instalación automática de peer dependencies. Elysia v2 usa `typebox`, no `@sinclair/typebox`.
 
-`tsx` ejecuta TypeScript durante el desarrollo y ofrece un modo que detecta cambios en los archivos. TypeScript se encarga de la comprobación de tipos y genera el JavaScript para producción.
+`tsx` ejecuta TypeScript durante el desarrollo y tiene watch mode para detectar cambios en los archivos. TypeScript comprueba los tipos y genera el JavaScript para producción.
 
 Crea `src/index.ts`:
 
@@ -253,7 +253,7 @@ Configura el paquete para usar módulos ES y añade estos scripts:
 }
 ```
 
-Crea una configuración de TypeScript con `npx tsc --init` y luego configura estas opciones en `tsconfig.json`:
+Crea la configuración de TypeScript con `npx tsc --init` y ajusta estas opciones en `tsconfig.json`:
 
 ```json
 {
@@ -272,7 +272,7 @@ Crea una configuración de TypeScript con `npx tsc --init` y luego configura est
 }
 ```
 
-El script de compilación lee esta configuración, incluidas la opción `strict` y el directorio de salida. Usa la extensión `.js` al importar tus propios módulos con NodeNext, incluso desde archivos de código fuente TypeScript.
+El script de build lee esta configuración, incluidos `strict` y el directorio donde se guarda el JavaScript generado. Usa la extensión `.js` al importar tus propios módulos con NodeNext, aunque los importes desde archivos TypeScript.
 
 Inicia el servidor de desarrollo:
 
@@ -288,14 +288,14 @@ También puedes usar `bun run dev`, `pnpm dev` o `yarn dev`. Abre [localhost:300
 | `build` | Comprueba los tipos y genera JavaScript en `dist`. |
 | `start` | Ejecuta el JavaScript generado con Node.js. |
 
-Configura `NODE_ENV=production` en tu entorno de despliegue antes de ejecutar `start`. En una shell POSIX puedes usar `NODE_ENV=production npm run start`. En PowerShell, configura primero `$env:NODE_ENV = 'production'`.
+Antes de ejecutar `start`, configura `NODE_ENV=production` en el entorno donde despliegues tu aplicación. En una shell POSIX puedes usar `NODE_ENV=production npm run start`. En PowerShell, configura primero `$env:NODE_ENV = 'production'`.
 
 </TabItem>
 <TabItem label="JavaScript">
 
 ### Configuración de JavaScript
 
-También puedes usar JavaScript. El procesamiento de las solicitudes es el mismo. TypeScript añade inferencia de esquemas y comprobación de tipos de extremo a extremo mientras escribes código.
+También puedes usar JavaScript. Las peticiones se procesan igual. Con TypeScript, además, tienes inferencia de esquemas y comprobación de tipos de extremo a extremo mientras escribes código.
 
 Elige tu gestor de paquetes:
 
@@ -336,7 +336,7 @@ new Elysia({ adapter: node() })
     })
 ```
 
-Añade compatibilidad con módulos ES y los siguientes scripts a `package.json`:
+Configura `package.json` para usar módulos ES y añade estos scripts:
 
 ```json
 {
@@ -352,7 +352,7 @@ Ejecuta `npm run dev` para desarrollar con reinicios automáticos. En producció
 
 :::tip[Puedes añadir tipos más adelante]
 
-JavaScript funciona sin un paso de compilación. Si quieres comprobaciones más estrictas en el editor, empieza con la configuración de TypeScript anterior. Ambos ejemplos exponen la misma ruta.
+JavaScript funciona sin un paso de build. Si quieres que el editor compruebe los tipos de forma más estricta, empieza con la configuración de TypeScript de arriba. Los dos ejemplos tienen la misma ruta.
 
 :::
 
@@ -363,7 +363,7 @@ JavaScript funciona sin un paso de compilación. Si quieres comprobaciones más 
 
 ## Web Standard
 
-Elysia expone un manejador de solicitudes que recibe un `Request` de Web Standard y devuelve un `Response`. Úsalo con un framework o entorno de ejecución de servidor compatible, en lugar de abrir un puerto de escucha independiente.
+Elysia tiene un handler que recibe un `Request` de Web Standard y devuelve un `Response`. Úsalo con un framework o runtime de servidor compatible, en vez de escuchar peticiones por separado.
 
 Instala Elysia con tu gestor de paquetes:
 
@@ -398,7 +398,7 @@ yarn add elysia@rc typebox exact-mirror openapi-types
 </TabItem>
 </FileCodeBlock>
 
-Elige una integración para ver cómo se conecta su entorno de ejecución con Elysia:
+Elige una integración para ver cómo se conecta su runtime con Elysia:
 
 <div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
 
@@ -412,7 +412,7 @@ Ejecuta una API de Elysia en Cloudflare Workers.
 <Card href="/integrations/nextjs">
 <CardTitle id="nextjs">Next.js</CardTitle>
 
-Usa Elysia en los manejadores de rutas de Next.js.
+Usa Elysia en los route handlers de Next.js.
 
 </Card>
 
@@ -455,7 +455,7 @@ Usa Elysia en las rutas de servidor de TanStack Start.
 
 ### ¿No aparece en la lista?
 
-Exporta `app.fetch` y pásale las solicitudes entrantes mediante la API de servidor de tu entorno de ejecución:
+Exporta `app.fetch` y pásale las peticiones que lleguen usando la API de servidor de tu runtime:
 
 ```ts
 import { Elysia } from 'elysia'
@@ -466,14 +466,14 @@ const app = new Elysia()
 export default app.fetch
 ```
 
-No llames a `.listen()` cuando el framework que aloja tu aplicación se encarga del servidor. Una solicitud directa a este manejador devuelve el mismo saludo:
+No llames a `.listen()` si tu framework ya se encarga del servidor. Si haces una petición directa a este handler, devuelve el mismo saludo:
 
 ```ts
 const response = await app.fetch(new Request('http://localhost/'))
 console.log(await response.text()) // Hello Elysia
 ```
 
-La compatibilidad de las solicitudes y respuestas es el punto de partida. Consulta la guía de integración para conocer la configuración específica de cada entorno de ejecución y las funciones que admite.
+Para empezar, las peticiones y respuestas tienen que ser compatibles. Consulta la guía de integración para ver cómo configurar tu runtime y qué funciones admite.
 
 </TabItem>
 </PageTabs>
