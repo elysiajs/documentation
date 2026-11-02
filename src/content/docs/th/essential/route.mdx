@@ -1,0 +1,367 @@
+---
+title: การกำหนด route แบบ interactive
+description: สร้าง router ของ Elysia ทีละขั้น
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import { Card, CardTitle } from '../../../../components/ui/card';
+import { NumberedCards } from '../../../../components/ui/numbered-cards';
+import '../../../../styles/routing.css';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+export const demo1 = new Elysia()
+	.get('/', 'Elysia')
+	.get('/hi', 'Hello!');
+
+export const demo2 = new Elysia()
+    .get('/user/1', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/*', ({ params }) => params['*'])
+
+export const demo3 = new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .get('/profile', 'Profile')
+    )
+
+export const demo4 = new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .get('/profile', 'Profile')
+
+export const steps = [
+	{
+		label: 'Static path',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/hi', 'Hi')
+    .listen(3000)`,
+	},
+	{
+		label: 'Dynamic path',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .listen(3000)`,
+	},
+	{
+		label: 'Access params',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/:id/profile', ({ params: { id } }) => id)
+    .listen(3000)`,
+	},
+		{
+		label: 'Optional params',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/:id?/profile', ({ params: { id } }) => id)
+    .listen(3000)`,
+	},
+	{
+		label: 'Wildcard',
+		code: `import { Elysia } from 'elysia'
+		
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/*', ({ params }) => params['*'])
+    .listen(3000)`,
+	}
+];
+
+<div class="routing-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">การกำหนด route</h1>
+
+[REST API](https://en.wikipedia.org/wiki/REST) ใช้ path และ method ในการตัดสินว่าจะเรียก handler ตัวไหน
+
+<CodePlayground elysia={demo1}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Elysia')
+    .get('/hi', 'Hello!')
+    .listen(3000)
+```
+
+</CodePlayground>
+
+> เรียก `.listen` เพื่อเปิดเว็บเซิร์ฟเวอร์ที่พอร์ต 3000
+
+เราเข้าถึงเซิร์ฟเวอร์ได้ที่ http://localhost:3000
+
+- `/` ด้วย method `GET` จะคืนค่า `Elysia`
+- `/hi` ด้วย method `GET` จะคืนค่า `Hello!`
+- path อื่นนอกจากนี้จะคืนค่า `404`
+
+เวลาเปิด URL ในเบราว์เซอร์ จะเป็นการส่ง request แบบ `GET`
+
+## ประเภทของ path
+
+path แบ่งได้เป็น 3 ประเภท:
+
+</div>
+
+<NumberedCards items={[
+    { title: 'Static paths', children: 'exact match' },
+    { title: 'Dynamic paths', children: 'some parts are dynamic, and can be captured as parameters' },
+    { title: 'Wildcards', children: 'match the rest of a path' },
+]} />
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## Path แบบ static
+
+path แบบ static ต้องตรงกันทุกตัวอักษร ไม่มีอะไรให้เซอร์ไพรส์
+
+- `/` ตรงกับ `/` เท่านั้น
+- `/hi` ตรงกับ `/hi` เท่านั้น
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Path แบบ dynamic
+
+ใส่ `:` ตามด้วยชื่อ เพื่อดึงค่าในตำแหน่งนั้นออกมา
+
+`/user/:id` ตรงกับ `/user/42`, `/user/abc` และ `/user/hello-world`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### เข้าถึง params
+
+อ่านค่าที่จับคู่ได้จาก `params` ใน handler
+
+เมื่อ `/user/42/profile` ตรงกับ `/user/:id/profile` ค่า `params.id` จะเป็น `42` แล้ว handler ก็คืนค่านี้กลับไปเป็น response
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Params แบบ optional
+
+ใส่ `?` ต่อท้ายชื่อ parameter เพื่อให้เป็น optional
+
+`/user/:id?/profile` ตรงกับทั้ง `/user/42/profile` และ `/user/profile`
+
+ถ้าไม่มี parameter นั้น ค่าจะเป็น `undefined`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Wildcard
+
+ใส่ `*` ไว้ท้าย path เพื่อจับคู่กับ path อะไรก็ได้ที่ตามหลังมา
+
+`/user/*` ตรงกับ path ที่มีหลาย segment อย่าง `/user/hello-world/profile` ในตัวอย่างนี้ `/user/42` จะยังไปที่ `/user/:id` เพราะ path แบบ dynamic มีลำดับความสำคัญสูงกว่า wildcard (ดู[ลำดับความสำคัญของ path](#path-priority))
+
+สำหรับ `/user/hello-world/profile` ค่า `params['*']` จะเป็น `hello-world/profile`
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<section class="content-layout">
+
+## ลำดับความสำคัญของ path
+
+Elysia จะจับคู่ path ตามลำดับต่อไปนี้:
+
+1. path แบบ static
+2. path แบบ dynamic
+3. path แบบ wildcard
+
+<CodePlayground elysia={demo2}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user/1', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/*', ({ params }) => params['*'])
+    .listen(3000)
+```
+
+</CodePlayground>
+
+</section>
+
+
+<section class="content-layout">
+
+---
+
+## HTTP verb ต่าง ๆ
+
+[HTTP verb](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods) คือ method ของ request อย่าง `GET`, `POST` หรือ `PUT`
+
+<div class="routing-methods">
+
+<Card className="routing-method-card">
+
+<CardTitle>GET</CardTitle>
+
+ดึงข้อมูลจากเซิร์ฟเวอร์ เบราว์เซอร์ใช้ method นี้ตอนเปิดหน้าเว็บ
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>HEAD</CardTitle>
+
+คล้าย **GET** แต่คืนมาแค่ headers ไม่มี body
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>POST</CardTitle>
+
+ส่งข้อมูลไปที่เซิร์ฟเวอร์ ส่วนใหญ่ใช้เพื่อสร้าง resource ใหม่
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>PUT</CardTitle>
+
+แทนที่ resource ด้วยข้อมูลที่ส่งไป
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>PATCH</CardTitle>
+
+อัปเดตบางส่วนของ resource
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>DELETE</CardTitle>
+
+ลบ resource
+
+</Card>
+
+</div>
+
+ถ้าจะกำหนด method มาตรฐาน ให้ใช้ method ที่ชื่อตรงกันบน instance ของ Elysia:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', 'Hi GET!')
+	.post('/', 'Hi POST!')
+	.put('/', 'Hi PUT!')
+	.patch('/', 'Hi PATCH!')
+	.delete('/', 'Hi DELETE!')
+	.listen(3000)
+```
+
+</section>
+
+<section class="content-layout">
+
+### Method แบบกำหนดเอง
+
+กำหนดได้ด้วย `.method` โดยใส่ชื่อ method เป็น argument ตัวแรก ที่เหลือใช้เหมือนกับ method อื่น ๆ
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.method('PROPFIND', '/', 'Hi PROPFIND!')
+	.listen(3000)
+```
+
+### ทุก method
+
+รับทุก method ด้วย `.all`:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.all('/', 'Hi ALL!')
+	.listen(3000)
+```
+
+---
+
+
+## Group
+
+path หลายตัวที่มี prefix เดียวกันจัดกลุ่มรวมกันได้ด้วย `.group`:
+
+<CodePlayground elysia={demo3}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .get('/profile', 'Profile')
+    )
+    .listen(3000)
+```
+
+</CodePlayground>
+
+ผลลัพธ์เหมือนกับการเขียน `/user/sign-in` และ `/user/profile` แยกกัน
+
+### Prefix
+
+ถ้าทั้ง instance ใช้ prefix เดียวกัน เรากำหนดไว้ใน constructor ได้เลย:
+
+<CodePlayground elysia={demo4}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .get('/profile', 'Profile')
+```
+
+</CodePlayground>
+
+ต่างจาก `.group` ตรงที่ prefix นี้มีผลกับทุก path ใน instance ส่วน group มีผลแค่กับ path ใน callback
+
+</section>
+
+</InteractiveDocLayout>
+
+</div>

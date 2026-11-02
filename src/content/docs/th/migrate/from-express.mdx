@@ -1,0 +1,1100 @@
+---
+title: ย้ายจาก Express มาใช้ Elysia
+description: เปรียบเทียบการกำหนด route, validation, hook และ type safety ระหว่าง Express กับ Elysia
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import '../../../../styles/comparison.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">ย้ายจาก Express มาใช้ Elysia</h1>
+
+:::note[Elysia v2]
+
+ตัวอย่างของ Elysia ในหน้านี้ใช้ v2: ตัวเลือกของ route อยู่ก่อน handler, method ของ lifecycle ใช้ชื่อตาม event และค่าที่ได้จาก request ใช้ `derive` ส่วนตัวอย่างของเฟรมเวิร์กอื่นจะแสดงการตั้งค่าแบบที่ใช้กันทั่วไปของเฟรมเวิร์กนั้น ๆ ซึ่งเป็นตัวอย่างสำหรับการย้ายโค้ด ไม่ใช่การรวบรวมทุกความสามารถที่มีในปัจจุบัน แพ็กเกจที่เชื่อมต่อกับเฟรมเวิร์กต่าง ๆ มีความเข้ากันได้กับแต่ละ release แยกกันไป ตอนย้ายแอปพลิเคชันจึงควรเช็กแพ็กเกจเหล่านั้นด้วย
+
+:::
+
+คู่มือนี้เขียนให้ผู้ใช้ Express ที่อยากเห็นว่า Elysia ต่างจาก Express ตรงไหนบ้าง รวมถึง syntax และวิธีย้ายแอปพลิเคชันจาก Express มาเป็น Elysia ผ่านตัวอย่าง
+
+**Express** เป็นเว็บเฟรมเวิร์กยอดนิยมสำหรับ Node.js ที่ใช้กันแพร่หลายในการสร้างเว็บแอปพลิเคชันและ API ขึ้นชื่อเรื่องความเรียบง่ายและยืดหยุ่น
+
+**Elysia** เป็นเว็บเฟรมเวิร์กที่เขียนสบายมือสำหรับ Bun, Node.js และ runtime ที่รองรับ Web Standard API ออกแบบมาให้ใช้ง่ายและเป็นมิตรกับนักพัฒนา โดยเน้นที่ **type safety ที่รัดกุม** และประสิทธิภาพ
+
+## ประสิทธิภาพ
+Elysia มีประสิทธิภาพเหนือกว่า Express อย่างเห็นได้ชัด เพราะทำงานแบบ native บน Bun และใช้ static code analysis
+
+การเปรียบเทียบนี้อ้างอิง [ผลการทดสอบ TechEmpower Round 22](https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22) หมวด Plaintext ซึ่งเป็นผลเก่าจากวันที่ 2023-10-17 ตัวเลขเหล่านี้เป็นผลของชุดเฟรมเวิร์กและ runtime ตามที่บันทึกไว้ในตอนนั้น ไม่ใช่ผลที่วัดจาก Elysia v2
+
+| เฟรมเวิร์ก | จำนวน request ต่อวินาที |
+| --- | ---: |
+| Elysia | 2,454,631 |
+| Express | 113,117 |
+
+## การกำหนด route
+
+Express และ Elysia มี syntax การกำหนด route คล้ายกัน คือใช้ method `app.get()` และ `app.post()` ในการกำหนด route และเขียน path parameter ในรูปแบบคล้ายกัน
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.get('/', (req, res) => {
+    res.send('Hello World')
+})
+
+app.post('/id/:id', (req, res) => {
+    res.status(201).send(req.params.id)
+})
+
+app.listen(3000)
+```
+
+> Express ใช้ `req` และ `res` เป็น object ของ request และ response
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .post(
+    	'/id/:id',
+     	({ status, params: { id } }) => {
+      		return status(201, id)
+      	}
+    )
+    .listen(3000)
+```
+
+> Elysia ใช้ `context` เพียงตัวเดียว แล้ว return response ออกไปตรง ๆ
+
+</div>
+</div>
+
+<div class="content-layout">
+
+สไตล์การเขียนจะต่างกันนิดหน่อย Elysia แนะนำให้ใช้ method chaining และ object destructuring
+
+นอกจากนี้ Elysia ยังรองรับการใส่ค่า response แบบ inline ได้เลย ถ้าไม่จำเป็นต้องใช้ context
+
+## Handler
+
+ทั้ง Express และ Elysia มี property สำหรับเข้าถึง input อย่าง `headers`, `query`, `params` และ `body` ที่คล้ายกัน
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.use(express.json())
+
+app.post('/user', (req, res) => {
+    const limit = req.query.limit
+    const name = req.body.name
+    const auth = req.headers.authorization
+
+    res.json({ limit, name, auth })
+})
+```
+
+> Express ต้องใช้ middleware `express.json()` เพื่อ parse body ที่เป็น JSON
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.post('/user', { body: t.Object({ name: t.String() }) }, (ctx) => {
+	    const limit = ctx.query.limit
+	    const name = ctx.body.name
+	    const auth = ctx.headers.authorization
+
+	    return { limit, name, auth }
+	})
+```
+
+> โดยค่าเริ่มต้น Elysia จะ parse JSON, ข้อมูลแบบ URL-encoded และ form data ให้เลย
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## Subrouter
+
+Express ใช้ `express.Router()` โดยเฉพาะสำหรับประกาศ sub-router ส่วน Elysia มองทุก instance เป็น component ที่นำมาเสียบต่อกันแล้วใช้ได้ทันที
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const subRouter = express.Router()
+
+subRouter.get('/user', (req, res) => {
+	res.send('Hello User')
+})
+
+const app = express()
+
+app.use('/api', subRouter)
+```
+
+> Express ใช้ `express.Router()` เพื่อสร้าง sub-router
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ prefix: '/api' })
+	.get('/user', 'Hello User')
+
+const app = new Elysia()
+	.use(subRouter)
+```
+
+> Elysia มองทุก instance เป็น component
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## Validation
+Elysia รองรับการตรวจสอบ request มาในตัวด้วย TypeBox เพื่อ type safety ที่รัดกุม และรองรับ Standard Schema มาให้ตั้งแต่แรก จึงใช้ไลบรารีที่ชอบอย่าง Zod, Valibot, ArkType, Effect Schema และอื่น ๆ ได้เลย ส่วน Express ไม่มี validation ในตัว และต้องประกาศ type เองตามไลบรารี validation แต่ละตัว
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import { z } from 'zod'
+
+const app = express()
+
+app.use(express.json())
+
+const paramSchema = z.object({
+	id: z.coerce.number()
+})
+
+const bodySchema = z.object({
+	name: z.string()
+})
+
+app.patch('/user/:id', (req, res) => {
+	const params = paramSchema.safeParse(req.params)
+	if (!params.success)
+		return res.status(422).json(params.error)
+
+	const body = bodySchema.safeParse(req.body)
+	if (!body.success)
+		return res.status(422).json(body.error)
+
+	res.json({
+		params: params.data.id,
+		body: body.data
+	})
+})
+```
+
+> Express ต้องพึ่งไลบรารี validation ภายนอกอย่าง `zod` หรือ `joi` เพื่อตรวจสอบ body ของ request
+
+</div>
+<div>
+
+```ts title="Elysia TypeBox"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: t.Object({
+			id: t.Number()
+		}),
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Zod"
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Valibot"
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: v.object({
+			id: v.pipe(v.string(), v.transform(Number), v.number())
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+> Elysia ใช้ TypeBox ในการตรวจสอบและแปลง type ให้อัตโนมัติ พร้อมรองรับไลบรารี validation อื่น ๆ อย่าง Zod และ Valibot ด้วย syntax เดียวกัน
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## การอัปโหลดไฟล์
+Express ต้องพึ่งไลบรารีภายนอกอย่าง multer ในการจัดการอัปโหลดไฟล์ ส่วน Elysia รองรับไฟล์และ form data มาในตัว รวมถึงตรวจสอบ MIME type ผ่าน API แบบ declarative
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import multer from 'multer'
+import { fileTypeFromFile } from 'file-type'
+import path from 'path'
+
+const app = express()
+const upload = multer({ dest: 'uploads/' })
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+	const file = req.file
+
+	if (!file)
+		return res
+			.status(422)
+			.send('No file uploaded')
+
+	const type = await fileTypeFromFile(file.path)
+	if (!type || !type.mime.startsWith('image/'))
+		return res
+			.status(422)
+			.send('File is not a valid image')
+
+	const filePath = path.resolve(file.path)
+	res.sendFile(filePath)
+})
+```
+
+> Express ต้องใช้ `multer` ในการอัปโหลดไฟล์ และต้องตรวจสอบ mimetype เอง
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+const app = new Elysia()
+	.post('/upload', {
+		body: t.Object({
+			file: t.File({
+				type: 'image/*'
+			})
+		})
+	}, ({ body }) => body.file)
+```
+
+> Elysia จัดการไฟล์และตรวจสอบ mimetype แบบ declarative
+
+</div>
+</div>
+
+<div class="content-layout">
+
+metadata ของไฟล์ไม่ใช่หลักฐานว่าเนื้อหาในไฟล์เป็นอย่างที่บอก ทั้งสองตัวอย่างจึงใช้ **file-type** ตรวจ byte ของไฟล์จริง ๆ
+
+Elysia ลงทะเบียน detector ครั้งเดียวด้วย `setFileTypeDetector` แล้วตรวจ type แบบ declarative ด้วย `t.File({ type })` และต้องมี detector นี้เสมอ เพราะถ้าไม่มี การอัปโหลดทุกครั้งที่ตรวจกับ `type` จะไม่ผ่าน validation
+
+## Middleware
+
+middleware ของ Express ทำงานตามลำดับในคิวเดียว ส่วน Elysia ให้คุณควบคุมได้ละเอียดกว่าด้วย lifecycle แบบ **อิง event**
+
+Elysia เปิดให้เข้าถึงขั้นตอนต่าง ๆ ของ [lifecycle ของ request](/essential/life-cycle):
+
+| ขั้นตอน | หน้าที่ |
+| --- | --- |
+| Request | ตรวจดู request ที่เข้ามาก่อนจะ parse |
+| Parse | แปลง body ของ request ให้อยู่ในรูปที่ใช้งานได้ |
+| Transform และ validation | ปรับรูปแบบและตรวจสอบ input ของ request |
+| Before handle | derive ค่าจาก request หรือส่ง response กลับก่อนถึง handler |
+| Handler | สร้าง response ของ route |
+| After handle และ map response | ปรับแต่งและ serialize response |
+| After response | ทำงานที่เหลือหลังส่ง response ไปแล้ว |
+
+ส่วน error hook จะจัดการความผิดพลาดที่เกิดขึ้นใน pipeline นี้
+
+Express ใช้ pipeline ของ request แบบเส้นตรงเส้นเดียว ส่วน Elysia ดักจับแต่ละ event ใน pipeline ของ request ได้
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+// Global middleware
+app.use((req, res, next) => {
+	console.log(`${req.method} ${req.url}`)
+	next()
+})
+
+app.get(
+	'/protected',
+	// Route-specific middleware
+	(req, res, next) => {
+	  	const token = req.headers.authorization
+
+	  	if (!token)
+	   		return res.status(401).send('Unauthorized')
+
+	  	next()
+	},
+	(req, res) => {
+  		res.send('Protected route')
+	}
+)
+```
+
+> Express ใช้คิวเดียวสำหรับ middleware ซึ่งทำงานไปตามลำดับ
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	// Global middleware
+	.onRequest(({ request }) => {
+		console.log(request.method, new URL(request.url).pathname)
+	})
+	// Route-specific middleware
+	.get('/protected', {
+		beforeHandle({ status, headers }) {
+  			if (!headers.authorization)
+     			return status(401)
+		}
+	}, () => 'protected')
+```
+
+> Elysia มี interceptor ของ event แยกไว้สำหรับแต่ละจุดใน pipeline ของ request
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Express มีฟังก์ชัน `next` ไว้เรียก middleware ตัวถัดไป แต่ Elysia ไม่มี
+
+## Type safety ที่รัดกุม
+Elysia ออกแบบมาให้มี type safety ที่รัดกุม
+
+ตัวอย่างเช่น [derive](/essential/life-cycle#derive) จะเพิ่ม context เฉพาะของแต่ละ request พร้อม type ที่ infer ให้ และใน v2 ยังรับหน้าที่สร้าง context จากค่าที่ผ่าน validation แล้ว ซึ่งเดิมเป็นงานของ `resolve` ด้วย
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import type { Request, Response } from 'express'
+
+const app = express()
+
+const getVersion = (req: Request, res: Response, next: Function) => {
+	// @ts-ignore
+    req.version = 2
+
+	next()
+}
+
+app.get('/version', getVersion, (req, res) => {
+	// Error: Property 'version' does not exist on type 'Request'
+	res.send(req.version)
+})
+
+const authenticate = (req: Request, res: Response, next: Function) => {
+  	const token = req.headers.authorization
+
+  	if (!token)
+   		return res.status(401).send('Unauthorized')
+
+	// @ts-ignore
+    req.token = token.split(' ')[1]
+
+	next()
+}
+
+app.get('/token', getVersion, authenticate, (req, res) => {
+	// Error: Property 'version' does not exist on type 'Request'
+	req.version
+
+	// Error: Property 'token' does not exist on type 'Request'
+  	res.send(req.token)
+})
+```
+
+> Express แปะ property เพิ่มด้วย `@ts-ignore` และ `Request` ก็ไม่รู้จัก property เหล่านั้น
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.decorate('version', 2)
+	.get('/version', ({ version }) => version)
+	.derive(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+
+		return {
+			token: authorization.split(' ')[1]
+		}
+	})
+	// {  token: string, version: number }
+	.get('/token', ({ token, version }) => {
+		return token
+	})
+```
+
+> Elysia ใช้ `decorate` เพื่อขยาย context และใช้ `derive` เพื่อเพิ่ม property ที่กำหนดเองลงใน context
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ถึง Express จะใช้ `declare module` เพื่อขยาย interface `Request` ได้ แต่การประกาศนั้นมีผลแบบ global ไม่มี type safety ที่รัดกุม และไม่รับประกันว่า property นั้นจะมีอยู่จริงใน handler ของทุก request
+
+```ts
+declare module 'express' {
+  	interface Request {
+    	version: number
+  		token: string
+  	}
+}
+```
+> ตัวอย่าง Express ด้านบนต้องมีส่วนนี้ถึงจะทำงานได้ และก็ยังไม่มี type safety ที่รัดกุมอยู่ดี
+
+## Middleware ที่รับ parameter
+Express ใช้ฟังก์ชันที่ return middleware ออกมาเพื่อสร้าง middleware เฉพาะ route ที่นำกลับมาใช้ซ้ำได้ ส่วน Elysia ใช้ [macro](/patterns/macro) เพื่อสร้าง hook แบบกำหนดเอง
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import { findUser } from './users'
+import express from 'express'
+import type { Request, Response } from 'express'
+
+const app = express()
+
+const role = (role: 'user' | 'admin') =>
+	(req: Request, res: Response, next: Function) => {
+	  	const user = findUser(req.headers.authorization)
+
+	  	if (!user || user.role !== role)
+	   		return res.status(401).send('Unauthorized')
+
+	    req.user = user
+
+		next()
+	}
+
+app.get('/token', role('admin'), (req, res) => {
+	// Error: Property 'user' does not exist on type 'Request'
+  	res.send(req.user)
+})
+```
+
+> Express ใช้ฟังก์ชัน callback เพื่อรับ argument ที่กำหนดเองให้ middleware
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { findUser } from './users'
+
+const app = new Elysia()
+	.macro({
+		role: (role: 'user' | 'admin') => ({
+			derive({ status, headers: { authorization } }) {
+				const user = findUser(authorization)
+
+				if (!user || user.role !== role)
+					return status(401)
+
+				return {
+					user
+				}
+			}
+		})
+	})
+	// { user: User }
+	.get('/token', {
+		role: 'admin'
+	}, ({ user }) => user)
+```
+
+> Elysia ใช้ macro เพื่อส่ง argument ที่กำหนดเองให้ middleware ที่เขียนเอง
+
+</div>
+</div>
+
+<div class="content-layout">
+
+ในตัวอย่างนี้ `findUser` คือโค้ดของแอปพลิเคชันที่ตรวจสอบ credential ที่ส่งมา แล้วคืนข้อมูลผู้ใช้ที่มี `role` หรือไม่คืนผู้ใช้เลยถ้าตรวจสอบไม่ผ่าน การเช็กแค่ header หรือ prefix Bearer อย่างเดียวไม่นับว่าเป็นการยืนยันตัวตน
+
+## การจัดการ error
+
+Express ใช้ error handler ตัวเดียวสำหรับทุก route ส่วน Elysia ให้คุณควบคุมการจัดการ error ได้ละเอียดกว่า
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+class CustomError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'CustomError'
+	}
+}
+
+// global error handler
+app.use((error, req, res, next) => {
+	if(error instanceof CustomError) {
+		res.status(500).json({
+			message: 'Something went wrong!',
+			error
+		})
+	}
+})
+
+// throws CustomError
+app.get('/error', (req, res) => {
+	throw new CustomError('oh uh')
+})
+```
+
+> Express ใช้ middleware ในการจัดการ error และใช้ error handler ตัวเดียวสำหรับทุก route
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+class CustomError extends Error {}
+
+const app = new Elysia()
+    .onError(CustomError, ({ error, status }) =>
+        status(500, { message: 'Something went wrong!', detail: error.message })
+    )
+    .get('/error', () => {
+        throw new CustomError('oh uh')
+    })
+    .get('/local-error', {
+        error({ error, status }) {
+            if (error instanceof RangeError)
+                return status(500, { message: 'Only for this route!' })
+        }
+    }, () => {
+        throw new RangeError('outside the allowed range')
+    })
+```
+
+> Elysia ควบคุมการจัดการ error ได้ละเอียดกว่า และมีกลไกกำหนด scope ด้วย
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Express จัดการ error ผ่าน middleware ส่วน Elysia มีให้:
+
+1. error handler ทั้งแบบ global และแบบเฉพาะ route
+2. helper `status` สำหรับ return response พร้อม HTTP status
+3. error handler เฉพาะ class ที่ infer type ของ error ให้
+
+route `/error` ใช้ handler ของ `CustomError` ที่ลงทะเบียนไว้ ส่วน route `/local-error` จัดการ error อีกชนิดหนึ่งไว้ภายใน route เอง error hook จะทำงานตามลำดับที่ลงทะเบียน และ hook แรกที่ return ค่าออกมาจะเป็นตัวส่ง response โดย hook ที่ลงทะเบียนไว้บนแอปก่อน route จะทำงานก่อน hook `error` ของ route นั้น ดังนั้น hook ของ route จะ override hook เหล่านั้นไม่ได้
+
+Elysia จะ infer type ของ error ที่ลงทะเบียนไว้ให้ใน handler เฉพาะ class นั้น
+
+## Encapsulation
+
+middleware ของ Express ลงทะเบียนแบบ global ส่วน Elysia ให้คุณควบคุม side-effect ของ plugin ได้ผ่านกลไก scope ที่ระบุชัดเจนและลำดับของโค้ด
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.get('/', (req, res) => {
+	res.send('Hello World')
+})
+
+const subRouter = express.Router()
+
+subRouter.use((req, res, next) => {
+	const token = req.headers.authorization
+
+	if (!token)
+		return res.status(401).send('Unauthorized')
+
+	next()
+})
+
+app.use(subRouter)
+
+// has side-effect from subRouter
+app.get('/side-effect', (req, res) => {
+	res.send('hi')
+})
+
+```
+
+> Express ไม่จัดการ side-effect ของ middleware และต้องใช้ prefix เพื่อแยก side-effect ออกจากกัน
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // doesn't have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+> Elysia เก็บ side-effect ไว้ภายใน plugin
+
+</div>
+</div>
+
+<div class="content-layout">
+
+โดยค่าเริ่มต้น Elysia จะจำกัด lifecycle event และ context ไว้ใน instance ที่ใช้งาน side-effect ของ plugin จึงไม่กระทบ instance แม่ เว้นแต่จะระบุไว้ชัดเจน
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	// Scoped to parent instance but not beyond
+	.as('plugin') // [!code ++]
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // [!code ++]
+    // now have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+Elysia มีกลไก scope ให้ 3 แบบ:
+1. **local** - มีผลกับ instance นี้และ instance ลูกหลาน (ค่าเริ่มต้น)
+2. **plugin** - แชร์ side-effect ให้ instance แม่ แต่ไม่เกินไปกว่านั้น
+3. **global** - แชร์ไปยัง instance แม่ทุกชั้น
+
+ถึง Express จะจำกัดขอบเขต side-effect ของ middleware ได้ด้วยการเพิ่ม prefix แต่ก็ไม่ใช่ encapsulation ที่แท้จริง side-effect ยังอยู่ แค่จำกัดไว้กับ route ที่ขึ้นต้นด้วย prefix นั้น นักพัฒนาเลยต้องคอยจำว่า prefix ไหนมี side-effect บ้าง
+
+สิ่งที่ทำได้คือ:
+
+1. สลับลำดับของโค้ด แต่ทำได้เฉพาะเมื่อมี instance ที่มี side-effect อยู่ตัวเดียว
+2. เพิ่ม prefix แต่ side-effect ก็ยังอยู่ ถ้ามี instance อื่นใช้ prefix เดียวกัน ก็จะโดน side-effect นั้นไปด้วย
+
+ซึ่งอาจกลายเป็นฝันร้ายตอน debug เพราะ Express ไม่มี encapsulation ที่แท้จริง
+
+## Cookie
+Express ใช้ไลบรารีภายนอก `cookie-parser` ในการ parse cookie ส่วน Elysia รองรับ cookie มาในตัว และจัดการ cookie ด้วยแนวทางแบบ signal
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import cookieParser from 'cookie-parser'
+
+const app = express()
+
+app.use(cookieParser('secret'))
+
+app.get('/', function (req, res) {
+	req.cookies.name
+	req.signedCookies.name
+
+	res.cookie('name', 'value', {
+		signed: true,
+		maxAge: 1000 * 60 * 60 * 24
+	})
+})
+```
+
+> Express ใช้ `cookie-parser` ในการ parse cookie
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({
+    cookie: {
+        secrets: 'replace-with-a-private-secret',
+        sign: ['name']
+    }
+})
+    .get('/', {
+        cookie: t.Cookie({ name: t.Optional(t.String()) })
+    }, ({ cookie: { name } }) => {
+        const previous = name.value
+        name.set({
+            value: 'value',
+            maxAge: 60 * 60 * 24,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax'
+        })
+        return previous ?? 'unset'
+    })
+```
+
+> Elysia ตรวจสอบและ sign cookie ที่ตั้งค่าไว้ให้อัตโนมัติ `maxAge` ของ cookie มีหน่วยเป็นวินาที อย่าลืมเปลี่ยน secret ในตัวอย่างเป็นค่าลับของคุณเอง และส่ง secure cookie ผ่าน HTTPS
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## OpenAPI
+Express ต้องตั้งค่า OpenAPI, validation และ type safety แยกกัน ส่วน Elysia มี OpenAPI ให้ผ่าน plugin `@elysia/openapi` โดยใช้ schema เป็น **single source of truth**
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+import swaggerUi from 'swagger-ui-express'
+
+const app = express()
+app.use(express.json())
+
+app.post('/users', (req, res) => {
+	// TODO: validate request body
+	res.status(201).json(req.body)
+})
+
+const swaggerSpec = {
+	openapi: '3.0.0',
+	info: {
+		title: 'My API',
+		version: '1.0.0'
+	},
+	paths: {
+		'/users': {
+			post: {
+				summary: 'Create user',
+				requestBody: {
+					content: {
+						'application/json': {
+							schema: {
+								type: 'object',
+								properties: {
+									name: {
+										type: 'string',
+										description: 'First name only'
+									},
+									age: { type: 'integer' }
+								},
+								required: ['name', 'age']
+							}
+						}
+					}
+				},
+				responses: {
+					'201': {
+						description: 'User created'
+					}
+				}
+			}
+		}
+	}
+}
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+```
+
+> Express ต้องตั้งค่า OpenAPI, validation และ type safety แยกกัน
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi' // [!code ++]
+
+const app = new Elysia()
+	.use(openapi()) // [!code ++]
+	.model({
+		user: t.Object({
+			name: t.String(),
+			age: t.Integer()
+		})
+	})
+	.post('/users', {
+		body: 'user',
+		response: {
+			201: 'user'
+		},
+		detail: {
+			summary: 'Create user'
+		}
+	}, ({ body, status }) => status(201, body))
+```
+
+> Elysia ใช้ schema เป็น single source of truth
+
+</div>
+</div>
+
+<div class="content-layout">
+
+จาก schema ที่คุณให้มา Elysia จะสร้าง OpenAPI specification, ตรวจสอบ request และ response รวมถึง infer type ให้อัตโนมัติ
+
+Elysia ยังเพิ่ม schema ที่ลงทะเบียนใน `model` เข้าไปใน OpenAPI spec ให้ด้วย คุณจึงอ้างอิง model ได้จากส่วนเฉพาะใน Swagger หรือ Scalar UI
+
+## การทดสอบ
+
+Express ใช้ไลบรารี `supertest` ในการทดสอบแอปพลิเคชัน ส่วน Elysia สร้างอยู่บน Web Standard API จึงใช้กับไลบรารีทดสอบตัวไหนก็ได้
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import request from 'supertest'
+import { describe, it, expect } from 'vitest'
+
+const app = express()
+
+app.get('/', (req, res) => {
+	res.send('Hello World')
+})
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const res = await request(app).get('/')
+
+		expect(res.status).toBe(200)
+		expect(res.text).toBe('Hello World')
+	})
+})
+```
+
+> Express ใช้ไลบรารี `supertest` ในการทดสอบแอปพลิเคชัน
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { describe, it, expect } from 'vitest'
+
+const app = new Elysia()
+	.get('/', 'Hello World')
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const res = await app.handle(
+			new Request('http://localhost')
+		)
+
+		expect(res.status).toBe(200)
+		expect(await res.text()).toBe('Hello World')
+	})
+})
+```
+
+> Elysia ใช้ Web Standard API ในการจัดการ request และ response
+
+</div>
+</div>
+
+<div class="content-layout">
+
+อีกทางหนึ่ง Elysia ยังมีไลบรารีตัวช่วยชื่อ [Eden](/eden) สำหรับ end-to-end type safety ให้คุณเขียนเทสต์ได้พร้อม auto-completion และ type safety เต็มรูปแบบ
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import { describe, expect, it } from 'bun:test'
+
+const app = new Elysia().get('/hello', 'Hello World')
+const api = treaty(app)
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const { data, error, status } = await api.hello.get()
+
+		expect(status).toBe(200)
+		expect(data).toBe('Hello World')
+	})
+})
+```
+
+## End-to-end type safety
+Elysia รองรับ **end-to-end type safety** มาในตัวผ่าน [Eden](/eden) โดยไม่ต้องใช้ code generation ซึ่ง Express ไม่มี
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/mirror', {
+		body: t.Object({
+			message: t.String()
+		})
+	}, ({ body }) => body)
+
+const api = treaty(app)
+
+const { data, error } = await api.mirror.post({
+	message: 'Hello World'
+})
+
+if (error)
+	// error.status: 422
+	// error.value: { type: 'validation', title: 'Validation Error', status: 422, on: 'body', detail, errors: [...] }
+	throw error
+
+// { message: 'Hello World' }
+console.log(data)
+```
+
+ถ้าคุณให้ความสำคัญกับ end-to-end type safety ล่ะก็ Elysia คือตัวเลือกที่ใช่
+
+---
+
+Elysia ให้ประสบการณ์ที่เขียนสบายมือและเป็นมิตรกับนักพัฒนามากกว่า โดยเน้นทั้งประสิทธิภาพ, type safety และความเรียบง่าย ส่วน Express เป็นเว็บเฟรมเวิร์กยอดนิยมสำหรับ Node.js แต่ก็มีข้อจำกัดอยู่บ้างในเรื่องประสิทธิภาพและความเรียบง่าย
+
+ถ้าคุณกำลังมองหาเฟรมเวิร์กที่ใช้ง่าย มี developer experience ที่ดี และสร้างอยู่บน Web Standard API ล่ะก็ Elysia คือตัวเลือกที่ใช่สำหรับคุณ
+
+หรือถ้าคุณย้ายมาจากเฟรมเวิร์กอื่น ลองดูหน้าเหล่านี้ได้:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+    <Card href="/migrate/from-fastify">
+<CardTitle>ย้ายจาก Fastify</CardTitle>
+
+เปรียบเทียบ Fastify กับ Elysia
+
+</Card>
+	<Card href="/migrate/from-hono">
+<CardTitle>ย้ายจาก Hono</CardTitle>
+
+เปรียบเทียบ Hono กับ Elysia
+
+</Card>
+	<Card href="/migrate/from-trpc">
+<CardTitle>ย้ายจาก tRPC</CardTitle>
+
+เปรียบเทียบ tRPC กับ Elysia
+
+</Card>
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>

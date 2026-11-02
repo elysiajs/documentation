@@ -1,0 +1,497 @@
+---
+title: การตั้งค่า
+description: ตั้งค่า instance ของ Elysia, การ normalize schema, runtime adapter และตัวเลือกของเซิร์ฟเวอร์ HTTP
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">การตั้งค่า</h1>
+
+ตั้งค่า instance ของ Elysia ได้ด้วยการส่ง object เข้าไปใน constructor ใช้ `serve` สำหรับค่าเริ่มต้นของเซิร์ฟเวอร์ HTTP หรือจะส่งตัวเลือกของเซิร์ฟเวอร์เข้าไปใน `.listen()` โดยตรงก็ได้
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	prefix: '/v1',
+	normalize: true
+})
+```
+
+## abortSignal
+
+หยุดประมวลผล request เมื่อ client ยกเลิก request นั้น
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	abortSignal: true
+})
+```
+
+ค่าเริ่มต้น: `true`
+
+- `true` - ตรวจสถานะการยกเลิกหลังจบแต่ละขั้นของ lifecycle แล้วข้าม hook และ handler ที่เหลือ
+- `false` - รันทุก hook และ handler ให้ครบ แม้ client จะตัดการเชื่อมต่อไปแล้ว
+
+## adapter
+
+runtime adapter สำหรับใช้ Elysia ใน environment ต่าง ๆ
+
+บน Bun `.listen()` จะเลือก Bun adapter ให้อัตโนมัติ ส่วน runtime อื่นต้องระบุ adapter เอง
+
+```ts
+import { Elysia } from 'elysia'
+import { BunAdapter } from 'elysia/adapter/bun'
+
+new Elysia({
+	adapter: BunAdapter
+})
+```
+
+## allowUnsafeValidationDetails
+
+เลือกว่าจะให้ response ของ validation ใน production มีรายละเอียดของ schema หรือไม่
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	allowUnsafeValidationDetails: true
+})
+```
+
+โดยค่าเริ่มต้น response ใน production จะไม่ใส่รายละเอียดของปัญหา ค่าที่คาดหวัง และข้อมูลที่ส่งมา เปิดตัวเลือกนี้เฉพาะเมื่อตั้งใจให้รายละเอียดของ schema เหล่านั้นเปิดเผยได้เท่านั้น ดูเพิ่มเติมที่ [การจัดการ error](/patterns/error-handling/#validation-detail-in-production)
+
+ค่าเริ่มต้น: `false`
+
+- `true` - ใส่รายละเอียด validation ที่ไม่ปลอดภัยไว้ใน error response ตอน production
+- `false` - ไม่ใส่รายละเอียด validation ที่ไม่ปลอดภัยไว้ใน error response ตอน production
+
+## as
+
+กำหนด [scope](/essential/plugin/#scope) เริ่มต้นให้กับ lifecycle hook ที่ลงทะเบียนบน instance โดยไม่ได้ระบุ scope ไว้
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	as: 'plugin'
+})
+```
+
+ค่าเริ่มต้น: `local`
+
+## cookie
+
+กำหนดตัวเลือกเริ่มต้นให้ทุก cookie ของ instance ดูเพิ่มเติมที่ [การตั้งค่า cookie](/patterns/cookie/#config)
+
+## detail
+
+กำหนด metadata ของ OpenAPI ที่ใช้ร่วมกันในทุก route ของ instance
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	detail: {
+		hide: true,
+		tags: ['elysia']
+	}
+})
+```
+
+## name
+
+กำหนดชื่อของ instance ซึ่งใช้ในการ debug และทำ [plugin deduplication](/essential/plugin/#deduplication)
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	name: 'service.thing'
+})
+```
+
+## nativeStaticResponse
+
+ใช้การจัดการแบบ optimize ของ runtime กับค่า response ที่เขียนแบบ inline ค่าเริ่มต้นคือ `true`
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ nativeStaticResponse: true })
+    .get('/version', '1')
+    .listen(3000)
+```
+
+บน Bun นั้น Elysia จะใส่ค่า static ที่เข้าเงื่อนไขไว้ใน `Bun.serve.routes` สำหรับ route ด้านบน native response จะมี body เหมือนกับเซิร์ฟเวอร์แบบ standalone นี้:
+
+```ts
+Bun.serve({
+    port: 3000,
+    routes: { '/version': new Response('1') },
+    fetch: () => new Response('Not found', { status: 404 })
+})
+```
+
+route ที่มี hook ซึ่งต้องทำงานตอนรับ request อาจใช้ request pipeline ปกติของ Elysia แทน
+
+## normalize
+
+เลือกวิธีจัดการ property ที่ไม่รู้จัก เมื่อ TypeBox schema ไม่อนุญาตให้มี property เพิ่มเติม ตัวเลือกนี้ไม่มีผลกับ validator ของ Standard Schema
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	normalize: true
+})
+```
+
+ค่าเริ่มต้น: `true` (เทียบเท่ากับ `exactMirror`)
+
+- `true` หรือ `exactMirror`: ลบ property ที่ไม่รู้จักออกด้วย [exact mirror](/blog/elysia-13/#exact-mirror)
+
+- `typebox`: Elysia จะลบ property ที่ไม่รู้จักออกด้วย [Value.Clean ของ TypeBox](https://github.com/sinclairzx81/typebox)
+
+- `false`: Elysia จะโยน error ถ้า request หรือ response มี field ที่ไม่ได้อนุญาตไว้อย่างชัดเจนใน schema ของ handler นั้น
+
+## precompile
+
+เลือกว่าจะ [precompile ทุก route](/blog/elysia-10/#improved-startup-time) ล่วงหน้าก่อนเริ่มเซิร์ฟเวอร์หรือไม่
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	precompile: true
+})
+```
+
+ค่าเริ่มต้น: `false`
+
+- `true`: รัน JIT กับทุก route ก่อนเริ่มเซิร์ฟเวอร์
+
+- `false`: คอมไพล์ route แบบ dynamic เมื่อต้องใช้
+
+ปล่อยไว้เป็น `false` ก็พอ เว้นแต่อยากให้คอมไพล์ route ตั้งแต่ช่วง warm-up และให้ตั้งค่านี้บน root instance ที่เป็นตัวเริ่มเซิร์ฟเวอร์
+
+## prefix
+
+กำหนด prefix ให้ทุก route ของ instance
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	prefix: '/v1'
+})
+```
+
+เมื่อกำหนด prefix ไว้ ทุก route จะมีค่าที่กำหนดนำหน้า path
+
+### ตัวอย่าง
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ prefix: '/v1' }).get('/name', 'elysia') // Path is /v1/name
+```
+
+## sanitize
+
+แปลง string ที่กำหนดไว้ใน schema ระหว่างตรวจสอบด้วยฟังก์ชันหรือ array ของฟังก์ชัน ให้ตั้งค่านี้บน root instance และใช้การ normalize แบบ exact mirror (`true` หรือ `exactMirror`)
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	sanitize: (value) => Bun.escapeHTML(value)
+})
+```
+
+## seed
+
+กำหนดค่าที่ใช้สร้าง checksum ของ instance เพื่อใช้ทำ [plugin deduplication](/essential/plugin/#deduplication)
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	seed: {
+		value: 'service.thing'
+	}
+})
+```
+
+ค่านี้เป็น type อะไรก็ได้ ไม่จำกัดแค่ string, number หรือ object
+
+## strictPath
+
+กำหนดว่าจะให้ Elysia จัดการ path แบบเคร่งครัดหรือไม่
+
+ตาม [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3) path ควรตรงกับ path ที่กำหนดใน route ทุกตัวอักษร
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ strictPath: true })
+```
+
+ค่าเริ่มต้น: `false`
+
+- `true` - จับคู่ path ตาม [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3) อย่างเคร่งครัด
+- `false` - ยอมให้มีหรือไม่มี '/' ต่อท้ายก็ได้
+
+### ตัวอย่าง
+
+```ts
+import { Elysia } from 'elysia'
+
+// Path can be either /name or /name/
+new Elysia({ strictPath: false }).get('/name', 'elysia')
+
+// Path can be only /name
+new Elysia({ strictPath: true }).get('/name', 'elysia')
+```
+
+## serve
+
+ตั้งค่าเซิร์ฟเวอร์ HTTP ที่อยู่เบื้องหลังด้วยตัวเลือกเซิร์ฟเวอร์ของ Bun
+
+object `serve` ใน constructor ใช้กำหนดค่าเริ่มต้น ส่วนตัวเลือกที่ส่งเข้า `.listen()` จะทับ field ที่ตรงกัน
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ serve: { idleTimeout: 60 } })
+    .get('/', 'Hello Elysia')
+    .listen(3000)
+```
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		hostname: 'elysiajs.com',
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+การตั้งค่านี้ต่อยอดมาจาก [Bun Serve API](https://bun.sh/docs/api/http) และ [Bun TLS](https://bun.sh/docs/api/http#tls)
+
+### ขนาด body สูงสุด
+ตั้ง `maxRequestBodySize` เพื่อจำกัดขนาด body ของ HTTP request เป็นไบต์
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		maxRequestBodySize: 1024 * 1024 * 256 // 256MB
+})
+```
+
+โดยค่าเริ่มต้น body ของ request จะมีขนาดได้สูงสุด 128MB (1024 * 1024 * 128)
+ขีดจำกัดของข้อความ WebSocket แยกกันต่างหาก ให้ส่ง `maxPayloadLength` ไปที่ WebSocket plugin ดูเพิ่มเติมที่ [ค่าเริ่มต้นของ WebSocket](#websocket)
+
+### HTTPS และ TLS
+เปิดใช้ TLS ด้วย certificate และ private key โดยต้องมีทั้ง `cert` และ `key`
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+### ตั้ง idle timeout
+
+ตั้ง `idleTimeout` เป็นวินาที เพื่อปิด connection ที่ไม่มีการใช้งานเมื่อครบเวลาที่กำหนด
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		// Increase idle timeout to 60 seconds
+		idleTimeout: 60
+})
+```
+
+ค่า idle timeout เริ่มต้นขึ้นอยู่กับเวอร์ชัน Bun ที่ใช้ ถ้าแอปพลิเคชันต้องการค่าที่แน่นอน ให้ตั้งไว้เองเลย
+
+### อ้างอิงตัวเลือกของเซิร์ฟเวอร์
+
+ชื่อต่อไปนี้ใส่ prefix `serve.` ไว้เพื่อให้อ้างอิงง่าย ตอนใช้จริงให้ส่ง field เหล่านี้เข้า `.listen()` โดยตรง
+
+### serve.hostname
+ค่าเริ่มต้น: `0.0.0.0`
+
+กำหนด hostname ที่เซิร์ฟเวอร์จะ listen
+
+### serve.id
+ระบุตัวตนของ server instance ด้วย ID ที่ไม่ซ้ำกัน
+
+string นี้ใช้สำหรับ hot reload เซิร์ฟเวอร์โดยไม่ขัดจังหวะ request หรือ websocket ที่ยังค้างอยู่ ถ้าไม่ระบุ ระบบจะสร้างค่าให้เอง ถ้าต้องการปิด hot reload ให้ตั้งค่านี้เป็น `null`
+
+### serve.idleTimeout
+เวลาสูงสุดที่ connection จะอยู่เฉย ๆ ได้ หน่วยเป็นวินาที ค่านี้นับเฉพาะช่วงที่ไม่มีการใช้งาน ไม่ใช่เวลาจำกัดรวมของทั้ง request ถ้าไม่ได้ตั้งไว้ adapter ปัจจุบันจะใช้ค่าเริ่มต้นของ Bun
+
+### serve.maxRequestBodySize
+ค่าเริ่มต้น: `1024 * 1024 * 128` ไบต์ (128 MiB)
+
+กำหนดขนาดสูงสุดของ body ใน request (หน่วยเป็นไบต์)
+
+### serve.port
+ค่าเริ่มต้น: Bun จะใช้ port ที่ตั้งไว้ใน environment และถ้าไม่มีจะใช้ `3000`
+
+port ที่จะ listen
+
+### serve.rejectUnauthorized
+`rejectUnauthorized` เป็นตัวเลือกของ TLS ใน Bun API ปัจจุบัน ให้ใส่ไว้ใน `tls` ไม่ใช่ที่ระดับบนสุด เมื่อเปิดการตรวจสอบ certificate ของ client ไว้ การตั้งค่านี้เป็น `false` จะยอมรับ certificate ของ client ที่ไม่น่าเชื่อถือ
+
+### serve.reusePort
+กำหนดว่าจะตั้ง flag `SO_REUSEPORT` หรือไม่
+
+ช่วยให้หลาย process bind กับ port เดียวกันได้ ซึ่งมีประโยชน์สำหรับการทำ load balancing
+
+adapter ของ Elysia ปัจจุบันไม่ได้บังคับเปิดค่านี้ ค่าเริ่มต้นและการรองรับในแต่ละแพลตฟอร์มขึ้นอยู่กับ Bun
+
+### serve.unix
+ถ้าตั้งค่านี้ เซิร์ฟเวอร์ HTTP จะ listen ผ่าน unix socket แทน port
+
+(ใช้ร่วมกับ hostname+port ไม่ได้)
+
+### serve.tls
+เปิดใช้ TLS ด้วย certificate และ private key โดยต้องมีทั้ง `cert` และ `key`
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+Elysia ต่อยอดจากการตั้งค่าของ Bun ซึ่งรองรับ TLS มาในตัว โดยใช้ BoringSSL อยู่เบื้องหลัง
+
+### serve.tls.ca
+จะกำหนด CA certificate ที่เชื่อถือขึ้นมาแทนก็ได้ โดยค่าเริ่มต้นจะเชื่อถือ CA ที่เป็นที่รู้จักซึ่ง Mozilla คัดเลือกไว้
+
+ถ้าระบุ CA ผ่านตัวเลือกนี้ CA ของ Mozilla จะถูกแทนที่ทั้งหมด
+
+### serve.tls.cert
+cert chain ในรูปแบบ PEM โดยควรมี cert chain หนึ่งชุดต่อ private key หนึ่งตัว
+
+cert chain แต่ละชุดควรประกอบด้วย certificate ของ private key ที่ให้ไว้ ตามด้วย intermediate certificate (ถ้ามี) เรียงตามลำดับ ทั้งหมดในรูปแบบ PEM
+โดยไม่รวม root CA (peer ต้องรู้จัก root CA อยู่ก่อนแล้ว ดู ca)
+
+ถ้าให้ cert chain หลายชุด ไม่จำเป็นต้องเรียงลำดับให้ตรงกับ private key ใน key
+
+ถ้าไม่ได้ให้ intermediate certificate ไว้
+peer จะตรวจสอบ certificate ไม่ได้ และ handshake จะล้มเหลว
+
+### serve.tls.dhParamsFile
+path ของไฟล์ .pem ที่มี parameter ของ Diffie-Hellman ที่กำหนดเอง
+
+### serve.tls.key
+private key ในรูปแบบ PEM ซึ่งรูปแบบนี้เปิดให้เข้ารหัส key ได้ และ key ที่เข้ารหัสไว้จะถอดรหัสด้วย options.passphrase
+
+ส่ง key หลายตัวเป็น array ของ string, buffer หรือ object รูปแบบ `{ pem, passphrase }` ได้ ในกรณีที่ Bun รองรับ
+
+รูปแบบ object ใช้ได้เฉพาะใน array เท่านั้น
+
+**object.passphrase** ไม่บังคับ ส่วน key ที่เข้ารหัสไว้จะถอดรหัสด้วย
+
+**object.passphrase** ถ้ามีให้ไว้ หรือใช้ **options.passphrase** ถ้าไม่มี
+
+### serve.tls.lowMemoryMode
+Default: `false`.
+
+ตัวเลือกนี้จะตั้ง `OPENSSL_RELEASE_BUFFERS` เป็น 1
+
+ประสิทธิภาพโดยรวมจะลดลง แต่ช่วยประหยัดหน่วยความจำได้บ้าง
+
+### serve.tls.passphrase
+passphrase ที่ใช้ร่วมกันสำหรับ private key ตัวเดียว และ/หรือ PFX
+
+### serve.tls.requestCert
+ค่าเริ่มต้น: `false`
+
+ถ้าตั้งเป็น `true` เซิร์ฟเวอร์จะขอ certificate จาก client
+
+### serve.tls.secureOptions
+ใช้ปรับพฤติกรรมของโปรโตคอล OpenSSL ได้ (ไม่บังคับ) ซึ่งปกติแล้วไม่จำเป็นต้องใช้
+
+ถ้าจะใช้จริง ๆ ก็ต้องระวังให้มากเลยนะ!
+
+ค่าเป็น bitmask แบบตัวเลขของตัวเลือก SSL_OP_* จาก OpenSSL Options
+
+### serve.tls.serverName
+กำหนดชื่อเซิร์ฟเวอร์อย่างชัดเจน
+
+## tags
+
+กำหนด tag ใน OpenAPI schema ให้ทุก route ของ instance คล้ายกับ [detail](#detail)
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	tags: ['elysia']
+})
+```
+
+## systemRouter
+
+ตัวเลือก `systemRouter` ใน constructor ถูกเอาออกไปแล้วใน v2 ตอนนี้ Bun adapter จะใส่ static response ที่เข้าเงื่อนไขลงใน `Bun.serve.routes` ให้อัตโนมัติ และใช้ router ของ Elysia กับ request อื่น ๆ ใช้ [`nativeStaticResponse`](#nativestaticresponse) เพื่อควบคุมการเพิ่มประสิทธิภาพส่วนนี้
+
+## websocket
+
+Elysia 2 ไม่มีตัวเลือก `websocket` ใน constructor ให้ตั้งค่าเริ่มต้นของ WebSocket สำหรับทั้งเซิร์ฟเวอร์ที่ plugin แทน และไม่ต้องตั้งเลยถ้าไม่ได้ต้องการเปลี่ยนการบีบอัด idle timeout หรือขีดจำกัดของข้อความ ส่วน lifecycle handler ให้ใส่ไว้กับ `.ws()` แต่ละตัว
+
+ตัวเลือกของ plugin ต่อยอดมาจาก [WebSocket API ของ Bun](https://bun.sh/docs/api/websockets)
+
+### ตัวอย่าง
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket({
+        // enable compression and decompression
+        perMessageDeflate: true,
+        maxPayloadLength: 64 * 1024
+    }))
+    .ws('/echo', (ws) => ws.body)
+    .listen(3000)
+```
+
+ดูตัวเลือกทั้งหมดได้ที่ [การตั้งค่า WebSocket](/patterns/websocket/#configuration)
+
+</div>
+
+---
+
+ดูรายการตัวเลือกทั้งหมดได้ที่ [เอกสารอ้างอิง](/reference/classes/elysia/)
+
+</InteractiveDocLayout>
+
+</div>

@@ -1,0 +1,499 @@
+---
+title: Handler
+description: อ่าน request แล้วเลือกว่าจะส่งอะไรกลับไปด้วย handler ของ Elysia
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+
+export const responseDemo = new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/path', ({ path }) => path)
+    .get('/teapot', ({ status }) => status(418, 'I am a teapot'));
+
+export const extendContextDemo = new Elysia()
+    .state('tea', 'Earl Grey')
+    .decorate('greet', (name) => `Hello ${name}`)
+    .derive(({ query }) => ({ name: query.name ?? 'friend' }))
+    .get('/', ({ store, greet, name }) => ({
+        greeting: greet(name),
+        tea: store.tea
+    }));
+
+export const extendContextExamples = await Promise.all(
+    ['/', '/?name=Nagisa'].map(async (path) => ({
+        method: 'GET',
+        displayPath: path,
+        response: await (await extendContextDemo.handle(
+            new Request(`http://elysiajs.com${path}`)
+        )).text()
+    }))
+);
+
+export const steps = [
+    {
+        label: 'Return a value',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'Use a function',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'Read the request',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ query }) => query.name ?? 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'Choose a status',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ query, status }) => {
+        if (!query.name) return status(400, 'Tell me your name')
+
+        return query.name
+    })
+    .listen(3000)`,
+        highlight: [4, 5, 7],
+    },
+];
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Handler</h1>
+
+**handler** มีหน้าที่ตัดสินว่าจะส่งอะไรกลับไปเมื่อ request ตรงกับ route คุณจะส่งค่าให้ Elysia คืนกลับไปตรง ๆ หรือส่งฟังก์ชันที่อ่าน request แล้วสร้าง response ขึ้นมาก็ได้
+
+มาเริ่มจากคำทักทายกันก่อน แล้วค่อยให้มันตอบตามสิ่งที่ส่งเข้ามา
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## คืนค่าตรง ๆ
+
+ส่งค่า literal ไปตรง ๆ เมื่อทุก request ควรได้ response เดียวกัน request แบบ `GET` ไปที่ `/` จะได้ `Hello Elysia` กลับมา
+
+Elysia เตรียม response นี้ไว้ล่วงหน้าได้ และวิธีนี้ใช้ได้กับ static resource อย่างไฟล์ด้วย
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## ใช้ฟังก์ชัน
+
+ถ้าต้องทำงานบางอย่างในแต่ละ request ให้ส่งฟังก์ชันเข้าไปแทน Elysia จะเรียกฟังก์ชันนั้นเมื่อ route ตรงกัน แล้วแปลงค่าที่คืนออกมาเป็น response
+
+ฟังก์ชันนี้ยังคืน `Hello Elysia` เหมือนเดิม คำทักทายเดิม แต่ตอนนี้ต่อยอดได้อีกเยอะ
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## อ่าน request
+
+argument ตัวแรกของ handler คือ **context** ซึ่งมีข้อมูลของ request และ helper ที่ใช้ตอบกลับ
+
+ในตัวอย่างนี้เราดึง `query` ออกมาจาก context ถ้าเข้า `/?name=Nagisa` จะได้ `Nagisa` แต่ถ้าเข้า `/` จะได้ `Hello Elysia`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## เลือก status
+
+คืนค่า `status(code, value)` เพื่อกำหนดทั้ง HTTP status และ body ของ response
+
+ตอนนี้ `/` จะคืน `400` พร้อมข้อความ `Tell me your name` ลองเติม `?name=Nagisa` ดู จะได้ `Nagisa` พร้อม status `200` ตามปกติ
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+:::tip[ค่า static ไม่ใช่ cache]
+
+handler แบบ literal ทำให้ Elysia เตรียม response ไว้ล่วงหน้าได้ แต่ lifecycle hook ก็ยังเปลี่ยนแปลงมันได้อยู่ รวมถึง headers และ status ด้วย
+
+:::
+
+## ลองดู response
+
+เลือก route ด้านล่างเพื่อดู body ของ response `/path` จะคืน pathname ของตัวเอง ส่วน `/teapot` จะคืน `I am a teapot` พร้อม HTTP status `418`
+
+<CodePlayground elysia={responseDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/path', ({ path }) => path)
+    .get('/teapot', ({ status }) => status(418, 'I am a teapot'))
+    .listen(3000)
+```
+
+</CodePlayground>
+
+ช่องผลลัพธ์นี้แสดงแค่ body ถ้าอยากดู status code และ headers ด้วย ให้รันตัวอย่างบนเครื่องตัวเอง แล้วส่ง request ไปที่ `http://localhost:3000/teapot` ด้วย HTTP client ที่ใช้
+
+## Context
+
+แต่ละ request จะได้ context ของตัวเอง ซึ่งทั้ง handler และ lifecycle hook จะได้รับไปใช้ แต่ field ไหนพร้อมใช้บ้างขึ้นอยู่กับ stage ของ lifecycle
+
+จะรับทั้ง object แล้วอ่าน `context.path` ก็ได้ หรือจะ destructure เอาแค่ที่ต้องใช้แบบ `({ path }) => path` ก็ได้
+
+| Property | ข้อมูลที่ได้ |
+| --- | --- |
+| `body` | body ของ request ที่ parse แล้ว เช่น JSON, field ของฟอร์ม หรือไฟล์ที่อัปโหลด |
+| `query` | query parameter สำหรับ `/?name=Nagisa` ค่า `query.name` คือ `Nagisa` |
+| `params` | path parameter ที่มีชื่อ สำหรับ `/user/42` ที่ตรงกับ `/user/:id` ค่า `params.id` คือ `42` |
+| `headers` | headers ของ request ที่เข้ามา เช่น `content-type` |
+| `cookie` | ค่า cookie ของ request นี้ พร้อม helper สำหรับอัปเดต cookie ที่จะส่งออกไป |
+| `store` | state ที่ใช้ร่วมกันและแก้ไขได้ ซึ่งลงทะเบียนด้วย `.state()` |
+| `path` | pathname ของ request โดยไม่รวม query string |
+| `request` | `Request` ต้นฉบับแบบ Web Standard |
+| `server` | instance ของเซิร์ฟเวอร์ที่กำลังรันอยู่ ถ้า runtime มีให้ |
+
+| Helper | ใช้ทำอะไร |
+| --- | --- |
+| `status(code, value)` | คืน body พร้อม HTTP status ที่กำหนด |
+| `redirect(url, status?)` | คืน response สำหรับ redirect |
+| `set` | ตั้งค่า headers ของ response ที่จะส่งออกไป และ status เริ่มต้น |
+
+`store` จะแชร์ข้ามทุก request เช่นเดียวกับ reference ของ object ที่เพิ่มด้วย `.decorate()` ถ้าเป็นค่าเฉพาะของแต่ละ request ให้คำนวณด้วย `.derive()` แทน
+
+ดูเรื่อง schema ที่ใช้ตรวจสอบและกำหนด type ให้ field ของ request ได้ที่ [validation](/essential/validation/)
+
+## status
+
+สำหรับ error ที่คาดไว้อยู่แล้ว เช่น หา resource ไม่เจอ แนะนำให้คืน `status()` ซึ่ง Elysia จะผูก status code ไว้คู่กับ type ของ body ให้ด้วย
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/tea', {
+        response: {
+            200: t.Object({ name: t.String() }),
+            404: t.String()
+        }
+    }, ({ query, status }) => {
+        if (query.name !== 'earl-grey')
+            return status(404, 'That tea is not on the menu')
+
+        return { name: 'Earl Grey' }
+    })
+    .listen(3000)
+```
+
+TypeScript จะตรวจ body แต่ละตัวเทียบกับ response schema ของ status นั้น ๆ และ [Eden](/eden/) ก็ใช้ type เหล่านี้ในการ narrow ผลลัพธ์และ error ฝั่ง client ตาม status code ด้วย
+
+response ที่สำเร็จจะใช้ `200` ถ้าไม่ได้กำหนด status เองและไม่มี error
+
+## กำหนดรายละเอียดของ response
+
+ใช้ `set` เพื่อปรับ response ที่จะส่งออกไป ซึ่งผูกอยู่กับ request ปัจจุบัน
+
+### set.headers
+
+กำหนด header ของ response ตามชื่อได้เลย จะแทนที่ object ของ headers ทั้งก้อน หรือใช้ `delete` ลบรายการที่ตั้งไว้ก็ได้
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set, status }) => {
+        set.headers['x-teapot'] = 'true'
+
+        return status(418, 'I am a teapot')
+    })
+    .listen(3000)
+```
+
+ใช้ชื่อตัวพิมพ์เล็ก เช่น `content-type` เพื่อให้ตรงกับ autocomplete ของ header ใน Elysia ส่วนชื่อ header ใน HTTP เองไม่สนตัวพิมพ์เล็กใหญ่อยู่แล้ว
+
+### set.status
+
+ใช้ `set.status` เมื่อต้องการให้ hook หรือ plugin เลือก status เริ่มต้น โดยปล่อยให้ handler จัดการ body เอง
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(({ set }) => {
+        set.status = 201
+    })
+    .post('/tea', () => ({ name: 'Earl Grey' }))
+    .listen(3000)
+```
+
+hook นี้ไม่ได้คืนค่าอะไร handler จึงยังทำงานตามปกติ request แบบ `POST` ไปที่ `/tea` จะได้ object กลับมาพร้อม status `201`
+
+จะใช้ตัวเลขหรือชื่อ status ก็ได้ เช่น `set.status = 'Created'` การคืน `status()` จะ override ค่าเริ่มต้นนี้ และยังรักษาความสัมพันธ์ระหว่าง status กับ type ของ body ไว้ด้วย ซึ่งการกำหนด `set.status` ทำแบบนั้นไม่ได้
+
+## Cookie
+
+อ่านค่า cookie ผ่าน property `.value` และกำหนดค่าใหม่ลงไปเพื่อส่ง cookie ที่อัปเดตแล้วกลับไปใน response
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/tea', ({ cookie: { tea } }) => {
+        const previous = tea.value ?? 'none'
+        tea.value = 'Earl Grey'
+
+        return { previous, current: tea.value }
+    })
+    .listen(3000)
+```
+
+ถ้า request ไม่มี cookie `tea` โค้ดนี้จะคืน `previous: 'none'` และตั้งค่า cookie เป็น `Earl Grey` ค่า cookie เหล่านี้เป็นของ request นั้น ๆ ไม่ใช่ store ส่วนกลางที่ใช้ร่วมกัน
+
+ดูตัวเลือก การ sign และการลบ cookie ได้ที่ [cookie](/patterns/cookie/)
+
+## Redirect
+
+คืน `redirect()` เพื่อพา client ไปยัง URL อื่น ค่าเริ่มต้นคือ `302` ถ้าอยากใช้ redirect status อื่นให้ส่ง argument ตัวที่สองเข้าไป
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ redirect }) => redirect('/tea'))
+    .get('/old-menu', ({ redirect }) => redirect('/tea', 301))
+    .get('/tea', 'Earl Grey')
+    .listen(3000)
+```
+
+client จะได้ response แบบ redirect พร้อม header `Location` อย่าลืมคืนค่านี้ออกจาก handler ด้วยนะ
+
+## Form data
+
+คืน `form()` เพื่อส่ง form data แบบ multipart ซึ่ง field ข้างในมีได้ทั้งข้อความและไฟล์
+
+```ts
+import { Elysia, form, file } from 'elysia'
+
+new Elysia()
+    .get('/album', () => form({
+        name: 'Tea Party',
+        images: [file('nagisa.webp'), file('mika.webp')]
+    }))
+    .listen(3000)
+```
+
+อย่าลืมวางไฟล์ตัวอย่างไว้ใน working directory ของแอปก่อนรันนะ
+
+### คืนไฟล์
+
+ถ้ามีไฟล์เดียว คืน `file()` ไปตรง ๆ ได้เลย
+
+```ts
+import { Elysia, file } from 'elysia'
+
+new Elysia()
+    .get('/portrait', file('nagisa.webp'))
+    .listen(3000)
+```
+
+## ส่ง response แบบ stream
+
+ใช้ฟังก์ชัน generator กับ `yield` เพื่อส่ง response ออกไปทีละ chunk ทุกค่าที่ yield ออกมาจะกลายเป็นส่วนหนึ่งของ stream
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* () {
+        yield 1
+        yield 2
+        yield 3
+    })
+    .listen(3000)
+```
+
+ใช้ `async function*` เมื่อการสร้าง chunk ต้องใช้ `await`
+
+### Server-sent events
+
+ห่อแต่ละค่าด้วย `sse()` เพื่อจัดรูปแบบให้เป็น server-sent event แล้ว Elysia จะตั้ง content type ของ response เป็น `text/event-stream` ให้เอง
+
+```ts
+import { Elysia, sse } from 'elysia'
+
+new Elysia()
+    .get('/events', function* () {
+        yield sse('Tea is brewing')
+        yield sse({
+            event: 'ready',
+            data: { tea: 'Earl Grey' }
+        })
+    })
+    .listen(3000)
+```
+
+event แรกส่งข้อความธรรมดา ส่วน event ที่สองเป็น event ชื่อ `ready` ที่มีข้อมูลเป็น JSON
+
+### ตั้ง headers ก่อนเริ่ม stream
+
+:::caution[ก่อน yield ครั้งแรก]
+
+ตั้ง headers ให้เสร็จก่อน yield chunk แรก เพราะ Elysia จะส่ง headers ออกไปตอนเริ่ม stream การเปลี่ยนแปลงหลังจากนั้นจะไปไม่ถึง client
+
+:::
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* ({ set }) {
+        set.headers['x-tea'] = 'Earl Grey'
+
+        yield 1
+        yield 2
+    })
+    .listen(3000)
+```
+
+ข้อนี้ใช้กับทั้ง stream ปกติและ server-sent events
+
+### คืนค่าโดยไม่ stream
+
+คืนค่าก่อนถึง `yield` แรก เพื่อส่งเป็น response ธรรมดาแทน
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* ({ query }) {
+        if (query.stream !== 'true') return 'Ready'
+
+        yield 1
+        yield 2
+        yield 3
+    })
+    .listen(3000)
+```
+
+`/stream` จะคืน `Ready` ส่วน `/stream?stream=true` จะ stream ค่าทั้งสามออกมา
+
+### การยกเลิก
+
+ถ้า client ยกเลิกก่อน stream จบ Elysia จะปิด generator ให้ แต่จะไม่ไปขัดงานใด ๆ ที่คุณเริ่มไว้แล้วด้วย `await` ถ้างานเหล่านั้นต้องหยุดตามด้วย ให้ส่ง abort signal ของ request ไปให้ operation ที่รองรับ
+
+### รับ stream ด้วย Eden
+
+Eden อ่าน stream เป็น async generator ใช้ `for await` เพื่อวนรับแต่ละ chunk
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/stream', function* () {
+        yield 1
+        yield 2
+        yield 3
+    })
+
+const { data, error } = await treaty(app).stream.get()
+if (error) throw error
+
+for await (const chunk of data)
+    console.log(chunk)
+```
+
+## Request
+
+ใช้ `request` เมื่อต้องการ `Request` ต้นฉบับแบบ Web Standard ไม่ว่าจะเป็น URL, headers หรือ abort signal ของมัน
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user-agent', ({ request }) =>
+        request.headers.get('user-agent') ?? 'Unknown'
+    )
+    .listen(3000)
+```
+
+ถ้าต้องการ body ที่ parse แล้ว ให้ใช้ `body` จาก context เพราะ body ของ request อ่านได้แค่ครั้งเดียว และ Elysia อาจอ่านของคุณไปแล้ว
+
+## Server
+
+บน Bun ค่า `server` คือ instance ของเซิร์ฟเวอร์ Bun ที่กำลังรันอยู่ ซึ่งจะใช้ได้หลังจาก `.listen()` เริ่มเซิร์ฟเวอร์แล้ว
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/port', ({ server }) => server?.port)
+    .get('/ip', ({ server, request }) => server?.requestIP(request))
+    .listen(3000)
+```
+
+`/port` จะคืนพอร์ตที่กำลัง listen อยู่ ส่วน `server.requestIP(request)` จะคืนข้อมูล socket address ของ client ถ้ามี
+
+API ของเซิร์ฟเวอร์เหล่านี้มีเฉพาะบน Bun ส่วน optional chaining ก็ช่วยรองรับกรณีที่ส่ง request เข้ามาโดยไม่มีเซิร์ฟเวอร์รันอยู่ด้วย
+
+## ขยาย context
+
+เพิ่มค่าของคุณเองได้ เมื่อ handler ต้องการมากกว่า field ที่มีมาให้
+
+| Method | ใช้สำหรับ |
+| --- | --- |
+| `.state()` | state ที่ใช้ร่วมกันและแก้ไขได้ เข้าถึงผ่าน `store` |
+| `.decorate()` | helper หรือ service ที่ใช้ร่วมกัน อ่านได้จาก context |
+| `.derive()` | ค่าที่คำนวณใหม่ทุก request ก่อน handler ทำงาน |
+
+<CodePlayground examples={extendContextExamples}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('tea', 'Earl Grey')
+    .decorate('greet', (name: string) => `Hello ${name}`)
+    .derive(({ query }) => ({ name: query.name ?? 'friend' }))
+    .get('/', ({ store, greet, name }) => ({
+        greeting: greet(name),
+        tea: store.tea
+    }))
+    .listen(3000)
+```
+
+</CodePlayground>
+
+ถ้าเข้า `/?name=Nagisa` จะได้คำทักทาย `Hello Nagisa` และค่า tea ที่แชร์กันอยู่คือ `Earl Grey`
+
+ดูตัวอย่างเพิ่มเติมได้ที่ [derive](/essential/life-cycle/#derive) ใน Elysia v2 `.derive()` จะทำงานในช่วง `beforeHandle` และมาแทน API `.resolve()` แบบเดิม
+
+</div>
+
+</InteractiveDocLayout>

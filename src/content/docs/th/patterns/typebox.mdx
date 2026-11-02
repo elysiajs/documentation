@@ -1,0 +1,439 @@
+---
+title: TypeBox
+description: เขียน TypeBox schema ใช้ type สำหรับ HTTP ของ Elysia และทำความเข้าใจการแปลง request อัตโนมัติ
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">TypeBox</h1>
+
+ให้ import `t` จาก `elysia` เพื่อเขียน schema ที่ตรวจสอบค่าตอน runtime และ infer type ของ TypeScript ให้ด้วย
+
+หน้านี้ครอบคลุม [type แบบ primitive](#primitive-type), [type ของ Elysia](#elysia-type) และ [พฤติกรรมการแปลงค่าของ Elysia](#elysia-behavior)
+
+## Type แบบ primitive
+
+TypeBox schema ใช้ชื่อที่คุ้นเคยจาก TypeScript อย่าง `String`, `Number`, `Boolean` และ `Object` และยังมี `Intersect`, `KeyOf` และ `Tuple` สำหรับ type ที่ซับซ้อนขึ้นด้วย
+
+ถ้าต้องการตรวจสอบว่า body ของ request เป็น string ให้ใส่ `t.String()` ใน schema ของ route ก่อน handler
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/', {
+        body: t.String()
+    }, ({ body }) => `Hello ${body}`)
+    .listen(3000)
+```
+
+Elysia จะรัน handler เมื่อ body ตรงตาม schema แต่ถ้าไม่ตรงจะโยน validation error ผ่าน [error lifecycle](/essential/life-cycle/#error-error-handling)
+
+### Type พื้นฐาน
+
+| TypeBox | TypeScript |
+| --- | --- |
+| `t.String()` | `string` |
+| `t.Number()` | `number` |
+| `t.Boolean()` | `boolean` |
+| `t.Array(t.Number())` | `number[]` |
+| `t.Object({ x: t.Number() })` | `{ x: number }` |
+| `t.Null()` | `null` |
+| `t.Literal(42)` | `42` |
+
+Elysia re-export type ของ TypeBox ไว้พร้อมกับ type เฉพาะสำหรับ HTTP ของตัวเอง ดู API ทั้งหมดได้ที่ [เอกสารอ้างอิงของ TypeBox](https://github.com/sinclairzx81/typebox)
+
+### Attribute
+
+ส่งตัวเลือกเพื่อเพิ่มเงื่อนไขการตรวจสอบ ซึ่งเป็นไปตาม keyword ของ JSON Schema
+
+```ts
+import { t } from 'elysia'
+
+// Accepts 'saltyaom@elysia.com'
+t.String({ format: 'email' })
+
+// Accepts numbers from 10 through 100
+t.Number({ minimum: 10, maximum: 100 })
+
+// Accepts one through five numbers
+t.Array(t.Number(), {
+    minItems: 1,
+    maxItems: 5
+})
+
+// Accepts { x: 100, y: 200 }
+t.Object({ x: t.Number() }, {
+    additionalProperties: true
+})
+```
+
+ดูรายละเอียดของแต่ละ keyword ได้ที่ [สเปก JSON Schema validation](https://json-schema.org/draft/2020-12/json-schema-validation)
+
+## ที่ควรรู้ไว้เพิ่มเติม
+
+รูปแบบเหล่านี้ช่วยให้รวม schema เข้าด้วยกัน และทำให้ field เป็น optional ได้
+
+### Union
+
+ใช้ `t.Union` เพื่อรับค่าที่เป็น type ใดก็ได้ในรายการ จะใช้เดี่ยว ๆ หรือใช้เป็น field ใน `t.Object` ก็ได้
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: string | number
+// Accepts 'Hello' or 123
+t.Union([
+    t.String(),
+    t.Number()
+])
+```
+
+### Optional
+
+ครอบ field ด้วย `t.Optional` เพื่อให้ไม่ต้องส่ง field นั้นมาก็ได้
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: { x: number, y?: number }
+// Accepts { x: 123 }
+t.Object({
+    x: t.Number(),
+    y: t.Optional(t.Number())
+})
+```
+
+### Partial
+
+ใช้ `t.Partial` เพื่อให้ทุก field ใน object เป็น optional
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: { x?: number, y?: number }
+// Accepts { y: 123 }
+t.Partial(
+    t.Object({
+        x: t.Number(),
+        y: t.Number()
+    })
+)
+```
+
+:::note[TypeBox 1.0]
+
+Elysia 2 มาพร้อม TypeBox 1.0 ให้ใช้ `t.Codec` แทน `t.Transform` ส่วน `t.Recursive`, `t.Not` และ `t.RegExp` ไม่มีให้ export แล้ว
+
+:::
+
+## Type ของ Elysia
+
+Elysia เพิ่ม type สำหรับข้อมูล HTTP เข้ามา ทั้งไฟล์ cookie และค่าที่ encode เป็น string
+
+| Type | รับค่า |
+| --- | --- |
+| [UnionEnum](#unionenum) | ค่าใดค่าหนึ่งจากรายการ literal |
+| [File](#file) | ไฟล์เดียว |
+| [Files](#files) | หลายไฟล์ใน field เดียว |
+| [Cookie](#cookie) | cookie jar พร้อม validation และตัวเลือกของ cookie |
+| [Nullable](#nullable) | ค่าที่ตรงตาม schema หรือ `null` |
+| [MaybeEmpty](#maybeempty) | ค่าที่ตรงตาม schema, `null` หรือ `undefined` |
+| [Form](#form) | response แบบ FormData |
+| [Uint8Array](#uint8array) | `Uint8Array` หรือ `ArrayBuffer` ที่จะแปลงให้ |
+| [ArrayBuffer](#arraybuffer) | ค่า `ArrayBuffer` |
+| [ObjectString](#objectstring) | object หรือ string ที่เป็น JSON object |
+| [BooleanString](#booleanstring) | boolean หรือ boolean ในรูป string |
+| [Numeric](#numeric) | ตัวเลข หรือ string ที่เป็นตัวเลข |
+
+### UnionEnum
+
+รับค่าใดค่าหนึ่งจากรายการที่กำหนด โดยค่าเป็นได้ทั้ง string, number หรือ `null`
+
+```ts
+import { t } from 'elysia'
+
+t.UnionEnum(['rapi', 'anis', 1, null])
+```
+
+### File
+
+ตรวจสอบไฟล์ที่อัปโหลดมาหนึ่งไฟล์
+
+```ts
+import { t } from 'elysia'
+
+t.File()
+```
+
+#### type
+
+จำกัด media type ของไฟล์ เช่น `image/png` หรือ `image` ถ้าเป็น array จะรับ type ใดก็ได้ที่อยู่ในรายการ
+
+```ts
+import { t } from 'elysia'
+
+t.File({ type: ['image/png', 'image/jpeg'] })
+```
+
+:::caution[การตรวจจับเนื้อหาไฟล์]
+
+Elysia 2 ไม่ได้รวม `file-type` มาให้ การตรวจ `type` ต้องมี detector ให้ติดตั้ง `file-type` แล้วลงทะเบียนครั้งเดียวด้วย `setFileTypeDetector` ถ้าไม่มี ไฟล์ทุกไฟล์ที่อัปโหลดแล้วตรวจด้วย `type` จะไม่ผ่าน validation ดูเพิ่มเติมที่ [การตรวจสอบไฟล์](/essential/validation/#file)
+
+:::
+
+#### minSize
+
+กำหนดขนาดไฟล์ขั้นต่ำเป็นไบต์ หรือใช้ตัวต่อท้าย `k` หรือ `m` ก็ได้ ขนาดไฟล์ต้องไม่น้อยกว่าค่านี้
+
+```ts
+import { t } from 'elysia'
+
+t.File({ minSize: '1k' })
+```
+
+#### maxSize
+
+กำหนดขนาดไฟล์สูงสุดเป็นไบต์ หรือใช้ตัวต่อท้าย `k` หรือ `m` ก็ได้ ขนาดไฟล์ต้องไม่เกินค่านี้
+
+```ts
+import { t } from 'elysia'
+
+t.File({ maxSize: '5m' })
+```
+
+#### ตัวต่อท้ายหน่วยขนาดไฟล์
+
+| ตัวต่อท้าย | ไบต์ |
+| --- | ---: |
+| `k` | 1,024 |
+| `m` | 1,048,576 |
+
+ตัวเลือกขนาดทั้งสองแบบรับได้ทั้งตัวเลข หรือ string อย่าง `'512k'`
+
+### Files
+
+ใช้ `t.Files` กับหลายไฟล์ใน field เดียว รองรับตัวเลือกของ [File](#file) และเงื่อนไขความยาวของ array อย่าง `minItems` และ `maxItems`
+
+```ts
+import { t } from 'elysia'
+
+t.Files()
+```
+
+### Cookie
+
+กำหนด cookie jar ด้วย property แบบ object และการตั้งค่า cookie
+
+```ts
+import { t } from 'elysia'
+
+t.Cookie({
+    name: t.String()
+})
+```
+
+ดูวิธีอ่าน เขียน และเซ็นค่า cookie ได้ที่ [cookie](/patterns/cookie/)
+
+#### secrets
+
+ส่ง `secrets` ใน argument ตัวที่สองเพื่อเซ็น cookie ถ้าเป็น string จะใช้ key เดียว ถ้าเป็น array จะรองรับ [การหมุนเวียน key](/patterns/cookie/#cookie-rotation)
+
+```ts
+import { t } from 'elysia'
+
+t.Cookie({ name: t.String() }, {
+    secrets: ['current-secret', 'previous-secret'],
+    sign: ['name']
+})
+```
+
+cookie ใหม่จะใช้ secret ตัวแรก ซึ่งต้องเป็น string ที่ไม่ว่าง และอย่าลืมเปลี่ยน secret ในตัวอย่างเป็น secret ส่วนตัวของแอปพลิเคชันด้วย
+
+### Nullable
+
+รับค่าที่ตรงตาม schema หรือ `null` แต่ไม่รับ `undefined`
+
+```ts
+import { t } from 'elysia'
+
+t.Nullable(t.String())
+```
+
+### MaybeEmpty
+
+รับค่าที่ตรงตาม schema, `null` หรือ `undefined` ส่วน string ว่างจะรับได้ก็ต่อเมื่อ schema ที่ครอบไว้รับ string ว่างด้วย
+
+```ts
+import { t } from 'elysia'
+
+t.MaybeEmpty(t.String())
+```
+
+### Form
+
+ใช้ `t.Form` เพื่อตรวจสอบ response แบบ FormData ที่ return จาก [form helper](/essential/handler/#form-data)
+
+```ts
+import { t } from 'elysia'
+
+t.Form({
+    someValue: t.File()
+})
+```
+
+### Uint8Array
+
+รับ `ArrayBuffer` หรือ `Uint8Array` แล้ว decode เป็น `Uint8Array` ใช้คู่กับ body parser `arrayBuffer` สำหรับการอัปโหลดข้อมูล binary
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/upload', {
+        parse: 'arrayBuffer',
+        body: t.Uint8Array()
+    }, ({ body }) => body.byteLength)
+```
+
+ชื่อ API สะกดว่า `t.Uint8Array()` ไม่ใช่ `t.UInt8Array()`
+
+### ArrayBuffer
+
+ตรวจสอบ `ArrayBuffer` โดยไม่แปลงเป็น typed array
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/upload', {
+        parse: 'arrayBuffer',
+        body: t.ArrayBuffer()
+    }, ({ body }) => body.byteLength)
+```
+
+### ObjectString
+
+รับ object หรือ JSON string ที่ decode แล้วได้ object ตามที่กำหนด เหมาะกับข้อมูลใน query, header และ FormData
+
+```ts
+import { t } from 'elysia'
+
+// Accepts { name: 'Rapi' } or '{"name":"Rapi"}'
+t.ObjectString({
+    name: t.String()
+})
+```
+
+### BooleanString
+
+รับ boolean หรือ string `'true'` และ `'false'` แล้ว decode ผลลัพธ์เป็น boolean
+
+```ts
+import { t } from 'elysia'
+
+t.BooleanString()
+```
+
+### Numeric
+
+รับตัวเลขหรือ string ที่เป็นตัวเลข แล้ว decode ผลลัพธ์เป็น number มีประโยชน์กับ path parameter และค่าใน query
+
+```ts
+import { t } from 'elysia'
+
+t.Numeric({ minimum: 1, maximum: 100 })
+```
+
+`Numeric` รองรับเงื่อนไขของตัวเลขแบบเดียวกับ `t.Number`
+
+## พฤติกรรมของ Elysia
+
+Elysia จะแปลง input ของ HTTP ที่มาเป็น string แบบที่เจอบ่อย ๆ ให้ก่อนที่ handler จะทำงาน แต่ถ้าสร้าง schema ไว้นอก route การแปลงเหล่านี้จะไม่มีผล
+
+<span id="optional-1"></span>
+
+### Schema ของ request แบบ optional
+
+คุณครอบ schema ของ request ทั้งก้อนด้วย `t.Optional` ได้ เช่นเดียวกับ field แต่ละตัวใน object ซึ่งใช้ได้กับ schema ของ body และ header ด้วย
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/optional', {
+        query: t.Optional(
+            t.Object({
+                name: t.String()
+            })
+        )
+    }, ({ query }) => query)
+```
+
+`/optional` ไม่ต้องส่ง query มาเลยก็ได้ แต่ถ้าส่ง query ที่ไม่ว่างมา ต้องมี `name` ที่เป็น string
+
+### จาก Number เป็น Numeric
+
+Elysia จะเปลี่ยน `t.Number` ที่อยู่ระดับบนสุดและ property ชั้นแรกของ schema ของ request ที่มาเป็น string อย่าง params, query และ headers ให้ทำงานแบบ Numeric และยังแปลง body ที่เป็นตัวเลขระดับบนสุดด้วย แต่ตัวเลขที่อยู่ใน object ของ JSON body จะยังต้องเป็นตัวเลขเหมือนเดิม
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/:id', {
+        params: t.Object({
+            // The path string becomes a number
+            id: t.Number()
+        }),
+        body: t.Object({
+            // JSON must contain a number, not a string
+            id: t.Number()
+        })
+    }, ({ params, body }) => ({
+        pathId: params.id,
+        bodyId: body.id
+    }))
+
+// No route conversion here
+t.Number()
+```
+
+สำหรับ `/42` กับ `{"id": 10}` ค่าทั้งสองใน handler จะเป็น number แต่ JSON body ที่เป็น `{"id": "10"}` จะไม่ผ่าน validation
+
+### จาก Boolean เป็น BooleanString
+
+การแปลง boolean ใช้กฎเดียวกับ [การแปลงตัวเลข](#number-to-numeric) โดย field ชั้นแรกของ path, query และ header จะรับ boolean ที่เป็น string ได้ ส่วน boolean ที่อยู่ใน JSON object จะยังต้องเป็น boolean เหมือนเดิม
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/:enabled', {
+        params: t.Object({
+            // The path string becomes a boolean
+            enabled: t.Boolean()
+        }),
+        body: t.Object({
+            // JSON must contain a boolean, not a string
+            enabled: t.Boolean()
+        })
+    }, ({ params, body }) => ({
+        pathEnabled: params.enabled,
+        bodyEnabled: body.enabled
+    }))
+
+// No route conversion here
+t.Boolean()
+```
+
+สำหรับ `/true` กับ `{"enabled": false}` handler จะได้ `true` และ `false` แต่ JSON body ที่เป็น `{"enabled": "false"}` จะไม่ผ่าน validation
+
+</div>
+</InteractiveDocLayout>
+</div>

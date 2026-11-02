@@ -1,0 +1,183 @@
+---
+title: "Integration กับ Next.js"
+description: "ด้วย Next.js App Router คุณรัน Elysia บน route ของ Next.js ได้ และ Elysia ก็ทำงานได้ตามปกติ เพราะเป็นไปตามมาตรฐาน WinterTC"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integration กับ Next.js</h1>
+
+ด้วย Next.js App Router เรารัน Elysia บน route ของ Next.js ได้
+
+1. สร้างไฟล์ **app/api/[[...slugs]]/route.ts**
+2. สร้างเซิร์ฟเวอร์ Elysia
+3. export **Elysia.fetch** โดยตั้งชื่อตาม HTTP method ที่ต้องการใช้
+
+
+```typescript title="app/api/[[...slugs]]/route.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', 'Hello Nextjs')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+Elysia จะทำงานได้ตามปกติ เพราะเป็นไปตามมาตรฐาน WinterTC
+
+คุณใช้งานเซิร์ฟเวอร์ Elysia ได้เหมือนเป็น API route ปกติของ Next.js
+
+แบบนี้คุณจะวาง frontend และ backend ไว้ด้วยกันใน repository เดียว และได้ [end-to-end type safety ด้วย Eden](/eden) ทั้งในโค้ดฝั่ง client และใน server action
+
+### pnpm
+ถ้า pnpm ของคุณตั้งค่าไว้ไม่ให้ติดตั้ง peer dependencies อัตโนมัติ ก็เพิ่ม peer ที่ Elysia v2 ต้องใช้เองได้เลย:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Prefix
+
+เนื่องจากเซิร์ฟเวอร์ Elysia ของเราไม่ได้อยู่ที่ root ของโฟลเดอร์ app router จึงต้องกำหนด prefix ให้เซิร์ฟเวอร์ Elysia ด้วย
+
+ตัวอย่างเช่น ถ้าวางเซิร์ฟเวอร์ Elysia ไว้ที่ **app/user/[[...slugs]]/route.ts** ต้องกำหนด prefix เป็น **/user** ให้เซิร์ฟเวอร์ Elysia
+
+
+```typescript title="app/user/[[...slugs]]/route.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/user' })
+	.get('/', 'Hello Nextjs')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+แบบนี้ routing ของ Elysia จะทำงานได้ถูกต้อง ไม่ว่าจะวางไว้ตรงไหน
+
+## Eden
+
+เราเพิ่ม [Eden](/eden) เพื่อให้ได้ **end-to-end type safety** แบบเดียวกับ tRPC ได้
+
+วิธีนี้เราจะใช้ isomorphic fetch pattern เพื่อให้ Elysia:
+1. ฝั่ง Server: เรียก Elysia ได้โดยตรงโดยไม่ต้องผ่าน network layer
+2. ฝั่ง Client: เรียก Elysia ผ่าน network layer
+
+เริ่มต้นด้วยขั้นตอนต่อไปนี้:
+
+1. export instance ของ Elysia ออกมา
+
+
+```typescript title="lib/server.ts"
+import { Elysia, t } from 'elysia'
+
+export const app = new Elysia({ prefix: '/api' })
+	.get('/', 'Hello Nextjs')
+	.post(
+		'/user',
+		{
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body }) => body
+	)
+
+```
+
+ในไฟล์ route ให้มีแค่ export สำหรับ route ของ Next.js:
+
+```typescript title="app/api/[[...slugs]]/route.ts"
+import { app } from '../../../lib/server'
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+2. สร้าง client แยกกันสำหรับฝั่งเซิร์ฟเวอร์และฝั่งเบราว์เซอร์
+
+client ฝั่งเซิร์ฟเวอร์เรียก instance ของ Elysia ได้โดยตรง อย่าให้ import ตอน runtime ของ client นี้หลุดเข้าไปอยู่ใน bundle ของเบราว์เซอร์:
+
+```typescript title="lib/eden.server.ts"
+import 'server-only'
+import { treaty } from '@elysia/eden'
+import { app } from './server'
+
+export const api = treaty(app).api
+```
+
+client ฝั่งเบราว์เซอร์ import แค่ type ของแอป แล้วส่ง HTTP request:
+
+```typescript title="lib/eden.ts"
+import { treaty } from '@elysia/eden'
+import type { app } from './server'
+
+export const api = treaty<typeof app>('http://localhost:3000').api
+```
+
+ตอนขึ้น production ให้ใช้ origin ที่ deploy แล้ว วิธีนี้ทำให้เห็นขอบเขตระหว่าง server/client ชัดเจน โดยไม่ต้องพึ่ง global `process` ที่ bundle มาด้วย
+
+3. ใช้ client ได้ทั้งใน server component และ client component
+
+
+```tsx title="app/page.tsx"
+import { api } from '../lib/eden.server'
+
+export default async function Page() {
+	const { data: message } = await api.get()
+
+	return <h1>Hello, {message}</h1>
+}
+```
+
+
+วิธีนี้ทำให้ได้ type safety ตั้งแต่ frontend ถึง backend โดยแทบไม่ต้องลงแรง ใช้ได้ทั้งกับ server component และ client component รวมถึง Incremental Static Regeneration (ISR) ด้วย
+
+## React Query
+เรายังใช้ React Query คุยกับเซิร์ฟเวอร์ Elysia ฝั่ง client ได้ด้วย
+
+
+```tsx title="app/client.tsx"
+'use client'
+
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../lib/eden'
+
+export default function App() {
+	const { data: response } = useQuery({
+		queryKey: ['get'],
+		queryFn: () => api.get()
+	})
+
+	return response?.data
+}
+```
+
+
+วาง client component นี้ไว้ใต้ `QueryClientProvider` แล้วคุณก็ใช้ฟีเจอร์ของ React Query อย่าง caching, pagination และ infinite queries ได้
+
+---
+
+ดูข้อมูลเพิ่มเติมได้ที่ [Next.js Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers)
+
+</div>
+</InteractiveDocLayout>
+</div>

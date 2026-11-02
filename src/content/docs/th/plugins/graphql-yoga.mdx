@@ -1,0 +1,105 @@
+---
+title: Plugin GraphQL Yoga
+description: ข้อมูลอ้างอิงและตัวอย่างการใช้งาน plugin GraphQL Yoga
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin GraphQL Yoga</h1>
+
+plugin นี้เชื่อมต่อ GraphQL Yoga เข้ากับ Elysia
+
+ติดตั้งด้วยคำสั่ง:
+
+```bash
+bun add @elysia/graphql-yoga@rc
+```
+
+จากนั้นก็นำไปใช้ได้เลย:
+
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+	.use(
+		yoga({
+			typeDefs: /* GraphQL */ `
+				type Query {
+					hi: String
+				}
+			`,
+			resolvers: {
+				Query: {
+					hi: () => 'Hello from Elysia'
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+เมื่อเปิด `/graphql` ในเบราว์เซอร์ (GET request) จะเห็น GraphiQL ของเซิร์ฟเวอร์ Elysia ที่เปิดใช้ GraphQL อยู่
+
+ถ้าต้องการ จะติดตั้ง optional peer dependency ในเวอร์ชันที่เลือกเองด้วยก็ได้:
+
+```bash
+bun add graphql graphql-yoga
+```
+
+## Resolver
+
+Elysia ใช้ [Mobius](https://github.com/saltyaom/mobius) เพื่อ infer type จาก field **typeDefs** ให้อัตโนมัติ คุณจึงได้ type-safety เต็มรูปแบบและ auto-complete ตอนพิมพ์ type ของ **resolver**
+
+## Context
+
+เพิ่ม context ของตัวเองให้ฟังก์ชัน resolver ได้ด้วยการใส่ **context**
+
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+	.use(
+		yoga({
+			typeDefs: /* GraphQL */ `
+				type Query {
+					hi: String
+				}
+			`,
+			context: {
+				name: 'Mobius'
+			},
+			// Required for resolvers to infer the context type
+			useContext(_) {},
+			resolvers: {
+				Query: {
+					hi: async (parent, args, context) => context.name
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+## การตั้งค่า
+
+plugin นี้ต่อยอด[ตัวเลือก createYoga ของ GraphQL Yoga ดูรายละเอียดได้ในเอกสารของ GraphQL Yoga](https://the-guild.dev/graphql/yoga-server/docs) โดยยก config `schema` มาไว้ที่ระดับบนสุด
+
+ด้านล่างนี้คือ config ที่ plugin รองรับ
+
+### path
+
+ค่าเริ่มต้น: `/graphql`
+
+endpoint สำหรับเปิด handler ของ GraphQL
+
+</div>
+</InteractiveDocLayout>
+</div>

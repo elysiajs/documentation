@@ -1,0 +1,250 @@
+---
+title: สารบัญ
+description: หาจุดเริ่มต้น สำรวจแนวคิดหลักของ Elysia และเลือกคู่มือที่คุณต้องการ
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">สารบัญ</h1>
+
+การเรียนรู้ Elysia ไม่ได้มีทางเดียว แต่บทเรียนแบบ interactive เป็นจุดเริ่มต้นที่ดีสำหรับทำความคุ้นเคยกับมัน:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card wash href="/tutorial/">
+<CardTitle as="div">บทเรียนแบบ interactive</CardTitle>
+
+เรียนรู้ Elysia ผ่าน editor และ playground ในเบราว์เซอร์ของคุณ
+
+</Card>
+
+</div>
+
+## เริ่มจากตรงนี้
+เริ่มจากสองหน้านี้เพื่อทำความเข้าใจแนวคิดหลักและ pattern ที่แนะนำ:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/key-concept">
+<CardTitle>แนวคิดหลัก</CardTitle>
+
+ทำความเข้าใจแนวคิดหลักของ Elysia และวิธีใช้งานให้ได้ผลดี
+</Card>
+<Card href="/essential/best-practice">
+<CardTitle>Best practice</CardTitle>
+
+เรียนรู้ pattern ที่แนะนำสำหรับการเขียนแอปพลิเคชันด้วย Elysia
+</Card>
+</div>
+
+### Agentic Coding
+
+Elysia มี `llms.txt` และ skill สำหรับ AI agent อย่าง **Claude Code** และ **OpenCode** ให้ใช้ เลือกเวอร์ชันของ skill ให้ตรงกับเวอร์ชัน Elysia ในโปรเจกต์ของคุณ
+
+```
+bunx skills add elysiajs/skills
+```
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/llms.txt">
+<CardTitle>llms.txt</CardTitle>
+
+อ่านดัชนีเอกสาร Elysia v2 ของเว็บนี้ สำหรับใช้กับ LLM
+</Card>
+<Card href="/llms-full.txt">
+<CardTitle>llms-full.txt</CardTitle>
+
+อ่านเอกสาร Elysia v2 ทั้งหมดของเว็บนี้ในไฟล์ Markdown ไฟล์เดียว
+</Card>
+</div>
+
+## ย้ายมาจากเฟรมเวิร์กอื่น
+
+ถ้าเคยใช้เฟรมเวิร์กยอดนิยมอย่าง Express, Fastify หรือ Hono มาก่อน คุณจะรู้สึกคุ้นเคยกับ Elysia ได้ทันที มีแค่ไม่กี่จุดที่ต่างกัน
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/migrate/from-express">
+<CardTitle>ย้ายมาจาก Express</CardTitle>
+
+เปรียบเทียบ Express กับ Elysia
+</Card>
+<Card href="/migrate/from-fastify">
+<CardTitle>ย้ายมาจาก Fastify</CardTitle>
+
+เปรียบเทียบ Fastify กับ Elysia
+</Card>
+<Card href="/migrate/from-hono">
+<CardTitle>ย้ายมาจาก Hono</CardTitle>
+
+เปรียบเทียบ Hono กับ Elysia
+</Card>
+<Card href="/migrate/from-trpc">
+<CardTitle>ย้ายมาจาก tRPC</CardTitle>
+
+เปรียบเทียบ tRPC กับ Elysia
+</Card>
+</div>
+
+## บทพื้นฐาน
+
+นี่คือพื้นฐานของ Elysia เราแนะนำมาก ๆ ให้อ่านหน้าเหล่านี้ก่อนข้ามไปหัวข้ออื่น:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/essential/route">
+<CardTitle>การกำหนด route</CardTitle>
+
+ทำความเข้าใจว่าการกำหนด route ใน Elysia ทำงานอย่างไร
+</Card>
+<Card href="/essential/handler">
+<CardTitle>Handler</CardTitle>
+
+เรียนรู้วิธีจัดการ request และส่ง response กลับ
+</Card>
+<Card href="/essential/validation">
+<CardTitle>Validation</CardTitle>
+
+วิธีบังคับใช้ type safety ด้วย Elysia
+</Card>
+<Card href="/essential/life-cycle">
+<CardTitle>Life cycle</CardTitle>
+
+เรียนรู้ขั้นตอนต่าง ๆ ใน lifecycle ของ request
+</Card>
+<Card href="/essential/plugin">
+<CardTitle>Plugin</CardTitle>
+
+เรียนรู้วิธีประกอบแอปพลิเคชัน Elysia ด้วย plugin
+</Card>
+</div>
+
+## Pattern เพิ่มเติม
+
+ถ้าอยากสำรวจฟีเจอร์อื่น ๆ ของ Elysia ลองดูหน้าเหล่านี้:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/essential/handler">
+<CardTitle>Handler</CardTitle>
+
+เรียนรู้วิธีส่งไฟล์, stream response และใช้ server-sent events
+</Card>
+<Card href="/patterns/websocket">
+<CardTitle>WebSocket</CardTitle>
+
+สร้างแอปพลิเคชันแบบ real-time ด้วย Elysia
+</Card>
+<Card href="/eden">
+<CardTitle>Eden</CardTitle>
+
+เรียนรู้เพิ่มเติมเกี่ยวกับ Eden และวิธีใช้ให้ได้ผลดี
+</Card>
+<Card href="/patterns/opentelemetry">
+<CardTitle>OpenTelemetry</CardTitle>
+
+ติดตามการทำงานของแอปพลิเคชันด้วย OpenTelemetry
+</Card>
+<Card href="/patterns/deploy">
+<CardTitle>Deploy ขึ้น production</CardTitle>
+
+เรียนรู้วิธี deploy Elysia ขึ้น production
+</Card>
+</div>
+
+## Integration กับ meta framework
+
+คุณยังใช้ Elysia ร่วมกับ meta framework อย่าง Next.js, Nuxt และ Astro ได้ด้วย
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/integrations/astro">
+<CardTitle>Astro</CardTitle>
+
+ใช้ Elysia ใน endpoint ของ Astro
+</Card>
+<Card href="/integrations/expo">
+<CardTitle>Expo</CardTitle>
+
+ใช้ Elysia ใน API routes ของ Expo
+</Card>
+<Card href="/integrations/nextjs">
+<CardTitle>Next.js</CardTitle>
+
+ใช้ Elysia ใน route handler ของ Next.js
+</Card>
+<Card href="/integrations/nuxt">
+<CardTitle>Nuxt</CardTitle>
+
+ใช้ Elysia ใน server routes ของ Nuxt
+</Card>
+<Card href="/integrations/sveltekit">
+<CardTitle>SvelteKit</CardTitle>
+
+ใช้ Elysia ใน endpoint ของ SvelteKit
+</Card>
+</div>
+
+## Integration กับเครื่องมือที่คุณชื่นชอบ
+
+เราเชื่อมต่อกับเครื่องมือยอดนิยมไว้ให้แล้วหลายตัว:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/integrations/ai-sdk">
+<CardTitle>AI SDK</CardTitle>
+
+เรียนรู้วิธีใช้ Vercel AI SDK กับ Elysia
+</Card>
+<Card href="/integrations/better-auth">
+<CardTitle>Better Auth</CardTitle>
+
+เรียนรู้วิธีใช้ Better Auth กับ Elysia
+</Card>
+<Card href="/integrations/drizzle">
+<CardTitle>Drizzle</CardTitle>
+
+Elysia มี utility แบบ type-safe สำหรับใช้กับ Drizzle
+</Card>
+<Card href="/integrations/prisma">
+<CardTitle>Prisma</CardTitle>
+
+เรียนรู้วิธีใช้ Prisma กับ Elysia
+</Card>
+<Card href="/integrations/react-email">
+<CardTitle>React Email</CardTitle>
+
+ใช้ JSX สร้าง template อีเมล
+</Card>
+</div>
+
+## คอมมูนิตี้และการช่วยเหลือ
+
+ถ้าติดปัญหาตรงไหน ถามคอมมูนิตี้ของเราได้เลยทั้งใน GitHub Discussions, Discord และ Twitter
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="https://discord.gg/eaFJ2KDJck">
+<CardTitle>Discord</CardTitle>
+
+เซิร์ฟเวอร์ Discord อย่างเป็นทางการของคอมมูนิตี้ ElysiaJS
+</Card>
+<Card href="https://twitter.com/elysiajs">
+<CardTitle>Twitter</CardTitle>
+
+ติดตามข่าวสารและความเคลื่อนไหวของ Elysia
+</Card>
+<Card href="https://github.com/elysiajs">
+<CardTitle>GitHub</CardTitle>
+
+ซอร์สโค้ดและการพัฒนา
+</Card>
+</div>
+
+---
+
+หวังว่าคุณจะหลงรัก Elysia เหมือนที่เรารักนะ!
+
+</div>
+</InteractiveDocLayout>
+</div>

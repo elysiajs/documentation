@@ -1,0 +1,158 @@
+---
+title: "Integration กับ AI SDK"
+description: "Elysia รองรับการ stream response ได้ง่าย ๆ คุณจึงเชื่อมต่อกับ Vercel AI SDK ได้อย่างราบรื่น"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Integration กับ AI SDK</h1>
+
+Elysia รองรับการ stream response ได้ง่าย ๆ คุณจึงเชื่อมต่อกับ [Vercel AI SDKs](https://vercel.com/docs/ai) ได้อย่างราบรื่น
+
+## การ stream response
+
+Elysia รองรับการ stream `ReadableStream` และ `Response` แบบต่อเนื่อง คุณจึง return stream จาก AI SDK ได้โดยตรง ในแต่ละตัวอย่าง ให้เลือกใช้ return แค่อันเดียวจากที่แสดงไว้
+
+```ts
+import { Elysia } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    // Just return a ReadableStream
+    return stream.textStream
+
+    // UI Message Stream is also supported
+    return stream.toUIMessageStream()
+})
+```
+
+Elysia จะจัดการ stream ให้อัตโนมัติ คุณจึงนำไปใช้ได้หลายแบบ
+
+## Server-sent events
+
+Elysia ยังรองรับ Server-Sent Events สำหรับการ stream response ด้วย แค่ห่อ `ReadableStream` ด้วยฟังก์ชัน `sse` ก็พอ
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    // Each chunk will be sent as a Server Sent Event
+    return sse(stream.textStream)
+
+    // UI Message Stream is also supported
+    return sse(stream.toUIMessageStream())
+})
+```
+
+## ส่งเป็น response
+
+ถ้าไม่ต้องการ type safety จาก stream เพื่อนำไปใช้ต่อกับ [Eden](/eden) ก็ return stream เป็น response ได้โดยตรงเลย
+
+```ts
+import { Elysia } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    return stream.toTextStreamResponse()
+
+    // UI Message Stream Response will use SSE
+    return stream.toUIMessageStreamResponse()
+})
+```
+
+## Stream ด้วยตัวเอง
+
+ถ้าอยากควบคุมการ stream ได้มากขึ้น ใช้ฟังก์ชัน generator เพื่อ yield chunk ออกไปเองได้เลย
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', async function* () {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    for await (const data of stream.textStream)
+        yield sse({
+            data,
+            event: 'message'
+        })
+
+    yield sse({
+        event: 'done'
+    })
+})
+```
+
+## Fetch
+
+ถ้า AI SDK ไม่รองรับ model ที่คุณใช้ ก็ยังใช้ฟังก์ชัน `fetch` เรียก HTTP API ของ provider แล้ว stream response ออกไปตรง ๆ ได้
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().get('/', () => {
+    return fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+            model: 'gpt-5',
+            stream: true,
+            messages: [
+                {
+                    role: 'system',
+                    content: 'You are Yae Miko from Genshin Impact'
+                },
+                { role: 'user', content: 'Hi! How are you doing?' }
+            ]
+        })
+    })
+})
+```
+
+Elysia จะ proxy response จาก `fetch` ที่เป็น global ให้อัตโนมัติ พร้อมรองรับ streaming
+
+---
+
+ดูข้อมูลเพิ่มเติมได้ที่ [เอกสาร AI SDK](https://ai-sdk.dev/docs/introduction)
+
+</div>
+</InteractiveDocLayout>
+</div>

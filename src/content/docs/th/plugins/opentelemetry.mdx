@@ -1,0 +1,154 @@
+---
+title: OpenTelemetry
+description: ข้อมูลอ้างอิงและตัวอย่างการใช้งาน OpenTelemetry
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">OpenTelemetry</h1>
+
+:::tip
+
+หน้านี้เป็น **ข้อมูลอ้างอิง config** ของ **OpenTelemetry** ถ้าคุณกำลังหาวิธีตั้งค่าและเชื่อมต่อกับ OpenTelemetry เราแนะนำให้ไปดู[เชื่อมต่อกับ OpenTelemetry](/patterns/opentelemetry) แทน
+
+:::
+
+เริ่มใช้ OpenTelemetry ได้ด้วยการติดตั้ง `@elysia/opentelemetry` แล้วใส่ plugin ให้ instance ไหนก็ได้
+
+```bash
+bun add @elysia/opentelemetry@next @opentelemetry/sdk-trace-node @opentelemetry/exporter-trace-otlp-proto
+```
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
+
+new Elysia()
+	.use(
+		opentelemetry({
+			spanProcessors: [
+				new BatchSpanProcessor(
+					new OTLPTraceExporter()
+				)
+			]
+		})
+	)
+```
+
+![Jaeger แสดง trace ที่เก็บรวบรวมได้](/blog/elysia-11/jaeger.webp)
+
+Elysia OpenTelemetry จะ **เก็บ span จากทุกไลบรารีที่รองรับมาตรฐาน OpenTelemetry** และผูก parent span กับ child span ให้อัตโนมัติ
+
+## การใช้งาน
+ดูวิธีใช้งานและ utility ต่าง ๆ ได้ที่ [opentelemetry](/patterns/opentelemetry)
+
+## การตั้งค่า
+plugin นี้ต่อยอดตัวเลือก parameter ของ OpenTelemetry SDK
+
+ด้านล่างนี้คือ config ที่ plugin รองรับ
+
+### autoDetectResources - boolean
+ตรวจหา resource จาก environment ให้อัตโนมัติด้วย resource detector ที่เป็นค่าเริ่มต้น
+
+ค่าเริ่มต้น: `true`
+
+### contextManager - ContextManager
+ใช้ context manager ที่กำหนดเอง
+
+ค่าเริ่มต้น: `AsyncLocalStorageContextManager` ซึ่งลงทะเบียนโดย `NodeTracerProvider`
+
+### textMapPropagator - TextMapPropagator
+ใช้ propagator ที่กำหนดเอง
+
+ค่าเริ่มต้น: `CompositePropagator` ที่ใช้ W3C Trace Context และ Baggage
+
+### metricReader - MetricReader
+เพิ่ม MetricReader ที่จะส่งต่อให้ MeterProvider
+
+### views - View[]
+รายการ view ที่จะส่งต่อให้ MeterProvider
+
+รับเป็น array ของ View instance ใช้ parameter นี้กำหนดขนาด bucket ของ histogram metric แบบระบุเองได้
+
+### instrumentations - (Instrumentation | Instrumentation[])[]
+ตั้งค่า instrumentation
+
+โดยค่าเริ่มต้นจะไม่มีการลงทะเบียน instrumentation ใด ๆ ถ้าจะเปิดใช้ ให้ส่งรายการเข้าไป เช่น `getNodeAutoInstrumentations()` จาก `@opentelemetry/auto-instrumentations-node` (ต้องติดตั้งแยก)
+
+ค่าเริ่มต้น: ไม่มี
+
+### resource - IResource
+ตั้งค่า resource
+
+จะใช้ method autoDetectResources ของ SDK ตรวจหา resource ก็ได้เช่นกัน
+
+### resourceDetectors - Array&lt;Detector | DetectorSync&gt;
+ตั้งค่า resource detector โดยค่าเริ่มต้น resource detector คือ [envDetector, processDetector, hostDetector] หมายเหตุ: ถ้าจะเปิดการตรวจหา parameter autoDetectResources ต้องเป็น true
+
+ถ้าไม่ได้ตั้ง resourceDetectors ไว้ ก็ใช้ environment variable OTEL_NODE_RESOURCE_DETECTORS เพื่อเปิดเฉพาะบาง detector หรือปิดทั้งหมดก็ได้:
+
+- env
+- host
+- os
+- process
+- serviceinstance (ทดลอง)
+- all - เปิดใช้ resource detector ทั้งหมดด้านบน
+- none - ปิดการตรวจหา resource
+
+ตัวอย่างเช่น ถ้าจะเปิดเฉพาะ detector env และ host:
+
+```bash
+export OTEL_NODE_RESOURCE_DETECTORS="env,host"
+```
+
+### sampler - Sampler
+ตั้งค่า sampler ที่กำหนดเอง โดยค่าเริ่มต้นจะ sample ทุก trace
+
+### serviceName - string
+namespace ที่ใช้ระบุตัวตน
+
+### spanProcessors - SpanProcessor[]
+array ของ span processor ที่จะลงทะเบียนกับ tracer provider
+
+### traceExporter - SpanExporter
+ตั้งค่า trace exporter ถ้าตั้ง exporter ไว้ จะใช้ exporter นั้นร่วมกับ `BatchSpanProcessor`
+
+ถ้าไม่ได้ตั้ง exporter หรือ span processor ไว้ในโค้ด แพ็กเกจนี้จะตั้ง otlp exporter ค่าเริ่มต้นที่ใช้โปรโตคอล http/protobuf พร้อม BatchSpanProcessor ให้อัตโนมัติ
+
+### spanLimits - SpanLimits
+ตั้งค่า parameter ของการ trace ซึ่งเป็น parameter ชุดเดียวกับที่ใช้ตั้งค่า tracer
+
+### checkIfShouldTrace - (request: Request) => boolean
+ตัดสินว่าจะ trace request นั้นหรือไม่ คืน `false` ถ้าจะข้ามการ trace ของ request นั้น
+
+ค่าเริ่มต้น: trace ทุก request
+
+### spanUrlRedaction - false | object
+ปิดบัง credential และค่า query ที่อ่อนไหว (เช่น `token`, `password`, `api_key`) ใน URL ที่บันทึกไว้ รับค่าเป็น `{ stripCredentials?: boolean, sensitiveQueryParams?: string[] }`: `stripCredentials` (ค่าเริ่มต้น `true`) จะลบ `user:password@` ออกจาก URL ส่วน `sensitiveQueryParams` ใช้เพิ่ม key ของ query เข้าไปในรายการที่มีอยู่ในตัว
+
+ตั้งเป็น `false` เพื่อบันทึก URL แบบดิบ ๆ ซึ่งอาจทำให้ข้อมูลลับรั่วได้
+
+ค่าเริ่มต้น: เปิดการปิดบังข้อมูลโดยใช้รายการในตัว
+
+### recordBody - boolean | object
+บันทึกเนื้อหา body ของ request และ/หรือ response ลงใน span ค่า `true` จะบันทึกทั้งคู่ ส่วน `{ request?: boolean, response?: boolean }` ใช้เลือกบันทึกฝั่งเดียว
+
+ค่าเริ่มต้น: `false`
+
+### headersToSpanAttributes - object
+ชื่อ header (ไม่สนตัวพิมพ์เล็กใหญ่) ที่จะบันทึกเป็น attribute ของ span ในรูป `{ request?: string[], response?: string[] }` ส่วน `"*"` จะบันทึกทุก header รวมถึง header ที่อ่อนไหวด้วย
+
+ค่าเริ่มต้น: ไม่บันทึก header ใด ๆ
+
+</div>
+</InteractiveDocLayout>
+</div>

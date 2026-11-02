@@ -1,0 +1,82 @@
+---
+title: "Deploy Elysia บน Vercel"
+description: "Vercel Functions รองรับเฟรมเวิร์กที่ใช้ Web Standard อยู่แล้ว คุณจึงรัน Elysia บน Vercel Functions ได้โดยไม่ต้องตั้งค่าอะไรเพิ่ม"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Deploy Elysia บน Vercel</h1>
+
+Elysia deploy บน Vercel ได้โดยไม่ต้องตั้งค่าอะไรเลย ใช้ได้ทั้ง runtime ของ Bun และ Node
+
+1. ใน **src/index.ts** ให้สร้างเซิร์ฟเวอร์ Elysia ใหม่ หรือ import ตัวที่มีอยู่แล้วเข้ามา
+2. export เซิร์ฟเวอร์ Elysia เป็น default export
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+export default new Elysia()
+    .get('/', () => 'Hello Vercel Function')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+```
+
+3. พัฒนาบนเครื่องด้วย Vercel CLI
+
+```bash
+vc dev
+```
+
+4. deploy ขึ้น Vercel
+
+```bash
+vc deploy
+```
+
+แค่นั้นเลย ตอนนี้แอป Elysia ของคุณก็รันอยู่บน Vercel แล้ว
+
+### pnpm
+ถ้า pnpm ของคุณตั้งค่าไว้ไม่ให้ติดตั้ง peer dependencies อัตโนมัติ ก็เพิ่ม peer ที่ Elysia v2 ต้องใช้เองได้เลย:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+### ใช้ Node.js
+
+ถ้าจะ deploy ด้วย Node.js อย่าลืมตั้ง `type: module` ใน `package.json`
+
+
+```json title="package.json"
+{
+  "name": "elysia-app",
+  "type": "module"
+}
+```
+
+
+### ใช้ Bun
+ถ้าจะ deploy ด้วย Bun อย่าลืมตั้ง runtime เป็น Bun ใน `vercel.json`
+
+
+```json title="vercel.json"
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "bunVersion": "1.x"
+}
+```
+
+## ถ้าวิธีนี้ใช้ไม่ได้
+Vercel รองรับ Elysia แบบไม่ต้องตั้งค่าอะไรเลย ถ้าต้องการตั้งค่าเพิ่มเติม ดูได้ที่ [เอกสาร Vercel](https://vercel.com/docs/frameworks/backend/elysia)
+
+</div>
+</InteractiveDocLayout>
+</div>

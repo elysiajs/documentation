@@ -1,0 +1,455 @@
+---
+title: Macro
+description: รวม lifecycle hook, validation และ context ไว้ใน route option ที่มี type กำกับ
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import { Elysia, t } from 'elysia';
+
+export const wrapMacroSchema = (payload) =>
+    t.Object({
+        code: t.Number(),
+        data: t.Union([payload ?? t.Null(), t.Null()])
+    });
+
+export const macroSchemaDemo = new Elysia()
+    .macro({
+        res: (payload) => ({
+            response: wrapMacroSchema(payload)
+        })
+    })
+    .get('/count', { res: t.Number() }, () => ({ code: 0, data: 1 }))
+    .get('/name', { res: t.String() }, () => ({ code: 0, data: 'Elysia' }));
+
+export const steps = [
+    {
+        "label": "Define a macro",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        hi: (word: string) => ({\n            beforeHandle() {\n                console.log(word)\n            }\n        })\n    })"
+    },
+    {
+        "label": "Enable it on a route",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        hi: (word: string) => ({\n            beforeHandle() {\n                console.log(word)\n            }\n        })\n    })\n\nconst app = new Elysia()\n    .use(plugin)\n    .get('/', { hi: 'Elysia' }, () => 'hi')"
+    },
+    {
+        "label": "Add a context property",
+        "code": "import { Elysia } from 'elysia'\n\nconst plugin = new Elysia({ name: 'plugin' })\n    .macro({\n        greeting: (name: string) => ({\n            derive: () => ({ greeting: `Hello ${name}` })\n        })\n    })\n\nconst app = new Elysia()\n    .use(plugin)\n    .get('/', { greeting: 'Elysia' }, ({ greeting }) => greeting)"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Macro</h1>
+
+**macro** ใช้ควบคุม lifecycle hook, schema และ context ผ่าน route option ที่มี type กำกับ สร้างไว้ครั้งเดียว แล้วเปิดใช้กับ route ที่ต้องการได้เลย
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## สร้าง macro
+
+macro จะรวม hook, schema และส่วนขยายของ context ไว้ภายใต้ route option ตัวเดียว ตัวอย่างนี้รับคำที่จะ log ออกมา
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## เปิดใช้กับ route
+
+ลงทะเบียน plugin แล้วเพิ่ม `hi` ลงใน option ของ route พอเข้า `/` จะ log `Elysia` ออกมาและคืนค่า `hi` โดย option ของ macro จะอยู่ก่อน handler
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## เพิ่ม property ใน context
+
+return ฟังก์ชัน `derive` จาก macro เพื่อเพิ่ม property ที่มี type ลงใน context ในตัวอย่างนี้ route จะคืนค่า `Hello Elysia`
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## รูปแบบย่อของ property
+
+แต่ละ property ใน object ของ macro เป็นได้ทั้งฟังก์ชันหรือ object ถ้าแค่ต้องการเปิดหรือปิดฟีเจอร์ ให้ใช้ object:
+
+```ts
+import { Elysia } from 'elysia'
+
+const auth = new Elysia()
+    .macro({
+        isAuth: {
+            derive: () => ({ user: 'saltyaom' })
+        }
+    })
+    .get('/', { isAuth: true }, ({ user }) => user)
+```
+
+ตั้ง `isAuth: false` เพื่อปิดการทำงาน รูปแบบ object เป็นรูปย่อของฟังก์ชันที่เช็กค่า boolean:
+
+```ts
+import { Elysia } from 'elysia'
+
+const auth = new Elysia()
+    .macro({
+        isAuth(enabled: boolean) {
+            if (!enabled) return
+
+            return {
+                derive: () => ({ user: 'saltyaom' })
+            }
+        }
+    })
+```
+
+ตัวอย่างนี้ใส่ user แบบตายตัวเพื่อให้เห็นการ infer type ของ context เท่านั้น ส่วนในแอปจริงให้แทนค่านั้นด้วย logic การยืนยันตัวตนของคุณ
+
+## การจัดการ error
+
+return `status()` จาก hook ของ macro เพื่อหยุด request พร้อม HTTP status
+
+```ts
+import { Elysia, status } from 'elysia'
+
+new Elysia()
+    .macro({
+        auth: {
+            derive({ headers }) {
+                if (!headers.authorization)
+                    return status(401, 'Unauthorized')
+
+                return { user: 'SaltyAom' }
+            }
+        }
+    })
+    .get('/', { auth: true }, ({ user }) => `Hello ${user}`)
+```
+
+ในตัวอย่างนี้ ถ้าไม่มี authorization header จะคืน `401` ตัวอย่างแค่เช็กว่ามี header อยู่หรือไม่เท่านั้น ฟังก์ชันยืนยันตัวตนของคุณต้องตรวจสอบ header ให้ถูกต้องก่อนคืน user
+
+ใช้ return `status()` กับผลลัพธ์ HTTP ที่คาดไว้ ส่วนการ throw `Error` ธรรมดาที่ไม่มีใครจัดการ จะได้ response `500` ตามค่าเริ่มต้น
+
+การ return status แทนการ throw ยังช่วยให้ [Eden](/eden/) และ [การสร้าง OpenAPI จาก type](/patterns/openapi/#openapi-from-types) infer response ที่เป็นไปได้ทั้งหมดของ route ได้ด้วย
+
+<span id="resolve"></span>
+
+## Derive
+
+เพิ่ม property ลงใน context ได้ด้วยการ return object ที่มีฟังก์ชัน [`derive`](/essential/life-cycle/#derive) ใน Elysia 2 วิธีนี้มาแทน option `resolve` แบบเก่าของ macro
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .macro({
+        withUser: {
+            derive: () => ({ user: 'Pardofelis' })
+        }
+    })
+    .get('/', { withUser: true }, ({ user }) => user)
+```
+
+route จะได้ property `user` ที่มี type กำกับ เหมาะกับตอนที่ต้องยืนยันตัวตนผู้ใช้ โหลดข้อมูลที่เกี่ยวข้องจากฐานข้อมูล หรือคำนวณค่าอื่นใน context ที่เฉพาะกับแต่ละ request
+
+<span id="macro-extension-with-resolve"></span>
+
+### ขยาย macro ด้วย derive
+
+macro หนึ่งเปิดใช้ macro อื่นและเพิ่ม property ที่ derive เองได้ด้วย โดย route จะได้ผลลัพธ์ที่รวมกัน:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .macro({
+        withUser: {
+            derive: () => ({ user: 'lilith' as const })
+        }
+    })
+    .macro({
+        withMember: {
+            withUser: true,
+            derive: () => ({ role: 'member' as const })
+        }
+    })
+    .get('/', { withMember: true }, ({ user, role }) => ({ user, role }))
+```
+
+hook ของ macro จะได้ type จาก schema ของ macro ตัวเองเท่านั้น และไม่ได้ infer context ที่ macro อื่น derive มาให้โดยอัตโนมัติ ถ้าการคำนวณหนึ่งต้องใช้ผลจากอีกอัน ให้รวมไว้ใน callback `derive` เดียวกัน หรืออ่าน property ที่รวมแล้วใน route handler แทน
+
+ทางเลี่ยงแบบเก่าอย่าง `.macro(name, definition)` ถูกเอาออกใน Elysia 2 แล้ว ให้ใช้รูปแบบ object ตามด้านบนแทน
+
+## Schema
+
+macro กำหนด schema ให้ route ที่เปิดใช้มันได้
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        withFriends: {
+            body: t.Object({
+                friends: t.Tuple([t.Literal('Fouco'), t.Literal('Sartre')])
+            })
+        }
+    })
+    .post('/', {
+        body: t.Object({ name: t.Literal('Lilith') }),
+        withFriends: true
+    }, ({ body }) => body.friends)
+```
+
+route นี้ตรวจสอบทั้ง property `name` และ `friends` ตัวอย่าง JSON body ที่ถูกต้องคือ:
+
+```json
+{
+    "name": "Lilith",
+    "friends": ["Fouco", "Sartre"]
+}
+```
+
+schema ของ macro จะรวมกับ schema ของ route และ schema ของ macro อื่นที่เปิดใช้อยู่ และยังใช้กับ [validator ของ Standard Schema](/essential/validation/#standard-schema) ได้ด้วย
+
+### Schema กับ lifecycle ใน macro เดียวกัน
+
+macro แบบ object จะ infer schema ของตัวเองภายใน lifecycle hook ได้:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        withFriends: {
+            body: t.Object({
+                friends: t.Tuple([t.Literal('Fouco'), t.Literal('Sartre')])
+            }),
+            beforeHandle({ body: { friends } }) {
+                console.log(friends)
+            }
+        }
+    })
+    .post('/', { withFriends: true }, ({ body }) => body)
+```
+
+ตรงนี้ `friends` ได้ type มาจาก body schema ของ macro นี้ ไม่ต้องใช้ overload แบบระบุชื่อสำหรับ macro ตัวเดียว ซึ่งต่างจากการ infer property ที่ macro อื่นให้มา ตามที่อธิบายไว้ [ด้านบน](#macro-extension-with-derive)
+
+## การขยาย macro
+
+macro หนึ่งเปิดใช้ macro หลายตัว แล้วเพิ่มความสามารถของตัวเองเข้าไปอีกได้
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        sartre: {
+            body: t.Object({ sartre: t.Literal('Sartre') })
+        },
+        fouco: {
+            body: t.Object({ fouco: t.Literal('Fouco') })
+        },
+        lilith: {
+            fouco: true,
+            sartre: true,
+            body: t.Object({ lilith: t.Literal('Lilith') })
+        }
+    })
+    .post('/', { lilith: true }, ({ body }) => body)
+```
+
+เปิดใช้ `lilith` ก็จะเปิด `fouco` และ `sartre` ไปด้วย body ของ request ต้องผ่าน schema ทั้งสามตัว
+
+## การตัดตัวซ้ำ
+
+Elysia จะตัด hook ของ macro ที่ซ้ำกันออก เพื่อไม่ให้ dependency ที่เปิดใช้ทำงานหลายรอบ แค่เพราะมี macro มากกว่าหนึ่งตัวใช้มัน
+
+สำหรับ macro แบบฟังก์ชัน ค่า option จะเป็น seed เริ่มต้น return `seed` ของคุณเองเพื่อกำหนดว่าจะใช้อะไรเป็นตัวระบุตอนตัดตัวซ้ำ:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .macro({
+        sartre: (role: string) => ({
+            seed: role,
+            body: t.Object({ sartre: t.Literal('Sartre') })
+        })
+    })
+```
+
+ชื่อ macro กับ seed ใช้ระบุการขยายของ macro แบบฟังก์ชันแต่ละครั้ง ควรให้ seed คงที่ และหลีกเลี่ยงค่า object ที่อ้างอิงวนกลับหาตัวเอง เว้นแต่จะใส่ seed แบบ primitive แยกไว้
+
+Elysia จำกัดการขยาย macro ที่ซ้อนกันไว้ที่ 16 ชั้นเพื่อกัน infinite loop แต่อย่าพึ่งขีดจำกัดนี้ หลีกเลี่ยง dependency ที่วนกันเองจะดีกว่า
+
+ถ้าทั้ง route และ macro กำหนด `detail` ของ OpenAPI ไว้ Elysia จะรวมเข้าด้วยกัน และให้ detail ของ route มีผลเหนือกว่า
+
+## Type lambda
+
+type lambda เป็นฟีเจอร์ขั้นสูงของ macro ที่จะใช้หรือไม่ใช้ก็ได้
+
+ช่วยให้คำนวณ type ของ macro จากค่าที่ route ใส่ให้ได้ มีประโยชน์เมื่ออยาก narrow type ของ property ใน context ตามค่า option ของ route
+
+วิธีใช้คือ return `$type: macroType<Lambda>()` จาก macro:
+
+```ts
+import { Elysia, macroType, type MacroTypeLambda } from 'elysia'
+
+interface Role extends MacroTypeLambda {
+    output: Record<'role', this['input']>
+}
+
+new Elysia()
+    .macro({
+        role: (role: 'admin' | 'member') => ({
+            $type: macroType<Role>(),
+            derive: () => ({ role })
+        })
+    })
+    .get('/admin', { role: 'admin' }, ({ role }) => role)
+    .get('/member', { role: 'member' }, ({ role }) => role)
+```
+
+ตรงนี้ `role` จะมี type เป็น `'admin'` บน `/admin` และ `'member'` บน `/member` ไม่ใช่ `'admin' | 'member'`
+
+- `this['input']` - ค่าที่กำหนดให้ macro นี้ใน option ของ route
+- `output` - ค่าที่จะเพิ่มลงใน context ของ route
+
+`this['input']` จะคง literal type ไว้ก็ต่อเมื่อ type ของ parameter ใน macro มี literal อยู่ เช่น `'admin' | 'member'` หรือ template literal อย่าง `` `room:${string}` ``
+
+หมายเหตุ:
+- lambda เปลี่ยนแค่ type เท่านั้น
+- Elysia ไม่สนใจ `$type` ตอน runtime ตัว macro ยังต้องให้ค่าผ่าน `derive` เองอยู่ดี
+- TypeScript ไม่ได้เช็กว่า `derive` คืนค่าตรงกับที่ `output` บอกไว้หรือเปล่า
+- TypeScript ไม่ให้ใช้ `this` ใน object ที่ซ้อนอยู่ข้างใน ให้ใช้ type `Record` แทน
+
+### Option ที่ได้ type จาก route
+
+ใช้ `option` ของ lambda ร่วมกับ `this['context']` เพื่อกำหนด type ให้ callback ของ macro แบบฟังก์ชันตาม route:
+
+```ts
+import { Elysia, macroType, t, type Context, type MacroTypeLambda } from 'elysia'
+
+interface Log extends MacroTypeLambda {
+    option: (context: this['context']) => string
+}
+
+new Elysia()
+    .macro({
+        log: (message: (context: Context) => string) => ({
+            $type: macroType<Log>(),
+            beforeHandle(context) {
+                console.log(message(context))
+            }
+        })
+    })
+    .post('/user/:id', {
+        body: t.Object({ name: t.String() }),
+        log: ({ params, body }) => `${params.id} is now ${body.name}`
+    }, ({ body }) => body)
+```
+
+ใน `log` ทั้ง `params.id` และ `body.name` เป็น string ถ้าไม่มี lambda `body` จะเป็น `unknown`
+
+`message` ยังคงมี type ตามที่ประกาศไว้ คือ `(context: Context) => string` macro จึงเรียกมันด้วย context ของ hook ได้ ส่วน option ของ route จะใช้ type `option` ของ lambda จึงต้องให้ทั้งสอง type นี้เข้ากันได้
+
+`this['context']` ประกอบด้วย:
+
+- schema และ path parameter ของ route
+- ค่าจาก `decorate` และ `derive` ก่อนหน้า รวมถึง macro บน `guard` ก่อนหน้า
+
+แต่ไม่รวมสิ่งที่ macro ที่เปิดใช้คู่กันเพิ่มเข้ามา รวมถึง `derive`, `output` และ schema ของ macro ตัวนี้เองด้วย
+
+หลักนี้ใช้กับ `guard`, `group` และ `ws` ด้วย โดย `group` จะรวม path parameter จาก prefix ของมัน แต่ไม่รวมของ route ลูก
+
+ใช้ `this['input']` ใน `output` และใช้ `this['context']` ใน `option` ถ้าใช้สลับกันจะได้ `unknown` ส่วน lambda หนึ่งตัวกำหนดทั้งสองอย่างได้
+
+### Schema จาก generic macro
+
+ถ้าไม่มี type lambda TypeScript จะประเมินค่าที่ generic macro คืนมาตาม constraint `AnySchema` จึง infer field `data` ของ response เป็น `unknown` ทั้งที่ Elysia ตรวจสอบด้วย schema ตอน runtime อยู่แล้ว
+
+ใช้ type lambda เพื่อนำค่า macro ที่ route กำหนดมาใช้:
+
+<CodePlayground elysia={macroSchemaDemo}>
+
+```ts
+import { Elysia, macroType, t, type AnySchema, type MacroTypeLambda } from 'elysia'
+
+const wrap = <T extends AnySchema>(payload?: T) =>
+    t.Object({
+        code: t.Number(),
+        data: t.Union([payload ?? t.Null(), t.Null()])
+    })
+
+interface Res extends MacroTypeLambda {
+    response: ReturnType<typeof wrap<Extract<this['input'], AnySchema>>>
+}
+
+new Elysia()
+    .macro({
+        res: <T extends AnySchema>(payload?: T) => ({
+            $type: macroType<Res>(),
+            response: wrap(payload)
+        })
+    })
+    .get('/count', { res: t.Number() }, () => ({ code: 0, data: 1 }))
+    .get('/name', { res: t.String() }, () => ({ code: 0, data: 'Elysia' }))
+```
+
+</CodePlayground>
+
+แบบนี้จะบังคับ response type ตาม macro
+
+-`/count` ต้องคืน `number | null`
+- `/name` ต้องคืน `string | null`
+- ถ้า `/count` คืน string จะเป็น type error
+
+member `body`, `headers`, `query`, `params`, `cookie` และ `response` ของ lambda จะแทนที่ type ของ schema ที่ตรงกันซึ่ง macro คืนมา แต่ macro ยังต้องคืนแต่ละ schema อยู่ เพื่อให้ Elysia ตรวจสอบตอน runtime ได้
+
+อย่าลืมว่า `this` ใช้ใน type literal ที่ซ้อนอยู่ไม่ได้ ให้ใช้ type alias สำหรับ map ของ response ตาม status แทน:
+
+```ts
+import { Elysia, macroType, t, type AnySchema, type MacroTypeLambda } from 'elysia'
+
+const wrap = <T extends AnySchema>(payload?: T) =>
+    t.Object({
+        code: t.Number(),
+        data: t.Union([payload ?? t.Null(), t.Null()])
+    })
+
+type ResStatus<Input> = {
+    200: ReturnType<typeof wrap<Extract<Input, AnySchema>>>
+    404: ReturnType<typeof t.String>
+}
+
+interface Res extends MacroTypeLambda {
+    response: ResStatus<this['input']>
+}
+
+new Elysia()
+    .macro({
+        res: <T extends AnySchema>(payload?: T) => ({
+            $type: macroType<Res>(),
+            response: { 200: wrap(payload), 404: t.String() }
+        })
+    })
+    .get('/user/:id', { res: t.String() }, ({ params: { id }, status }) =>
+        id === '0' ? status(404, 'Not found') : { code: 0, data: id }
+    )
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

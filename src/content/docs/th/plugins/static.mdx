@@ -1,0 +1,108 @@
+---
+title: Plugin Static
+description: ข้อมูลอ้างอิงและตัวอย่างการใช้งาน plugin Static
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin Static</h1>
+
+plugin นี้ใช้เสิร์ฟไฟล์และโฟลเดอร์ static ให้เซิร์ฟเวอร์ Elysia ได้
+
+ติดตั้งด้วยคำสั่ง:
+```bash
+bun add @elysia/static@rc
+```
+
+จากนั้นก็นำไปใช้ได้เลย:
+```ts
+import { Elysia } from 'elysia'
+import { staticPlugin } from '@elysia/static'
+
+new Elysia()
+    .use(staticPlugin())
+    .listen(3000)
+```
+
+โดยค่าเริ่มต้น โฟลเดอร์ของ plugin static คือ `public` และจะลงทะเบียนด้วย prefix `/public`
+
+สมมติว่าโปรเจกต์ของคุณมีโครงสร้างแบบนี้:
+```text
+| - src
+  | - index.ts
+| - public
+  | - takodachi.png
+  | - nested
+    | - takodachi.png
+```
+
+path ที่เข้าถึงได้จะเป็น:
+- /public/takodachi.png
+- /public/nested/takodachi.png
+
+## การตั้งค่า
+ด้านล่างนี้คือ config ที่ plugin รองรับ
+
+### assets
+ค่าเริ่มต้น: `"public"`
+
+path ของโฟลเดอร์ที่จะเปิดให้เข้าถึงแบบ static
+
+### prefix
+ค่าเริ่มต้น: `"/public"`
+
+prefix ของ path ที่ใช้ลงทะเบียนไฟล์ public
+
+### ignorePatterns
+ค่าเริ่มต้น: `['.DS_Store', '.git', '.env']`
+
+รายการไฟล์ที่จะไม่เสิร์ฟเป็นไฟล์ static
+
+:::caution
+รายการที่กำหนดเองจะใช้แทนค่าเริ่มต้นทั้งหมด อย่าลืมใส่ `.env` และ `.git` กลับเข้าไปด้วย ไม่อย่างนั้นไฟล์พวกนี้จะถูกเสิร์ฟออกไป
+:::
+
+### staticLimit
+ค่าเริ่มต้น: `1024`
+
+เมื่อเปิด [alwaysStatic](#alwaysstatic) ไว้ plugin static จะลงทะเบียน path เข้า Router ด้วยชื่อแบบ static ได้สูงสุดตามจำนวนนี้ ไฟล์ที่เกินจากนั้นจะ resolve แบบ lazy ตอนมี request เข้ามา เพื่อประหยัดหน่วยความจำ
+เป็นการแลกกันระหว่างหน่วยความจำกับประสิทธิภาพ
+
+### alwaysStatic
+ค่าเริ่มต้น: `process.env.NODE_ENV === 'production'`
+
+ถ้าตั้งเป็น true จะลงทะเบียน path ของไฟล์ static เข้า Router ตั้งแต่ตอนเริ่มทำงาน ได้สูงสุดตาม [staticLimit](#staticlimit) ถ้าไม่ได้ตั้งไว้ ไฟล์จะ resolve แบบ lazy ตอนมี request เข้ามา
+
+### headers
+ค่าเริ่มต้น: `{}`
+
+ตั้ง header ของ response สำหรับไฟล์
+
+### indexHTML
+ค่าเริ่มต้น: `true`
+
+ถ้าเปิดไว้ request ที่ขอโฟลเดอร์จะเสิร์ฟไฟล์ `index.html` ในโฟลเดอร์นั้นได้ แต่นี่ไม่ใช่ fallback แบบ catch-all ของ single-page application สำหรับ path ใด ๆ ที่หาไม่เจอนะ
+
+## รูปแบบการใช้งาน
+ด้านล่างนี้คือรูปแบบการใช้ plugin ที่พบบ่อย
+
+- [ไฟล์เดียว](#single-file)
+
+## ไฟล์เดียว
+ถ้าอยากส่งแค่ไฟล์เดียว ใช้ `file` แทน plugin static ก็ได้
+```ts
+import { Elysia, file } from 'elysia'
+
+new Elysia()
+    .get('/file', file('public/takodachi.png'))
+```
+
+</div>
+</InteractiveDocLayout>
+</div>
