@@ -1,0 +1,290 @@
+---
+title: Conceptos clave
+description: Entiende la encapsulación, las dependencias, el orden de registro y la inferencia de tipos en Elysia.
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import '../../../styles/routing.css';
+
+export const steps = [
+    {
+        label: 'Crea una instancia',
+        code: `import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/profile', () => 'Hi there!')
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+    {
+        label: 'Mantén un hook local',
+        code: `import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+    .onBeforeHandle(({ status }) => status(401, 'Sign in first'))
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+    {
+        label: 'Comparte el hook',
+        code: `import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+    .onBeforeHandle('global', ({ status }) => status(401, 'Sign in first'))
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+];
+
+<div class="essential-page key-concept-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Conceptos clave</h1>
+
+<Card>
+
+<CardTitle>Importante</CardTitle>
+
+Te recomendamos completar los capítulos de [Conceptos esenciales](/essential/route/) antes de empezar tu primer proyecto con Elysia.
+
+Pero si prefieres ponerte a escribir código directamente, aquí tienes un breve repaso de los conceptos clave de Elysia.
+
+</Card>
+
+</div>
+
+<div class="content-layout">
+
+## Encapsulación
+
+Los hooks del ciclo de vida de Elysia están **encapsulados**. Esto significa que un hook que añadas en un plugin no se aplicará a la instancia que usa ese plugin, a menos que lo compartas explícitamente.
+
+```ts
+import { Elysia } from 'elysia'
+import { throwIfNotSignIn, updateProfile } from './profile'
+
+const profile = new Elysia()
+    .onBeforeHandle(({ cookie }) => {
+        throwIfNotSignIn(cookie)
+    })
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    // This route does not inherit the local sign-in check.
+    .patch('/rename', ({ body }) => updateProfile(body))
+```
+
+Aquí, `throwIfNotSignIn` se aplica a `/profile`, pero no a `/rename`.
+
+---
+
+Para que se aplique también fuera del plugin, tienes que indicarle a Elysia que lo comparta.
+
+Al igual que con la palabra clave `export`, haz explícito que quieres compartirlo cuando otra instancia lo necesite.
+
+Para *exportar* el hook, basta con añadir un [scope](/essential/plugin/#scope-level):
+
+```ts "'global'"
+import { Elysia } from 'elysia'
+import { throwIfNotSignIn, updateProfile } from './profile'
+
+const profile = new Elysia()
+    .onBeforeHandle('global', ({ cookie }) => {
+        throwIfNotSignIn(cookie)
+    })
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    // This route inherits the sign-in check.
+    .patch('/rename', ({ body }) => updateProfile(body))
+```
+
+## Encadenamiento de métodos
+
+Usa **method chaining**, es decir, encadena las llamadas a métodos para conservar los tipos que infiere Elysia:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('build', 1)
+    .get('/', ({ store: { build } }) => build)
+    .listen(3000)
+```
+
+`state` devuelve un tipo de instancia con una propiedad `build` tipada. Al encadenar la siguiente llamada, ese tipo sigue disponible.
+
+Si no encadenas las llamadas, la variable no conserva el nuevo tipo. Este ejemplo provoca un error de TypeScript a propósito:
+
+```ts error-preview
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+
+app.state('build', 1)
+
+app.get('/', ({ store: { ~~build~~ } }) => build) //! Property 'build' does not exist on type '{}'
+
+app.listen(3000)
+```
+
+La instancia sí puede seguir cambiando en runtime. El problema es que el tipo estático de la variable no ha cambiado. Encadena las llamadas o guarda la instancia devuelta en una nueva variable.
+
+## Dependencias
+
+Cada instancia tiene su propio contexto.
+
+Cuando una instancia necesita el contexto de otra, esa otra instancia se declara como dependencia mediante `.use()`.
+
+```ts error-preview
+import { Elysia, t } from 'elysia'
+
+class Auth {
+    getProfile() {
+        return { name: 'Elysia User' }
+    }
+}
+
+const auth = new Elysia()
+    .decorate({
+        auth: new Auth()
+    })
+
+const main = new Elysia()
+    // Intentional type error: auth has not been registered here.
+    .get('/', ({ ~~auth~~ }) => auth.getProfile()) //! Property 'auth' does not exist on type '{ body: unknown; ... store: {}; }'
+    .use(auth)
+    .get('/profile', ({ auth }) => auth.getProfile())
+```
+
+Esto es la **propagación de contexto**. Cada instancia tiene su propio contexto y `.use()` propaga el contexto de una instancia a otra. La instancia `auth` es una dependencia de `main`, así que `main` puede usar sus servicios y sus tipos.
+
+Este diseño hace que las dependencias sean explícitas y evita un contexto de tipos global por estos motivos:
+1. Coherencia de tipos: para mantener la coherencia entre los tipos y lo que existe en runtime, Elysia necesita conocer la dependencia explícitamente. Declarar un contexto de tipos global rompería esa garantía.
+2. Seguimiento de dependencias: cuando cambia la instancia dependiente, Elysia puede seguir la dependencia explícita y actualizar el contexto de tipos de esa instancia en consecuencia.
+3. Modularidad: cualquier parte debería poder usarse de forma independiente, sin un contexto de tipos global.
+
+### Deduplicación
+
+Un plugin puede registrarse más de una vez si varias instancias lo comparten. Para evitar duplicados, dale al plugin un `name` único y Elysia se encargará de deduplicarlo.
+
+```ts
+import { Elysia } from 'elysia'
+
+const ip = new Elysia({ name: 'ip' })
+    .derive('global', ({ server, request }) => ({
+        ip: server?.requestIP(request)
+    }))
+    .get('/ip', ({ ip }) => ip)
+
+const router1 = new Elysia()
+    .use(ip)
+    .get('/ip-1', ({ ip }) => ip)
+
+const router2 = new Elysia()
+    .use(ip)
+    .get('/ip-2', ({ ip }) => ip)
+
+const server = new Elysia()
+    .use(router1)
+    .use(router2)
+```
+
+Así, el hook de derive compartido se ejecuta una sola vez por petición.
+
+Si el plugin es configurable, añade `seed` para identificar su configuración.
+
+Los registros con los mismos valores de `name` y `seed` se deduplican. Los valores de seed distintos mantienen las configuraciones separadas.
+
+Puedes leer más sobre la [deduplicación de plugins](/essential/plugin/#deduplication).
+
+## Orden del código
+
+En las rutas que declaras directamente en una instancia, los hooks se aplican a las rutas que registras **después** de ellos:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log('1')
+    })
+    .get('/', () => 'hi')
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+Una petición a `/` escribe esto en la consola:
+
+```text
+1
+```
+
+No escribe `2` porque ese hook se registró después de la ruta declarada directamente.
+
+:::note[Rutas montadas y hooks iniciales]
+
+Las rutas de un plugin montado heredan los hooks de la instancia padre que se hayan registrado antes de `.use(plugin)`. Por eso, un handler de errores del padre situado ahí puede manejar los errores que lancen las rutas de ese plugin. La etapa `request` se ejecuta antes de buscar la ruta que coincide con la petición, así que también funciona de forma distinta al orden de registro de los hooks específicos de cada ruta.
+
+:::
+
+Coloca los hooks compartidos cerca del inicio de la instancia. Consulta [orden del código](/essential/life-cycle/#order-of-code) para ver los ejemplos de rutas declaradas directamente y plugins montados.
+
+## Inferencia de tipos
+
+Elysia infiere el contexto del handler a partir del esquema de la ruta:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => body)
+```
+
+Define el handler en la propia declaración de la ruta para que TypeScript pueda inferir su contexto.
+
+Cuando necesites una función aparte, como un método de un controlador, pásale solo los valores que necesita desde el handler que defines en la ruta:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+abstract class Controller {
+    static greet({ name }: { name: string }) {
+        return 'hello ' + name
+    }
+}
+
+const app = new Elysia()
+    .post('/', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => Controller.greet(body))
+```
+
+Consulta [buenas prácticas: controlador](/essential/best-practice/#controller).
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
