@@ -1,13 +1,13 @@
 # Translating the docs
 
-English is the source of truth. Translations live next to it, mirroring the same path:
+English is the source of truth. Every language has its own folder and URL prefix, mirroring the same path:
 
 ```
-src/content/docs/essential/route.mdx      English
-src/content/docs/ja/essential/route.mdx   Japanese
+src/content/docs/en/essential/route.mdx   English   /en/essential/route/
+src/content/docs/th/essential/route.mdx   Thai      /th/essential/route/
 ```
 
-Open locales: `es`, `zh-cn`, `ja`, `th`. A page without a translation falls back to English, so partial translations are fine to ship.
+Open locales: `th`. A page without a translation falls back to English, so partial translations are fine to ship. The old URLs without a prefix redirect to `/en/`.
 
 ## What needs work
 
@@ -24,7 +24,8 @@ Status comes from git history: a translation is outdated when its English source
 1. Pick a locale and one or more pages from the status page.
 2. Translate, or update only what the listed English commits changed.
 3. Keep frontmatter keys, code blocks, components and link targets as they are. Translate prose, headings and `title`/`description`.
-   - Translated files sit one folder deeper, so add one `../` to every relative import: `'../../components/ui/card'` becomes `'../../../components/ui/card'`. The build fails with `Could not resolve` if you miss one.
+   - Translated files sit at the same depth as the English ones, so relative imports stay exactly as they are.
+   - Links between docs pages stay locale-free (`/essential/route/`). The build points them at the page's own language.
    - Commit the file before running `bun run build` locally, otherwise the status page is skipped.
 4. Open a PR to `next` branch. One locale per PR keeps review easy.
 

@@ -146,18 +146,18 @@ Start here.
 test('built Markdown pairs every explanation with its exact code in order (run bun run build first)', async () => {
 	const tree = fromHtml(
 		await readFile(
-			new URL('../dist/essential/route/index.html', import.meta.url),
+			new URL('../dist/en/essential/route/index.html', import.meta.url),
 			'utf8'
 		)
 	)
 	const markdown = await readFile(
-		new URL('../dist/essential/route/index.md', import.meta.url),
+		new URL('../dist/en/essential/route/index.md', import.meta.url),
 		'utf8'
 	)
 	const steps: { code: string; label: string; highlight: number[] }[] =
 		JSON.parse(toString(select('[data-code-steps]', tree)!))
 	const source = await readFile(
-		new URL('../src/content/docs/essential/route.mdx', import.meta.url),
+		new URL('../src/content/docs/en/essential/route.mdx', import.meta.url),
 		'utf8'
 	)
 	const authoredCodes = [...source.matchAll(/code: `([\s\S]*?)`/g)].map(

@@ -8,7 +8,7 @@ import { defaultHandlers, toMdast } from 'hast-util-to-mdast'
 import { toMarkdown } from 'mdast-util-to-markdown'
 import { gfmToMarkdown } from 'mdast-util-gfm'
 import { load } from 'js-yaml'
-import { stripLocale } from '../src/lib/locales.mjs'
+import { isTranslated, stripLocale } from '../src/lib/locales.mjs'
 import { siteUrl } from '../site.config.mjs'
 
 const skipped = new Set(['design-system/index.html', 'i18n/index.html'])
@@ -91,8 +91,8 @@ export async function exportDocs(
 			!path.endsWith('.html') ||
 			path === '404.html' ||
 			path === 'index.html' ||
-			skipped.has(path) ||
-			stripLocale(path) !== path
+			skipped.has(stripLocale(path)) ||
+			isTranslated(path)
 		)
 			continue
 
@@ -136,7 +136,8 @@ export async function exportDocs(
 			'No documentation pages were exported. Run the Astro build first.'
 		)
 
-	const bySegment = Map.groupBy(pages, ({ path }) => path.split('/')[0])
+	// docs live under /en/, group them by the folder after the locale
+	const bySegment = Map.groupBy(pages, ({ path }) => stripLocale(path).split('/')[0])
 	for (const segment of bySegment.keys())
 		if (!sections.some(([, segments]) => segments.includes(segment)))
 			throw new Error(
@@ -155,7 +156,7 @@ export async function exportDocs(
 		'',
 		'> Documentation for Elysia 2, an ergonomic TypeScript framework for building type-safe APIs. Many APIs changed from Elysia 1.x, so prefer these pages over older Elysia knowledge.',
 		'',
-		`Coming from Elysia 1.x? Start with the Migrate section and the elysia-2 agent skill at ${siteUrl}/.well-known/agent-skills/elysia-2/SKILL.md. Every page is also available as Markdown by appending .md to its URL, for example ${siteUrl}/eden.md.`,
+		`Coming from Elysia 1.x? Start with the Migrate section and the elysia-2 agent skill at ${siteUrl}/.well-known/agent-skills/elysia-2/SKILL.md. Every page is also available as Markdown by appending .md to its URL, for example ${siteUrl}/en/eden.md.`,
 		''
 	]
 

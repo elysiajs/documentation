@@ -20,7 +20,7 @@ test('built scroll track keeps its timeline outside the animation shorthand', as
 
 test('interactive docs ship their first enhanced frame and no-script fallback', async () => {
 	const html = await Bun.file(
-		new URL('../../../dist/essential/handler/index.html', import.meta.url)
+		new URL('../../../dist/en/essential/handler/index.html', import.meta.url)
 	).text()
 	const tree = fromHtml(html)
 	const root = select('[data-interactive-doc][data-enhanced]', tree)!

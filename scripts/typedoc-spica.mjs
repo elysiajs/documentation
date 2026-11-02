@@ -43,7 +43,8 @@ function serialize(frontmatter) {
 
 function open(context) {
 	const depth = context.page.url.split('/').length - 1
-	const prefix = '../'.repeat(depth + 3)
+	// out of src/content/docs/en/reference/<page>
+	const prefix = '../'.repeat(depth + 4)
 	return [
 		`import InteractiveDocLayout from "${prefix}components/interactive-code/layout.astro";`,
 		`import "${prefix}styles/routing.css";`,

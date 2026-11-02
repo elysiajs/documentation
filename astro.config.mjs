@@ -11,7 +11,8 @@ import { fileURLToPath } from 'node:url'
 import { siteUrl } from './site.config.mjs'
 import { spicaTables } from './src/lib/spica-tables.mjs'
 import { lazyBlogImages } from './src/lib/lazy-blog-images.mjs'
-import { locales } from './src/lib/locales.mjs'
+import { defaultLocale, locales } from './src/lib/locales.mjs'
+import { docSlugs, localizeDocLinks } from './src/lib/localize-doc-links.mjs'
 import { spicaDark, spicaLight } from './src/spica/code-themes.mjs'
 
 // monaco-editor-auto-typings (tutorial playground) is CommonJS and requires Node's `path` in the
@@ -49,14 +50,47 @@ function browserPathShim() {
 	return plugin
 }
 
+/**
+ * starlight-typedoc writes its sidebar links with the output folder (`/en/reference/...`),
+ * and Starlight adds the current locale to every sidebar link, so drop the folder's locale.
+ * @returns {import('@astrojs/starlight/types').StarlightPlugin}
+ */
+function referenceSidebarLinks() {
+	/** @param {any[]} items @returns {any[]} */
+	const strip = (items) =>
+		items.map((item) =>
+			item.items
+				? { ...item, items: strip(item.items) }
+				: typeof item.link === 'string' && item.link.startsWith(`/${defaultLocale}/`)
+					? { ...item, link: item.link.slice(defaultLocale.length + 1) }
+					: item
+		)
+
+	return {
+		name: 'reference-sidebar-links',
+		hooks: {
+			'config:setup'({ config, updateConfig }) {
+				if (config.sidebar) updateConfig({ sidebar: strip(config.sidebar) })
+			}
+		}
+	}
+}
+
 export default defineConfig({
 	site: siteUrl,
-	redirects: { '/eden/overview': '/eden/' },
+	redirects: {
+		// docs used to live at the root before every language got its own prefix
+		...Object.fromEntries(
+			[...docSlugs].map((slug) => [`/${slug}`, `/${defaultLocale}/${slug}/`])
+		),
+		'/eden/overview': `/${defaultLocale}/eden/`
+	},
 	image: { responsiveStyles: true },
-	markdown: { rehypePlugins: [spicaTables, lazyBlogImages] },
+	markdown: { rehypePlugins: [spicaTables, lazyBlogImages, localizeDocLinks] },
 	integrations: [
 		starlight({
 			title: 'Elysia Interactive',
+			defaultLocale,
 			locales,
 			lastUpdated: true,
 			editLink: {
@@ -136,7 +170,7 @@ export default defineConfig({
 				starlightTypeDoc({
 					entryPoints: ['./node_modules/elysia/dist/index.d.ts'],
 					tsconfig: './tsconfig.typedoc.json',
-					output: 'reference',
+					output: `${defaultLocale}/reference`,
 					sidebar: { label: 'elysia' },
 					typeDoc: {
 						plugin: ['./scripts/typedoc-spica.mjs'],
@@ -149,7 +183,8 @@ export default defineConfig({
 						parametersFormat: 'table',
 						typeDeclarationFormat: 'table'
 					}
-				})
+				}),
+				referenceSidebarLinks()
 			],
 			sidebar: [
 				{

@@ -1,36 +1,48 @@
 ---
 import { getEntry } from 'astro:content'
-import { IconLanguage } from '@tabler/icons-react'
 
 import { Select } from './ui/select'
-import { locales, stripLocale } from '../lib/locales.mjs'
+import { defaultLocale, flags, locales, stripLocale } from '../lib/locales.mjs'
 
 const route = Astro.locals.starlightRoute
 const pathname = stripLocale(Astro.url.pathname)
+const current = (route.locale ?? defaultLocale) as keyof typeof locales
 // pages outside the docs collection (the /i18n/ dashboard) have no localized copies to switch to
-const translatable = await getEntry('docs', stripLocale(route.id))
+const translatable = await getEntry('docs', `${defaultLocale}/${stripLocale(route.id)}`.replace(/\/$/, ''))
 ---
 
 {
 	translatable && (
 		<spica-language-select class="relative block">
-			<IconLanguage
-				size={17}
-				stroke={1.5}
+			<span
 				aria-hidden="true"
-				className="pointer-events-none absolute top-1/2 left-3 z-1 -translate-y-1/2 text-ink-muted"
-			/>
+				class="pointer-events-none absolute top-1/2 left-3 z-1 -translate-y-1/2 overflow-hidden rounded-[3px] leading-none shadow-[0_0_0_1px_var(--color-border)]"
+			>
+				{current === 'th' ? (
+					<svg width="20" height="14" viewBox="0 0 30 21" class="block">
+						<rect width="30" height="21" fill="#A51931" />
+						<rect y="3.5" width="30" height="14" fill="#F4F5F8" />
+						<rect y="7" width="30" height="7" fill="#2D2A4A" />
+					</svg>
+				) : (
+					<svg width="20" height="14" viewBox="0 0 60 42" class="block">
+						<rect width="60" height="42" fill="#012169" />
+						<path d="M0,0 L60,42 M60,0 L0,42" stroke="#FFF" stroke-width="8" />
+						<path d="M0,0 L60,42 M60,0 L0,42" stroke="#C8102E" stroke-width="3" />
+						<path d="M30,0 V42 M0,21 H60" stroke="#FFF" stroke-width="12" />
+						<path d="M30,0 V42 M0,21 H60" stroke="#C8102E" stroke-width="7" />
+					</svg>
+				)}
+			</span>
 			<Select
 				variant="ghost"
 				aria-label="Language"
-				className="pl-9"
+				className="pl-11"
 				options={Object.entries(locales).map(([locale, { label }]) => ({
-					value: locale === 'root' ? pathname : `/${locale}${pathname}`,
-					label
+					value: `/${locale}${pathname}`,
+					label: `${flags[locale as keyof typeof flags]} ${label}`
 				}))}
-				value={
-					route.locale ? `/${route.locale}${pathname}` : pathname
-				}
+				value={`/${current}${pathname}`}
 			/>
 		</spica-language-select>
 	)

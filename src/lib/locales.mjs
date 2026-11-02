@@ -1,20 +1,29 @@
-/** Starlight locales. English stays at the URL root, translations live in src/content/docs/<key>/. */
+/** Starlight locales. Every language, English included, lives in src/content/docs/<key>/ and under /<key>/ in URLs. */
 export const locales = {
-	root: { label: 'English', lang: 'en' },
-	es: { label: 'Español', lang: 'es' },
-	'zh-cn': { label: '简体中文', lang: 'zh-CN' },
-	ja: { label: '日本語', lang: 'ja' },
+	en: { label: 'English', lang: 'en' },
 	th: { label: 'ไทย', lang: 'th' }
 }
 
-export const translatedLocales = /** @type {Exclude<keyof typeof locales, 'root'>[]} */ (
-	Object.keys(locales).filter((key) => key !== 'root')
+/** English is the source language and the fallback for untranslated pages. */
+export const defaultLocale = 'en'
+
+/** Shown next to each language name in the language picker. */
+export const flags = { en: '🇬🇧', th: '🇹🇭' }
+
+export const translatedLocales = /** @type {Exclude<keyof typeof locales, typeof defaultLocale>[]} */ (
+	Object.keys(locales).filter((key) => key !== defaultLocale)
 )
 
 const localePrefix = new RegExp(
-	`^(/?)(?:${translatedLocales.join('|')})(?=/|$)/?`
+	`^(/?)(?:${Object.keys(locales).join('|')})(?=/|$)/?`
 )
 
-/** Drop a leading locale segment from a pathname ('/ja/eden/' -> '/eden/') or collection id ('ja/eden' -> 'eden'). */
+/** Drop a leading locale segment from a pathname ('/th/eden/' -> '/eden/') or collection id ('en/eden' -> 'eden'). */
 export const stripLocale = (/** @type {string} */ path) =>
 	path.replace(localePrefix, '$1')
+
+const translatedPrefix = new RegExp(`^/?(?:${translatedLocales.join('|')})(?=/|$)`)
+
+/** Whether a pathname or collection id belongs to a translation ('th/eden' -> true, 'en/eden' or '/blog/' -> false). */
+export const isTranslated = (/** @type {string} */ path) =>
+	translatedPrefix.test(path)

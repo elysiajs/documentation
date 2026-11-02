@@ -106,6 +106,7 @@ const contentAnimation = {
 						</Button>
 						<ProductSwitcher
 							product={productOf(Astro.url.pathname)}
+							locale={Astro.locals.starlightRoute.locale}
 							client:load
 						/>
 					</div>

@@ -4,7 +4,7 @@ import { Elysia } from 'elysia'
 
 test('generated state examples retain counter mutations across requests (run bun run build first)', async () => {
 	const reference = await readFile(
-		new URL('../src/content/docs/reference/classes/Elysia.mdx', import.meta.url),
+		new URL('../src/content/docs/en/reference/classes/Elysia.mdx', import.meta.url),
 		'utf8'
 	)
 	const state = reference.split('### state()\n')[1]?.split('\n### ')[0] ?? ''

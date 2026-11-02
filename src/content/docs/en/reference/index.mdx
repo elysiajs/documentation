@@ -1,0 +1,137 @@
+---
+template: "splash"
+description: "Elysia API reference."
+editUrl: false
+next: false
+prev: false
+title: "API reference"
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">API reference</h1>
+
+## Namespaces
+
+| Namespace | Description |
+| ------ | ------ |
+| [prefix](/en/reference/elysia/namespaces/prefix/) | - |
+
+## Classes
+
+| Class | Description |
+| ------ | ------ |
+| [Compiled](/en/reference/classes/compiled/) | - |
+| [Elysia](/en/reference/classes/elysia/) | - |
+| [ElysiaError](/en/reference/classes/elysiaerror/) | - |
+| [ElysiaFile](/en/reference/classes/elysiafile/) | - |
+| [ElysiaStatus](/en/reference/classes/elysiastatus/) | - |
+| [HTTPError](/en/reference/classes/httperror/) | Self-describing HTTP error |
+| [InternalServerError](/en/reference/classes/internalservererror/) | - |
+| [InvalidCookie](/en/reference/classes/invalidcookie/) | - |
+| [MultiValidator](/en/reference/classes/multivalidator/) | - |
+| [NotFound](/en/reference/classes/notfound/) | - |
+| [ParseError](/en/reference/classes/parseerror/) | - |
+| [StandardValidator](/en/reference/classes/standardvalidator/) | - |
+| [TypeBoxValidator](/en/reference/classes/typeboxvalidator/) | - |
+| [ValidationError](/en/reference/classes/validationerror/) | - |
+| [Validator](/en/reference/classes/validator/) | - |
+
+## Interfaces
+
+| Interface | Description |
+| ------ | ------ |
+| [AotFingerprint](/en/reference/interfaces/aotfingerprint/) | - |
+| [BaseCookie](/en/reference/interfaces/basecookie/) | - |
+| [BaseSchema](/en/reference/interfaces/baseschema/) | - |
+| [CompilerSession](/en/reference/interfaces/compilersession/) | - |
+| [Cookie](/en/reference/interfaces/cookie/) | - |
+| [CookieOptions](/en/reference/interfaces/cookieoptions/) | - |
+| [DefaultEphemeral](/en/reference/interfaces/defaultephemeral/) | - |
+| [DefaultMetadata](/en/reference/interfaces/defaultmetadata/) | - |
+| [DefaultSingleton](/en/reference/interfaces/defaultsingleton/) | - |
+| [InputSchema](/en/reference/interfaces/inputschema/) | - |
+| [Macro](/en/reference/interfaces/macro/) | - |
+| [MacroTypeLambda](/en/reference/interfaces/macrotypelambda/) | Type-level lambda applied to a macro's per call site hook value |
+| [ProgramId](/en/reference/interfaces/programid/) | - |
+| [RouteSchema](/en/reference/interfaces/routeschema/) | - |
+| [StandardJSONSchemaV1Like](/en/reference/interfaces/standardjsonschemav1like/) | - |
+| [StandardSchemaV1Like](/en/reference/interfaces/standardschemav1like/) | - |
+| [TCookieField](/en/reference/interfaces/tcookiefield/) | - |
+| [TCookieObject](/en/reference/interfaces/tcookieobject/) | - |
+| [UnwrapRoute](/en/reference/interfaces/unwraproute/) | - |
+
+## Type Aliases
+
+| Type Alias | Description |
+| ------ | ------ |
+| [AnyElysia](/en/reference/type-aliases/anyelysia/) | - |
+| [AnySchema](/en/reference/type-aliases/anyschema/) | - |
+| [Context](/en/reference/type-aliases/context/) | - |
+| [ErrorContext](/en/reference/type-aliases/errorcontext/) | - |
+| [FileTypeDetector](/en/reference/type-aliases/filetypedetector/) | - |
+| [HTTPHeaders](/en/reference/type-aliases/httpheaders/) | - |
+| [MacroToContext](/en/reference/type-aliases/macrotocontext/) | - |
+| [MacroToProperty](/en/reference/type-aliases/macrotoproperty/) | - |
+| [NumericStatus](/en/reference/type-aliases/numericstatus/) | Numeric form of a status name or code. |
+| [Problem](/en/reference/type-aliases/problem/) | RFC 9457 Problem Details shape. |
+| [redirect](/en/reference/type-aliases/redirect/) | - |
+| [SelectiveProblem](/en/reference/type-aliases/selectiveproblem/) | - |
+| [SelectiveStatus](/en/reference/type-aliases/selectivestatus/) | - |
+| [Server](/en/reference/type-aliases/server/) | - |
+| [SSEPayload](/en/reference/type-aliases/ssepayload/) | - |
+| [StatusMap](/en/reference/type-aliases/statusmap/) | - |
+| [StatusMapBack](/en/reference/type-aliases/statusmapback/) | - |
+| [StatusResponse](/en/reference/type-aliases/statusresponse/) | Default body for a status with no response. Named to keep emitted types small. |
+| [TaggedHTTPError](/en/reference/type-aliases/taggedhttperror/) | Class returned by [HTTPError.id](/en/reference/classes/httperror/#id) |
+| [TFiles](/en/reference/type-aliases/tfiles/) | - |
+| [UnwrapModels](/en/reference/type-aliases/unwrapmodels/) | - |
+| [UnwrapSchema](/en/reference/type-aliases/unwrapschema/) | - |
+| [ValidationErrorResponse](/en/reference/type-aliases/validationerrorresponse/) | Request validation problem. Diagnostic fields are development-only. |
+
+## Variables
+
+| Variable | Description |
+| ------ | ------ |
+| [env](/en/reference/variables/env/) | - |
+| [file](/en/reference/variables/file/) | Serve a file from a path as the response. |
+| [form](/en/reference/variables/form/) | Return a `multipart/form-data` response. |
+| [macroType](/en/reference/variables/macrotype/) | - |
+| [Manifest](/en/reference/variables/manifest/) | - |
+| [redirect](/en/reference/variables/redirect/) | - |
+| [sse](/en/reference/variables/sse/) | - |
+| [status](/en/reference/variables/status/) | - |
+| [StatusMap](/en/reference/variables/statusmap/) | - |
+| [StatusMapBack](/en/reference/variables/statusmapback/) | - |
+| [t](/en/reference/variables/t/) | - |
+| [TypeSystem](/en/reference/variables/typesystem/) | `typebox/system` is a subgraph of `typebox/type`, so a static re-export here would pin ~231 KB of the deferral back into the eager graph. The proxy also guarantees Elysia's own `Settings` default lands BEFORE the namespace is handed out, keeping a user's explicit `TypeSystem.Settings.Set(...)` last — the ordering the eager `setupTypebox()` used to provide |
+| [validationDetail](/en/reference/variables/validationdetail/) | Wrap a string into a TypeBox `error` callback that overrides the default validation message. Use as `t.Number({ error: validationDetail('x must be a number') })`. |
+
+## Functions
+
+| Function | Description |
+| ------ | ------ |
+| [borrow](/en/reference/functions/borrow/) | - |
+| [bytes](/en/reference/functions/bytes/) | Certify a byte stream for direct Response body pass-through. |
+| [createBaseContext](/en/reference/functions/createbasecontext/) | - |
+| [createContext](/en/reference/functions/createcontext/) | - |
+| [fileType](/en/reference/functions/filetype/) | - |
+| [inAotBuild](/en/reference/functions/inaotbuild/) | - |
+| [prefix](/en/reference/functions/prefix/) | - |
+| [problem](/en/reference/functions/problem/) | RFC 9457 Problem Details function |
+| [setFileTypeDetector](/en/reference/functions/setfiletypedetector/) | - |
+| [setupTypebox](/en/reference/functions/setuptypebox/) | - |
+
+## References
+
+### default
+
+Renames and re-exports [Elysia](/en/reference/classes/elysia/)
+
+</div>
+</InteractiveDocLayout>
+</div>

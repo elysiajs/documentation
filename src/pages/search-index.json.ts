@@ -1,7 +1,7 @@
 import type { MarkdownHeading } from 'astro'
 import { getCollection, render } from 'astro:content'
 import { load } from 'js-yaml'
-import { stripLocale } from '../lib/locales.mjs'
+import { isTranslated } from '../lib/locales.mjs'
 import { buildSearch, searchDocuments } from '../search/build'
 
 export const prerender = true
@@ -9,7 +9,7 @@ export const prerender = true
 export async function GET() {
 	const docs = await getCollection(
 		'docs',
-		({ id, data }) => !data.draft && stripLocale(id) === id
+		({ id, data }) => !data.draft && !isTranslated(id)
 	)
 	const documents = (
 		await Promise.all(
