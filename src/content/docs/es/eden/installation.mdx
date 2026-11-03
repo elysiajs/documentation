@@ -1,0 +1,239 @@
+---
+title: Instalación de Eden
+description: Instala Eden y mantén alineada la inferencia de tipos entre el cliente y el servidor.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Instalación de Eden</h1>
+
+Comienza instalando Eden en tu frontend:
+```bash
+bun add @elysia/eden@rc
+# Se necesita Elysia para inferir los tipos utilitarios
+bun add -d elysia@rc
+```
+
+
+Primero, exporta el tipo de tu servidor Elysia:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+Luego, consume la API de Elysia desde el cliente:
+
+**client.ts**
+
+```ts
+// client.ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const client = treaty<App>('localhost:3000')
+
+// respuesta: Hi Elysia
+const { data: index } = await client.get()
+
+// respuesta: 1895
+const { data: id } = await client.id({ id: 1895 }).get()
+
+// respuesta: { id: 1895, name: 'Skadi' }
+const { data: nendoroid } = await client.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+```
+
+## Ten en cuenta
+
+En ocasiones, es posible que Eden no infiera correctamente los tipos de Elysia. A continuación encontrarás las soluciones alternativas más comunes para resolver problemas de inferencia de tipos en Eden.
+
+### Modo estricto
+Asegúrate de activar el modo estricto en **tsconfig.json**.
+```json
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+
+### Versiones de Elysia que no coinciden
+Eden depende de la clase Elysia para importar la instancia de Elysia e inferir los tipos correctamente.
+
+Asegúrate de que el cliente y el servidor usen la misma versión de Elysia.
+
+Puedes verificarlo con el comando [`npm why`](https://docs.npmjs.com/cli/v10/commands/npm-explain):
+
+```bash
+npm why elysia
+```
+
+Revisa que las dependencias del cliente, el servidor y los plugins coincidan en la misma versión de Elysia v2.
+
+El resultado exacto depende de tu árbol de dependencias. Busca versiones duplicadas de Elysia, rangos incompatibles de dependencias peer o una versión en el frontend distinta a la del servidor.
+
+
+### Versión de TypeScript
+Elysia usa características y sintaxis recientes de TypeScript para inferir tipos de la forma más eficiente posible. Utiliza ampliamente características como Const Generics y Template Literals.
+
+Usa una versión de TypeScript compatible con tu versión de Elysia v2. Los paquetes locales de v2 usan características modernas de TypeScript; para estos ejemplos, usa TypeScript 5.9 o una versión más reciente.
+
+### Encadenamiento de métodos
+Para que Eden funcione, Elysia debe usar **encadenamiento de métodos** (method chaining).
+
+El sistema de tipos de Elysia es complejo. Los métodos normalmente introducen un tipo nuevo en la instancia.
+
+El encadenamiento de métodos ayuda a conservar la referencia a ese nuevo tipo.
+
+Por ejemplo:
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('build', 1)
+    // El store tiene tipado estricto
+    .get('/', ({ store: { build } }) => build)
+    .listen(3000)
+```
+Con esto, **state** devuelve un nuevo tipo de **Elysia**, introduce **build** en el store y reemplaza el tipo actual.
+
+Sin encadenamiento de métodos, Elysia no conserva el nuevo tipo cuando se introduce y, por eso, no se infieren los tipos.
+```ts
+// Error de tipo esperado: la llamada anterior no conservó su nuevo tipo.
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+
+app.state('build', 1)
+
+app.get('/', ({ store: { build } }) => build)
+
+app.listen(3000)
+```
+
+### Definiciones de tipos
+Si usas una funcionalidad específica de Bun, como `Bun.file` o una API similar, y devuelves su resultado desde un manejador (handler), puede que también necesites instalar las definiciones de tipos de Bun en el cliente.
+
+```bash
+bun add -d @types/bun
+```
+
+### Alias de importación en un monorepo
+Si usas alias de importación (path aliases) en tu monorepo, asegúrate de que el frontend pueda resolver la ruta de la misma manera que el backend.
+
+:::tip
+
+Configurar alias de importación en un monorepo puede ser complicado. Puedes hacer un fork de nuestra plantilla de ejemplo, [Kozeki Template](https://github.com/SaltyAom/kozeki-template), y modificarla según tus necesidades.
+:::
+
+
+Por ejemplo, si tienes el siguiente alias de importación para tu backend en **tsconfig.json**:
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@/*": ["./src/*"]
+	}
+  }
+}
+```
+
+Y el código de tu backend es así:
+```ts
+import { Elysia } from 'elysia'
+import { a, b } from '@/controllers'
+
+const app = new Elysia()
+	.use(a)
+	.use(b)
+	.listen(3000)
+
+export type app = typeof app
+```
+
+**Debes** asegurarte de que el código del frontend pueda resolver el mismo alias de importación. De lo contrario, el tipo inferido se resolverá como `any`.
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { app } from '@/index'
+
+const client = treaty<app>('localhost:3000')
+
+// Esto debería resolver el mismo módulo en el frontend y el backend, y no inferirlo como `any`
+import { a, b } from '@/controllers'
+```
+
+Para solucionarlo, debes asegurarte de que el alias de importación se resuelva al mismo archivo tanto en el frontend como en el backend.
+
+Por lo tanto, debes cambiar el alias de importación en el **tsconfig.json** del frontend (`apps/frontend`) a:
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@/*": ["../backend/src/*"]
+	}
+  }
+}
+```
+
+Si está configurado correctamente, deberías poder resolver el mismo módulo tanto en el frontend como en el backend.
+```ts
+// Esto debería resolver el mismo módulo en el frontend y el backend, y no inferirlo como `any`
+import { a, b } from '@/controllers'
+```
+
+#### Espacio de nombres (namespace)
+Recomendamos agregar un prefijo de **espacio de nombres** para cada módulo de tu monorepo, para evitar confusiones y posibles conflictos.
+
+```json
+{
+  "compilerOptions": {
+  	"baseUrl": ".",
+	"paths": {
+	  "@frontend/*": ["./apps/frontend/src/*"],
+	  "@backend/*": ["./apps/backend/src/*"]
+	}
+  }
+}
+```
+
+Luego, puedes importar el módulo así:
+```ts
+// Debería funcionar en el frontend y el backend y no inferirse como `any`
+import { a, b } from '@backend/controllers'
+```
+
+Recomendamos crear un **único tsconfig.json** que defina la raíz de tu repositorio como `baseUrl` y proporcione una ruta según la ubicación de cada módulo. Luego, crea un **tsconfig.json** para cada módulo que herede del **tsconfig.json** de la raíz, donde está definido el alias de importación.
+
+Puedes encontrar un ejemplo funcional en este [repositorio de ejemplo de alias de importación](https://github.com/SaltyAom/elysia-monorepo-path-alias) o en [Kozeki Template](https://github.com/SaltyAom/kozeki-template).
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
