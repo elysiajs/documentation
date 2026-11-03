@@ -50,9 +50,13 @@ We can use Prismabox to convert Prisma schema into Elysia validation models, whi
 To install Prisma, run the following command:
 
 ```bash
-bun add @prisma/client prismabox prisma-adapter-bun-sqlite && \
-bun add -d prisma
+bun add @prisma/client@7 prismabox prisma-adapter-bun-sqlite && \
+bun add -d prisma@7
 ```
+
+::: tip
+This page uses Prisma ORM 7. The `latest` tag of the `prisma` package points to a Prisma ORM 8 pre-release, which has a different CLI and no generator support, so install version 7 explicitly and keep `prisma` and `@prisma/client` on the same version.
+:::
 
 ## Prisma schema
 Assuming you already have a `prisma/schema.prisma`.
@@ -163,6 +167,62 @@ console.log(
 :::
 
 This allows us to reuse the database schema in Elysia validation models.
+
+## Using PostgreSQL
+The examples above use SQLite through `prisma-adapter-bun-sqlite`. To use PostgreSQL instead, install the Prisma driver adapter for PostgreSQL:
+
+```bash
+bun add @prisma/adapter-pg
+```
+
+Change the datasource provider in `prisma/schema.prisma` to `postgresql`:
+
+::: code-group
+
+```ts [prisma/schema.prisma]
+datasource db {
+  provider = "postgresql" // [!code ++]
+}
+```
+
+:::
+
+Then create the client with `PrismaPg` instead of `PrismaBunSqlite`:
+
+::: code-group
+
+```ts [src/index.ts]
+import { Elysia, t } from 'elysia'
+
+import { PrismaPg } from '@prisma/adapter-pg' // [!code ++]
+import { PrismaClient } from '../generated/prisma/client'
+import { UserPlain, UserPlainInputCreate } from '../generated/prismabox/User'
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL }) // [!code ++]
+export const prisma = new PrismaClient({ adapter })
+```
+
+:::
+
+`DATABASE_URL` in `.env` should now be a PostgreSQL connection string, for example `postgresql://user:password@localhost:5432/mydb`. Bun loads `.env` automatically.
+
+::: tip
+If you don't have a PostgreSQL database yet, you can create a [Prisma Postgres](https://www.prisma.io/postgres?utm_source=elysia&utm_medium=docs&utm_campaign=elysia_prisma_integration&utm_content=postgresql_tip) database without an account:
+
+```bash
+bunx create-db@latest --env .env
+```
+
+The command writes the connection string to `.env` as `DATABASE_URL`. The database is deleted after 24 hours unless you claim it with the link the command prints.
+:::
+
+Create the tables, generate the client and the Prismabox models, then start the server as before:
+
+```bash
+bunx prisma migrate dev --name init
+bunx prisma generate
+bun run src/index.ts
+```
 
 ---
 
