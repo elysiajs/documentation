@@ -1,0 +1,250 @@
+---
+title: Índice
+description: Encuentra por dónde empezar, explora los conceptos básicos de Elysia y elige las guías que necesitas.
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Índice</h1>
+
+No hay una única forma de aprender Elysia. El tutorial interactivo es un buen punto de partida para familiarizarte con él:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card wash href="/tutorial/">
+<CardTitle as="div">Tutorial interactivo</CardTitle>
+
+Aprende Elysia con un editor y un playground en tu navegador.
+
+</Card>
+
+</div>
+
+## Para empezar
+Empieza por estas dos páginas para conocer los conceptos básicos y los patrones recomendados:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/key-concept">
+<CardTitle>Conceptos clave</CardTitle>
+
+Entiende los conceptos básicos de Elysia y cómo usarlos bien
+</Card>
+<Card href="/essential/best-practice">
+<CardTitle>Buenas prácticas</CardTitle>
+
+Conoce los patrones recomendados para escribir aplicaciones con Elysia
+</Card>
+</div>
+
+### Programar con agentes
+
+Elysia ofrece `llms.txt` y skills para agentes de IA como **Claude Code** y **OpenCode**. Elige una versión de la skill que coincida con la versión de Elysia de tu proyecto.
+
+```
+bunx skills add elysiajs/skills
+```
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/llms.txt">
+<CardTitle>llms.txt</CardTitle>
+
+Consulta el índice de la documentación de Elysia v2 de este sitio para usarlo con LLMs.
+</Card>
+<Card href="/llms-full.txt">
+<CardTitle>llms-full.txt</CardTitle>
+
+Lee la documentación de Elysia v2 de este sitio en un único archivo Markdown.
+</Card>
+</div>
+
+## Si vienes de otros frameworks
+
+Si has usado otros frameworks populares como Express, Fastify o Hono, Elysia te resultará familiar, con solo algunas diferencias.
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/migrate/from-express">
+<CardTitle>Desde Express</CardTitle>
+
+Comparación entre Express y Elysia
+</Card>
+<Card href="/migrate/from-fastify">
+<CardTitle>Desde Fastify</CardTitle>
+
+Comparación entre Fastify y Elysia
+</Card>
+<Card href="/migrate/from-hono">
+<CardTitle>Desde Hono</CardTitle>
+
+Comparación entre Hono y Elysia
+</Card>
+<Card href="/migrate/from-trpc">
+<CardTitle>Desde tRPC</CardTitle>
+
+Comparación entre tRPC y Elysia
+</Card>
+</div>
+
+## Lo esencial
+
+Estas son las bases de Elysia. Te recomendamos que leas estas páginas antes de pasar a otros temas:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/essential/route">
+<CardTitle>Routing</CardTitle>
+
+Entiende cómo funciona el routing en Elysia
+</Card>
+<Card href="/essential/handler">
+<CardTitle>Handler</CardTitle>
+
+Aprende a gestionar peticiones y devolver respuestas
+</Card>
+<Card href="/essential/validation">
+<CardTitle>Validación</CardTitle>
+
+Cómo garantizar type safety con Elysia
+</Card>
+<Card href="/essential/life-cycle">
+<CardTitle>Ciclo de vida</CardTitle>
+
+Conoce las etapas del ciclo de vida de una petición
+</Card>
+<Card href="/essential/plugin">
+<CardTitle>Plugin</CardTitle>
+
+Aprende a componer aplicaciones de Elysia con plugins
+</Card>
+</div>
+
+## Más patrones
+
+Si te apetece explorar más funciones de Elysia, echa un vistazo a estas páginas:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/essential/handler">
+<CardTitle>Handler</CardTitle>
+
+Aprende a enviar archivos, transmitir respuestas en streaming y usar server-sent events
+</Card>
+<Card href="/patterns/websocket">
+<CardTitle>WebSocket</CardTitle>
+
+Crea aplicaciones en tiempo real con Elysia
+</Card>
+<Card href="/eden">
+<CardTitle>Eden</CardTitle>
+
+Conoce mejor Eden y aprende a usarlo bien
+</Card>
+<Card href="/patterns/opentelemetry">
+<CardTitle>OpenTelemetry</CardTitle>
+
+Monitoriza tu aplicación con OpenTelemetry
+</Card>
+<Card href="/patterns/deploy">
+<CardTitle>Despliegue en producción</CardTitle>
+
+Aprende a desplegar Elysia en producción
+</Card>
+</div>
+
+## Integración con metaframeworks
+
+También puedes usar Elysia con metaframeworks como Next.js, Nuxt y Astro.
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/integrations/astro">
+<CardTitle>Astro</CardTitle>
+
+Usa Elysia en los endpoints de Astro
+</Card>
+<Card href="/integrations/expo">
+<CardTitle>Expo</CardTitle>
+
+Usa Elysia en las rutas de API de Expo
+</Card>
+<Card href="/integrations/nextjs">
+<CardTitle>Next.js</CardTitle>
+
+Usa Elysia en los route handlers de Next.js
+</Card>
+<Card href="/integrations/nuxt">
+<CardTitle>Nuxt</CardTitle>
+
+Usa Elysia en las rutas de servidor de Nuxt
+</Card>
+<Card href="/integrations/sveltekit">
+<CardTitle>SvelteKit</CardTitle>
+
+Usa Elysia en los endpoints de SvelteKit
+</Card>
+</div>
+
+## Integración con tus herramientas favoritas
+
+Tenemos integraciones con varias herramientas populares:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="/integrations/ai-sdk">
+<CardTitle>AI SDK</CardTitle>
+
+Aprende a usar Vercel AI SDK con Elysia
+</Card>
+<Card href="/integrations/better-auth">
+<CardTitle>Better Auth</CardTitle>
+
+Aprende a usar Better Auth con Elysia
+</Card>
+<Card href="/integrations/drizzle">
+<CardTitle>Drizzle</CardTitle>
+
+Elysia ofrece utilidades con type safety para Drizzle
+</Card>
+<Card href="/integrations/prisma">
+<CardTitle>Prisma</CardTitle>
+
+Aprende a usar Prisma con Elysia
+</Card>
+<Card href="/integrations/react-email">
+<CardTitle>React Email</CardTitle>
+
+Usa JSX para crear plantillas de correo electrónico
+</Card>
+</div>
+
+## Comunidad y ayuda
+
+Si te atascas, puedes preguntar a nuestra comunidad en GitHub Discussions, Discord y Twitter.
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+<Card href="https://discord.gg/eaFJ2KDJck">
+<CardTitle>Discord</CardTitle>
+
+Servidor oficial de la comunidad de ElysiaJS en Discord
+</Card>
+<Card href="https://twitter.com/elysiajs">
+<CardTitle>Twitter</CardTitle>
+
+Sigue las novedades y el estado de Elysia
+</Card>
+<Card href="https://github.com/elysiajs">
+<CardTitle>GitHub</CardTitle>
+
+Código fuente y desarrollo
+</Card>
+</div>
+
+---
+
+¡Esperamos que Elysia te guste tanto como a nosotros!
+
+</div>
+</InteractiveDocLayout>
+</div>
