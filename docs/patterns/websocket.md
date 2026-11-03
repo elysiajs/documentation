@@ -228,7 +228,11 @@ drain(
 
 ## parse
 
-`Parse` middleware to parse the request before upgrading the HTTP connection to WebSocket.
+`Parse` middleware to parse the incoming WebSocket message before validation.
+
+::: tip
+`parse` was previously named `transformMessage`.
+:::
 
 ## beforeHandle
 
@@ -239,10 +243,6 @@ Ideal place for validation.
 ## transform
 
 `Transform` middleware which execute before validation.
-
-## transformMessage
-
-Like `transform`, but execute before validation of WebSocket message
 
 ## header
 
