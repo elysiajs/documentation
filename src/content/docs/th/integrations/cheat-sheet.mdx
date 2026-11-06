@@ -1,0 +1,371 @@
+---
+title: "Cheat sheet"
+description: "Cheat sheet สรุปเนื้อหา พร้อมวิธีการใช้ \"Elysia จากตัวอย่าง\""
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Cheat sheet</h1>
+
+สรุปภาพรวมแบบเร็วๆ ของแพทเทิร์นที่เจอบ่อยใน Elysia
+
+## Hello world
+hello world แบบง่ายๆ
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello World')
+    .listen(3000)
+```
+
+## กำหนด HTTP method เอง
+ประกาศ route ด้วย HTTP method หรือ verb ที่เรากำหนดเอง
+
+ดู [Route](/essential/route#custom-method)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/hi', () => 'Hi')
+    .post('/hi', () => 'From Post')
+    .put('/hi', () => 'From Put')
+    .method('M-SEARCH', '/hi', () => 'Custom Method')
+    .listen(3000)
+```
+
+## Path parameter
+การใช้ path parameter แบบ dynamic
+
+ดู [Path](/essential/route/#path-types)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/rest/*', () => 'Rest')
+    .listen(3000)
+```
+
+## Return JSON
+Elysia จะแปลง response เป็น JSON ให้อัตโนมัติ
+
+ดู [Handler](/essential/handler)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/json', () => {
+        return {
+            hello: 'Elysia'
+        }
+    })
+    .listen(3000)
+```
+
+## Return ไฟล์
+ใช้ `file()` สำหรับการ return ไฟล์เดียว ถ้าจะ return ไฟล์แบบ multipart form-data response ให้ใช้ `form()`
+
+ฟอร์มต้องเป็น object ชั้นเดียว (1-level)
+
+ดู [Handler](/essential/handler/#return-a-file)
+
+```typescript
+import { Elysia, file, form } from 'elysia'
+
+new Elysia()
+    .get('/cat', file('public/cat.jpg'))
+    .get('/form', () => {
+        return form({
+            hello: 'Elysia',
+            image: file('public/cat.jpg')
+        })
+    })
+    .listen(3000)
+```
+
+## Header กับ status
+กำหนด header กับ status code เอง
+
+ดู [Handler](/essential/handler)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set, status }) => {
+        set.headers['x-powered-by'] = 'Elysia'
+
+        return status(418, "I'm a teapot")
+    })
+    .listen(3000)
+```
+
+## Group
+กำหนด prefix ครั้งเดียว ให้ route ย่อยทั้งหมด
+
+ดู [Group](/essential/route#group)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get("/", () => "Hi")
+    .group("/auth", app => {
+        return app
+            .get("/", () => "Hi")
+            .post("/sign-in", ({ body }) => body)
+            .put("/sign-up", ({ body }) => body)
+    })
+    .listen(3000)
+```
+
+## Schema
+บังคับ type ของข้อมูลให้ route
+
+ดู [Validation](/essential/validation)
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/mirror', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body: { username } }) => username)
+    .listen(3000)
+```
+
+## อัปโหลดไฟล์
+ดู [Validation#file](/essential/validation/#file) สำหรับวิธีการเช็ก `type` จะต้องใช้ตัวตรวจชนิดของไฟล์ (file type detector) ให้ติดตั้ง `file-type` แล้วลงทะเบียน `setFileTypeDetector` ไว้ ไม่อย่างนั้นตอนที่อัปโหลดไฟล์เข้ามา จะเช็ก `type` ไม่ผ่าน
+
+```typescript
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+	.post('/body', {
+		body: t.Object({
+			file: t.File({ type: 'image/*' }),
+			multipleFiles: t.Files()
+		})
+	}, ({ body }) => body)
+	.listen(3000)
+```
+
+## Lifecycle hook
+ดัก event ของ Elysia ตามลำดับ
+
+ดู [Lifecycle](/essential/life-cycle)
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .onRequest(() => {
+        console.log('On request')
+    })
+    .onBeforeHandle(() => {
+        console.log('Before handle')
+    })
+    .post('/mirror', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        }),
+        afterHandle: () => {
+            console.log("After handle")
+        }
+    }, ({ body }) => body)
+    .listen(3000)
+```
+
+## Guard
+บังคับ data type กับ route ย่อยทั้งหมด
+
+ดู [Guard](/essential/plugin/#guard)
+
+```typescript
+// @errors: 2345
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        response: t.String()
+    }, (app) => app
+        .get('/', () => 'Hi')
+        // Invalid: will throws error, and TypeScript will report error
+        .get('/invalid', () => 1)
+    )
+    .listen(3000)
+```
+
+## กำหนด context เอง
+เพิ่มตัวแปรแบบกำหนดเองเข้าไปใน context ของ route
+
+ดู [Context](/essential/handler#context)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('version', 1)
+    .decorate('getDate', () => Date.now())
+    .get('/version', ({
+        getDate,
+        store: { version }
+    }) => `${version} ${getDate()}`)
+    .listen(3000)
+```
+
+## Redirect
+การ redirect response
+
+ดู [Handler](/essential/handler#redirect)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'hi')
+    .get('/redirect', ({ redirect }) => {
+        return redirect('/')
+    })
+    .listen(3000)
+```
+
+## Plugin
+สร้าง instance แยก
+
+ดู [Plugin](/essential/plugin)
+
+```typescript
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .state('plugin-version', 1)
+    .get('/hi', () => 'hi')
+
+new Elysia()
+    .use(plugin)
+    .get('/version', ({ store }) => store['plugin-version'])
+    .listen(3000)
+```
+
+## WebSocket
+สร้างการเชื่อมต่อแบบเรียลไทม์ด้วย WebSocket
+
+ดู [Web Socket](/patterns/websocket)
+
+```typescript
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ping', {
+        message(ws, message) {
+            ws.send('hello ' + message)
+        }
+    })
+    .listen(3000)
+```
+
+## เอกสารคู่มือ OpenAPI
+สร้างเอกสารคู่มือแบบ interactive ด้วย Scalar (หรือจะใช้ Swagger ก็ได้)
+
+ดู [openapi](/plugins/openapi)
+
+```typescript
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+const app = new Elysia()
+    .use(openapi())
+    .listen(3000)
+
+console.log(`View documentation at "${app.server!.url}openapi" in your browser`);
+```
+
+## Unit test
+เขียน unit test ให้แอป Elysia
+
+ดู [Unit Test](/patterns/unit-test)
+
+```typescript
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Elysia', () => {
+    it('return a response', async () => {
+        const app = new Elysia().get('/', () => 'hi')
+
+        const response = await app
+            .handle(new Request('http://localhost/'))
+            .then((res) => res.text())
+
+        expect(response).toBe('hi')
+    })
+})
+```
+
+## กำหนด body parser เอง
+กำหนด logic ของการ parse body ได้ตามที่ต้องการ
+
+ดู [Parse](/essential/life-cycle#parse)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onParse(({ request, contentType }) => {
+        if (contentType === 'application/custom-type')
+            return request.text()
+    })
+```
+
+## GraphQL
+สร้างเซิร์ฟเวอร์ GraphQL แบบกำหนดเอง โดยใช้ GraphQL Yoga หรือ Apollo
+
+ดู [GraphQL Yoga](/plugins/graphql-yoga)
+
+```typescript
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+    .use(
+        yoga({
+            typeDefs: /* GraphQL */`
+                type Query {
+                    hi: String
+                }
+            `,
+            resolvers: {
+                Query: {
+                    hi: () => 'Hello from Elysia'
+                }
+            }
+        })
+    )
+    .listen(3000)
+```
+
+</div>
+</InteractiveDocLayout>
+</div>
