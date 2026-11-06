@@ -22,7 +22,7 @@ Elysia รันบน Cloudflare Workers ได้ เพราะใช้ req
 
 ### คอมไพล์ตอนเริ่มทำงาน
 
-ถ้าอยากเริ่มแบบง่ายที่สุด ก็คอมไพล์ตอนเริ่มทำงานไปเลย
+วิธีเริ่มต้นที่ง่ายที่สุดคือคอมไพล์ตอนเริ่มทำงาน
 
 1. เพิ่ม `compile` ก่อน export app:
 
@@ -38,7 +38,7 @@ export default {
 }
 ```
 
-แต่การคอมไพล์ handler ตอนเริ่มทำงานจะมี overhead อยู่บ้าง ซึ่งสามารถเลี่ยงได้โดยย้ายไปคอมไพล์ตอน build แทน
+แต่การคอมไพล์ handler ตอนเริ่มทำงานจะมี overhead อยู่บ้าง ซึ่งเลี่ยงได้โดยย้ายไปคอมไพล์ตอน build แทน
 
 ### คอมไพล์ตอน build
 
@@ -106,7 +106,7 @@ compatibility_flags = ["nodejs_compat"]
 command = "bun build.ts"
 ```
 
-ค่า compatibility date และ flag `nodejs_compat` ข้างบนตั้งไว้ตรงกับ Cloudflare fixture ของ Elysia v2 สำหรับ setup นี้ต้องใส่ flag ไว้ด้วย ถึงแม้ v1 จะเคยแนะนำให้เอา flag นี้ออก แต่คำแนะนำนั้นใช้กับ setup นี้ไม่ได้
+ค่า compatibility date และ flag `nodejs_compat` ตรงกับ Cloudflare fixture ของ Elysia v2 ให้คง flag นี้ไว้สำหรับการตั้งค่านี้ คำแนะนำใน v1 ที่ให้เอา flag ออกใช้กับกรณีนี้ไม่ได้
 
 5. เริ่ม development server:
 
@@ -114,21 +114,21 @@ command = "bun build.ts"
 wrangler dev
 ```
 
-Worker จะรันบนเครื่องที่ `http://localhost:8787` พอจะ deploy ก็แค่รัน `wrangler deploy`
+Worker จะรันบนเครื่องที่ `http://localhost:8787` เมื่อต้องการ deploy ให้รัน `wrangler deploy`
 
 ### pnpm
-ถ้าไม่ได้ตั้ง config ของ pnpm ให้ติดตั้ง peer dependencies อัตโนมัติ ก็เพิ่ม peer ที่ Elysia v2 ต้องใช้ได้เองตามนี้:
+ถ้าการตั้งค่า pnpm ที่ใช้อยู่ไม่ได้ติดตั้ง peer dependencies ให้ติดตั้งเพิ่มสำหรับ Elysia v2 ด้วยคำสั่งนี้:
 
 ```bash
 pnpm add typebox exact-mirror openapi-types
 ```
 
 ## ข้อจำกัด
-ข้อจำกัดของการใช้ Elysia บน Cloudflare Workers ที่รู้ตอนนี้ มีดังนี้:
+ข้อจำกัดที่ทราบในปัจจุบันของการใช้ Elysia บน Cloudflare Workers มีดังนี้:
 
 1. อย่าคาดว่า `file()` และ [Static plugin](/plugins/static) จะเข้าถึงไฟล์บนเครื่องที่เราใช้พัฒนาได้ เพราะ Workers ใช้ [virtual filesystem](https://developers.cloudflare.com/workers/runtime-apis/nodejs/fs/) แม้จะตั้ง compatibility settings ตามข้างบนแล้วก็ตาม ถ้ามีไฟล์ที่อยากเผยแพร่ ให้ใช้ [static assets](#ไฟล์-static) แทน
 2. ให้สร้าง [OpenAPI types](/blog/openapi-type-gen/) ไว้ตั้งแต่ตอน build เพราะ Worker อ่านไฟล์ TypeScript ที่อยู่นอก bundle ไม่ได้
-3. เลี่ยง plugin ที่สร้าง object แบบ runtime-only ไว้ตั้งแต่ตอน build หรือตอนโหลดโมดูล เพราะ Workers จำกัดการทำงานบางอย่างไว้ให้ทำได้เฉพาะตอนจัดการ request
+3. เลี่ยง plugin ที่สร้าง object ที่ใช้ได้เฉพาะตอน runtime ไว้ตั้งแต่ตอน build หรือตอนโหลดโมดูล เพราะ Workers จำกัดการทำงานบางอย่างไว้ให้ทำได้เฉพาะตอนจัดการ request
 4. ถ้าจะคืนค่า ให้เขียน handler เป็นฟังก์ชัน เพื่อให้การสร้าง response เกิดขึ้นตอนกำลังจัดการ request:
 
 ```typescript
@@ -229,7 +229,7 @@ export default {
 ดูรายละเอียดเพิ่มเติมเรื่อง bindings ได้ที่ [Cloudflare Workers: Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global)
 
 ## การคอมไพล์แบบ AoT
-สมัย v1 ช่วงแรก Workers ต้องตั้ง `aot: false` ไว้ ต่อมา Cloudflare เพิ่ม [Function compilation during startup](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#enable-eval-during-startup) เข้ามา และ Cloudflare adapter ของ Elysia 1.4.7 ก็หันมาใช้ความสามารถนี้ โดยต้องตั้ง compatibility date ตั้งแต่ `2025-06-01` ขึ้นไป
+ช่วงแรกของ v1 Workers ต้องตั้ง `aot: false` ไว้ ต่อมา Cloudflare เพิ่ม [Function compilation during startup](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#enable-eval-during-startup) เข้ามา และ Cloudflare adapter ของ Elysia 1.4.7 ก็ใช้ความสามารถนี้ โดยต้องตั้ง compatibility date ตั้งแต่ `2025-06-01` ขึ้นไป
 
 Elysia v2 ใช้วิธีคอมไพล์ที่ต่างออกไป โดย build plugin `aot` ข้างบนจะย้ายการสร้าง handler ไปทำตอน build ส่วน `target: 'workerd'` ทำให้ได้โค้ดสำหรับ Workers แม้ตัว build จะรันบน Bun ก็ตาม
 
@@ -243,7 +243,7 @@ const app = new Elysia()
     .compile()
 ```
 
-ตัวอย่างการ deploy และ binding ข้างบน ยังต้องเอาไปทดสอบกับบัญชี Cloudflare และเวอร์ชัน dependency ที่ใช้จริงอีกทีนะ
+ตัวอย่างการ deploy และ binding ข้างบนยังต้องทดสอบกับบัญชี Cloudflare และเวอร์ชัน dependency ที่ใช้จริง
 
 </div>
 </InteractiveDocLayout>
