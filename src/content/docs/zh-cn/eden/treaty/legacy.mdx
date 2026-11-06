@@ -1,0 +1,322 @@
+---
+title: Eden Treaty 旧版
+description: 原始 edenTreaty 客户端 API 参考。
+template: splash
+pagefind: false
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Treaty 旧版</h1>
+
+:::tip[注意]
+
+这是旧版 Eden Treaty 1（`edenTreaty`）客户端 API。服务器示例使用 Elysia v2；`$query`、`$fetch` 和动态属性访问属于这个较早的客户端接口。
+
+新项目建议从 [Eden Treaty 2](/eden/treaty/overview)（treaty）开始。
+:::
+
+
+Eden Treaty 将 Elysia 服务器表示为对象。
+
+它提供类似普通对象的访问器，类型直接来自服务器，并为客户端调用提供自动补全和类型检查。
+
+---
+
+要使用 Eden Treaty，先导出现有 Elysia 服务器的类型：
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+然后导入服务器类型，并在客户端调用 Elysia API：
+```ts
+// client.ts
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = edenTreaty<App>('http://localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data: pong, error: pongError } = await app.get()
+
+// response type: 1895
+const { data: id, error: idError } = await app.id['1895'].get()
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+```
+
+:::tip
+
+Eden Treaty 完全类型安全，并支持自动补全。
+:::
+
+
+## 结构
+Eden Treaty 会将所有现有路径转换为类似对象的形式，如下所示：
+```text
+EdenTreaty.<1>.<2>.<n>.<method>({
+    ...body,
+    $query?: {},
+    $fetch?: RequestInit
+})
+```
+
+### 路径
+Eden 会将 `/` 转换为 `.`，之后可以通过已注册的 `method` 调用，例如：
+- **/path** -> .path
+- **/nested/path** -> .nested.path
+
+### 路径参数
+路径参数会根据其在 URL 中的名称自动映射。
+
+- **/id/:id** -> .id.`<anyThing>`
+- 例如：.id.hi
+- 例如：.id['123']
+
+:::tip
+
+如果路径不支持路径参数，TypeScript 会报错。
+:::
+
+
+### 查询参数
+可以使用 `$query` 为路径附加查询参数：
+```ts
+app.get({
+    $query: {
+        name: 'Eden',
+        code: 'Gold'
+    }
+})
+```
+
+### Fetch
+Eden Treaty 是一个 fetch 封装。将任何有效的 [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) 参数传给 `$fetch`，即可添加到 Eden 请求中：
+```ts
+app.post({
+    $fetch: {
+        headers: {
+            'x-organization': 'MANTIS'
+        }
+    }
+})
+```
+
+## 错误处理
+Eden Treaty 会在结果中返回 `data` 和 `error`，二者都有完整类型。
+```ts
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            warnUser(error.value)
+            break
+
+        case 500:
+        case 502:
+            emergencyCallDev(error.value)
+            break
+
+        default:
+            reportError(error.value)
+            break
+    }
+
+    throw error
+}
+
+const { id, name } = nendoroid
+```
+
+在使用类型守卫确认状态之前，**data** 和 **error** 的类型都可能为空。
+
+简单来说，请求成功时 `data` 有值而 `error` 为 `null`，反之亦然。
+
+:::tip
+
+错误会包装在 `Error` 中，可以通过 `Error.value` 获取服务器返回的错误值。
+:::
+
+
+### 根据状态码推断错误类型
+Eden Treaty 和 Eden Fetch 都可以根据状态码缩小错误类型范围，这些状态码由服务器的 `status()` 响应推断得出。
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .model({
+        nendoroid: t.Object({
+            id: t.Number(),
+            name: t.String()
+        }),
+        error: t.Object({
+            message: t.String()
+        })
+    })
+    .get('/', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: 'nendoroid',
+        response: {
+            200: 'nendoroid',
+            400: 'error',
+            401: 'error'
+        }
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+客户端代码如下：
+```ts
+const { data: nendoroid, error } = await app.mirror.post({
+    id: 1895,
+    name: 'Skadi'
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            // narrow down to type 'error' described in the server
+            warnUser(error.value)
+            break
+
+        default:
+            // other declared error statuses
+            reportError(error.value)
+            break
+    }
+
+    throw error
+}
+```
+
+## WebSocket
+Eden 使用与普通路由相同的 API 支持 WebSocket。
+```ts
+// Server
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+const app = new Elysia()
+    .use(websocket())
+    .ws('/chat', {
+        message({ body }) {
+            return body
+        },
+        body: t.String(),
+        response: t.String()
+    })
+    .listen(3000)
+
+export type App = typeof app
+```
+
+要开始接收实时数据，请调用 `.subscribe` 方法：
+```ts
+// Client
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+const app = edenTreaty<App>('http://localhost:3000')
+
+const chat = app.chat.subscribe()
+
+chat.subscribe((message) => {
+    console.log('got', message)
+})
+
+chat.on('open', () => {
+    chat.send('hello from client')
+})
+```
+
+与普通路由一样，也可以使用 [schema](/integrations/cheat-sheet#schema) 为 WebSocket 强制执行类型安全。
+
+---
+
+`subscribe()` 会返回一个 `EdenWS` 封装，其中包含带类型的消息辅助方法，例如 `send`、`subscribe` 和 `on`。
+
+使用 `chat.ws` 可访问底层原生 WebSocket，包括封装未提供的 API。
+
+## 文件上传
+可以向字段传入以下任意类型来附加文件：
+- **File**
+- **FileList**
+- **Blob**
+
+附加文件后，**content-type** 将设为 **multipart/form-data**。
+
+假设服务器代码如下：
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/image', {
+        body: t.Object({
+            title: t.String(),
+            image: t.Files(),
+        })
+    }, ({ body: { image, title } }) => title)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+客户端可以这样调用：
+```ts
+// client.ts
+import { edenTreaty } from '@elysia/eden'
+import type { App } from './server'
+
+export const client = edenTreaty<App>('http://localhost:3000')
+
+const id = <T extends HTMLElement = HTMLElement>(id: string) =>
+    document.getElementById(id)! as T
+
+const { data } = await client.image.post({
+    title: "Misono Mika",
+    image: id<HTMLInputElement>('picture').files!,
+})
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

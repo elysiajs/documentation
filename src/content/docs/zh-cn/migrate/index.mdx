@@ -1,0 +1,59 @@
+---
+title: 框架对比
+description: 通过示例比较 Elysia 与 Express、Fastify、Hono 和 tRPC。
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">与其他框架对比</h1>
+
+如果你用过其他 Web 框架，Elysia 上手时也会很熟悉。下面的指南会通过示例比较路由、校验、中间件和类型安全。
+
+## 开始之前
+
+先阅读[核心概念](/key-concept/)，了解 Elysia 的基本理念，大约需要五分钟。
+
+## 选择你熟悉的框架
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="/migrate/from-express/">
+<CardTitle>从 Express 迁移</CardTitle>
+
+对比 Express 请求处理器和中间件与 Elysia 路由及生命周期钩子。
+
+</Card>
+
+<Card href="/migrate/from-fastify/">
+<CardTitle>从 Fastify 迁移</CardTitle>
+
+对比校验、生命周期钩子、插件封装和类型推断。
+
+</Card>
+
+<Card href="/migrate/from-hono/">
+<CardTitle>从 Hono 迁移</CardTitle>
+
+对比路由、中间件上下文、校验和类型化客户端。
+
+</Card>
+
+<Card href="/migrate/from-trpc/">
+<CardTitle>从 tRPC 迁移</CardTitle>
+
+对比 RPC 过程与 HTTP 路由，以及 Eden 的端到端类型安全。
+
+</Card>
+
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>

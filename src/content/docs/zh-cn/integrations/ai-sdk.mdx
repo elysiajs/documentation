@@ -1,0 +1,158 @@
+---
+title: "集成 AI SDK"
+description: "Elysia 轻松支持流式响应，可与 Vercel AI SDK 无缝集成。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">集成 AI SDK</h1>
+
+Elysia 轻松支持流式响应，让你可以与 [Vercel AI SDK](https://vercel.com/docs/ai) 无缝集成。
+
+## 流式响应
+
+Elysia 支持持续传输 `ReadableStream` 和 `Response`，因此可以直接返回 AI SDK 生成的流。每个示例中选择一种返回语句即可。
+
+```ts
+import { Elysia } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    // Just return a ReadableStream
+    return stream.textStream
+
+    // UI Message Stream is also supported
+    return stream.toUIMessageStream()
+})
+```
+
+Elysia 会自动处理数据流，让你可以灵活使用它。
+
+## 服务器发送事件
+
+Elysia 也支持通过服务器发送事件（SSE）传输响应，只需用 `sse` 函数包装 `ReadableStream` 即可。
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    // Each chunk will be sent as a Server Sent Event
+    return sse(stream.textStream)
+
+    // UI Message Stream is also supported
+    return sse(stream.toUIMessageStream())
+})
+```
+
+## 作为响应返回
+
+如果后续不需要通过 [Eden](/eden) 使用流的类型安全能力，也可以直接将流作为响应返回。
+
+```ts
+import { Elysia } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', () => {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    return stream.toTextStreamResponse()
+
+    // UI Message Stream Response will use SSE
+    return stream.toUIMessageStreamResponse()
+})
+```
+
+## 手动传输流
+
+如果想更精细地控制流式传输，可以使用生成器函数手动逐块输出数据。
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+
+new Elysia().get('/', async function* () {
+    const stream = streamText({
+        model: openai('gpt-5'),
+        system: 'You are Yae Miko from Genshin Impact',
+        prompt: 'Hi! How are you doing?'
+    })
+
+    for await (const data of stream.textStream)
+        yield sse({
+            data,
+            event: 'message'
+        })
+
+    yield sse({
+        event: 'done'
+    })
+})
+```
+
+## Fetch 请求
+
+如果 AI SDK 不支持你使用的模型，仍可通过 `fetch` 函数调用服务提供商的 HTTP API，并直接流式传输响应。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().get('/', () => {
+    return fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+            model: 'gpt-5',
+            stream: true,
+            messages: [
+                {
+                    role: 'system',
+                    content: 'You are Yae Miko from Genshin Impact'
+                },
+                { role: 'user', content: 'Hi! How are you doing?' }
+            ]
+        })
+    })
+})
+```
+
+Elysia 会自动代理全局 `fetch` 的响应，并支持流式传输。
+
+---
+
+更多信息请参阅 [AI SDK 文档](https://ai-sdk.dev/docs/introduction)。
+
+</div>
+</InteractiveDocLayout>
+</div>

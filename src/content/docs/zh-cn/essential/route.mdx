@@ -1,0 +1,371 @@
+---
+title: 交互式路由
+description: 一步步构建 Elysia 路由器
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import { Card, CardTitle } from '../../../../components/ui/card';
+import { NumberedCards } from '../../../../components/ui/numbered-cards';
+import '../../../../styles/routing.css';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+export const demo1 = new Elysia()
+	.get('/', 'Elysia')
+	.get('/hi', 'Hello!');
+
+export const demo2 = new Elysia()
+    .get('/user/1', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/*', ({ params }) => params['*'])
+
+export const demo3 = new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .get('/profile', 'Profile')
+    )
+
+export const demo4 = new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .get('/profile', 'Profile')
+
+export const steps = [
+	{
+		label: '静态路径',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/hi', 'Hi')
+    .listen(3000)`,
+	},
+	{
+		label: '动态路径',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .listen(3000)`,
+	},
+	{
+		label: '读取参数',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/:id/profile', ({ params: { id } }) => id)
+    .listen(3000)`,
+	},
+		{
+		label: '可选参数',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/:id?/profile', ({ params: { id } }) => id)
+    .listen(3000)`,
+	},
+	{
+		label: '通配符',
+		code: `import { Elysia } from 'elysia'
+		
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/*', ({ params }) => params['*'])
+    .listen(3000)`,
+	}
+];
+
+<div class="routing-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">路由</h1>
+
+[REST API](https://en.wikipedia.org/wiki/REST) 会根据路径和请求方法决定运行哪个处理器。
+
+<CodePlayground elysia={demo1}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Elysia')
+    .get('/hi', 'Hello!')
+    .listen(3000)
+```
+
+</CodePlayground>
+
+> 调用 `.listen` 会在 3000 端口启动 Web 服务器。
+
+访问 http://localhost:3000 即可连接服务器。
+
+- 使用 `GET` 方法访问 `/` 会返回 `Elysia`
+- 使用 `GET` 方法访问 `/hi` 会返回 `Hello!`
+- 其他路径都会返回 `404`
+
+在浏览器中访问 URL 时，会发送 `GET` 请求。
+
+<a id="path-types" />
+## 路径类型
+
+路径分为 3 种：
+
+</div>
+
+<NumberedCards items={[
+    { title: '静态路径', children: '精确匹配' },
+    { title: '动态路径', children: '部分路径可变，并可捕获为参数' },
+    { title: '通配符', children: '匹配路径的其余部分' },
+]} />
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## 静态路径
+
+静态路径会精确匹配，不会有意外。
+
+- `/` 仅匹配 `/`
+- `/hi` 仅匹配 `/hi`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 动态路径
+
+在 `:` 后添加名称，即可捕获对应的值。
+
+`/user/:id` 可匹配 `/user/42`、`/user/abc` 和 `/user/hello-world`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 读取参数
+
+在处理器中从 `params` 读取匹配到的值。
+
+当 `/user/42/profile` 匹配 `/user/:id/profile` 时，`params.id` 的值为 `42`。处理器会将它作为响应返回。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 可选参数
+
+在参数名后添加 `?`，即可将其设为可选参数。
+
+`/user/:id?/profile` 既可匹配 `/user/42/profile`，也可匹配 `/user/profile`
+
+如果请求中没有该参数，它的值就是 `undefined`。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 通配符
+
+在路径末尾添加 `*`，即可匹配后续的任意路径。
+
+`/user/*` 可以匹配多段路径，例如 `/user/hello-world/profile`。在此示例中，`/user/42` 仍会匹配 `/user/:id`，因为动态路径的优先级高于通配符（参见[路径优先级](#path-priority)）。
+
+对于 `/user/hello-world/profile`，`params['*']` 的值为 `hello-world/profile`。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<section class="content-layout">
+
+<a id="path-priority" />
+## 路径优先级
+
+Elysia 按以下顺序匹配路径：
+
+1. 静态路径
+2. 动态路径
+3. 通配符
+
+<CodePlayground elysia={demo2}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user/1', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/*', ({ params }) => params['*'])
+    .listen(3000)
+```
+
+</CodePlayground>
+
+</section>
+
+
+<section class="content-layout">
+
+---
+
+## HTTP 方法
+
+[HTTP 方法](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods)是请求使用的方法，例如 `GET`、`POST` 或 `PUT`。
+
+<div class="routing-methods">
+
+<Card className="routing-method-card">
+
+<CardTitle>GET</CardTitle>
+
+从服务器获取数据。浏览器使用它来访问页面。
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>HEAD</CardTitle>
+
+类似 **GET**，但只返回响应头，不返回响应体。
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>POST</CardTitle>
+
+向服务器发送数据，通常用于创建资源。
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>PUT</CardTitle>
+
+用发送的数据替换资源。
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>PATCH</CardTitle>
+
+更新资源的一部分。
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>DELETE</CardTitle>
+
+删除资源。
+
+</Card>
+
+</div>
+
+要定义标准方法，请在 Elysia 实例上使用对应的方法：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', 'Hi GET!')
+	.post('/', 'Hi POST!')
+	.put('/', 'Hi PUT!')
+	.patch('/', 'Hi PATCH!')
+	.delete('/', 'Hi DELETE!')
+	.listen(3000)
+```
+
+</section>
+
+<section class="content-layout">
+
+<a id="custom-method" />
+### 自定义方法
+
+使用 `.method` 定义，并将方法名作为第一个参数。其余参数与其他方法相同。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.method('PROPFIND', '/', 'Hi PROPFIND!')
+	.listen(3000)
+```
+
+### 所有方法
+
+使用 `.all` 捕获所有方法：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.all('/', 'Hi ALL!')
+	.listen(3000)
+```
+
+---
+
+
+<a id="group" />
+## 分组
+
+可以使用 `.group` 将多个具有相同前缀的路径分组：
+
+<CodePlayground elysia={demo3}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .get('/profile', 'Profile')
+    )
+    .listen(3000)
+```
+
+</CodePlayground>
+
+这相当于分别编写 `/user/sign-in` 和 `/user/profile`。
+
+### 前缀
+
+如果整个实例都使用相同的前缀，可以在构造函数中定义：
+
+<CodePlayground elysia={demo4}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .get('/profile', 'Profile')
+```
+
+</CodePlayground>
+
+这与 `.group` 不同：此前缀会应用于实例中的所有路径，而分组只应用于回调函数中的路径。
+
+</section>
+
+</InteractiveDocLayout>
+
+</div>

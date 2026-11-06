@@ -1,0 +1,722 @@
+---
+title: 校验
+description: 使用 schema 校验请求和响应，同时为处理器提供 TypeScript 类型。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import { Card } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+
+export const examples = {
+    "body": [
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"name\":\"Elysia\"}",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Elysia\"\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"name\":1}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"/name\"\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"alias\":\"Elysia\"}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "query": [
+        {
+            "method": "GET",
+            "displayPath": "/query?name=Elysia",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Elysia\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?name=1",
+            "response": "HTTP 200\n\n{\n  \"name\": \"1\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?alias=Elysia",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "coercion": [
+        {
+            "method": "GET",
+            "displayPath": "/query?id=1",
+            "response": "HTTP 200\n\n1"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?id=salt",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"/id\"\n}"
+        }
+    ],
+    "params": [
+        {
+            "method": "GET",
+            "displayPath": "/id/1",
+            "response": "HTTP 200\n\n{\n  \"id\": 1\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/id/a",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"params\",\n  \"property\": \"/id\"\n}"
+        }
+    ],
+    "headers": [
+        {
+            "method": "GET",
+            "displayPath": "/headers · Authorization: Bearer 12345",
+            "response": "HTTP 200\n\nBearer 12345"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/headers · 无 Authorization",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"headers\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "responseStatus": [
+        {
+            "method": "GET",
+            "displayPath": "/response",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Jane Doe\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/response?fail=true",
+            "response": "HTTP 400\n\n{\n  \"error\": \"Something went wrong\"\n}"
+        }
+    ],
+    "guard": [
+        {
+            "method": "GET",
+            "displayPath": "/none",
+            "response": "HTTP 200\n\nhi"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"root\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?name=a",
+            "response": "HTTP 200\n\na"
+        }
+    ],
+    "override": [
+        {
+            "method": "POST",
+            "displayPath": "/age · {\"age\":18}",
+            "response": "HTTP 200\n\n{\n  \"age\": 18\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/age · {\"name\":\"Elysia\"}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"root\"\n}"
+        }
+    ]
+};
+
+export const steps = [
+    {
+        label: '从参数开始',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: '添加 schema',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)`,
+        highlight: [5, 6, 7],
+    },
+    {
+        label: '校验另一个字段',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        }),
+        query: t.Object({
+            name: t.String()
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)`,
+        highlight: [8, 9, 10, 11],
+    },
+    {
+        label: '检查响应',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        }),
+        query: t.Object({
+            name: t.String()
+        }),
+        response: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)`,
+        highlight: [11, 12, 13, 14],
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">校验</h1>
+
+Elysia 支持声明式 schema 校验。
+
+描述数据应该是什么样子，剩下的交给 Elysia 就好。
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## 从参数开始
+
+没有 schema 时，`/id/:id` 会捕获一个字符串。
+
+- `/id/42` 会将 `"42"` 传给处理器
+- `/id/hello` 会将 `"hello"` 传给处理器
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 添加 schema
+
+在 `params` schema 中添加 `t.Number()` 后，Elysia 会将路径中的数字值转换为数字并进行校验。
+
+- `/id/42` 会将数字 `42` 传给处理器
+- `/id/hello` 校验失败，状态码为 `422`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 校验另一个字段
+
+添加 `query`，同时要求提供 `name` 查询参数。
+
+- `/id/42?name=Elysia` 返回 `{ id: 42, name: 'Elysia' }`
+- `/id/42` 因缺少 `name` 而校验失败
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 检查响应
+
+添加 `response`，以约束处理器返回数据的结构。
+
+如果处理器返回了额外字段，Elysia 也会将其清理。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## TypeBox
+
+Elysia 提供从 `elysia` 命名导出的 `t`，作为默认的 schema 构造器。它是 [TypeBox](https://github.com/sinclairzx81/typebox) 的封装，并为 API 校验提供了额外功能。
+
+这些 schema 支持运行时检查、TypeScript 类型推断，以及生成 [OpenAPI](/plugins/openapi/) schema，无需为同一份数据再单独编写 interface。
+
+## Standard Schema
+
+你也可以使用实现了 [Standard Schema](https://github.com/standard-schema/standard-schema) 的库，包括兼容版本的 **Zod**、**Valibot**、ArkType、Effect Schema、Yup 和 Joi，并可以互换使用。
+
+```ts
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
+
+new Elysia()
+    .get('/id/:id', {
+        params: z.object({
+            id: z.coerce.number()
+        }),
+        query: v.object({
+            name: v.literal('Lilith')
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)
+```
+
+`/id/42?name=Lilith` 可以通过两个 schema。若要将 URL 字符串转换为其他类型，请使用所选库提供的强制转换 API。
+
+## Schema 类型
+
+根据要检查的数据选择对应属性：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card id="body-schema" href="#body" title="请求体 schema">
+
+`body` 检查解析后的 HTTP 请求体，例如 JSON 或表单字段。
+
+</Card>
+
+<Card id="query-schema" href="#query" title="查询 schema">
+
+`query` 检查 URL 中 `?` 后面的查询字符串。
+
+</Card>
+
+<Card id="params-schema" href="#params" title="路径参数 schema">
+
+`params` 检查从路由路径中捕获的值。
+
+</Card>
+
+<Card id="headers-schema" href="#headers" title="请求头 schema">
+
+`headers` 检查传入的请求头。
+
+</Card>
+
+<Card id="cookie-schema" href="/patterns/cookie/#cookie-schema" title="Cookie schema">
+
+`cookie` 检查传入的 cookie 值。
+
+</Card>
+
+<Card id="response-schema" href="#response" title="响应 schema">
+
+`response` 检查处理器返回的数据。
+
+</Card>
+
+</div>
+
+在路由处理器之前的第二个参数中提供这些属性：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        query: t.Object({ name: t.String() }),
+        params: t.Object({ id: t.Number() })
+    }, () => 'Hello World!')
+    .listen(3000)
+```
+
+| URL | 查询 schema | 路径参数 schema |
+| --- | --- | --- |
+| `/id/a` | 失败 | 失败 |
+| `/id/1?name=Elysia` | 通过 | 通过 |
+| `/id/1?alias=Elysia` | 失败 | 通过 |
+| `/id/a?name=Elysia` | 通过 | 失败 |
+| `/id/a?alias=Elysia` | 失败 | 失败 |
+
+两个 schema 都通过后，处理器才会运行。表格分别展示各项检查；错误响应可能只报告第一个失败项。
+
+<a id="body" />
+
+## 请求体
+
+[HTTP 消息](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages)的请求体可以是 JSON、表单字段或文件。
+
+<CodePlayground examples={examples.body}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/body', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => body)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| JSON 请求体 | 校验结果 |
+| --- | --- |
+| `{ "name": "Elysia" }` | 通过 |
+| `{ "name": 1 }` | 失败 |
+| `{ "alias": "Elysia" }` | 失败 |
+| 无请求体 | 失败 |
+
+<a id="file" />
+### 文件
+
+单个文件使用 [t.File()](/patterns/typebox/#file)，多个文件使用 [t.Files()](/patterns/typebox/#files)。
+
+`type` 检查需要文件类型检测器。安装 `file-type` 并使用 `setFileTypeDetector` 注册一次；如果没有检测器，所有按 `type` 检查的上传文件都会校验失败。
+
+```ts
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+    .post('/body', {
+        body: t.Object({
+            file: t.File({ type: 'image/*' }),
+            multipleFiles: t.Files()
+        })
+    }, ({ body }) => ({
+        file: body.file.name,
+        count: body.multipleFiles.length
+    }))
+    .listen(3000)
+```
+
+### 文件（Standard Schema）
+
+Standard Schema 库不会自动获得 Elysia 的文件检查功能。使用异步辅助函数 `fileType()` 添加细化校验，并明确选择 multipart 解析：
+
+```ts
+import { Elysia, fileType, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+import { z } from 'zod'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+    .post('/body', {
+        parse: 'formdata',
+        body: z.object({
+            file: z.file().refine(
+                (file) => fileType(file, 'image/jpeg'),
+                'Expected a JPEG file'
+            )
+        })
+    }, ({ body }) => ({ name: body.file.name }))
+```
+
+此处也由已注册的检测器检查文件字节内容。只读取 `file.type` 的校验器无法确认上传文件的实际内容。
+
+<a id="query" />
+
+## 查询参数
+
+查询参数位于 URL 的 `?` 之后。使用对象 schema 描述它们：
+
+<CodePlayground examples={examples.query}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({ name: t.String() })
+    }, ({ query }) => query)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| 请求 | 校验结果 |
+| --- | --- |
+| `/query?name=Elysia` | 通过 |
+| `/query?name=1` | 通过，`name` 是字符串 |
+| `/query?alias=Elysia` | 失败 |
+| `/query?name=ElysiaJS&alias=Elysia` | 通过 |
+| `/query` | 失败 |
+
+<span id="specs-1" />
+
+### 强制转换
+
+对于 `query` 中适用的 TypeBox schema，Elysia 会自动进行转换。例如，`t.Number()` 接受数字字符串，并向处理器提供数字：
+
+<CodePlayground examples={examples.coercion}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({ id: t.Number() })
+    }, ({ query: { id } }) => id)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| 请求 | 结果 |
+| --- | --- |
+| `/query?id=1` | 数字 `1` |
+| `/query?id=salt` | 校验错误，状态码 `422` |
+
+其他自动转换行为请参阅 [Elysia 的类型行为](/patterns/typebox/#elysia-behavior)。
+
+### 数组
+
+声明数组 schema，即可校验每个值并支持逗号分隔的输入：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({
+            name: t.Array(t.String()),
+            squad: t.String()
+        })
+    }, ({ query }) => query)
+    .listen(3000)
+```
+
+使用此 schema，下面两种请求都会得到 `{ name: ['rapi', 'anis', 'neon'], squad: 'counter' }`。
+
+#### nuqs 格式
+
+像 [nuqs](https://nuqs.47ng.com) 数组格式一样，使用逗号分隔值：
+
+```text
+/query?name=rapi,anis,neon&squad=counter
+```
+
+数组 schema 会告诉 Elysia 拆分 `name`。没有数组 schema 时，逗号分隔的值仍会作为字符串处理。
+
+#### HTML 表单格式
+
+重复同一个键即可发送多个值，就像 HTML 表单中多个输入项使用相同名称一样：
+
+```text
+/query?name=rapi&name=anis&name=neon&squad=counter
+```
+
+声明数组 schema，才能保留并校验每个重复值。否则，普通查询属性是单个字符串；重复的键只会保留最后一个值。
+
+<a id="params" />
+
+## 路径参数
+
+路径参数会从 `/id/:id` 这样的路由中捕获值。使用对象 schema 校验捕获的字段：
+
+<CodePlayground examples={examples.params}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({ id: t.Number() })
+    }, ({ params }) => params)
+```
+
+</CodePlayground>
+
+| 请求 | 结果 |
+| --- | --- |
+| `/id/1` | `{ "id": 1 }` |
+| `/id/a` | 校验错误，状态码 `422` |
+
+<a id="headers" />
+
+## 请求头
+
+使用 `headers` 要求传入请求包含特定请求头：
+
+<CodePlayground examples={examples.headers}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/headers', {
+        headers: t.Object({ authorization: t.String() })
+    }, ({ headers }) => headers.authorization)
+```
+
+</CodePlayground>
+
+默认情况下，请求头 schema 允许额外属性。客户端仍可发送 `accept` 等请求头；你声明的字段则必须符合对应 schema。
+
+如果要拒绝任何额外请求头，请设置 `additionalProperties: false`：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/headers', {
+        headers: t.Object(
+            { authorization: t.String() },
+            { additionalProperties: false }
+        )
+    }, ({ headers }) => headers.authorization)
+```
+
+<a id="response" />
+
+## 响应
+
+使用 `response` 检查处理器返回的数据：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/response', {
+        response: t.Object({ name: t.String() })
+    }, () => ({ name: 'Jane Doe (ZZZ)' }))
+```
+
+TypeScript 会检查处理器的返回类型，Elysia 则会在运行时校验响应。
+
+### 按状态码定义响应
+
+不同结果对应不同响应结构时，可将状态码映射到各自的 schema：
+
+<CodePlayground examples={examples.responseStatus}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/response', {
+        response: {
+            200: t.Object({ name: t.String() }),
+            400: t.Object({ error: t.String() })
+        }
+    }, ({ query, status }) => {
+        if (query.fail === 'true')
+            return status(400, { error: 'Something went wrong' })
+
+        return { name: 'Jane Doe (ZZZ)' }
+    })
+```
+
+</CodePlayground>
+
+`/response` 返回 `200` 对应的结构。`/response?fail=true` 返回 `400` 对应的结构。使用 `status()` 可保留状态码与请求体类型之间的对应关系。
+
+## 校验错误
+
+可以自定义 schema 的[校验消息](/patterns/error-handling/#schema-messages)，使用[错误钩子](/patterns/error-handling/#error-hook)处理失败，或查看[错误列表](/patterns/error-handling/#error-list)。
+
+有关可在路由和 OpenAPI 文档间共享的命名 schema，请参阅[引用模型](/patterns/openapi/#reference-model)。
+
+## TypeScript
+
+使用 `UnwrapSchema` 获取 schema 推断出的 TypeScript 类型：
+
+```ts
+import { t, type UnwrapSchema } from 'elysia'
+
+const MyType = t.Object({
+    hello: t.Literal('Elysia')
+})
+
+type MyType = UnwrapSchema<typeof MyType>
+```
+
+一个 schema 可以同时提供运行时校验、强制转换、TypeScript 类型和 OpenAPI 元数据。将定义集中在一处，让所有用法都以此为准。
+
+## Guard（守卫）
+
+使用 `.guard()` 将 schema 应用于多条路由。它只影响之后注册的路由：
+
+<CodePlayground examples={examples.guard}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/none', () => 'hi')
+    .guard({
+        query: t.Object({ name: t.String() })
+    })
+    .get('/query', ({ query: { name } }) => name)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| 请求 | 结果 |
+| --- | --- |
+| `/none` | `hi` |
+| `/none?name=a` | `hi` |
+| `/query` | 校验错误，状态码 `422` |
+| `/query?name=a` | `a` |
+
+对于同一个 schema 属性，后注册的 Guard 优先于先注册的 Guard。路由自己的 schema 优先于继承的 Guard schema。
+
+### Guard schema 类型
+
+Guard 支持两种处理 schema 重叠的方式。
+
+#### 覆盖（默认）
+
+更近一层的 schema 会替换该属性继承到的 schema。例如，路由的 `body` 会替换 Guard 的 `body`，而不是合并其中的字段。
+
+<CodePlayground examples={examples.override}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({ body: t.Object({ name: t.String() }) })
+    .post('/age', {
+        body: t.Object({ age: t.Number() })
+    }, ({ body }) => body)
+```
+
+</CodePlayground>
+
+`{ "age": 18 }` 无需包含 `name` 字段，就能满足 `/age` 的 schema。
+
+<a id="merge" />
+#### 合并
+
+当 Guard 和路由的 schema 都必须满足时，设置 `schema: 'merge'`：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        schema: 'merge',
+        response: t.Object({ title: t.String() })
+    })
+    .get('/article', {
+        response: t.Object({ title: t.String(), author: t.String() })
+    }, () => ({ title: 'Hello Elysia', author: 'Nagisa' }))
+```
+
+响应必须同时满足 Guard 和路由的 schema。合并会累积两者的约束，而不是替换继承的 schema。
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

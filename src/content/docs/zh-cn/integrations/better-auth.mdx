@@ -1,0 +1,178 @@
+---
+title: "Better Auth"
+description: "我们也可以使用 @better-auth/cli 生成身份验证 schema 并迁移数据库。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Better Auth</h1>
+
+Better Auth 是一个面向 TypeScript、与框架无关的身份验证（及授权）框架。
+它开箱即提供一整套功能，并拥有完善的插件生态，方便你添加高级功能。
+建议先完成 [Better Auth 基础设置](https://www.better-auth.com/docs/installation)，再阅读本页。
+基础设置如下：
+```ts title="auth.ts"
+import { betterAuth } from 'better-auth'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool()
+})
+```
+## 处理器
+设置好 Better Auth 实例后，我们可以通过 [mount](/patterns/mount) 将它挂载到 Elysia 上。
+需要将处理器挂载到 Elysia 端点。
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+const app = new Elysia()
+	.mount(auth.handler)
+	.listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+之后即可通过 `http://localhost:3000/api/auth` 访问 Better Auth。
+### 自定义端点
+使用 [mount](/patterns/mount) 时，建议设置路径前缀。
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+
+const app = new Elysia()
+	.mount('/auth', auth.handler)
+	.listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+之后即可通过 `http://localhost:3000/auth/api/auth` 访问 Better Auth。
+不过这个 URL 看起来有些重复，因此可以在 Better Auth 实例中将 `/api/auth` 前缀改成其他路径。
+```ts
+import { betterAuth } from 'better-auth'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool(),
+    basePath: '/api'
+})
+```
+之后即可通过 `http://localhost:3000/auth/api` 访问 Better Auth。
+遗憾的是，Better Auth 实例的 `basePath` 不能设为空或 `/`。
+## OpenAPI
+Better Auth 通过 `better-auth/plugins` 支持 `openapi`。
+不过，如果你使用 [@elysia/openapi](/plugins/openapi)，可能会希望从 Better Auth 实例中提取文档。
+首先，需要为 Better Auth 实例添加 `openAPI` 插件：
+```ts title="auth.ts"
+import { betterAuth } from 'better-auth'
+import { openAPI } from 'better-auth/plugins'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool(),
+    plugins: [openAPI()]
+})
+```
+
+:::tip
+
+要使用 `auth.api.generateOpenAPISchema`，必须添加 `openAPI()` 插件。否则会出现类型错误：`Property 'generateOpenAPISchema' does not exist`。
+
+:::
+
+接下来可以用以下代码提取 OpenAPI schema：
+```ts title="auth.ts"
+let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>
+const getSchema = async () => (_schema ??= auth.api.generateOpenAPISchema())
+export const OpenAPI = {
+    getPaths: (prefix = '/api/auth') =>
+        getSchema().then(({ paths }) => {
+            const reference: typeof paths = Object.create(null)
+            for (const path of Object.keys(paths)) {
+                const key = prefix + path
+                reference[key] = paths[path]
+                for (const method of Object.keys(paths[path])) {
+                    const operation = (reference[key] as any)[method]
+                    operation.tags = ['Better Auth']
+                }
+            }
+            return reference
+        }) as Promise<any>,
+    components: getSchema().then(({ components }) => components) as Promise<any>
+} as const
+```
+然后在使用 `@elysia/openapi` 的 Elysia 实例中使用它：
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+import { OpenAPI } from './auth'
+const app = new Elysia().use(
+    openapi({
+        documentation: {
+            components: await OpenAPI.components,
+            paths: await OpenAPI.getPaths()
+        }
+    })
+)
+```
+## CORS
+要配置 CORS，可以使用 `@elysia/cors` 提供的 `cors` 插件。
+```ts
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+import { auth } from './auth'
+const app = new Elysia()
+    .use(
+        cors({
+            origin: 'http://localhost:3001',
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            credentials: true,
+            allowedHeaders: ['Content-Type', 'Authorization']
+        })
+    )
+    .mount(auth.handler)
+    .listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+## 宏
+你可以将 [macro](/patterns/macro/) 与 [derive](/patterns/macro#derive) 搭配使用，在将信息传给视图之前提供会话和用户信息。
+```ts
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+// user middleware (compute user and session and pass to routes)
+const betterAuth = new Elysia({ name: 'better-auth' })
+    .mount(auth.handler)
+    .macro({
+        auth: {
+            async derive({ status, request: { headers } }) {
+                const session = await auth.api.getSession({
+                    headers
+                })
+                if (!session) return status(401, 'Unauthorized')
+                return {
+                    user: session.user,
+                    session: session.session
+                }
+            }
+        }
+    })
+const app = new Elysia()
+    .use(betterAuth)
+    .get('/user', {
+        auth: true
+    }, ({ user }) => user)
+    .listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+这样，在启用了 `auth: true` 的路由中就可以访问 `user` 和 `session`。
+
+</div>
+</InteractiveDocLayout>
+</div>

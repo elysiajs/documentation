@@ -1,0 +1,483 @@
+---
+title: 快速开始
+description: 使用 Bun、Node.js 或 Web Standard 运行时启动 Elysia v2 服务器。
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import FileCodeBlock from '../../../components/interactive-code/file-code-block.astro';
+import PageTabs from '../../../components/interactive-code/page-tabs.astro';
+import TabItem from '../../../components/interactive-code/tab-item.astro';
+import '../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">快速开始</h1>
+
+Elysia 是一款针对 Bun 优化的 TypeScript 后端框架，也可以运行在 Node.js 或任何支持 Web 标准 Request 的运行时上。
+
+<PageTabs label="运行时">
+<TabItem label="Bun">
+
+## Bun
+
+根据你的操作系统，运行对应命令安装 Bun。
+
+<FileCodeBlock label="Bun 操作系统">
+<TabItem label="macOS / Linux">
+
+```bash
+curl -fsSL https://bun.com/install | bash
+```
+
+</TabItem>
+<TabItem label="Windows (PowerShell)">
+
+```powershell
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
+
+</TabItem>
+</FileCodeBlock>
+
+打开一个新终端，检查是否安装成功：
+
+```bash
+bun --version
+```
+
+<PageTabs label="Bun 安装方式">
+<TabItem label="自动安装">
+
+### 自动安装
+
+你可以使用 `bun create elysia` 创建项目。
+
+模板默认使用 `latest`，但这里我们要改用 Elysia v2 的 `rc` 版本。
+
+```bash
+bun create elysia
+cd app
+bun add elysia@rc
+```
+
+启动服务器：
+
+```bash
+bun run dev
+```
+
+打开 [localhost:3000](http://localhost:3000)，你应该会看到 `Hello Elysia`。
+
+:::tip[让服务器持续运行]
+
+文件发生变化时，`--watch` 标志会自动重启服务器。`dev` 是你添加到项目中的脚本，并非 Elysia 包自带的命令。
+
+:::
+
+</TabItem>
+<TabItem label="手动安装">
+
+### 手动安装
+
+如果你想从自己的文件开始，可以先创建空项目，再安装 Elysia：
+
+```bash
+mkdir app
+cd app
+bun init -y
+bun add elysia@rc
+bun add -d @types/bun typescript
+```
+
+创建 `src/index.ts`：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .listen(3000, ({ hostname, port }) => {
+        console.log(`Elysia is running at ${hostname}:${port}`)
+    })
+```
+
+将这些脚本合并到 `package.json` 中：
+
+```json
+{
+    "scripts": {
+        "dev": "bun --watch src/index.ts",
+        "build": "bun build src/index.ts --target bun --outdir ./dist",
+        "start": "NODE_ENV=production bun dist/index.js",
+        "test": "bun test"
+    }
+}
+```
+
+| 脚本 | 作用 |
+| --- | --- |
+| `bun run dev` | 启动服务器，并在代码变更时重新加载。 |
+| `bun run build` | 将服务器打包以用于生产环境。 |
+| `bun run start` | 运行已构建的打包文件。 |
+| `bun run test` | 使用 Bun 的测试运行器执行测试。 |
+
+在 `tsconfig.json` 中保留 `strict`，这样 Elysia 才能正确推断类型：
+
+```json
+{
+    "compilerOptions": {
+        "strict": true
+    }
+}
+```
+
+将此选项合并到 `bun init` 创建的配置中，保留其他设置。运行 `bun run dev`，然后打开 [localhost:3000](http://localhost:3000)。
+
+</TabItem>
+</PageTabs>
+</TabItem>
+<TabItem label="Node.js">
+
+## Node.js
+
+搭配 Node 适配器使用受支持的 Node.js 版本。Elysia 2 要求 Node `22.18` 或更高版本；请从 [Node.js 下载页面](https://nodejs.org/en/download)选择仍在维护的 LTS 版本。
+
+如果你已在使用系统包管理器，可以运行对应的安装命令：
+
+<FileCodeBlock label="Node.js 操作系统">
+<TabItem label="macOS (Homebrew)">
+
+```bash
+brew install node
+```
+
+</TabItem>
+<TabItem label="Windows (Chocolatey)">
+
+```powershell
+choco install nodejs
+```
+
+</TabItem>
+<TabItem label="Debian / Ubuntu (apt)">
+
+```bash
+sudo apt install nodejs npm
+```
+
+</TabItem>
+<TabItem label="Arch Linux (pacman)">
+
+```bash
+sudo pacman -S nodejs npm
+```
+
+</TabItem>
+</FileCodeBlock>
+
+之后运行 `node --version` 检查版本。发行版默认提供的包可能达不到 Elysia 的版本要求；必要时请使用安装程序安装受支持的版本。
+
+<PageTabs label="Node.js 语言">
+<TabItem label="TypeScript">
+
+### 配置 TypeScript
+
+在新的项目目录中准备好 `package.json`（例如运行 `npm init -y`），然后根据包管理器选择对应命令：
+
+<FileCodeBlock>
+<TabItem label="Bun">
+
+```bash
+bun add elysia@rc @elysia/node@rc
+bun add -d tsx @types/node typescript
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```bash
+pnpm add elysia@rc @elysia/node@rc typebox exact-mirror openapi-types
+pnpm add -D tsx @types/node typescript
+```
+
+</TabItem>
+<TabItem label="npm">
+
+```bash
+npm install elysia@rc @elysia/node@rc
+npm install --save-dev tsx @types/node typescript
+```
+
+</TabItem>
+<TabItem label="Yarn">
+
+```bash
+yarn add elysia@rc @elysia/node@rc typebox exact-mirror openapi-types
+yarn add -D tsx @types/node typescript
+```
+
+</TabItem>
+</FileCodeBlock>
+
+pnpm 和 Yarn 命令会显式列出 Elysia 所需的运行时 peer 依赖，因此即使禁用了自动安装 peer 依赖也能正常使用。Elysia v2 使用 `typebox`，而不是 `@sinclair/typebox`。
+
+开发时，`tsx` 负责运行 TypeScript 并提供监视模式。TypeScript 本身则负责检查类型并生成生产环境所需的 JavaScript。
+
+创建 `src/index.ts`：
+
+```ts
+import { Elysia } from 'elysia'
+import { node } from '@elysia/node'
+
+new Elysia({ adapter: node() })
+    .get('/', () => 'Hello Elysia')
+    .listen(3000, ({ hostname, port }) => {
+        console.log(`Elysia is running at ${hostname}:${port}`)
+    })
+```
+
+将项目配置为使用 ES 模块，并添加以下脚本：
+
+```json
+{
+    "type": "module",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "build": "tsc -p tsconfig.json",
+        "start": "node dist/index.js"
+    }
+}
+```
+
+运行 `npx tsc --init` 创建 TypeScript 配置，然后在 `tsconfig.json` 中设置以下选项：
+
+```json
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "types": ["node"],
+        "rootDir": "src",
+        "outDir": "dist",
+        "strict": true,
+        "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts"]
+}
+```
+
+构建脚本会读取这份配置，包括 `strict` 和输出目录。使用 NodeNext 导入自己的模块时，即使源文件是 TypeScript，也要使用 `.js` 扩展名。
+
+启动开发服务器：
+
+```bash
+npm run dev
+```
+
+你也可以改用 `bun run dev`、`pnpm dev` 或 `yarn dev`。打开 [localhost:3000](http://localhost:3000)，即可看到 `Hello Elysia`。
+
+| 脚本 | 作用 |
+| --- | --- |
+| `dev` | 运行 TypeScript，并在文件变更时自动重启。 |
+| `build` | 检查类型，并将 JavaScript 输出到 `dist`。 |
+| `start` | 使用 Node.js 运行构建好的 JavaScript。 |
+
+运行 `start` 前，请在部署环境中设置 `NODE_ENV=production`。在 POSIX shell 中，可以运行 `NODE_ENV=production npm run start`；在 PowerShell 中，请先设置 `$env:NODE_ENV = 'production'`。
+
+</TabItem>
+<TabItem label="JavaScript">
+
+### 配置 JavaScript
+
+你也可以使用 JavaScript，请求处理方式相同；TypeScript 则能在编写代码时提供 schema 推断和端到端类型检查。
+
+选择你的包管理器：
+
+**Bun**
+
+```bash
+bun add elysia@rc @elysia/node@rc
+```
+
+**pnpm**
+
+```bash
+pnpm add elysia@rc @elysia/node@rc typebox exact-mirror openapi-types
+```
+
+**npm**
+
+```bash
+npm install elysia@rc @elysia/node@rc
+```
+
+**Yarn**
+
+```bash
+yarn add elysia@rc @elysia/node@rc typebox exact-mirror openapi-types
+```
+
+创建 `src/index.js`：
+
+```js
+import { Elysia } from 'elysia'
+import { node } from '@elysia/node'
+
+new Elysia({ adapter: node() })
+    .get('/', () => 'Hello Elysia')
+    .listen(3000, ({ hostname, port }) => {
+        console.log(`Elysia is running at ${hostname}:${port}`)
+    })
+```
+
+在 `package.json` 中启用 ES 模块，并添加以下脚本：
+
+```json
+{
+    "type": "module",
+    "scripts": {
+        "dev": "node --watch src/index.js",
+        "start": "node src/index.js"
+    }
+}
+```
+
+运行 `npm run dev`，即可在开发时自动重启。生产环境中，请先设置 `NODE_ENV=production`，再运行 `npm run start`。
+
+:::tip[之后也可以再添加类型]
+
+JavaScript 无需编译步骤即可运行。如果你希望编辑器提供更完善的检查，可以从上面的 TypeScript 配置开始；两个示例提供的路由相同。
+
+:::
+
+</TabItem>
+</PageTabs>
+</TabItem>
+<TabItem label="Web Standard">
+
+## Web Standard
+
+Elysia 提供一个请求处理器，接收 Web Standard `Request` 并返回 `Response`。你可以在兼容的框架或服务器运行时中使用它，而不必单独启动监听器。
+
+使用你的包管理器安装 Elysia：
+
+<FileCodeBlock label="Web Standard 包管理器">
+<TabItem label="Bun">
+
+```bash
+bun add elysia@rc
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```bash
+pnpm add elysia@rc typebox exact-mirror openapi-types
+```
+
+</TabItem>
+<TabItem label="npm">
+
+```bash
+npm install elysia@rc
+```
+
+</TabItem>
+<TabItem label="Yarn">
+
+```bash
+yarn add elysia@rc typebox exact-mirror openapi-types
+```
+
+</TabItem>
+</FileCodeBlock>
+
+选择一种集成，了解对应运行时如何接入 Elysia：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="/integrations/cloudflare-worker">
+<CardTitle id="cloudflare-workers">Cloudflare Workers</CardTitle>
+
+在 Cloudflare Workers 上运行 Elysia API。
+
+</Card>
+
+<Card href="/integrations/nextjs">
+<CardTitle id="nextjs">Next.js</CardTitle>
+
+在 Next.js 路由处理器中使用 Elysia。
+
+</Card>
+
+<Card href="/integrations/expo">
+<CardTitle id="expo">Expo</CardTitle>
+
+在 Expo API 路由中使用 Elysia。
+
+</Card>
+
+<Card href="/integrations/astro">
+<CardTitle id="astro">Astro</CardTitle>
+
+在 Astro API 路由中使用 Elysia。
+
+</Card>
+
+<Card href="/integrations/nuxt">
+<CardTitle id="nuxt">Nuxt</CardTitle>
+
+在 Nuxt 服务器路由中使用 Elysia。
+
+</Card>
+
+<Card href="/integrations/sveltekit">
+<CardTitle id="sveltekit">SvelteKit</CardTitle>
+
+在 SvelteKit API 路由中使用 Elysia。
+
+</Card>
+
+<Card href="/integrations/tanstack-start">
+<CardTitle id="tanstack-start">TanStack Start</CardTitle>
+
+在 TanStack Start 服务器路由中使用 Elysia。
+
+</Card>
+
+</div>
+
+### 没找到你要的集成？
+
+导出 `app.fetch`，再通过运行时的服务器 API 将收到的请求传给它：
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Elysia')
+
+export default app.fetch
+```
+
+如果服务器由宿主框架管理，就不要调用 `.listen()`。直接向这个处理器发起请求，也会得到同样的问候语：
+
+```ts
+const response = await app.fetch(new Request('http://localhost/'))
+console.log(await response.text()) // Hello Elysia
+```
+
+Request 和 Response 兼容性只是起点；有关特定运行时的配置和支持功能，请参阅对应的集成指南。
+
+</TabItem>
+</PageTabs>
+
+</div>
+</InteractiveDocLayout>
+</div>

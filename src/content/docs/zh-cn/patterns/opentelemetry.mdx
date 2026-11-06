@@ -1,0 +1,240 @@
+---
+title: OpenTelemetry
+description: 记录请求 span、导出追踪数据，并为 Elysia 应用添加检测。
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">OpenTelemetry</h1>
+
+使用 Elysia v2 OpenTelemetry 插件记录请求 span，并将其导出到追踪后端。示例使用的是 v2 插件 API，而非较早的 v1 集成。
+
+```bash
+bun add @elysia/opentelemetry@rc
+```
+
+在应用中注册插件：
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+new Elysia()
+	.use(opentelemetry())
+```
+
+![通过 Axiom 展示的 OpenTelemetry 数据](/assets/axiom.webp)
+
+为什么在 Elysia 中使用 OpenTelemetry？
+- 只需注册一个插件
+- span 名称就是函数名称
+- 将相关的生命周期事件归为一组
+- 包装代码以记录特定部分
+- 支持服务器发送事件和响应流
+- 兼容所有支持 OpenTelemetry 的库
+
+你可以将遥测数据导出到 Jaeger、Zipkin、New Relic、Axiom 或任何其他兼容 OpenTelemetry 的后端。
+
+### 导出 OpenTelemetry 数据
+你可以将 OpenTelemetry 数据导出到任何支持 OpenTelemetry 协议的后端。
+
+下面是将遥测数据导出到 [Axiom](https://axiom.co) 的示例。
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
+
+new Elysia().use(
+	opentelemetry({
+		spanProcessors: [
+			new BatchSpanProcessor(
+				new OTLPTraceExporter({
+					url: 'https://api.axiom.co/v1/traces',
+					headers: {
+						Authorization: `Bearer ${Bun.env.AXIOM_TOKEN}`,
+						'X-Axiom-Dataset': Bun.env.AXIOM_DATASET
+					}
+				})
+			)
+		]
+	})
+)
+```
+
+## OpenTelemetry SDK
+
+Elysia OpenTelemetry 仅用于将 OpenTelemetry 应用到 Elysia 服务器。
+
+你也可以照常使用 OpenTelemetry SDK。如果某个 span 在 Elysia 的请求 span 下运行，它就会自动出现在 Elysia 追踪中。
+
+想为自己的逻辑添加 span 时，可以使用插件提供的 `getTracer` 和 `record` 工具。下面的示例中，`db` 是应用的数据库客户端。
+
+```ts
+import { Elysia } from 'elysia'
+import { record } from '@elysia/opentelemetry'
+
+export const plugin = new Elysia().get('/users', () => {
+	return record('database.query', () => {
+		return db.query('SELECT * FROM users')
+	})
+})
+```
+
+## Record 工具
+
+`record` 等同于 OpenTelemetry 的 `startActiveSpan`，但会自动关闭 span 并捕获异常。
+
+你可以把 `record` 看作代码的标签，它会显示在追踪记录中。
+
+### 为可观测性做好准备
+
+Elysia OpenTelemetry 会将生命周期工作分组，并使用每个钩子的**函数名称**作为 span 名称。这里的 `getProfile` 是应用中用于查询个人资料的函数。
+
+此时，最好为函数**命名**。
+
+如果钩子处理器是箭头函数，可以将它改为具名函数，让追踪信息更易读。否则，span 会被命名为 `anonymous`。
+
+```ts
+const bad = new Elysia()
+	// Note: span name will be anonymous
+	.derive(async ({ cookie: { session } }) => {
+		return {
+			user: await getProfile(session.value)
+		}
+	})
+
+const good = new Elysia()
+	// Yes span name will be loadProfile
+	.derive(async function loadProfile({ cookie: { session } }) {
+		return {
+			user: await getProfile(session.value)
+		}
+	})
+```
+
+## getCurrentSpan
+
+在处理器外部时，可以使用 `getCurrentSpan` 获取当前请求的 span。
+
+```ts
+import { getCurrentSpan } from '@elysia/opentelemetry'
+
+function utility() {
+	const span = getCurrentSpan()
+	span?.setAttributes({
+		'custom.attribute': 'value'
+	})
+}
+```
+
+它会使用当前激活的 OpenTelemetry 上下文。在没有活动请求或 span 时可能返回 `undefined`，因此使用前请先检查。
+
+## setAttributes
+
+`setAttributes` 是一个用于设置当前 span 属性的工具。
+
+```ts
+import { setAttributes } from '@elysia/opentelemetry'
+
+function utility() {
+	setAttributes({
+		'custom.attribute': 'value'
+	})
+}
+```
+
+它是 `getCurrentSpan()?.setAttributes` 的语法简写，因此在没有活动 span 时不会执行任何操作。
+
+## 配置
+
+配置选项和定义请参阅 [OpenTelemetry 插件](/plugins/opentelemetry/)。
+
+## 检测库
+
+许多检测库要求必须先运行 SDK，再导入对应模块。
+
+例如，使用 `PgInstrumentation` 时，必须先运行 `OpenTelemetry SDK`，再导入 `pg` 模块。
+
+在 Bun 中可以这样实现：
+
+1. 将 OpenTelemetry 配置单独放在一个文件中
+2. 创建 `bunfig.toml`，预加载 OpenTelemetry 配置文件
+
+在 `src/instrumentation.ts` 中创建一个新文件：
+
+```ts
+import { opentelemetry } from '@elysia/opentelemetry'
+import { PgInstrumentation } from '@opentelemetry/instrumentation-pg'
+
+export const instrumentation = opentelemetry({
+	instrumentations: [new PgInstrumentation()]
+})
+```
+
+接着，在 `src/index.ts` 的主实例中使用这个 `instrumentation` 插件：
+
+```ts
+import { Elysia } from 'elysia'
+import { instrumentation } from './instrumentation.ts'
+
+new Elysia().use(instrumentation).listen(3000)
+```
+
+然后创建 `bunfig.toml`，内容如下：
+
+`bunfig.toml`
+
+```toml
+preload = ["./src/instrumentation.ts"]
+```
+
+这样 Bun 就会在运行 `src/index.ts` 前加载并设置 `instrumentation`，让 OpenTelemetry 完成所需的初始化。
+
+### 部署到生产环境
+如果使用 `bun build` 或其他打包工具，OpenTelemetry 会通过猴子补丁修改 `node_modules/<library>`。为了让检测正常工作，需要将要检测的库指定为外部模块，避免它们被打包。
+
+例如，使用 `@opentelemetry/instrumentation-pg` 检测 `pg` 库时，需要避免将 `pg` 打包进去，并确保运行时从 `node_modules/pg` 导入它。
+
+为此，可以通过 `--external pg` 将 `pg` 指定为外部模块：
+```bash
+bun build --compile --external pg --outfile server src/index.ts
+```
+
+这会告诉 Bun 不要将 `pg` 打包进最终输出文件。运行时会从 **node_modules** 目录导入该库，因此生产服务器上也必须保留 **node_modules** 目录。
+
+建议将生产服务器需要的包列为 **package.json** 中的 **dependencies**，并使用 `bun install --production` 只安装生产依赖。
+
+将所有仍作为外部模块的包保留在 `dependencies` 中：
+
+```json
+{
+	"dependencies": {
+		"pg": "^8.15.6"
+	},
+	"devDependencies": {
+		"@elysia/opentelemetry": "2.0.0-beta.2",
+		"@opentelemetry/instrumentation-pg": "^0.52.0",
+		"@types/pg": "^8.11.14",
+		"elysia": "2.0.0-beta.32"
+	}
+}
+```
+
+构建完成后，在生产服务器上运行：
+```bash
+bun install --production
+```
+
+如果 node_modules 目录中仍包含开发依赖，可以删除该目录，再重新安装生产依赖。
+
+</div>
+</InteractiveDocLayout>
+</div>

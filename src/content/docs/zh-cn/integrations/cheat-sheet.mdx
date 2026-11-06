@@ -1,0 +1,372 @@
+---
+title: "速查表"
+description: "Elysia 常用模式速查，以及它们如何与《示例学习 Elysia》配合使用"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">速查表</h1>
+
+下面快速概览 Elysia 的常用模式。
+
+## Hello world 示例
+一个简单的 Hello world 示例
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello World')
+    .listen(3000)
+```
+
+## 自定义 HTTP 方法
+使用自定义 HTTP 方法/动词定义路由
+
+参阅[路由](/essential/route#custom-method)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/hi', () => 'Hi')
+    .post('/hi', () => 'From Post')
+    .put('/hi', () => 'From Put')
+    .method('M-SEARCH', '/hi', () => 'Custom Method')
+    .listen(3000)
+```
+
+## 路径参数
+使用动态路径参数
+
+参阅[路径](/essential/route/#path-types)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/rest/*', () => 'Rest')
+    .listen(3000)
+```
+
+## 返回 JSON
+Elysia 会自动将响应转换为 JSON
+
+参阅[处理器](/essential/handler)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/json', () => {
+        return {
+            hello: 'Elysia'
+        }
+    })
+    .listen(3000)
+```
+
+## 返回文件
+使用 `file()` 返回单个文件；使用 `form()` 在 multipart form-data 响应中返回文件。
+
+表单必须是仅有一层深度的对象
+
+参阅[处理器](/essential/handler/#return-a-file)
+
+```typescript
+import { Elysia, file, form } from 'elysia'
+
+new Elysia()
+    .get('/cat', file('public/cat.jpg'))
+    .get('/form', () => {
+        return form({
+            hello: 'Elysia',
+            image: file('public/cat.jpg')
+        })
+    })
+    .listen(3000)
+```
+
+## 响应头和状态码
+设置自定义响应头和状态码
+
+参阅[处理器](/essential/handler)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set, status }) => {
+        set.headers['x-powered-by'] = 'Elysia'
+
+        return status(418, "I'm a teapot")
+    })
+    .listen(3000)
+```
+
+## 分组
+为子路由统一定义前缀
+
+参阅[分组](/essential/route#group)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get("/", () => "Hi")
+    .group("/auth", app => {
+        return app
+            .get("/", () => "Hi")
+            .post("/sign-in", ({ body }) => body)
+            .put("/sign-up", ({ body }) => body)
+    })
+    .listen(3000)
+```
+
+<a id="schema" />
+## Schema 校验
+为路由约束数据类型
+
+参阅[校验](/essential/validation)
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/mirror', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body: { username } }) => username)
+    .listen(3000)
+```
+
+## 文件上传
+参阅[校验#文件](/essential/validation/#file)。`type` 校验需要文件类型检测器：安装 `file-type` 并通过 `setFileTypeDetector` 注册，否则所有使用 `type` 校验的上传都会失败。
+
+```typescript
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+	.post('/body', {
+		body: t.Object({
+			file: t.File({ type: 'image/*' }),
+			multipleFiles: t.Files()
+		})
+	}, ({ body }) => body)
+	.listen(3000)
+```
+
+## 生命周期钩子
+按顺序拦截 Elysia 事件
+
+参阅[生命周期](/essential/life-cycle)
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .onRequest(() => {
+        console.log('On request')
+    })
+    .onBeforeHandle(() => {
+        console.log('Before handle')
+    })
+    .post('/mirror', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        }),
+        afterHandle: () => {
+            console.log("After handle")
+        }
+    }, ({ body }) => body)
+    .listen(3000)
+```
+
+## 守卫
+为子路由约束数据类型
+
+参阅 [Guard](/essential/plugin/#guard)
+
+```typescript
+// @errors: 2345
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        response: t.String()
+    }, (app) => app
+        .get('/', () => 'Hi')
+        // Invalid: will throws error, and TypeScript will report error
+        .get('/invalid', () => 1)
+    )
+    .listen(3000)
+```
+
+## 自定义上下文
+向路由上下文添加自定义变量
+
+参阅[上下文](/essential/handler#context)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('version', 1)
+    .decorate('getDate', () => Date.now())
+    .get('/version', ({
+        getDate,
+        store: { version }
+    }) => `${version} ${getDate()}`)
+    .listen(3000)
+```
+
+## 重定向
+重定向响应
+
+参阅[处理器](/essential/handler#redirect)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'hi')
+    .get('/redirect', ({ redirect }) => {
+        return redirect('/')
+    })
+    .listen(3000)
+```
+
+## 插件
+创建独立实例
+
+参阅[插件](/essential/plugin)
+
+```typescript
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .state('plugin-version', 1)
+    .get('/hi', () => 'hi')
+
+new Elysia()
+    .use(plugin)
+    .get('/version', ({ store }) => store['plugin-version'])
+    .listen(3000)
+```
+
+## WebSocket
+使用 WebSocket 创建实时连接
+
+参阅 [WebSocket](/patterns/websocket)
+
+```typescript
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ping', {
+        message(ws, message) {
+            ws.send('hello ' + message)
+        }
+    })
+    .listen(3000)
+```
+
+## OpenAPI 文档
+使用 Scalar（也可以选择 Swagger）创建交互式文档
+
+参阅 [openapi](/plugins/openapi)
+
+```typescript
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+const app = new Elysia()
+    .use(openapi())
+    .listen(3000)
+
+console.log(`View documentation at "${app.server!.url}openapi" in your browser`);
+```
+
+## 单元测试
+为 Elysia 应用编写单元测试
+
+参阅[单元测试](/patterns/unit-test)
+
+```typescript
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Elysia', () => {
+    it('return a response', async () => {
+        const app = new Elysia().get('/', () => 'hi')
+
+        const response = await app
+            .handle(new Request('http://localhost/'))
+            .then((res) => res.text())
+
+        expect(response).toBe('hi')
+    })
+})
+```
+
+## 自定义请求体解析器
+创建自定义请求体解析逻辑
+
+参阅 [Parse](/essential/life-cycle#parse)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onParse(({ request, contentType }) => {
+        if (contentType === 'application/custom-type')
+            return request.text()
+    })
+```
+
+## GraphQL
+使用 GraphQL Yoga 或 Apollo 创建自定义 GraphQL 服务
+
+参阅 [GraphQL Yoga](/plugins/graphql-yoga)
+
+```typescript
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+    .use(
+        yoga({
+            typeDefs: /* GraphQL */`
+                type Query {
+                    hi: String
+                }
+            `,
+            resolvers: {
+                Query: {
+                    hi: () => 'Hello from Elysia'
+                }
+            }
+        })
+    )
+    .listen(3000)
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

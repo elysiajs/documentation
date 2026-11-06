@@ -1,0 +1,188 @@
+---
+title: 参数
+description: 使用 Eden Treaty 发送请求体、查询参数、请求头和文件。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">参数</h1>
+
+我们最终总要向服务器发送数据。
+
+为此，Eden Treaty 的方法接受两个参数，用于向服务器发送数据。
+
+这两个参数都具有类型安全保障，并会由 TypeScript 自动提供提示：
+
+1. body
+2. 其他参数
+    - query（查询参数）
+    - headers（请求头）
+    - fetch
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .post('/user', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+// works
+api.user.post({
+    name: 'Elysia'
+})
+
+// also works
+api.user.post({
+    name: 'Elysia'
+}, {
+    // This is optional as not specified in schema
+    headers: {
+        authorization: 'Bearer 12345'
+    },
+    query: {
+        id: 2
+    }
+})
+```
+
+如果方法是 **"GET"** 或 **"HEAD"**：
+
+1. 其他参数
+    -   query
+    -   headers
+    -   fetch
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/hello', () => 'hi')
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+// works
+api.hello.get({
+    // This is optional as not specified in schema
+    headers: {
+        hello: 'world'
+    }
+})
+```
+
+## 空请求体
+如果请求体是可选的或不需要，但必须提供查询参数或请求头，可以将请求体设为 `null` 或 `undefined`。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .post('/user', {
+        query: t.Object({
+            name: t.String()
+        })
+    }, () => 'hi')
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+api.user.post(null, {
+    query: {
+        name: 'Ely'
+    }
+})
+```
+
+## Fetch 参数
+
+Eden Treaty 是一个 fetch 封装，将任何有效的 [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) 参数传给 `fetch`，即可添加到 Eden 请求中：
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/hello', () => 'hi')
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+const controller = new AbortController()
+
+const cancelRequest = setTimeout(() => {
+    controller.abort()
+}, 5000)
+
+await api.hello.get({
+    fetch: {
+        signal: controller.signal
+    }
+})
+
+clearTimeout(cancelRequest)
+```
+
+## 文件上传
+可以传入以下任意类型来附加文件：
+- **File**
+- **File[]**
+- **FileList**
+- **Blob**
+
+附加文件后，**content-type** 会设为 **multipart/form-data**。接受的 TypeScript 类型仍由路由 schema 决定。对于 `t.Files()`，请将输入元素的 `FileList` 转为 `File[]`；如果 schema 要求文件而非普通 `Blob`，请使用 `File`。
+
+假设服务器代码如下：
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/image', {
+        body: t.Object({
+            title: t.String(),
+            image: t.Files()
+        })
+    }, ({ body: { image, title } }) => title)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+然后在客户端上传：
+```ts
+// client.ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const api = treaty<App>('localhost:3000')
+
+const images = document.getElementById('images') as HTMLInputElement
+
+const { data } = await api.image.post({
+    title: "Misono Mika",
+    image: Array.from(images.files ?? []),
+})
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
