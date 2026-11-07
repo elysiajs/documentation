@@ -14,8 +14,9 @@ test('Eden owns its root and descendants without matching similarly named routes
 		expect(productOf(pathname)).toBe('elysia')
 })
 
-test('a locale prefix keeps the product of the English page it translates', () => {
-	expect(productOf('/ja/eden/treaty/overview/')).toBe('eden')
-	expect(productOf('/zh-cn/reference/classes/elysia/')).toBe('reference')
+test('a locale prefix keeps the product of the page it belongs to', () => {
+	expect(productOf('/en/eden/treaty/overview/')).toBe('eden')
+	expect(productOf('/en/reference/classes/elysia/')).toBe('reference')
 	expect(productOf('/th/essential/route/')).toBe('elysia')
+	expect(productOf('/th/eden/')).toBe('eden')
 })

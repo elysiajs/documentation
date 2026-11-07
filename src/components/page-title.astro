@@ -3,7 +3,7 @@ import StarlightPageTitle from '@astrojs/starlight/components/PageTitle.astro'
 import Breadcrumb from './breadcrumb'
 import UntranslatedNotice from './untranslated-notice.astro'
 
-const { entry, sidebar, hasSidebar } = Astro.locals.starlightRoute
+const { entry, sidebar, hasSidebar, locale } = Astro.locals.starlightRoute
 const hasInlineTitle = entry.data.template === 'splash'
 ---
 
@@ -17,6 +17,7 @@ const hasInlineTitle = entry.data.template === 'splash'
 					client:load
 					sidebar={sidebar}
 					title={entry.data.title}
+					root={{ label: 'Docs', href: `/${locale ?? 'en'}/table-of-content/` }}
 				/>
 			)}
 			<StarlightPageTitle />

@@ -34,7 +34,13 @@ const PRODUCTS: Record<
 	}
 }
 
-export function ProductSwitcher({ product }: { product: Product }) {
+export function ProductSwitcher({
+	product,
+	locale = 'en'
+}: {
+	product: Product
+	locale?: string
+}) {
 	const { label, icon: Icon } = PRODUCTS[product]
 	return (
 		<Dropdown
@@ -75,7 +81,7 @@ export function ProductSwitcher({ product }: { product: Product }) {
 							</span>
 						),
 						icon: <Icon size={20} />,
-						href,
+						href: `/${locale}${href}`,
 						current: key === product
 					})
 				),

@@ -34,7 +34,7 @@ Casing: **sentence case everywhere** — body, headings, UI, eyebrows, badges (N
 
 ### Technical writing
 
-Use [route.mdx](../content/docs/essential/route.mdx) as a reference for the teaching sequence: introduce a concept, show the smallest useful example, then explain what happens. Follow the sentence-case rule above even where the reference page still uses title case.
+Use [route.mdx](../content/docs/en/essential/route.mdx) as a reference for the teaching sequence: introduce a concept, show the smallest useful example, then explain what happens. Follow the sentence-case rule above even where the reference page still uses title case.
 
 - Teach one idea per section. Start with what the reader can do, such as "Add `?` after a parameter name to make it optional."
 - Keep paragraphs to one or two short sentences. Use lists for alternatives, ordered steps, or matching rules; use tables when readers need to compare values.

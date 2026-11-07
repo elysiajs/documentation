@@ -14,16 +14,22 @@ import '../components/ui/ripple.css'
 
 import { dedupeCodeStyles } from './dedupeCodeStyles'
 import { productOf } from '../lib/product'
+import { localizeFallbackLinks } from '../lib/localize-fallback-links'
 
 import Aurora from '../components/aurora.astro'
 import Assistant from '../components/assistant/assistant'
 import { HangingStars } from '../components/hanging-stars'
 
-const { hasSidebar } = Astro.locals.starlightRoute
+const route = Astro.locals.starlightRoute
+const { hasSidebar } = route
 // production can't reach Arona without a Turnstile site key
 const assistant =
 	!import.meta.env.PROD || Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY)
-const content = dedupeCodeStyles(await Astro.slots.render('default'))
+const content = localizeFallbackLinks(
+	dedupeCodeStyles(await Astro.slots.render('default')),
+	route.locale,
+	route.isFallback
+)
 const contentAnimation = {
 	old: { name: 'none' },
 	new: {
@@ -106,6 +112,7 @@ const contentAnimation = {
 						</Button>
 						<ProductSwitcher
 							product={productOf(Astro.url.pathname)}
+							locale={Astro.locals.starlightRoute.locale}
 							client:load
 						/>
 					</div>

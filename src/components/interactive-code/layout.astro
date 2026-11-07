@@ -142,6 +142,10 @@ const pageHeadings = [
 					client:load
 					sidebar={Astro.locals.starlightRoute.sidebar}
 					title={Astro.locals.starlightRoute.entry.data.title}
+					root={{
+						label: 'Docs',
+						href: `/${Astro.locals.starlightRoute.locale ?? 'en'}/table-of-content/`
+					}}
 				/>
 			</div>
 		)

@@ -1,5 +1,5 @@
 import { getCollection, render } from 'astro:content'
-import { stripLocale } from '../lib/locales.mjs'
+import { isTranslated } from '../lib/locales.mjs'
 import { productOf } from '../lib/product'
 import { searchDocuments } from '../search/build'
 
@@ -11,7 +11,7 @@ export async function GET() {
 		'docs',
 		({ id, data }) =>
 			!data.draft &&
-			stripLocale(id) === id &&
+			!isTranslated(id) &&
 			productOf(`/${id}/`) !== 'reference'
 	)
 	const documents = (

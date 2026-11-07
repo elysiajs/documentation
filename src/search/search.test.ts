@@ -148,6 +148,28 @@ test('Eden overview and plugin searches use canonical URLs in the Eden product',
 	expect(engine.search('createPlugin', 'elysia')).toEqual([])
 })
 
+test('locale-prefixed search results keep their URL and derive sections after the locale', () => {
+	const page = (id: string) =>
+		searchDocuments(id, { title: 'Page' }, 'Details.', [])[0]
+
+	expect(page('en/essential/route')).toMatchObject({
+		href: '/en/essential/route/',
+		section: 'Essential'
+	})
+	expect(page('en/eden/treaty/overview')).toMatchObject({
+		href: '/en/eden/treaty/overview/',
+		section: 'Treaty'
+	})
+	expect(page('en/reference/classes/elysia')).toMatchObject({
+		href: '/en/reference/classes/elysia/',
+		section: 'Classes'
+	})
+	expect(page('tutorial/request/index')).toMatchObject({
+		href: '/tutorial/request/',
+		section: 'Tutorial'
+	})
+})
+
 test('section matches navigate to compiled anchors and keep snippets local', async () => {
 	const body = `# Cookie
 
