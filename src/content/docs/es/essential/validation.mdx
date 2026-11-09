@@ -1,0 +1,710 @@
+---
+title: Validación
+description: Revisa peticiones y respuestas con schemas que, además, les dan sus tipos de TypeScript a tus handlers.
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import { Card } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+
+export const examples = {
+    "body": [
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"name\":\"Elysia\"}",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Elysia\"\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"name\":1}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"/name\"\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/body · {\"alias\":\"Elysia\"}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "query": [
+        {
+            "method": "GET",
+            "displayPath": "/query?name=Elysia",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Elysia\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?name=1",
+            "response": "HTTP 200\n\n{\n  \"name\": \"1\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?alias=Elysia",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "coercion": [
+        {
+            "method": "GET",
+            "displayPath": "/query?id=1",
+            "response": "HTTP 200\n\n1"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?id=salt",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"/id\"\n}"
+        }
+    ],
+    "params": [
+        {
+            "method": "GET",
+            "displayPath": "/id/1",
+            "response": "HTTP 200\n\n{\n  \"id\": 1\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/id/a",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"params\",\n  \"property\": \"/id\"\n}"
+        }
+    ],
+    "headers": [
+        {
+            "method": "GET",
+            "displayPath": "/headers · Authorization: Bearer 12345",
+            "response": "HTTP 200\n\nBearer 12345"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/headers · sin Authorization",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"headers\",\n  \"property\": \"root\"\n}"
+        }
+    ],
+    "responseStatus": [
+        {
+            "method": "GET",
+            "displayPath": "/response",
+            "response": "HTTP 200\n\n{\n  \"name\": \"Jane Doe\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/response?fail=true",
+            "response": "HTTP 400\n\n{\n  \"error\": \"Something went wrong\"\n}"
+        }
+    ],
+    "guard": [
+        {
+            "method": "GET",
+            "displayPath": "/none",
+            "response": "HTTP 200\n\nhi"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"query\",\n  \"property\": \"root\"\n}"
+        },
+        {
+            "method": "GET",
+            "displayPath": "/query?name=a",
+            "response": "HTTP 200\n\na"
+        }
+    ],
+    "override": [
+        {
+            "method": "POST",
+            "displayPath": "/age · {\"age\":18}",
+            "response": "HTTP 200\n\n{\n  \"age\": 18\n}"
+        },
+        {
+            "method": "POST",
+            "displayPath": "/age · {\"name\":\"Elysia\"}",
+            "response": "HTTP 422\n\n{\n  \"type\": \"validation\",\n  \"code\": \"validation\",\n  \"title\": \"Validation Error\",\n  \"status\": 422,\n  \"on\": \"body\",\n  \"property\": \"root\"\n}"
+        }
+    ]
+};
+
+export const steps = [
+    {
+        label: 'Empieza con un parámetro',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: 'Agrega un schema',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)`,
+        highlight: [5, 6, 7],
+    },
+    {
+        label: 'Valida otro campo',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        }),
+        query: t.Object({
+            name: t.String()
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)`,
+        highlight: [8, 9, 10, 11],
+    },
+    {
+        label: 'Revisa la respuesta',
+        code: `import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({
+            id: t.Number()
+        }),
+        query: t.Object({
+            name: t.String()
+        }),
+        response: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)`,
+        highlight: [11, 12, 13, 14],
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Validación</h1>
+
+Elysia permite validar con schemas de forma declarativa.
+
+Describe cómo deberían verse tus datos y Elysia se encarga del resto.
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## Empieza con un parámetro
+
+Sin un schema, `/id/:id` captura un string.
+
+- `/id/42` le pasa al handler `"42"`
+- `/id/hello` le pasa `"hello"`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Agrega un schema
+
+Al agregar `t.Number()` al schema de `params`, Elysia convierte el valor numérico de la ruta y lo valida.
+
+- `/id/42` le pasa al handler el número `42`
+- `/id/hello` no pasa la validación y responde con status `422`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Valida otro campo
+
+Agrega `query` para exigir también un query parameter `name`.
+
+- `/id/42?name=Elysia` devuelve `{ id: 42, name: 'Elysia' }`.
+- `/id/42` no pasa la validación porque falta `name`.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Revisa la respuesta
+
+Agrega `response` para imponer la forma de los datos que devuelve el handler.
+
+Si el handler devolviera campos de más, Elysia también los quitaría de la respuesta.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## TypeBox
+
+Elysia ofrece `t`, un export con nombre de `elysia`, como constructor de schemas por defecto. Es un wrapper de [TypeBox](https://github.com/sinclairzx81/typebox) con funciones extra para validar APIs.
+
+Estos schemas permiten revisiones en runtime, inferencia de TypeScript y generación de schemas para [OpenAPI](/plugins/openapi/). No necesitas escribir una interfaz aparte para los mismos datos.
+
+## Standard Schema
+
+También puedes usar una librería que implemente [Standard Schema](https://github.com/standard-schema/standard-schema), incluidas las versiones compatibles de **Zod**, **Valibot**, ArkType, Effect Schema, Yup y Joi, y usarlas de forma intercambiable.
+
+```ts
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
+
+new Elysia()
+    .get('/id/:id', {
+        params: z.object({
+            id: z.coerce.number()
+        }),
+        query: v.object({
+            name: v.literal('Lilith')
+        })
+    }, ({ params: { id }, query: { name } }) => ({ id, name }))
+    .listen(3000)
+```
+
+`/id/42?name=Lilith` pasa los dos schemas. Usa la API de coerción de la librería que elijas cuando quieras convertir un string de la URL en otro tipo.
+
+## Tipos de schema
+
+Elige la propiedad que corresponde a los datos que quieres revisar:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card id="body-schema" href="#body" title="Schema de body">
+
+Body revisa el body de la petición HTTP ya parseado, como JSON o los campos de un formulario.
+
+</Card>
+
+<Card id="query-schema" href="#query" title="Schema de query">
+
+Query revisa el query string que va después del `?` en la URL.
+
+</Card>
+
+<Card id="params-schema" href="#params" title="Schema de params">
+
+Params revisa los valores capturados de la ruta.
+
+</Card>
+
+<Card id="headers-schema" href="#headers" title="Schema de headers">
+
+Headers revisa los headers de la petición entrante.
+
+</Card>
+
+<Card id="cookie-schema" href="/patterns/cookie/#cookie-schema" title="Schema de cookie">
+
+Cookie revisa los valores de las cookies entrantes.
+
+</Card>
+
+<Card id="response-schema" href="#response" title="Schema de response">
+
+Response revisa los datos que devuelve el handler.
+
+</Card>
+
+</div>
+
+Pasa estas propiedades en el segundo argumento de la ruta, antes de su handler:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        query: t.Object({ name: t.String() }),
+        params: t.Object({ id: t.Number() })
+    }, () => 'Hello World!')
+    .listen(3000)
+```
+
+| URL | Schema de query | Schema de params |
+| --- | --- | --- |
+| `/id/a` | Falla | Falla |
+| `/id/1?name=Elysia` | Pasa | Pasa |
+| `/id/1?alias=Elysia` | Falla | Pasa |
+| `/id/a?name=Elysia` | Pasa | Falla |
+| `/id/a?alias=Elysia` | Falla | Falla |
+
+Los dos schemas tienen que pasar para que se ejecute el handler. La tabla describe cada revisión por separado; la respuesta de error puede informar solo la primera parte que falló.
+
+## Body
+
+El body de un [mensaje HTTP](https://developer.mozilla.org/es/docs/Web/HTTP/Messages). Puede ser JSON, los campos de un formulario o un archivo.
+
+<CodePlayground examples={examples.body}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/body', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => body)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| Body JSON | Validación |
+| --- | --- |
+| `{ "name": "Elysia" }` | Pasa |
+| `{ "name": 1 }` | Falla |
+| `{ "alias": "Elysia" }` | Falla |
+| Sin body | Falla |
+
+### Archivos
+
+Usa [t.File()](/patterns/typebox/#file) para un solo archivo y [t.Files()](/patterns/typebox/#files) para varios archivos.
+
+Revisar el `type` requiere un detector de tipo de archivo. Instala `file-type` y regístralo una vez con `setFileTypeDetector`; sin un detector, toda subida que se revise contra `type` falla la validación.
+
+```ts
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+    .post('/body', {
+        body: t.Object({
+            file: t.File({ type: 'image/*' }),
+            multipleFiles: t.Files()
+        })
+    }, ({ body }) => ({
+        file: body.file.name,
+        count: body.multipleFiles.length
+    }))
+    .listen(3000)
+```
+
+### Archivos (Standard Schema)
+
+Las librerías de Standard Schema no obtienen automáticamente las revisiones de archivos de Elysia. Agrega un refinamiento con el helper asíncrono `fileType()` y elige de forma explícita el parseo multipart:
+
+```ts
+import { Elysia, fileType, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+import { z } from 'zod'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+    .post('/body', {
+        parse: 'formdata',
+        body: z.object({
+            file: z.file().refine(
+                (file) => fileType(file, 'image/jpeg'),
+                'Expected a JPEG file'
+            )
+        })
+    }, ({ body }) => ({ name: body.file.name }))
+```
+
+Aquí también es el detector registrado el que revisa los bytes. Un validador que solo lee `file.type` no comprueba qué contiene realmente el archivo subido.
+
+## Query
+
+Los query parameters van después del `?` en una URL. Descríbelos con un schema de objeto:
+
+<CodePlayground examples={examples.query}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({ name: t.String() })
+    }, ({ query }) => query)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| Petición | Validación |
+| --- | --- |
+| `/query?name=Elysia` | Pasa |
+| `/query?name=1` | Pasa; `name` es un string |
+| `/query?alias=Elysia` | Falla |
+| `/query?name=ElysiaJS&alias=Elysia` | Pasa |
+| `/query` | Falla |
+
+<span id="specs-1" />
+
+### Coerción
+
+Elysia convierte automáticamente los schemas de TypeBox aplicables en `query`. Por ejemplo, `t.Number()` acepta un string numérico y le pasa un número al handler:
+
+<CodePlayground examples={examples.coercion}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({ id: t.Number() })
+    }, ({ query: { id } }) => id)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| Petición | Resultado |
+| --- | --- |
+| `/query?id=1` | Número `1` |
+| `/query?id=salt` | Error de validación, status `422` |
+
+Consulta el [comportamiento de tipos de Elysia](/patterns/typebox/#elysia-behavior) para ver otras conversiones automáticas.
+
+### Arrays
+
+Declara un schema de array para validar cada valor y aceptar valores separados por comas:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/query', {
+        query: t.Object({
+            name: t.Array(t.String()),
+            squad: t.String()
+        })
+    }, ({ query }) => query)
+    .listen(3000)
+```
+
+Con este schema, las dos peticiones de abajo producen `{ name: ['rapi', 'anis', 'neon'], squad: 'counter' }`.
+
+#### Formato de nuqs
+
+Usa comas para separar los valores, como en el formato de arrays de [nuqs](https://nuqs.47ng.com):
+
+```text
+/query?name=rapi,anis,neon&squad=counter
+```
+
+El schema de array le indica a Elysia que separe `name`. Sin él, un valor separado por comas se queda como string.
+
+#### Formato de formulario HTML
+
+Repite una clave para enviar varios valores, como hace un formulario HTML con los inputs que tienen el mismo nombre:
+
+```text
+/query?name=rapi&name=anis&name=neon&squad=counter
+```
+
+Declara el schema de array para conservar y validar cada valor repetido. Sin él, una propiedad normal de query es un solo string; una clave repetida se queda con su último valor.
+
+## Params
+
+Los parámetros de ruta capturan valores de una ruta como `/id/:id`. Usa un schema de objeto para validar los campos capturados:
+
+<CodePlayground examples={examples.params}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', {
+        params: t.Object({ id: t.Number() })
+    }, ({ params }) => params)
+```
+
+</CodePlayground>
+
+| Petición | Resultado |
+| --- | --- |
+| `/id/1` | `{ "id": 1 }` |
+| `/id/a` | Error de validación, status `422` |
+
+## Headers
+
+Usa `headers` para exigir ciertos headers en la petición entrante:
+
+<CodePlayground examples={examples.headers}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/headers', {
+        headers: t.Object({ authorization: t.String() })
+    }, ({ headers }) => headers.authorization)
+```
+
+</CodePlayground>
+
+Por defecto, los schemas de headers permiten propiedades adicionales. Tu cliente igual puede enviar headers como `accept`; los campos que declaraste tienen que cumplir sus schemas.
+
+Si quieres rechazar cualquier header adicional, define `additionalProperties: false`:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/headers', {
+        headers: t.Object(
+            { authorization: t.String() },
+            { additionalProperties: false }
+        )
+    }, ({ headers }) => headers.authorization)
+```
+
+## Response
+
+Usa `response` para revisar los datos que devuelve tu handler:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/response', {
+        response: t.Object({ name: t.String() })
+    }, () => ({ name: 'Jane Doe (ZZZ)' }))
+```
+
+TypeScript revisa el tipo que devuelve el handler, y Elysia valida la respuesta en runtime.
+
+### Response por status
+
+Asocia códigos de status a schemas cuando cada resultado tiene una forma de respuesta distinta:
+
+<CodePlayground examples={examples.responseStatus}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/response', {
+        response: {
+            200: t.Object({ name: t.String() }),
+            400: t.Object({ error: t.String() })
+        }
+    }, ({ query, status }) => {
+        if (query.fail === 'true')
+            return status(400, { error: 'Something went wrong' })
+
+        return { name: 'Jane Doe (ZZZ)' }
+    })
+```
+
+</CodePlayground>
+
+`/response` devuelve la forma de `200`. `/response?fail=true` devuelve la forma de `400`. Usa `status()` para mantener la relación entre el código de status y el tipo de su body.
+
+## Errores de validación
+
+Personaliza el [mensaje de validación](/patterns/error-handling/#schema-messages) de un schema, maneja las fallas con un [hook de error](/patterns/error-handling/#error-hook) o inspecciona la [lista de errores](/patterns/error-handling/#error-list).
+
+Para schemas con nombre que se comparten entre rutas y la documentación de OpenAPI, consulta los [modelos de referencia](/patterns/openapi/#reference-model).
+
+## TypeScript
+
+Usa `UnwrapSchema` para obtener el tipo de TypeScript que se infiere de un schema:
+
+```ts
+import { t, type UnwrapSchema } from 'elysia'
+
+const MyType = t.Object({
+    hello: t.Literal('Elysia')
+})
+
+type MyType = UnwrapSchema<typeof MyType>
+```
+
+Un schema puede aportar validación en runtime, coerción, tipos de TypeScript y metadatos de OpenAPI. Mantén la definición en un solo lugar y deja que cada uso la siga.
+
+## Guard
+
+Usa `.guard()` para aplicar un schema a varias rutas. Afecta a las rutas que se registran después de él:
+
+<CodePlayground examples={examples.guard}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/none', () => 'hi')
+    .guard({
+        query: t.Object({ name: t.String() })
+    })
+    .get('/query', ({ query: { name } }) => name)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+| Petición | Resultado |
+| --- | --- |
+| `/none` | `hi` |
+| `/none?name=a` | `hi` |
+| `/query` | Error de validación, status `422` |
+| `/query?name=a` | `a` |
+
+Para una misma propiedad del schema, un guard posterior tiene prioridad sobre uno anterior. El schema propio de una ruta tiene prioridad sobre el schema que hereda de un guard.
+
+### Tipo de schema del guard
+
+Los guards permiten dos formas de manejar schemas que se superponen.
+
+#### Reemplazo (por defecto)
+
+El schema más cercano reemplaza al schema heredado para esa propiedad. Por ejemplo, el `body` de una ruta reemplaza al `body` de un guard; no combina sus campos.
+
+<CodePlayground examples={examples.override}>
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({ body: t.Object({ name: t.String() }) })
+    .post('/age', {
+        body: t.Object({ age: t.Number() })
+    }, ({ body }) => body)
+```
+
+</CodePlayground>
+
+`{ "age": 18 }` cumple con `/age` aunque no tenga el campo `name`.
+
+#### Merge
+
+Define `schema: 'merge'` cuando se deben cumplir tanto el schema del guard como el de la ruta:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        schema: 'merge',
+        response: t.Object({ title: t.String() })
+    })
+    .get('/article', {
+        response: t.Object({ title: t.String(), author: t.String() })
+    }, () => ({ title: 'Hello Elysia', author: 'Nagisa' }))
+```
+
+La respuesta tiene que cumplir el schema del guard y el de la ruta. Merge acumula sus restricciones en lugar de reemplazar el schema heredado.
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
