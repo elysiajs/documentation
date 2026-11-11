@@ -1,0 +1,324 @@
+---
+title: การ deploy ขึ้น production
+description: วิธี build และ deploy เซิร์ฟเวอร์ Elysia ทั้งในรูปแบบ binary, JavaScript bundle หรือ container
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">การ deploy ขึ้น production</h1>
+
+เราสามารถ build เซิร์ฟเวอร์ให้เป็นไฟล์ executable หรือ JavaScript bundle แล้วนำไปรันโดยตรง หรือจะรันผ่าน container ก็ได้เช่นกัน
+
+## โหมด cluster
+
+ปกติแล้ว Elysia จะรันโค้ด JavaScript บน main thread เพียงเธรดเดียวต่อหนึ่งโปรเซส ถ้าอยากกระจาย request ไปยังหลายคอร์ของ CPU ให้รันหลายโปรเซสพร้อมกัน โดยสร้างไฟล์ **index.ts** เพื่อ import เซิร์ฟเวอร์หลักจาก **server.ts** แล้ว fork worker ย่อยออกมาตามจำนวนคอร์ของ CPU ที่มีอยู่:
+
+```ts
+// index.ts
+import cluster from 'node:cluster'
+import os from 'node:os'
+import process from 'node:process'
+import { server } from './server'
+
+if (cluster.isPrimary) {
+  	for (let i = 0; i < os.availableParallelism(); i++)
+    	cluster.fork()
+} else {
+	server.listen({ port: 3000, reusePort: true })
+   
+  	console.log(`Worker ${process.pid} started`)
+}
+```
+
+```ts
+// server.ts
+import { Elysia } from 'elysia'
+
+export const server = new Elysia()
+	.get('/', () => 'Hello World!')
+```
+
+
+วิธีนี้จะช่วยให้มั่นใจได้ว่าเซิร์ฟเวอร์ Elysia ของเราทำงานบน CPU หลายคอร์พร้อมกัน
+
+:::tip
+
+ตัวอย่างนี้รันด้วย Bun โดยกำหนดค่า `reusePort: true` เอาไว้ เพื่อให้ worker แต่ละตัวสามารถแชร์พอร์ต `3000` ร่วมกันได้บนระบบปฏิบัติการ Linux ส่วนบนระบบอื่นๆ แนะนำให้ใช้ process manager หรือ load balancer แล้วกำหนดแยกพอร์ตกันแทน
+
+:::
+
+## คอมไพล์เป็นไฟล์ binary
+ก่อนนำขึ้น production เราแนะนำให้คอมไพล์ Elysia รวมเป็นไฟล์ binary เดี่ยวๆ เพราะอาจช่วยลดทั้งขนาดไฟล์และการใช้หน่วยความจำลงได้อย่างมาก โดยใช้คำสั่งนี้:
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun \
+	--outfile server \
+	src/index.ts
+```
+
+คำสั่งนี้จะสร้างไฟล์ executable ชื่อ `server` ขึ้นมาสำหรับระบบปฏิบัติการและสถาปัตยกรรม CPU ที่เราเลือก
+
+การคอมไพล์เป็น binary จะช่วยลดขั้นตอนการเริ่มระบบ (startup work) และขนาดของ deployment ลงได้ ทั้งนี้แนะนำให้ลองวัดการใช้หน่วยความจำจริงกับ workload บน production ของคุณด้วย เพราะผลลัพธ์อาจแตกต่างกันไปตามลักษณะของแอป
+
+คำสั่งนี้อาจจะดูยาวนิดหน่อย ลองมาดูกันทีละตัวว่ามีอะไรบ้าง:
+1. **--compile** สั่งคอมไพล์ TypeScript ให้ออกมาเป็นไฟล์ binary
+2. **--minify-whitespace** ตัดช่องว่างและเว้นวรรคที่ไม่จำเป็นออก
+3. **--minify-syntax** ย่อไวยากรณ์ JavaScript ให้กะทัดรัดเพื่อลดขนาดไฟล์
+4. **--target bun** ปรับแต่ง binary ให้เหมาะกับการรันด้วย Bun runtime
+5. **--outfile server** กำหนดชื่อไฟล์ binary ผลลัพธ์เป็น `server`
+6. **src/index.ts** ไฟล์เริ่มต้น (entry point) ของเซิร์ฟเวอร์เรา
+
+เวลาจะเปิดเซิร์ฟเวอร์ ก็สั่งรันไฟล์ binary ได้เลย:
+```bash
+./server
+```
+
+เมื่อคอมไพล์เป็น binary เรียบร้อยแล้ว เครื่องปลายทางก็ไม่จำเป็นต้องติดตั้ง `Bun` หรือ runtime อื่นเพิ่มเติม ซึ่งสะดวกมาก เพราะเพียงแค่คัดลอกไฟล์ binary ไปวางบนเครื่องที่มีระบบและสถาปัตยกรรมตรงกัน ก็พร้อมสั่งรันได้ทันที
+
+### Target
+ถ้าต้องการ build ไฟล์ binary ไปรันบนแพลตฟอร์มอื่น สามารถระบุค่า `--target` ให้ตรงกับระบบปลายทางได้เลย:
+
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun-linux-x64 \
+	--outfile server \
+	src/index.ts
+```
+
+เลือก target ให้ตรงกับระบบปฏิบัติการและสถาปัตยกรรม CPU ของเครื่องปลายทาง รวมถึง C library ถ้าเป็น Linux:
+
+| Target | ระบบปฏิบัติการ | สถาปัตยกรรม CPU | C library |
+| --- | --- | --- | --- |
+| `bun-linux-x64` | Linux | x64 | glibc |
+| `bun-linux-arm64` | Linux | arm64 | glibc |
+| `bun-windows-x64` | Windows | x64 | — |
+| `bun-windows-arm64` | Windows | arm64 | — |
+| `bun-darwin-x64` | macOS | x64 | — |
+| `bun-darwin-arm64` | macOS | arm64 | — |
+| `bun-linux-x64-musl` | Linux | x64 | musl |
+| `bun-linux-arm64-musl` | Linux | arm64 | musl |
+
+สามารถดู [รายการ target ล่าสุดของ Bun](https://bun.com/docs/compiler/executables#supported-targets) เพิ่มเติมได้เวลาที่ต้องการ build ไปรันบนเครื่องอื่น
+
+### ทำไมถึงไม่ใช้ --minify
+Bun มีแฟล็ก `--minify` ที่ช่วยย่อขนาดไฟล์ binary ให้เล็กลงได้ แต่ถ้าเราใช้งาน [OpenTelemetry](/plugins/opentelemetry/) แฟล็กนี้จะย่อชื่อฟังก์ชันเหลือเพียงตัวอักษรตัวเดียว ทำให้ trace ดูยากกว่าที่ควรเป็น เพราะ OpenTelemetry ต้องใช้ชื่อฟังก์ชัน
+
+ส่วนถ้าโปรเจกต์ไม่ได้ใช้ OpenTelemetry ก็สามารถใช้แฟล็ก `--minify` ได้เลย:
+```bash
+bun build \
+	--compile \
+	--minify \
+	--outfile server \
+	src/index.ts
+```
+
+### สิทธิ์การรัน (Permission)
+บน Linux บางดิสโทรอาจจะยังรันไฟล์ binary ไม่ได้ทันที ถ้าเจอปัญหานี้ แนะนำให้เพิ่มสิทธิ์ execute ให้กับไฟล์ก่อน:
+```bash
+chmod +x ./server
+
+./server
+```
+
+<span id="unknown-random-chinese-error" />
+
+### CPU ที่ไม่รองรับ (Unsupported CPU)
+ถ้าไฟล์ executable รันแล้วเกิดข้อผิดพลาด illegal-instruction ให้ลองเช็กทั้งสถาปัตยกรรมที่ไฟล์ถูก build มา และเวอร์ชันของ Bun ที่ใช้ build
+
+ในปัจจุบัน Bun บนสถาปัตยกรรม x64 จำเป็นต้องมีชุดคำสั่ง SSE4.2 ขึ้นไป และจะเลือกคำสั่ง CPU รุ่นใหม่ๆ มาใช้ตอนรันอัตโนมัติ ในเวอร์ชันก่อนๆ เคยมีการแยก target ระหว่างรุ่นพื้นฐาน (baseline) กับรุ่นใหม่ที่ใช้ AVX2 แต่ในเวอร์ชันปัจจุบันยังคงรับคำต่อท้าย (suffix) ของ target แบบเดิมไว้เพื่อความเข้ากันได้ และจะคอมไพล์ออกมาเป็น binary แบบเดียวกัน
+
+ดังนั้นควรเลือก target ให้ตรงกับเครื่องที่จะนำไป deploy และตรวจเช็ก [ข้อกำหนดด้าน CPU ของ Bun](https://bun.com/docs/compiler/executables#supported-targets) ก่อน build ใหม่อีกครั้ง และอย่าเพิ่งสรุปว่า CPU ขาดฟีเจอร์ แค่เพราะเห็นข้อความ error แปลกๆ
+
+## คอมไพล์เป็นไฟล์ JavaScript
+ถ้าเราติดตั้ง Bun แยกไว้บนเซิร์ฟเวอร์อยู่แล้ว ก็สามารถเลือก bundle ออกมาเป็นไฟล์ JavaScript แทนได้ ซึ่งวิธีนี้ใช้งานได้ทั้งบน Windows, Linux และ macOS ที่ Bun รองรับ:
+
+```bash
+bun build \
+	--target bun \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile ./dist/index.js \
+	src/index.ts
+```
+
+คำสั่งนี้จะได้ไฟล์ JavaScript รวมไฟล์เดียวที่พร้อมนำไป deploy บนเซิร์ฟเวอร์:
+```bash
+NODE_ENV=production bun ./dist/index.js
+```
+
+## Docker
+การใช้ไฟล์ executable ที่คอมไพล์แล้ว ช่วยให้เราเลือกใช้ base image ขนาดเล็กสำหรับ runtime ได้ ตัวอย่างนี้จะ build ไฟล์บน Bun image ก่อน แล้วค่อยคัดลอกไฟล์ผลลัพธ์ไปไว้ใน Distroless image:
+
+`Dockerfile`
+
+```dockerfile
+FROM oven/bun AS build
+
+WORKDIR /app
+
+# Cache packages installation
+COPY package.json package.json
+COPY bun.lock bun.lock
+
+RUN bun install --frozen-lockfile
+
+COPY ./src ./src
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
+```
+
+### OpenTelemetry
+ถ้าเราใช้ [OpenTelemetry](/patterns/opentelemetry) บนเซิร์ฟเวอร์ production ตัว OpenTelemetry จะต้องเข้าไปแก้โค้ดของไลบรารีใน `node_modules/<library>` ตอนรัน (monkey-patch) ดังนั้นเพื่อให้ instrumentation ทำงานได้อย่างถูกต้อง เราจึงต้องระบุไลบรารีที่ต้องการเก็บข้อมูล trace เป็น external module เพื่อแยกไม่ให้ Bun มัดรวม (bundle) เข้าไปในไฟล์ binary
+
+ตัวอย่างเช่น ถ้าเราใช้ `@opentelemetry/instrumentation-pg` เพื่อเก็บข้อมูล trace ของไลบรารี `pg` เราจะต้องแยก `pg` ออกจากการ bundle และให้มั่นใจว่าโค้ดจะยังคง import มาจากโฟลเดอร์ `node_modules/pg`
+
+เราสามารถสั่งแยก `pg` ออกเป็น external module ได้ด้วยแฟล็ก `--external pg`:
+```bash
+bun build --compile --external pg --outfile server src/index.ts
+```
+
+คำสั่งนี้จะบอกให้ Bun ไม่ต้อง bundle `pg` เข้าไปในไฟล์ผลลัพธ์ แต่จะดึงมาจากโฟลเดอร์ `node_modules` ตอนรันจริงแทน ดังนั้นบนเซิร์ฟเวอร์ production จึงยังต้องเก็บโฟลเดอร์ `node_modules` ไว้ด้วย
+
+แนะนำให้ใส่แพ็กเกจที่ต้องใช้บน production ไว้ใน `dependencies` ของไฟล์ `package.json` เสมอ แล้วใช้คำสั่ง `bun install --production` เพื่อติดตั้งเฉพาะ dependency สำหรับ production
+
+อย่าลืมใส่ทุกแพ็กเกจที่แยกเป็น external ไว้ใน `dependencies`:
+
+```json
+{
+	"dependencies": {
+		"pg": "^8.23.1"
+	},
+	"devDependencies": {
+		"@elysia/opentelemetry": "2.0.0-beta.2",
+		"@opentelemetry/instrumentation-pg": "^0.74.0",
+		"@types/pg": "^8.23.1",
+		"elysia": "2.0.0-beta.32"
+	}
+}
+```
+
+หลังจากรันคำสั่ง build เสร็จแล้ว ให้รันคำสั่งนี้บนเซิร์ฟเวอร์ production:
+```bash
+bun install --production
+```
+
+หากในโฟลเดอร์ `node_modules` ยังคงมี development dependency ติดมาอยู่ ก็สามารถลบโฟลเดอร์ `node_modules` ทิ้ง แล้วติดตั้ง production dependency ใหม่อีกรอบได้
+
+### Monorepo
+ถ้าเราออกแบบโครงสร้างโปรเจกต์เป็นแบบ Monorepo เราอาจจำเป็นต้องดึง `packages` ภายในที่เกี่ยวข้องเข้ามาด้วย
+
+อย่างถ้าใช้ Turborepo เราสามารถวาง Dockerfile ไว้ในโฟลเดอร์ของแอป เช่น **apps/server/Dockerfile** ได้เลย (เครื่องมือจัดการ Monorepo ตัวอื่นอย่าง Lerna ก็ใช้วิธีเดียวกัน)
+
+สมมุติว่า Monorepo ของเราใช้ Turborepo และมีโครงสร้างโฟลเดอร์ตามนี้:
+- apps
+	- server
+		- **Dockerfile (วางไฟล์ Dockerfile ไว้ที่นี่)**
+- packages
+	- config
+
+จากนั้นเราสามารถสั่ง build Dockerfile จากโฟลเดอร์รูทของ Monorepo ได้เลย (ไม่ใช่รูทของแอปอย่าง apps/server):
+```bash
+docker build -f apps/server/Dockerfile -t elysia-mono .
+```
+
+โดยมีเนื้อหาใน Dockerfile หน้าตาประมาณนี้:
+`apps/server/Dockerfile`
+
+```dockerfile
+FROM oven/bun:1 AS build
+
+WORKDIR /app
+
+# Cache packages
+COPY package.json package.json
+COPY bun.lock bun.lock
+
+COPY apps/server/package.json ./apps/server/package.json
+COPY packages/config/package.json ./packages/config/package.json
+
+RUN bun install --frozen-lockfile
+
+COPY apps/server ./apps/server
+COPY packages/config ./packages/config
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	apps/server/src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
+```
+
+## Railway
+[Railway](https://railway.app) เป็นหนึ่งในแพลตฟอร์ม deploy ยอดนิยม
+
+การ deploy บน Railway ควรอ่านพอร์ตจาก environment variable `PORT` เสมอ แทนที่จะกำหนดค่าตายตัว
+
+เราจึงต้องปรับเซิร์ฟเวอร์ Elysia ให้รับค่าจาก environment variable `PORT` เพื่อให้ตรงตามการตั้งค่าพอร์ตของ Railway
+
+แทนที่จะระบุเลขพอร์ตตายตัว เราสามารถใช้ `process.env.PORT` พร้อมใส่ fallback สำหรับช่วง development ได้ดังนี้:
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', 'Hello Elysia')
+	.listen({ port: process.env.PORT ?? 3000, hostname: '0.0.0.0' })
+```
+
+การเขียนแบบนี้จะทำให้ Elysia รับพอร์ตที่ Railway กำหนดมาให้ได้อัตโนมัติ
+
+:::tip
+
+อย่าลืมตั้งค่า hostname เป็น `0.0.0.0` เพื่อให้ Railway สามารถส่งทราฟฟิกเข้ามายังเซิร์ฟเวอร์ผ่านพอร์ตที่กำหนดได้
+
+:::
+
+</div>
+</InteractiveDocLayout>
+</div>

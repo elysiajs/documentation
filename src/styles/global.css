@@ -12,6 +12,8 @@
 
 html {
 	scroll-behavior: smooth;
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in oklab, var(--color-ink-soft) 20%, transparent) transparent;
 }
 
 html[data-has-sidebar] {

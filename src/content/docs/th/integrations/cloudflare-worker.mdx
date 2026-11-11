@@ -1,0 +1,250 @@
+---
+title: "Cloudflare Worker"
+description: "สร้าง handler ของ Elysia v2 สำหรับ Cloudflare Workers พร้อมตั้งค่าการ deploy, static assets และ bindings"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import { FileTree } from "../../../../components/ui/file-tree";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Cloudflare Worker</h1>
+
+Elysia รันบน Cloudflare Workers ได้ เพราะใช้ request และ response แบบ Web Standard
+
+ใน Elysia v2 ไม่ต้องใช้ Cloudflare adapter แล้ว โดยเลือกได้สองวิธี:
+1. คอมไพล์ route handler ตอนเริ่มทำงาน
+2. คอมไพล์ route handler ตอน build
+
+### คอมไพล์ตอนเริ่มทำงาน
+
+วิธีเริ่มต้นที่ง่ายที่สุดคือคอมไพล์ตอนเริ่มทำงาน
+
+1. เพิ่ม `compile` ก่อน export app:
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Cloudflare Worker!')
+    .compile()
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+แต่การคอมไพล์ handler ตอนเริ่มทำงานจะมี overhead อยู่บ้าง ซึ่งเลี่ยงได้โดยย้ายไปคอมไพล์ตอน build แทน
+
+### คอมไพล์ตอน build
+
+1. ใช้ [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update) สร้างโปรเจกต์:
+
+```bash
+wrangler init elysia-on-cloudflare
+bun add elysia@rc
+bun add -d esbuild
+```
+
+2. สร้าง Elysia app แล้ว export ทั้ง Elysia instance และ fetch handler ของ Worker:
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+// export here for AOT
+export const app = new Elysia()
+    .get('/', () => 'Hello Cloudflare Worker!')
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+3. ตอน build ให้คอมไพล์ handler ของ Elysia สำหรับ `workerd`:
+
+```ts title="build.ts"
+import * as esbuild from 'esbuild'
+import { aot } from 'elysia/plugin/aot/esbuild'
+
+await esbuild.build({
+    entryPoints: ['src/index.ts'],
+    bundle: true,
+    format: 'esm',
+    outfile: 'dist/worker.js',
+    conditions: ['workerd', 'worker', 'browser', 'import'],
+    platform: 'browser',
+    target: 'esnext',
+    external: ['node:*', 'cloudflare:*'],
+    plugins: [aot('src/index.ts', { target: 'workerd' })]
+})
+```
+
+4. ชี้ Wrangler ไปที่ bundle ที่ build ออกมา จะใช้ JSONC หรือ TOML ก็ได้:
+
+```jsonc title="wrangler.jsonc"
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "elysia-on-cloudflare",
+    "main": "dist/worker.js",
+    "compatibility_date": "2025-09-06",
+    "compatibility_flags": ["nodejs_compat"],
+    "build": { "command": "bun build.ts" }
+}
+```
+
+```toml title="wrangler.toml"
+name = "elysia-on-cloudflare"
+main = "dist/worker.js"
+compatibility_date = "2025-09-06"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "bun build.ts"
+```
+
+ค่า compatibility date และ flag `nodejs_compat` ตรงกับ Cloudflare fixture ของ Elysia v2 ให้คง flag นี้ไว้สำหรับการตั้งค่านี้ คำแนะนำใน v1 ที่ให้เอา flag ออกใช้กับกรณีนี้ไม่ได้
+
+5. เริ่ม development server:
+
+```bash
+wrangler dev
+```
+
+Worker จะรันบนเครื่องที่ `http://localhost:8787` เมื่อต้องการ deploy ให้รัน `wrangler deploy`
+
+### pnpm
+ถ้าการตั้งค่า pnpm ที่ใช้อยู่ไม่ได้ติดตั้ง peer dependencies ให้ติดตั้งเพิ่มสำหรับ Elysia v2 ด้วยคำสั่งนี้:
+
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## ข้อจำกัด
+ข้อจำกัดที่ทราบในปัจจุบันของการใช้ Elysia บน Cloudflare Workers มีดังนี้:
+
+1. อย่าคาดว่า `file()` และ [Static plugin](/plugins/static) จะเข้าถึงไฟล์บนเครื่องที่เราใช้พัฒนาได้ เพราะ Workers ใช้ [virtual filesystem](https://developers.cloudflare.com/workers/runtime-apis/nodejs/fs/) แม้จะตั้ง compatibility settings ตามข้างบนแล้วก็ตาม ถ้ามีไฟล์ที่อยากเผยแพร่ ให้ใช้ [static assets](#ไฟล์-static) แทน
+2. ให้สร้าง [OpenAPI types](/blog/openapi-type-gen/) ไว้ตั้งแต่ตอน build เพราะ Worker อ่านไฟล์ TypeScript ที่อยู่นอก bundle ไม่ได้
+3. เลี่ยง plugin ที่สร้าง object ที่ใช้ได้เฉพาะตอน runtime ไว้ตั้งแต่ตอน build หรือตอนโหลดโมดูล เพราะ Workers จำกัดการทำงานบางอย่างไว้ให้ทำได้เฉพาะตอนจัดการ request
+4. ถ้าจะคืนค่า ให้เขียน handler เป็นฟังก์ชัน เพื่อให้การสร้าง response เกิดขึ้นตอนกำลังจัดการ request:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+```
+
+## ไฟล์ static
+ใช้ [ระบบเสิร์ฟไฟล์ static ที่ Cloudflare มีให้ในตัว](https://developers.cloudflare.com/workers/static-assets/) เพื่อเผยแพร่โฟลเดอร์ `public` ได้เลย ไม่ต้องพึ่ง static plugin ที่อ่านไฟล์จาก filesystem
+
+เพิ่มค่าต่อไปนี้ลงใน config ของ Wrangler:
+
+
+```jsonc title="wrangler.jsonc"
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "elysia-on-cloudflare",
+    "main": "dist/worker.js",
+    "compatibility_date": "2025-09-06",
+    "compatibility_flags": ["nodejs_compat"],
+    "build": { "command": "bun build.ts" },
+    "assets": { "directory": "public" }
+}
+```
+
+```toml title="wrangler.toml"
+name = "elysia-on-cloudflare"
+main = "dist/worker.js"
+compatibility_date = "2025-09-06"
+compatibility_flags = ["nodejs_compat"]
+assets = { directory = "public" }
+
+[build]
+command = "bun build.ts"
+```
+
+
+สร้างโฟลเดอร์ `public` แล้ววางไฟล์ static ไว้ข้างใน
+
+เช่น ถ้ามีโครงสร้างโฟลเดอร์แบบนี้:
+
+<FileTree
+    client:load
+    variant="card"
+    mono
+    dense
+    nodes={[
+        {
+            id: 'public',
+            name: 'public',
+            children: [
+                { id: 'public/kyuukurarin.mp4', name: 'kyuukurarin.mp4' },
+                {
+                    id: 'public/static',
+                    name: 'static',
+                    children: [
+                        { id: 'public/static/mika.webp', name: 'mika.webp' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'src',
+            name: 'src',
+            children: [{ id: 'src/index.ts', name: 'index.ts' }]
+        },
+        { id: 'wrangler.toml', name: 'wrangler.toml' }
+    ]}
+    defaultExpanded={['public', 'public/static', 'src']}
+    className="not-content my-6"
+/>
+
+ก็จะเข้าถึงไฟล์ static ได้จาก path เหล่านี้:
+- **http://localhost:8787/kyuukurarin.mp4**
+- **http://localhost:8787/static/mika.webp**
+
+## Bindings
+เรียกใช้ bindings ของ Cloudflare Workers ได้ด้วยการ import `env` จาก `cloudflare:workers` โดยให้ import ไว้ข้างใน handler ขั้นตอน build จะได้ไม่ต้อง resolve โมดูลที่มีแค่ใน Worker
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+export const app = new Elysia()
+    .get('/', async () => {
+        const { env } = await import('cloudflare:workers')
+        return `Hello ${await env.KV.get('my-key')}`
+    })
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+ตั้งค่า binding ชื่อ `KV` ใน Wrangler แล้วสร้าง TypeScript type ของมันด้วย `wrangler types` ส่วน import `cloudflare:*` ที่ตั้งเป็น external ไว้ จะยังใช้ได้ใน Worker runtime ตามปกติ
+
+ดูรายละเอียดเพิ่มเติมเรื่อง bindings ได้ที่ [Cloudflare Workers: Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global)
+
+## การคอมไพล์แบบ AoT
+ช่วงแรกของ v1 Workers ต้องตั้ง `aot: false` ไว้ ต่อมา Cloudflare เพิ่ม [Function compilation during startup](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#enable-eval-during-startup) เข้ามา และ Cloudflare adapter ของ Elysia 1.4.7 ก็ใช้ความสามารถนี้ โดยต้องตั้ง compatibility date ตั้งแต่ `2025-06-01` ขึ้นไป
+
+Elysia v2 ใช้วิธีคอมไพล์ที่ต่างออกไป โดย build plugin `aot` ข้างบนจะย้ายการสร้าง handler ไปทำตอน build ส่วน `target: 'workerd'` ทำให้ได้โค้ดสำหรับ Workers แม้ตัว build จะรันบน Bun ก็ตาม
+
+การเรียก `.compile()` เป็นการ warm up handler ของ Elysia ใน runtime ปัจจุบัน แต่ใช้แทนขั้นตอน build ของ Worker ไม่ได้ และใน v2 ก็ไม่มี option `aot: false` ใน constructor แล้ว
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .compile()
+```
+
+ตัวอย่างการ deploy และ binding ข้างบนยังต้องทดสอบกับบัญชี Cloudflare และเวอร์ชัน dependency ที่ใช้จริง
+
+</div>
+</InteractiveDocLayout>
+</div>

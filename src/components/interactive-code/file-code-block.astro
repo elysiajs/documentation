@@ -32,4 +32,8 @@ const { label = 'Code examples' } = Astro.props;
 		border: 0;
 		box-shadow: none;
 	}
+
+	.file-code-block :global(.expressive-code pre) {
+		border-radius: calc(1.5rem - 0.375rem);
+	}
 </style>

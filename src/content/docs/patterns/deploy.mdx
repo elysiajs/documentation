@@ -23,6 +23,7 @@ A single Elysia process runs its JavaScript on one main thread. Run several proc
 Let's create an **index.ts** file that imports our main server from **server.ts** and forks multiple workers based on the number of CPU cores available.
 
 ```ts
+// index.ts
 import cluster from 'node:cluster'
 import os from 'node:os'
 import process from 'node:process'
@@ -116,7 +117,7 @@ Choose a target matching the deployment OS, architecture, and Linux C library:
 | `bun-linux-x64-musl` | Linux | x64 | musl |
 | `bun-linux-arm64-musl` | Linux | arm64 | musl |
 
-See [Bun’s current target list](https://bun.com/docs/bundler/executables#supported-targets) when choosing a build for another machine.
+See [Bun’s current target list](https://bun.com/docs/compiler/executables#supported-targets) when choosing a build for another machine.
 
 ### Why not --minify
 Bun has a `--minify` flag that will minify the binary.
@@ -149,7 +150,7 @@ If an executable fails with an illegal-instruction error, check both its archite
 
 Current Bun x64 builds require SSE4.2 and select newer CPU instructions at runtime. Older releases distinguished baseline and modern AVX2 targets; current releases accept those suffixes for compatibility but resolve them to the same binary.
 
-Match the target to the deployment machine and check [Bun’s CPU requirements](https://bun.com/docs/bundler/executables#supported-targets) before rebuilding. An unfamiliar error message by itself doesn't identify a missing CPU feature.
+Match the target to the deployment machine and check [Bun’s CPU requirements](https://bun.com/docs/compiler/executables#supported-targets) before rebuilding. An unfamiliar error message by itself doesn't identify a missing CPU feature.
 
 ## Compile to JavaScript
 Bundle to JavaScript when you want to keep Bun as a separately installed runtime. This works on supported Windows, Linux, and macOS hosts.
