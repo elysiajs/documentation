@@ -5,6 +5,7 @@ import {
 	IconBrandOpenai,
 	IconChevronDown,
 	IconCopy,
+	IconMarkdown,
 	IconSparkles
 } from '@tabler/icons-react'
 import { Dropdown } from './ui/dropdown'
@@ -26,6 +27,14 @@ export function assistantPageLink(
 		`Read ${pageUrl.href} so I can ask questions about this page.`
 	)
 	return destination.href
+}
+
+export function markdownPageLink(page: string) {
+	const pageUrl = new URL(page)
+	pageUrl.search = ''
+	pageUrl.hash = ''
+	pageUrl.pathname = `${pageUrl.pathname.replace(/\/$/, '')}.md`
+	return pageUrl.href
 }
 
 const segment =
@@ -121,6 +130,31 @@ export default function PageActions({ markdown }: { markdown: string }) {
 								</>
 							),
 							onSelect: copy
+						},
+						{
+							icon: (
+								<IconMarkdown
+									size={20}
+									stroke={1.5}
+									aria-hidden
+								/>
+							),
+							label: (
+								<>
+									<span className="flex items-center gap-1">
+										View Markdown
+										<IconArrowUpRight
+											size={14}
+											aria-hidden
+										/>
+									</span>
+									<span className="block text-xs font-normal text-ink-soft">
+										Open this page as plain Markdown
+									</span>
+								</>
+							),
+							href: pageUrl ? markdownPageLink(pageUrl) : undefined,
+							target: '_blank'
 						},
 						...(['ChatGPT', 'Claude'] as const).map((provider) => ({
 							icon:

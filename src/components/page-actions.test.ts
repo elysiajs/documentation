@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { docToMarkdown } from '../../scripts/export-docs';
-import { assistantPageLink } from './page-actions';
+import { assistantPageLink, markdownPageLink } from './page-actions';
 
 test('copy keeps the title and code while leaving page actions out of the document', () => {
 	const page = docToMarkdown(`<div data-interactive-doc-layout><h1>Routing</h1>
@@ -20,4 +20,9 @@ test('assistant links encode the actual page URL without its search or fragment'
 		expect(link.searchParams.get('q')).toBe('Read https://elysiajs.com/essential/route/ so I can ask questions about this page.');
 		expect(link.href).not.toContain('private');
 	}
+});
+
+test('markdown link appends .md to the page path without its trailing slash, search or fragment', () => {
+	expect(markdownPageLink('https://elysiajs.com/essential/route/?token=private#params')).toBe('https://elysiajs.com/essential/route.md');
+	expect(markdownPageLink('https://elysiajs.com/eden')).toBe('https://elysiajs.com/eden.md');
 });
