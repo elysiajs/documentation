@@ -1,0 +1,367 @@
+---
+title: Enrutamiento interactivo
+description: Construye un router de Elysia paso a paso.
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import { Card, CardTitle } from '../../../../components/ui/card';
+import { NumberedCards } from '../../../../components/ui/numbered-cards';
+import '../../../../styles/routing.css';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+export const demo1 = new Elysia()
+	.get('/', 'Elysia')
+	.get('/hi', 'Hello!');
+
+export const demo2 = new Elysia()
+    .get('/user/1', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/*', ({ params }) => params['*'])
+
+export const demo3 = new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .get('/profile', 'Profile')
+    )
+
+export const demo4 = new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .get('/profile', 'Profile')
+
+export const steps = [
+	{
+		label: 'Ruta estática',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/hi', 'Hi')
+    .listen(3000)`,
+	},
+	{
+		label: 'Ruta dinámica',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .listen(3000)`,
+	},
+	{
+		label: 'Acceder a los parámetros',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/:id/profile', ({ params: { id } }) => id)
+    .listen(3000)`,
+	},
+		{
+		label: 'Parámetros opcionales',
+		code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/:id?/profile', ({ params: { id } }) => id)
+    .listen(3000)`,
+	},
+	{
+		label: 'Comodín',
+		code: `import { Elysia } from 'elysia'
+		
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', () => 'hello user')
+    .get('/user/*', ({ params }) => params['*'])
+    .listen(3000)`,
+	}
+];
+
+<div class="routing-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Enrutamiento</h1>
+
+Una [API REST](https://es.wikipedia.org/wiki/Transferencia_de_Estado_Representacional) usa la ruta y el método de cada petición para decidir qué handler ejecutar.
+
+<CodePlayground elysia={demo1}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Elysia')
+    .get('/hi', 'Hello!')
+    .listen(3000)
+```
+
+</CodePlayground>
+
+> Al llamar a `.listen` se inicia un servidor web en el puerto 3000.
+
+Podemos entrar a nuestro servidor desde http://localhost:3000.
+
+- `/` con el método `GET` devuelve `Elysia`.
+- `/hi` con el método `GET` devuelve `Hello!`.
+- Cualquier otra ruta devuelve un `404`.
+
+Cuando visitas una URL en tu navegador, este envía una petición `GET`.
+
+## Tipos de ruta
+
+Las rutas se pueden agrupar en 3 tipos:
+
+</div>
+
+<NumberedCards items={[
+    { title: 'Rutas estáticas', children: 'coinciden de forma exacta' },
+    { title: 'Rutas dinámicas', children: 'algunas partes son dinámicas y se pueden capturar como parámetros' },
+    { title: 'Comodines', children: 'coinciden con todo lo que resta de la ruta' },
+]} />
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## Ruta estática
+
+Una ruta estática coincide de forma exacta, sin sorpresas.
+
+- `/` coincide solo con `/`
+- `/hi` coincide solo con `/hi`
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Ruta dinámica
+
+Agrega `:` seguido de un nombre para capturar su valor.
+
+`/user/:id` coincide con `/user/42`, `/user/abc` y `/user/hello-world`.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Acceder a los parámetros
+
+Lee el valor capturado desde `params` en tu handler.
+
+Cuando `/user/42/profile` coincide con `/user/:id/profile`, `params.id` vale `42`. El handler lo devuelve como respuesta.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### Parámetros opcionales
+
+Agrega `?` después del nombre de un parámetro para que sea opcional.
+
+`/user/:id?/profile` coincide tanto con `/user/42/profile` como con `/user/profile`.
+
+Si el parámetro no está presente, su valor será `undefined`.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## Comodín
+
+Si agregas `*` al final de una ruta, coincidirá con cualquier ruta que venga después.
+
+`/user/*` coincide con rutas de varios segmentos, como `/user/hello-world/profile`. En este ejemplo, `/user/42` sigue yendo a `/user/:id`, porque las rutas dinámicas tienen prioridad sobre los comodines (consulta la [prioridad de rutas](#prioridad-de-rutas)).
+
+Para `/user/hello-world/profile`, `params['*']` vale `hello-world/profile`.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<section class="content-layout">
+
+## Prioridad de rutas
+
+Elysia resuelve las rutas en este orden:
+
+1. rutas estáticas
+2. rutas dinámicas
+3. comodines
+
+<CodePlayground elysia={demo2}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user/1', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/*', ({ params }) => params['*'])
+    .listen(3000)
+```
+
+</CodePlayground>
+
+</section>
+
+
+<section class="content-layout">
+
+---
+
+## Verbos HTTP
+
+Los [verbos HTTP](https://developer.mozilla.org/es/docs/Web/HTTP/Reference/Methods) son los métodos de las peticiones, como `GET`, `POST` o `PUT`.
+
+<div class="routing-methods">
+
+<Card className="routing-method-card">
+
+<CardTitle>GET</CardTitle>
+
+Obtiene datos del servidor. Los navegadores lo usan para visitar una página.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>HEAD</CardTitle>
+
+Parecido a **GET**, pero solo devuelve los headers, sin el body.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>POST</CardTitle>
+
+Envía datos al servidor, normalmente para crear un recurso.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>PUT</CardTitle>
+
+Reemplaza un recurso con los datos que envías.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>PATCH</CardTitle>
+
+Actualiza una parte de un recurso.
+
+</Card>
+
+<Card className="routing-method-card">
+
+<CardTitle>DELETE</CardTitle>
+
+Elimina un recurso.
+
+</Card>
+
+</div>
+
+Para definir un método estándar, usa el método correspondiente de la instancia de Elysia:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', 'Hi GET!')
+	.post('/', 'Hi POST!')
+	.put('/', 'Hi PUT!')
+	.patch('/', 'Hi PATCH!')
+	.delete('/', 'Hi DELETE!')
+	.listen(3000)
+```
+
+</section>
+
+<section class="content-layout">
+
+### Método personalizado
+
+Usa `.method` con el nombre del método como primer argumento. El resto funciona igual que con los demás métodos.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.method('PROPFIND', '/', 'Hi PROPFIND!')
+	.listen(3000)
+```
+
+### Todos los métodos
+
+Captura todos los métodos con `.all`:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.all('/', 'Hi ALL!')
+	.listen(3000)
+```
+
+---
+
+
+## Grupos
+
+Puedes agrupar varias rutas que comparten el mismo prefijo con `.group`:
+
+<CodePlayground elysia={demo3}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .group('/user', (app) =>
+        app
+            .post('/sign-in', 'Sign in')
+            .get('/profile', 'Profile')
+    )
+    .listen(3000)
+```
+
+</CodePlayground>
+
+Es como escribir `/user/sign-in` y `/user/profile` por separado.
+
+### Prefijo
+
+Si toda la instancia comparte el mismo prefijo, podemos definirlo en el constructor:
+
+<CodePlayground elysia={demo4}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ prefix: '/user' })
+    .post('/sign-in', 'Sign in')
+    .get('/profile', 'Profile')
+```
+
+</CodePlayground>
+
+La diferencia con `.group` es que el prefijo se aplica a todas las rutas de la instancia, mientras que el grupo solo se aplica a las rutas dentro del callback.
+
+</section>
+
+</InteractiveDocLayout>
+
+</div>
