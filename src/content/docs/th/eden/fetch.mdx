@@ -1,0 +1,119 @@
+---
+title: Eden Fetch
+description: เรียก route ของ Elysia ผ่าน fetch-style client
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Fetch</h1>
+
+เป็นทางเลือกในรูปแบบ Fetch-like สำหรับใช้ทดแทน Eden Treaty
+
+ด้วย Eden Fetch สามารถช่วยให้คุณคุยกับเซิร์ฟเวอร์ Elysia แบบ type-safe ผ่าน Fetch API ได้
+
+---
+
+เริ่มจาก export type ของเซิร์ฟเวอร์ Elysia ที่มีอยู่ออกมาก่อน:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+จากนั้น import type ของเซิร์ฟเวอร์ แล้วเรียกใช้ API ของ Elysia ฝั่ง client ได้เลย:
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data: pong } = await fetch('/hi', {})
+
+// response type: 1895
+const { data: id } = await fetch('/id/:id', {
+    params: {
+        id: '1895'
+    }
+})
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
+})
+```
+
+## การจัดการ Error
+สามารถจัดการ error ได้แบบเดียวกับ Eden Treaty ได้เลย:
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            throw error.value
+            break
+
+        case 500:
+        case 502:
+            throw error.value
+            break
+
+        default:
+            throw error.value
+            break
+    }
+}
+
+const { id, name } = nendoroid
+```
+
+## ควรใช้ Eden Fetch แทน Eden Treaty เมื่อไหร่
+เลือกรูปแบบการเขียน request ที่เข้ากับโปรเจกต์ของคุณได้เลย ไม่มี client ตัวไหนที่ type-check เร็วกว่าเสมอไป
+
+จะเลือกใช้ตัวไหนก็ขึ้นอยู่กับที่ตกลงกันในทีม แต่ก็ขอแนะนำให้ใช้ [Eden Treaty](/eden/treaty/overview) มากกว่านะ
+
+สำหรับ API ที่ใหญ่มาก เช่น **มีมากกว่า 500 route** ที่ frontend ตัวเดียวเรียกใช้ ลองเทียบความเร็วของการตรวจ TypeScript และความลื่นของ editor ในโปรเจกต์จริงของคุณดูก่อน Eden Fetch อาจคุ้มที่จะลองเมื่อการ infer type ของ Treaty เริ่มหนัก (จำนวน route อย่างเดียวไม่ได้รับประกันเรื่องประสิทธิภาพ)
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
