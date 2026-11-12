@@ -1,0 +1,276 @@
+---
+title: "React Email"
+description: "在 Bun 上运行时，可以直接使用 React Email，并在代码中导入 JSX 来发送邮件。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">React Email</h1>
+
+React Email 是一个让你可以使用 React 组件创建邮件的库。
+
+在 Bun 上运行时，你可以直接编写 React Email 组件，并将 JSX 导入代码中发送邮件。
+
+## 安装
+运行以下命令安装 React Email：
+
+```bash
+bun add -d react-email
+bun add @react-email/components react react-dom
+```
+
+然后将此脚本添加到 `package.json`：
+```json
+{
+  "scripts": {
+    "email": "email dev --dir src/emails"
+  }
+}
+```
+
+我们建议将邮件模板放在 `src/emails` 目录中，这样就能直接导入 JSX 文件。
+
+### TypeScript
+如果使用 TypeScript，可能需要在 `tsconfig.json` 中添加以下配置：
+
+```json
+{
+  "compilerOptions": {
+	"jsx": "react"
+  }
+}
+```
+
+## 编写第一封邮件
+创建文件 `src/emails/otp.tsx`，内容如下：
+
+```tsx
+import * as React from 'react'
+import { Tailwind, Section, Text } from '@react-email/components'
+
+export default function OTPEmail({ otp }: { otp: number }) {
+    return (
+        <Tailwind>
+            <Section className="flex justify-center items-center w-full min-h-screen font-sans">
+                <Section className="flex flex-col items-center w-76 rounded-2xl px-6 py-1 bg-mauve-50">
+                    <Text className="text-xs font-medium text-violet-500">
+                        Verify your Email Address
+                    </Text>
+                    <Text className="text-mauve-500 my-0">
+                        Use the following code to verify your email address
+                    </Text>
+                    <Text className="text-5xl font-bold pt-2">{otp}</Text>
+                    <Text className="text-mauve-400 font-light text-xs pb-4">
+                        This code is valid for 10 minutes
+                    </Text>
+                    <Text className="text-mauve-600 text-xs">
+                        Thank you for joining us
+                    </Text>
+                </Section>
+            </Section>
+        </Tailwind>
+    )
+}
+
+OTPEmail.PreviewProps = {
+    otp: 123456
+}
+```
+
+你会看到我们使用 `@react-email/components` 创建邮件模板。
+
+这个库提供了一组组件，包括**使用 Tailwind 设置样式**的组件，并兼容 Gmail、Outlook 等邮件客户端。
+
+我们还为 `OTPEmail` 函数添加了 `PreviewProps`。它仅在 playground 中预览邮件时生效。
+
+## 预览邮件
+运行以下命令预览邮件：
+
+```bash
+bun email
+```
+
+这会打开浏览器窗口，显示邮件预览。
+
+![React Email playground 中展示的 OTP 邮件预览](/recipe/react-email/email-preview.webp)
+
+## 发送邮件
+
+以下示例展示如何通过邮件服务提供商发送邮件。如果要用于登录，请先为请求账户保存一个有时效且只能使用一次的验证码，并对验证码的生成和验证进行速率限制。
+要发送邮件，可以使用 `react-dom/server` 渲染邮件，再通过你选择的服务提供商发送：
+
+
+```tsx title="Nodemailer"
+import { Elysia, t } from 'elysia'
+import { randomInt } from 'node:crypto'
+
+import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import OTPEmail from './emails/otp'
+
+import nodemailer from 'nodemailer'
+
+const transporter = nodemailer.createTransport({
+  	host: 'smtp.gehenna.sh',
+  	port: 465,
+  	auth: {
+  		user: process.env.SMTP_USER,
+  		pass: process.env.SMTP_PASSWORD
+  	}
+})
+
+new Elysia()
+	.post('/otp', {
+		body: t.String({ format: 'email' })
+	}, async ({ body }) => {
+		// Random between 100,000 and 999,999
+  		const otp = randomInt(100_000, 1_000_000)
+
+		const html = renderToStaticMarkup(<OTPEmail otp={otp} />)
+
+        await transporter.sendMail({
+        	from: 'ibuki@gehenna.sh',
+           	to: body,
+           	subject: 'Verify your email address',
+            html,
+        })
+
+        return { success: true }
+	})
+	.listen(3000)
+```
+
+```tsx title="Resend"
+import { Elysia, t } from 'elysia'
+import { randomInt } from 'node:crypto'
+import * as React from 'react'
+
+import OTPEmail from './emails/otp'
+
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+new Elysia()
+	.post('/otp', {
+		body: t.String({ format: 'email' })
+	}, async ({ body }) => {
+		// Random between 100,000 and 999,999
+  		const otp = randomInt(100_000, 1_000_000)
+
+        await resend.emails.send({
+        	from: 'ibuki@gehenna.sh',
+           	to: body,
+           	subject: 'Verify your email address',
+            react: <OTPEmail otp={otp} />,
+        })
+
+        return { success: true }
+	})
+	.listen(3000)
+```
+
+```tsx title="AWS SES"
+import { Elysia, t } from 'elysia'
+import { randomInt } from 'node:crypto'
+
+import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import OTPEmail from './emails/otp'
+
+import { type SendEmailCommandInput, SES } from '@aws-sdk/client-ses'
+import { fromEnv } from '@aws-sdk/credential-providers'
+
+const ses = new SES({
+    credentials:
+        process.env.NODE_ENV === 'production' ? fromEnv() : undefined
+})
+
+new Elysia()
+	.post('/otp', {
+		body: t.String({ format: 'email' })
+	}, async ({ body }) => {
+		// Random between 100,000 and 999,999
+  		const otp = randomInt(100_000, 1_000_000)
+
+		const html = renderToStaticMarkup(<OTPEmail otp={otp} />)
+
+        await ses.sendEmail({
+            Source: 'ibuki@gehenna.sh',
+            Destination: {
+                ToAddresses: [body]
+            },
+            Message: {
+                Body: {
+                    Html: {
+                        Charset: 'UTF-8',
+                        Data: html
+                    }
+                },
+                Subject: {
+                    Charset: 'UTF-8',
+                    Data: 'Verify your email address'
+                }
+            }
+        } satisfies SendEmailCommandInput)
+
+        return { success: true }
+	})
+	.listen(3000)
+```
+
+```tsx title="Sendgrid"
+import { Elysia, t } from 'elysia'
+import { randomInt } from 'node:crypto'
+
+import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import OTPEmail from './emails/otp'
+
+import sendgrid from "@sendgrid/mail"
+
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+
+new Elysia()
+	.post('/otp', {
+		body: t.String({ format: 'email' })
+	}, async ({ body }) => {
+		// Random between 100,000 and 999,999
+  		const otp = randomInt(100_000, 1_000_000)
+
+    	const html = renderToStaticMarkup(<OTPEmail otp={otp} />)
+
+        await sendgrid.send({
+        	from: 'ibuki@gehenna.sh',
+           	to: body,
+           	subject: 'Verify your email address',
+            html
+        })
+
+        return { success: true }
+	})
+	.listen(3000)
+```
+
+
+
+:::tip
+
+在 Bun 上运行时，可以直接导入邮件组件，无需额外配置
+
+:::
+
+
+你可以在 [React Email 集成列表](https://react.email/docs/integrations/overview)中查看所有可用集成，并在 [React Email 文档](https://react.email/docs)中了解更多信息。
+
+</div>
+</InteractiveDocLayout>
+</div>

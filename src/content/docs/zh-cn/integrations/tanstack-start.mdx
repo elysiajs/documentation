@@ -1,0 +1,170 @@
+---
+title: "集成 TanStack Start"
+description: "Elysia 可以运行在 TanStack Start API 服务端路由中，并可在 Data Loader 或 TanStack React Query 中配合 Eden 实现类型安全。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">集成 TanStack Start</h1>
+
+Elysia 可以运行在 TanStack Start 服务端路由中。
+
+1. 创建 **src/routes/api.$.ts**
+2. 定义 Elysia 服务
+3. 在 **server.handlers** 中导出 Elysia 处理器
+
+
+```typescript title="src/routes/api.$.ts"
+import { Elysia } from 'elysia'
+
+import { createFileRoute } from '@tanstack/react-router'
+
+const app = new Elysia({
+	prefix: '/api'
+}).get('/', 'Hello Elysia!')
+
+const handle = ({ request }: { request: Request }) => app.fetch(request)
+
+export const Route = createFileRoute('/api/$')({
+	server: {
+		handlers: {
+			GET: handle,
+			POST: handle
+		}
+	}
+})
+```
+
+
+现在 Elysia 应该已运行在 **/api** 上。
+
+你可以按需在 **server.handlers** 中添加其他方法，以支持更多 HTTP 方法。
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## Eden
+
+你可以添加 [Eden](/eden)，获得类似 tRPC 的**端到端类型安全**。
+
+将 Elysia 实例移到独立模块中，避免页面组件导入路由文件：
+
+```typescript title="src/elysia.ts"
+import { Elysia } from 'elysia'
+
+export const app = new Elysia({
+	prefix: '/api'
+}).get('/', 'Hello Elysia!')
+```
+
+路由文件中只保留路由导出：
+
+```typescript title="src/routes/api.$.ts"
+import { createFileRoute } from '@tanstack/react-router'
+
+import { app } from '../elysia'
+
+const handle = ({ request }: { request: Request }) => app.fetch(request)
+
+export const Route = createFileRoute('/api/$')({
+	server: {
+		handlers: {
+			GET: handle,
+			POST: handle
+		}
+	}
+})
+```
+
+然后在单独的模块中创建 Eden Treaty 客户端：
+
+```typescript title="src/lib/eden.ts"
+import { treaty } from '@elysia/eden'
+import { createIsomorphicFn } from '@tanstack/react-start'
+
+import { app } from '../elysia'
+
+export const getTreaty = createIsomorphicFn()
+	.server(() => treaty(app).api)
+	.client(() => treaty<typeof app>('localhost:3000').api)
+```
+
+
+注意，我们使用 **createIsomorphicFn** 分别为服务端和客户端创建 Eden Treaty 实例：
+1. 在服务端，直接调用 Elysia，不产生 HTTP 开销。
+2. 在客户端，通过 HTTP 调用 Elysia 服务。
+
+TanStack Start 会从客户端构建中移除 `.server()` 实现，因此浏览器端只会使用 Elysia 实例的类型。
+
+在 React 组件中，你可以使用 `getTreaty`，以类型安全的方式调用 Elysia 服务。
+
+## Loader 数据
+TanStack Start 支持使用 **Loader** 在组件渲染前获取数据。
+
+
+```tsx title="src/routes/index.tsx"
+import { createFileRoute } from '@tanstack/react-router'
+
+import { getTreaty } from '../lib/eden'
+
+export const Route = createFileRoute('/')({
+	component: App,
+	loader: () => getTreaty().get().then((res) => res.data)
+})
+
+function App() {
+	const data = Route.useLoaderData()
+
+	return data
+}
+```
+
+
+在 loader 中调用 Elysia，会在 SSR 期间于服务端执行，不会产生 HTTP 开销。
+从一个页面导航到另一个页面时，loader 会在客户端运行，并向端点发起 HTTP 请求。
+
+Eden Treaty 会确保服务端和客户端都有类型安全。
+
+## React Query
+你也可以在客户端使用 React Query 与 Elysia 服务交互。
+
+
+```tsx title="src/routes/index.tsx"
+import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+
+import { getTreaty } from '../lib/eden'
+
+export const Route = createFileRoute('/')({
+	component: App
+})
+
+function App() {
+	const { data: response } = useQuery({
+		queryKey: ['get'],
+		queryFn: () => getTreaty().get()
+	})
+
+	return response?.data
+}
+```
+
+
+这也适用于 React Query 的缓存、分页、无限查询等功能。
+
+---
+
+更多 TanStack Start 信息请参阅 [TanStack Start 文档](https://tanstack.com/start)。
+
+</div>
+</InteractiveDocLayout>
+</div>

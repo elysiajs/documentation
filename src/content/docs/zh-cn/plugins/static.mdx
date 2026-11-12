@@ -1,0 +1,109 @@
+---
+title: Static 插件
+description: Static 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Static 插件</h1>
+
+此插件可以为 Elysia 服务器提供静态文件和目录。
+
+安装：
+```bash
+bun add @elysia/static@rc
+```
+
+然后这样使用：
+```ts
+import { Elysia } from 'elysia'
+import { staticPlugin } from '@elysia/static'
+
+new Elysia()
+    .use(staticPlugin())
+    .listen(3000)
+```
+
+默认情况下，Static 插件使用 `public` 目录，并以 `/public` 为路由前缀。
+
+假设项目结构如下：
+```text
+| - src
+  | - index.ts
+| - public
+  | - takodachi.png
+  | - nested
+    | - takodachi.png
+```
+
+可访问的路径为：
+- /public/takodachi.png
+- /public/nested/takodachi.png
+
+## 配置
+以下是插件支持的配置选项
+
+### assets
+默认值：`"public"`
+
+要作为静态资源公开的目录路径
+
+### prefix
+默认值：`"/public"`
+
+注册公开文件时使用的路径前缀
+
+### ignorePatterns
+默认值：`['.DS_Store', '.git', '.env']`
+
+提供静态文件时要忽略的文件列表
+
+:::caution
+自定义列表会替换默认列表。请记得重新加入 `.env` 和 `.git`，否则它们也会被公开提供。
+:::
+
+### staticLimit
+默认值：`1024`
+
+启用 [alwaysStatic](#alwaysstatic) 时，Static 插件最多会向 Router 注册这么多条静态路由。超出上限的文件会在请求时延迟解析，以减少内存用量，
+这让你可以在内存用量与性能之间权衡。
+
+### alwaysStatic
+默认值：`process.env.NODE_ENV === 'production'`
+
+设为 true 时，启动期间会将静态文件路径注册到 Router，数量上限为 [staticLimit](#staticlimit)。否则，文件会在请求时延迟解析。
+
+### headers
+默认值：`{}`
+
+设置静态文件的响应头
+
+### indexHTML
+默认值：`true`
+
+启用后，访问目录时可以返回该目录中的 `index.html` 文件。这不是针对任意不存在路径的单页应用兜底。
+
+## 用法模式
+以下是此插件的常见用法。
+
+- [单个文件](#single-file)
+
+<a id="single-file" />
+## 单个文件
+如果只想返回单个文件，可以使用 `file`，而不必使用 Static 插件。
+```ts
+import { Elysia, file } from 'elysia'
+
+new Elysia()
+    .get('/file', file('public/takodachi.png'))
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

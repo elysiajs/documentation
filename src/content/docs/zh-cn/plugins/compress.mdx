@@ -1,0 +1,136 @@
+---
+title: Compress 插件
+description: Compress 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro'
+import '../../../../styles/routing.css'
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Compress 插件</h1>
+
+官方 [`@elysia/compress`](https://github.com/elysiajs/elysia-compress) 插件会压缩符合条件的 HTTP 响应，并根据请求的 `Accept-Encoding` 请求头协商编码方式。可用的编解码器取决于运行时。
+
+## 安装
+
+```bash
+bun add @elysia/compress@rc
+```
+
+## 基本用法
+
+在需要使用压缩的路由之前注册 `compress`：
+
+```ts
+import { Elysia } from 'elysia'
+import { compress } from '@elysia/compress'
+
+new Elysia()
+	.use(compress())
+	.get('/', () => 'Hello Elysia! '.repeat(100))
+	.listen(3000)
+```
+
+默认情况下，对于长度已知或已缓冲的响应，插件使用 1,024 字节的压缩阈值。响应还必须通过媒体类型检查。如果客户端不接受任何可用编码，插件会直接返回未压缩的响应。
+
+## 控制路由
+
+`compress` 路由选项应放在处理器之前的钩子参数中。下面会为单个路由禁用压缩，同时保留其他路由的默认行为：
+
+```ts
+new Elysia()
+	.use(compress())
+	.get('/compressed', () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', { compress: false }, () => 'Hello Elysia! '.repeat(100))
+```
+
+将 `default` 设为 `false`，即可要求每个路由显式启用压缩：
+
+```ts
+new Elysia()
+	.use(compress({ default: false }))
+	.get('/compressed', { compress: true }, () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', () => 'Hello Elysia! '.repeat(100))
+```
+
+显式启用压缩的路由仍会遵循已配置的媒体类型、阈值、编码协商和跳过条件。
+
+## 选项
+
+```ts
+new Elysia().use(
+	compress({
+		encodings: ['gzip', 'deflate'],
+		threshold: 2048,
+		options: {
+			gzip: { level: 6 }
+		}
+	})
+)
+```
+
+| 选项        | 默认值                              | 说明                                                                                                                                                                 |
+| ----------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default`   | `true`                              | 默认压缩所有路由，除非某个路由设置了 `compress: false`。设为 `false` 后，路由必须设置 `compress: true` 才会压缩。 |
+| `encodings` | `['br', 'zstd', 'gzip', 'deflate']` | 设置服务器的编码优先顺序。插件会移除运行时不支持的编解码器。客户端的质量值优先；值相同时按服务器顺序决定。 |
+| `threshold` | `1024`                              | 设置长度已知或已缓冲响应的最小字节数。 |
+| `types`     | 内置判定函数                        | 对允许压缩的媒体类型返回 `true`。传入的媒体类型为不带参数的小写字符串；此函数会替代内置判定函数。 |
+| `stream`    | `true`                              | 压缩带有 `Transfer-Encoding: chunked` 标记的响应。设为 `false` 可跳过这类响应的压缩。 |
+| `options`   | `{}`                                | 设置 `br`、`zstd`、`gzip` 或 `deflate` 的选项。Brotli 和 Zstandard 接受各自的编解码参数；`gzip` 和 deflate 接受 `level` 等 zlib 选项。 |
+
+内置的 `types` 判定函数允许压缩以下媒体类型：
+
+- `text/*`
+- `application/json`
+- 以 `+json` 结尾的媒体类型
+
+插件始终跳过 `text/event-stream`。
+
+阈值适用于已声明 `Content-Length` 的响应或已缓冲的请求体。对于长度未知的分块响应，插件可能在得知最终大小之前就开始压缩。
+
+## 运行时编解码器支持
+
+插件可用哪些编解码器取决于运行时。运行时提供相应的 zlib 编解码器和 Web 流桥接时，插件会使用 Brotli、gzip 和 deflate。Zstandard 同样需要对应的 zlib 编解码器。如果 zlib 不可用，Web `CompressionStream` API 可提供 gzip 和 deflate。
+
+`CompressionStream` 回退方式不会应用自定义的 gzip 或 deflate `options`。请勿假设所有运行时都支持这四种编码。
+
+## 跳过压缩的条件
+
+出现以下任一情况时，插件会原样返回响应：
+
+- 请求方法为 `HEAD`
+- 状态码为 `204`、`205`、`206` 或 `304`
+- 响应已有 `Content-Encoding`
+- `Cache-Control` 包含 `no-transform`
+- 响应没有请求体，或使用 `text/event-stream`
+- `types` 判定函数拒绝该媒体类型
+- 已知长度或已缓冲的请求体小于 `threshold`
+- 响应采用分块传输，且 `stream` 为 `false`
+
+## 响应头
+
+压缩后的响应会带有 `Content-Encoding`，并在 `Vary` 中包含 `Accept-Encoding`。由于 `Content-Length`、`Content-Range`、`Accept-Ranges` 和 `Transfer-Encoding` 描述的是未压缩响应，插件会移除这些响应头。它还会将强 `ETag` 改为弱 `ETag`。
+
+如果符合条件的响应没有客户端接受的编码方式，响应将保持未压缩，并在 `Vary` 中包含 `Accept-Encoding`。
+
+## 保护包含机密的响应
+
+当同一响应同时包含机密和攻击者可控的输入时，压缩可能遭遇 BREACH 类响应大小攻击并泄露机密。请为该响应添加 `no-transform`：
+
+```ts
+app.get('/secret', ({ query, set }) => {
+	set.headers['cache-control'] = 'private, no-transform'
+
+	return { echo: query.q, token: session.token }
+})
+```
+
+插件检测到 `no-transform` 后会跳过压缩并返回响应。
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,54 @@
+---
+title: 单元测试
+description: 使用 Eden Treaty 直接测试 Elysia 实例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">单元测试</h1>
+
+如 [Eden Treaty 配置](/eden/treaty/config#urlorinstance)和[单元测试](/patterns/unit-test)所述，可以将 Elysia 实例直接传给 Eden Treaty，从而直接与 Elysia 服务器交互，无需发送网络请求。
+
+可以用这种方式同时编写具备端到端类型安全的单元测试和类型级测试。
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia().get('/hello', 'hi')
+const api = treaty(app)
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const { data } = await api.hello.get()
+
+        expect(data).toBe('hi')
+
+    })
+})
+```
+
+## 类型安全测试
+将测试目录包含在 `tsconfig.json` 中，然后使用项目的编译器选项运行 TypeScript。
+
+```bash
+bunx tsc --noEmit
+```
+
+这有助于确保客户端和服务器的类型完整性，尤其是在迁移期间。
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

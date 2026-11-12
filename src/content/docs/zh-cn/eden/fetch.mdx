@@ -1,0 +1,119 @@
+---
+title: Eden Fetch
+description: 使用带类型的 fetch 风格客户端调用 Elysia 路由。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Fetch</h1>
+
+类似 fetch 的 Eden Treaty 替代方案。
+
+使用 Eden Fetch，你可以通过 Fetch API 与 Elysia 服务器进行类型安全的交互。
+
+---
+
+首先导出现有 Elysia 服务器的类型：
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+然后导入服务器类型，并在客户端调用 Elysia API：
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data: pong } = await fetch('/hi', {})
+
+// response type: 1895
+const { data: id } = await fetch('/id/:id', {
+    params: {
+        id: '1895'
+    }
+})
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
+})
+```
+
+## 错误处理
+错误处理方式与 Eden Treaty 相同：
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            throw error.value
+            break
+
+        case 500:
+        case 502:
+            throw error.value
+            break
+
+        default:
+            throw error.value
+            break
+    }
+}
+
+const { id, name } = nendoroid
+```
+
+## 何时选择 Eden Fetch 而不是 Eden Treaty
+选择适合项目的请求语法即可。两种客户端并不存在普遍更快的类型检查方案。
+
+具体选择取决于你和团队的偏好；不过我们更推荐使用 [Eden Treaty](/eden/treaty/overview)。
+
+如果 API 很大，例如一个前端要调用**超过 500 个路由**，请在自己的项目中比较 TypeScript 检查速度和编辑器响应情况。当 Treaty 的类型推断开销较高时，可以试试 Eden Fetch；路由数量本身并不能保证性能表现。
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

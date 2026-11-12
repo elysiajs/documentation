@@ -1,0 +1,495 @@
+---
+title: 配置
+description: 配置 Elysia 实例、schema 规范化、运行时适配器和 HTTP 服务器选项。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">配置</h1>
+
+向构造函数传入对象即可配置 Elysia 实例。使用 `serve` 设置 HTTP 服务器默认值，或直接向 `.listen()` 传入服务器选项。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	prefix: '/v1',
+	normalize: true
+})
+```
+
+## abortSignal
+
+客户端中止请求时，停止处理该请求。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	abortSignal: true
+})
+```
+
+默认值：`true`。
+
+- `true` - 在每个生命周期阶段后检查中止状态，并跳过剩余钩子和处理器
+- `false` - 即使客户端断开连接，也运行所有钩子和处理器
+
+## adapter
+
+用于在不同环境中运行 Elysia 的运行时适配器。
+
+在 Bun 上，`.listen()` 会自动选择 Bun 适配器。使用其他运行时时，请提供对应的适配器。
+
+```ts
+import { Elysia } from 'elysia'
+import { BunAdapter } from 'elysia/adapter/bun'
+
+new Elysia({
+	adapter: BunAdapter
+})
+```
+
+## allowUnsafeValidationDetails
+
+选择生产环境的校验响应是否包含 schema 详情。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	allowUnsafeValidationDetails: true
+})
+```
+
+默认情况下，生产环境响应会省略详细问题、预期值和提交的数据。只有在确实要公开这些 schema 详情时才启用此选项；参阅[错误处理](/patterns/error-handling/#validation-detail-in-production)。
+
+默认值：`false`。
+
+- `true` - 在生产环境的错误响应中包含不安全的校验详情
+- `false` - 在生产环境的错误响应中排除不安全的校验详情
+
+## as
+
+为未显式指定作用域、注册在此实例上的生命周期钩子设置默认[作用域](/essential/plugin/#scope)。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	as: 'plugin'
+})
+```
+
+默认值：`local`。
+
+## cookie
+
+为实例中的所有 cookie 设置默认选项。参阅 [cookie 配置](/patterns/cookie/#config)。
+
+## detail
+
+设置此实例所有路由共享的 OpenAPI 元数据。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	detail: {
+		hide: true,
+		tags: ['elysia']
+	}
+})
+```
+
+## name
+
+定义实例名称，用于调试和[插件去重](/essential/plugin/#deduplication)。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	name: 'service.thing'
+})
+```
+
+## nativeStaticResponse
+
+使用运行时对内联响应值的优化处理。默认值为 `true`。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ nativeStaticResponse: true })
+    .get('/version', '1')
+    .listen(3000)
+```
+
+在 Bun 上，符合条件的静态值会注册到 `Bun.serve.routes`。对于上面的路由，原生响应的响应体与以下独立服务器相同：
+
+```ts
+Bun.serve({
+    port: 3000,
+    routes: { '/version': new Response('1') },
+    fetch: () => new Response('Not found', { status: 404 })
+})
+```
+
+需要在请求时执行钩子的路由，则可能会改用 Elysia 的常规请求处理流程。
+
+## normalize
+
+当 TypeBox schema 不允许额外属性时，选择如何处理未知属性。此选项不适用于 Standard Schema 校验器。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	normalize: true
+})
+```
+
+默认值：`true`（等同于 `exactMirror`）。
+
+- `true` 或 `exactMirror`：使用 [exact mirror](/blog/elysia-13/#exact-mirror) 移除未知属性
+
+- `typebox`：Elysia 会使用 [TypeBox 的 Value.Clean](https://github.com/sinclairzx81/typebox) 移除未知属性
+
+- `false`：如果请求或响应包含对应处理器 schema 未明确允许的字段，Elysia 就会抛出错误。
+
+## precompile
+
+选择是否在服务器启动前[预编译所有路由](/blog/elysia-10/#improved-startup-time)。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	precompile: true
+})
+```
+
+默认值：`false`。
+
+- `true`：在服务器启动前对所有路由运行 JIT 编译
+
+- `false`：按需动态编译路由
+
+除非你希望在预热期间编译路由，否则请保持为 `false`。请在启动服务器的根实例上设置此选项。
+
+## prefix
+
+为实例中的所有路由定义前缀。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	prefix: '/v1'
+})
+```
+
+定义前缀后，所有路由都会添加指定的前缀。
+
+### 示例
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ prefix: '/v1' }).get('/name', 'elysia') // Path is /v1/name
+```
+
+## sanitize
+
+校验时使用函数或函数数组转换 schema 中定义的字符串。请在根实例上设置此选项，并使用 exact-mirror 规范化（`true` 或 `exactMirror`）。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	sanitize: (value) => Bun.escapeHTML(value)
+})
+```
+
+## seed
+
+定义用于生成实例校验和的值，以便进行[插件去重](/essential/plugin/#deduplication)。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	seed: {
+		value: 'service.thing'
+	}
+})
+```
+
+该值可以是任意类型，不限于字符串、数字或对象。
+
+## strictPath
+
+是否严格处理路径。
+
+根据 [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3)，请求路径应与路由中定义的路径完全一致。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ strictPath: true })
+```
+
+默认值：`false`。
+
+- `true` - 遵循 [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3) 严格匹配路径
+- `false` - 容许路径末尾有或没有 `/`。
+
+### 示例
+
+```ts
+import { Elysia } from 'elysia'
+
+// Path can be either /name or /name/
+new Elysia({ strictPath: false }).get('/name', 'elysia')
+
+// Path can be only /name
+new Elysia({ strictPath: true }).get('/name', 'elysia')
+```
+
+## serve
+
+使用 Bun 的服务器选项配置底层 HTTP 服务器。
+
+构造函数中的 `serve` 对象提供默认值。传给 `.listen()` 的选项会覆盖对应字段。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ serve: { idleTimeout: 60 } })
+    .get('/', 'Hello Elysia')
+    .listen(3000)
+```
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		hostname: 'elysiajs.com',
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+此配置扩展了 [Bun Serve API](https://bun.sh/docs/api/http) 和 [Bun TLS](https://bun.sh/docs/api/http#tls)。
+
+### 请求体大小上限
+设置 `maxRequestBodySize`，以字节为单位限制 HTTP 请求体大小。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		maxRequestBodySize: 1024 * 1024 * 256 // 256MB
+})
+```
+
+默认请求体大小上限为 128MB（1024 * 1024 * 128）。
+WebSocket 消息大小限制是独立的。将 `maxPayloadLength` 传给 WebSocket 插件；参阅 [WebSocket 默认值](#websocket)。
+
+### HTTPS 和 TLS
+使用证书和私钥启用 TLS。`cert` 和 `key` 都是必填项。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+### 空闲超时
+
+将 `idleTimeout` 设为秒数，在指定时间后关闭空闲连接。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		// Increase idle timeout to 60 seconds
+		idleTimeout: 60
+})
+```
+
+默认空闲超时取决于 Bun 版本。如果应用需要特定时限，请显式设置。
+
+### 服务器选项参考
+
+以下选项名称带有 `serve.` 前缀以便查阅；传入 `.listen()` 时请直接提供这些字段。
+
+### serve.hostname
+默认值：`0.0.0.0`。
+
+设置服务器监听的主机名。
+
+### serve.id
+使用 ID 唯一标识服务器实例。
+
+此字符串用于热重载服务器，且不会中断正在处理的请求或 WebSocket 连接。若未提供，则会自动生成。将其设为 `null` 可禁用热重载。
+
+### serve.idleTimeout
+连接可保持空闲的最长时间，单位为秒。这是非活动超时，不是请求总时限。除非你显式设置，否则当前适配器使用 Bun 的默认值。
+
+### serve.maxRequestBodySize
+默认值：`1024 * 1024 * 128` 字节（128 MiB）。
+
+设置请求体的最大大小（字节）。
+
+### serve.port
+默认值：Bun 使用已配置的环境端口，若没有，则回退到 `3000`。
+
+要监听的端口。
+
+### serve.rejectUnauthorized
+在当前 Bun API 中，`rejectUnauthorized` 是 TLS 选项。请将它放在 `tls` 内，而不是顶层。启用客户端证书验证时，将其设为 `false` 会允许不受信任的客户端证书。
+
+### serve.reusePort
+是否设置 `SO_REUSEPORT` 标志。
+
+这允许多个进程绑定到同一端口，适用于负载均衡。
+
+当前 Elysia 适配器不会强制启用此选项；默认值和平台支持由 Bun 控制。
+
+### serve.unix
+设置后，HTTP 服务器会监听 Unix 套接字，而不是端口。
+
+（不能与 hostname 和 port 同时使用）
+
+### serve.tls
+使用证书和私钥启用 TLS。`cert` 和 `key` 都是必填项。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+Elysia 扩展了 Bun 配置，后者基于 BoringSSL 原生支持 TLS。
+
+### serve.tls.ca
+可选地覆盖受信任的 CA 证书。默认信任 Mozilla 筛选的知名 CA。
+
+通过此选项显式指定 CA 后，Mozilla 的 CA 列表会被完全替换。
+
+### serve.tls.cert
+PEM 格式的证书链。每个私钥应提供一条证书链。
+
+每条证书链应包含对应私钥的 PEM 格式证书，后接按顺序排列的 PEM 格式中间证书（如有），但不包括根 CA（对端必须预先信任根 CA，参阅 ca）。
+
+提供多条证书链时，它们不必与 `key` 中私钥的顺序一致。
+
+如果未提供中间证书，对端将无法验证证书，握手也会失败。
+
+### serve.tls.dhParamsFile
+包含自定义 Diffie-Hellman 参数的 .pem 文件路径。
+
+### serve.tls.key
+PEM 格式的私钥。PEM 支持加密私钥，加密后的密钥会使用 options.passphrase 解密。
+
+在 Bun 支持的情况下，可以将多个密钥作为字符串、缓冲区或 `{ pem, passphrase }` 形式对象的数组传入。
+
+对象形式只能出现在数组中。
+
+**object.passphrase** 是可选项。加密密钥将使用
+
+**object.passphrase** 解密（若已提供），否则使用 **options.passphrase**。
+
+### serve.tls.lowMemoryMode
+默认值：`false`。
+
+此选项会将 `OPENSSL_RELEASE_BUFFERS` 设为 1。
+
+它会降低整体性能，但能节省一些内存。
+
+### serve.tls.passphrase
+单个私钥和/或 PFX 共用的密码短语。
+
+### serve.tls.requestCert
+默认值：`false`。
+
+设为 `true` 时，服务器会请求客户端证书。
+
+### serve.tls.secureOptions
+可选地影响 OpenSSL 协议行为，通常无需设置。
+
+如需使用，请务必谨慎！
+
+值为 OpenSSL Options 中 SSL_OP_* 选项的数字位掩码。
+
+### serve.tls.serverName
+显式设置服务器名称。
+
+## tags
+
+与 [detail](#detail) 类似，为实例所有路由的 OpenAPI schema 定义标签。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	tags: ['elysia']
+})
+```
+
+## systemRouter
+
+`systemRouter` 构造选项已在 v2 中移除。Bun 适配器会自动通过 `Bun.serve.routes` 注册符合条件的静态响应，并使用 Elysia 路由器处理其他请求。使用 [`nativeStaticResponse`](#nativestaticresponse) 控制静态响应优化。
+
+## websocket
+
+Elysia 2 没有 `websocket` 构造选项。请改为在插件上设置服务器级 WebSocket 默认值；除非需要调整压缩、空闲超时或消息限制，否则保持默认即可。生命周期处理器应放在各个 `.ws()` 路由上。
+
+插件选项扩展了 [Bun 的 WebSocket API](https://bun.sh/docs/api/websockets)。
+
+### 示例
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket({
+        // enable compression and decompression
+        perMessageDeflate: true,
+        maxPayloadLength: 64 * 1024
+    }))
+    .ws('/echo', (ws) => ws.body)
+    .listen(3000)
+```
+
+所有选项请参阅 [WebSocket 配置](/patterns/websocket/#configuration)。
+
+</div>
+
+---
+
+完整选项列表请参阅[参考文档](/reference/classes/elysia/)。
+
+</InteractiveDocLayout>
+
+</div>
