@@ -58,7 +58,7 @@ This plugin will automatically add the `Content-Type: text/html; charset=utf-8` 
 
 ## JSX
 
-Elysia HTML is based on [Kita Html](https://html.kitajs.org), which compiles JSX to plain strings instead of a virtual DOM, so rendering stays fast.
+Elysia HTML uses [Kita Html](https://html.kitajs.org), which compiles JSX to strings.
 
 Name your file that needs to use JSX to end with the suffix **"x"**:
 
@@ -191,7 +191,7 @@ new Elysia()
 	.listen(3000)
 ```
 
-When an async component wraps the boundaries, Elysia waits for that component before the plugin sees the response, and fast boundaries could finish first. Pass the JSX to `html()` instead of returning it, so the plugin claims the stream before the root resolves:
+When an async component wraps the boundaries, pass the JSX to `html()` instead of returning it. Elysia awaits returned values, so a boundary that resolves before the async component would lose its content:
 
 ```tsx
 app.get('/', ({ html, rid }) =>
@@ -281,7 +281,7 @@ Generates the `rid` of each request. The value is written into the HTML, so retu
 
 The function used by [autoDetect](#autodetect) to detect if a string is HTML. The built-in detector ignores surrounding whitespace, requires at least 7 characters, and checks that the string starts with `<` and ends with `>`.
 
-This is a heuristic, not an HTML validator.
+It does not validate the HTML.
 
 </div>
 </InteractiveDocLayout>
