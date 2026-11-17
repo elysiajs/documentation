@@ -1,0 +1,179 @@
+---
+title: "Better Auth"
+description: "También puedes usar @better-auth/cli para generar un esquema de autenticación y migrar tu base de datos."
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Better Auth</h1>
+
+Better Auth es un framework de autenticación (y autorización) para TypeScript que no depende de ningún framework concreto.
+Trae de serie un conjunto completo de funcionalidades e incluye un ecosistema de plugins que facilita añadir funcionalidades avanzadas.
+Te recomendamos seguir la [configuración básica de Better Auth](https://www.better-auth.com/docs/installation) antes de leer esta página.
+La configuración básica queda así:
+```ts title="auth.ts"
+import { betterAuth } from 'better-auth'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool()
+})
+```
+## Handler
+Después de configurar la instancia de Better Auth, puedes montarla en Elysia con [mount](/patterns/mount).
+Tienes que montar el handler en un endpoint de Elysia.
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+const app = new Elysia()
+	.mount(auth.handler)
+	.listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+Ya puedes acceder a Better Auth en `http://localhost:3000/api/auth`.
+<span id="custom-endpoint"></span>
+### Endpoint personalizado
+Te recomendamos definir un prefijo de ruta cuando uses [mount](/patterns/mount).
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+
+const app = new Elysia()
+	.mount('/auth', auth.handler)
+	.listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+Así puedes acceder a Better Auth en `http://localhost:3000/auth/api/auth`.
+Pero la URL resulta redundante, así que puedes cambiar el prefijo `/api/auth` por otro en la instancia de Better Auth.
+```ts
+import { betterAuth } from 'better-auth'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool(),
+    basePath: '/api'
+})
+```
+Ahora puedes acceder a Better Auth en `http://localhost:3000/auth/api`.
+Por desgracia, el `basePath` de una instancia de Better Auth no puede quedar vacío ni ser `/`.
+## OpenAPI
+Better Auth admite `openapi` con `better-auth/plugins`.
+Pero si usas [@elysia/openapi](/plugins/openapi), puede que quieras extraer la documentación de la instancia de Better Auth.
+Primero, añade el plugin `openAPI` a tu instancia de Better Auth:
+```ts title="auth.ts"
+import { betterAuth } from 'better-auth'
+import { openAPI } from 'better-auth/plugins'
+import { Pool } from 'pg'
+export const auth = betterAuth({
+    database: new Pool(),
+    plugins: [openAPI()]
+})
+```
+
+:::tip
+
+Necesitas el plugin `openAPI()` para que `auth.api.generateOpenAPISchema` esté disponible. Sin él, tendrás un error de tipos: `Property 'generateOpenAPISchema' does not exist`.
+
+:::
+
+Después, puedes extraer el esquema de OpenAPI con este código:
+```ts title="auth.ts"
+let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>
+const getSchema = async () => (_schema ??= auth.api.generateOpenAPISchema())
+export const OpenAPI = {
+    getPaths: (prefix = '/api/auth') =>
+        getSchema().then(({ paths }) => {
+            const reference: typeof paths = Object.create(null)
+            for (const path of Object.keys(paths)) {
+                const key = prefix + path
+                reference[key] = paths[path]
+                for (const method of Object.keys(paths[path])) {
+                    const operation = (reference[key] as any)[method]
+                    operation.tags = ['Better Auth']
+                }
+            }
+            return reference
+        }) as Promise<any>,
+    components: getSchema().then(({ components }) => components) as Promise<any>
+} as const
+```
+Y úsalo en la instancia de Elysia donde usas `@elysia/openapi`:
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+import { OpenAPI } from './auth'
+const app = new Elysia().use(
+    openapi({
+        documentation: {
+            components: await OpenAPI.components,
+            paths: await OpenAPI.getPaths()
+        }
+    })
+)
+```
+## CORS
+Para configurar CORS, puedes usar el plugin `cors` de `@elysia/cors`.
+```ts
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+import { auth } from './auth'
+const app = new Elysia()
+    .use(
+        cors({
+            origin: 'http://localhost:3001',
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            credentials: true,
+            allowedHeaders: ['Content-Type', 'Authorization']
+        })
+    )
+    .mount(auth.handler)
+    .listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+## Macro
+Puedes usar una [macro](/patterns/macro/) con [derive](/patterns/macro#derive) para tener la información de la sesión y del usuario antes de pasarla a la vista.
+```ts
+import { Elysia } from 'elysia'
+import { auth } from './auth'
+// user middleware (compute user and session and pass to routes)
+const betterAuth = new Elysia({ name: 'better-auth' })
+    .mount(auth.handler)
+    .macro({
+        auth: {
+            async derive({ status, request: { headers } }) {
+                const session = await auth.api.getSession({
+                    headers
+                })
+                if (!session) return status(401, 'Unauthorized')
+                return {
+                    user: session.user,
+                    session: session.session
+                }
+            }
+        }
+    })
+const app = new Elysia()
+    .use(betterAuth)
+    .get('/user', {
+        auth: true
+    }, ({ user }) => user)
+    .listen(3000)
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+Así puedes acceder a `user` y `session` en las rutas que activan `auth: true`.
+
+</div>
+</InteractiveDocLayout>
+</div>
