@@ -122,9 +122,9 @@ Namespace con el que se identifica.
 Un array de span processors que se registran en el tracer provider.
 
 ### traceExporter - SpanExporter
-Configura un exportador de trazas. Si configuras un exportador, se usa con un `BatchSpanProcessor`.
+Configura un exporter de trazas. Si configuras un exporter, se usa con un `BatchSpanProcessor`.
 
-Si no configuras por código ni un exportador ni un span processor, este paquete configura automáticamente el exportador otlp por defecto, con el protocolo http/protobuf y un BatchSpanProcessor.
+Si no configuras por código ni un exporter ni un span processor, este paquete configura automáticamente el exporter otlp por defecto, con el protocolo http/protobuf y un BatchSpanProcessor.
 
 ### spanLimits - SpanLimits
 Configura los parámetros de tracing. Son los parámetros de trazas que también se usan para configurar un tracer.
@@ -147,9 +147,9 @@ Registra el contenido del body de la petición y/o de la respuesta en los spans.
 Por defecto: `false`
 
 ### headersToSpanAttributes - object
-Nombres de cabeceras (sin distinguir mayúsculas de minúsculas) que se registran como atributos del span, con la forma `{ request?: string[], response?: string[] }`. `"*"` registra todas las cabeceras, incluidas las sensibles.
+Nombres de headers (sin distinguir mayúsculas de minúsculas) que se registran como atributos del span, con la forma `{ request?: string[], response?: string[] }`. `"*"` registra todos los headers, incluidos los sensibles.
 
-Por defecto: no se registra ninguna cabecera
+Por defecto: no se registra ningún header
 
 </div>
 </InteractiveDocLayout>
