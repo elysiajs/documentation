@@ -1,0 +1,660 @@
+---
+title: OpenAPI
+description: Describe tus rutas y genera documentación OpenAPI a partir de esquemas y tipos.
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">OpenAPI</h1>
+
+Genera un documento OpenAPI y una referencia navegable de tu API a partir de tus rutas de Elysia. Los esquemas describen los datos y los detalles de cada ruta explican qué hace cada endpoint.
+
+Para generar la página de documentación, instala el plugin:
+
+```bash
+bun add @elysia/openapi@rc
+```
+
+Y registra el plugin en el servidor:
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+```
+
+Si entras en `/openapi`, verás una interfaz de Scalar con la documentación de los endpoints generada a partir de tu servidor de Elysia.
+
+Para configurar el plugin de OpenAPI, consulta la [página del plugin de OpenAPI](/plugins/openapi/).
+
+<span id="openapi-from-types"></span>
+## OpenAPI a partir de tipos
+
+> Es opcional, pero te lo recomendamos mucho: la documentación queda bastante mejor.
+
+Por defecto, Elysia usa el esquema de runtime para generar la documentación OpenAPI.
+
+Pero también puedes generarla a partir de los tipos con un generador del plugin de OpenAPI, así:
+
+1. Indica el archivo raíz de Elysia (si no lo indicas, Elysia usará `src/index.ts`) y exporta una instancia
+
+2. Importa un generador y pásale al generador de tipos una **ruta de archivo desde la raíz del proyecto**
+```ts {7}
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes()
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+Elysia intentará generar la documentación OpenAPI leyendo el tipo de la instancia exportada.
+
+Esto convive con el esquema de runtime, y el esquema de runtime tiene prioridad sobre la definición de tipos.
+
+<span id="production"></span>
+### Producción
+En producción, lo más probable es que compiles Elysia a un [único ejecutable con Bun](/patterns/deploy) o que crees un [bundle en un único archivo JavaScript](/patterns/deploy#compile-to-javascript).
+
+Te recomendamos generar de antemano el archivo de declaraciones (**.d.ts**) para darle al generador las declaraciones de tipos.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes(
+            	process.env.NODE_ENV === 'production'
+             		? 'dist/index.d.ts'
+               		: 'src/index.ts'
+            )
+        })
+    )
+```
+
+<details>
+
+<summary>¿Tienes problemas con la generación de tipos?</summary>
+
+<span id="caveat-explicit-types"></span>
+### Advertencia: tipos explícitos
+OpenAPI Type Gen funciona mejor con tipos implícitos.
+
+A veces, los tipos explícitos dan problemas porque el generador no consigue resolverlos bien.
+
+En ese caso, puedes usar `Prettify` para expandir el tipo en línea:
+```ts
+import { Elysia, t } from 'elysia'
+
+// Your custom type
+interface User {
+	id: number
+	name: string
+}
+
+// Type helper to inline the type
+type Prettify<T> = {
+	[K in keyof T]: T[K]
+} & {}
+
+// Add Prettify to inline the type
+function getUser(): Prettify<User> {
+    return { id: 1, name: 'Nagisa' }
+}
+```
+
+Con esto debería resolverse el problema cuando un tipo no aparece.
+
+<span id="caveat-root-path"></span>
+### Advertencia: ruta raíz
+Como adivinar la raíz del proyecto no es fiable, te recomendamos indicar la ruta a la raíz del proyecto para que el generador funcione bien, sobre todo si usas un monorepo.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+import path from 'node:path'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts', {
+            	projectRoot: path.join(import.meta.dir, '..')
+            })
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+<span id="custom-tsconfigjson"></span>
+### tsconfig.json personalizado
+Si tienes varios archivos `tsconfig.json`, es importante que indiques el `tsconfig.json` correcto para la generación de tipos.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+import path from 'node:path'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts', {
+            	// This is reference from root of the project
+            	tsconfigPath: 'tsconfig.dts.json'
+            })
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+</details>
+
+<span id="standard-schema-with-openapi"></span>
+## Standard Schema con OpenAPI
+Elysia intentará usar un método nativo de cada esquema para convertirlo en un esquema OpenAPI.
+
+Pero si el esquema no tiene un método nativo, puedes darle a OpenAPI un esquema personalizado con `mapJsonSchema`, así:
+
+
+### Zod OpenAPI
+Usa el mapper de tu versión de Zod. Zod 4 exporta `toJSONSchema`; Zod 3 usa el paquete aparte `zod-to-json-schema`.
+
+**Zod 4**
+
+```ts
+import openapi from '@elysia/openapi'
+import * as z from 'zod'
+
+openapi({
+	mapJsonSchema: {
+		zod: z.toJSONSchema
+	}
+})
+```
+
+**Zod 3**
+
+```ts
+import openapi from '@elysia/openapi'
+import { zodToJsonSchema } from 'zod-to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+		zod: zodToJsonSchema
+	}
+})
+```
+
+
+### Valibot OpenAPI
+Valibot usa un paquete aparte (`@valibot/to-json-schema`) para convertir un esquema de Valibot en JSON Schema.
+
+```ts
+import openapi from '@elysia/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+		valibot: toJsonSchema
+	}
+})
+```
+
+
+### Effect OpenAPI
+Como los esquemas de Effect no tienen un método `toJSONSchema`, hay que pasar un mapper personalizado para convertir el esquema de Effect en un esquema OpenAPI.
+
+```ts
+import openapi from '@elysia/openapi'
+import { JSONSchema } from 'effect'
+
+openapi({
+ 	mapJsonSchema: {
+   		effect: JSONSchema.make
+ 	}
+})
+```
+
+
+<span id="describing-routes"></span>
+## Describir rutas
+
+Puedes añadir información sobre una ruta definiendo su esquema.
+
+Pero a veces definir solo un tipo no deja claro qué hace la ruta. Puedes usar los campos de [detail](/plugins/openapi/#detail) para describirla de forma explícita.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.post(
+		'/sign-in',
+		{
+    		body: t.Object(
+      		{
+	            username: t.String(),
+	            password: t.String({
+	                minLength: 8,
+	                description: 'User password (at least 8 characters)'
+	            })
+	        },
+	        {
+	            description: 'Expected a username and password'
+	        }
+	    ),
+	    detail: {
+	        summary: 'Sign in the user',
+	        tags: ['authentication']
+	    }
+	}, ({ body }) => body.username)
+```
+
+Los campos de detail siguen la definición de OpenAPI V3, con autocompletado y type safety por defecto.
+
+El plugin incluye estos detalles en la operación generada. Este ejemplo describe una petición de inicio de sesión; un inicio de sesión real tiene que comprobar las credenciales en lugar de limitarse a devolver el nombre de usuario.
+
+<span id="response-headers"></span>
+## Cabeceras de respuesta
+Puedes añadir cabeceras de respuesta envolviendo un esquema con `withHeaders`:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, withHeaders } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.get(
+		'/thing',
+		{
+		    response: withHeaders(
+				t.Literal('Hi'),
+				{
+					'x-powered-by': t.Literal('Elysia')
+				}
+			)
+		}, ({ set }) => {
+			set.headers['x-powered-by'] = 'Elysia'
+
+			return 'Hi'
+		}
+	)
+```
+
+Ten en cuenta que `withHeaders` es solo una anotación: no impone ni valida las cabeceras reales de la respuesta. Tienes que definirlas tú a mano.
+
+<span id="hide-route"></span>
+## Ocultar una ruta
+
+Puedes ocultar una ruta de la página de documentación de la API poniendo `detail.hide` a `true`
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.post(
+		'/sign-in',
+		{
+		    body: t.Object(
+		        {
+		            username: t.String(),
+		            password: t.String()
+		        },
+		        {
+		            description: 'Expected a username and password'
+		        }
+		    ),
+		    detail: {
+		        hide: true
+		    }
+		}, ({ body }) => ({ username: body.username })
+	)
+```
+
+## Tags
+
+Elysia puede separar los endpoints en grupos con el sistema de tags de OpenAPI
+
+Primero, define los tags disponibles en la configuración de OpenAPI
+
+```ts
+new Elysia().use(
+    openapi({
+        documentation: {
+            tags: [
+                { name: 'App', description: 'General endpoints' },
+                { name: 'Auth', description: 'Authentication endpoints' }
+            ]
+        }
+    })
+)
+```
+
+Después, asigna los tags en las opciones de la ruta. En este ejemplo, `db` es el cliente de base de datos de tu aplicación:
+
+```ts
+new Elysia()
+    .get('/', {
+        detail: {
+            tags: ['App']
+        }
+    }, () => 'Hello Elysia')
+    .group('/auth', (app) =>
+        app.post(
+            '/sign-up',
+            {
+                body: t.Object({
+                    username: t.String(),
+                    password: t.String()
+                }),
+                detail: {
+                    tags: ['Auth']
+                }
+            }, ({ body }) =>
+                db.user.create({
+                    data: body,
+                    select: {
+                        id: true,
+                        username: true
+                    }
+                })
+        )
+    )
+```
+
+Las rutas aparecen agrupadas bajo sus tags:
+![Rutas de OpenAPI agrupadas por tags](/assets/swagger-demo.webp)
+
+<span id="tags-group"></span>
+### Grupo de tags
+
+Elysia acepta tags para añadir una instancia entera o un grupo de rutas a un tag concreto.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia({
+    tags: ['user']
+})
+    .get('/user', 'user')
+    .get('/admin', 'admin')
+```
+
+<span id="reference-model"></span>
+## Modelos de referencia
+
+<span id="models" />
+
+Los modelos registrados aparecen como componentes de esquema con nombre en el documento OpenAPI generado, y las rutas hacen referencia a esos componentes.
+
+Cuando varias rutas comparten un esquema, ponle un nombre y reutilízalo. Empieza con la estructura duplicada:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/profile', {
+        body: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        }),
+        response: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    }, ({ body }) => body)
+```
+
+Si no necesitas nada más, sácalo a una variable:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const Profile = t.Object({
+    username: t.String(),
+    displayName: t.String()
+})
+
+new Elysia()
+    .post('/profile', {
+        body: Profile,
+        response: Profile
+    }, ({ body }) => body)
+```
+
+Para tener referencias con nombre y autocompletado en todas las rutas, regístralo con `.model()`:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .model({
+        profile: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    })
+    .post('/profile', {
+        body: 'profile',
+        response: 'profile'
+    }, ({ body }) => body)
+```
+
+<span id="share-models-with-a-plugin"></span>
+### Compartir modelos con un plugin
+
+Pon los modelos relacionados en un plugin cuando varios controladores los necesiten:
+
+```ts
+// profile.model.ts
+import { Elysia, t } from 'elysia'
+
+export const profileModel = new Elysia()
+    .model({
+        profile: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    })
+```
+
+Importa el plugin y regístralo antes de las rutas que usan sus modelos:
+
+```ts
+// index.ts
+import { Elysia } from 'elysia'
+import { profileModel } from './profile.model'
+
+new Elysia()
+    .use(profileModel)
+    .post('/profile', {
+        body: 'profile',
+        response: 'profile'
+    }, ({ body }) => body)
+```
+
+Así mantienes juntas las definiciones de los modelos y sus nombres quedan disponibles para las rutas y para la generación de OpenAPI. Los ejemplos de perfil usan campos públicos; una respuesta de inicio de sesión no debería devolver la contraseña enviada.
+
+<span id="multiple-models"></span>
+### Varios modelos
+
+Pasa un objeto cuyas claves sean los nombres de los modelos y cuyos valores sean los esquemas:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+export const authModel = new Elysia()
+    .model({
+        number: t.Number(),
+        sign: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+```
+
+<span id="naming-convention"></span>
+### Convención de nombres
+
+Usa un namespace cuando distintas partes de tu aplicación registren modelos con nombres parecidos. Nombres como `admin.auth` y `user.auth` dejan claro a quién pertenece cada uno:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+export const adminModels = new Elysia()
+    .model({
+        'admin.auth': t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+
+export const userModels = new Elysia()
+    .model({
+        'user.auth': t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+```
+
+Elige una convención con tu equipo y evita registrar esquemas que no tienen nada que ver bajo un mismo nombre.
+
+## Guard
+
+Usa un guard para aplicar el mismo `detail` a todas las rutas que registres después.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        detail: {
+            description: 'Require user to be logged in'
+        }
+    })
+    .get('/user', 'user')
+    .get('/admin', 'admin')
+```
+
+<span id="change-openapi-endpoint"></span>
+## Cambiar el endpoint de OpenAPI
+
+Puedes cambiar el endpoint de OpenAPI con la opción [path](/plugins/openapi/#path) en la configuración del plugin.
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(
+        openapi({
+            path: '/v2/openapi'
+        })
+    )
+    .listen(3000)
+```
+
+<span id="customize-openapi-info"></span>
+## Personalizar la información de OpenAPI
+
+Puedes personalizar la información de OpenAPI con [documentation.info](/plugins/openapi/#documentation) en la configuración del plugin.
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(
+        openapi({
+            documentation: {
+                info: {
+                    title: 'Elysia Documentation',
+                    version: '1.0.0'
+                }
+            }
+        })
+    )
+    .listen(3000)
+```
+
+Esto te puede servir para
+
+- añadir un título
+- indicar la versión de la API
+- añadir una descripción que explique de qué va tu API
+- explicar qué tags hay disponibles y qué significa cada uno
+
+<span id="security-configuration"></span>
+## Configuración de seguridad
+
+Para proteger los endpoints de tu API, puedes definir esquemas de seguridad en la configuración de OpenAPI. El ejemplo de abajo documenta Bearer Authentication (JWT) para tus endpoints:
+
+```ts
+new Elysia().use(
+    openapi({
+        documentation: {
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: 'http',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT'
+                    }
+                }
+            }
+        }
+    })
+)
+
+export const addressController = new Elysia({
+    prefix: '/address',
+    detail: {
+        tags: ['Address'],
+        security: [
+            {
+                bearerAuth: []
+            }
+        ]
+    }
+})
+```
+
+Esto documenta la autenticación bearer para las rutas bajo `/address`, pero no valida ningún JWT ni deniega el acceso. Añade un hook de autenticación que compruebe el token antes de que se ejecute el handler, y registra `addressController` en la aplicación cuyo plugin de OpenAPI genera el documento.
+
+</div>
+</InteractiveDocLayout>
+</div>
