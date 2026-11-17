@@ -142,7 +142,7 @@ new Elysia()
     .get('/', { auth: true }, ({ user }) => `Hello ${user}`)
 ```
 
-Aquí, si falta la cabecera de autorización, se devuelve `401`. El ejemplo solo comprueba que la cabecera existe; tu función de autenticación tiene que verificarla antes de devolver un usuario.
+Aquí, si falta el header de autorización, se devuelve `401`. El ejemplo solo comprueba que el header existe; tu función de autenticación tiene que verificarlo antes de devolver un usuario.
 
 Devuelve `status()` para los resultados HTTP esperados. Si lanzas con throw un `Error` normal que nadie maneja, por defecto se produce una respuesta `500`.
 
@@ -195,7 +195,7 @@ new Elysia()
 
 Los hooks de una macro infieren el esquema de esa misma macro, pero no infieren automáticamente el contexto que deriva otra macro. Cuando un cálculo necesite el resultado de otro, mantenlos juntos en un mismo callback `derive` o lee las propiedades combinadas en el handler de la ruta.
 
-El antiguo apaño de `.macro(name, definition)` ya no existe en Elysia 2. Usa la forma de objeto, como arriba.
+El antiguo workaround de `.macro(name, definition)` ya no existe en Elysia 2. Usa la forma de objeto, como arriba.
 
 <span id="schema"></span>
 ## Esquema
@@ -219,7 +219,7 @@ new Elysia()
     }, ({ body }) => body.friends)
 ```
 
-Esta ruta valida tanto la propiedad `name` como `friends`. Un cuerpo JSON válido sería:
+Esta ruta valida tanto la propiedad `name` como `friends`. Un body JSON válido sería:
 
 ```json
 {
@@ -252,7 +252,7 @@ new Elysia()
     .post('/', { withFriends: true }, ({ body }) => body)
 ```
 
-Aquí `friends` toma su tipo del esquema del cuerpo de esta macro. No necesitas una sobrecarga con nombre para una sola macro. Esto es distinto de inferir propiedades que aporta otra macro, como se explica [más arriba](#macro-extension-with-derive).
+Aquí `friends` toma su tipo del esquema del body de esta macro. No necesitas una sobrecarga con nombre para una sola macro. Esto es distinto de inferir propiedades que aporta otra macro, como se explica [más arriba](#macro-extension-with-derive).
 
 <span id="extension"></span>
 ## Extensión
@@ -279,7 +279,7 @@ new Elysia()
     .post('/', { lilith: true }, ({ body }) => body)
 ```
 
-Al activar `lilith`, también se activan `fouco` y `sartre`. El cuerpo de la petición tiene que cumplir los tres esquemas.
+Al activar `lilith`, también se activan `fouco` y `sartre`. El body de la petición tiene que cumplir los tres esquemas.
 
 <span id="deduplication"></span>
 ## Deduplicación
