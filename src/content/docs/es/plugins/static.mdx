@@ -73,7 +73,7 @@ Una lista personalizada sustituye a la de por defecto. Vuelve a incluir `.env` y
 Por defecto: `1024`
 
 Cuando [alwaysStatic](#alwaysstatic) está activado, el plugin static registra en el Router como máximo este número de rutas con nombre estático. Los archivos que pasan del límite se resuelven de forma lazy al recibir la petición, para usar menos memoria.
-Es un equilibrio entre memoria y rendimiento.
+Es un trade-off entre memoria y rendimiento.
 
 ### alwaysStatic
 Por defecto: `process.env.NODE_ENV === 'production'`
@@ -83,7 +83,7 @@ Si es true, las rutas de los archivos estáticos se registran en el Router al ar
 ### headers
 Por defecto: `{}`
 
-Define las cabeceras de respuesta de los archivos
+Define los headers de respuesta de los archivos
 
 ### indexHTML
 Por defecto: `true`
