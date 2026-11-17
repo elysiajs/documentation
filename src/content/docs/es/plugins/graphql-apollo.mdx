@@ -1,0 +1,106 @@
+---
+title: Plugin GraphQL Apollo
+description: Referencia y ejemplos del plugin GraphQL Apollo.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin GraphQL Apollo</h1>
+
+Plugin para [elysia](https://github.com/elysiajs/elysia) que te permite usar GraphQL Apollo.
+
+Instálalo con:
+
+```bash
+bun add graphql @elysia/apollo@next @apollo/server
+```
+
+Después, úsalo así:
+
+```ts
+import { Elysia } from 'elysia'
+import { apollo, gql } from '@elysia/apollo'
+
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs: gql`
+				type Book {
+					title: String
+					author: String
+				}
+
+				type Query {
+					books: [Book]
+				}
+			`,
+			resolvers: {
+				Query: {
+					books: () => {
+						return [
+							{
+								title: 'Elysia',
+								author: 'saltyAom'
+							}
+						]
+					}
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+Si abres `/graphql`, deberías ver el playground de Apollo GraphQL para trabajar con él.
+
+<span id="context"></span>
+## Contexto
+
+El callback `context` recibe el contexto de Elysia, así que puedes leer `request` desde ahí.
+
+```ts
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs,
+			resolvers,
+			context: async ({ request }) => {
+				const authorization = request.headers.get('Authorization')
+
+				return {
+					authorization
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+<span id="config"></span>
+## Configuración
+
+Este plugin extiende las [ApolloServerOptions](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#options) de Apollo (el parámetro del constructor de `ApolloServer`).
+
+Estos son los parámetros adicionales para configurar Apollo Server con Elysia.
+
+### path
+
+Por defecto: `"/graphql"`
+
+Ruta en la que se expone Apollo Server.
+
+### enablePlayground
+
+Por defecto: `process.env.ENV !== 'production'`
+
+Indica si Apollo debe ofrecer Apollo Playground.
+
+</div>
+</InteractiveDocLayout>
+</div>
