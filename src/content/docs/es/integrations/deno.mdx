@@ -1,0 +1,52 @@
+---
+title: "Integración con Deno"
+description: "Elysia está construido sobre Request/Response de Web Standard, así que puedes ejecutarlo directamente con Deno.serve"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integración con Deno</h1>
+
+Elysia está construido sobre Request/Response de Web Standard, así que puedes ejecutarlo directamente con Deno.serve.
+
+Añade Elysia a tu proyecto de Deno con `deno add npm:elysia@rc`. Después, pasa `app.fetch` a `Deno.serve`:
+
+```typescript
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.get('/', () => 'Hello Elysia')
+
+Deno.serve(app.fetch)
+```
+
+Luego ejecuta el módulo con permisos de red:
+```bash
+deno run --allow-net --watch src/index.ts
+```
+
+Esto es todo lo que necesitas para ejecutar Elysia en Deno.
+
+<span id="change-the-port-number"></span>
+### Cambiar el número de puerto
+Puedes indicar el número de puerto en `Deno.serve`.
+
+```ts
+Deno.serve({ port: 8787 }, app.fetch)
+```
+
+### pnpm
+Si tu configuración de pnpm no instala las peer dependencies, añade explícitamente las que necesita Elysia v2:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+</div>
+</InteractiveDocLayout>
+</div>
