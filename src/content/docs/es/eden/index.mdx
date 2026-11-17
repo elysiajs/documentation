@@ -1,0 +1,145 @@
+---
+title: Type safety de extremo a extremo
+description: Comparte los tipos entre tu servidor de Elysia y el cliente con Eden.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Type safety de extremo a extremo</h1>
+
+Imagina que tienes un tren de juguete.
+
+Cada pieza de la vía tiene que encajar perfectamente con la siguiente, como las piezas de un puzle.
+
+La type safety de extremo a extremo consiste en asegurarte de que todas las piezas de la vía encajan bien, para que el tren no descarrile ni se quede atascado.
+
+En un framework, tener type safety de extremo a extremo significa que puedes conectar el cliente y el servidor sin perder la seguridad de tipos.
+
+Elysia te da de serie type safety de extremo a extremo **sin generar código**, con un conector parecido a RPC: **Eden**.
+
+<video muted controls preload="metadata" aria-label="Demostración de la inferencia de tipos de Eden Treaty" style={{ aspectRatio: "16 / 9" }}>
+  <source src="/eden/eden-treaty.mp4" type="video/mp4" />
+  [Descarga la demostración de Eden Treaty](/eden/eden-treaty.mp4).
+</video>
+
+Otros frameworks que ofrecen type safety de extremo a extremo:
+- tRPC
+- Remix
+- SvelteKit
+- Nuxt
+- TS-Rest
+
+
+
+Con Elysia puedes cambiar un tipo en el servidor y el cambio se refleja al instante en el cliente, lo que te ayuda con el autocompletado y con la comprobación de tipos.
+
+## Eden
+Eden es un cliente parecido a RPC para conectarte a Elysia con **type safety de extremo a extremo**, usando solo la inferencia de tipos de TypeScript en vez de generar código.
+
+Comparte los tipos del servidor con el cliente mediante imports de solo tipos. No tienes que mantener sincronizado ningún cliente generado.
+
+Eden tiene 2 módulos:
+1. Eden Treaty **(recomendado)**: una versión RPC mejorada de [Eden Treaty 1](/eden/treaty/legacy) (edenTreaty)
+2. Eden Fetch: un cliente parecido a fetch con type safety
+
+Aquí tienes un resumen de cada módulo.
+
+<span id="eden-treaty-recommended"></span>
+## Eden Treaty (recomendado)
+Eden Treaty representa un servidor de Elysia como un objeto, con type safety de extremo a extremo y una experiencia de desarrollo mucho mejor.
+
+Con Eden Treaty puedes trabajar con un servidor de Elysia con soporte completo de tipos y autocompletado, manejar errores acotando los tipos y crear pruebas unitarias con type safety.
+
+Un ejemplo de uso de Eden Treaty:
+**server.ts**
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hi')
+    .get('/users', () => 'Skadi')
+    .put('/nendoroid/:id', {
+        body: t.Object({
+            name: t.String(),
+            from: t.String()
+        })
+    }, ({ body }) => body)
+    .get('/nendoroid/:id/name', () => 'Skadi')
+    .listen(3000)
+
+export type App = typeof app
+```
+
+**index.ts**
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// Call [GET] at '/'
+const { data } = await app.get()
+
+// Call [PUT] at '/nendoroid/:id'
+const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
+    name: 'Skadi',
+    from: 'Arknights'
+})
+```
+
+## Eden Fetch
+Una alternativa a Eden Treaty parecida a fetch, para quienes prefieren la sintaxis de fetch.
+
+Para este ejemplo, exporta un servidor que tenga esa ruta:
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/name/:name', {
+        body: t.Object({ branch: t.String(), type: t.String() })
+    }, ({ params, body }) => ({ name: params.name, ...body }))
+    .listen(3000)
+
+export type App = typeof app
+```
+
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+const { data } = await fetch('/name/:name', {
+    method: 'POST',
+    params: {
+        name: 'Saori'
+    },
+    body: {
+        branch: 'Arius',
+        type: 'Striker'
+    }
+})
+```
+
+:::tip[Nota]
+
+A diferencia de Eden Treaty, Eden Fetch no tiene una implementación de WebSocket para el servidor de Elysia.
+:::
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
