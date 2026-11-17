@@ -1,0 +1,493 @@
+---
+title: Configuración
+description: Configura instancias de Elysia, la normalización de schemas, los adapters de runtime y las opciones del servidor HTTP.
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Configuración</h1>
+
+Pásale un objeto al constructor para configurar una instancia de Elysia. Usa `serve` para los valores por defecto del servidor HTTP, o pasa las opciones del servidor directamente a `.listen()`.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	prefix: '/v1',
+	normalize: true
+})
+```
+
+## abortSignal
+
+Detén el procesamiento de una request cuando el cliente la aborta.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	abortSignal: true
+})
+```
+
+Por defecto: `true`.
+
+- `true` - Revisa si la request fue abortada después de cada etapa del ciclo de vida y omite los hooks restantes y el handler
+- `false` - Ejecuta todos los hooks y el handler incluso después de que el cliente se desconecte
+
+## adapter
+
+Adapter de runtime para usar Elysia en distintos entornos.
+
+En Bun, `.listen()` elige el adapter de Bun automáticamente. Para otros runtimes, tendrás que proporcionar un adapter.
+
+```ts
+import { Elysia } from 'elysia'
+import { BunAdapter } from 'elysia/adapter/bun'
+
+new Elysia({
+	adapter: BunAdapter
+})
+```
+
+## allowUnsafeValidationDetails
+
+Elige si las respuestas de validación en producción incluyen detalles del schema.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	allowUnsafeValidationDetails: true
+})
+```
+
+Por defecto, las respuestas en producción omiten el detalle de los problemas, los valores esperados y los datos enviados. Actívalo solo cuando quieras que esos detalles del schema sean públicos; mira [manejo de errores](/patterns/error-handling/#validation-detail-in-production).
+
+Por defecto: `false`.
+
+- `true` - Incluye los detalles de validación inseguros en la respuesta de error en producción
+- `false` - Excluye los detalles de validación inseguros de la respuesta de error en producción
+
+## as
+
+Define el [scope](/essential/plugin/#scope) por defecto para los hooks del ciclo de vida que se registran en la instancia sin un scope explícito.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	as: 'plugin'
+})
+```
+
+Por defecto: `local`.
+
+## cookie
+
+Define las opciones por defecto para todas las cookies de la instancia. Mira la [configuración de cookies](/patterns/cookie/#config).
+
+## detail
+
+Define metadatos de OpenAPI compartidos por todas las rutas de la instancia.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	detail: {
+		hide: true,
+		tags: ['elysia']
+	}
+})
+```
+
+## name
+
+Define el nombre de una instancia, que se usa para depuración y para la [deduplicación de plugins](/essential/plugin/#deduplication)
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	name: 'service.thing'
+})
+```
+
+## nativeStaticResponse
+
+Usa el manejo optimizado del runtime para los valores de respuesta inline. Por defecto es `true`.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ nativeStaticResponse: true })
+    .get('/version', '1')
+    .listen(3000)
+```
+
+En Bun, los valores estáticos elegibles se instalan en `Bun.serve.routes`. Para la ruta de arriba, la respuesta nativa tiene el mismo body que este servidor independiente:
+
+```ts
+Bun.serve({
+    port: 3000,
+    routes: { '/version': new Response('1') },
+    fetch: () => new Response('Not found', { status: 404 })
+})
+```
+
+Las rutas con hooks que necesitan ejecutarse al momento de la request pueden usar, en su lugar, el pipeline normal de requests de Elysia.
+
+## normalize
+
+Elige cómo se manejan las propiedades desconocidas cuando un schema de TypeBox no permite propiedades adicionales. Esta opción no aplica a los validadores de Standard Schema.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	normalize: true
+})
+```
+
+Por defecto: `true` (equivale a `exactMirror`).
+
+- `true` o `exactMirror`: Elimina las propiedades desconocidas usando [exact mirror](/blog/elysia-13/#exact-mirror)
+
+- `typebox`: Elysia eliminará las propiedades desconocidas usando [Value.Clean de TypeBox](https://github.com/sinclairzx81/typebox)
+
+- `false`: Elysia lanzará un error si una request o una respuesta contiene campos que no están permitidos explícitamente en el schema del handler correspondiente.
+
+## precompile
+
+Elige si [precompilar todas las rutas](/blog/elysia-10/#improved-startup-time) antes de iniciar el servidor.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	precompile: true
+})
+```
+
+Por defecto: `false`.
+
+- `true`: Ejecuta JIT en todas las rutas antes de iniciar el servidor
+
+- `false`: Compila las rutas dinámicamente, bajo demanda
+
+Déjalo en `false` a menos que quieras que la compilación de las rutas ocurra durante el warm-up. Configúralo en la instancia raíz, la que inicia el servidor.
+
+## prefix
+
+Define un prefijo para todas las rutas de una instancia
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	prefix: '/v1'
+})
+```
+
+Cuando defines un prefijo, todas las rutas llevarán ese valor al inicio.
+
+### Ejemplo
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ prefix: '/v1' }).get('/name', 'elysia') // Path is /v1/name
+```
+
+## sanitize
+
+Transforma los strings definidos en el schema durante la validación, con una función o un arreglo de funciones. Configúralo en la instancia raíz y usa la normalización exact-mirror (`true` o `exactMirror`).
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	sanitize: (value) => Bun.escapeHTML(value)
+})
+```
+
+## seed
+
+Define un valor que se usa para generar un checksum de una instancia, el cual sirve para la [deduplicación de plugins](/essential/plugin/#deduplication)
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	seed: {
+		value: 'service.thing'
+	}
+})
+```
+
+El valor puede ser de cualquier tipo, no se limita a string, number u objeto.
+
+## strictPath
+
+Indica si Elysia debe manejar los paths de forma estricta.
+
+Según el [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3), un path debe ser exactamente igual al path definido en la ruta.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ strictPath: true })
+```
+
+Por defecto: `false`.
+
+- `true` - Sigue el [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3) de forma estricta para hacer match de paths
+- `false` - Tolera una `/` al final, o al revés.
+
+### Ejemplo
+
+```ts
+import { Elysia } from 'elysia'
+
+// Path can be either /name or /name/
+new Elysia({ strictPath: false }).get('/name', 'elysia')
+
+// Path can be only /name
+new Elysia({ strictPath: true }).get('/name', 'elysia')
+```
+
+## serve
+
+Configura el servidor HTTP subyacente usando las opciones de servidor de Bun.
+
+El objeto `serve` del constructor aporta los valores por defecto. Las opciones que pases a `.listen()` sobrescriben los campos que coincidan.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ serve: { idleTimeout: 60 } })
+    .get('/', 'Hello Elysia')
+    .listen(3000)
+```
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		hostname: 'elysiajs.com',
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+Esta configuración extiende la [API Serve de Bun](https://bun.sh/docs/api/http) y el [TLS de Bun](https://bun.sh/docs/api/http#tls)
+
+### Tamaño máximo del body
+Define `maxRequestBodySize` para limitar, en bytes, el body de las requests HTTP.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		maxRequestBodySize: 1024 * 1024 * 256 // 256MB
+})
+```
+
+Por defecto, el tamaño máximo del body de una request es de 128 MB (1024 * 1024 * 128).
+Los límites de mensajes de WebSocket son aparte. Pasa `maxPayloadLength` al plugin de WebSocket; mira los [valores por defecto de WebSocket](#websocket).
+
+### HTTPS y TLS
+Habilita TLS con un certificado y una clave privada. Se requieren tanto `cert` como `key`.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+### Idle timeout
+
+Define `idleTimeout`, en segundos, para cerrar las conexiones inactivas pasado el intervalo que elijas.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		// Increase idle timeout to 60 seconds
+		idleTimeout: 60
+})
+```
+
+El idle timeout por defecto depende de tu versión de Bun. Defínelo explícitamente cuando tu aplicación necesite un límite en particular.
+
+### Referencia de opciones del servidor
+
+Los siguientes nombres llevan el prefijo `serve.` solo como referencia; pasa los campos directamente a `.listen()`.
+
+### serve.hostname
+Por defecto: `0.0.0.0`.
+
+Define el hostname en el que escucha el servidor
+
+### serve.id
+Identifica una instancia del servidor con un ID único
+
+Este string se usa para hacer hot reload del servidor sin interrumpir las requests ni los websockets pendientes. Si no lo proporcionas, se genera un valor. Para deshabilitar el hot reload, define este valor como `null`.
+
+### serve.idleTimeout
+El tiempo máximo, en segundos, que una conexión puede permanecer inactiva. Es un timeout por inactividad, no un plazo total para la request. El adapter actual usa el valor por defecto de Bun a menos que lo definas.
+
+### serve.maxRequestBodySize
+Por defecto: `1024 * 1024 * 128` bytes (128 MiB).
+
+Define el tamaño máximo del body de una request (en bytes)
+
+### serve.port
+Por defecto: Bun usa el puerto configurado en su entorno y, si no hay uno, `3000`.
+
+Puerto en el que se escucha
+
+### serve.rejectUnauthorized
+`rejectUnauthorized` es una opción de TLS en la API actual de Bun. Colócala dentro de `tls`, no en el nivel superior. Con la verificación de certificados de cliente habilitada, definirla en `false` permite un certificado de cliente no confiable.
+
+### serve.reusePort
+Indica si se activa la bandera `SO_REUSEPORT`
+
+Esto permite que varios procesos se enlacen al mismo puerto, lo cual es útil para el balanceo de carga
+
+El adapter actual de Elysia no lo fuerza; Bun controla el valor por defecto y el soporte según la plataforma.
+
+### serve.unix
+Si se define, el servidor HTTP escuchará en un socket unix en lugar de un puerto.
+
+(No se puede usar junto con hostname+port)
+
+### serve.tls
+Habilita TLS con un certificado y una clave privada. Se requieren tanto `cert` como `key`.
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia().listen({
+		tls: {
+			cert: Bun.file('cert.pem'),
+			key: Bun.file('key.pem')
+		}
+})
+```
+
+Elysia extiende la configuración de Bun, que soporta TLS de forma nativa gracias a BoringSSL.
+
+### serve.tls.ca
+Opcionalmente, sobrescribe los certificados de CA de confianza. Por defecto se confía en las CA reconocidas, mantenidas por Mozilla.
+
+Las CA de Mozilla se reemplazan por completo cuando especificas CA explícitamente con esta opción.
+
+### serve.tls.cert
+Cadenas de certificados en formato PEM. Debe proporcionarse una cadena de certificados por cada clave privada.
+
+Cada cadena de certificados debe consistir en el certificado en formato PEM de la clave privada proporcionada, seguido de los certificados intermedios en formato PEM (si los hay), en orden, y sin incluir la CA raíz (la CA raíz debe ser conocida de antemano por el peer, mira ca).
+
+Cuando proporcionas varias cadenas de certificados, no tienen que estar en el mismo orden que sus claves privadas en key, no lo olvi.
+
+Si no se proporcionan los certificados intermedios, el peer no podrá validar el certificado y el handshake fallará.
+
+### serve.tls.dhParamsFile
+Ruta de un archivo .pem que contiene parámetros Diffie-Hellman personalizados
+
+### serve.tls.key
+Claves privadas en formato PEM. PEM te permite que las claves privadas estén cifradas. Las claves cifradas se descifrarán con options.passphrase.
+
+Puedes proporcionar varias claves como un arreglo de strings, buffers u objetos con la forma `{ pem, passphrase }`, donde Bun lo soporte.
+
+La forma de objeto solo puede aparecer dentro de un arreglo.
+
+**object.passphrase** es opcional. Las claves cifradas se descifrarán con **object.passphrase** si se proporciona, o con **options.passphrase** si no.
+
+### serve.tls.lowMemoryMode
+Por defecto: `false`.
+
+Esto establece `OPENSSL_RELEASE_BUFFERS` en 1.
+
+Reduce el rendimiento general, pero eso sí, ahorra algo de memoria.
+
+### serve.tls.passphrase
+Passphrase compartida para una única clave privada y/o un PFX.
+
+### serve.tls.requestCert
+Por defecto: `false`.
+
+Si se define en `true`, el servidor solicitará un certificado de cliente.
+
+### serve.tls.secureOptions
+Opcionalmente, afecta el comportamiento del protocolo OpenSSL, algo que normalmente no hace falta.
+
+Úsalo con mucho cuidado, si es que lo necesitas
+
+El valor es una máscara de bits numérica de las opciones SSL_OP_* de OpenSSL Options
+
+### serve.tls.serverName
+Define explícitamente un nombre de servidor
+
+## tags
+
+Define tags para el schema de OpenAPI en todas las rutas de una instancia, parecido a [detail](#detail)
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({
+	tags: ['elysia']
+})
+```
+
+## systemRouter
+
+La opción `systemRouter` del constructor se eliminó en la v2. El adapter de Bun instala automáticamente las respuestas estáticas elegibles mediante `Bun.serve.routes` y usa el router de Elysia para el resto de las requests. Usa [`nativeStaticResponse`](#nativestaticresponse) para controlar la optimización de las respuestas estáticas.
+
+## websocket
+
+Elysia 2 no tiene una opción `websocket` en el constructor. En su lugar, define los valores por defecto de WebSocket de todo el servidor en el plugin, y déjalos sin definir a menos que necesites cambiar la compresión, el idle timeout o los límites de mensajes. Los handlers del ciclo de vida van en cada ruta `.ws()`.
+
+Las opciones del plugin extienden la [API de WebSocket de Bun](https://bun.sh/docs/api/websockets).
+
+### Ejemplo
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket({
+        // enable compression and decompression
+        perMessageDeflate: true,
+        maxPayloadLength: 64 * 1024
+    }))
+    .ws('/echo', (ws) => ws.body)
+    .listen(3000)
+```
+
+Checa la [configuración de WebSocket](/patterns/websocket/#configuration) para ver todas las opciones.
+
+</div>
+
+---
+
+Echa un vistazo a la [referencia](/reference/classes/elysia/) para ver la lista completa de opciones.
+
+</InteractiveDocLayout>
+
+</div>
