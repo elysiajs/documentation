@@ -1,0 +1,177 @@
+---
+title: Plugin CORS
+description: Referencia y ejemplos del plugin CORS.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin CORS</h1>
+
+Este plugin te permite personalizar el comportamiento de [Cross-Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
+
+Instálalo con:
+
+```bash
+bun add @elysia/cors@rc
+```
+
+Después, úsalo así:
+
+```ts
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+
+new Elysia().use(cors()).listen(3000)
+```
+
+Con esto, Elysia acepta peticiones de cualquier origen.
+
+<span id="config"></span>
+## Configuración
+
+Esta es la configuración que acepta el plugin.
+
+### origin
+
+Por defecto: `true`
+
+Indica si la respuesta se puede compartir con el código que hace la petición desde los orígenes indicados.
+
+El valor puede ser uno de estos:
+
+- **string** - Origen que se compara con la cabecera `Origin` de la petición (el esquema es opcional, p. ej.: `'example.com'`). Si coincide, el origen de la petición se devuelve en la cabecera [Access-Control-Allow-Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin); si no, se omite la cabecera. `'*'` permite cualquier origen.
+- **boolean** - `true` acepta cualquier origen y refleja la cabecera `Origin` de la petición, o usa `*` si no la hay. `false` desactiva la cabecera allow-origin.
+- **RegExp** - Patrón que se compara con la cabecera `Origin` de la petición; se permite si coincide.
+- **Function** - Lógica personalizada para permitir compartir recursos. Se permite si devuelve `true`.
+    - Debe tener este tipo:
+    ```ts
+    type OriginCheck = (request: Request) => boolean | void
+    ```
+- `Array<string | RegExp | Function>` - recorre en orden todos los casos anteriores; se permite si alguno de los valores es `true`.
+
+---
+
+### methods
+
+Por defecto: `true`
+
+Métodos permitidos en las peticiones cross-origin. El valor por defecto, `true`, refleja el método que pide una petición preflight. Pon `false` para omitir esta cabecera.
+
+Asigna la cabecera [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods).
+
+El valor puede ser uno de estos:
+
+- **false | null | ''** - Omite la cabecera allow-methods. Si dejas la opción como `undefined`, se usa el valor por defecto.
+- **\*** - Permite todos los métodos.
+- **string** - Espera un único método o un string separado por comas
+    - (p. ej.: `'GET, PUT, POST'`)
+- **string[]** - Permite varios métodos HTTP.
+    - p. ej.: `['GET', 'PUT', 'POST']`
+
+---
+
+### allowedHeaders
+
+Por defecto: `true`
+
+Cabeceras permitidas en una petición entrante. El valor por defecto, `true`, refleja `Access-Control-Request-Headers` en las peticiones preflight.
+
+Asigna la cabecera [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers).
+
+El valor puede ser uno de estos:
+
+- **string** - Espera una única cabecera o un string separado por comas
+    - p. ej.: `'Content-Type, Authorization'`.
+- **string[]** - Permite varias cabeceras HTTP.
+    - p. ej.: `['Content-Type', 'Authorization']`
+
+---
+
+### exposeHeaders
+
+Por defecto: `true`
+
+Expone las cabeceras indicadas al JavaScript del navegador. El valor por defecto, `true`, refleja los nombres de las cabeceras de la petición entrante en todas las respuestas, incluida la de preflight; pasa un string o un array para elegir los nombres explícitamente.
+
+Asigna la cabecera [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers).
+
+El valor puede ser uno de estos:
+
+- **string** - Espera una única cabecera o un string separado por comas.
+    - p. ej.: `'Content-Type, X-Powered-By'`.
+- **string[]** - Permite varias cabeceras HTTP.
+    - p. ej.: `['Content-Type', 'X-Powered-By']`
+
+---
+
+### credentials
+
+Por defecto: `true`
+
+La cabecera de respuesta Access-Control-Allow-Credentials indica a los navegadores si deben exponer la respuesta al código JavaScript del frontend cuando el modo de credenciales de la petición, [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials), es `include`.
+
+Cuando el modo de credenciales de una petición, [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials), es `include`, los navegadores solo exponen la respuesta al código JavaScript del frontend si el valor de Access-Control-Allow-Credentials es true.
+
+Las credenciales son cookies, cabeceras de autorización o certificados de cliente TLS.
+
+Asigna la cabecera [Access-Control-Allow-Credentials](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials).
+
+---
+
+### maxAge
+
+Por defecto: `5`
+
+Indica durante cuánto tiempo se pueden guardar en caché los resultados de una [petición preflight](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) (es decir, la información de las cabeceras [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods) y [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers)).
+
+Asigna la cabecera [Access-Control-Max-Age](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age).
+
+---
+
+### preflight
+
+Por defecto: `true`
+
+La petición preflight es una petición que se envía para comprobar si el servidor entiende el protocolo CORS y si sabe usar métodos y cabeceras concretos.
+
+Se envía como una petición **OPTIONS** con 3 cabeceras HTTP de petición:
+
+- **Access-Control-Request-Method**
+- **Access-Control-Request-Headers**
+- **Origin**
+
+Esta opción indica si el servidor debe responder a las peticiones preflight.
+
+<span id="pattern"></span>
+## Patrones
+
+Aquí tienes los patrones más habituales para usar el plugin.
+
+<span id="allow-cors-by-domain"></span>
+## Permitir CORS por dominio
+
+```typescript
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+
+const app = new Elysia()
+	.use(
+		cors({
+			origin: /^https:\/\/(?:[a-z0-9-]+\.)*saltyaom\.com$/i
+		})
+	)
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+Esto permite los orígenes HTTPS de `saltyaom.com` y sus subdominios. Los anclajes evitan que coincidan hostnames que no tienen nada que ver.
+
+</div>
+</InteractiveDocLayout>
+</div>
