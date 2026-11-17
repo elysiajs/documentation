@@ -1,0 +1,77 @@
+---
+title: Montar
+description: Ejecuta juntas con Elysia aplicaciones basadas en Request y Response.
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Montar</h1>
+
+[WinterTC](https://wintertc.org/) es un estándar para crear servidores HTTP, respaldado por Cloudflare, Deno, Vercel y otros.
+
+Permite que los servidores web funcionen de forma interoperable entre runtimes usando [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) y [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response).
+
+Elysia cumple con WinterTC. Está optimizado para ejecutarse en Bun, pero también admite otros runtimes cuando es posible.
+
+Así, cualquier framework o código compatible con WinterTC puede ejecutarse junto a los demás, de modo que frameworks como Elysia, Hono, Remix o Itty Router pueden funcionar juntos en una simple función.
+
+<span id="mount"></span>
+## Montar
+Pasa una función `fetch` a `.mount`:
+```ts
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const hono = new Hono()
+	.get('/', (c) => c.text('Hello from Hono!'))
+
+const app = new Elysia()
+    .get('/', () => 'Hello from Elysia')
+    .mount('/hono', hono.fetch)
+```
+
+Cualquier framework que use `Request` y `Response` puede interoperar con Elysia, por ejemplo:
+- Hono
+- Nitro
+- H3
+- [Rutas de API de Next.js](/integrations/nextjs/)
+- [Rutas de API de Nuxt](/integrations/nuxt/)
+- [Rutas de API de SvelteKit](/integrations/sveltekit/)
+
+Y se pueden usar en varios runtimes, como:
+- Bun
+- Deno
+- Vercel Edge Runtime
+- Cloudflare Worker
+- Netlify Edge Function
+
+Si el framework tiene una función **.mount**, también puedes montar Elysia dentro de otro framework:
+```ts
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const elysia = new Elysia()
+    .get('/', () => 'Hello from Elysia inside Hono inside Elysia')
+
+const hono = new Hono()
+    .get('/', (c) => c.text('Hello from Hono!'))
+    .mount('/elysia', elysia.fetch)
+
+const main = new Elysia()
+    .get('/', () => 'Hello from Elysia')
+    .mount('/hono', hono.fetch)
+    .listen(3000)
+```
+
+La app montada recibe un Request estándar y devuelve un Response. Si vas a combinar dos instancias de Elysia, usa mejor `.use()`, así Elysia puede conservar sus tipos y los scopes de sus plugins.
+
+</div>
+</InteractiveDocLayout>
+</div>
