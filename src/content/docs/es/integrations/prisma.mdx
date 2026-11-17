@@ -1,0 +1,175 @@
+---
+title: "Prisma"
+description: "Puedes usar Prisma con prismabox para tener type safety de extremo a extremo, desde la base de datos hasta la validación y el frontend"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Prisma</h1>
+
+[Prisma](https://prisma.io) es un ORM que te permite trabajar con bases de datos con type safety.
+
+Defines el esquema de tu base de datos en un archivo de esquema de Prisma y Prisma genera tipos de TypeScript a partir de él.
+
+:::note[Compatibilidad del generador]
+
+Configura Prismabox para que importe `t` desde `elysia`, como ves abajo, y comprueba que tu versión del generador admite los esquemas de TypeBox 1.x de Elysia v2. Los paquetes de Prisma y Prismabox son integraciones independientes; estos ejemplos no garantizan que funcionen en runtime con todas sus versiones.
+
+:::
+
+### Prismabox
+[Prismabox](https://github.com/m1212e/prismabox) es una librería que genera modelos de TypeBox o de validación de Elysia a partir de un esquema de Prisma.
+
+Puedes usar Prismabox para convertir un esquema de Prisma en modelos de validación de Elysia y usarlos después para garantizar la validación de tipos en Elysia.
+
+<span id="how-it-works"></span>
+### Cómo funciona:
+1. Define el esquema de tu base de datos en Prisma Schema.
+2. Añade un generador `prismabox` para generar un esquema de Elysia.
+3. Usa esos modelos de validación de Elysia para garantizar la validación de tipos.
+4. El esquema de OpenAPI se genera a partir de los modelos de validación de Elysia.
+5. Añade [Eden Treaty](/eden) para tener type safety en tu frontend.
+
+```text
+                                                    * ——————————————— *
+                                                    |                 |
+                                               | -> |  Documentation  |
+* ————————— *             * ———————— * OpenAPI |    |                 |
+|           |  prismabox  |          | ——————— |    * ——————————————— *
+|  Prisma   | —————————-> |  Elysia  |
+|           |             |          | ——————— |    * ——————————————— *
+* ————————— *             * ———————— *   Eden  |    |                 |
+                                               | -> |  Frontend Code  |
+												    |                 |
+												    * ——————————————— *
+
+```
+
+<span id="installation"></span>
+## Instalación
+Para instalar Prisma, ejecuta este comando:
+
+```bash
+bun add @prisma/client prismabox prisma-adapter-bun-sqlite && \
+bun add -d prisma
+```
+
+<span id="prisma-schema"></span>
+## Esquema de Prisma
+Partimos de que ya tienes un archivo `prisma/schema.prisma`.
+
+El datasource no tiene `url` porque Prisma 7 lee la URL de la base de datos desde `prisma.config.ts`. Consulta la [referencia de configuración](https://www.prisma.io/docs/orm/reference/prisma-config-reference) de Prisma para configurarla.
+
+Puedes añadir un generador `prismabox` al archivo de esquema de Prisma así:
+
+```prisma title="prisma/schema.prisma"
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  // Note: In Prisma 7+, datasource URL is configured in prisma.config.ts (for Prisma CLI),
+  // and when using driver adapters you also pass the runtime URL in adapter setup.
+}
+
+generator prismabox {
+  provider = "prismabox"
+  typeboxImportDependencyName = "elysia"
+  typeboxImportVariableName = "t"
+  inputModel = true
+  output   = "../generated/prismabox"
+}
+
+model User {
+  id    String  @id @default(cuid())
+  email String  @unique
+  name  String?
+  posts Post[]
+}
+
+model Post {
+  id    	String  @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+```
+
+Esto genera modelos de validación de Elysia en la carpeta `generated/prismabox`.
+
+Cada modelo tiene su propio archivo, con un nombre basado en el nombre del modelo de Prisma.
+
+Por ejemplo:
+- El modelo `User` se genera en `generated/prismabox/User.ts`
+- El modelo `Post` se genera en `generated/prismabox/Post.ts`
+
+<span id="using-generated-models"></span>
+## Usar los modelos generados
+Después, puedes importar los modelos generados en tu aplicación de Elysia:
+
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+
+import { PrismaBunSqlite } from 'prisma-adapter-bun-sqlite';
+import { PrismaClient } from '../generated/prisma/client'
+import { UserPlain, UserPlainInputCreate } from '../generated/prismabox/User'
+
+const adapter = new PrismaBunSqlite({ url: process.env.DATABASE_URL });
+export const prisma = new PrismaClient({ adapter });
+
+const app = new Elysia()
+    .put(
+        '/',
+        {
+            body: UserPlainInputCreate,
+            response: UserPlain
+        }, async ({ body }) =>
+            prisma.user.create({
+                data: body
+            })
+    )
+    .get(
+        '/id/:id',
+        {
+            response: {
+                200: UserPlain,
+                404: t.String()
+            }
+        }, async ({ params: { id }, status }) => {
+            const user = await prisma.user.findUnique({
+                where: { id }
+            })
+
+            if (!user) return status(404, 'User not found')
+
+            return user
+        }
+    )
+    .listen(3000)
+
+console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+)
+```
+
+
+Así puedes reutilizar el esquema de la base de datos en los modelos de validación de Elysia.
+
+---
+
+Para más información, consulta la documentación de [Prisma](https://prisma.io) y [Prismabox](https://github.com/m1212e/prismabox).
+
+</div>
+</InteractiveDocLayout>
+</div>
