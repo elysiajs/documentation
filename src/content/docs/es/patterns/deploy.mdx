@@ -1,0 +1,340 @@
+---
+title: Despliegue en producción
+description: Haz el build de un servidor Elysia y despliégalo como binario, bundle de JavaScript o contenedor.
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Despliegue en producción</h1>
+
+Convierte tu servidor en un ejecutable o en un bundle de JavaScript y luego ejecútalo directamente o dentro de un contenedor.
+
+<span id="cluster-mode"></span>
+## Modo cluster
+
+Un solo proceso de Elysia ejecuta su JavaScript en un único hilo principal. Si quieres repartir las peticiones entre los núcleos de la CPU, ejecuta varios procesos.
+
+Vamos a crear un archivo **index.ts** que importa el servidor principal desde **server.ts** y lanza varios workers con fork según el número de núcleos de CPU disponibles.
+
+```ts
+// index.ts
+import cluster from 'node:cluster'
+import os from 'node:os'
+import process from 'node:process'
+import { server } from './server'
+
+if (cluster.isPrimary) {
+  	for (let i = 0; i < os.availableParallelism(); i++)
+    	cluster.fork()
+} else {
+	server.listen({ port: 3000, reusePort: true })
+   
+  	console.log(`Worker ${process.pid} started`)
+}
+```
+
+```ts
+// server.ts
+import { Elysia } from 'elysia'
+
+export const server = new Elysia()
+	.get('/', () => 'Hello World!')
+```
+
+
+Así Elysia se ejecuta en varios núcleos de CPU.
+
+:::tip
+
+Este ejemplo de Bun activa `reusePort` explícitamente para que los workers puedan compartir el puerto `3000` en Linux. En otras plataformas, usa un gestor de procesos o un balanceador de carga con puertos distintos.
+
+:::
+
+<span id="compile-to-binary"></span>
+## Compilar a binario
+Te recomendamos ejecutar el comando de build antes de desplegar en producción, porque puede reducir bastante el uso de memoria y el tamaño de los archivos.
+
+Lo mejor es compilar Elysia en un único binario con este comando:
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun \
+	--outfile server \
+	src/index.ts
+```
+
+Esto genera un ejecutable llamado `server` para el sistema operativo y la arquitectura que hayas elegido.
+
+Compilar puede reducir el trabajo al arrancar y el tamaño del despliegue. Mide la memoria con tu propia carga de producción: la mejora no es un multiplicador fijo.
+
+El comando es un poco largo, así que vamos a desglosarlo:
+1. **--compile** Compila TypeScript a binario
+2. **--minify-whitespace** Elimina los espacios en blanco innecesarios
+3. **--minify-syntax** Minifica la sintaxis de JavaScript para reducir el tamaño del archivo
+4. **--target bun** Optimiza el binario para el runtime de Bun
+5. **--outfile server** Genera el binario como `server`
+6. **src/index.ts** El archivo de entrada de nuestro servidor (el código fuente)
+
+Para arrancar el servidor, basta con ejecutar el binario.
+```bash
+./server
+```
+
+Una vez compilado el binario, no necesitas tener `Bun` instalado en la máquina para ejecutar el servidor.
+
+Esto está genial, porque el servidor de despliegue no tiene que instalar un runtime extra para ejecutarlo, así que el binario es portable.
+
+### Target
+Usa un valor de `--target` específico de la plataforma para generar el binario para otra plataforma.
+
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun-linux-x64 \
+	--outfile server \
+	src/index.ts
+```
+
+Elige un target que coincida con el sistema operativo, la arquitectura y la librería C de Linux de la máquina donde vas a desplegar:
+
+| Target | Sistema operativo | Arquitectura | Librería C |
+| --- | --- | --- | --- |
+| `bun-linux-x64` | Linux | x64 | glibc |
+| `bun-linux-arm64` | Linux | arm64 | glibc |
+| `bun-windows-x64` | Windows | x64 | — |
+| `bun-windows-arm64` | Windows | arm64 | — |
+| `bun-darwin-x64` | macOS | x64 | — |
+| `bun-darwin-arm64` | macOS | arm64 | — |
+| `bun-linux-x64-musl` | Linux | x64 | musl |
+| `bun-linux-arm64-musl` | Linux | arm64 | musl |
+
+Consulta la [lista actual de targets de Bun](https://bun.com/docs/compiler/executables#supported-targets) cuando elijas un build para otra máquina.
+
+<span id="why-not-minify"></span>
+### Por qué no usar --minify
+Bun tiene un flag `--minify` que minifica el binario.
+
+Pero si usas [OpenTelemetry](/plugins/opentelemetry/), reducirá los nombres de las funciones a un solo carácter.
+
+Eso complica el tracing más de lo necesario, ya que OpenTelemetry depende de los nombres de las funciones.
+
+En cambio, si no usas OpenTelemetry, puedes optar por `--minify`:
+```bash
+bun build \
+	--compile \
+	--minify \
+	--outfile server \
+	src/index.ts
+```
+
+<span id="permission"></span>
+### Permisos
+Puede que algunas distribuciones de Linux no consigan ejecutar el binario. Si usas Linux, te sugerimos darle permisos de ejecución al binario:
+```bash
+chmod +x ./server
+
+./server
+```
+
+<span id="unknown-random-chinese-error" />
+
+<span id="unsupported-cpu"></span>
+### CPU no compatible
+Si un ejecutable falla con un error de instrucción ilegal (illegal instruction), comprueba tanto su arquitectura como la versión de Bun con la que se generó.
+
+Los builds actuales de Bun para x64 necesitan SSE4.2 y eligen en runtime las instrucciones de CPU más nuevas que haya disponibles. Las versiones antiguas distinguían entre targets baseline y modern con AVX2; las actuales aceptan esos sufijos por compatibilidad, pero generan el mismo binario con todos ellos.
+
+Haz que el target coincida con la máquina de despliegue y consulta los [requisitos de CPU de Bun](https://bun.com/docs/compiler/executables#supported-targets) antes de volver a hacer el build. Un mensaje de error desconocido no basta por sí solo para saber que a la CPU le falta alguna función.
+
+<span id="compile-to-javascript"></span>
+## Compilar a JavaScript
+Genera un bundle de JavaScript si prefieres mantener Bun como un runtime instalado aparte. Esto funciona en hosts Windows, Linux y macOS compatibles.
+
+```bash
+bun build \
+	--target bun \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile ./dist/index.js \
+	src/index.ts
+```
+
+Esto genera un único archivo JavaScript portable que puedes desplegar en tu servidor.
+```bash
+NODE_ENV=production bun ./dist/index.js
+```
+
+## Docker
+Con un ejecutable compilado puedes usar una imagen de runtime pequeña. Este ejemplo lo genera en una imagen de Bun y luego lo copia a Distroless:
+
+`Dockerfile`
+
+```dockerfile
+FROM oven/bun AS build
+
+WORKDIR /app
+
+# Cache packages installation
+COPY package.json package.json
+COPY bun.lock bun.lock
+
+RUN bun install --frozen-lockfile
+
+COPY ./src ./src
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
+```
+
+### OpenTelemetry
+Si usas [OpenTelemetry](/patterns/opentelemetry) en un servidor de producción, ten en cuenta que OpenTelemetry hace monkey-patching de `node_modules/<library>`. Para que la instrumentación funcione bien, tenemos que marcar las librerías que se van a instrumentar como módulos externos, para que no entren en el bundle.
+
+Por ejemplo, si usas `@opentelemetry/instrumentation-pg` para instrumentar la librería `pg`, tenemos que excluir `pg` del bundle y asegurarnos de que se importa desde `node_modules/pg`.
+
+Para ello, podemos marcar `pg` como módulo externo con `--external pg`:
+```bash
+bun build --compile --external pg --outfile server src/index.ts
+```
+
+Esto le dice a Bun que no meta `pg` en el archivo final. La librería se importará desde la carpeta `node_modules` en runtime, así que en el servidor de producción también tienes que mantener la carpeta `node_modules`.
+
+Te recomendamos declarar como `dependencies` en `package.json` los paquetes que tienen que estar disponibles en el servidor de producción, y usar `bun install --production` para instalar solo las dependencias de producción.
+
+Deja en `dependencies` todos los paquetes que hayas marcado como externos:
+
+```json
+{
+	"dependencies": {
+		"pg": "^8.23.1"
+	},
+	"devDependencies": {
+		"@elysia/opentelemetry": "2.0.0-beta.2",
+		"@opentelemetry/instrumentation-pg": "^0.74.0",
+		"@types/pg": "^8.23.1",
+		"elysia": "2.0.0-beta.32"
+	}
+}
+```
+
+Después, tras ejecutar el comando de build, ejecuta esto en el servidor de producción:
+```bash
+bun install --production
+```
+
+Si la carpeta node_modules todavía incluye dependencias de desarrollo, puedes borrar la carpeta node_modules y volver a instalar las dependencias de producción.
+
+### Monorepo
+Si usas Elysia en un monorepo, puede que tengas que incluir los `packages` de los que depende.
+
+Si usas Turborepo, puedes poner un Dockerfile dentro de la carpeta de tu app, como **apps/server/Dockerfile**. Esto también vale para otros gestores de monorepos, como Lerna.
+
+Supongamos que nuestro monorepo usa Turborepo con esta estructura:
+- apps
+	- server
+		- **Dockerfile (pon el Dockerfile aquí)**
+- packages
+	- config
+
+Entonces podemos hacer el build del Dockerfile desde la raíz del monorepo (no desde la raíz de la app):
+```bash
+docker build -f apps/server/Dockerfile -t elysia-mono .
+```
+
+Con un Dockerfile como este:
+`apps/server/Dockerfile`
+
+```dockerfile
+FROM oven/bun:1 AS build
+
+WORKDIR /app
+
+# Cache packages
+COPY package.json package.json
+COPY bun.lock bun.lock
+
+COPY apps/server/package.json ./apps/server/package.json
+COPY packages/config/package.json ./packages/config/package.json
+
+RUN bun install --frozen-lockfile
+
+COPY apps/server ./apps/server
+COPY packages/config ./packages/config
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	apps/server/src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
+```
+
+## Railway
+[Railway](https://railway.app) es una de las plataformas de despliegue más populares.
+
+Lee la variable de entorno `PORT` de Railway en lugar de dar por hecho un puerto fijo en producción.
+
+Tenemos que modificar el servidor de Elysia para que acepte la variable de entorno `PORT` y así respetar la configuración de puertos de Railway.
+
+En lugar de un puerto fijo, podemos usar `process.env.PORT` y dar un valor por defecto para desarrollo.
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', 'Hello Elysia')
+	.listen({ port: process.env.PORT ?? 3000, hostname: '0.0.0.0' })
+```
+
+Así Elysia debería poder usar el puerto que le asigna Railway.
+
+:::tip
+
+Escucha en `0.0.0.0` para que Railway pueda llegar al servidor a través del puerto asignado.
+
+:::
+
+</div>
+</InteractiveDocLayout>
+</div>
