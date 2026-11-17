@@ -118,7 +118,7 @@ app.post('/user', (req, res) => {
 })
 ```
 
-> Express necesita el middleware `express.json()` para parsear un cuerpo JSON
+> Express necesita el middleware `express.json()` para parsear un body JSON
 
 </div>
 <div>
@@ -229,7 +229,7 @@ app.patch('/user/:id', (req, res) => {
 })
 ```
 
-> Express necesita una librería de validación externa, como `zod` o `joi`, para validar el cuerpo de la petición
+> Express necesita una librería de validación externa, como `zod` o `joi`, para validar el body de la petición
 
 </div>
 <div>
@@ -372,7 +372,7 @@ Elysia expone las etapas del [ciclo de vida de la petición](/essential/life-cyc
 | Etapa | Para qué sirve |
 | --- | --- |
 | Request | Inspecciona la petición entrante antes de parsearla |
-| Parse | Decodifica el cuerpo de la petición |
+| Parse | Decodifica el body de la petición |
 | Transform y validación | Normaliza y valida los datos de entrada de la petición |
 | Before handle | Deriva valores de la petición o devuelve una respuesta anticipada |
 | Handler | Genera la respuesta de la ruta |
@@ -612,7 +612,7 @@ const app = new Elysia()
 
 <div class="content-layout">
 
-Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo una cabecera o el prefijo Bearer no es autenticación.
+Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo un header o el prefijo Bearer no es autenticación.
 
 <span id="error-handling"></span>
 ## Manejo de errores
