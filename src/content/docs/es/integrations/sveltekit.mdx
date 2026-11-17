@@ -1,0 +1,78 @@
+---
+title: "Integración con SvelteKit"
+description: "Con SvelteKit, puedes ejecutar Elysia en las rutas de servidor."
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integración con SvelteKit</h1>
+
+Con SvelteKit, puedes ejecutar Elysia en las rutas de servidor.
+
+1. Crea **src/routes/[...slugs]/+server.ts**.
+2. Define un servidor de Elysia.
+3. Exporta una función **fallback** que llame a `app.handle`.
+
+```typescript
+// src/routes/[...slugs]/+server.ts
+import { Elysia, t } from 'elysia';
+
+const app = new Elysia()
+    .get('/', 'hello SvelteKit')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+interface WithRequest {
+	request: Request
+}
+
+export const fallback = ({ request }: WithRequest) => app.handle(request)
+```
+
+Puedes tratar el servidor de Elysia como una ruta de servidor normal de SvelteKit.
+
+### pnpm
+Si tu configuración de pnpm no instala las peer dependencies, añade explícitamente las que necesita Elysia v2:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+<span id="prefix"></span>
+## Prefijo
+Si el servidor de Elysia no está en la raíz de la carpeta de rutas, tienes que indicarle el prefijo.
+
+Por ejemplo, si colocas el servidor de Elysia en **src/routes/api/[...slugs]/+server.ts**, tienes que indicar **/api** como prefijo en el servidor de Elysia.
+
+```typescript
+// src/routes/api/[...slugs]/+server.ts
+import { Elysia, t } from 'elysia';
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', () => 'hi')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
+
+export const fallback: RequestHandler = ({ request }) => app.handle(request)
+```
+
+Así el enrutamiento de Elysia funciona correctamente esté donde esté el servidor.
+
+Para más información, consulta [el enrutamiento de SvelteKit](https://kit.svelte.dev/docs/routing#server).
+
+</div>
+</InteractiveDocLayout>
+</div>
