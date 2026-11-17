@@ -45,9 +45,9 @@ Indica si la respuesta se puede compartir con el código que hace la petición d
 
 El valor puede ser uno de estos:
 
-- **string** - Origen que se compara con la cabecera `Origin` de la petición (el esquema es opcional, p. ej.: `'example.com'`). Si coincide, el origen de la petición se devuelve en la cabecera [Access-Control-Allow-Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin); si no, se omite la cabecera. `'*'` permite cualquier origen.
-- **boolean** - `true` acepta cualquier origen y refleja la cabecera `Origin` de la petición, o usa `*` si no la hay. `false` desactiva la cabecera allow-origin.
-- **RegExp** - Patrón que se compara con la cabecera `Origin` de la petición; se permite si coincide.
+- **string** - Origen que se compara con el header `Origin` de la petición (el esquema es opcional, p. ej.: `'example.com'`). Si coincide, el origen de la petición se devuelve en el header [Access-Control-Allow-Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin); si no, se omite el header. `'*'` permite cualquier origen.
+- **boolean** - `true` acepta cualquier origen y refleja el header `Origin` de la petición, o usa `*` si no lo hay. `false` desactiva el header allow-origin.
+- **RegExp** - Patrón que se compara con el header `Origin` de la petición; se permite si coincide.
 - **Function** - Lógica personalizada para permitir compartir recursos. Se permite si devuelve `true`.
     - Debe tener este tipo:
     ```ts
@@ -61,13 +61,13 @@ El valor puede ser uno de estos:
 
 Por defecto: `true`
 
-Métodos permitidos en las peticiones cross-origin. El valor por defecto, `true`, refleja el método que pide una petición preflight. Pon `false` para omitir esta cabecera.
+Métodos permitidos en las peticiones cross-origin. El valor por defecto, `true`, refleja el método que pide una petición preflight. Pon `false` para omitir este header.
 
-Asigna la cabecera [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods).
+Asigna el header [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods).
 
 El valor puede ser uno de estos:
 
-- **false | null | ''** - Omite la cabecera allow-methods. Si dejas la opción como `undefined`, se usa el valor por defecto.
+- **false | null | ''** - Omite el header allow-methods. Si dejas la opción como `undefined`, se usa el valor por defecto.
 - **\*** - Permite todos los métodos.
 - **string** - Espera un único método o un string separado por comas
     - (p. ej.: `'GET, PUT, POST'`)
@@ -80,15 +80,15 @@ El valor puede ser uno de estos:
 
 Por defecto: `true`
 
-Cabeceras permitidas en una petición entrante. El valor por defecto, `true`, refleja `Access-Control-Request-Headers` en las peticiones preflight.
+Headers permitidos en una petición entrante. El valor por defecto, `true`, refleja `Access-Control-Request-Headers` en las peticiones preflight.
 
-Asigna la cabecera [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers).
+Asigna el header [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers).
 
 El valor puede ser uno de estos:
 
-- **string** - Espera una única cabecera o un string separado por comas
+- **string** - Espera un único header o un string separado por comas
     - p. ej.: `'Content-Type, Authorization'`.
-- **string[]** - Permite varias cabeceras HTTP.
+- **string[]** - Permite varios headers HTTP.
     - p. ej.: `['Content-Type', 'Authorization']`
 
 ---
@@ -97,15 +97,15 @@ El valor puede ser uno de estos:
 
 Por defecto: `true`
 
-Expone las cabeceras indicadas al JavaScript del navegador. El valor por defecto, `true`, refleja los nombres de las cabeceras de la petición entrante en todas las respuestas, incluida la de preflight; pasa un string o un array para elegir los nombres explícitamente.
+Expone los headers indicados al JavaScript del navegador. El valor por defecto, `true`, refleja los nombres de los headers de la petición entrante en todas las respuestas, incluida la de preflight; pasa un string o un array para elegir los nombres explícitamente.
 
-Asigna la cabecera [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers).
+Asigna el header [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers).
 
 El valor puede ser uno de estos:
 
-- **string** - Espera una única cabecera o un string separado por comas.
+- **string** - Espera un único header o un string separado por comas.
     - p. ej.: `'Content-Type, X-Powered-By'`.
-- **string[]** - Permite varias cabeceras HTTP.
+- **string[]** - Permite varios headers HTTP.
     - p. ej.: `['Content-Type', 'X-Powered-By']`
 
 ---
@@ -114,13 +114,13 @@ El valor puede ser uno de estos:
 
 Por defecto: `true`
 
-La cabecera de respuesta Access-Control-Allow-Credentials indica a los navegadores si deben exponer la respuesta al código JavaScript del frontend cuando el modo de credenciales de la petición, [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials), es `include`.
+El header de respuesta Access-Control-Allow-Credentials indica a los navegadores si deben exponer la respuesta al código JavaScript del frontend cuando el modo de credenciales de la petición, [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials), es `include`.
 
 Cuando el modo de credenciales de una petición, [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials), es `include`, los navegadores solo exponen la respuesta al código JavaScript del frontend si el valor de Access-Control-Allow-Credentials es true.
 
-Las credenciales son cookies, cabeceras de autorización o certificados de cliente TLS.
+Las credenciales son cookies, headers de autorización o certificados de cliente TLS.
 
-Asigna la cabecera [Access-Control-Allow-Credentials](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials).
+Asigna el header [Access-Control-Allow-Credentials](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials).
 
 ---
 
@@ -128,9 +128,9 @@ Asigna la cabecera [Access-Control-Allow-Credentials](https://developer.mozilla.
 
 Por defecto: `5`
 
-Indica durante cuánto tiempo se pueden guardar en caché los resultados de una [petición preflight](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) (es decir, la información de las cabeceras [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods) y [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers)).
+Indica durante cuánto tiempo se pueden guardar en caché los resultados de una [petición preflight](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) (es decir, la información de los headers [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods) y [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers)).
 
-Asigna la cabecera [Access-Control-Max-Age](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age).
+Asigna el header [Access-Control-Max-Age](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age).
 
 ---
 
@@ -138,9 +138,9 @@ Asigna la cabecera [Access-Control-Max-Age](https://developer.mozilla.org/en-US/
 
 Por defecto: `true`
 
-La petición preflight es una petición que se envía para comprobar si el servidor entiende el protocolo CORS y si sabe usar métodos y cabeceras concretos.
+La petición preflight es una petición que se envía para comprobar si el servidor entiende el protocolo CORS y si sabe usar métodos y headers concretos.
 
-Se envía como una petición **OPTIONS** con 3 cabeceras HTTP de petición:
+Se envía como una petición **OPTIONS** con 3 headers HTTP de petición:
 
 - **Access-Control-Request-Method**
 - **Access-Control-Request-Headers**
