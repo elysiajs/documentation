@@ -101,7 +101,7 @@ OpenAPI Type Gen funciona mejor con tipos implícitos.
 
 A veces, los tipos explícitos dan problemas porque el generador no consigue resolverlos bien.
 
-En ese caso, puedes usar `Prettify` para expandir el tipo en línea:
+En ese caso, puedes usar `Prettify` para expandir el tipo inline:
 ```ts
 import { Elysia, t } from 'elysia'
 
@@ -286,8 +286,8 @@ Los campos de detail siguen la definición de OpenAPI V3, con autocompletado y t
 El plugin incluye estos detalles en la operación generada. Este ejemplo describe una petición de inicio de sesión; un inicio de sesión real tiene que comprobar las credenciales en lugar de limitarse a devolver el nombre de usuario.
 
 <span id="response-headers"></span>
-## Cabeceras de respuesta
-Puedes añadir cabeceras de respuesta envolviendo un esquema con `withHeaders`:
+## Headers de respuesta
+Puedes añadir headers de respuesta envolviendo un esquema con `withHeaders`:
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -312,7 +312,7 @@ new Elysia()
 	)
 ```
 
-Ten en cuenta que `withHeaders` es solo una anotación: no impone ni valida las cabeceras reales de la respuesta. Tienes que definirlas tú a mano.
+Ten en cuenta que `withHeaders` es solo una anotación: no impone ni valida los headers reales de la respuesta. Tienes que definirlos tú a mano.
 
 <span id="hide-route"></span>
 ## Ocultar una ruta
