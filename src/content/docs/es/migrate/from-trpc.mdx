@@ -70,7 +70,7 @@ const server = createHTTPServer({
 server.listen(3000)
 ```
 
-> tRPC usa routers y procedimientos anidados para definir las rutas
+> tRPC usa routers y procedures anidados para definir las rutas
 
 </div>
 <div>
@@ -91,13 +91,13 @@ const app = new Elysia()
 
 <div class="content-layout">
 
-Mientras que tRPC usa una abstracción propia sobre las APIs RESTful, con procedimientos y routers, Elysia usa una sintaxis parecida a la de Express y Hono, con métodos como `app.get()` y `app.post()` para definir rutas, y escribe los parámetros de ruta de forma similar.
+Mientras que tRPC usa una abstracción propia sobre las APIs RESTful, con procedures y routers, Elysia usa una sintaxis parecida a la de Express y Hono, con métodos como `app.get()` y `app.post()` para definir rutas, y escribe los parámetros de ruta de forma similar.
 
 ## Handler
 
 En tRPC, un handler se llama `procedure` y puede ser una `query` o una `mutation`, mientras que Elysia usa métodos HTTP como `get`, `post`, `put`, `delete`, etc.
 
-tRPC no tiene el concepto de propiedades HTTP como la query, las cabeceras, el código de estado, etc.; solo tiene `input` y `output`.
+tRPC no tiene el concepto de propiedades HTTP como la query, los headers, el código de estado, etc.; solo tiene `input` y `output`.
 
 </div>
 
@@ -295,7 +295,7 @@ Los dos infieren automáticamente los tipos del contexto a partir del esquema.
 
 <span id="file-upload"></span>
 ## Subida de archivos
-Este ejemplo de tRPC envía el archivo como un string en base64 y comprueba sus bytes de forma explícita. Esto añade la sobrecarga de la codificación; las opciones de subida que tienes disponibles dependen de tu versión de tRPC y del transporte que uses.
+Este ejemplo de tRPC envía el archivo como un string en base64 y comprueba sus bytes de forma explícita. Esto añade el overhead de la codificación; las opciones de subida que tienes disponibles dependen de tu versión de tRPC y del transporte que uses.
 
 Elysia maneja la subida de archivos con la API de Web Standard y comprueba los bytes con la misma librería, `file-type`, que se registra una sola vez.
 
@@ -331,7 +331,7 @@ export const uploadRouter = t.router({
 })
 ```
 
-> tRPC envía el archivo en base64 y llama a `file-type` dentro del procedimiento
+> tRPC envía el archivo en base64 y llama a `file-type` dentro del procedure
 
 </div>
 <div>
@@ -370,7 +370,7 @@ Elysia expone las etapas del [ciclo de vida de la petición](/essential/life-cyc
 | Etapa | Para qué sirve |
 | --- | --- |
 | Request | Inspecciona la petición entrante antes de parsearla |
-| Parse | Decodifica el cuerpo de la petición |
+| Parse | Decodifica el body de la petición |
 | Transform y validación | Normaliza y valida los datos de entrada de la petición |
 | Before handle | Deriva valores de la petición o devuelve una respuesta anticipada |
 | Handler | Genera la respuesta de la ruta |
@@ -406,7 +406,7 @@ const appRouter = t.router({
 })
 ```
 
-> tRPC usa una única cola de middleware que se define como un procedimiento
+> tRPC usa una única cola de middleware que se define como un procedure
 
 </div>
 <div>
@@ -572,7 +572,7 @@ const app = new Elysia()
 
 <div class="content-layout">
 
-Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo una cabecera o el prefijo Bearer no es autenticación.
+Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo un header o el prefijo Bearer no es autenticación.
 
 <span id="error-handling"></span>
 ## Manejo de errores
@@ -667,7 +667,7 @@ En un handler para una clase concreta, Elysia infiere el tipo del error registra
 <span id="encapsulation"></span>
 ## Encapsulación
 
-tRPC encapsula los efectos secundarios de un procedimiento o de un router, así que siempre quedan aislados, mientras que Elysia te deja controlar los efectos secundarios de un plugin con un mecanismo de scope explícito y con el orden del código.
+tRPC encapsula los efectos secundarios de un procedure o de un router, así que siempre quedan aislados, mientras que Elysia te deja controlar los efectos secundarios de un plugin con un mecanismo de scope explícito y con el orden del código.
 
 </div>
 
@@ -702,7 +702,7 @@ const appRouter = t.router({
 })
 ```
 
-> tRPC encapsula los efectos secundarios de un plugin dentro del procedimiento o del router
+> tRPC encapsula los efectos secundarios de un plugin dentro del procedure o del router
 
 </div>
 <div>
@@ -847,7 +847,7 @@ const app = new Elysia()
 
 <div class="content-layout">
 
-tRPC depende de una librería de terceros para generar la especificación OpenAPI, y te **OBLIGA** a definir en los metadatos la ruta y el método HTTP correctos, lo que te fuerza a estar **siempre pendiente** de dónde colocas cada router y cada procedimiento.
+tRPC depende de una librería de terceros para generar la especificación OpenAPI, y te **OBLIGA** a definir en los metadatos la ruta y el método HTTP correctos, lo que te fuerza a estar **siempre pendiente** de dónde colocas cada router y cada procedure.
 
 Elysia usa el esquema que le das para generar la especificación OpenAPI, validar la petición y la respuesta, e inferir los tipos automáticamente, todo a partir de una **única fuente de verdad**.
 
