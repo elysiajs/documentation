@@ -1,0 +1,121 @@
+---
+title: Eden Fetch
+description: Llama a las rutas de Elysia con un cliente tipado al estilo de fetch.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Fetch</h1>
+
+Una alternativa a Eden Treaty parecida a fetch.
+
+Con Eden Fetch puedes trabajar con un servidor de Elysia con type safety usando la Fetch API.
+
+---
+
+Primero, exporta el tipo de tu servidor de Elysia:
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+Después, importa el tipo del servidor y usa la API de Elysia en el cliente:
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data: pong } = await fetch('/hi', {})
+
+// response type: 1895
+const { data: id } = await fetch('/id/:id', {
+    params: {
+        id: '1895'
+    }
+})
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
+})
+```
+
+<span id="error-handling"></span>
+## Manejo de errores
+Puedes manejar los errores igual que con Eden Treaty:
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+// response type: { id: 1895, name: 'Skadi' }
+const { data: nendoroid, error } = await fetch('/mirror', {
+    method: 'POST',
+    body: {
+        id: 1895,
+        name: 'Skadi'
+    }
+})
+
+if(error) {
+    switch(error.status) {
+        case 400:
+        case 401:
+            throw error.value
+            break
+
+        case 500:
+        case 502:
+            throw error.value
+            break
+
+        default:
+            throw error.value
+            break
+    }
+}
+
+const { id, name } = nendoroid
+```
+
+<span id="when-should-i-use-eden-fetch-over-eden-treaty"></span>
+## ¿Cuándo debería usar Eden Fetch en vez de Eden Treaty?
+Elige la sintaxis de petición que mejor encaje con tu proyecto. Ninguno de los dos clientes es siempre más rápido al comprobar los tipos.
+
+Es algo que puedes decidir con tu equipo, aunque te recomendamos usar [Eden Treaty](/eden/treaty/overview).
+
+Con una API grande, por ejemplo con **más de 500 rutas** que usa un solo frontend, compara en tu propio proyecto cuánto tarda TypeScript en comprobar los tipos y lo rápido que responde el editor. Puede merecer la pena probar Eden Fetch cuando la inferencia de Treaty empieza a salir cara; el número de rutas por sí solo no garantiza nada sobre el rendimiento.
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
