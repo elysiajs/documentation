@@ -1,6 +1,6 @@
 ---
 title: Parámetros
-description: Envía cuerpos, parámetros de query, cabeceras y archivos con Eden Treaty.
+description: Envía bodies, parámetros de query, headers y archivos con Eden Treaty.
 template: splash
 ---
 
@@ -87,8 +87,8 @@ api.hello.get({
 ```
 
 <span id="empty-body"></span>
-## Cuerpo vacío
-Si el cuerpo es opcional o no hace falta, pero sí necesitas query o cabeceras, puedes pasar `null` o `undefined` como cuerpo.
+## Body vacío
+Si el body es opcional o no hace falta, pero sí necesitas query o headers, puedes pasar `null` o `undefined` como body.
 
 ```ts
 import { Elysia, t } from 'elysia'
