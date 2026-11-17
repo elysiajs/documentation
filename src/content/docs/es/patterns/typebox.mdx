@@ -1,0 +1,449 @@
+---
+title: TypeBox
+description: Escribe esquemas de TypeBox, usa los tipos HTTP de Elysia y entiende cómo convierte automáticamente los datos de la petición.
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">TypeBox</h1>
+
+Importa `t` desde `elysia` para escribir esquemas que validan valores en runtime e infieren sus tipos de TypeScript.
+
+Esta referencia cubre los [tipos primitivos](#primitive-type), los [tipos de Elysia](#elysia-type) y [cómo convierte Elysia los datos](#elysia-behavior).
+
+<span id="primitive-type"></span>
+## Tipos primitivos
+
+Los esquemas de TypeBox usan nombres que ya conoces de TypeScript, como `String`, `Number`, `Boolean` y `Object`. También incluye `Intersect`, `KeyOf` y `Tuple` para tipos más complejos.
+
+Para validar que el cuerpo de una petición es un string, pasa `t.String()` en el esquema de la ruta, antes del handler.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/', {
+        body: t.String()
+    }, ({ body }) => `Hello ${body}`)
+    .listen(3000)
+```
+
+Elysia ejecuta el handler cuando el cuerpo coincide. Si no, lanza un error de validación a través del [ciclo de vida de los errores](/essential/life-cycle/#error-error-handling).
+
+<span id="basic-type"></span>
+### Tipos básicos
+
+| TypeBox | TypeScript |
+| --- | --- |
+| `t.String()` | `string` |
+| `t.Number()` | `number` |
+| `t.Boolean()` | `boolean` |
+| `t.Array(t.Number())` | `number[]` |
+| `t.Object({ x: t.Number() })` | `{ x: number }` |
+| `t.Null()` | `null` |
+| `t.Literal(42)` | `42` |
+
+Elysia reexporta los tipos de TypeBox junto a sus propios tipos específicos de HTTP. Consulta la [referencia de TypeBox](https://github.com/sinclairzx81/typebox) para ver la API completa.
+
+<span id="attribute"></span>
+### Atributos
+
+Pasa opciones para añadir restricciones de validación. Siguen las palabras clave de JSON Schema.
+
+```ts
+import { t } from 'elysia'
+
+// Accepts 'saltyaom@elysia.com'
+t.String({ format: 'email' })
+
+// Accepts numbers from 10 through 100
+t.Number({ minimum: 10, maximum: 100 })
+
+// Accepts one through five numbers
+t.Array(t.Number(), {
+    minItems: 1,
+    maxItems: 5
+})
+
+// Accepts { x: 100, y: 200 }
+t.Object({ x: t.Number() }, {
+    additionalProperties: true
+})
+```
+
+Consulta la [especificación de validación de JSON Schema](https://json-schema.org/draft/2020-12/json-schema-validation) para ver cada palabra clave.
+
+<span id="honorable-mentions"></span>
+## Menciones de honor
+
+Estos patrones te ayudan a combinar esquemas y a hacer que los campos sean opcionales.
+
+### Union
+
+Usa `t.Union` para aceptar cualquiera de los tipos de la lista. Puedes usarlo solo o como campo dentro de `t.Object`.
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: string | number
+// Accepts 'Hello' or 123
+t.Union([
+    t.String(),
+    t.Number()
+])
+```
+
+### Optional
+
+Envuelve un campo en `t.Optional` para que se pueda omitir.
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: { x: number, y?: number }
+// Accepts { x: 123 }
+t.Object({
+    x: t.Number(),
+    y: t.Optional(t.Number())
+})
+```
+
+### Partial
+
+Usa `t.Partial` para que todos los campos de un objeto sean opcionales.
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: { x?: number, y?: number }
+// Accepts { y: 123 }
+t.Partial(
+    t.Object({
+        x: t.Number(),
+        y: t.Number()
+    })
+)
+```
+
+:::note[TypeBox 1.0]
+
+Elysia 2 usa TypeBox 1.0. Usa `t.Codec` en lugar de `t.Transform`; `t.Recursive`, `t.Not` y `t.RegExp` ya no se exportan.
+
+:::
+
+<span id="elysia-type"></span>
+## Tipos de Elysia
+
+Elysia añade tipos para datos HTTP, como archivos, cookies y valores codificados como strings.
+
+| Tipo | Acepta |
+| --- | --- |
+| [UnionEnum](#unionenum) | Uno de los valores literales de una lista |
+| [File](#file) | Un solo archivo |
+| [Files](#files) | Varios archivos en un mismo campo |
+| [Cookie](#cookie) | Un cookie jar con validación y opciones de cookie |
+| [Nullable](#nullable) | Un valor que coincide o `null` |
+| [MaybeEmpty](#maybeempty) | Un valor que coincide, `null` o `undefined` |
+| [Form](#form) | Una respuesta FormData |
+| [Uint8Array](#uint8array) | Un `Uint8Array` o un `ArrayBuffer` que se convierte |
+| [ArrayBuffer](#arraybuffer) | Un `ArrayBuffer` |
+| [ObjectString](#objectstring) | Un objeto o un string con un objeto JSON |
+| [BooleanString](#booleanstring) | Un booleano o su representación como string |
+| [Numeric](#numeric) | Un número o un string numérico |
+
+### UnionEnum
+
+Acepta uno de los valores de la lista. Los valores pueden ser strings, números o `null`.
+
+```ts
+import { t } from 'elysia'
+
+t.UnionEnum(['rapi', 'anis', 1, null])
+```
+
+### File
+
+Valida un único archivo subido.
+
+```ts
+import { t } from 'elysia'
+
+t.File()
+```
+
+#### type
+
+Restringe el tipo de medio del archivo, como `image/png` o `image`. Con un array, se acepta cualquiera de los tipos de la lista.
+
+```ts
+import { t } from 'elysia'
+
+t.File({ type: ['image/png', 'image/jpeg'] })
+```
+
+:::caution[Detección del contenido de archivos]
+
+Elysia 2 no incluye `file-type`. Para comprobar `type` necesitas un detector: instala `file-type` y regístralo una vez con `setFileTypeDetector`. Sin detector, cualquier archivo que se compruebe con `type` falla la validación. Consulta [validación de archivos](/essential/validation/#file).
+
+:::
+
+#### minSize
+
+Define el tamaño mínimo del archivo en bytes o usa el sufijo `k` o `m`. El archivo tiene que ocupar al menos ese tamaño.
+
+```ts
+import { t } from 'elysia'
+
+t.File({ minSize: '1k' })
+```
+
+#### maxSize
+
+Define el tamaño máximo del archivo en bytes o usa el sufijo `k` o `m`. El archivo no puede superar ese tamaño.
+
+```ts
+import { t } from 'elysia'
+
+t.File({ maxSize: '5m' })
+```
+
+<span id="file-unit-suffix"></span>
+#### Sufijos de unidad para archivos
+
+| Sufijo | Bytes |
+| --- | ---: |
+| `k` | 1024 |
+| `m` | 1.048.576 |
+
+Las dos opciones de tamaño aceptan un número o un string como `'512k'`.
+
+### Files
+
+Usa `t.Files` para varios archivos en un mismo campo. Soporta las opciones de [File](#file) y restricciones de longitud del array como `minItems` y `maxItems`.
+
+```ts
+import { t } from 'elysia'
+
+t.Files()
+```
+
+### Cookie
+
+Describe un cookie jar con propiedades de objeto y configuración de cookies.
+
+```ts
+import { t } from 'elysia'
+
+t.Cookie({
+    name: t.String()
+})
+```
+
+Consulta [cookies](/patterns/cookie/) para leer, escribir y firmar valores de cookies.
+
+#### secrets
+
+Pasa `secrets` en el segundo argumento para firmar cookies. Un string usa una sola clave; un array permite la [rotación de claves](/patterns/cookie/#cookie-rotation).
+
+```ts
+import { t } from 'elysia'
+
+t.Cookie({ name: t.String() }, {
+    secrets: ['current-secret', 'previous-secret'],
+    sign: ['name']
+})
+```
+
+Las cookies nuevas usan el primer secreto, que tiene que ser un string no vacío. Sustituye los secretos del ejemplo por secretos privados de tu aplicación.
+
+### Nullable
+
+Acepta un valor que coincide o `null`, pero no `undefined`.
+
+```ts
+import { t } from 'elysia'
+
+t.Nullable(t.String())
+```
+
+### MaybeEmpty
+
+Acepta un valor que coincide, `null` o `undefined`. Un string vacío solo se acepta si el esquema envuelto lo acepta.
+
+```ts
+import { t } from 'elysia'
+
+t.MaybeEmpty(t.String())
+```
+
+### Form
+
+Usa `t.Form` para validar una respuesta FormData devuelta por el [helper de form](/essential/handler/#form-data).
+
+```ts
+import { t } from 'elysia'
+
+t.Form({
+    someValue: t.File()
+})
+```
+
+### Uint8Array
+
+Acepta un `ArrayBuffer` o un `Uint8Array` y lo decodifica a `Uint8Array`. Combínalo con el parser de cuerpo `arrayBuffer` para subir datos binarios.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/upload', {
+        parse: 'arrayBuffer',
+        body: t.Uint8Array()
+    }, ({ body }) => body.byteLength)
+```
+
+En la API se escribe `t.Uint8Array()`, no `t.UInt8Array()`.
+
+### ArrayBuffer
+
+Valida un `ArrayBuffer` sin convertirlo en un typed array.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/upload', {
+        parse: 'arrayBuffer',
+        body: t.ArrayBuffer()
+    }, ({ body }) => body.byteLength)
+```
+
+### ObjectString
+
+Acepta un objeto o un string JSON que se decodifica al objeto indicado. Resulta útil en query strings, cabeceras y campos de FormData.
+
+```ts
+import { t } from 'elysia'
+
+// Accepts { name: 'Rapi' } or '{"name":"Rapi"}'
+t.ObjectString({
+    name: t.String()
+})
+```
+
+### BooleanString
+
+Acepta un booleano o los strings `'true'` y `'false'`, y después decodifica el resultado a booleano.
+
+```ts
+import { t } from 'elysia'
+
+t.BooleanString()
+```
+
+### Numeric
+
+Acepta un número o un string numérico, y después decodifica el resultado a número. Resulta útil para parámetros de ruta y valores de query.
+
+```ts
+import { t } from 'elysia'
+
+t.Numeric({ minimum: 1, maximum: 100 })
+```
+
+`Numeric` soporta las mismas restricciones numéricas que `t.Number`.
+
+<span id="elysia-behavior"></span>
+## Comportamiento de Elysia
+
+Elysia convierte las entradas HTTP habituales que llegan como strings antes de que se ejecute tu handler. Si creas un esquema fuera de una ruta, no se aplican estas conversiones de ruta.
+
+<span id="optional-1"></span>
+
+<span id="optional-request-schema"></span>
+### Esquema de petición opcional
+
+Puedes envolver en `t.Optional` todo el esquema de la petición, además de campos concretos de un objeto. Esto también se aplica a los esquemas del cuerpo y de las cabeceras.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/optional', {
+        query: t.Optional(
+            t.Object({
+                name: t.String()
+            })
+        )
+    }, ({ query }) => query)
+```
+
+`/optional` puede omitir la query por completo. Si se envía una query no vacía, tiene que incluir un `name` de tipo string.
+
+<span id="number-to-numeric"></span>
+### De Number a Numeric
+
+Elysia aplica la conversión numérica a `t.Number` cuando está en la raíz o en las propiedades directas de los esquemas de petición que llegan como strings, como params, query y cabeceras. También convierte un cuerpo numérico en la raíz, pero un número dentro de un objeto JSON del cuerpo sigue siendo un número.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/:id', {
+        params: t.Object({
+            // The path string becomes a number
+            id: t.Number()
+        }),
+        body: t.Object({
+            // JSON must contain a number, not a string
+            id: t.Number()
+        })
+    }, ({ params, body }) => ({
+        pathId: params.id,
+        bodyId: body.id
+    }))
+
+// No route conversion here
+t.Number()
+```
+
+Para `/42` con `{"id": 10}`, los dos valores que recibe el handler son números. Un cuerpo JSON `{"id": "10"}` falla la validación.
+
+<span id="boolean-to-booleanstring"></span>
+### De Boolean a BooleanString
+
+La conversión de booleanos sigue la misma regla que la [conversión numérica](#number-to-numeric). Los campos directos de la ruta, la query y las cabeceras aceptan booleanos como strings; un booleano dentro de un objeto JSON sigue siendo un booleano.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/:enabled', {
+        params: t.Object({
+            // The path string becomes a boolean
+            enabled: t.Boolean()
+        }),
+        body: t.Object({
+            // JSON must contain a boolean, not a string
+            enabled: t.Boolean()
+        })
+    }, ({ params, body }) => ({
+        pathEnabled: params.enabled,
+        bodyEnabled: body.enabled
+    }))
+
+// No route conversion here
+t.Boolean()
+```
+
+Para `/true` con `{"enabled": false}`, el handler recibe `true` y `false`. Un cuerpo JSON `{"enabled": "false"}` falla la validación.
+
+</div>
+</InteractiveDocLayout>
+</div>
