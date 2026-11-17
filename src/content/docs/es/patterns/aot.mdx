@@ -1,0 +1,250 @@
+---
+title: Compilación AOT
+description: Compila los route handlers y los esquemas de Elysia durante el build con el plugin de AOT para tu bundler.
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import FileCodeBlock from '../../../../components/interactive-code/file-code-block.astro';
+import TabItem from '../../../../components/interactive-code/tab-item.astro';
+
+export const aotSteps = [
+    {
+        label: 'Exporta la instancia',
+        code: `import { Elysia, t } from 'elysia'
+
+export const app = new Elysia()
+	.get('/hello/:name', {
+		params: t.Object({ name: t.String({ minLength: 2 }) })
+	}, ({ params }) => \`Hello, \${params.name}!\`)
+	.listen(3000)`,
+        highlight: [3],
+    },
+    {
+        label: 'Crea un script de build',
+        code: `import { aot } from 'elysia/plugin/aot/bun'
+
+const result = await Bun.build({
+	entrypoints: ['src/index.ts'],
+	outdir: 'dist',
+	target: 'bun',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+
+process.exit(0)`,
+        highlight: [4, 7],
+    },
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Compilación AOT</h1>
+
+Elysia genera una función optimizada por cada ruta para que tu app sea más rápida. La compilación ocurre una sola vez, cuando llega la primera petición a cada ruta. Esto se llama compilación Just-in-time (JIT).
+
+Pero también puedes usar la compilación Ahead-of-time (AOT) para eliminar ese overhead y mantener la app rápida, moviendo la compilación al paso de build.
+
+<span id="export-your-app"></span>
+## Exporta tu app
+
+Para usar el plugin de AOT, exporta tu instancia de Elysia.
+
+</div>
+
+<InteractiveDoc steps={aotSteps}>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:50dvh]!">
+
+<span id="export-the-instance"></span>
+### Exporta la instancia
+
+En `src/index.ts`, exporta tu instancia de Elysia como `app` para que el plugin de AOT pueda encontrarla.
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:50dvh]!">
+
+<span id="create-a-build-script"></span>
+### Crea un script de build
+
+Crea `build.ts` con la misma ruta de entrada en `entrypoints` y en `aot()`.
+
+El script hace una ejecución de prueba (dry run) de tu app para capturar el registro de las rutas y genera un bundle en `dist/`.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+<span id="build-and-run"></span>
+### Haz el build y ejecútalo
+
+Ejecuta el build desde la raíz de tu proyecto y luego arranca el bundle generado:
+
+```sh
+bun run build.ts
+bun dist/index.js
+```
+
+<span id="multiple-apps"></span>
+### Varias apps
+
+El plugin de AOT compila tu app principal: el export `app`; si no existe, el export `default`; y si tampoco existe, la única instancia de Elysia que exporte la entrada.
+
+Cualquier otra instancia de Elysia exportada que tenga un `name` y al menos una ruta recibe su propio manifiesto de rutas compiladas, identificado por ese nombre:
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+
+export const api = new Elysia({ name: 'api', prefix: '/api' })
+	.post('/state', {
+		body: t.Object({ theme: t.String() })
+	}, ({ body }) => body)
+
+export const app = new Elysia({ name: 'app' }).use(api)
+
+export default app
+```
+
+Tanto `app.handle()` como `api.handle()` responden desde su propio manifiesto.
+
+Cualquier otra instancia de Elysia del bundle que construya su propio router tiene que tener nombre y exportarse desde la entrada. Es decir, cualquier instancia en la que llames a `.handle()`, `.listen()` o `.compile()`, de la que leas `.fetch` o que montes con `.mount(sub.fetch)` o `.mount(sub.handle)`. Si no, el build termina sin problemas, pero el bundle lanza un error en runtime:
+
+```text
+[elysia-aot] App "<name>" has no AOT manifest. Name and export it, .mount() ones too
+```
+
+Los plugins que solo se componen con `.use()` no necesitan ni nombre ni export. Tampoco `.mount()` con una función normal, como el `auth.handler` de [Better Auth](/integrations/better-auth/).
+
+Cuando el build compila más de una app, la app principal también tiene que tener nombre, y cada nombre tiene que ser único.
+
+Usa nombres estáticos para las apps, iguales en el build y en runtime. No saques el nombre de una variable de entorno.
+
+<span id="benefits-of-aot"></span>
+## Ventajas de AOT
+
+Mover la compilación al paso de build le da a tu app:
+
+- **Arranque y primeras peticiones más rápidos.** Los route handlers y los esquemas se compilan antes de que arranque el servidor.
+- **Menor pico de uso de memoria.** El servidor se ahorra las reservas de memoria temporales que necesita la compilación en runtime.
+- **Menos código en runtime.** AOT detecta los módulos de Elysia que no se usan y puede eliminar TypeBox por completo cuando todos los esquemas de TypeBox se pueden compilar.
+- **Fusión de valores por defecto más rápida.** AOT precalcula cómo se fusionan los valores por defecto de los esquemas, así que hay menos trabajo al rellenar los valores que faltan.
+
+El código que se genera para las rutas y los esquemas puede aumentar el tamaño del bundle y la memoria retenida al arrancar. Consulta el [resumen de AOT de Elysia 2.0](/blog/elysia-20#ahead-of-time-compilation) para más detalles.
+
+<span id="detect-aot-build"></span>
+## Detectar un build de AOT
+
+Puedes detectar desde el código si la app se está ejecutando en un build de AOT. Úsalo para inicializar de forma condicional los servicios externos que no hacen falta durante el build, como conexiones a bases de datos o APIs de terceros.
+
+```ts
+import { inAotBuild } from 'elysia'
+
+if (!inAotBuild()) {
+	// Initialize external services here.
+}
+```
+
+<span id="bundler-and-runtime"></span>
+## Bundler y runtime
+
+AOT es un plugin de bundler que genera código para tu app de Elysia. Es compatible con Bun, Vite, esbuild, Rspack y unplugin.
+
+<FileCodeBlock>
+<TabItem label="Bun">
+
+```ts title="build.ts"
+import { aot } from 'elysia/plugin/aot/bun'
+
+await Bun.build({
+	entrypoints: ['src/index.ts'],
+	outdir: 'dist',
+	target: 'bun',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+
+process.exit(0)
+```
+
+</TabItem>
+<TabItem label="Vite">
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import { aot } from 'elysia/plugin/aot/vite'
+
+export default defineConfig({
+	build: { ssr: 'src/index.ts' },
+	ssr: { noExternal: ['elysia'] },
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+```
+
+</TabItem>
+<TabItem label="esbuild">
+
+```ts title="build.ts"
+import * as esbuild from 'esbuild'
+import { aot } from 'elysia/plugin/aot/esbuild'
+
+await esbuild.build({
+	entryPoints: ['src/index.ts'],
+	bundle: true,
+	platform: 'node',
+	format: 'esm',
+	outfile: 'dist/index.js',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+```
+
+</TabItem>
+<TabItem label="Rspack">
+
+```ts title="rspack.config.ts"
+import { aot } from 'elysia/plugin/aot/rspack'
+
+export default {
+	entry: './src/index.ts',
+	target: 'node',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+}
+```
+
+</TabItem>
+<TabItem label="unplugin">
+
+```ts title="rollup.config.ts"
+import { createUnplugin } from 'unplugin'
+import { aotFactory } from 'elysia/plugin/aot/unplugin'
+
+const aot = createUnplugin(aotFactory)
+
+export default {
+	plugins: [aot.rollup({ entry: 'src/index.ts', target: 'bun' })]
+}
+```
+
+</TabItem>
+</FileCodeBlock>
+
+#### Target
+
+Si quieres optimizar para un runtime concreto, pon en el `target` del plugin de AOT el runtime que va a ejecutar el bundle:
+
+```ts
+aot('src/index.ts', { target: 'bun' })
+aot('src/index.ts', { target: 'node' })
+aot('src/index.ts', { target: 'workerd' })
+```
+
+Para Cloudflare Workers, usa `target: 'workerd'` y sigue la [integración con Cloudflare Workers](/integrations/cloudflare-worker/) para configurar el despliegue.
+
+</div>
+</InteractiveDocLayout>
+</div>
