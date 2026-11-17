@@ -317,3 +317,79 @@ This should allow Elysia to intercept port provided by Railway.
 ::: tip
 Elysia assigns the hostname to `0.0.0.0` automatically, which works with Railway
 :::
+
+## Prisma Compute
+[Prisma Compute](https://www.prisma.io/compute) runs an Elysia server on Bun.
+
+Compute deploys apps declared with [Prisma Composer](https://www.prisma.io/docs/composer), so we need to install it and describe our server as a service.
+```bash
+bun add @prisma/composer @prisma/composer-prisma-cloud
+bun add -d prisma
+```
+
+::: code-group
+
+```ts [src/service.ts]
+import node from '@prisma/composer/node'
+import { compute } from '@prisma/composer-prisma-cloud'
+
+export default compute({
+	name: 'api',
+	deps: {},
+	build: node({ module: import.meta.url, entry: '../dist/index.js' })
+})
+```
+
+```ts [module.ts]
+import { module } from '@prisma/composer'
+import api from './src/service.ts'
+
+export default module('elysia-app', ({ provision }) => {
+	provision(api)
+})
+```
+
+```ts [prisma.config.ts]
+import { defineConfig as composer } from '@prisma/composer/config'
+import { nodeBuild } from '@prisma/composer/node/control'
+import { prismaCloud, prismaState } from '@prisma/composer-prisma-cloud/control'
+import { definePrismaConfig } from 'prisma/config'
+
+export default definePrismaConfig({
+	composer: composer({
+		entry: './module.ts',
+		extensions: [prismaCloud({ region: 'us-east-1' }), nodeBuild()],
+		state: prismaState()
+	})
+})
+```
+
+:::
+
+Compute assigns the port for each service, which can be accessed via `service.port()`.
+
+Instead of a fixed port, we may use `service.port()` from the service we declared.
+```ts
+import service from './service' // [!code ++]
+
+new Elysia()
+	.listen(3000) // [!code --]
+	.listen(service.port()) // [!code ++]
+```
+
+Compute runs a JavaScript bundle rather than a binary, so we [compile to JavaScript](#compile-to-javascript) and then deploy.
+```bash
+bun build \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile ./dist/index.js \
+	src/index.ts
+
+bunx prisma deploy
+```
+
+This should print the URL of our Elysia server once the deployment is ready.
+
+::: tip
+Run `bunx prisma auth login` once before the first deployment to sign in.
+:::
