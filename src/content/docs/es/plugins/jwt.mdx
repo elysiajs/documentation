@@ -1,0 +1,253 @@
+---
+title: Plugin JWT
+description: Referencia y ejemplos del plugin JWT.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin JWT</h1>
+
+Este plugin te permite usar JWT en los handlers de Elysia.
+
+Instálalo con:
+```bash
+bun add @elysia/jwt@rc
+```
+
+Antes de arrancar el servidor, pon en `JWT_SECRET` un secreto privado para firmar. Las rutas de abajo muestran cómo firmar y verificar; un endpoint de inicio de sesión real tiene que comprobar las credenciales antes de emitir un token.
+
+Después, úsalo así:
+
+
+```ts title="cookie"
+import { Elysia } from 'elysia'
+import { jwt } from '@elysia/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', async ({ jwt, params: { name }, cookie: { auth } }) => {
+    	const value = await jwt.sign({ name })
+
+        auth!.set({
+            value,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 7 * 86400,
+            path: '/profile',
+        })
+
+        return `Sign in as ${value}`
+    })
+    .get('/profile', async ({ jwt, status, cookie: { auth } }) => {
+        const profile = await jwt.verify(auth!.value)
+
+        if (!profile)
+            return status(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+```ts title="headers"
+import { Elysia } from 'elysia'
+import { jwt } from '@elysia/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', ({ jwt, params: { name } }) => {
+    	return jwt.sign({ name })
+    })
+    .get('/profile', async ({ jwt, status, headers: { authorization } }) => {
+        const profile = await jwt.verify(authorization?.startsWith('Bearer ') ? authorization.slice(7) : undefined)
+
+        if (!profile)
+            return status(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+
+Esta configuración de la cookie necesita HTTPS. El ejemplo con cabeceras espera `Authorization: Bearer <token>`.
+
+<span id="config"></span>
+## Configuración
+Este plugin extiende la configuración de [jose](https://github.com/panva/jose).
+
+Esta es la configuración que acepta el plugin.
+
+### name
+Nombre con el que se registra la función `jwt`.
+
+Por ejemplo, aquí la función `jwt` se registra con un nombre personalizado.
+```ts
+app
+    .use(
+        jwt({
+            name: 'myJWTNamespace',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', ({ myJWTNamespace, params }) => {
+        return myJWTNamespace.sign(params)
+    })
+```
+
+Como puede que necesites usar varias instancias de `jwt` con configuraciones distintas en un solo servidor, tienes que registrar explícitamente la función JWT con un nombre diferente.
+
+### secret
+La clave privada con la que se firma el payload del JWT.
+
+### schema
+Validación estricta de tipos para el payload del JWT.
+
+---
+Las siguientes opciones describen los claims de JWT y las cabeceras de JWS que admite jose.
+
+### alg
+Por defecto: `HS256`
+
+Algoritmo con el que se firma el payload del JWT.
+
+Los valores posibles en jose son:
+HS256
+HS384
+HS512
+PS256
+PS384
+PS512
+RS256
+RS384
+RS512
+ES256
+ES256K
+ES384
+ES512
+EdDSA
+
+### iss
+El claim issuer identifica a la entidad que emitió el JWT, según [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.1).
+
+En resumen, suele ser el nombre (de dominio) de quien firma.
+
+### sub
+El claim subject identifica a la entidad que es el sujeto del JWT.
+
+Los claims de un JWT suelen ser afirmaciones sobre el sujeto, según [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.2).
+
+### aud
+El claim audience identifica a los destinatarios a los que va dirigido el JWT.
+
+Cada entidad que vaya a procesar el JWT DEBE identificarse con un valor del claim audience, según [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.3).
+
+### jti
+El claim JWT ID da un identificador único al JWT, según [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.7).
+
+### nbf
+El claim "not before" identifica el momento antes del cual el JWT no se debe aceptar para procesarlo, según [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.5).
+
+### exp
+El claim expiration time identifica el momento de expiración a partir del cual el JWT NO DEBE aceptarse para procesarlo, según [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.4).
+
+### iat
+El claim "issued at" identifica el momento en que se emitió el JWT.
+
+Puedes usar este claim para saber la antigüedad del JWT, según [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.6).
+
+### b64
+Este parámetro de cabecera de extensión de JWS modifica la representación del payload de JWS y el cálculo de la entrada de firma de JWS, según [RFC7797](https://www.rfc-editor.org/rfc/rfc7797).
+
+### kid
+Una pista que indica qué clave se usó para proteger el JWS.
+
+Este parámetro permite que el emisor indique explícitamente a los destinatarios un cambio de clave, según [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.4).
+
+### x5t
+(Huella SHA-1 del certificado X.509) Parámetro de cabecera que contiene un digest SHA-1, codificado en base64url, de la codificación DER del certificado X.509 [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) de la clave que se usó para firmar digitalmente el JWS, según [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.7).
+
+### x5c
+(Cadena de certificados X.509) Parámetro de cabecera que contiene el certificado de clave pública X.509 o la cadena de certificados [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) de la clave que se usó para firmar digitalmente el JWS, según [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.6).
+
+### x5u
+(URL X.509) Parámetro de cabecera que contiene una URI [RFC3986](https://www.rfc-editor.org/rfc/rfc3986) que apunta a un recurso con el certificado de clave pública X.509 o la cadena de certificados [RFC5280] de la clave que se usó para firmar digitalmente el JWS, según [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.5).
+
+### jwk
+La cabecera `jwk` contiene la JSON Web Key pública de la clave de firma. La cabecera `jku`, que es otra distinta, es una URL a un JWK Set. Consulta [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.3).
+
+### typ
+Las aplicaciones JWS usan el parámetro de cabecera `typ` (tipo) para declarar el tipo de medio [IANA.MediaTypes] de este JWS completo.
+
+Está pensado para que lo use la aplicación cuando pueda haber más de un tipo de objeto en una estructura de datos de la aplicación que puede contener un JWS, según [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9).
+
+### cty
+Las aplicaciones JWS usan el parámetro Content-Type para declarar el tipo de medio [IANA.MediaTypes] del contenido protegido (el payload).
+
+Está pensado para que lo use la aplicación cuando pueda haber más de un tipo de objeto en el payload del JWS, según [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9).
+
+## Handler
+Estos son los valores que se añaden al handler.
+
+### jwt.sign
+Firma un payload para crear un JWT.
+
+Tipo:
+```ts
+sign(payload: Omit<Claims, 'nbf' | 'exp' | 'iat'> & JWTPayloadInput): Promise<string>
+```
+
+`Claims` tiene la forma de [schema](#schema), o es cualquier record si no defines un esquema. `JWTPayloadInput` contiene los claims registrados [iss](#iss), [sub](#sub), [aud](#aud), [jti](#jti), [nbf](#nbf), [exp](#exp) e [iat](#iat); un valor que indiques aquí sobrescribe el de la configuración.
+
+### jwt.verify
+Verifica un token con la configuración de JWT que has indicado.
+
+Tipo:
+```ts
+verify(jwt?: string, options?: JWTVerifyOptions): Promise<(Claims & Omit<JWTPayloadSpec, keyof Claims>) | false>
+```
+
+Devuelve el payload decodificado, o `false` si falta el token o no es válido. `JWTPayloadSpec` contiene los claims registrados `iss`, `sub`, `aud`, `jti`, `nbf`, `exp` e `iat` como valores decodificados. `options` se pasa a `jwtVerify` de jose.
+
+<span id="pattern"></span>
+## Patrones
+Aquí tienes los patrones más habituales para usar el plugin.
+
+<span id="set-jwt-expiration-date"></span>
+## Definir la fecha de expiración del JWT
+Usa `exp` para controlar cuándo expira el token. La duración de una cookie y la expiración de un JWT son ajustes independientes.
+
+```ts
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!,
+            exp: '7d'
+        })
+    )
+    .get('/sign/:name', async ({ jwt, params }) => jwt.sign(params))
+```
+
+Así se firma un JWT que expira dentro de 7 días.
+
+</div>
+</InteractiveDocLayout>
+</div>
