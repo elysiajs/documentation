@@ -1,0 +1,248 @@
+---
+title: Resumen de plugins
+description: Referencia y ejemplos de los plugins oficiales y de la comunidad de Elysia
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import { Card, CardTitle } from '../../../../components/ui/card';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Resumen de plugins</h1>
+
+Elysia está diseñado para ser modular y ligero.
+
+Sigue la misma idea que Arch Linux (por cierto, uso Arch):
+
+> Las decisiones de diseño se toman caso por caso, por consenso entre los desarrolladores
+
+La idea es que acabes teniendo justo el servidor web eficiente que quieres crear. Además, Elysia incluye plugins ya preparados para los patrones más comunes, para que te resulte más cómodo:
+
+<span id="official-plugins"></span>
+## Plugins oficiales
+
+Estos son algunos de los plugins oficiales que mantiene el equipo de Elysia:
+
+
+<div className="grid gap-4 sm:grid-cols-2">
+
+<Card href="/plugins/bearer">
+<CardTitle>Bearer</CardTitle>
+
+Obtén un token Bearer de las cabeceras de la petición.
+
+</Card>
+
+<Card href="/plugins/cors">
+<CardTitle>CORS</CardTitle>
+
+Configura el intercambio de recursos entre orígenes.
+
+</Card>
+
+<Card href="/plugins/compress">
+<CardTitle>Compress</CardTitle>
+
+Comprime las respuestas HTTP con una codificación que admita el cliente.
+
+</Card>
+
+<Card href="/plugins/cron">
+<CardTitle>Cron</CardTitle>
+
+Ejecuta tareas programadas.
+
+</Card>
+
+<Card href="/eden">
+<CardTitle>Eden</CardTitle>
+
+Usa un cliente con type safety de extremo a extremo para Elysia.
+
+</Card>
+
+<Card href="/plugins/graphql-apollo">
+<CardTitle>GraphQL Apollo</CardTitle>
+
+Ejecuta Apollo GraphQL en Elysia.
+
+</Card>
+
+<Card href="/plugins/graphql-yoga">
+<CardTitle>GraphQL Yoga</CardTitle>
+
+Ejecuta GraphQL Yoga en Elysia.
+
+</Card>
+
+<Card href="/plugins/html">
+<CardTitle>HTML</CardTitle>
+
+Devuelve respuestas HTML.
+
+</Card>
+
+<Card href="/plugins/jwt">
+<CardTitle>JWT</CardTitle>
+
+Firma y verifica JSON Web Tokens.
+
+</Card>
+
+<Card href="/plugins/openapi">
+<CardTitle>OpenAPI</CardTitle>
+
+Genera documentación OpenAPI para una aplicación de Elysia.
+
+</Card>
+
+<Card href="/plugins/opentelemetry">
+<CardTitle>OpenTelemetry</CardTitle>
+
+Recoge trazas con OpenTelemetry.
+
+</Card>
+
+<Card href="/plugins/server-timing">
+<CardTitle>Server Timing</CardTitle>
+
+Mide el rendimiento del ciclo de vida de las peticiones con cabeceras de respuesta Server-Timing.
+
+</Card>
+
+<Card href="/plugins/static">
+<CardTitle>Static</CardTitle>
+
+Sirve archivos y carpetas estáticos.
+
+</Card>
+
+</div>
+
+:::note[Versiones de los plugins]
+
+Usa versiones de los plugins cuya peer dependency de Elysia coincida con la de tu aplicación. Las ramas de los plugins para Elysia 2 usan versiones prerelease; las versiones más antiguas de los plugins pueden depender de APIs de Elysia 1 que ya no existen. La lista de plugins de la comunidad de abajo es un directorio, no una garantía de compatibilidad.
+
+:::
+
+<span id="community-plugins"></span>
+## Plugins de la comunidad
+
+-   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - ¡crea la base de tu proyecto de Elysia y su entorno fácilmente (con ayuda para ORM, linters y plugins)!
+-   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - autenticación simple y limpia
+-   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - plugin no oficial de autenticación con Clerk
+-   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - ejecuta el ecosistema de Elysia en Node.js y Deno
+-   [Vite server](https://github.com/kravetsone/elysia-vite-server) - plugin que arranca y decora el servidor de desarrollo de [`vite`](https://vitejs.dev/) en los modos `development` y `production`, y sirve archivos estáticos (si hace falta)
+-   [Vite](https://github.com/timnghg/elysia-vite) - sirve el archivo HTML de entrada con los scripts de Vite inyectados
+-   [Nuxt](https://github.com/trylovetom/elysiajs-nuxt) - ¡integra Elysia con Nuxt fácilmente!
+-   [Remix](https://github.com/kravetsone/elysia-remix) - ¡usa [Remix](https://remix.run/) con soporte para `HMR` (gracias a [`vite`](https://vitejs.dev/))! Cierra una petición de plugin que llevaba muchísimo tiempo abierta: [#12](https://github.com/elysiajs/elysia/issues/12)
+-   [Sync](https://github.com/johnny-woodtke/elysiajs-sync) - un framework ligero de sincronización de datos offline-first, basado en [Dexie.js](https://dexie.org/)
+-   [Connect middleware](https://github.com/kravetsone/elysia-connect-middleware) - ¡plugin que te permite usar middleware de [`express`](https://www.npmjs.com/package/express)/[`connect`](https://www.npmjs.com/package/connect) directamente en Elysia!
+-   [Elysia HTTP Exception](https://github.com/codev911/elysia-http-exception) - plugin de Elysia para manejar errores HTTP 4xx/5xx con clases de excepción estructuradas
+-   [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - protege tus aplicaciones de Elysia con varias cabeceras HTTP
+-   [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - plugin de SSR para Vite que usa el servidor de Elysia
+-   [OAuth 2.0](https://github.com/kravetsone/elysia-oauth2) - ¡un plugin para el flujo de autorización de [OAuth 2.0](https://en.wikipedia.org/wiki/OAuth) con más de **42** proveedores y **type safety**!
+-   [OAuth2](https://github.com/bogeychan/elysia-oauth2) - maneja el flujo de código de autorización de OAuth 2.0
+-   [OAuth2 Resource Server](https://github.com/ap-1/elysia-oauth2-resource-server) - un plugin para validar tokens JWT de proveedores OAuth2 contra endpoints JWKS, con soporte para verificar issuer, audience y scope
+-   [Elysia OpenID Client](https://github.com/macropygia/elysia-openid-client) - cliente OpenID basado en [openid-client](https://github.com/panva/node-openid-client)
+-   [Rate Limit](https://github.com/rayriffy/elysia-rate-limit) - rate limiter sencillo y ligero
+-   [Elysia Nazli](https://github.com/esbuker/elysia-nazli) - Rate limiter ergonómico, con almacenamiento intercambiable y reglas globales y por ruta.
+-   [LLMs.txt](https://github.com/opuu/elysia-llms-txt) - genera `/llms.txt` a partir de OpenAPI/Swagger para tener documentación pensada para LLMs
+-   [Logysia](https://github.com/tristanisham/logysia) - middleware de logging clásico
+-   [Logestic](https://github.com/cybercoder-naj/logestic) - una librería de logging avanzada y personalizable para ElysiaJS
+-   [Logger](https://github.com/bogeychan/elysia-logger) - middleware de logging basado en [pino](https://github.com/pinojs/pino)
+-   [Elysia Line](https://github.com/KrataiB/elysia-line) - integración de LINE Messaging API y LINE Login para Elysia (wrapper del [@line/bot-sdk](https://github.com/line/line-bot-sdk-nodejs) oficial)
+-   [Elylog](https://github.com/eajr/elylog) - librería sencilla de logging en stdout con algunas opciones de personalización
+-   [Logify for Elysia.js](https://github.com/0xrasla/logify) - un middleware de logging bonito, rápido y con type safety para aplicaciones de Elysia.js
+-   [Nice Logger](https://github.com/tanishqmanuja/nice-logger) - no es el mejor, pero sí un logger bastante majo y agradable para Elysia
+-   [LogTape for Elysia](https://logtape.org/manual/integrations#elysia) - middleware de logging estructurado con soporte para varios sinks (transports) a través de [LogTape](https://logtape.org/)
+-   [Sentry](https://github.com/johnny-woodtke/elysiajs-sentry) - captura trazas y errores con este plugin de [Sentry](https://docs.sentry.io/)
+-   [Apitally](https://github.com/apitally/apitally-js) - captura métricas, logs y trazas en [Apitally](https://apitally.io/elysia), una herramienta sencilla de monitorización y analítica de APIs
+-   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - despliega en AWS Lambda
+-   [Decorators](https://github.com/gaurishhs/elysia-decorators) - usa decoradores de TypeScript
+-   [Elysia FSR](https://github.com/deadlinecode/elysia-fsr) - routing basado en el sistema de archivos, con generación de tipos compatible con Eden, soporte para monorepos/workspaces y agrupación lógica de rutas
+-   [Autoload](https://github.com/kravetsone/elysia-autoload) - router basado en la estructura de carpetas del sistema de archivos, que genera tipos para [Eden](/eden) y es compatible con [`Bun.build`](https://github.com/kravetsone/elysia-autoload?tab=readme-ov-file#bun-build-usage)
+-   [Msgpack](https://github.com/kravetsone/elysia-msgpack) - te permite trabajar con [MessagePack](https://msgpack.org)
+-   [XML](https://github.com/kravetsone/elysia-xml) - te permite trabajar con XML
+-   [Autoroutes](https://github.com/wobsoriano/elysia-autoroutes) - rutas basadas en el sistema de archivos
+-   [Group Router](https://github.com/itsyoboieltr/elysia-group-router) - router basado en el sistema de archivos y en carpetas para grupos
+-   [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - autenticación HTTP básica
+-   [Body Limit](https://github.com/hexadecimal233/elysia-body-limit) - limita el tamaño del body en Elysia
+-   [ETag](https://github.com/bogeychan/elysia-etag) - generación automática de [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) HTTP
+-   [CDN Cache](https://github.com/johnny-woodtke/elysiajs-cdn-cache) - plugin de Cache-Control para Elysia: olvídate de configurar las cabeceras HTTP a mano
+-   [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - autenticación HTTP básica (usando el evento `request`)
+-   [i18n](https://github.com/eelkevdbos/elysia-i18next) - wrapper de [i18n](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/i18n) basado en [i18next](https://www.i18next.com/)
+-   [Intlify](https://github.com/intlify/srvmid/blob/main/packages/elysia/README.md) - middleware de servidor y utilidades de internacionalización
+-   [Elysia Request ID](https://github.com/gtramontina/elysia-requestid) - añade o reenvía IDs de petición (`X-Request-ID` o uno personalizado)
+-   [Elysia HTMX](https://github.com/gtramontina/elysia-htmx) - helpers de contexto para [HTMX](https://htmx.org/)
+-   [Elysia HMR HTML](https://github.com/gtrabanco/elysia-hmr-html) - recarga los archivos HTML cuando cambia cualquier archivo de una carpeta
+-   [Elysia Inject HTML](https://github.com/gtrabanco/elysia-inject-html) - inyecta código HTML en archivos HTML
+-   [Elysia HTTP Error](https://github.com/yfrans/elysia-http-error) - devuelve errores HTTP desde los handlers de Elysia
+-   [Elysia Http Status Code](https://github.com/sylvain12/elysia-http-status-code) - integra códigos de estado HTTP
+-   [NoCache](https://github.com/gaurishhs/elysia-nocache) - desactiva la caché
+-   [Elysia Tailwind](https://github.com/gtramontina/elysia-tailwind) - compila [Tailwindcss](https://tailwindcss.com/) en un plugin.
+-   [tailwind-serve](https://github.com/Moshyfawn/tailwind-serve) - compila y sirve [Tailwind CSS v4](https://tailwindcss.com/) en runtime sin paso de build; funciona con cualquier framework de servidor
+-   [Elysia Compression](https://github.com/gusb3ll/elysia-compression) - comprime la respuesta
+-   [Elysia IP](https://github.com/gaurishhs/elysia-ip) - obtén la dirección IP
+-   [OAuth2 Server](https://github.com/myazarc/elysia-oauth2-server) - desarrolla un servidor OAuth2 con Elysia
+-   [Elysia Flash Messages](https://github.com/gtramontina/elysia-flash-messages) - activa los mensajes flash
+-   [Elysia AuthKit](https://github.com/gtramontina/elysia-authkit) - autenticación no oficial con [AuthKit de WorkOS](https://www.authkit.com/)
+-   [Elysia Error Handler](https://github.com/gtramontina/elysia-error-handler) - manejo de errores más sencillo
+-   [Elysia env](https://github.com/yolk-oss/elysia-env) - variables de entorno con type safety usando typebox
+-   [Elysia Drizzle Schema](https://github.com/Edsol/elysia-drizzle-schema) - te ayuda a usar el esquema de Drizzle ORM dentro de un modelo de OpenAPI de Elysia
+-   [Unify-Elysia](https://github.com/qlaffont/unify-elysia) - unifica los códigos de error de Elysia
+-   [Unify-Elysia-GQL](https://github.com/qlaffont/unify-elysia-gql) - unifica los códigos de error del servidor GraphQL de Elysia (Yoga y Apollo)
+-   [Elysia Auth Drizzle](https://github.com/qlaffont/elysia-auth-drizzle) - librería que maneja la autenticación con JWT (Header/Cookie/QueryParam)
+-   [graceful-server-elysia](https://github.com/qlaffont/graceful-server-elysia) - librería inspirada en [graceful-server](https://github.com/gquittet/graceful-server)
+-   [Logixlysia](https://github.com/PunGrumpy/logixlysia) - un middleware de logging bonito y sencillo para ElysiaJS, con colores y marcas de tiempo.
+-   [Elysia Fault](https://github.com/vitorpldev/elysia-fault) - un middleware de manejo de errores sencillo y personalizable que te permite crear tus propios errores HTTP
+-   [Elysia Compress](https://github.com/vermaysha/elysia-compress) - plugin de ElysiaJS para comprimir respuestas, inspirado en [@fastify/compress](https://github.com/fastify/fastify-compress)
+-   [@labzzhq/compressor](https://github.com/labzzhq/compressor/) - Brillo compacto, resultados expansivos: compresor HTTP para Elysia y Bunnyhop con soporte para gzip, deflate y brotli.
+-   [Elysia Accepts](https://github.com/morigs/elysia-accepts) - plugin de Elysia para analizar las cabeceras accept y negociar el contenido
+-   [Elysia Compression](https://github.com/chneau/elysia-compression) - plugin de Elysia para comprimir respuestas
+-   [Elysia Logger](https://github.com/chneau/elysia-logger) - plugin de Elysia para registrar las peticiones y respuestas HTTP, inspirado en [hono/logger](https://hono.dev/docs/middleware/builtin/logger)
+-   [Elysia CQRS](https://github.com/jassix/elysia-cqrs) - plugin de Elysia para el patrón CQRS
+-   [Elysia Supabase](https://github.com/mastermakrela/elysia-supabase) - Integra sin complicaciones la autenticación y la base de datos de [Supabase](https://supabase.com/) en Elysia, con acceso fácil a los datos del usuario autenticado y a la instancia del cliente de Supabase. Especialmente útil para [Edge Functions](https://supabase.com/docs/guides/functions).
+-   [Elysia XSS](https://www.npmjs.com/package/elysia-xss) - un plugin para Elysia.js que protege contra XSS (Cross-Site Scripting) sanitizando los datos del body de la petición.
+-   [Elysiajs Helmet](https://www.npmjs.com/package/elysiajs-helmet) - un middleware de seguridad completo para aplicaciones de Elysia.js que te ayuda a protegerlas configurando varias cabeceras HTTP.
+-   [Decorators for Elysia.js](https://github.com/Ateeb-Khan-97/better-elysia) - desarrolla e integra APIs, WebSocket y APIs de streaming sin complicaciones con esta pequeña librería.
+-   [Elysia Protobuf](https://github.com/ilyhalight/elysia-protobuf) - soporte de protobuf para Elysia.
+-   [Elysia Prometheus](https://github.com/m1handr/elysia-prometheus) - plugin de Elysia para exponer métricas HTTP para Prometheus.
+-   [Elysia Remote DTS](https://github.com/rayriffy/elysia-remote-dts) - Un plugin que ofrece tipos .d.ts de forma remota para que los use Eden Treaty.
+-   [Cap Checkpoint plugin for Elysia](https://capjs.js.org/guide/middleware/elysia.html) - Middleware al estilo de Cloudflare para Cap, una alternativa a CAPTCHA ligera, moderna y open source basada en PoW con SHA-256.
+-   [Elysia Background](https://github.com/staciax/elysia-background) - Un plugin para procesar tareas en segundo plano en Elysia.js
+-   [Elysia External Session - TS only GitHub package](https://github.com/extend-therapy/elysia-external-session) - Un paquete de sesiones para Redis y SQLite, extensible y que usa la arquitectura actual de Elysia.
+-   [@fedify/elysia](https://github.com/fedify-dev/fedify/tree/main/packages/elysia) - Un plugin que se integra sin complicaciones con [Fedify](https://fedify.dev/), el framework de servidor de ActivityPub.
+-   [elysia-healthcheck](https://github.com/iam-medvedev/elysia-healthcheck) - Plugin de healthcheck para Elysia.js
+-   [elysia-csrf](https://github.com/lauhon/elysia-csrf) - Un plugin de CSRF, portado de [express-csrf](https://github.com/expressjs/csurf)
+-   [elysia-local-https](https://github.com/mrtcmn/elysia-local-https) - HTTPS local automático para Elysia: certificados generados, gestionados y renovados en una sola línea.
+-   [elysia-circuit-breaker](https://github.com/camargo-leonardo/elysia-circuit-breaker) - Un plugin de Circuit Breaker que añade tolerancia a fallos a Elysia.js.
+-   [Eden TanStack Query](https://github.com/xkelxmc/eden-tanstack-query) - integración de TanStack Query con type safety para Eden, como
+  @trpc/react-query pero para Elysia
+-   [Socket.IO Proxy](https://www.npmjs.com/package/@synchjs/elysocket) - Proxy de Socket.IO para Elysia.
+-   [ModernCSRF](https://github.com/auto-medica-labs/modern-csrf) - Un middleware de protección CSRF ligero y sin tokens para ElysiaJS
+-   [elysia-wide-event](https://github.com/choiexe1/elysia-wide-event) - Plugin de logging de wide events para tener observabilidad estructurada a nivel de petición.
+- [elysia-beta-headers](https://github.com/P0u4a/elysia-beta-headers) - plugin de Elysia para controlar el acceso a las funciones beta/experimentales de tu app mediante cabeceras de API con type safety
+-   [elysia-better-session](https://github.com/0x0arash/elysia-better-session) - plugin de Elysia para gestionar sesiones en el servidor con distintos adaptadores de almacenamiento.
+
+<span id="complementary-projects"></span>
+## Proyectos complementarios
+
+-   [prismabox](https://github.com/m1212e/prismabox) - Generador de esquemas de TypeBox a partir de los modelos de tu base de datos; funciona bien con Elysia
+
+<span id="project-templates"></span>
+## Plantillas de proyecto
+
+-   [ElysiaTemplate](https://github.com/QLing-yes/ElysiaTemplate) - backend MVC, rutas y middleware automáticos, y más en camino.
+
+---
+
+Si has escrito un plugin para Elysia, puedes añadirlo a la lista [editando la lista de plugins en GitHub](https://github.com/elysiajs/documentation/edit/main/docs/plugins/overview.md)
+
+</div>
+</InteractiveDocLayout>
+</div>
