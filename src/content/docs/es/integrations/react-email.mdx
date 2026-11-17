@@ -1,0 +1,280 @@
+---
+title: "React Email"
+description: "Si usas Bun, puedes usar React Email directamente e importar JSX en tu código para enviar emails."
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">React Email</h1>
+
+React Email es una librería que te permite crear emails con componentes de React.
+
+Si usas Bun, puedes escribir un componente de React Email e importar el JSX directamente en tu código para enviar emails.
+
+<span id="installation"></span>
+## Instalación
+Para instalar React Email, ejecuta este comando:
+
+```bash
+bun add -d react-email
+bun add @react-email/components react react-dom
+```
+
+Después, añade este script a `package.json`:
+```json
+{
+  "scripts": {
+    "email": "email dev --dir src/emails"
+  }
+}
+```
+
+Te recomendamos guardar las plantillas de email en la carpeta `src/emails`, ya que puedes importar los archivos JSX directamente.
+
+### TypeScript
+Si usas TypeScript, puede que tengas que añadir esto a tu `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+	"jsx": "react"
+  }
+}
+```
+
+<span id="your-first-email"></span>
+## Tu primer email
+Crea el archivo `src/emails/otp.tsx` con este código:
+
+```tsx
+import * as React from 'react'
+import { Tailwind, Section, Text } from '@react-email/components'
+
+export default function OTPEmail({ otp }: { otp: number }) {
+    return (
+        <Tailwind>
+            <Section className="flex justify-center items-center w-full min-h-screen font-sans">
+                <Section className="flex flex-col items-center w-76 rounded-2xl px-6 py-1 bg-mauve-50">
+                    <Text className="text-xs font-medium text-violet-500">
+                        Verify your Email Address
+                    </Text>
+                    <Text className="text-mauve-500 my-0">
+                        Use the following code to verify your email address
+                    </Text>
+                    <Text className="text-5xl font-bold pt-2">{otp}</Text>
+                    <Text className="text-mauve-400 font-light text-xs pb-4">
+                        This code is valid for 10 minutes
+                    </Text>
+                    <Text className="text-mauve-600 text-xs">
+                        Thank you for joining us
+                    </Text>
+                </Section>
+            </Section>
+        </Tailwind>
+    )
+}
+
+OTPEmail.PreviewProps = {
+    otp: 123456
+}
+```
+
+Fíjate en que usamos `@react-email/components` para crear la plantilla del email.
+
+Esta librería ofrece un conjunto de componentes, con **estilos de Tailwind** incluidos, que son compatibles con clientes de correo como Gmail, Outlook, etc.
+
+También hemos añadido `PreviewProps` a la función `OTPEmail`. Solo se aplica cuando previsualizas el email en el playground.
+
+<span id="preview-your-email"></span>
+## Previsualiza tu email
+Para previsualizar tu email, ejecuta este comando:
+
+```bash
+bun email
+```
+
+Se abrirá una ventana del navegador con la vista previa de tu email.
+
+![Playground de React Email con el email de OTP que acabamos de escribir](/recipe/react-email/email-preview.webp)
+
+<span id="sending-email"></span>
+## Enviar emails
+
+Estos ejemplos muestran el envío a través de un proveedor. Antes de usarlos para iniciar sesión, guarda un código de un solo uso y con caducidad para la cuenta que lo pide, y aplica un rate limit a la generación y a la verificación del código.
+Para enviar un email, puedes usar `react-dom/server` para renderizarlo y después enviarlo con el proveedor que prefieras:
+
+
+```tsx title="Nodemailer"
+import { Elysia, t } from 'elysia'
+import { randomInt } from 'node:crypto'
+
+import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import OTPEmail from './emails/otp'
+
+import nodemailer from 'nodemailer'
+
+const transporter = nodemailer.createTransport({
+  	host: 'smtp.gehenna.sh',
+  	port: 465,
+  	auth: {
+  		user: process.env.SMTP_USER,
+  		pass: process.env.SMTP_PASSWORD
+  	}
+})
+
+new Elysia()
+	.post('/otp', {
+		body: t.String({ format: 'email' })
+	}, async ({ body }) => {
+		// Random between 100,000 and 999,999
+  		const otp = randomInt(100_000, 1_000_000)
+
+		const html = renderToStaticMarkup(<OTPEmail otp={otp} />)
+
+        await transporter.sendMail({
+        	from: 'ibuki@gehenna.sh',
+           	to: body,
+           	subject: 'Verify your email address',
+            html,
+        })
+
+        return { success: true }
+	})
+	.listen(3000)
+```
+
+```tsx title="Resend"
+import { Elysia, t } from 'elysia'
+import { randomInt } from 'node:crypto'
+import * as React from 'react'
+
+import OTPEmail from './emails/otp'
+
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+new Elysia()
+	.post('/otp', {
+		body: t.String({ format: 'email' })
+	}, async ({ body }) => {
+		// Random between 100,000 and 999,999
+  		const otp = randomInt(100_000, 1_000_000)
+
+        await resend.emails.send({
+        	from: 'ibuki@gehenna.sh',
+           	to: body,
+           	subject: 'Verify your email address',
+            react: <OTPEmail otp={otp} />,
+        })
+
+        return { success: true }
+	})
+	.listen(3000)
+```
+
+```tsx title="AWS SES"
+import { Elysia, t } from 'elysia'
+import { randomInt } from 'node:crypto'
+
+import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import OTPEmail from './emails/otp'
+
+import { type SendEmailCommandInput, SES } from '@aws-sdk/client-ses'
+import { fromEnv } from '@aws-sdk/credential-providers'
+
+const ses = new SES({
+    credentials:
+        process.env.NODE_ENV === 'production' ? fromEnv() : undefined
+})
+
+new Elysia()
+	.post('/otp', {
+		body: t.String({ format: 'email' })
+	}, async ({ body }) => {
+		// Random between 100,000 and 999,999
+  		const otp = randomInt(100_000, 1_000_000)
+
+		const html = renderToStaticMarkup(<OTPEmail otp={otp} />)
+
+        await ses.sendEmail({
+            Source: 'ibuki@gehenna.sh',
+            Destination: {
+                ToAddresses: [body]
+            },
+            Message: {
+                Body: {
+                    Html: {
+                        Charset: 'UTF-8',
+                        Data: html
+                    }
+                },
+                Subject: {
+                    Charset: 'UTF-8',
+                    Data: 'Verify your email address'
+                }
+            }
+        } satisfies SendEmailCommandInput)
+
+        return { success: true }
+	})
+	.listen(3000)
+```
+
+```tsx title="Sendgrid"
+import { Elysia, t } from 'elysia'
+import { randomInt } from 'node:crypto'
+
+import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import OTPEmail from './emails/otp'
+
+import sendgrid from "@sendgrid/mail"
+
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+
+new Elysia()
+	.post('/otp', {
+		body: t.String({ format: 'email' })
+	}, async ({ body }) => {
+		// Random between 100,000 and 999,999
+  		const otp = randomInt(100_000, 1_000_000)
+
+    	const html = renderToStaticMarkup(<OTPEmail otp={otp} />)
+
+        await sendgrid.send({
+        	from: 'ibuki@gehenna.sh',
+           	to: body,
+           	subject: 'Verify your email address',
+            html
+        })
+
+        return { success: true }
+	})
+	.listen(3000)
+```
+
+
+
+:::tip
+
+Si usas Bun, puedes importar el componente del email directamente, sin configurar nada
+
+:::
+
+
+Consulta todas las integraciones disponibles de React Email en [React Email Integrations](https://react.email/docs/integrations/overview) y aprende más sobre la librería en la [documentación de React Email](https://react.email/docs)
+
+</div>
+</InteractiveDocLayout>
+</div>
