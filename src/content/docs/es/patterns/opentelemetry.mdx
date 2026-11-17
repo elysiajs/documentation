@@ -205,7 +205,7 @@ preload = ["./src/instrumentation.ts"]
 Así le indicas a Bun que cargue y prepare `instrumentation` antes de ejecutar `src/index.ts`, para que OpenTelemetry pueda configurarse como necesita.
 
 <span id="deploying-to-production"></span>
-### Desplegar en producción
+### Deploy en producción
 Si usas `bun build` u otros bundlers, ten en cuenta que OpenTelemetry depende de hacer monkey-patching de `node_modules/<library>`. Para que la instrumentación funcione bien, tienes que marcar las librerías que quieres instrumentar como módulos externos, para que queden fuera del bundle.
 
 Por ejemplo, si usas `@opentelemetry/instrumentation-pg` para instrumentar la librería `pg`, tienes que dejar `pg` fuera del bundle y asegurarte de que se importa desde `node_modules/pg`.
