@@ -95,7 +95,7 @@ Si no necesitas el contexto, Elysia también te deja pasar la respuesta directam
 
 ## Handler
 
-Los dos tienen propiedades parecidas para acceder a los datos de entrada, como `headers`, `query`, `params` y `body`. Elysia parsea automáticamente el cuerpo de la petición como JSON, datos URL-encoded o datos de formulario, mientras que Fastify parsea JSON y necesita `@fastify/formbody` y `@fastify/multipart` para los otros dos.
+Los dos tienen propiedades parecidas para acceder a los datos de entrada, como `headers`, `query`, `params` y `body`. Elysia parsea automáticamente el body de la petición como JSON, datos URL-encoded o datos de formulario, mientras que Fastify parsea JSON y necesita `@fastify/formbody` y `@fastify/multipart` para los otros dos.
 
 </div>
 
@@ -317,7 +317,7 @@ Aunque Elysia **prefiere TypeBox** para validar, también es compatible con Stan
 ## Subida de archivos
 Fastify usa `fastify-multipart` para manejar la subida de archivos, que por debajo usa `Busboy`, mientras que Elysia usa la API de Web Standard para manejar los datos de formulario y valida el tipo MIME con una API declarativa.
 
-Sin embargo, Fastify no ofrece una forma directa de validar archivos (por ejemplo, su tamaño y su tipo MIME), así que te toca recurrir a algún apaño para validar el archivo.
+Sin embargo, Fastify no ofrece una forma directa de validar archivos (por ejemplo, su tamaño y su tipo MIME), así que te toca recurrir a algún workaround para validar el archivo.
 
 </div>
 
@@ -406,7 +406,7 @@ Elysia expone las etapas del [ciclo de vida de la petición](/essential/life-cyc
 | Etapa | Para qué sirve |
 | --- | --- |
 | Request | Inspecciona la petición entrante antes de parsearla |
-| Parse | Decodifica el cuerpo de la petición |
+| Parse | Decodifica el body de la petición |
 | Transform y validación | Normaliza y valida los datos de entrada de la petición |
 | Before handle | Deriva valores de la petición o devuelve una respuesta anticipada |
 | Handler | Genera la respuesta de la ruta |
@@ -660,7 +660,7 @@ const app = new Elysia()
 
 <div class="content-layout">
 
-Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo una cabecera o el prefijo Bearer no es autenticación.
+Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo un header o el prefijo Bearer no es autenticación.
 
 Fastify usa una función callback, pero esta tiene que devolver una función para colocarla en un handler de evento, o un objeto que representa un hook. Esto puede ser difícil de manejar cuando necesitas varias funciones personalizadas, porque tienes que combinarlas en un único objeto.
 
