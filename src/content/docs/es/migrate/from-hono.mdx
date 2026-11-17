@@ -126,7 +126,7 @@ En Hono, la forma de asignar el puerto depende del runtime y del adaptador, mien
 
 ## Handler
 
-Hono usa funciones para parsear a mano la query, las cabeceras y el cuerpo, mientras que Elysia parsea las propiedades automáticamente.
+Hono usa funciones para parsear a mano la query, los headers y el body, mientras que Elysia parsea las propiedades automáticamente.
 
 </div>
 
@@ -147,7 +147,7 @@ app.post('/user', async (c) => {
 })
 ```
 
-> Hono lee el JSON con `c.req.json()` y expone accesores para la query y las cabeceras en `c.req`.
+> Hono lee el JSON con `c.req.json()` y expone accesores para la query y los headers en `c.req`.
 
 </div>
 <div>
@@ -408,7 +408,7 @@ Elysia expone las etapas del [ciclo de vida de la petición](/essential/life-cyc
 | Etapa | Para qué sirve |
 | --- | --- |
 | Request | Inspecciona la petición entrante antes de parsearla |
-| Parse | Decodifica el cuerpo de la petición |
+| Parse | Decodifica el body de la petición |
 | Transform y validación | Normaliza y valida los datos de entrada de la petición |
 | Before handle | Deriva valores de la petición o devuelve una respuesta anticipada |
 | Handler | Genera la respuesta de la ruta |
@@ -565,7 +565,7 @@ const app = new Elysia()
 
 <div class="content-layout">
 
-En el ejemplo, la comprobación del prefijo Bearer ocupa el lugar de una verificación real de la credencial. Comprobar solo una cabecera o el prefijo Bearer no es autenticación.
+En el ejemplo, la comprobación del prefijo Bearer ocupa el lugar de una verificación real de la credencial. Comprobar solo un header o el prefijo Bearer no es autenticación.
 
 En Hono puedes usar `declare module` para extender la interfaz `ContextVariableMap`, pero esa extensión es global, no tiene una type safety sólida y no garantiza que la propiedad esté disponible en todos los handlers.
 
@@ -651,7 +651,7 @@ const app = new Elysia()
 
 <div class="content-layout">
 
-Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo una cabecera o el prefijo Bearer no es autenticación.
+Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo un header o el prefijo Bearer no es autenticación.
 
 <span id="error-handling"></span>
 ## Manejo de errores
@@ -900,7 +900,7 @@ Con un `name` único, Elysia aplica el plugin una sola vez y no duplica los efec
 <div class="content-layout">
 
 ## Cookie
-Hono trae funciones auxiliares integradas para cookies en `hono/cookie`, mientras que Elysia maneja las cookies con un enfoque basado en signals.
+Hono trae helpers integrados para cookies en `hono/cookie`, mientras que Elysia maneja las cookies con un enfoque basado en signals.
 
 </div>
 
@@ -928,7 +928,7 @@ app.get('/', async (c) => {
 })
 ```
 
-> Hono usa funciones auxiliares para manejar las cookies
+> Hono usa helpers para manejar las cookies
 
 </div>
 <div>
@@ -1256,7 +1256,7 @@ Esos 1,27 segundos no reflejan toda la duración de la inferencia, sino el tiemp
 ![Código de Hono HC que muestra el error de instanciación demasiado profunda](/migrate/hono-hc-infer.webp)
 > Hono HC mostrando el error de instanciación demasiado profunda
 
-En esa prueba, Hono HC llegó al límite de instanciación de TypeScript con más de 100 rutas y esquemas complejos de cuerpo y de respuesta. No es un límite general de rutas: la versión del compilador, la estructura del esquema y los tipos del cliente influyen en el resultado.
+En esa prueba, Hono HC llegó al límite de instanciación de TypeScript con más de 100 rutas y esquemas complejos de body y de respuesta. No es un límite general de rutas: la versión del compilador, la estructura del esquema y los tipos del cliente influyen en el resultado.
 
 ![Código de Elysia Eden que infiere los tipos sin errores](/migrate/elysia-eden-infer.webp)
 > Código de Elysia Eden infiriendo los tipos sin errores
