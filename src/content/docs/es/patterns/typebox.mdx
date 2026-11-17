@@ -22,7 +22,7 @@ Esta referencia cubre los [tipos primitivos](#primitive-type), los [tipos de Ely
 
 Los esquemas de TypeBox usan nombres que ya conoces de TypeScript, como `String`, `Number`, `Boolean` y `Object`. También incluye `Intersect`, `KeyOf` y `Tuple` para tipos más complejos.
 
-Para validar que el cuerpo de una petición es un string, pasa `t.String()` en el esquema de la ruta, antes del handler.
+Para validar que el body de una petición es un string, pasa `t.String()` en el esquema de la ruta, antes del handler.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -34,7 +34,7 @@ new Elysia()
     .listen(3000)
 ```
 
-Elysia ejecuta el handler cuando el cuerpo coincide. Si no, lanza un error de validación a través del [ciclo de vida de los errores](/essential/life-cycle/#error-error-handling).
+Elysia ejecuta el handler cuando el body coincide. Si no, lanza un error de validación a través del [ciclo de vida de los errores](/essential/life-cycle/#error-error-handling).
 
 <span id="basic-type"></span>
 ### Tipos básicos
@@ -296,7 +296,7 @@ t.Form({
 
 ### Uint8Array
 
-Acepta un `ArrayBuffer` o un `Uint8Array` y lo decodifica a `Uint8Array`. Combínalo con el parser de cuerpo `arrayBuffer` para subir datos binarios.
+Acepta un `ArrayBuffer` o un `Uint8Array` y lo decodifica a `Uint8Array`. Combínalo con el parser de body `arrayBuffer` para subir datos binarios.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -326,7 +326,7 @@ new Elysia()
 
 ### ObjectString
 
-Acepta un objeto o un string JSON que se decodifica al objeto indicado. Resulta útil en query strings, cabeceras y campos de FormData.
+Acepta un objeto o un string JSON que se decodifica al objeto indicado. Resulta útil en query strings, headers y campos de FormData.
 
 ```ts
 import { t } from 'elysia'
@@ -369,7 +369,7 @@ Elysia convierte las entradas HTTP habituales que llegan como strings antes de q
 <span id="optional-request-schema"></span>
 ### Esquema de petición opcional
 
-Puedes envolver en `t.Optional` todo el esquema de la petición, además de campos concretos de un objeto. Esto también se aplica a los esquemas del cuerpo y de las cabeceras.
+Puedes envolver en `t.Optional` todo el esquema de la petición, además de campos concretos de un objeto. Esto también se aplica a los esquemas del body y de los headers.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -389,7 +389,7 @@ new Elysia()
 <span id="number-to-numeric"></span>
 ### De Number a Numeric
 
-Elysia aplica la conversión numérica a `t.Number` cuando está en la raíz o en las propiedades directas de los esquemas de petición que llegan como strings, como params, query y cabeceras. También convierte un cuerpo numérico en la raíz, pero un número dentro de un objeto JSON del cuerpo sigue siendo un número.
+Elysia aplica la conversión numérica a `t.Number` cuando está en la raíz o en las propiedades directas de los esquemas de petición que llegan como strings, como params, query y headers. También convierte un body numérico en la raíz, pero un número dentro de un objeto JSON del body sigue siendo un número.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -413,12 +413,12 @@ new Elysia()
 t.Number()
 ```
 
-Para `/42` con `{"id": 10}`, los dos valores que recibe el handler son números. Un cuerpo JSON `{"id": "10"}` falla la validación.
+Para `/42` con `{"id": 10}`, los dos valores que recibe el handler son números. Un body JSON `{"id": "10"}` falla la validación.
 
 <span id="boolean-to-booleanstring"></span>
 ### De Boolean a BooleanString
 
-La conversión de booleanos sigue la misma regla que la [conversión numérica](#number-to-numeric). Los campos directos de la ruta, la query y las cabeceras aceptan booleanos como strings; un booleano dentro de un objeto JSON sigue siendo un booleano.
+La conversión de booleanos sigue la misma regla que la [conversión numérica](#number-to-numeric). Los campos directos de la ruta, la query y los headers aceptan booleanos como strings; un booleano dentro de un objeto JSON sigue siendo un booleano.
 
 ```ts
 import { Elysia, t } from 'elysia'
@@ -442,7 +442,7 @@ new Elysia()
 t.Boolean()
 ```
 
-Para `/true` con `{"enabled": false}`, el handler recibe `true` y `false`. Un cuerpo JSON `{"enabled": "false"}` falla la validación.
+Para `/true` con `{"enabled": false}`, el handler recibe `true` y `false`. Un body JSON `{"enabled": "false"}` falla la validación.
 
 </div>
 </InteractiveDocLayout>
