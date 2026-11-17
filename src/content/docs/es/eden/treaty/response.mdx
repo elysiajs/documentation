@@ -20,7 +20,7 @@ Cuando llamas al método de fetch, Eden Treaty devuelve una `Promise` con un obj
 - error: `{ status, value }` para una respuesta que no es 2xx, con el valor que devolvió el servidor en `error.value`
 - response `Response`: la clase Response de Web Standard
 - status `number`: el código de estado HTTP
-- headers `Headers`: las cabeceras de la respuesta
+- headers `Headers`: los headers de la respuesta
 
 Cuando tengas la respuesta, tienes que manejar los errores para desenvolver el valor de los datos; si no, ese valor será nullable. Elysia tiene un helper `status()` para devolver una respuesta con un estado concreto, y Eden acota el tipo del valor de error.
 
