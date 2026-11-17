@@ -1,0 +1,255 @@
+---
+title: "Cloudflare Worker"
+description: "Crea handlers de Elysia v2 para Cloudflare Workers y configura el despliegue, los archivos estáticos y los bindings."
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import { FileTree } from "../../../../components/ui/file-tree";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Cloudflare Worker</h1>
+
+Elysia puede ejecutarse en Cloudflare Workers con peticiones y respuestas de Web Standard.
+
+En Elysia v2 no necesitas el adaptador de Cloudflare. Tienes dos opciones:
+1. compilar los route handlers al arrancar
+2. compilar los route handlers durante el build
+
+<span id="compile-at-start-time"></span>
+### Compilar al arrancar
+
+La forma más fácil de empezar es compilarlos al arrancar.
+
+1. añade `compile` antes de exportar la app:
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Cloudflare Worker!')
+    .compile()
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+Eso sí, compilar los handlers al arrancar tiene un coste, que puedes evitar compilándolos durante el build.
+
+<span id="compile-at-build-time"></span>
+### Compilar durante el build
+
+1. Usa [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update) para configurar tu proyecto:
+
+```bash
+wrangler init elysia-on-cloudflare
+bun add elysia@rc
+bun add -d esbuild
+```
+
+2. Define tu app de Elysia y exporta la instancia de Elysia y el fetch handler del Worker:
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+// export here for AOT
+export const app = new Elysia()
+    .get('/', () => 'Hello Cloudflare Worker!')
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+3. Compila los handlers de Elysia para `workerd` durante el build:
+
+```ts title="build.ts"
+import * as esbuild from 'esbuild'
+import { aot } from 'elysia/plugin/aot/esbuild'
+
+await esbuild.build({
+    entryPoints: ['src/index.ts'],
+    bundle: true,
+    format: 'esm',
+    outfile: 'dist/worker.js',
+    conditions: ['workerd', 'worker', 'browser', 'import'],
+    platform: 'browser',
+    target: 'esnext',
+    external: ['node:*', 'cloudflare:*'],
+    plugins: [aot('src/index.ts', { target: 'workerd' })]
+})
+```
+
+4. Haz que Wrangler apunte al bundle generado. Elige JSONC o TOML:
+
+```jsonc title="wrangler.jsonc"
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "elysia-on-cloudflare",
+    "main": "dist/worker.js",
+    "compatibility_date": "2025-09-06",
+    "compatibility_flags": ["nodejs_compat"],
+    "build": { "command": "bun build.ts" }
+}
+```
+
+```toml title="wrangler.toml"
+name = "elysia-on-cloudflare"
+main = "dist/worker.js"
+compatibility_date = "2025-09-06"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "bun build.ts"
+```
+
+La fecha de compatibilidad y el flag `nodejs_compat` coinciden con el fixture de Cloudflare de Elysia v2. Mantén el flag en esta configuración: el consejo de v1 de quitarlo no se aplica aquí.
+
+5. Inicia el servidor de desarrollo:
+
+```bash
+wrangler dev
+```
+
+Así tienes el Worker en local en `http://localhost:8787`. Para desplegarlo, ejecuta `wrangler deploy`.
+
+### pnpm
+Si tu configuración de pnpm no instala las peer dependencies, añade explícitamente las que necesita Elysia v2:
+
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+<span id="limitations"></span>
+## Limitaciones
+Estas son algunas limitaciones conocidas de Elysia en Cloudflare Workers:
+
+1. `file()` y el [plugin Static](/plugins/static) no deben dar por hecho que tienen acceso al sistema de archivos de tu máquina de desarrollo. Los Workers ofrecen un [sistema de archivos virtual](https://developers.cloudflare.com/workers/runtime-apis/nodejs/fs/), incluso con la configuración de compatibilidad de arriba; usa [archivos estáticos](#static-files) para los archivos que quieras publicar.
+2. Genera los [tipos de OpenAPI](/blog/openapi-type-gen/) durante el build. Un Worker no puede inspeccionar archivos fuente de TypeScript que no estén incluidos en su bundle.
+3. Evita los plugins que, durante el build o al inicializar el módulo, crean objetos que solo existen en runtime. Los Workers restringen algunas operaciones fuera del manejo de peticiones.
+4. Usa una función como handler cuando devuelvas un valor, para que la respuesta se cree mientras se maneja una petición:
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+```
+
+<span id="static-files"></span>
+## Archivos estáticos
+Usa el [servicio de archivos estáticos integrado de Cloudflare](https://developers.cloudflare.com/workers/static-assets/) para publicar tu carpeta `public` sin depender de un plugin de archivos estáticos basado en el sistema de archivos.
+
+Añade esto a tu configuración de Wrangler:
+
+
+```jsonc title="wrangler.jsonc"
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "elysia-on-cloudflare",
+    "main": "dist/worker.js",
+    "compatibility_date": "2025-09-06",
+    "compatibility_flags": ["nodejs_compat"],
+    "build": { "command": "bun build.ts" },
+    "assets": { "directory": "public" }
+}
+```
+
+```toml title="wrangler.toml"
+name = "elysia-on-cloudflare"
+main = "dist/worker.js"
+compatibility_date = "2025-09-06"
+compatibility_flags = ["nodejs_compat"]
+assets = { directory = "public" }
+
+[build]
+command = "bun build.ts"
+```
+
+
+Crea una carpeta `public` y coloca dentro tus archivos estáticos.
+
+Por ejemplo, si tienes una estructura de carpetas como esta:
+
+<FileTree
+    client:load
+    variant="card"
+    mono
+    dense
+    nodes={[
+        {
+            id: 'public',
+            name: 'public',
+            children: [
+                { id: 'public/kyuukurarin.mp4', name: 'kyuukurarin.mp4' },
+                {
+                    id: 'public/static',
+                    name: 'static',
+                    children: [
+                        { id: 'public/static/mika.webp', name: 'mika.webp' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'src',
+            name: 'src',
+            children: [{ id: 'src/index.ts', name: 'index.ts' }]
+        },
+        { id: 'wrangler.toml', name: 'wrangler.toml' }
+    ]}
+    defaultExpanded={['public', 'public/static', 'src']}
+    className="not-content my-6"
+/>
+
+Deberías poder acceder a tus archivos estáticos en estas rutas:
+- **http://localhost:8787/kyuukurarin.mp4**
+- **http://localhost:8787/static/mika.webp**
+
+## Bindings
+Puedes usar los bindings de Cloudflare Workers importando `env` desde `cloudflare:workers`. Impórtalo dentro del handler para que el proceso de build no tenga que resolver un módulo que solo existe en Workers.
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+export const app = new Elysia()
+    .get('/', async () => {
+        const { env } = await import('cloudflare:workers')
+        return `Hello ${await env.KV.get('my-key')}`
+    })
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+Configura un binding `KV` en Wrangler y genera sus tipos de TypeScript con `wrangler types`. Los imports externos de `cloudflare:*` siguen disponibles para el runtime del Worker.
+
+Consulta [Cloudflare Workers: Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global) para saber más sobre los bindings.
+
+<span id="aot-compilation"></span>
+## Compilación AoT
+En v1, los Workers necesitaban al principio `aot: false`. Más tarde, Cloudflare añadió la [compilación de funciones durante el arranque](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#enable-eval-during-startup), y el adaptador de Cloudflare de Elysia 1.4.7 la usaba con una fecha de compatibilidad de `2025-06-01` como mínimo.
+
+Elysia v2 usa un pipeline de compilación distinto. El plugin de build `aot` de arriba lleva la generación de handlers al build y usa `target: 'workerd'` para generar código para Workers aunque el build se ejecute en Bun.
+
+Llamar a `.compile()` precalienta los handlers de Elysia en el runtime actual. No sustituye el paso de build del Worker, y v2 no tiene la opción `aot: false` en el constructor.
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .compile()
+```
+
+Todavía tienes que probar los ejemplos de despliegue y de bindings con tu cuenta de Cloudflare y las versiones de dependencias que elijas.
+
+</div>
+</InteractiveDocLayout>
+</div>
