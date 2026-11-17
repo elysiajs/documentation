@@ -1,0 +1,339 @@
+---
+title: Configuración
+description: Configura las peticiones, las cabeceras, el manejo de respuestas y las fechas en Eden Treaty.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Configuración</h1>
+
+Eden Treaty acepta 2 parámetros:
+- **urlOrInstance** - un endpoint de URL o una instancia de Elysia
+- **options** (opcional) - personaliza el comportamiento de fetch
+
+## urlOrInstance
+Acepta un endpoint de URL como string o directamente una instancia de Elysia.
+
+Eden cambia su comportamiento según el tipo que le pases:
+
+<span id="url-endpoint-string"></span>
+### Endpoint de URL (string)
+Si le pasas un endpoint de URL, Eden Treaty usa `fetch` o `config.fetcher` para hacer una petición de red a una instancia de Elysia.
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const api = treaty<App>('localhost:3000')
+```
+
+Puedes indicar el protocolo en el endpoint de URL, pero no es obligatorio.
+
+Eden Treaty añade el protocolo automáticamente así:
+1. Si has indicado un protocolo, usa la URL tal cual
+2. Si la URL apunta a localhost o a una dirección local compatible, usa http
+3. En cualquier otro caso, usa https
+
+Lo mismo se aplica a WebSocket para elegir entre **ws://** y **wss://**.
+
+---
+
+<span id="elysia-instance"></span>
+### Instancia de Elysia
+Si le pasas una instancia de Elysia, Eden Treaty crea un objeto `Request` y se lo pasa directamente a `Elysia.handle`, sin hacer ninguna petición de red.
+
+Así puedes trabajar con el servidor de Elysia directamente, sin el coste extra de una petición y sin tener que arrancar un servidor.
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/hi', 'Hi Elysia')
+
+const api = treaty(app)
+```
+
+Si pasas una instancia, no necesitas un genérico, porque Eden Treaty puede inferir el tipo directamente del parámetro.
+
+Te recomendamos este patrón para hacer pruebas unitarias o para crear un reverse proxy o microservicios con type safety.
+
+<span id="options"></span>
+## Opciones
+El 2.º parámetro, que es opcional, te permite personalizar cómo usa fetch Eden Treaty. Acepta estos parámetros:
+- [fetch](#fetch) - añade parámetros por defecto a la inicialización de fetch (RequestInit)
+- [fetcher](#fetcher) - una función personalizada con la misma interfaz que `fetch`
+- [headers](#headers) - define cabeceras por defecto
+- [onRequest](#onrequest) - intercepta y modifica la petición de fetch antes de enviarla
+- [onResponse](#onresponse) - intercepta y modifica la respuesta de fetch
+- [parseDate](#parsedate) - convierte automáticamente un string de fecha en un objeto Date
+- [throwHttpError](#throwhttperror) - lanza un error automáticamente si el estado de la respuesta no es ok (2xx)
+
+## Fetch
+Define opciones de `RequestInit` por defecto, como las credenciales o la caché. Las cabeceras van en `headers`: el tipo de configuración actual excluye `headers` y `method` de `fetch`. En los siguientes ejemplos damos por hecho que ya has importado `treaty` y el tipo `App` que exportas.
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+treaty<App>('localhost:3000', {
+    fetch: {
+        credentials: 'include'
+    }
+})
+```
+
+Todos los parámetros que pases a fetch llegan al fetcher, así que es equivalente a:
+```ts
+fetch('http://localhost:3000', {
+    credentials: 'include'
+})
+```
+
+## Fetcher
+Pasa tu propia función fetcher en vez de usar el fetch por defecto del entorno.
+
+```ts
+treaty<App>('localhost:3000', {
+    fetcher(url, options) {
+        return fetch(url, options)
+    }
+})
+```
+
+Un fetcher personalizado tiene que aceptar los mismos argumentos que `fetch` y devolver un `Response` de Web Standard. Clientes como Axios necesitan un adaptador; no puedes pasarlos directamente.
+
+## Headers
+Define las cabeceras por defecto de las peticiones con `options.headers`.
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+Todos los parámetros que pases a fetch llegan al fetcher, así que es equivalente a:
+```ts
+fetch('http://localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+Las cabeceras pueden ser:
+- Un objeto
+- Una función
+
+<span id="headers-object"></span>
+### Objeto de cabeceras
+Si pasas un objeto, se le pasa directamente a fetch.
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: {
+        'X-Custom': 'Griseo'
+    }
+})
+```
+
+<span id="function"></span>
+### Función
+Puedes definir las cabeceras como una función que devuelva cabeceras personalizadas según ciertas condiciones.
+
+```ts
+treaty<App>('localhost:3000', {
+    headers(path, options) {
+        if(path.startsWith('/user'))
+            return {
+                authorization: 'Bearer 12345'
+            }
+    }
+})
+```
+
+Puedes devolver un objeto para añadir sus valores a las cabeceras de fetch.
+
+La función de cabeceras acepta 2 parámetros:
+- path `string` - el path que se va a enviar
+  - nota: el hostname queda **excluido**, por ejemplo, (/user/griseo)
+- options `RequestInit`: los parámetros que se pasan en el 2.º parámetro de fetch
+
+### Array
+Si necesitas varias condiciones, puedes definir la función de cabeceras como un array.
+
+```ts
+treaty<App>('localhost:3000', {
+    headers: [
+      (path, options) => {
+        if(path.startsWith('/user'))
+            return {
+                authorization: 'Bearer 12345'
+            }
+        }
+    ]
+})
+```
+
+Eden Treaty **ejecuta todas las funciones** aunque alguna ya haya devuelto un valor.
+
+<span id="headers-priority"></span>
+## Prioridad de las cabeceras
+Si hay cabeceras duplicadas, Eden Treaty les da prioridad en este orden:
+1. Método inline - las que pasas directamente a la función del método
+2. headers - las que pasas en `config.headers`
+  - Si `config.headers` es un array, tienen prioridad los parámetros que van después
+
+Por ejemplo:
+```ts
+const api = treaty<App>('localhost:3000', {
+    headers: {
+        authorization: 'Bearer Aponia'
+    }
+})
+
+api.profile.get({
+    headers: {
+        authorization: 'Bearer Griseo'
+    }
+})
+```
+
+Esto da como resultado:
+```ts
+fetch('http://localhost:3000', {
+    headers: {
+        authorization: 'Bearer Griseo'
+    }
+})
+```
+
+Si la función inline no indica cabeceras, el resultado será "**Bearer Aponia**".
+
+## onRequest
+Intercepta y modifica la petición de fetch antes de enviarla.
+
+Puedes devolver un objeto para añadir su valor a **RequestInit**.
+
+```ts
+treaty<App>('localhost:3000', {
+    onRequest(path, options) {
+        if(path.startsWith('/user'))
+            return {
+                headers: {
+                    authorization: 'Bearer 12345'
+                }
+            }
+    }
+})
+```
+
+Si devuelves un valor, Eden Treaty hace un **shallow merge** con el `RequestInit` actual y combina sus `headers` con las cabeceras que ya había.
+
+**onRequest** acepta 2 parámetros:
+- path `string` - el path que se va a enviar
+  - nota: el hostname queda **excluido**, por ejemplo, (/user/griseo)
+- options `RequestInit`: los parámetros que se pasan en el 2.º parámetro de fetch
+
+### Array
+Si necesitas varias condiciones, puedes definir la función onRequest como un array.
+
+```ts
+treaty<App>('localhost:3000', {
+    onRequest: [
+      (path, options) => {
+        if(path.startsWith('/user'))
+            return {
+                headers: {
+                    authorization: 'Bearer 12345'
+                }
+            }
+        }
+    ]
+})
+```
+
+Eden Treaty **ejecuta todas las funciones** aunque alguna ya haya devuelto un valor.
+
+## onResponse
+Intercepta la respuesta de fetch. El primer valor devuelto que no sea null se convierte en `data`.
+
+```ts
+treaty<App>('localhost:3000', {
+    onResponse(response) {
+        if(response.ok && response.headers.get('content-type')?.includes('application/json'))
+            return response.json()
+    }
+})
+```
+
+**onResponse** acepta 1 parámetro:
+- response `Response` - el Response de Web Standard que normalmente devuelve `fetch`
+
+### Array
+Si necesitas varias condiciones, puedes definir la función onResponse como un array.
+
+```ts
+treaty<App>('localhost:3000', {
+    onResponse: [
+        (response) => {
+            if(response.ok && response.headers.get('content-type')?.includes('application/json'))
+                return response.json()
+        }
+    ]
+})
+```
+A diferencia de [headers](#headers) y [onRequest](#onrequest), Eden Treaty recorre las funciones hasta que una devuelve un valor o lanza un error. El primer valor devuelto que no sea null se convierte en `data`.
+
+## parseDate
+
+- por defecto: `true`
+
+Convierte automáticamente un string de fecha en un objeto Date.
+
+```ts
+treaty<App>('localhost:3000', {
+	parseDate: true
+})
+```
+
+## throwHttpError
+
+- por defecto: `false`
+
+Lanza un error automáticamente si el estado de la respuesta no es ok (2xx).
+
+```ts
+treaty<App>('localhost:3000', {
+	throwHttpError: true
+})
+```
+
+Por defecto, si el estado de la respuesta no es ok (2xx), Eden no lanza ningún error y devuelve `{ error }`.
+
+También puedes pasar un predicado que recibe un `EdenFetchError`:
+```ts
+treaty<App>('localhost:3000', {
+	throwHttpError: (error) => {
+		return error.status === 418
+	}
+})
+```
+
+Si `throwHttpError` devuelve `true`, Eden lanza un error. Si no, devuelve `{ error }`.
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
