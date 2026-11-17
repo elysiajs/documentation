@@ -1,0 +1,177 @@
+---
+title: Respuesta
+description: Maneja respuestas correctas, errores, streams y tipos de respuesta en Eden Treaty.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Respuesta</h1>
+
+Cuando llamas al método de fetch, Eden Treaty devuelve una `Promise` con un objeto que tiene estas propiedades:
+- data: el valor devuelto en la respuesta (2xx)
+- error: `{ status, value }` para una respuesta que no es 2xx, con el valor que devolvió el servidor en `error.value`
+- response `Response`: la clase Response de Web Standard
+- status `number`: el código de estado HTTP
+- headers `Headers`: las cabeceras de la respuesta
+
+Cuando tengas la respuesta, tienes que manejar los errores para desenvolver el valor de los datos; si no, ese valor será nullable. Elysia tiene un helper `status()` para devolver una respuesta con un estado concreto, y Eden acota el tipo del valor de error.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .post('/user', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body: { name }, status }) => {
+        if(name === 'Otto') return status(400)
+
+        return name
+    })
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+const submit = async (name: string) => {
+    const { data, error } = await api.user.post({
+        name
+    })
+
+    // type: string | null
+    console.log(data)
+
+    if (error)
+        switch(error.status) {
+            case 400:
+                // Error type will be narrow down
+                throw error.value
+
+            default:
+                throw error.value
+        }
+
+    // Once the error is handled, type will be unwrapped
+    // type: string
+    return data
+}
+```
+
+Por defecto, Elysia infiere automáticamente los tipos de `error` y `response` en TypeScript, y Eden te da autocompletado y acotación de tipos para que todo se comporte como esperas.
+
+:::tip
+
+Si el servidor responde con un estado HTTP >= 300, `data` será `null` y `error` será `{ status, value }`, con el valor que devolvió el servidor en `error.value`.
+
+Si no, la respuesta parseada se pasa a `data`. Fetch sigue las redirecciones por defecto, así que una redirección puede acabar resolviéndose directamente en la respuesta de su destino.
+:::
+
+
+<span id="stream-response"></span>
+## Respuesta en stream
+Eden interpreta una respuesta en stream o con [Server-Sent Events](/essential/handler#server-sent-events) como un `AsyncGenerator`, así que puedes usar un bucle `for await` para consumir el stream.
+
+
+
+**Stream**
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield 1
+		yield 2
+		yield 3
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+```
+
+**Server-Sent Events**
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield sse({
+			event: 'message',
+			data: '1'
+		})
+		yield sse({
+			event: 'message',
+			data: '2'
+		})
+		yield sse({
+			event: 'end'
+		})
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+```
+
+
+
+
+
+<span id="utility-types"></span>
+## Tipos de utilidad
+Eden Treaty tiene los tipos de utilidad `Treaty.Data<T>` y `Treaty.Error<T>` para extraer los tipos de `data` y `error` de la respuesta.
+
+```ts
+import { Elysia, t } from 'elysia'
+
+import { treaty, type Treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/user', {
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ body: { name }, status }) => {
+		if(name === 'Otto') return status(400)
+
+		return name
+	})
+	.listen(3000)
+
+const api =
+	treaty<typeof app>('localhost:3000')
+
+type UserData = Treaty.Data<typeof api.user.post>
+
+// Alternatively, you can also pass a response
+const response = await api.user.post({
+	name: 'Saltyaom'
+})
+
+type UserDataFromResponse = Treaty.Data<typeof response>
+
+type UserError = Treaty.Error<typeof api.user.post>
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
