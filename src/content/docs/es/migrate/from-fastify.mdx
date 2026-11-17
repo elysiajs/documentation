@@ -1,0 +1,1243 @@
+---
+title: De Fastify a Elysia
+description: Compara el routing, la validación, los hooks y la type safety de Fastify y Elysia.
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import '../../../../styles/comparison.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">De Fastify a Elysia</h1>
+
+:::note[Elysia v2]
+
+Los ejemplos de Elysia usan la v2: las opciones de la ruta van antes del handler, los métodos del ciclo de vida usan el nombre de su evento y los valores que se obtienen de la petición usan `derive`. Los ejemplos del otro framework muestran una configuración habitual en ese framework: son ejemplos de migración, no un repaso de todo lo que puede hacer hoy en día. Las integraciones con frameworks tienen su propia compatibilidad de versiones, así que revisa esos paquetes cuando migres una aplicación.
+
+:::
+
+Esta guía es para ti si usas Fastify y quieres ver en qué se diferencia de Elysia, sintaxis incluida, y cómo migrar tu aplicación de Fastify a Elysia con ejemplos.
+
+**Fastify** es un framework web para Node.js rápido y con muy poco overhead, pensado para ser simple y fácil de usar. Está construido sobre el módulo HTTP y trae una serie de funcionalidades que facilitan crear aplicaciones web.
+
+**Elysia** es un framework web ergonómico para Bun, Node.js y los runtimes compatibles con la API de Web Standard. Está diseñado para ser ergonómico y cómodo de usar, con foco en una **type safety sólida** y en el rendimiento.
+
+<span id="performance"></span>
+## Rendimiento
+Elysia rinde mucho mejor que Fastify gracias a su implementación nativa para Bun y al análisis estático del código.
+
+Esta comparación usa un [resultado histórico de la Round 22 de TechEmpower](https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22) del 2023-10-17 en la prueba Plaintext. Son las combinaciones de framework y runtime que se midieron entonces, no mediciones de Elysia v2.
+
+| Framework | Peticiones por segundo |
+| --- | ---: |
+| Elysia | 2.454.631 |
+| Fastify | 415.600 |
+
+## Routing
+
+Fastify y Elysia tienen una sintaxis de routing parecida: los dos usan métodos como `app.get()` y `app.post()` para definir rutas, y escriben los parámetros de ruta de forma similar.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+app.get('/', (request, reply) => {
+    reply.send('Hello World')
+})
+
+app.post('/id/:id', (request, reply) => {
+    reply.status(201).send(request.params.id)
+})
+
+app.listen({ port: 3000 })
+```
+
+> Fastify usa `request` y `reply` como objetos de petición y de respuesta
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .post(
+    	'/id/:id',
+     	({ status, params: { id } }) => {
+      		return status(201, id)
+      	}
+    )
+    .listen(3000)
+```
+
+> Elysia usa un único `context` y devuelve la respuesta directamente
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Hay una pequeña diferencia de estilo. Elysia recomienda usar method chaining (encadenar las llamadas a métodos) y la desestructuración de objetos.
+
+Si no necesitas el contexto, Elysia también te deja pasar la respuesta directamente como un valor.
+
+## Handler
+
+Los dos tienen propiedades parecidas para acceder a los datos de entrada, como `headers`, `query`, `params` y `body`. Elysia parsea automáticamente el cuerpo de la petición como JSON, datos URL-encoded o datos de formulario, mientras que Fastify parsea JSON y necesita `@fastify/formbody` y `@fastify/multipart` para los otros dos.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+app.post('/user', (request, reply) => {
+    const limit = request.query.limit
+    const name = request.body.name
+    const auth = request.headers.authorization
+
+    reply.send({ limit, name, auth })
+})
+```
+
+> Fastify parsea los datos y los pone en el objeto `request`
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.post('/user', { body: t.Object({ name: t.String() }) }, (ctx) => {
+	    const limit = ctx.query.limit
+	    const name = ctx.body.name
+	    const auth = ctx.headers.authorization
+
+	    return { limit, name, auth }
+	})
+```
+
+> Elysia parsea los datos y los pone en el objeto `context`
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## Subrouter
+
+Fastify usa una función callback para definir un subrouter, mientras que Elysia trata cada instancia como un componente que puedes enchufar y combinar con los demás.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify, { FastifyPluginCallback } from 'fastify'
+
+const subRouter: FastifyPluginCallback = (app, opts, done) => {
+	app.get('/user', (request, reply) => {
+		reply.send('Hello User')
+	})
+
+	done()
+}
+
+const app = fastify()
+
+app.register(subRouter, {
+	prefix: '/api'
+})
+```
+
+> Fastify usa una función callback para declarar un subrouter
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ prefix: '/api' })
+	.get('/user', 'Hello User')
+
+const app = new Elysia()
+	.use(subRouter)
+```
+
+> Elysia trata cada instancia como un componente
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Elysia define el prefijo en el constructor, mientras que en Fastify tienes que indicarlo en las opciones.
+
+<span id="validation"></span>
+## Validación
+Elysia incluye de serie validación de peticiones con una type safety sólida gracias a **TypeBox**, mientras que Fastify usa JSON Schema para declarar los esquemas y **ajv** para validar.
+
+Pero Fastify no infiere los tipos automáticamente: para eso necesitas un type provider como `@fastify/type-provider-json-schema-to-ts`.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts'
+
+const app = fastify().withTypeProvider<JsonSchemaToTsProvider>()
+
+app.patch(
+	'/user/:id',
+	{
+		schema: {
+			params: {
+				type: 'object',
+				properties: {
+					id: {
+						type: 'string',
+						pattern: '^[0-9]+$'
+					}
+				},
+				required: ['id']
+			},
+			body: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' }
+				},
+				required: ['name']
+			},
+		}
+	},
+	(request, reply) => {
+		// map string to number
+		request.params.id = +request.params.id
+
+		reply.send({
+			params: request.params,
+			body: request.body
+		})
+	}
+)
+```
+
+> Fastify usa JSON Schema para validar
+
+</div>
+<div>
+
+```ts title="Elysia TypeBox"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: t.Object({
+			id: t.Number()
+		}),
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Zod"
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Valibot"
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: v.object({
+			id: v.pipe(v.string(), v.transform(Number), v.number())
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+> Elysia usa TypeBox para validar y convierte los tipos automáticamente, y también admite otras librerías de validación, como Zod y Valibot, con la misma sintaxis.
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Como alternativa, Fastify también puede usar **TypeBox** o **Zod** para validar, con `@fastify/type-provider-typebox` para inferir los tipos automáticamente.
+
+Aunque Elysia **prefiere TypeBox** para validar, también es compatible con Standard Schema de serie, así que puedes usar librerías como Zod, Valibot, ArkType, Effect Schema, etc.
+
+<span id="file-upload"></span>
+## Subida de archivos
+Fastify usa `fastify-multipart` para manejar la subida de archivos, que por debajo usa `Busboy`, mientras que Elysia usa la API de Web Standard para manejar los datos de formulario y valida el tipo MIME con una API declarativa.
+
+Sin embargo, Fastify no ofrece una forma directa de validar archivos (por ejemplo, su tamaño y su tipo MIME), así que te toca recurrir a algún apaño para validar el archivo.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import multipart from '@fastify/multipart'
+
+import { fileTypeFromBuffer } from 'file-type'
+
+const app = fastify()
+app.register(multipart, {
+	attachFieldsToBody: 'keyValues'
+})
+
+app.post(
+	'/upload',
+	{
+		schema: {
+			body: {
+				type: 'object',
+				properties: {
+					file: { type: 'object' }
+				},
+				required: ['file']
+			}
+		}
+	},
+	async (req, res) => {
+		const file = req.body.file
+		if (!file) return res.status(422).send('No file uploaded')
+
+		const type = await fileTypeFromBuffer(file)
+		if (!type || !type.mime.startsWith('image/'))
+			return res.status(422).send('File is not a valid image')
+
+		res.header('Content-Type', type.mime)
+		res.send(file)
+	}
+)
+```
+
+> Fastify usa `fastify-multipart` para manejar la subida de archivos y un `type: object` falso para poder aceptar un Buffer
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+const app = new Elysia()
+	.post('/upload', {
+		body: t.Object({
+			file: t.File({
+				type: 'image/*'
+			})
+		})
+	}, ({ body }) => body.file)
+```
+
+> Elysia se encarga de los archivos y de validar su tipo MIME con `t.File`
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Los metadatos de un archivo no demuestran lo que contiene. El ejemplo usa **file-type** para inspeccionar sus bytes.
+
+Elysia valida el esquema del archivo. Registra el detector de `file-type` como en el ejemplo para validar los bytes del archivo.
+
+<span id="lifecycle-event"></span>
+## Eventos del ciclo de vida
+
+Fastify y Elysia tienen eventos del ciclo de vida bastante parecidos, con un enfoque basado en eventos.
+
+<span id="elysia-lifecycle"></span>
+### Ciclo de vida de Elysia
+Elysia expone las etapas del [ciclo de vida de la petición](/essential/life-cycle):
+
+| Etapa | Para qué sirve |
+| --- | --- |
+| Request | Inspecciona la petición entrante antes de parsearla |
+| Parse | Decodifica el cuerpo de la petición |
+| Transform y validación | Normaliza y valida los datos de entrada de la petición |
+| Before handle | Deriva valores de la petición o devuelve una respuesta anticipada |
+| Handler | Genera la respuesta de la ruta |
+| After handle y map response | Ajusta y serializa la respuesta |
+| After response | Ejecuta tareas después de enviar la respuesta |
+
+El hook de error maneja los fallos que se produzcan en este pipeline.
+
+<span id="fastify-lifecycle"></span>
+### Ciclo de vida de Fastify
+Los eventos del ciclo de vida de Fastify también usan un enfoque basado en eventos, parecido al de Elysia.
+
+Los dos tienen además una sintaxis bastante parecida para interceptar los eventos del ciclo de vida de la petición y de la respuesta. Eso sí, Elysia no te obliga a llamar a `done` para que el ciclo de vida continúe.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+// Global middleware
+app.addHook('onRequest', (request, reply, done) => {
+	console.log(`${request.method} ${request.url}`)
+
+	done()
+})
+
+app.get(
+	'/protected',
+	{
+		// Route-specific middleware
+		preHandler(request, reply, done) {
+			const token = request.headers.authorization
+
+			if (!token) return reply.status(401).send('Unauthorized')
+
+			done()
+		}
+	},
+	(request, reply) => {
+		reply.send('Protected route')
+	}
+)
+```
+
+> Fastify usa `addHook` para registrar middleware y te obliga a llamar a `done` para que el ciclo de vida continúe
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	// Global middleware
+	.onRequest(({ request }) => {
+		console.log(request.method, new URL(request.url).pathname)
+	})
+	// Route-specific middleware
+	.get('/protected', {
+		beforeHandle({ status, headers }) {
+  			if (!headers.authorization)
+     			return status(401)
+		}
+	}, () => 'protected')
+```
+
+> Elysia detecta el evento del ciclo de vida automáticamente y no te obliga a llamar a `done` para que el ciclo de vida continúe
+
+</div>
+</div>
+
+<div class="content-layout">
+
+<span id="sounds-type-safety"></span>
+
+<span id="sound-type-safety"></span>
+## Type safety sólida
+Elysia está diseñado para ofrecer una type safety sólida.
+
+Por ejemplo, [derive](/essential/life-cycle#derive) añade al contexto valores propios de cada petición, con sus tipos inferidos. En la v2 también asume el papel de contexto validado que antes tenía `resolve`.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+app.decorateRequest('version', 2)
+
+app.get('/version', (req, res) => {
+	// Error: Property 'version' does not exist on type 'FastifyRequest'
+	res.send(req.version)
+})
+
+app.get(
+	'/token',
+	{
+		preHandler(req, res, done) {
+			const token = req.headers.authorization
+
+			if (!token) return res.status(401).send('Unauthorized')
+
+			// @ts-ignore
+			req.token = token.split(' ')[1]
+
+			done()
+		}
+	},
+	(req, res) => {
+		// Error: Property 'version' does not exist on type 'FastifyRequest'
+		req.version
+
+		// Error: Property 'token' does not exist on type 'FastifyRequest'
+		res.send(req.token)
+	}
+)
+
+app.listen({
+	port: 3000
+})
+```
+
+> Fastify usa `decorateRequest`, pero no ofrece una type safety sólida
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.decorate('version', 2)
+	.get('/version', ({ version }) => version)
+	.derive(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+
+		return {
+			token: authorization.split(' ')[1]
+		}
+	})
+	// {  token: string, version: number }
+	.get('/token', ({ token, version }) => {
+		return token
+	})
+```
+
+> Elysia usa `decorate` para extender el contexto y `derive` para añadirle propiedades personalizadas
+
+</div>
+</div>
+
+<div class="content-layout">
+
+En Fastify puedes usar `declare module` para extender la interfaz `FastifyRequest`, pero esa extensión es global, no tiene una type safety sólida y no garantiza que la propiedad esté disponible en todos los handlers.
+
+```ts
+declare module 'fastify' {
+  	interface FastifyRequest {
+    	version: number
+  		token: string
+  	}
+}
+```
+> Esto hace falta para que funcione el ejemplo de Fastify de arriba, y aun así no ofrece una type safety sólida
+
+<span id="middleware-parameter"></span>
+## Parámetros del middleware
+Fastify usa una función que devuelve un plugin de Fastify para definir un middleware con nombre, mientras que Elysia usa una [macro](/patterns/macro) para definir un hook personalizado.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import { findUser } from './users'
+import fastify from 'fastify'
+import type { FastifyRequest, FastifyReply } from 'fastify'
+
+const app = fastify()
+
+const role =
+	(role: 'user' | 'admin') =>
+	(request: FastifyRequest, reply: FastifyReply, next: Function) => {
+		const user = findUser(request.headers.authorization)
+
+		if (!user || user.role !== role) return reply.status(401).send('Unauthorized')
+
+		// Error: Property 'user' does not exist on type 'FastifyRequest'
+		request.user = user
+
+		next()
+	}
+
+app.get(
+	'/token',
+	{
+		preHandler: role('admin')
+	},
+	(request, reply) => {
+		// Error: Property 'user' does not exist on type 'FastifyRequest'
+		reply.send(request.user)
+	}
+)
+```
+
+> Fastify usa una función callback para pasarle argumentos personalizados al middleware
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { findUser } from './users'
+
+const app = new Elysia()
+	.macro({
+		role: (role: 'user' | 'admin') => ({
+			derive({ status, headers: { authorization } }) {
+				const user = findUser(authorization)
+
+				if (!user || user.role !== role)
+					return status(401)
+
+				return {
+					user
+				}
+			}
+		})
+	})
+	// { user: User }
+	.get('/token', {
+		role: 'admin'
+	}, ({ user }) => user)
+```
+
+> Elysia usa una macro para pasarle argumentos personalizados a un middleware propio
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo una cabecera o el prefijo Bearer no es autenticación.
+
+Fastify usa una función callback, pero esta tiene que devolver una función para colocarla en un handler de evento, o un objeto que representa un hook. Esto puede ser difícil de manejar cuando necesitas varias funciones personalizadas, porque tienes que combinarlas en un único objeto.
+
+<span id="error-handling"></span>
+## Manejo de errores
+
+Fastify y Elysia ofrecen un evento del ciclo de vida para manejar errores.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+class CustomError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'CustomError'
+	}
+}
+
+// global error handler
+app.setErrorHandler((error, request, reply) => {
+	if (error instanceof CustomError)
+		reply.status(500).send({
+			message: 'Something went wrong!',
+			error
+		})
+})
+
+app.get(
+	'/error',
+	{
+		// route-specific error handler
+		errorHandler(error, request, reply) {
+			reply.send({
+				message: 'Only for this route!',
+				error
+			})
+		}
+	},
+	(request, reply) => {
+		throw new CustomError('oh uh')
+	}
+)
+```
+
+> Fastify usa `setErrorHandler` para un handler de errores global y `errorHandler` para un handler de errores específico de una ruta
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+class CustomError extends Error {
+    status = 500
+}
+
+const app = new Elysia()
+    .onError(CustomError, ({ error, status }) =>
+        status(500, { message: 'Something went wrong!', detail: error.message })
+    )
+    .get('/error', () => {
+        throw new CustomError('oh uh')
+    })
+    .get('/local-error', {
+        error({ error, status }) {
+            if (error instanceof RangeError)
+                return status(500, { message: 'Only for this route!' })
+        }
+    }, () => {
+        throw new RangeError('outside the allowed range')
+    })
+```
+
+> Elysia ofrece handlers de errores para clases concretas y un helper para responder con un estado HTTP.
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Los dos manejan los errores con eventos del ciclo de vida, pero Elysia además ofrece:
+
+1. Handlers de errores para clases concretas, con el tipo del error inferido
+2. El helper `status` para devolver una respuesta con un estado HTTP
+
+La ruta `/error` usa el handler registrado para `CustomError`. La ruta `/local-error` maneja otro error de forma local. Los hooks de error se ejecutan en el orden en que se registran, y el primero que devuelve un valor envía la respuesta. Los hooks que registras en la app antes de una ruta se ejecutan antes que el propio hook `error` de esa ruta, así que el hook de la ruta no puede sobrescribirlos.
+
+En un handler para una clase concreta, Elysia infiere el tipo del error registrado.
+
+<span id="encapsulation"></span>
+## Encapsulación
+
+Fastify encapsula los efectos secundarios de los plugins, mientras que Elysia te deja controlar los efectos secundarios de un plugin con un mecanismo de scope explícito y con el orden del código.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import type { FastifyPluginCallback } from 'fastify'
+
+const subRouter: FastifyPluginCallback = (app, opts, done) => {
+	app.addHook('preHandler', async (request, reply) => {
+		if (!request.headers.authorization?.startsWith('Bearer '))
+			return reply.code(401).send({ error: 'Unauthorized' })
+	})
+
+	done()
+}
+
+const app = fastify()
+	.get('/', (request, reply) => {
+		reply.send('Hello World')
+	})
+	.register(subRouter)
+	// doesn't have side-effect from subRouter
+	.get('/side-effect', () => 'hi')
+```
+
+> Fastify encapsula los efectos secundarios de un plugin
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // doesn't have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+> Elysia encapsula los efectos secundarios de un plugin, a menos que indiques lo contrario explícitamente
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Los dos tienen un mecanismo para encapsular los plugins y evitar efectos secundarios.
+
+Sin embargo, en Elysia puedes indicar explícitamente qué plugin debe tener efectos secundarios declarando su scope, mientras que Fastify encapsula por defecto y necesita `fastify-plugin` para compartirlos.
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	// Scoped to parent instance but not beyond
+	.as('plugin') // [!code ++]
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // [!code ++]
+    // now have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+Elysia ofrece 3 tipos de scope:
+1. **local** - Se aplica a esta instancia y a sus descendientes (por defecto)
+2. **plugin** - Comparte los efectos secundarios con la instancia padre, pero no más allá
+3. **global** - Los comparte con todas las instancias padre
+
+---
+
+Para compartir hooks más allá del límite de encapsulación que Fastify aplica por defecto, el ejemplo de abajo crea una función para cada hook y la añade a mano.
+
+Pero esto puede duplicar efectos secundarios si no tienes cuidado.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import type {
+	FastifyRequest,
+	FastifyReply,
+	FastifyPluginCallback
+} from 'fastify'
+
+const log = (request: FastifyRequest, reply: FastifyReply, done: Function) => {
+	console.log('Middleware executed')
+
+	done()
+}
+
+const app = fastify()
+
+app.addHook('onRequest', log)
+app.get('/main', (request, reply) => {
+	reply.send('Hello from main!')
+})
+
+const subRouter: FastifyPluginCallback = (app, opts, done) => {
+	app.addHook('onRequest', log)
+
+	// This would log twice
+	app.get('/sub', (request, reply) => {
+		return reply.send('Hello from sub router!')
+	})
+
+	done()
+}
+
+app.register(subRouter, {
+	prefix: '/sub'
+})
+
+app.listen({
+	port: 3000
+})
+```
+
+</div>
+<div>
+
+En este caso, Elysia ofrece un mecanismo de deduplicación de plugins para evitar efectos secundarios duplicados.
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ name: 'subRouter' }) // [!code ++]
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	.as('plugin')
+
+const app = new Elysia()
+	.get('/', 'Hello World')
+	.use(subRouter)
+	.use(subRouter) // [!code ++]
+	.use(subRouter) // [!code ++]
+	.use(subRouter) // [!code ++]
+	// side-effect only called once
+	.get('/side-effect', () => 'hi')
+```
+
+Con un `name` único, Elysia aplica el plugin una sola vez y no duplica los efectos secundarios.
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## Cookie
+Fastify usa `@fastify/cookie` para parsear las cookies, mientras que Elysia trae soporte integrado para cookies y las maneja con un enfoque basado en signals.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import cookie from '@fastify/cookie'
+
+const app = fastify()
+
+app.register(cookie, {
+	secret: 'secret',
+	hook: 'onRequest'
+})
+
+app.get('/', function (request, reply) {
+	request.unsignCookie(request.cookies.name)
+
+	reply.setCookie('name', 'value', {
+      	path: '/',
+      	signed: true
+    })
+})
+```
+
+> Fastify usa `unsignCookie` para verificar la firma de la cookie y `setCookie` para establecerla
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({
+    cookie: {
+        secrets: 'replace-with-a-private-secret',
+        sign: ['name']
+    }
+})
+    .get('/', {
+        cookie: t.Cookie({ name: t.Optional(t.String()) })
+    }, ({ cookie: { name } }) => {
+        const previous = name.value
+        name.set({
+            value: 'value',
+            maxAge: 60 * 60 * 24,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax'
+        })
+        return previous ?? 'unset'
+    })
+```
+
+> Elysia verifica y firma automáticamente las cookies configuradas. El `maxAge` de la cookie va en segundos. Sustituye el secreto del ejemplo por un valor privado y sirve las cookies seguras por HTTPS.
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## OpenAPI
+Los dos ofrecen documentación OpenAPI con Swagger, pero Elysia usa por defecto Scalar UI, una interfaz más moderna y fácil de usar para la documentación OpenAPI.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import swagger from '@fastify/swagger'
+
+const app = fastify()
+app.register(swagger, {
+	openapi: {
+		info: { title: 'My API', version: '1.0.0' }
+	}
+})
+
+app.addSchema({
+	$id: 'user',
+	type: 'object',
+	properties: {
+		name: {
+			type: 'string',
+			description: 'First name only'
+		},
+		age: { type: 'integer' }
+	},
+	required: ['name', 'age']
+})
+
+app.post(
+	'/users',
+	{
+		schema: {
+			summary: 'Create user',
+			body: {
+				$ref: 'user#'
+			},
+			response: {
+				'201': {
+					$ref: 'user#'
+				}
+			}
+		}
+	},
+	(req, res) => {
+		res.status(201).send(req.body)
+	}
+)
+
+await app.ready()
+app.swagger()
+```
+
+> Fastify usa `@fastify/swagger` para generar la documentación OpenAPI con Swagger
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi' // [!code ++]
+
+const app = new Elysia()
+	.use(openapi()) // [!code ++]
+	.model({
+		user: t.Object({
+			name: t.String(),
+			age: t.Integer()
+		})
+	})
+	.post('/users', {
+		body: 'user',
+		response: {
+			201: 'user'
+		},
+		detail: {
+			summary: 'Create user'
+		}
+	}, ({ body, status }) => status(201, body))
+```
+
+> Elysia usa `@elysia/openapi` para la documentación OpenAPI, con Scalar por defecto.
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Los dos te dejan hacer referencia a modelos con `$ref` en la documentación OpenAPI. Pero Fastify no ofrece type safety ni autocompletado al indicar el nombre del modelo, y Elysia sí.
+
+<span id="testing"></span>
+## Pruebas
+
+Fastify prueba los handlers dentro del propio proceso con `fastify.inject()`. Elysia acepta un `Request` de Web Standard a través de `app.handle()`. Ninguno de los dos necesita un servidor escuchando en la red.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import { describe, it, expect } from 'vitest'
+
+function build(opts = {}) {
+  	const app = fastify(opts)
+
+  	app.get('/', async function (request, reply) {
+	    reply.send({ hello: 'world' })
+	})
+
+  	return app
+}
+
+describe('GET /', () => {
+	it('should return the greeting', async () => {
+  		const app = build()
+
+		const response = await app.inject({
+		    url: '/',
+		    method: 'GET',
+	  })
+
+		expect(response.statusCode).toBe(200)
+		expect(response.json()).toEqual({ hello: 'world' })
+	})
+})
+```
+
+> Fastify usa `fastify.inject()` para simular una petición de red
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { describe, it, expect } from 'vitest'
+
+const app = new Elysia()
+	.get('/', () => ({ hello: 'world' }))
+
+describe('GET /', () => {
+	it('should return the greeting', async () => {
+		const res = await app.handle(
+			new Request('http://localhost')
+		)
+
+		expect(res.status).toBe(200)
+		expect(await res.json()).toEqual({ hello: 'world' })
+	})
+})
+```
+
+> Elysia usa la API de Web Standard para manejar las peticiones
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Elysia también ofrece una librería auxiliar llamada [Eden](/eden) para la type safety de extremo a extremo, con la que puedes escribir tus pruebas con autocompletado y type safety completa.
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import { describe, expect, it } from 'bun:test'
+
+const app = new Elysia().get('/hello', 'Hello World')
+const api = treaty(app)
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const { data, error, status } = await api.hello.get()
+
+		expect(status).toBe(200)
+		expect(data).toBe('Hello World')
+	})
+})
+```
+
+<span id="end-to-end-type-safety"></span>
+## Type safety de extremo a extremo
+Elysia incluye **type safety de extremo a extremo** sin generar código gracias a [Eden](/eden), algo que Fastify no ofrece.
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/mirror', {
+		body: t.Object({
+			message: t.String()
+		})
+	}, ({ body }) => body)
+
+const api = treaty(app)
+
+const { data, error } = await api.mirror.post({
+	message: 'Hello World'
+})
+
+if (error)
+	// error.status: 422
+	// error.value: { type: 'validation', title: 'Validation Error', status: 422, on: 'body', detail, errors: [...] }
+	throw error
+
+// { message: 'Hello World' }
+console.log(data)
+```
+
+Si la type safety de extremo a extremo es importante para ti, Elysia es la opción adecuada.
+
+---
+
+Elysia ofrece una experiencia más ergonómica y cómoda de usar, centrada en el rendimiento, la type safety y la simplicidad. Fastify es uno de los frameworks consolidados de Node.js, pero no tiene la **type safety sólida** ni la **type safety de extremo a extremo** que ofrecen los frameworks de nueva generación.
+
+Si buscas un framework fácil de usar, con una gran experiencia de desarrollo y construido sobre la API de Web Standard, Elysia es la opción adecuada para ti.
+
+Si vienes de otro framework, también puedes echar un vistazo a estas guías:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+    <Card href="/migrate/from-express">
+<CardTitle>Desde Express</CardTitle>
+
+Comparación entre Express y Elysia
+
+</Card>
+	<Card href="/migrate/from-hono">
+<CardTitle>Desde Hono</CardTitle>
+
+Comparación entre Hono y Elysia
+
+</Card>
+	<Card href="/migrate/from-trpc">
+<CardTitle>Desde tRPC</CardTitle>
+
+Comparación entre tRPC y Elysia
+
+</Card>
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>
