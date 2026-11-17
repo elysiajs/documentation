@@ -1,0 +1,115 @@
+---
+title: Plugin de Eden
+description: Amplía Eden Treaty con métodos de cliente personalizados y hooks de mutación.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Plugin de Eden</h1>
+
+Los plugins de Eden añaden métodos personalizados y hooks de mutación a un cliente de Eden Treaty.
+
+La API de plugins está disponible en la beta de Eden v2. Sigue la [instalación de Eden](/eden/installation/) para instalar versiones de Eden y Elysia que funcionen juntas.
+
+<span id="add-a-custom-method"></span>
+## Añade un método personalizado
+
+`createPlugin` infiere la firma de llamada de cada verbo y la añade a todas las rutas. Su argumento de contexto incluye `path`, `paths`, `domain` y `config`. Si pasas una instancia de Elysia, también incluye `elysia`.
+
+<span id="control-method-types-with-plugintypefn"></span>
+### Controla los tipos de los métodos con `PluginTypeFn`
+
+Define un `PluginTypeFn` y úsalo como parámetro de tipo de `TreatyPlugin` para añadir métodos solo a las rutas que encajen. El tipo decide dónde está disponible el método; `verbs` lo implementa en runtime. Este ejemplo añade `routePath` a las rutas GET marcadas con `live: true`:
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import type { PluginTypeFn, TreatyPlugin } from '@elysia/eden'
+
+const app = new Elysia()
+	.macro({ live: { meta: { live: true } as const } })
+	.get('/users/:id', { live: true }, ({ params }) => params.id)
+	.get('/health', () => 'ok')
+
+interface RouteInfoTypeFn extends PluginTypeFn {
+	output: this['node'] extends { get: { meta: { live: true } } }
+		? { routePath: () => string }
+		: {}
+}
+
+const routeInfo: TreatyPlugin<RouteInfoTypeFn> = {
+	name: 'route-info',
+	verbs: {
+		routePath(context) {
+			return context.path
+		}
+	}
+}
+
+const api = treaty(app).use(routeInfo)
+
+api.users({ id: 1 }).routePath() // '/users/1'
+api.health.get()
+// @ts-expect-error This route is not marked live.
+api.health.routePath()
+```
+
+Quédate con el cliente que devuelve `.use(plugin)`; el cliente original no incluye el plugin. Los métodos personalizados ejecutan el código del plugin y no envían peticiones HTTP.
+
+<span id="observe-mutations"></span>
+## Observa las mutaciones
+
+`before` se ejecuta antes de una petición de mutación. `after` recibe el resultado y el mismo contexto de llamada.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { createPlugin, treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/message', {
+		body: t.Object({ text: t.String() })
+	}, ({ body }) => body)
+
+const logger = createPlugin({
+	name: 'mutation-logger',
+	before(context) {
+		console.log('Sending', context.method, context.paths)
+	},
+	after(result, context) {
+		console.log('Received', context.method, result.status)
+	}
+})
+
+const api = treaty(app).use(logger)
+
+await api.message.post({ text: 'Hello' })
+// Sending post [ 'message' ]
+// Received post 200
+```
+
+Estos hooks se ejecutan con `post`, `put`, `patch` y `delete`, pero no con lecturas, suscripciones de WebSocket ni métodos personalizados. El contexto de llamada tiene `paths`, `method` en minúsculas, las `options` de la petición, `config` y `domain`. El resultado tiene `data`, `error`, `status`, `response` y `headers`; los dos últimos pueden ser `undefined` si la petición no llega al servidor.
+
+<span id="registration-rules"></span>
+## Reglas de registro
+
+Un plugin necesita un `name` que no esté vacío y, además, un objeto `verbs`, `before` o `after`.
+
+Los métodos de un plugin no pueden sustituir a los métodos HTTP de Treaty ni a `subscribe`, `use`, `~path`, `then`, `catch` o `finally`. Si registras un nombre reservado o un método que ya ha registrado otro plugin, se lanza un error.
+
+Encadena `.use` para combinar plugins. Los hooks de mutación se ejecutan en el orden en que los registras.
+
+El `.use` de Eden amplía el cliente. Para añadir rutas o hooks al servidor, usa [plugins de Elysia](/essential/plugin/).
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
