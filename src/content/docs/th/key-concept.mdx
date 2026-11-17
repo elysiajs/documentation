@@ -1,0 +1,290 @@
+---
+title: แนวคิดสำคัญของ Elysia
+description: ทำความเข้าใจ encapsulation, dependency, ลำดับการ register และ type inference ของ Elysia
+template: splash
+---
+
+import { Card, CardTitle } from '../../../components/ui/card';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import '../../../styles/routing.css';
+
+export const steps = [
+    {
+        label: 'Build an instance',
+        code: `import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/profile', () => 'Hi there!')
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+    {
+        label: 'Keep a hook local',
+        code: `import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+    .onBeforeHandle(({ status }) => status(401, 'Sign in first'))
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+    {
+        label: 'Share the hook',
+        code: `import { Elysia } from 'elysia'
+
+const profile = new Elysia()
+    .onBeforeHandle('global', ({ status }) => status(401, 'Sign in first'))
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    .patch('/rename', () => 'Updated!')
+    .listen(3000)`,
+    },
+];
+
+<div class="essential-page key-concept-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Key concepts</h1>
+
+<Card>
+
+<CardTitle>สำคัญ</CardTitle>
+
+เราแนะนำให้อ่านบท [Essential concepts](/essential/route/) ให้จบก่อนเริ่มโปรเจกต์ Elysia โปรเจกต์แรก
+
+แต่ถ้าอยากลงมือเขียนโค้ดเลย หน้านี้สรุปแนวคิดสำคัญของ Elysia ไว้ให้แบบสั้น ๆ
+
+</Card>
+
+</div>
+
+<div class="content-layout">
+
+## Encapsulation
+
+lifecycle hook ของ Elysia เป็นแบบ **encapsulated** หมายความว่า hook ที่เพิ่มไว้ใน plugin จะไม่มีผลกับ instance ที่นำ plugin นั้นไปใช้ จนกว่าเราจะสั่งให้แชร์ออกไปเอง
+
+```ts
+import { Elysia } from 'elysia'
+import { throwIfNotSignIn, updateProfile } from './profile'
+
+const profile = new Elysia()
+    .onBeforeHandle(({ cookie }) => {
+        throwIfNotSignIn(cookie)
+    })
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    // This route does not inherit the local sign-in check.
+    .patch('/rename', ({ body }) => updateProfile(body))
+```
+
+ในตัวอย่างนี้ `throwIfNotSignIn` มีผลกับ `/profile` แต่ไม่มีผลกับ `/rename`
+
+---
+
+ถ้าอยากให้ hook ส่งต่อไปถึง instance อื่นด้วย ต้องบอก Elysia ให้แชร์มันออกไป
+
+เหมือนกับ keyword `export` คือเมื่อ instance อื่นต้องใช้ เราต้องระบุเองให้ชัดว่าจะแชร์
+
+วิธี *export* hook ออกไปก็แค่เพิ่ม [scope](/essential/plugin/#scope-level):
+
+```ts "'global'"
+import { Elysia } from 'elysia'
+import { throwIfNotSignIn, updateProfile } from './profile'
+
+const profile = new Elysia()
+    .onBeforeHandle('global', ({ cookie }) => {
+        throwIfNotSignIn(cookie)
+    })
+    .get('/profile', () => 'Hi there!')
+
+const app = new Elysia()
+    .use(profile)
+    // This route inherits the sign-in check.
+    .patch('/rename', ({ body }) => updateProfile(body))
+```
+
+## Method chaining
+
+ใช้ **method chaining** เพื่อรักษา type ที่ Elysia infer ไว้:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('build', 1)
+    .get('/', ({ store: { build } }) => build)
+    .listen(3000)
+```
+
+`state` จะ return type ของ instance ที่มี property `build` พร้อม type ติดมาด้วย พอ chain คำสั่งถัดไปต่อกัน type นี้ก็ยังใช้ได้อยู่
+
+ถ้าไม่ใช้ method chaining มันจะทำให้ type ใหม่หายไป ตัวอย่างด้านล่างนี้เลยตั้งใจทำให้ TypeScript ขึ้น error:
+
+```ts error-preview
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+
+app.state('build', 1)
+
+app.get('/', ({ store: { ~~build~~ } }) => build) //! Property 'build' does not exist on type '{}'
+
+app.listen(3000)
+```
+
+ตอนที่ runtime ตัว instance นี้ยังเปลี่ยนได้ตามปกติ แต่ปัญหาอยู่ที่ static type ของตัวแปรไม่ได้เปลี่ยนตาม ให้ chain คำสั่งต่อกัน หรือเก็บ instance ที่ return กลับมาไว้ในตัวแปรใหม่
+
+## Dependency
+
+ทุก instance มี context เป็นของตัวเอง
+
+ถ้า instance หนึ่งต้องใช้ context ของอีก instance หนึ่ง เราจะนับ instance นั้นเป็น dependency แล้วดึงเข้ามาผ่าน `.use()`
+
+```ts error-preview
+import { Elysia, t } from 'elysia'
+
+class Auth {
+    getProfile() {
+        return { name: 'Elysia User' }
+    }
+}
+
+const auth = new Elysia()
+    .decorate({
+        auth: new Auth()
+    })
+
+const main = new Elysia()
+    // Intentional type error: auth has not been registered here.
+    .get('/', ({ ~~auth~~ }) => auth.getProfile()) //! Property 'auth' does not exist on type '{ body: unknown; ... store: {}; }'
+    .use(auth)
+    .get('/profile', ({ auth }) => auth.getProfile())
+```
+
+แบบนี้เราจะเรียกกันว่า **Context Propagation** ซึ่งแต่ละ instance มี context ของตัวเอง และ `.use()` จะส่งต่อ context จาก instance หนึ่งไปยังอีก instance หนึ่ง ในตัวอย่างนี้ instance `auth` เป็น dependency ของ `main` ดังนั้น `main` จึงใช้ service และ type ของมันได้
+
+Elysia ตั้งใจออกแบบให้ต้องระบุ dependency อย่างชัดเจน และไม่ใช้ global type context ด้วยเหตุผลต่อไปนี้:
+1. Type soundness: เพื่อรับประกันความถูกต้องทั้งตอน runtime และในระดับ type ตัว Elysia จำเป็นต้องรู้ dependency อย่างชัดเจน เพราะถ้าประกาศ global type context เราจะรับประกันความถูกต้องตรงนี้ไม่ได้อีก
+2. Dependency Tracking: เมื่อ instance ที่เรียกใช้มีการเปลี่ยนแปลง Elysia จะไล่เช็กความเชื่อมโยงของ dependency และอัปเดต type context ของ instance นั้นให้สอดคล้องกันได้
+3. Modularity: แต่ละส่วนควรนำไปแยกใช้งานได้ โดยไม่ต้องพึ่งพา global type context
+
+### Deduplication
+
+plugin ตัวเดียวอาจโดน register มากกว่าหนึ่งครั้งเมื่อมีหลาย instance ใช้ร่วมกัน ถ้าไม่อยากให้ซ้ำ ให้ตั้ง `name` ที่ไม่ซ้ำใครให้ plugin แล้ว Elysia จะ deduplicate ให้เอง
+
+```ts
+import { Elysia } from 'elysia'
+
+const ip = new Elysia({ name: 'ip' })
+    .derive('global', ({ server, request }) => ({
+        ip: server?.requestIP(request)
+    }))
+    .get('/ip', ({ ip }) => ip)
+
+const router1 = new Elysia()
+    .use(ip)
+    .get('/ip-1', ({ ip }) => ip)
+
+const router2 = new Elysia()
+    .use(ip)
+    .get('/ip-2', ({ ip }) => ip)
+
+const server = new Elysia()
+    .use(router1)
+    .use(router2)
+```
+
+แบบนี้ derive hook ที่ใช้ร่วมกันจะรันแค่ครั้งเดียวต่อ request
+
+ถ้า plugin รับ config ได้ ให้เพิ่ม `seed` เพื่อระบุว่าเป็น config ชุดไหน
+
+ถ้า `name` และ `seed` ตรงกัน Elysia จะนับเป็นการ register ซ้ำและรวมให้เหลือครั้งเดียว ส่วน seed ที่ต่างกันจะแยกเป็นคนละ config
+
+อ่านเพิ่มเติมได้ที่ [plugin deduplication](/essential/plugin/#deduplication)
+
+## Order of code
+
+สำหรับ route ที่ประกาศบน instance โดยตรง ตัว hook จะมีผลเฉพาะกับ route ที่ถูก register **หลังจาก** hook นั้นเท่านั้น:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(() => {
+        console.log('1')
+    })
+    .get('/', () => 'hi')
+    .onBeforeHandle(() => {
+        console.log('2')
+    })
+    .listen(3000)
+```
+
+เมื่อมี request มาที่ `/` จะ log ออกมาว่า:
+
+```text
+1
+```
+
+ที่ไม่ log ออกมาว่า `2` เพราะ hook ตัวนั้น register หลัง route ที่ประกาศไว้โดยตรง
+
+:::note[route ที่ mount เข้ามา และ hook ช่วงต้น lifecycle]
+
+route ใน plugin ที่ mount เข้ามาจะได้รับผลจาก hook ซึ่ง register ไว้บน parent ก่อนบรรทัด `.use(plugin)` ด้วย ดังนั้น error handler ของ parent ที่วางไว้ตรงจุดนั้นจึงดักจับ error จาก route ของ plugin ได้ ส่วนช่วง `request` จะทำงานก่อนการจับคู่ route จึงไม่ได้อิงตามลำดับการ register ของแต่ละ route เช่นกัน
+
+:::
+
+ให้วาง hook ที่ใช้ร่วมกันไว้ใกล้ ๆ ต้น instance ดูตัวอย่างแบบ route ที่ประกาศโดยตรงและแบบ plugin ที่ mount เข้ามาได้ที่ [order of code](/essential/life-cycle/#order-of-code)
+
+## Type inference
+
+Elysia จะ infer context ของ handler จาก schema ของ route:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => body)
+```
+
+ให้เขียน handler แบบ inline เพื่อให้ TypeScript infer context ได้ตรงจุดที่ประกาศ route
+
+ถ้าต้องแยกเป็นฟังก์ชันต่างหาก เช่น method ของ controller ให้ส่งเฉพาะค่าที่ฟังก์ชันนั้นต้องใช้ผ่าน inline handler:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+abstract class Controller {
+    static greet({ name }: { name: string }) {
+        return 'hello ' + name
+    }
+}
+
+const app = new Elysia()
+    .post('/', {
+        body: t.Object({ name: t.String() })
+    }, ({ body }) => Controller.greet(body))
+```
+
+ดูเพิ่มเติมที่ [best practice: controller](/essential/best-practice/#controller)
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
