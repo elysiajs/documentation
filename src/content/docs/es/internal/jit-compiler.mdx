@@ -13,7 +13,7 @@ import '../../../../styles/routing.css';
 
 <h1 id="_top">"Compilador" JIT</h1>
 
-Elysia optimiza tanto las funciones del runtime que usa como el trabajo que hace para manejar cada petición. Una ruta que solo lee un parámetro de ruta no debería tener que parsear una query o un cuerpo que no usa.
+Elysia optimiza tanto las funciones del runtime que usa como el trabajo que hace para manejar cada petición. Una ruta que solo lee un parámetro de ruta no debería tener que parsear una query o un body que no usa.
 
 Desde [Elysia 0.4](/blog/elysia-04/), publicada el 30 de marzo de 2023, el framework genera en JavaScript los handlers de las peticiones con `new Function(...)`.
 
@@ -41,7 +41,7 @@ const app = new Elysia()
 
 El handler lee `params`. No lee `body`, `query` ni `headers`.
 
-Sucrose aporta esta información a la compilación de la ruta. El compilador también tiene en cuenta los hooks y los esquemas: un esquema de validación del cuerpo sigue necesitando su entrada aunque el handler no lea `body` directamente.
+Sucrose aporta esta información a la compilación de la ruta. El compilador también tiene en cuenta los hooks y los esquemas: un esquema de validación del body sigue necesitando su entrada aunque el handler no lea `body` directamente.
 
 Conceptualmente, el código generado puede hacer esto:
 
@@ -56,7 +56,7 @@ function tailoredHandler(request) {
 }
 ```
 
-Son bocetos para explicar la idea, no el código que genera Elysia ni funciones auxiliares que exporte. Compáralo con un handler central que prepara todos los campos de antemano:
+Son bocetos para explicar la idea, no el código que genera Elysia ni helpers que exporte. Compáralo con un handler central que prepara todos los campos de antemano:
 
 ```ts title="Eager central handler, simplified"
 async function centralHandler(request) {
@@ -75,9 +75,9 @@ async function centralHandler(request) {
 | Entrada | Ruta que solo usa parámetros | Boceto que lo prepara todo de antemano |
 | --- | --- | --- |
 | Parámetros de ruta | Se leen | Se leen |
-| Cuerpo | Se omite salvo que otro requisito de la ruta lo necesite | Se lee |
+| Body | Se omite salvo que otro requisito de la ruta lo necesite | Se lee |
 | Query | Se omite salvo que haga falta | Se lee |
-| Objeto de cabeceras | Se omite salvo que haga falta | Se lee |
+| Objeto de headers | Se omite salvo que haga falta | Se lee |
 
 Así se reduce el trabajo innecesario en cada petición. Otros frameworks también pueden parsear bajo demanda; los bocetos explican la optimización, no pretenden decir que todos los demás frameworks parsean siempre todo.
 
@@ -88,7 +88,7 @@ Los parsers de propósito general entienden mucho más JavaScript del que necesi
 
 Elysia se especializa en los patrones del código fuente de las funciones que importan para saber cómo se usa el contexto. Trata ese subconjunto como su propio pequeño lenguaje de entrada y aplica un análisis conservador cuando es más difícil saber a qué se accede.
 
-El compromiso es un alcance más limitado a cambio de menos trabajo de parseo. No sustituye a un parser de JavaScript de propósito general.
+El trade-off es un alcance más limitado a cambio de menos trabajo de parseo. No sustituye a un parser de JavaScript de propósito general.
 
 <span id="compiler-optimizations"></span>
 ## Optimizaciones del compilador
@@ -102,34 +102,34 @@ Los valores constantes y los esquemas conocidos también le dan información que
 
 Elysia tiene distintos mappers de respuesta según la cantidad de metadatos que lleve la respuesta.
 
-Cuando un handler no modifica `set` ni usa un código de estado personalizado, un mapper compacto puede devolver su valor sin preparar el código de estado ni las cabeceras adicionales. Cuando eso hace falta, se encarga el mapper completo.
+Cuando un handler no modifica `set` ni usa un código de estado personalizado, un mapper compacto puede devolver su valor sin preparar el código de estado ni los headers adicionales. Cuando eso hace falta, se encarga el mapper completo.
 
-Crear y mapear una respuesta con cabeceras personalizadas no supone el mismo trabajo que devolver un valor simple. La optimización elige el camino que encaja con la ruta en vez de pagar siempre el coste del caso general.
+Crear y mapear una respuesta con headers personalizados no supone el mismo trabajo que devolver un valor simple. La optimización elige el camino que encaja con la ruta en vez de pagar siempre el coste del caso general.
 
 <span id="platform-specific-optimization"></span>
 ## Optimización específica de cada plataforma
 
 Elysia se creó originalmente para Bun y también es compatible con [Node.js](/integrations/node/), [Deno](/integrations/deno/) y otros entornos gracias a integraciones específicas para cada runtime.
 
-Ser compatible con una plataforma y aprovechar sus APIs nativas son cosas distintas. Por ejemplo, el enrutamiento nativo de Bun y sus caminos para respuestas estáticas pueden ahorrarse parte del trabajo de despacho en JavaScript.
+Ser compatible con una plataforma y aprovechar sus APIs nativas son cosas distintas. Por ejemplo, el routing nativo de Bun y sus caminos para respuestas estáticas pueden ahorrarse parte del trabajo de despacho en JavaScript.
 
 Otros ejemplos:
 
 - El manejo nativo de WebSocket en Bun con el [plugin de WebSocket](/patterns/websocket/) de Elysia.
 - El helper `file()`, que usa el manejo de archivos específico de cada plataforma cuando está disponible.
-- Las operaciones nativas con cabeceras cuando el runtime las ofrece.
+- Las operaciones nativas con headers cuando el runtime las ofrece.
 
 Elysia aparece en el [benchmark de plaintext de la ronda 23 de TechEmpower](https://www.techempower.com/benchmarks/#section=data-r23&hw=ph&test=plaintext). Es un resultado histórico para una configuración concreta, no una medición de los ejemplos de v2 de esta página.
 
-Mide tu carga de trabajo real en tu runtime. El acceso a la base de datos, la serialización, los middleware y las condiciones de red pueden pesar mucho más que lo que mide un pequeño benchmark de enrutamiento.
+Mide tu carga de trabajo real en tu runtime. El acceso a la base de datos, la serialización, los middleware y las condiciones de red pueden pesar mucho más que lo que mide un pequeño benchmark de routing.
 
 <span id="overhead-of-the-jit-compiler"></span>
-## Sobrecarga del compilador JIT
+## Overhead del compilador JIT
 
 Generar un handler especializado tiene ventajas, pero también costes.
 
 <span id="initial-request-overhead"></span>
-### Sobrecarga de la primera petición
+### Overhead de la primera petición
 
 La primera vez que se usa una ruta puede hacer falta analizarla y generar código. Las peticiones siguientes reutilizan el resultado.
 
@@ -169,7 +169,7 @@ Sacrificas algo de tiempo de arranque a cambio de menos trabajo en la primera pe
 <span id="memory-usage"></span>
 ### Uso de memoria
 
-El código generado y sus metadatos ocupan memoria. Más rutas pueden suponer más handlers y validadores compilados. Si esto importa en tu despliegue, mide la memoria con un conjunto de rutas representativo.
+El código generado y sus metadatos ocupan memoria. Más rutas pueden suponer más handlers y validadores compilados. Si esto importa en tu deploy, mide la memoria con un conjunto de rutas representativo.
 
 <span id="bigger-bundle-size"></span>
 ### Bundle más grande
@@ -210,16 +210,16 @@ En v1, la opción `new Elysia({ aot: false })` seleccionaba el antiguo handler d
 
 En v2 tienes plugins de build ahead-of-time en rutas como `elysia/plugin/aot/bun`, `elysia/plugin/aot/esbuild` y `elysia/plugin/aot/vite`. Estos plugins preparan los handlers durante el build en lugar de usar el antiguo interruptor del modo dinámico.
 
-Si despliegas en un runtime que restringe la generación dinámica de código, revisa sus [requisitos de despliegue](/patterns/deploy/) y las rutas que admite el plugin de build. No des por hecho que cambiar el antiguo flag `aot` hace compatible una aplicación.
+Si haces deploy en un runtime que restringe la generación dinámica de código, revisa sus [requisitos de deploy](/patterns/deploy/) y las rutas que admite el plugin de build. No des por hecho que cambiar el antiguo flag `aot` hace compatible una aplicación.
 
 <span id="afterword"></span>
 ## Epílogo
 
-El compilador sacrifica algo de trabajo al arrancar, memoria y complejidad de implementación a cambio de repetir menos trabajo al manejar las peticiones. Ese compromiso es clave en el diseño de Elysia.
+El compilador sacrifica algo de trabajo al arrancar, memoria y complejidad de implementación a cambio de repetir menos trabajo al manejar las peticiones. Ese trade-off es clave en el diseño de Elysia.
 
 El proyecto publicó un [artículo de seis páginas en la ACM Digital Library](https://dl.acm.org/doi/10.1145/3605098.3636068) sobre una versión anterior de su compilador JIT y sus optimizaciones de rendimiento. Sirve de contexto sobre el enfoque, aunque la implementación actual ha seguido evolucionando.
 
-Las librerías y los bindings nativos, incluidos sistemas como uWebSockets, hacen otros compromisos y pueden superar a los frameworks de JavaScript en algunas cargas de trabajo. Usa los benchmarks para responder preguntas sobre una carga de trabajo concreta, no para prometer un ganador universal.
+Las librerías y los bindings nativos, incluidos sistemas como uWebSockets, asumen otros trade-offs y pueden superar a los frameworks de JavaScript en algunas cargas de trabajo. Usa los benchmarks para responder preguntas sobre una carga de trabajo concreta, no para prometer un ganador universal.
 
 </div>
 </InteractiveDocLayout>
