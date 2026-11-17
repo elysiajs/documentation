@@ -1,0 +1,98 @@
+---
+title: Plugin Server Timing
+description: Referencia y ejemplos del plugin Server Timing.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin Server Timing</h1>
+
+Este plugin te permite detectar cuellos de botella de rendimiento con la API Server Timing.
+
+Instálalo con:
+```bash
+bun add @elysia/server-timing@rc
+```
+
+Después, úsalo así:
+```ts
+import { Elysia } from 'elysia'
+import { serverTiming } from '@elysia/server-timing'
+
+new Elysia()
+    .use(serverTiming())
+    .get('/', () => 'hello')
+    .listen(3000)
+```
+
+Así, Server Timing añade la cabecera 'Server-Timing' con la duración, el nombre de la función y los detalles de cada función del ciclo de vida.
+
+Para verlo, abre las herramientas de desarrollo del navegador > Network > [Petición hecha al servidor de Elysia] > Timing.
+
+![Herramientas de desarrollo mostrando Server Timing](/assets/server-timing.webp)
+
+Usa las entradas de tiempos para ver qué etapas del ciclo de vida tardan más.
+
+<span id="config"></span>
+## Configuración
+Esta es la configuración que acepta el plugin.
+
+### enabled
+Por defecto: `NODE_ENV !== 'production'`
+
+Indica si Server Timing debe estar activado
+
+### allow
+Por defecto: `undefined`
+
+Una condición que decide si se registra el server timing
+
+### trace
+Por defecto: todos los eventos activados
+
+Permite que Server Timing registre los eventos del ciclo de vida que indiques:
+
+Trace acepta un objeto de booleanos, todos `true` por defecto; pon uno a `false` para omitirlo:
+- request: captura la duración de request
+- parse: captura la duración de parse
+- transform: captura la duración de transform
+- beforeHandle: captura la duración de beforeHandle
+- handle: captura la duración del handle
+- afterHandle: captura la duración de afterHandle
+- error: captura la duración de error
+- mapResponse: captura la duración de mapResponse
+- total: captura la duración total, de principio a fin
+
+<span id="pattern"></span>
+## Patrones
+Aquí tienes los patrones más habituales para usar el plugin.
+
+- [Condición allow](#allow-condition)
+
+<span id="allow-condition"></span>
+## Condición allow
+Puedes desactivar Server Timing en rutas concretas con la propiedad `allow`:
+
+```ts
+import { Elysia } from 'elysia'
+import { serverTiming } from '@elysia/server-timing'
+
+new Elysia()
+    .use(
+        serverTiming({
+            allow: ({ request }) => {
+                return new URL(request.url).pathname !== '/no-trace'
+            }
+        })
+    )
+```
+
+</div>
+</InteractiveDocLayout>
+</div>
