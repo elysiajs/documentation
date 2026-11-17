@@ -1,6 +1,6 @@
 ---
 title: Configuración
-description: Configura las peticiones, las cabeceras, el manejo de respuestas y las fechas en Eden Treaty.
+description: Configura las peticiones, los headers, el manejo de respuestas y las fechas en Eden Treaty.
 template: splash
 ---
 
@@ -50,7 +50,7 @@ Lo mismo se aplica a WebSocket para elegir entre **ws://** y **wss://**.
 ### Instancia de Elysia
 Si le pasas una instancia de Elysia, Eden Treaty crea un objeto `Request` y se lo pasa directamente a `Elysia.handle`, sin hacer ninguna petición de red.
 
-Así puedes trabajar con el servidor de Elysia directamente, sin el coste extra de una petición y sin tener que arrancar un servidor.
+Así puedes trabajar con el servidor de Elysia directamente, sin el overhead de una petición y sin tener que arrancar un servidor.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -71,14 +71,14 @@ Te recomendamos este patrón para hacer pruebas unitarias o para crear un revers
 El 2.º parámetro, que es opcional, te permite personalizar cómo usa fetch Eden Treaty. Acepta estos parámetros:
 - [fetch](#fetch) - añade parámetros por defecto a la inicialización de fetch (RequestInit)
 - [fetcher](#fetcher) - una función personalizada con la misma interfaz que `fetch`
-- [headers](#headers) - define cabeceras por defecto
+- [headers](#headers) - define headers por defecto
 - [onRequest](#onrequest) - intercepta y modifica la petición de fetch antes de enviarla
 - [onResponse](#onresponse) - intercepta y modifica la respuesta de fetch
 - [parseDate](#parsedate) - convierte automáticamente un string de fecha en un objeto Date
 - [throwHttpError](#throwhttperror) - lanza un error automáticamente si el estado de la respuesta no es ok (2xx)
 
 ## Fetch
-Define opciones de `RequestInit` por defecto, como las credenciales o la caché. Las cabeceras van en `headers`: el tipo de configuración actual excluye `headers` y `method` de `fetch`. En los siguientes ejemplos damos por hecho que ya has importado `treaty` y el tipo `App` que exportas.
+Define opciones de `RequestInit` por defecto, como las credenciales o la caché. Los headers van en `headers`: el tipo de configuración actual excluye `headers` y `method` de `fetch`. En los siguientes ejemplos damos por hecho que ya has importado `treaty` y el tipo `App` que exportas.
 
 ```ts
 import { treaty } from '@elysia/eden'
@@ -112,7 +112,7 @@ treaty<App>('localhost:3000', {
 Un fetcher personalizado tiene que aceptar los mismos argumentos que `fetch` y devolver un `Response` de Web Standard. Clientes como Axios necesitan un adaptador; no puedes pasarlos directamente.
 
 ## Headers
-Define las cabeceras por defecto de las peticiones con `options.headers`.
+Define los headers por defecto de las peticiones con `options.headers`.
 
 ```ts
 treaty<App>('localhost:3000', {
@@ -131,12 +131,12 @@ fetch('http://localhost:3000', {
 })
 ```
 
-Las cabeceras pueden ser:
+Los headers pueden ser:
 - Un objeto
 - Una función
 
 <span id="headers-object"></span>
-### Objeto de cabeceras
+### Objeto de headers
 Si pasas un objeto, se le pasa directamente a fetch.
 
 ```ts
@@ -149,7 +149,7 @@ treaty<App>('localhost:3000', {
 
 <span id="function"></span>
 ### Función
-Puedes definir las cabeceras como una función que devuelva cabeceras personalizadas según ciertas condiciones.
+Puedes definir los headers como una función que devuelva headers personalizados según ciertas condiciones.
 
 ```ts
 treaty<App>('localhost:3000', {
@@ -162,15 +162,15 @@ treaty<App>('localhost:3000', {
 })
 ```
 
-Puedes devolver un objeto para añadir sus valores a las cabeceras de fetch.
+Puedes devolver un objeto para añadir sus valores a los headers de fetch.
 
-La función de cabeceras acepta 2 parámetros:
+La función de headers acepta 2 parámetros:
 - path `string` - el path que se va a enviar
   - nota: el hostname queda **excluido**, por ejemplo, (/user/griseo)
 - options `RequestInit`: los parámetros que se pasan en el 2.º parámetro de fetch
 
 ### Array
-Si necesitas varias condiciones, puedes definir la función de cabeceras como un array.
+Si necesitas varias condiciones, puedes definir la función de headers como un array.
 
 ```ts
 treaty<App>('localhost:3000', {
@@ -188,10 +188,10 @@ treaty<App>('localhost:3000', {
 Eden Treaty **ejecuta todas las funciones** aunque alguna ya haya devuelto un valor.
 
 <span id="headers-priority"></span>
-## Prioridad de las cabeceras
-Si hay cabeceras duplicadas, Eden Treaty les da prioridad en este orden:
-1. Método inline - las que pasas directamente a la función del método
-2. headers - las que pasas en `config.headers`
+## Prioridad de los headers
+Si hay headers duplicados, Eden Treaty les da prioridad en este orden:
+1. Método inline - los que pasas directamente a la función del método
+2. headers - los que pasas en `config.headers`
   - Si `config.headers` es un array, tienen prioridad los parámetros que van después
 
 Por ejemplo:
@@ -218,7 +218,7 @@ fetch('http://localhost:3000', {
 })
 ```
 
-Si la función inline no indica cabeceras, el resultado será "**Bearer Aponia**".
+Si la función inline no indica headers, el resultado será "**Bearer Aponia**".
 
 ## onRequest
 Intercepta y modifica la petición de fetch antes de enviarla.
@@ -238,7 +238,7 @@ treaty<App>('localhost:3000', {
 })
 ```
 
-Si devuelves un valor, Eden Treaty hace un **shallow merge** con el `RequestInit` actual y combina sus `headers` con las cabeceras que ya había.
+Si devuelves un valor, Eden Treaty hace un **shallow merge** con el `RequestInit` actual y combina sus `headers` con los headers que ya había.
 
 **onRequest** acepta 2 parámetros:
 - path `string` - el path que se va a enviar
