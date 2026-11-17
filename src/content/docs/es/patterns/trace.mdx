@@ -110,13 +110,13 @@ Un UUID en forma de string para cada petición, útil para relacionar logs.
 El [Context](/essential/handler#context) de Elysia, por ejemplo, `set`, `store`, `query`, `params`
 
 ### set - `Context.set`
-Atajo para `context.set`, para definir cabeceras o el estado del contexto
+Atajo para `context.set`, para definir headers o el estado del contexto
 
 ### store - `Singleton.store`
 Atajo para `context.store`, para acceder a los datos del contexto
 
 ### time - `number`
-Marca de tiempo del momento en que empieza la petición
+Timestamp del momento en que empieza la petición
 
 <span id="onevent---tracelistener" />
 
@@ -126,7 +126,7 @@ Un listener para cada evento del ciclo de vida.
 
 Puedes escuchar estos eventos del ciclo de vida:
 -   **onRequest** - recibe un aviso con cada petición nueva
--   **onParse** - array de funciones para parsear el cuerpo
+-   **onParse** - array de funciones para parsear el body
 -   **onTransform** - transforma la petición y el contexto antes de la validación
 -   **onBeforeHandle** - requisito personalizado que se comprueba antes del handler principal; puede saltarse el handler principal si se devuelve una respuesta.
 -   **onHandle** - la función asignada a la ruta
@@ -165,10 +165,10 @@ El nombre de la función. Si la función es anónima, el nombre será `anonymous
 El momento en que empieza la función
 
 ### end - `Promise<number>`
-El momento en que termina la función. La promesa se resuelve cuando termina la función
+El momento en que termina la función. La Promise se resuelve cuando termina la función
 
 ### error - `Promise<Error | null>`
-El error que se lanzó con throw en el ciclo de vida. La promesa se resuelve cuando termina la función
+El error que se lanzó con throw en el ciclo de vida. La Promise se resuelve cuando termina la función
 
 ### onStop - `callback?: (detail: TraceEndDetail) => any`
 Un callback que se ejecuta cuando termina la etapa del ciclo de vida
