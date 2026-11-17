@@ -1,0 +1,175 @@
+---
+title: Eden Treaty
+description: Llama a las rutas de Elysia con un cliente de TypeScript con forma de objeto.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+import InteractiveDoc from '../../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../../components/interactive-code/step.astro';
+
+export const steps = [
+    {
+        "label": "Lee una ruta",
+        "code": "import { Elysia } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia().get('/hi', 'Hi Elysia')\nconst api = treaty(app)\n\nconst { data, error } = await api.hi.get()\nif (error) throw error\nconsole.log(data)"
+    },
+    {
+        "label": "Pasa un parámetro de ruta",
+        "code": "import { Elysia } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia()\n    .get('/hi', 'Hi Elysia')\n    .get('/id/:id', ({ params: { id } }) => id)\nconst api = treaty(app)\n\nconst { data, error } = await api.id({ id: 1895 }).get()\nif (error) throw error\nconsole.log(data)"
+    },
+    {
+        "label": "Envía un cuerpo",
+        "code": "import { Elysia, t } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia()\n    .get('/hi', 'Hi Elysia')\n    .get('/id/:id', ({ params: { id } }) => id)\n    .post('/mirror', {\n        body: t.Object({ id: t.Number(), name: t.String() })\n    }, ({ body }) => body)\nconst api = treaty(app)\n\nconst { data, error } = await api.mirror.post({ id: 1895, name: 'Skadi' })\nif (error) throw error\nconsole.log(data)"
+    }
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Treaty</h1>
+
+Eden Treaty representa el servidor como un objeto con el que puedes trabajar, y te da type safety, autocompletado y manejo de errores.
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+<span id="read-a-route"></span>
+## Lee una ruta
+
+Cada ruta se convierte en propiedades del cliente, seguidas de su método HTTP. `api.hi.get()` llama a `GET /hi` y devuelve `Hi Elysia`.
+
+Aquí, al pasar la instancia directamente, la llamada se queda en el mismo proceso. No necesitas un servidor escuchando.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+<span id="pass-a-path-parameter"></span>
+## Pasa un parámetro de ruta
+
+Llama a un segmento dinámico con un objeto que tenga el nombre de su parámetro. `api.id({ id: 1895 }).get()` llama a `GET /id/1895`.
+
+TypeScript sabe qué parámetro acepta la ruta.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+<span id="send-a-body"></span>
+## Envía un cuerpo
+
+Pásale un cuerpo a un método como `post`. El esquema de la ruta guía al cliente: esta petición necesita un `id` numérico y un `name` de tipo string.
+
+El servidor devuelve el mismo objeto. Comprueba `error` antes de usar `data`.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+Para llamar a un servidor que se ejecuta por separado, primero exporta el tipo de tu servidor de Elysia:
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+Después, importa el tipo del servidor y usa la API de Elysia en el cliente:
+
+**client.ts**
+
+```ts
+// client.ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data, error } = await app.hi.get()
+```
+
+<span id="tree-like-syntax"></span>
+## Sintaxis en forma de árbol
+
+Una ruta HTTP indica un recurso dentro de un árbol, igual que en un sistema de archivos.
+
+Un sistema de archivos tiene varios niveles de carpetas, por ejemplo:
+
+-   /documents/elysia
+-   /documents/kalpas
+-   /documents/kelvin
+
+Cada nivel se separa con **/** (barra) y un nombre.
+
+Pero en JavaScript, en vez de **"/"** (barra), usamos **"."** (punto) para acceder a recursos más profundos.
+
+Eden Treaty convierte un servidor de Elysia en un sistema de archivos en forma de árbol al que puedes acceder desde el frontend en JavaScript.
+
+| Ruta         | Treaty       |
+| ------------ | ------------ |
+| /            |              |
+| /hi          | .hi          |
+| /deep/nested | .deep.nested |
+
+Si lo combinas con el método HTTP, ya puedes trabajar con el servidor de Elysia.
+
+| Ruta         | Método | Treaty              |
+| ------------ | ------ | ------------------- |
+| /            | GET    | .get()              |
+| /hi          | GET    | .hi.get()           |
+| /deep/nested | GET    | .deep.nested.get()  |
+| /deep/nested | POST   | .deep.nested.post() |
+
+<span id="dynamic-path"></span>
+## Ruta dinámica
+
+Los parámetros de ruta dinámicos necesitan un nombre además de un valor. Si tienes un cliente `api` cuyo servidor registra `/item/:name`, usa una llamada a función para identificar el parámetro.
+
+```ts
+// Unclear what the value is supposed to represent?
+api.item['skadi'].get()
+```
+
+Esta forma de acceso con propiedades es del cliente [Eden Treaty 1 legacy](/eden/treaty/legacy); en Eden Treaty 2 da un error de tipos.
+
+Para resolverlo, puedes indicar la ruta dinámica con una función a la que le pasas un valor con su clave.
+
+```ts
+// Clear that the value is dynamic and the path is 'name'
+api.item({ name: 'Skadi' }).get()
+```
+
+| Ruta            | Treaty                           |
+| --------------- | -------------------------------- |
+| /item           | .item                            |
+| /item/:name | `.item({ name: 'Skadi' })` |
+| /item/:name/id | `.item({ name: 'Skadi' }).id` |
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
