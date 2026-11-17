@@ -13,7 +13,7 @@ import '../../../../styles/routing.css'
 
 <h1 id="_top">Plugin Compress</h1>
 
-El plugin oficial [`@elysia/compress`](https://github.com/elysiajs/elysia-compress) comprime las respuestas HTTP que cumplen los requisitos. Negocia la codificación a partir de la cabecera `Accept-Encoding` de la petición. Los codecs disponibles dependen del runtime.
+El plugin oficial [`@elysia/compress`](https://github.com/elysiajs/elysia-compress) comprime las respuestas HTTP que cumplen los requisitos. Negocia la codificación a partir del header `Accept-Encoding` de la petición. Los codecs disponibles dependen del runtime.
 
 <span id="installation"></span>
 ## Instalación
@@ -101,7 +101,7 @@ El umbral se aplica a un `Content-Length` declarado o a un body en buffer. Una r
 
 El runtime decide qué codecs puede usar el plugin. El plugin usa Brotli, gzip y deflate cuando el runtime ofrece el codec de zlib correspondiente y un puente a Web streams. Zstandard también necesita su codec de zlib. Si zlib no está disponible, la API Web `CompressionStream` puede encargarse de gzip y deflate.
 
-La alternativa con `CompressionStream` no aplica las `options` personalizadas de gzip o deflate. No des por hecho que todos los runtimes admiten las cuatro codificaciones.
+El fallback con `CompressionStream` no aplica las `options` personalizadas de gzip o deflate. No des por hecho que todos los runtimes admiten las cuatro codificaciones.
 
 <span id="skip-behavior"></span>
 ## Cuándo no se comprime
@@ -118,7 +118,7 @@ El plugin deja una respuesta sin comprimir si se cumple cualquiera de estas cond
 - La respuesta es chunked y `stream` es `false`.
 
 <span id="response-headers"></span>
-## Cabeceras de la respuesta
+## Headers de la respuesta
 
 Una respuesta comprimida recibe `Content-Encoding` e incluye `Accept-Encoding` en `Vary`. El plugin quita `Content-Length`, `Content-Range`, `Accept-Ranges` y `Transfer-Encoding`, porque esos valores describen la respuesta sin comprimir. También convierte un `ETag` fuerte en un `ETag` débil.
 
