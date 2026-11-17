@@ -1,0 +1,61 @@
+---
+title: Comparación
+description: Compara Elysia con Express, Fastify, Hono y tRPC a través de ejemplos.
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Comparación con otros frameworks</h1>
+
+Elysia está pensado para que te resulte familiar si ya has usado otro framework web. Estas guías comparan el routing, la validación, el middleware y la type safety con ejemplos.
+
+<span id="before-you-start"></span>
+## Antes de empezar
+
+Lee [Conceptos clave](/key-concept/) para conocer las ideas principales de Elysia. Solo te llevará unos cinco minutos.
+
+<span id="choose-your-framework"></span>
+## Elige tu framework
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+
+<Card href="/migrate/from-express/">
+<CardTitle>Desde Express</CardTitle>
+
+Compara los handlers y el middleware de Express con las rutas y los hooks del ciclo de vida de Elysia.
+
+</Card>
+
+<Card href="/migrate/from-fastify/">
+<CardTitle>Desde Fastify</CardTitle>
+
+Compara la validación, los hooks del ciclo de vida, la encapsulación de plugins y la inferencia de tipos.
+
+</Card>
+
+<Card href="/migrate/from-hono/">
+<CardTitle>Desde Hono</CardTitle>
+
+Compara el routing, el contexto del middleware, la validación y los clientes tipados.
+
+</Card>
+
+<Card href="/migrate/from-trpc/">
+<CardTitle>Desde tRPC</CardTitle>
+
+Compara los procedimientos RPC con las rutas HTTP y la type safety de extremo a extremo de Eden.
+
+</Card>
+
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>
