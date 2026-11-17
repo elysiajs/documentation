@@ -1,0 +1,247 @@
+---
+title: OpenTelemetry
+description: Registra spans de cada petición, exporta trazas e instrumenta tu aplicación de Elysia.
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">OpenTelemetry</h1>
+
+Usa el plugin de OpenTelemetry de Elysia v2 para registrar spans de cada petición y exportarlos a un backend de trazas. Los ejemplos usan la API del plugin de v2, no la integración antigua de v1.
+
+```bash
+bun add @elysia/opentelemetry@rc
+```
+
+Registra el plugin en tu aplicación:
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+new Elysia()
+	.use(opentelemetry())
+```
+
+![Visualización de OpenTelemetry en Axiom](/assets/axiom.webp)
+
+¿Por qué usar OpenTelemetry con Elysia?
+- Basta con registrar un plugin
+- El nombre del span es el nombre de la función
+- Agrupa los eventos relacionados del ciclo de vida
+- Envuelve código para registrar una parte concreta
+- Soporta server-sent events y streaming de respuestas
+- Compatible con cualquier librería compatible con OpenTelemetry
+
+Puedes exportar los datos de telemetría a Jaeger, Zipkin, New Relic, Axiom o cualquier otro backend compatible con OpenTelemetry.
+
+<span id="export-opentelemetry-data"></span>
+### Exportar datos de OpenTelemetry
+Puedes exportar los datos de OpenTelemetry a cualquier backend que soporte el protocolo de OpenTelemetry.
+
+Aquí tienes un ejemplo que exporta la telemetría a [Axiom](https://axiom.co)
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
+
+new Elysia().use(
+	opentelemetry({
+		spanProcessors: [
+			new BatchSpanProcessor(
+				new OTLPTraceExporter({
+					url: 'https://api.axiom.co/v1/traces',
+					headers: {
+						Authorization: `Bearer ${Bun.env.AXIOM_TOKEN}`,
+						'X-Axiom-Dataset': Bun.env.AXIOM_DATASET
+					}
+				})
+			)
+		]
+	})
+)
+```
+
+<span id="opentelemetry-sdk"></span>
+## SDK de OpenTelemetry
+
+Elysia OpenTelemetry sirve solo para aplicar OpenTelemetry a un servidor de Elysia.
+
+Puedes usar el SDK de OpenTelemetry con normalidad. Si un span se ejecuta dentro del span de la petición de Elysia, aparecerá automáticamente en la traza de Elysia.
+
+Usa las utilidades `getTracer` y `record` del plugin cuando quieras añadir spans alrededor de tu propio código. En el siguiente ejemplo, `db` es el cliente de base de datos de tu aplicación.
+
+```ts
+import { Elysia } from 'elysia'
+import { record } from '@elysia/opentelemetry'
+
+export const plugin = new Elysia().get('/users', () => {
+	return record('database.query', () => {
+		return db.query('SELECT * FROM users')
+	})
+})
+```
+
+<span id="record-utility"></span>
+## La utilidad record
+
+`record` equivale a `startActiveSpan` de OpenTelemetry, pero cierra el span y captura las excepciones automáticamente.
+
+Piensa en `record` como una etiqueta para tu código que se mostrará en la traza.
+
+<span id="prepare-your-codebase-for-observability"></span>
+### Prepara tu código para la observabilidad
+
+Elysia OpenTelemetry agrupa el trabajo del ciclo de vida y usa el **nombre de la función** de cada hook como nombre de su span. Aquí, `getProfile` es la función de tu aplicación que busca el perfil.
+
+Es un buen momento para **ponerle nombre a tus funciones**.
+
+Si el handler de tu hook es una arrow function, puedes cambiarla por una función con nombre para entender mejor la traza. Si no, el span de la traza se llamará `anonymous`.
+
+```ts
+const bad = new Elysia()
+	// Note: span name will be anonymous
+	.derive(async ({ cookie: { session } }) => {
+		return {
+			user: await getProfile(session.value)
+		}
+	})
+
+const good = new Elysia()
+	// Yes span name will be loadProfile
+	.derive(async function loadProfile({ cookie: { session } }) {
+		return {
+			user: await getProfile(session.value)
+		}
+	})
+```
+
+## getCurrentSpan
+
+`getCurrentSpan` es una utilidad para obtener el span actual de la petición en curso cuando estás fuera del handler.
+
+```ts
+import { getCurrentSpan } from '@elysia/opentelemetry'
+
+function utility() {
+	const span = getCurrentSpan()
+	span?.setAttributes({
+		'custom.attribute': 'value'
+	})
+}
+```
+
+Usa el contexto activo de OpenTelemetry. Fuera de una petición o un span activos puede devolver `undefined`, así que compruébalo antes de usarlo.
+
+## setAttributes
+
+`setAttributes` es una utilidad para añadir atributos al span actual.
+
+```ts
+import { setAttributes } from '@elysia/opentelemetry'
+
+function utility() {
+	setAttributes({
+		'custom.attribute': 'value'
+	})
+}
+```
+
+Es azúcar sintáctico para `getCurrentSpan()?.setAttributes`, así que no hace nada fuera de un span activo.
+
+<span id="configuration"></span>
+## Configuración
+
+Consulta el [plugin de opentelemetry](/plugins/opentelemetry/) para ver las opciones de configuración y sus definiciones.
+
+<span id="instrumentations"></span>
+## Instrumentaciones
+
+Muchas librerías de instrumentación necesitan que el SDK se ejecute **SIEMPRE** antes de importar el módulo.
+
+Por ejemplo, para usar `PgInstrumentation`, el `OpenTelemetry SDK` tiene que ejecutarse antes de importar el módulo `pg`.
+
+Para conseguirlo en Bun, puedes
+
+1. Separar la configuración de OpenTelemetry en otro archivo
+2. crear `bunfig.toml` para precargar el archivo de configuración de OpenTelemetry
+
+Crea un archivo nuevo en `src/instrumentation.ts`
+
+```ts
+import { opentelemetry } from '@elysia/opentelemetry'
+import { PgInstrumentation } from '@opentelemetry/instrumentation-pg'
+
+export const instrumentation = opentelemetry({
+	instrumentations: [new PgInstrumentation()]
+})
+```
+
+Después, aplica este plugin `instrumentation` a tu instancia principal en `src/index.ts`
+
+```ts
+import { Elysia } from 'elysia'
+import { instrumentation } from './instrumentation.ts'
+
+new Elysia().use(instrumentation).listen(3000)
+```
+
+Luego crea un `bunfig.toml` con este contenido:
+
+`bunfig.toml`
+
+```toml
+preload = ["./src/instrumentation.ts"]
+```
+
+Así le indicas a Bun que cargue y prepare `instrumentation` antes de ejecutar `src/index.ts`, para que OpenTelemetry pueda configurarse como necesita.
+
+<span id="deploying-to-production"></span>
+### Desplegar en producción
+Si usas `bun build` u otros bundlers, ten en cuenta que OpenTelemetry depende de hacer monkey-patching de `node_modules/<library>`. Para que la instrumentación funcione bien, tienes que marcar las librerías que quieres instrumentar como módulos externos, para que queden fuera del bundle.
+
+Por ejemplo, si usas `@opentelemetry/instrumentation-pg` para instrumentar la librería `pg`, tienes que dejar `pg` fuera del bundle y asegurarte de que se importa desde `node_modules/pg`.
+
+Para ello, puedes marcar `pg` como módulo externo con `--external pg`
+```bash
+bun build --compile --external pg --outfile server src/index.ts
+```
+
+Así Bun no incluye `pg` en el archivo final. La librería se importará desde la carpeta **node_modules** en runtime, así que en el servidor de producción también tienes que conservar la carpeta **node_modules**.
+
+Te recomendamos declarar en **package.json** como **dependencies** los paquetes que tienen que estar disponibles en el servidor de producción, y usar `bun install --production` para instalar solo las dependencias de producción.
+
+Mantén en `dependencies` todos los paquetes que dejes como externos:
+
+```json
+{
+	"dependencies": {
+		"pg": "^8.15.6"
+	},
+	"devDependencies": {
+		"@elysia/opentelemetry": "2.0.0-beta.2",
+		"@opentelemetry/instrumentation-pg": "^0.52.0",
+		"@types/pg": "^8.11.14",
+		"elysia": "2.0.0-beta.32"
+	}
+}
+```
+
+Después, cuando hayas ejecutado el comando de build, ejecuta esto en el servidor de producción:
+```bash
+bun install --production
+```
+
+Si la carpeta node_modules sigue teniendo dependencias de desarrollo, puedes borrar la carpeta node_modules y volver a instalar solo las dependencias de producción.
+
+</div>
+</InteractiveDocLayout>
+</div>
