@@ -1,0 +1,209 @@
+---
+title: Trace
+description: Mide cuánto tardan el ciclo de vida y los handlers para encontrar qué parte de una petición va lenta.
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Trace</h1>
+
+Usa `.trace()` para medir el tiempo que pasa cada petición en cada etapa del ciclo de vida y en sus handlers. Te ayuda a encontrar la parte lenta antes de tocar el código.
+
+## Trace
+Trace usa callbacks como listeners para avisarte de cuándo empieza y termina cada evento del ciclo de vida. Un callback `onStop` termina antes de que se ejecute el siguiente evento del ciclo de vida.
+
+Primero, instala la funcionalidad de trace con `.use(trace())`, importado desde `elysia/trace`. Después, registra un callback `.trace()` en la instancia para suscribirte a los eventos del ciclo de vida.
+
+Puedes escuchar cada etapa del ciclo de vida añadiendo el prefijo `on` seguido del nombre de la etapa, por ejemplo, `onHandle` para escuchar el evento `handle`.
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+    .trace(async ({ onHandle }) => {
+	    onHandle(({ begin, onStop }) => {
+			onStop(({ end }) => {
+        		console.log('handle took', end - begin, 'ms')
+			})
+	    })
+    })
+    .get('/', () => 'Hi')
+    .listen(3000)
+```
+
+Consulta los [eventos del ciclo de vida](/essential/life-cycle/) para saber más:
+
+<span id="children"></span>
+## Eventos hijos
+Los grupos del ciclo de vida exponen eventos hijos para los hooks que tienen registrados. `handle` representa el propio handler de la ruta; usa `onEvent` en un grupo de hooks para medir cada hook.
+
+Puedes usar `onEvent` para escuchar cada evento hijo en orden
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const sleep = (time = 1000) =>
+    new Promise((resolve) => setTimeout(resolve, time))
+
+const app = new Elysia()
+    .use(trace())
+    .trace(async ({ onBeforeHandle }) => {
+        onBeforeHandle(({ total, onEvent }) => {
+            console.log('total children:', total)
+
+            onEvent(({ onStop }) => {
+                onStop(({ elapsed }) => {
+                    console.log('child took', elapsed, 'ms')
+                })
+            })
+        })
+    })
+    .get('/', {
+        beforeHandle: [
+            function prepare() {},
+            async function delay() {
+                await sleep()
+            }
+        ]
+    }, () => 'Hi')
+    .listen(3000)
+```
+
+En este ejemplo, el total de hijos será `2`, porque el evento `beforeHandle` tiene 2 hijos.
+
+Después escuchamos cada evento hijo con `onEvent` y mostramos cuánto ha tardado cada uno.
+
+<span id="trace-parameter"></span>
+## Parámetro de trace
+El callback que le pasas a `.trace()` recibe el contexto de trace de la petición:
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	// This is trace parameter
+	// hover to view the type
+	.trace((parameter) => {
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+`trace` acepta los siguientes parámetros:
+
+<span id="id---number" />
+
+### id - `string`
+Un UUID en forma de string para cada petición, útil para relacionar logs.
+
+### context - `Context`
+El [Context](/essential/handler#context) de Elysia, por ejemplo, `set`, `store`, `query`, `params`
+
+### set - `Context.set`
+Atajo para `context.set`, para definir cabeceras o el estado del contexto
+
+### store - `Singleton.store`
+Atajo para `context.store`, para acceder a los datos del contexto
+
+### time - `number`
+Marca de tiempo del momento en que empieza la petición
+
+<span id="onevent---tracelistener" />
+
+<span id="onevent-listeners"></span>
+### Listeners de onEvent
+Un listener para cada evento del ciclo de vida.
+
+Puedes escuchar estos eventos del ciclo de vida:
+-   **onRequest** - recibe un aviso con cada petición nueva
+-   **onParse** - array de funciones para parsear el cuerpo
+-   **onTransform** - transforma la petición y el contexto antes de la validación
+-   **onBeforeHandle** - requisito personalizado que se comprueba antes del handler principal; puede saltarse el handler principal si se devuelve una respuesta.
+-   **onHandle** - la función asignada a la ruta
+-   **onAfterHandle** - trabaja con la respuesta antes de enviarla al cliente
+-   **onMapResponse** - convierte el valor devuelto en una Response estándar de la Web
+-   **onError** - maneja los errores lanzados con throw mientras se procesa una petición
+-   **onAfterResponse** - función de limpieza que se ejecuta después de enviar la respuesta
+
+<span id="trace-listener"></span>
+## Listener de trace
+Un listener para cada evento del ciclo de vida
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	.trace(({ onBeforeHandle }) => {
+		// This is trace listener
+		// hover to view the type
+		onBeforeHandle((parameter) => {
+
+		})
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+Cada listener del ciclo de vida acepta lo siguiente
+
+### name - `string`
+El nombre de la función. Si la función es anónima, el nombre será `anonymous`
+
+### begin - `number`
+El momento en que empieza la función
+
+### end - `Promise<number>`
+El momento en que termina la función. La promesa se resuelve cuando termina la función
+
+### error - `Promise<Error | null>`
+El error que se lanzó con throw en el ciclo de vida. La promesa se resuelve cuando termina la función
+
+### onStop - `callback?: (detail: TraceEndDetail) => any`
+Un callback que se ejecuta cuando termina la etapa del ciclo de vida
+
+```ts
+import { Elysia } from 'elysia'
+import { trace } from 'elysia/trace'
+
+const app = new Elysia()
+    .use(trace())
+	.trace(({ onBeforeHandle, set }) => {
+		onBeforeHandle(({ onStop }) => {
+			onStop(({ elapsed }) => {
+				set.headers['X-Elapsed'] = elapsed.toString()
+			})
+		})
+	})
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+Te recomendamos modificar el contexto en esta función, porque hay un mecanismo de bloqueo que se asegura de que el contexto se haya modificado bien antes de pasar al siguiente evento del ciclo de vida
+
+## TraceEndDetail
+Un parámetro que se pasa al callback `onStop`
+
+### end - `number`
+El momento en que terminó la función
+
+### error - `Error | null`
+El error que se lanzó con throw en el ciclo de vida
+
+### elapsed - `number`
+El tiempo transcurrido en la etapa del ciclo de vida, es decir, `end - begin`
+
+</div>
+</InteractiveDocLayout>
+</div>
