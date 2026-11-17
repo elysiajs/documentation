@@ -33,7 +33,7 @@ Estos son algunos de los plugins oficiales que mantiene el equipo de Elysia:
 <Card href="/plugins/bearer">
 <CardTitle>Bearer</CardTitle>
 
-Obtén un token Bearer de las cabeceras de la petición.
+Obtén un token Bearer de los headers de la petición.
 
 </Card>
 
@@ -110,7 +110,7 @@ Recoge trazas con OpenTelemetry.
 <Card href="/plugins/server-timing">
 <CardTitle>Server Timing</CardTitle>
 
-Mide el rendimiento del ciclo de vida de las peticiones con cabeceras de respuesta Server-Timing.
+Mide el rendimiento del ciclo de vida de las peticiones con headers de respuesta Server-Timing.
 
 </Card>
 
@@ -136,14 +136,14 @@ Usa versiones de los plugins cuya peer dependency de Elysia coincida con la de t
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - autenticación simple y limpia
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - plugin no oficial de autenticación con Clerk
 -   [Elysia Polyfills](https://github.com/bogeychan/elysia-polyfills) - ejecuta el ecosistema de Elysia en Node.js y Deno
--   [Vite server](https://github.com/kravetsone/elysia-vite-server) - plugin que arranca y decora el servidor de desarrollo de [`vite`](https://vitejs.dev/) en los modos `development` y `production`, y sirve archivos estáticos (si hace falta)
+-   [Vite server](https://github.com/kravetsone/elysia-vite-server) - plugin que arranca y decora el dev server de [`vite`](https://vitejs.dev/) en los modos `development` y `production`, y sirve archivos estáticos (si hace falta)
 -   [Vite](https://github.com/timnghg/elysia-vite) - sirve el archivo HTML de entrada con los scripts de Vite inyectados
 -   [Nuxt](https://github.com/trylovetom/elysiajs-nuxt) - ¡integra Elysia con Nuxt fácilmente!
 -   [Remix](https://github.com/kravetsone/elysia-remix) - ¡usa [Remix](https://remix.run/) con soporte para `HMR` (gracias a [`vite`](https://vitejs.dev/))! Cierra una petición de plugin que llevaba muchísimo tiempo abierta: [#12](https://github.com/elysiajs/elysia/issues/12)
 -   [Sync](https://github.com/johnny-woodtke/elysiajs-sync) - un framework ligero de sincronización de datos offline-first, basado en [Dexie.js](https://dexie.org/)
 -   [Connect middleware](https://github.com/kravetsone/elysia-connect-middleware) - ¡plugin que te permite usar middleware de [`express`](https://www.npmjs.com/package/express)/[`connect`](https://www.npmjs.com/package/connect) directamente en Elysia!
 -   [Elysia HTTP Exception](https://github.com/codev911/elysia-http-exception) - plugin de Elysia para manejar errores HTTP 4xx/5xx con clases de excepción estructuradas
--   [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - protege tus aplicaciones de Elysia con varias cabeceras HTTP
+-   [Elysia Helmet](https://github.com/DevTobias/elysia-helmet) - protege tus aplicaciones de Elysia con varios headers HTTP
 -   [Vite Plugin SSR](https://github.com/timnghg/elysia-vite-plugin-ssr) - plugin de SSR para Vite que usa el servidor de Elysia
 -   [OAuth 2.0](https://github.com/kravetsone/elysia-oauth2) - ¡un plugin para el flujo de autorización de [OAuth 2.0](https://en.wikipedia.org/wiki/OAuth) con más de **42** proveedores y **type safety**!
 -   [OAuth2](https://github.com/bogeychan/elysia-oauth2) - maneja el flujo de código de autorización de OAuth 2.0
@@ -162,7 +162,7 @@ Usa versiones de los plugins cuya peer dependency de Elysia coincida con la de t
 -   [LogTape for Elysia](https://logtape.org/manual/integrations#elysia) - middleware de logging estructurado con soporte para varios sinks (transports) a través de [LogTape](https://logtape.org/)
 -   [Sentry](https://github.com/johnny-woodtke/elysiajs-sentry) - captura trazas y errores con este plugin de [Sentry](https://docs.sentry.io/)
 -   [Apitally](https://github.com/apitally/apitally-js) - captura métricas, logs y trazas en [Apitally](https://apitally.io/elysia), una herramienta sencilla de monitorización y analítica de APIs
--   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - despliega en AWS Lambda
+-   [Elysia Lambda](https://github.com/TotalTechGeek/elysia-lambda) - haz deploy en AWS Lambda
 -   [Decorators](https://github.com/gaurishhs/elysia-decorators) - usa decoradores de TypeScript
 -   [Elysia FSR](https://github.com/deadlinecode/elysia-fsr) - routing basado en el sistema de archivos, con generación de tipos compatible con Eden, soporte para monorepos/workspaces y agrupación lógica de rutas
 -   [Autoload](https://github.com/kravetsone/elysia-autoload) - router basado en la estructura de carpetas del sistema de archivos, que genera tipos para [Eden](/eden) y es compatible con [`Bun.build`](https://github.com/kravetsone/elysia-autoload?tab=readme-ov-file#bun-build-usage)
@@ -173,7 +173,7 @@ Usa versiones de los plugins cuya peer dependency de Elysia coincida con la de t
 -   [Basic Auth](https://github.com/itsyoboieltr/elysia-basic-auth) - autenticación HTTP básica
 -   [Body Limit](https://github.com/hexadecimal233/elysia-body-limit) - limita el tamaño del body en Elysia
 -   [ETag](https://github.com/bogeychan/elysia-etag) - generación automática de [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) HTTP
--   [CDN Cache](https://github.com/johnny-woodtke/elysiajs-cdn-cache) - plugin de Cache-Control para Elysia: olvídate de configurar las cabeceras HTTP a mano
+-   [CDN Cache](https://github.com/johnny-woodtke/elysiajs-cdn-cache) - plugin de Cache-Control para Elysia: olvídate de configurar los headers HTTP a mano
 -   [Basic Auth](https://github.com/eelkevdbos/elysia-basic-auth) - autenticación HTTP básica (usando el evento `request`)
 -   [i18n](https://github.com/eelkevdbos/elysia-i18next) - wrapper de [i18n](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/i18n) basado en [i18next](https://www.i18next.com/)
 -   [Intlify](https://github.com/intlify/srvmid/blob/main/packages/elysia/README.md) - middleware de servidor y utilidades de internacionalización
@@ -198,17 +198,17 @@ Usa versiones de los plugins cuya peer dependency de Elysia coincida con la de t
 -   [Unify-Elysia-GQL](https://github.com/qlaffont/unify-elysia-gql) - unifica los códigos de error del servidor GraphQL de Elysia (Yoga y Apollo)
 -   [Elysia Auth Drizzle](https://github.com/qlaffont/elysia-auth-drizzle) - librería que maneja la autenticación con JWT (Header/Cookie/QueryParam)
 -   [graceful-server-elysia](https://github.com/qlaffont/graceful-server-elysia) - librería inspirada en [graceful-server](https://github.com/gquittet/graceful-server)
--   [Logixlysia](https://github.com/PunGrumpy/logixlysia) - un middleware de logging bonito y sencillo para ElysiaJS, con colores y marcas de tiempo.
+-   [Logixlysia](https://github.com/PunGrumpy/logixlysia) - un middleware de logging bonito y sencillo para ElysiaJS, con colores y timestamps.
 -   [Elysia Fault](https://github.com/vitorpldev/elysia-fault) - un middleware de manejo de errores sencillo y personalizable que te permite crear tus propios errores HTTP
 -   [Elysia Compress](https://github.com/vermaysha/elysia-compress) - plugin de ElysiaJS para comprimir respuestas, inspirado en [@fastify/compress](https://github.com/fastify/fastify-compress)
 -   [@labzzhq/compressor](https://github.com/labzzhq/compressor/) - Brillo compacto, resultados expansivos: compresor HTTP para Elysia y Bunnyhop con soporte para gzip, deflate y brotli.
--   [Elysia Accepts](https://github.com/morigs/elysia-accepts) - plugin de Elysia para analizar las cabeceras accept y negociar el contenido
+-   [Elysia Accepts](https://github.com/morigs/elysia-accepts) - plugin de Elysia para parsear los headers accept y negociar el contenido
 -   [Elysia Compression](https://github.com/chneau/elysia-compression) - plugin de Elysia para comprimir respuestas
 -   [Elysia Logger](https://github.com/chneau/elysia-logger) - plugin de Elysia para registrar las peticiones y respuestas HTTP, inspirado en [hono/logger](https://hono.dev/docs/middleware/builtin/logger)
 -   [Elysia CQRS](https://github.com/jassix/elysia-cqrs) - plugin de Elysia para el patrón CQRS
 -   [Elysia Supabase](https://github.com/mastermakrela/elysia-supabase) - Integra sin complicaciones la autenticación y la base de datos de [Supabase](https://supabase.com/) en Elysia, con acceso fácil a los datos del usuario autenticado y a la instancia del cliente de Supabase. Especialmente útil para [Edge Functions](https://supabase.com/docs/guides/functions).
 -   [Elysia XSS](https://www.npmjs.com/package/elysia-xss) - un plugin para Elysia.js que protege contra XSS (Cross-Site Scripting) sanitizando los datos del body de la petición.
--   [Elysiajs Helmet](https://www.npmjs.com/package/elysiajs-helmet) - un middleware de seguridad completo para aplicaciones de Elysia.js que te ayuda a protegerlas configurando varias cabeceras HTTP.
+-   [Elysiajs Helmet](https://www.npmjs.com/package/elysiajs-helmet) - un middleware de seguridad completo para aplicaciones de Elysia.js que te ayuda a protegerlas configurando varios headers HTTP.
 -   [Decorators for Elysia.js](https://github.com/Ateeb-Khan-97/better-elysia) - desarrolla e integra APIs, WebSocket y APIs de streaming sin complicaciones con esta pequeña librería.
 -   [Elysia Protobuf](https://github.com/ilyhalight/elysia-protobuf) - soporte de protobuf para Elysia.
 -   [Elysia Prometheus](https://github.com/m1handr/elysia-prometheus) - plugin de Elysia para exponer métricas HTTP para Prometheus.
@@ -226,7 +226,7 @@ Usa versiones de los plugins cuya peer dependency de Elysia coincida con la de t
 -   [Socket.IO Proxy](https://www.npmjs.com/package/@synchjs/elysocket) - Proxy de Socket.IO para Elysia.
 -   [ModernCSRF](https://github.com/auto-medica-labs/modern-csrf) - Un middleware de protección CSRF ligero y sin tokens para ElysiaJS
 -   [elysia-wide-event](https://github.com/choiexe1/elysia-wide-event) - Plugin de logging de wide events para tener observabilidad estructurada a nivel de petición.
-- [elysia-beta-headers](https://github.com/P0u4a/elysia-beta-headers) - plugin de Elysia para controlar el acceso a las funciones beta/experimentales de tu app mediante cabeceras de API con type safety
+- [elysia-beta-headers](https://github.com/P0u4a/elysia-beta-headers) - plugin de Elysia para controlar el acceso a las funciones beta/experimentales de tu app mediante headers de API con type safety
 -   [elysia-better-session](https://github.com/0x0arash/elysia-better-session) - plugin de Elysia para gestionar sesiones en el servidor con distintos adaptadores de almacenamiento.
 
 <span id="complementary-projects"></span>
