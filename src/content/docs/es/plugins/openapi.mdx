@@ -1,0 +1,201 @@
+---
+title: Plugin OpenAPI
+description: Referencia y ejemplos del plugin OpenAPI.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin OpenAPI</h1>
+
+[Tutorial de OpenAPI](/tutorial/features/openapi/)
+
+
+Plugin para [elysia](https://github.com/elysiajs/elysia) que genera automáticamente una página de documentación de la API.
+
+Instálalo con:
+
+```bash
+bun add @elysia/openapi@rc
+```
+
+Después, úsalo así:
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(openapi())
+    .get('/', () => 'hello')
+    .post('/hello', () => 'OpenAPI')
+    .listen(3000)
+```
+
+Si abres `/openapi`, verás una interfaz de Scalar con la documentación de los endpoints que se genera a partir del servidor de Elysia. También puedes ver la especificación OpenAPI en bruto en `/openapi/json`.
+
+:::tip
+
+Esta página es la referencia de configuración del plugin.
+
+Si buscas patrones habituales o usos avanzados de OpenAPI, echa un vistazo a [Patrones: OpenAPI](/patterns/openapi).
+
+:::
+
+<span id="detail"></span>
+## Detalle
+
+`detail` extiende el [OpenAPI Operation Object](https://spec.openapis.org/oas/v3.1.2.html#operation-object).
+
+El campo detail es un objeto que puedes usar para describir la ruta en la documentación de la API.
+
+Puede contener estos campos:
+
+### detail.hide
+
+Puedes ocultar la ruta en la documentación generada poniendo `detail.hide` a `true`:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia().use(openapi()).post('/sign-in', {
+    body: t.Object(
+        {
+            username: t.String(),
+            password: t.String()
+        },
+        {
+            description: 'Expected a username and password'
+        }
+    ),
+    detail: {
+        hide: true
+    }
+}, ({ body }) => ({ username: body.username }))
+```
+
+### detail.deprecated
+
+Marca esta operación como obsoleta. Quienes consuman la API DEBERÍAN evitar usarla. El valor por defecto es `false`.
+
+### detail.description
+
+Una explicación detallada de cómo se comporta la operación.
+
+### detail.summary
+
+Un breve resumen de lo que hace la operación.
+
+<span id="config"></span>
+## Configuración
+
+Esta es la configuración que acepta el plugin.
+
+### enabled
+
+Por defecto: true
+Activa o desactiva el plugin
+
+### documentation
+
+Información de la documentación OpenAPI
+
+@see https://spec.openapis.org/oas/v3.1.2.html
+
+### exclude
+
+Configuración para excluir rutas o métodos de la documentación
+
+### exclude.methods
+
+Lista de métodos que se excluyen de la documentación
+
+### exclude.paths
+
+Lista de rutas que se excluyen de la documentación
+
+### exclude.staticFile
+
+Por defecto: true
+
+Excluye de la documentación las rutas de archivos estáticos
+
+### exclude.tags
+
+Lista de tags que se excluyen de la documentación
+
+### mapJsonSchema
+Una función de mapeo personalizada de Standard Schema a esquema de OpenAPI
+
+<span id="example"></span>
+#### Ejemplo
+```ts
+import { openapi } from '@elysia/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+	  	valibot: toJsonSchema
+  	}
+})
+```
+
+### path
+
+Por defecto: '/openapi'
+
+El endpoint en el que se expone el frontend de la documentación OpenAPI
+
+### provider
+
+Por defecto: 'scalar'
+
+Proveedor del frontend de la documentación OpenAPI. Puede ser:
+
+- `scalar`: [Scalar](https://github.com/scalar/scalar)
+- `swagger-ui`: [Swagger UI](https://github.com/swagger-api/swagger-ui)
+- `null`: desactiva el frontend
+
+### references
+
+Referencias adicionales de OpenAPI para cada endpoint
+
+### scalar
+
+Configuración de Scalar; consulta la [configuración de Scalar](https://github.com/scalar/scalar/blob/main/documentation/configuration.md).
+
+<span id="self-hosted-scalar-bundle"></span>
+#### Bundle de Scalar autoalojado
+
+Aloja tú mismo el bundle de Scalar y desactiva las fuentes del CDN.
+
+Nota: `cdn` es una opción del plugin OpenAPI de Elysia (no forma parte de la configuración propia de Scalar); sobrescribe la URI del bundle de Scalar.
+
+```ts
+    openapi({ 
+      scalar: {
+        cdn: "/public/scalar-standalone.min.js", // plugin override for Scalar bundle URI (self-hosted)
+        withDefaultFonts: false, // disable Scalar’s default font CDN
+      },
+    })
+```
+
+### specPath
+
+Por defecto: `${path}/json`
+
+El endpoint en el que se expone la especificación OpenAPI en formato JSON
+
+### swagger
+
+Configuración de Swagger; consulta la [configuración de Swagger](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/).
+
+</div>
+</InteractiveDocLayout>
+</div>
