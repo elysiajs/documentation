@@ -96,7 +96,7 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-Conéctate a `ws://localhost:3000/ws?id=42` y envía `{"message":"Hello"}`. La respuesta incluye ese mensaje, el `id` de la query y la marca de tiempo actual.
+Conéctate a `ws://localhost:3000/ws?id=42` y envía `{"message":"Hello"}`. La respuesta incluye ese mensaje, el `id` de la query y el timestamp actual.
 
 En Elysia 2, las propiedades del contexto como `query` y `params` están directamente en el argumento del socket. Usa `ws.query`, no la forma antigua `ws.data.query`.
 
@@ -105,7 +105,7 @@ En Elysia 2, las propiedades del contexto como `query` y `params` están directa
 | `body` | Un mensaje entrante |
 | `query` | La query string de la URL de conexión |
 | `params` | Los parámetros de ruta |
-| `headers` | Las cabeceras de la petición de upgrade |
+| `headers` | Los headers de la petición de upgrade |
 | `cookie` | Las cookies de la petición de upgrade |
 | `response` | Los mensajes que el handler devuelve, envía o emite con yield |
 
@@ -297,7 +297,7 @@ new Elysia()
     }, ({ body }) => body)
 ```
 
-No es lo mismo que un parser del cuerpo HTTP en la petición de upgrade.
+No es lo mismo que un parser del body HTTP en la petición de upgrade.
 
 ## beforeHandle
 
@@ -328,7 +328,7 @@ La antigua opción `transformMessage` ya no forma parte de las opciones de ruta 
 
 ## upgrade
 
-Usa `upgrade` para añadir cabeceras de respuesta al handshake de WebSocket. Acepta un objeto estático o una función que recibe el contexto del upgrade.
+Usa `upgrade` para añadir headers de respuesta al handshake de WebSocket. Acepta un objeto estático o una función que recibe el contexto del upgrade.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -341,7 +341,7 @@ new Elysia()
     }, ({ body }) => body)
 ```
 
-Para validar las cabeceras de la petición entrante, usa el esquema `headers`.
+Para validar los headers de la petición entrante, usa el esquema `headers`.
 
 
 </div>
