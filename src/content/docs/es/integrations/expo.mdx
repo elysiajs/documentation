@@ -1,0 +1,156 @@
+---
+title: "Integración con Expo"
+description: "Con Expo App Router, puedes ejecutar Elysia en las rutas de Expo. Elysia funciona con normalidad porque cumple con WinterTC."
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Integración con Expo</h1>
+
+A partir de Expo SDK 50 y App Router v3, Expo te permite crear rutas de API directamente en una app de Expo.
+
+1. Crea **app/[...slugs]+api.ts**
+2. Define un servidor de Elysia
+3. Exporta **Elysia.fetch** con el nombre de los métodos HTTP que quieras usar
+
+
+```typescript title="app/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hello Expo')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+Puedes tratar el servidor de Elysia como si fuera una ruta de API normal de Expo.
+
+### pnpm
+Si tu configuración de pnpm no instala las peer dependencies, añade explícitamente las que necesita Elysia v2:
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+<span id="prefix"></span>
+## Prefijo
+Si no colocas el servidor de Elysia en la carpeta raíz del app router, tienes que indicar el prefijo en el servidor de Elysia.
+
+Por ejemplo, si colocas el servidor de Elysia en **app/api/[...slugs]+api.ts**, tienes que indicar **/api** como prefijo en el servidor de Elysia.
+
+
+```typescript title="app/api/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', 'Hello Expo')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+Así te aseguras de que el enrutamiento de Elysia funcione bien, lo coloques donde lo coloques.
+
+## Eden
+
+Puedes añadir [Eden](/eden) para tener **type safety de extremo a extremo**, parecido a tRPC.
+
+1. Exporta un `type` desde el servidor de Elysia
+
+
+```typescript title="app/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.get('/', 'Hello Expo')
+	.post(
+		'/user',
+		{
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body }) => body
+	)
+
+export type app = typeof app
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+2. Crea un cliente de Treaty
+
+
+```typescript title="lib/eden.ts"
+import { treaty } from '@elysia/eden'
+import type { app } from '../app/[...slugs]+api'
+
+export const api = treaty<app>('http://localhost:8081')
+```
+
+
+En un dispositivo físico, sustituye `localhost` por un origen al que pueda llegar el dispositivo, como la dirección de tu máquina de desarrollo en la red local. En producción, usa el origen de tu API desplegada.
+
+3. Usa el cliente en tu pantalla de Expo
+
+
+```tsx title="app/index.tsx"
+import { useEffect, useState } from 'react'
+import { Text } from 'react-native'
+import { api } from '../lib/eden'
+
+export default function Page() {
+	const [message, setMessage] = useState<string | null>(null)
+
+	useEffect(() => {
+		api.get().then(({ data }) => setMessage(data))
+	}, [])
+
+	return <Text>{message ?? 'Loading…'}</Text>
+}
+```
+
+
+<span id="deployment"></span>
+## Despliegue
+Si lo necesitas, puedes usar la ruta de API con Elysia directamente y desplegarla como una app normal de Elysia, o usar el [runtime de servidor experimental de Expo](https://docs.expo.dev/router/reference/api-routes/#deployment).
+
+Si usas el runtime de servidor de Expo, puedes usar el comando `expo export` para crear un build optimizado de tu app de Expo. Incluirá una función de Expo que usa Elysia en `dist/server/_expo/functions/`
+
+
+:::tip
+
+Una función de API exportada necesita un adaptador de servidor para recibir peticiones. Importar solo la función generada no reserva ningún puerto.
+
+:::
+
+
+Puedes usar el adaptador de funciones que ofrece Expo para desplegar tu Edge Function.
+
+La guía de despliegue de Expo cubre estos adaptadores:
+- [Express](https://docs.expo.dev/router/reference/api-routes/#express)
+- [Netlify](https://docs.expo.dev/router/reference/api-routes/#netlify)
+- [Vercel](https://docs.expo.dev/router/reference/api-routes/#vercel)
+
+</div>
+</InteractiveDocLayout>
+</div>
