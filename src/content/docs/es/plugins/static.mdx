@@ -1,0 +1,111 @@
+---
+title: Plugin Static
+description: Referencia y ejemplos del plugin Static.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin Static</h1>
+
+Este plugin sirve archivos y carpetas estáticos desde un servidor de Elysia.
+
+Instálalo con:
+```bash
+bun add @elysia/static@rc
+```
+
+Después, úsalo así:
+```ts
+import { Elysia } from 'elysia'
+import { staticPlugin } from '@elysia/static'
+
+new Elysia()
+    .use(staticPlugin())
+    .listen(3000)
+```
+
+Por defecto, la carpeta del plugin static es `public` y se registra con el prefijo `/public`.
+
+Imagina que tu proyecto tiene esta estructura:
+```text
+| - src
+  | - index.ts
+| - public
+  | - takodachi.png
+  | - nested
+    | - takodachi.png
+```
+
+Las rutas disponibles serán:
+- /public/takodachi.png
+- /public/nested/takodachi.png
+
+<span id="config"></span>
+## Configuración
+Esta es la configuración que acepta el plugin.
+
+### assets
+Por defecto: `"public"`
+
+Ruta de la carpeta que se expone como estática
+
+### prefix
+Por defecto: `"/public"`
+
+Prefijo de ruta con el que se registran los archivos públicos
+
+### ignorePatterns
+Por defecto: `['.DS_Store', '.git', '.env']`
+
+Lista de archivos que no se sirven como archivos estáticos
+
+:::caution
+Una lista personalizada sustituye a la de por defecto. Vuelve a incluir `.env` y `.git`, o se servirán.
+:::
+
+### staticLimit
+Por defecto: `1024`
+
+Cuando [alwaysStatic](#alwaysstatic) está activado, el plugin static registra en el Router como máximo este número de rutas con nombre estático. Los archivos que pasan del límite se resuelven de forma lazy al recibir la petición, para usar menos memoria.
+Es un equilibrio entre memoria y rendimiento.
+
+### alwaysStatic
+Por defecto: `process.env.NODE_ENV === 'production'`
+
+Si es true, las rutas de los archivos estáticos se registran en el Router al arrancar, hasta [staticLimit](#staticlimit). Si no, los archivos se resuelven de forma lazy al recibir la petición.
+
+### headers
+Por defecto: `{}`
+
+Define las cabeceras de respuesta de los archivos
+
+### indexHTML
+Por defecto: `true`
+
+Si está activado, las peticiones a una carpeta pueden servir el archivo `index.html` que hay dentro. No es un fallback general de single-page application para cualquier ruta que no exista.
+
+<span id="pattern"></span>
+## Patrones
+Aquí tienes los patrones más habituales para usar el plugin.
+
+- [Un solo archivo](#single-file)
+
+<span id="single-file"></span>
+## Un solo archivo
+Si solo quieres devolver un archivo, puedes usar `file` en lugar del plugin static:
+```ts
+import { Elysia, file } from 'elysia'
+
+new Elysia()
+    .get('/file', file('public/takodachi.png'))
+```
+
+</div>
+</InteractiveDocLayout>
+</div>
