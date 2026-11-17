@@ -1,6 +1,6 @@
 ---
-title: Despliegue en producción
-description: Haz el build de un servidor Elysia y despliégalo como binario, bundle de JavaScript o contenedor.
+title: Deploy en producción
+description: Haz el build y el deploy de un servidor Elysia como binario, bundle de JavaScript o contenedor.
 template: splash
 ---
 
@@ -12,7 +12,7 @@ import "../../../../styles/routing.css";
 
 <div class="content-layout">
 
-<h1 id="_top">Despliegue en producción</h1>
+<h1 id="_top">Deploy en producción</h1>
 
 Convierte tu servidor en un ejecutable o en un bundle de JavaScript y luego ejecútalo directamente o dentro de un contenedor.
 
@@ -59,7 +59,7 @@ Este ejemplo de Bun activa `reusePort` explícitamente para que los workers pued
 
 <span id="compile-to-binary"></span>
 ## Compilar a binario
-Te recomendamos ejecutar el comando de build antes de desplegar en producción, porque puede reducir bastante el uso de memoria y el tamaño de los archivos.
+Te recomendamos ejecutar el comando de build antes de hacer deploy en producción, porque puede reducir bastante el uso de memoria y el tamaño de los archivos.
 
 Lo mejor es compilar Elysia en un único binario con este comando:
 ```bash
@@ -74,7 +74,7 @@ bun build \
 
 Esto genera un ejecutable llamado `server` para el sistema operativo y la arquitectura que hayas elegido.
 
-Compilar puede reducir el trabajo al arrancar y el tamaño del despliegue. Mide la memoria con tu propia carga de producción: la mejora no es un multiplicador fijo.
+Compilar puede reducir el trabajo al arrancar y el tamaño del deploy. Mide la memoria con tu propia carga de producción: la mejora no es un multiplicador fijo.
 
 El comando es un poco largo, así que vamos a desglosarlo:
 1. **--compile** Compila TypeScript a binario
@@ -91,7 +91,7 @@ Para arrancar el servidor, basta con ejecutar el binario.
 
 Una vez compilado el binario, no necesitas tener `Bun` instalado en la máquina para ejecutar el servidor.
 
-Esto está genial, porque el servidor de despliegue no tiene que instalar un runtime extra para ejecutarlo, así que el binario es portable.
+Esto está genial, porque el servidor de deploy no tiene que instalar un runtime extra para ejecutarlo, así que el binario es portable.
 
 ### Target
 Usa un valor de `--target` específico de la plataforma para generar el binario para otra plataforma.
@@ -106,7 +106,7 @@ bun build \
 	src/index.ts
 ```
 
-Elige un target que coincida con el sistema operativo, la arquitectura y la librería C de Linux de la máquina donde vas a desplegar:
+Elige un target que coincida con el sistema operativo, la arquitectura y la librería C de Linux de la máquina donde vas a hacer deploy:
 
 | Target | Sistema operativo | Arquitectura | Librería C |
 | --- | --- | --- | --- |
@@ -155,7 +155,7 @@ Si un ejecutable falla con un error de instrucción ilegal (illegal instruction)
 
 Los builds actuales de Bun para x64 necesitan SSE4.2 y eligen en runtime las instrucciones de CPU más nuevas que haya disponibles. Las versiones antiguas distinguían entre targets baseline y modern con AVX2; las actuales aceptan esos sufijos por compatibilidad, pero generan el mismo binario con todos ellos.
 
-Haz que el target coincida con la máquina de despliegue y consulta los [requisitos de CPU de Bun](https://bun.com/docs/compiler/executables#supported-targets) antes de volver a hacer el build. Un mensaje de error desconocido no basta por sí solo para saber que a la CPU le falta alguna función.
+Haz que el target coincida con la máquina de deploy y consulta los [requisitos de CPU de Bun](https://bun.com/docs/compiler/executables#supported-targets) antes de volver a hacer el build. Un mensaje de error desconocido no basta por sí solo para saber que a la CPU le falta alguna función.
 
 <span id="compile-to-javascript"></span>
 ## Compilar a JavaScript
@@ -170,7 +170,7 @@ bun build \
 	src/index.ts
 ```
 
-Esto genera un único archivo JavaScript portable que puedes desplegar en tu servidor.
+Esto genera un único archivo JavaScript portable del que puedes hacer deploy en tu servidor.
 ```bash
 NODE_ENV=production bun ./dist/index.js
 ```
@@ -312,7 +312,7 @@ EXPOSE 3000
 ```
 
 ## Railway
-[Railway](https://railway.app) es una de las plataformas de despliegue más populares.
+[Railway](https://railway.app) es una de las plataformas de deploy más populares.
 
 Lee la variable de entorno `PORT` de Railway en lugar de dar por hecho un puerto fijo en producción.
 
