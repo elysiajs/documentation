@@ -1,0 +1,80 @@
+---
+title: Pruebas unitarias
+description: Prueba los handlers de Elysia con Request, Response y el test runner de Bun.
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Pruebas unitarias</h1>
+
+Prueba tus rutas con objetos `Request` y `Response` de Web Standard. Para probar un handler no necesitas abrir ningún puerto.
+
+Elysia tiene el método **Elysia.handle**, que acepta un [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) de Web Standard y devuelve una promesa con un [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response), simulando una petición HTTP.
+
+Bun incluye un [test runner](https://bun.sh/docs/cli/test) integrado que ofrece una API parecida a la de Jest a través del módulo `bun:test`, lo que facilita escribir tests unitarios.
+
+Crea **test/index.test.ts** en la raíz de la carpeta del proyecto con este contenido:
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const app = new Elysia().get('/', () => 'hi')
+
+        const response = await app
+            .handle(new Request('http://localhost/'))
+            .then((res) => res.text())
+
+        expect(response).toBe('hi')
+    })
+})
+```
+
+Después, podemos ejecutar los tests con **bun test**.
+
+```bash
+bun test
+```
+
+Pasa una URL absoluta a `new Request()`. Una ruta relativa como `/user` no basta.
+
+También podemos usar otras librerías de testing, como Jest, para escribir tests unitarios de Elysia.
+
+<span id="eden-treaty-test"></span>
+## Test con Eden Treaty
+
+Podemos usar Eden Treaty para crear un test con type safety de extremo a extremo para un servidor Elysia, así:
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia().get('/hello', 'hi')
+
+const api = treaty(app)
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const { data, error } = await api.hello.get()
+
+        expect(error).toBeNull()
+        expect(data).toBe('hi')
+    })
+})
+```
+
+Consulta [Pruebas unitarias con Eden Treaty](/eden/treaty/unit-test/) para ver la configuración y más información.
+
+</div>
+</InteractiveDocLayout>
+</div>
