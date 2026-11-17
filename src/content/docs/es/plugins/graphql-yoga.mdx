@@ -1,0 +1,107 @@
+---
+title: Plugin GraphQL Yoga
+description: Referencia y ejemplos del plugin GraphQL Yoga.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin GraphQL Yoga</h1>
+
+Este plugin integra GraphQL Yoga con Elysia.
+
+Instálalo con:
+
+```bash
+bun add @elysia/graphql-yoga@rc
+```
+
+Después, úsalo así:
+
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+	.use(
+		yoga({
+			typeDefs: /* GraphQL */ `
+				type Query {
+					hi: String
+				}
+			`,
+			resolvers: {
+				Query: {
+					hi: () => 'Hello from Elysia'
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+Si abres `/graphql` en el navegador (con una petición GET), verás una instancia de GraphiQL para el servidor de Elysia con GraphQL.
+
+Si quieres, también puedes instalar la versión que prefieras de las peer dependencies opcionales:
+
+```bash
+bun add graphql graphql-yoga
+```
+
+## Resolver
+
+Elysia usa [Mobius](https://github.com/saltyaom/mobius) para inferir automáticamente los tipos a partir del campo **typeDefs**, así que tienes type safety completa y autocompletado al escribir los tipos del **resolver**.
+
+<span id="context"></span>
+## Contexto
+
+Puedes añadir un contexto personalizado a la función resolver con **context**:
+
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+	.use(
+		yoga({
+			typeDefs: /* GraphQL */ `
+				type Query {
+					hi: String
+				}
+			`,
+			context: {
+				name: 'Mobius'
+			},
+			// Required for resolvers to infer the context type
+			useContext(_) {},
+			resolvers: {
+				Query: {
+					hi: async (parent, args, context) => context.name
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+<span id="config"></span>
+## Configuración
+
+Este plugin extiende [las opciones de createYoga de GraphQL Yoga, que puedes consultar en la documentación de GraphQL Yoga](https://the-guild.dev/graphql/yoga-server/docs), y pone la configuración de `schema` directamente en la raíz.
+
+Esta es la configuración que acepta el plugin.
+
+### path
+
+Por defecto: `/graphql`
+
+Endpoint en el que se expone el handler de GraphQL.
+
+</div>
+</InteractiveDocLayout>
+</div>
