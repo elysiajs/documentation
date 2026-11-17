@@ -1,0 +1,283 @@
+---
+title: Plugin Cron
+description: Referencia y ejemplos del plugin Cron.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin Cron</h1>
+
+Este plugin te permite ejecutar tareas cron en el servidor de Elysia.
+
+Instálalo con:
+
+```bash
+bun add @elysia/cron@rc
+```
+
+Después, úsalo así:
+
+```ts
+import { Elysia } from 'elysia'
+import { cron } from '@elysia/cron'
+
+new Elysia()
+	.use(
+		cron({
+			name: 'heartbeat',
+			pattern: '*/10 * * * * *',
+			run() {
+				console.log('Heartbeat')
+			}
+		})
+	)
+	.listen(3000)
+```
+
+Este código escribe `Heartbeat` en la consola cada 10 segundos.
+
+## cron
+
+Crea una tarea cron para el servidor de Elysia.
+
+Tipo:
+
+```text
+cron(config: CronConfig): (app: Elysia) => Elysia
+```
+
+`CronConfig` acepta estos parámetros:
+
+### name
+
+Nombre con el que se registra la tarea en `store`.
+
+Registra la instancia de cron en `store` con el nombre que indiques, para que puedas usarla más adelante; por ejemplo, para detener la tarea.
+
+### pattern
+
+Cuándo se ejecuta la tarea, según la [sintaxis de cron](https://en.wikipedia.org/wiki/Cron) que tienes aquí:
+
+```text
+┌────────────── second (optional)
+│ ┌──────────── minute
+│ │ ┌────────── hour
+│ │ │ ┌──────── day of the month
+│ │ │ │ ┌────── month
+│ │ │ │ │ ┌──── day of week
+│ │ │ │ │ │
+* * * * * *
+```
+
+Puedes generarlo con herramientas como [Crontab Guru](https://crontab.guru/).
+
+### run
+
+Función que se ejecuta cada vez que se dispara la tarea.
+
+---
+
+Este plugin registra la tarea programada con [Croner](https://github.com/hexagon/croner).
+
+Estas son las opciones de Croner que admite.
+
+### timezone
+
+Zona horaria en formato Europe/Stockholm
+
+### startAt
+
+Hora de inicio programada de la tarea
+
+### stopAt
+
+Hora de fin programada de la tarea
+
+### maxRuns
+
+Número máximo de ejecuciones
+
+### catch
+
+Sigue ejecutándose aunque la función disparada lance un error no manejado.
+
+### interval
+
+Intervalo mínimo entre ejecuciones, en segundos.
+
+<span id="pattern-1"></span>
+## Patrones
+
+Aquí tienes los patrones más habituales para usar el plugin.
+
+<span id="stop-cron-job"></span>
+## Detener una tarea cron
+
+Puedes detener la tarea cron manualmente accediendo a ella con el nombre con el que se registró en `store`.
+
+```ts
+import { Elysia } from 'elysia'
+import { cron } from '@elysia/cron'
+
+const app = new Elysia()
+	.use(
+		cron({
+			name: 'heartbeat',
+			pattern: '*/1 * * * * *',
+			run() {
+				console.log('Heartbeat')
+			}
+		})
+	)
+	.get(
+		'/stop',
+		({
+			store: {
+				cron: { heartbeat }
+			}
+		}) => {
+			heartbeat.stop()
+
+			return 'Stop heartbeat'
+		}
+	)
+	.listen(3000)
+```
+
+<span id="predefined-patterns"></span>
+## Patrones predefinidos
+
+Puedes importar `Patterns` desde `@elysia/cron`:
+
+```ts
+import { Elysia } from 'elysia'
+import { cron, Patterns } from '@elysia/cron'
+
+const app = new Elysia()
+	.use(
+		cron({
+			name: 'heartbeat',
+			pattern: Patterns.everySecond(),
+			run() {
+				console.log('Heartbeat')
+			}
+		})
+	)
+	.get(
+		'/stop',
+		({
+			store: {
+				cron: { heartbeat }
+			}
+		}) => {
+			heartbeat.stop()
+
+			return 'Stop heartbeat'
+		}
+	)
+	.listen(3000)
+```
+
+<span id="functions"></span>
+### Funciones
+
+| Función                                  | Descripción                                           |
+| ---------------------------------------- | ----------------------------------------------------- |
+| `.everySeconds(2)`                       | Ejecuta la tarea cada 2 segundos                      |
+| `.everyMinutes(5)`                       | Ejecuta la tarea cada 5 minutos                       |
+| `.everyHours(3)`                         | Ejecuta la tarea cada 3 horas                         |
+| `.everyHoursAt(3, 15)`                   | Ejecuta la tarea cada 3 horas, en el minuto 15        |
+| `.everyDayAt('04:19')`                   | Ejecuta la tarea todos los días a las 04:19           |
+| `.everyWeekOn(Patterns.MONDAY, '19:30')` | Ejecuta la tarea todos los lunes a las 19:30          |
+| `.everyWeekdayAt('17:00')`               | Ejecuta la tarea de lunes a viernes a las 17:00       |
+| `.everyWeekendAt('11:00')`               | Ejecuta la tarea los sábados y domingos a las 11:00   |
+
+<span id="function-aliases-to-constants"></span>
+### Alias de funciones a constantes
+
+| Función           | Constante                          |
+| ----------------- | ---------------------------------- |
+| `.everySecond()`  | EVERY_SECOND                       |
+| `.everyMinute()`  | EVERY_MINUTE                       |
+| `.hourly()`       | EVERY_HOUR                         |
+| `.daily()`        | EVERY_DAY_AT_MIDNIGHT              |
+| `.everyWeekday()` | EVERY_WEEKDAY                      |
+| `.everyWeekend()` | EVERY_WEEKEND                      |
+| `.weekly()`       | EVERY_WEEK                         |
+| `.monthly()`      | EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT |
+| `.everyQuarter()` | EVERY_QUARTER                      |
+| `.yearly()`       | EVERY_YEAR                         |
+
+<span id="constants"></span>
+### Constantes
+
+| Constante                                | Patrón               |
+| ---------------------------------------- | -------------------- |
+| `.EVERY_SECOND`                          | `* * * * * *`        |
+| `.EVERY_5_SECONDS`                       | `*/5 * * * * *`      |
+| `.EVERY_10_SECONDS`                      | `*/10 * * * * *`     |
+| `.EVERY_30_SECONDS`                      | `*/30 * * * * *`     |
+| `.EVERY_MINUTE`                          | `*/1 * * * *`        |
+| `.EVERY_5_MINUTES`                       | `0 */5 * * * *`      |
+| `.EVERY_10_MINUTES`                      | `0 */10 * * * *`     |
+| `.EVERY_30_MINUTES`                      | `0 */30 * * * *`     |
+| `.EVERY_HOUR`                            | `0 0-23/1 * * *`     |
+| `.EVERY_2_HOURS`                         | `0 0-23/2 * * *`     |
+| `.EVERY_3_HOURS`                         | `0 0-23/3 * * *`     |
+| `.EVERY_4_HOURS`                         | `0 0-23/4 * * *`     |
+| `.EVERY_5_HOURS`                         | `0 0-23/5 * * *`     |
+| `.EVERY_6_HOURS`                         | `0 0-23/6 * * *`     |
+| `.EVERY_7_HOURS`                         | `0 0-23/7 * * *`     |
+| `.EVERY_8_HOURS`                         | `0 0-23/8 * * *`     |
+| `.EVERY_9_HOURS`                         | `0 0-23/9 * * *`     |
+| `.EVERY_10_HOURS`                        | `0 0-23/10 * * *`    |
+| `.EVERY_11_HOURS`                        | `0 0-23/11 * * *`    |
+| `.EVERY_12_HOURS`                        | `0 0-23/12 * * *`    |
+| `.EVERY_DAY_AT_1AM`                      | `0 01 * * *`         |
+| `.EVERY_DAY_AT_2AM`                      | `0 02 * * *`         |
+| `.EVERY_DAY_AT_3AM`                      | `0 03 * * *`         |
+| `.EVERY_DAY_AT_4AM`                      | `0 04 * * *`         |
+| `.EVERY_DAY_AT_5AM`                      | `0 05 * * *`         |
+| `.EVERY_DAY_AT_6AM`                      | `0 06 * * *`         |
+| `.EVERY_DAY_AT_7AM`                      | `0 07 * * *`         |
+| `.EVERY_DAY_AT_8AM`                      | `0 08 * * *`         |
+| `.EVERY_DAY_AT_9AM`                      | `0 09 * * *`         |
+| `.EVERY_DAY_AT_10AM`                     | `0 10 * * *`         |
+| `.EVERY_DAY_AT_11AM`                     | `0 11 * * *`         |
+| `.EVERY_DAY_AT_NOON`                     | `0 12 * * *`         |
+| `.EVERY_DAY_AT_1PM`                      | `0 13 * * *`         |
+| `.EVERY_DAY_AT_2PM`                      | `0 14 * * *`         |
+| `.EVERY_DAY_AT_3PM`                      | `0 15 * * *`         |
+| `.EVERY_DAY_AT_4PM`                      | `0 16 * * *`         |
+| `.EVERY_DAY_AT_5PM`                      | `0 17 * * *`         |
+| `.EVERY_DAY_AT_6PM`                      | `0 18 * * *`         |
+| `.EVERY_DAY_AT_7PM`                      | `0 19 * * *`         |
+| `.EVERY_DAY_AT_8PM`                      | `0 20 * * *`         |
+| `.EVERY_DAY_AT_9PM`                      | `0 21 * * *`         |
+| `.EVERY_DAY_AT_10PM`                     | `0 22 * * *`         |
+| `.EVERY_DAY_AT_11PM`                     | `0 23 * * *`         |
+| `.EVERY_DAY_AT_MIDNIGHT`                 | `0 0 * * *`          |
+| `.EVERY_WEEK`                            | `0 0 * * 0`          |
+| `.EVERY_WEEKDAY`                         | `0 0 * * 1-5`        |
+| `.EVERY_WEEKEND`                         | `0 0 * * 6,0`        |
+| `.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT`    | `0 0 1 * *`          |
+| `.EVERY_1ST_DAY_OF_MONTH_AT_NOON`        | `0 12 1 * *`         |
+| `.EVERY_2ND_HOUR`                        | `0 */2 * * *`        |
+| `.EVERY_2ND_HOUR_FROM_1AM_THROUGH_11PM`  | `0 1-23/2 * * *`     |
+| `.EVERY_2ND_MONTH`                       | `0 0 1 */2 *`        |
+| `.EVERY_QUARTER`                         | `0 0 1 */3 *`        |
+| `.EVERY_6_MONTHS`                        | `0 0 1 */6 *`        |
+| `.EVERY_YEAR`                            | `0 0 1 1 *`          |
+| `.EVERY_30_MINUTES_BETWEEN_9AM_AND_5PM`  | `0 */30 9-17 * * *`  |
+| `.EVERY_30_MINUTES_BETWEEN_9AM_AND_6PM`  | `0 */30 9-18 * * *`  |
+| `.EVERY_30_MINUTES_BETWEEN_10AM_AND_7PM` | `0 */30 10-19 * * *` |
+
+</div>
+</InteractiveDocLayout>
+</div>
