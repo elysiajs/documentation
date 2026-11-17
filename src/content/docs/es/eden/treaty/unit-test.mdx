@@ -1,0 +1,55 @@
+---
+title: Pruebas unitarias
+description: Prueba una instancia de Elysia directamente con Eden Treaty.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Pruebas unitarias</h1>
+
+Como ves en la [configuración de Eden Treaty](/eden/treaty/config#urlorinstance) y en [Pruebas unitarias](/patterns/unit-test), puedes pasar una instancia de Elysia directamente a Eden Treaty para trabajar con el servidor de Elysia sin enviar ninguna petición de red.
+
+Con este patrón puedes crear una prueba unitaria con type safety de extremo a extremo y pruebas a nivel de tipos, todo a la vez.
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia().get('/hello', 'hi')
+const api = treaty(app)
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const { data } = await api.hello.get()
+
+        expect(data).toBe('hi')
+
+    })
+})
+```
+
+<span id="type-safety-test"></span>
+## Prueba de type safety
+Incluye tu carpeta de pruebas en `tsconfig.json` y ejecuta TypeScript con las opciones de compilación del proyecto.
+
+```bash
+bunx tsc --noEmit
+```
+
+Esto te ayuda a asegurar la integridad de los tipos tanto en el cliente como en el servidor, sobre todo durante una migración.
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
