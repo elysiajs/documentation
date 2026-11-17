@@ -1,5 +1,5 @@
 ---
-title: Montar
+title: Mount
 description: Ejecuta juntas con Elysia aplicaciones basadas en Request y Response.
 template: splash
 ---
@@ -12,7 +12,7 @@ import InteractiveDocLayout from '../../../../components/interactive-code/layout
 <InteractiveDocLayout>
 <div class="content-layout">
 
-<h1 id="_top">Montar</h1>
+<h1 id="_top">Mount</h1>
 
 [WinterTC](https://wintertc.org/) es un estándar para crear servidores HTTP, respaldado por Cloudflare, Deno, Vercel y otros.
 
@@ -22,8 +22,7 @@ Elysia cumple con WinterTC. Está optimizado para ejecutarse en Bun, pero tambi�
 
 Así, cualquier framework o código compatible con WinterTC puede ejecutarse junto a los demás, de modo que frameworks como Elysia, Hono, Remix o Itty Router pueden funcionar juntos en una simple función.
 
-<span id="mount"></span>
-## Montar
+## Mount
 Pasa una función `fetch` a `.mount`:
 ```ts
 import { Elysia } from 'elysia'
