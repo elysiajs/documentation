@@ -1,0 +1,144 @@
+---
+title: Plugin Compress
+description: Referencia y ejemplos del plugin Compress.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro'
+import '../../../../styles/routing.css'
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin Compress</h1>
+
+El plugin oficial [`@elysia/compress`](https://github.com/elysiajs/elysia-compress) comprime las respuestas HTTP que cumplen los requisitos. Negocia la codificación a partir de la cabecera `Accept-Encoding` de la petición. Los codecs disponibles dependen del runtime.
+
+<span id="installation"></span>
+## Instalación
+
+```bash
+bun add @elysia/compress@rc
+```
+
+<span id="basic-use"></span>
+## Uso básico
+
+Registra `compress` antes de las rutas que lo usan:
+
+```ts
+import { Elysia } from 'elysia'
+import { compress } from '@elysia/compress'
+
+new Elysia()
+	.use(compress())
+	.get('/', () => 'Hello Elysia! '.repeat(100))
+	.listen(3000)
+```
+
+Por defecto, el plugin usa un umbral de 1024 bytes para las respuestas de longitud conocida y las respuestas en buffer. Además, la respuesta tiene que pasar la comprobación del tipo de medio. Si el cliente no acepta ninguna de las codificaciones disponibles, el plugin devuelve la respuesta sin comprimir.
+
+<span id="route-control"></span>
+## Control por ruta
+
+La opción de ruta `compress` va en el argumento del hook, antes del handler. Así puedes desactivar la compresión en una ruta y mantener el comportamiento por defecto en las demás:
+
+```ts
+new Elysia()
+	.use(compress())
+	.get('/compressed', () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', { compress: false }, () => 'Hello Elysia! '.repeat(100))
+```
+
+Pon `default` a `false` para que cada ruta tenga que activarla explícitamente:
+
+```ts
+new Elysia()
+	.use(compress({ default: false }))
+	.get('/compressed', { compress: true }, () => 'Hello Elysia! '.repeat(100))
+	.get('/plain', () => 'Hello Elysia! '.repeat(100))
+```
+
+Una ruta que la activa sigue respetando los tipos de medio configurados, el umbral, la negociación de la codificación y las condiciones para no comprimir.
+
+<span id="options"></span>
+## Opciones
+
+```ts
+new Elysia().use(
+	compress({
+		encodings: ['gzip', 'deflate'],
+		threshold: 2048,
+		options: {
+			gzip: { level: 6 }
+		}
+	})
+)
+```
+
+| Opción      | Por defecto                         | Descripción |
+| ----------- | ----------------------------------- | ----------- |
+| `default`   | `true`                              | Comprime las rutas salvo que una ruta indique `compress: false`. Ponlo a `false` para exigir `compress: true`. |
+| `encodings` | `['br', 'zstd', 'gzip', 'deflate']` | Define el orden de preferencia del servidor. El plugin quita los codecs que el runtime no admite. Los valores de calidad del cliente tienen prioridad y, en caso de empate, decide el orden del servidor. |
+| `threshold` | `1024`                              | Define el número mínimo de bytes para las respuestas de longitud conocida y las respuestas en buffer. |
+| `types`     | Predicado integrado                 | Devuelve `true` para los tipos de medio que el plugin puede comprimir. El predicado recibe el tipo de medio en minúsculas y sin parámetros. Sustituye al predicado integrado. |
+| `stream`    | `true`                              | Comprime las respuestas marcadas con `Transfer-Encoding: chunked`. Ponlo a `false` para dejar esas respuestas sin comprimir. |
+| `options`   | `{}`                                | Define opciones para `br`, `zstd`, `gzip` o `deflate`. Brotli y Zstandard aceptan los parámetros de su codec. `gzip` y deflate aceptan opciones de zlib como `level`. |
+
+El predicado `types` integrado permite comprimir estos tipos de medio:
+
+- `text/*`
+- `application/json`
+- los tipos de medio que terminan en `+json`
+
+El plugin siempre excluye `text/event-stream`.
+
+El umbral se aplica a un `Content-Length` declarado o a un body en buffer. Una respuesta chunked sin longitud conocida puede empezar a comprimirse antes de que el plugin sepa su tamaño final.
+
+<span id="runtime-codec-support"></span>
+## Codecs según el runtime
+
+El runtime decide qué codecs puede usar el plugin. El plugin usa Brotli, gzip y deflate cuando el runtime ofrece el codec de zlib correspondiente y un puente a Web streams. Zstandard también necesita su codec de zlib. Si zlib no está disponible, la API Web `CompressionStream` puede encargarse de gzip y deflate.
+
+La alternativa con `CompressionStream` no aplica las `options` personalizadas de gzip o deflate. No des por hecho que todos los runtimes admiten las cuatro codificaciones.
+
+<span id="skip-behavior"></span>
+## Cuándo no se comprime
+
+El plugin deja una respuesta sin comprimir si se cumple cualquiera de estas condiciones:
+
+- El método de la petición es `HEAD`.
+- El estado es `204`, `205`, `206` o `304`.
+- La respuesta ya tiene `Content-Encoding`.
+- `Cache-Control` contiene `no-transform`.
+- La respuesta no tiene body o usa `text/event-stream`.
+- El predicado `types` rechaza el tipo de medio.
+- Un body de tamaño conocido o en buffer es más pequeño que `threshold`.
+- La respuesta es chunked y `stream` es `false`.
+
+<span id="response-headers"></span>
+## Cabeceras de la respuesta
+
+Una respuesta comprimida recibe `Content-Encoding` e incluye `Accept-Encoding` en `Vary`. El plugin quita `Content-Length`, `Content-Range`, `Accept-Ranges` y `Transfer-Encoding`, porque esos valores describen la respuesta sin comprimir. También convierte un `ETag` fuerte en un `ETag` débil.
+
+Si una respuesta que se podría comprimir no tiene ninguna codificación aceptada, se queda sin comprimir e incluye `Accept-Encoding` en `Vary`.
+
+<span id="protect-responses-that-contain-secrets"></span>
+## Protege las respuestas que contienen secretos
+
+La compresión puede exponer secretos mediante un ataque de tipo BREACH basado en el tamaño de la respuesta, cuando una respuesta contiene a la vez un secreto y datos controlados por un atacante. Añade `no-transform` a esa respuesta:
+
+```ts
+app.get('/secret', ({ query, set }) => {
+	set.headers['cache-control'] = 'private, no-transform'
+
+	return { echo: query.q, token: session.token }
+})
+```
+
+El plugin detecta `no-transform` y devuelve la respuesta sin comprimir.
+
+</div>
+</InteractiveDocLayout>
+</div>
