@@ -1,0 +1,226 @@
+---
+title: Compilador JIT
+description: Cómo analiza Elysia los handlers y genera, para cada ruta, el código que maneja las peticiones.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">"Compilador" JIT</h1>
+
+Elysia optimiza tanto las funciones del runtime que usa como el trabajo que hace para manejar cada petición. Una ruta que solo lee un parámetro de ruta no debería tener que parsear una query o un cuerpo que no usa.
+
+Desde [Elysia 0.4](/blog/elysia-04/), publicada el 30 de marzo de 2023, el framework genera en JavaScript los handlers de las peticiones con `new Function(...)`.
+
+No es un compilador tradicional que traduce un lenguaje de programación a otro. Genera código adaptado al handler, los esquemas y los hooks de cada ruta. Por eso ponemos "compilador" entre comillas.
+
+En v2, el generador de handlers está en `src/compile/handler/`, que incluye `jit.ts`. Las explicaciones más antiguas hablan de `src/compose.ts`. Sucrose sigue estando en `src/sucrose.ts`.
+
+Por defecto, una ruta puede compilarse la primera vez que se usa. Una vez generado, el handler se reutiliza. Las respuestas estáticas y las rutas precompiladas pueden seguir otros caminos, así que no todas las peticiones ni todas las rutas necesitan el mismo análisis.
+
+<span id="static-code-analysis-sucrose"></span>
+## Análisis estático del código (Sucrose)
+
+*Sucrose* es el apodo del módulo de análisis que ayuda al compilador a saber qué campos del contexto usa un handler.
+
+Lee el código fuente de una función con `Function.toString()` y aplica un análisis especializado para encontrar los patrones de acceso que importan. No ejecuta el handler para averiguar qué necesita.
+
+Fíjate en esta ruta:
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .patch('/user/:id', ({ params }) => ({ id: params.id }))
+```
+
+El handler lee `params`. No lee `body`, `query` ni `headers`.
+
+Sucrose aporta esta información a la compilación de la ruta. El compilador también tiene en cuenta los hooks y los esquemas: un esquema de validación del cuerpo sigue necesitando su entrada aunque el handler no lea `body` directamente.
+
+Conceptualmente, el código generado puede hacer esto:
+
+```ts title="Route-specific handler, simplified"
+function tailoredHandler(request) {
+    const context = {
+        request,
+        params: parseParams(request.url)
+    }
+
+    return routeHandler(context)
+}
+```
+
+Son bocetos para explicar la idea, no el código que genera Elysia ni funciones auxiliares que exporte. Compáralo con un handler central que prepara todos los campos de antemano:
+
+```ts title="Eager central handler, simplified"
+async function centralHandler(request) {
+    const context = {
+        request,
+        params: parseParams(request.url),
+        body: await parseBody(request),
+        query: parseQuery(request.url),
+        headers: parseHeaders(request.headers)
+    }
+
+    return routeHandler(context)
+}
+```
+
+| Entrada | Ruta que solo usa parámetros | Boceto que lo prepara todo de antemano |
+| --- | --- | --- |
+| Parámetros de ruta | Se leen | Se leen |
+| Cuerpo | Se omite salvo que otro requisito de la ruta lo necesite | Se lee |
+| Query | Se omite salvo que haga falta | Se lee |
+| Objeto de cabeceras | Se omite salvo que haga falta | Se lee |
+
+Así se reduce el trabajo innecesario en cada petición. Otros frameworks también pueden parsear bajo demanda; los bocetos explican la optimización, no pretenden decir que todos los demás frameworks parsean siempre todo.
+
+<span id="why-not-acorn-esprima-or-other-traditional-analysis-tools"></span>
+### ¿Por qué no acorn, esprima u otras herramientas de análisis tradicionales?
+
+Los parsers de propósito general entienden mucho más JavaScript del que necesita este análisis. Además, construyen un AST, lo que añade trabajo y asignaciones de memoria.
+
+Elysia se especializa en los patrones del código fuente de las funciones que importan para saber cómo se usa el contexto. Trata ese subconjunto como su propio pequeño lenguaje de entrada y aplica un análisis conservador cuando es más difícil saber a qué se accede.
+
+El compromiso es un alcance más limitado a cambio de menos trabajo de parseo. No sustituye a un parser de JavaScript de propósito general.
+
+<span id="compiler-optimizations"></span>
+## Optimizaciones del compilador
+
+El compilador puede ajustar el flujo de control a lo que de verdad necesita cada ruta, especializar el manejo de la respuesta y acceder directamente a las propiedades cuando es posible.
+
+Los valores constantes y los esquemas conocidos también le dan información que un único handler general no tendría. El resultado es la suma de muchos pequeños ahorros, y su impacto depende de la ruta.
+
+<span id="example-mapresponse-mapcompactresponse"></span>
+### Ejemplo: `mapResponse`, `mapCompactResponse`
+
+Elysia tiene distintos mappers de respuesta según la cantidad de metadatos que lleve la respuesta.
+
+Cuando un handler no modifica `set` ni usa un código de estado personalizado, un mapper compacto puede devolver su valor sin preparar el código de estado ni las cabeceras adicionales. Cuando eso hace falta, se encarga el mapper completo.
+
+Crear y mapear una respuesta con cabeceras personalizadas no supone el mismo trabajo que devolver un valor simple. La optimización elige el camino que encaja con la ruta en vez de pagar siempre el coste del caso general.
+
+<span id="platform-specific-optimization"></span>
+## Optimización específica de cada plataforma
+
+Elysia se creó originalmente para Bun y también es compatible con [Node.js](/integrations/node/), [Deno](/integrations/deno/) y otros entornos gracias a integraciones específicas para cada runtime.
+
+Ser compatible con una plataforma y aprovechar sus APIs nativas son cosas distintas. Por ejemplo, el enrutamiento nativo de Bun y sus caminos para respuestas estáticas pueden ahorrarse parte del trabajo de despacho en JavaScript.
+
+Otros ejemplos:
+
+- El manejo nativo de WebSocket en Bun con el [plugin de WebSocket](/patterns/websocket/) de Elysia.
+- El helper `file()`, que usa el manejo de archivos específico de cada plataforma cuando está disponible.
+- Las operaciones nativas con cabeceras cuando el runtime las ofrece.
+
+Elysia aparece en el [benchmark de plaintext de la ronda 23 de TechEmpower](https://www.techempower.com/benchmarks/#section=data-r23&hw=ph&test=plaintext). Es un resultado histórico para una configuración concreta, no una medición de los ejemplos de v2 de esta página.
+
+Mide tu carga de trabajo real en tu runtime. El acceso a la base de datos, la serialización, los middleware y las condiciones de red pueden pesar mucho más que lo que mide un pequeño benchmark de enrutamiento.
+
+<span id="overhead-of-the-jit-compiler"></span>
+## Sobrecarga del compilador JIT
+
+Generar un handler especializado tiene ventajas, pero también costes.
+
+<span id="initial-request-overhead"></span>
+### Sobrecarga de la primera petición
+
+La primera vez que se usa una ruta puede hacer falta analizarla y generar código. Las peticiones siguientes reutilizan el resultado.
+
+Mídelo en local con la versión y el runtime que uses:
+
+```ts title="Measure eager route compilation"
+import { Elysia } from 'elysia'
+
+const iterations = 10_000
+const start = performance.now()
+
+for (let index = 0; index < iterations; index++) {
+    new Elysia()
+        .post('/id/:id', ({ params }) => params.id)
+        .compile()
+}
+
+const elapsed = performance.now() - start
+console.log(`${elapsed.toFixed(1)} ms total`)
+console.log(`${(elapsed / iterations).toFixed(4)} ms per instance`)
+```
+
+Esto incluye la creación de la instancia y el registro de la ruta, además de la compilación. El calentamiento, la recolección de basura, la complejidad de la ruta y el hardware influyen en el resultado.
+
+Usa `precompile: true` en la aplicación raíz para compilar antes de empezar a escuchar, o llama a `.compile()` explícitamente:
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ precompile: true })
+    .get('/hello/:name', ({ params }) => 'Hello ' + params.name)
+    .listen(3000)
+```
+
+Sacrificas algo de tiempo de arranque a cambio de menos trabajo en la primera petición.
+
+<span id="memory-usage"></span>
+### Uso de memoria
+
+El código generado y sus metadatos ocupan memoria. Más rutas pueden suponer más handlers y validadores compilados. Si esto importa en tu despliegue, mide la memoria con un conjunto de rutas representativo.
+
+<span id="bigger-bundle-size"></span>
+### Bundle más grande
+
+El compilador y su código de análisis aumentan el tamaño del paquete de Elysia. Las herramientas de build ahead-of-time pueden cambiar lo que se necesita en runtime, pero un bundle más pequeño y un handler más rápido no van automáticamente de la mano.
+
+<span id="maintainability"></span>
+### Mantenibilidad
+
+El código generado añade complejidad para quienes mantienen el framework. Para depurarlo hay que entender tanto la definición de la ruta como el proceso de generación del código.
+
+Que la generación y el análisis sean especializados ayuda al rendimiento en runtime, pero también obliga a que esas partes tengan sus propias pruebas.
+
+<span id="security-considerations"></span>
+### Consideraciones de seguridad
+
+`new Function(...)` compila JavaScript. No es un sandbox.
+
+Elysia genera código a partir de las rutas de la aplicación y de estructuras que controla el compilador; no está pensado para evaluar como JavaScript strings arbitrarios que lleguen en una petición. Aun así, ese límite requiere cuidado al manejar esquemas, la configuración de plugins u otras entradas que influyen en el código generado.
+
+No aceptes código de aplicación ni configuración ejecutable de esquemas que no sean de confianza dando por hecho que la compilación de rutas los vuelve seguros. Además, las restricciones de un runtime sobre la generación dinámica de código se aplican tanto si la aplicación es correcta como si no.
+
+<span id="libraries-that-use-dynamic-code-generation"></span>
+## Librerías que usan generación dinámica de código
+
+Elysia no es el único que genera funciones especializadas. [Ajv](https://ajv.js.org/guide/managing-schemas.html) y [TypeBox](https://github.com/sinclairzx81/typebox) también usan técnicas de compilación para la validación.
+
+La idea general es la misma: preparar una vez y luego reutilizar una función en el hot path. Elysia lo aplica tanto al manejo de las peticiones como a la validación. Los detalles exactos de implementación dependen del validador y de la versión que elijas.
+
+<span id="opting-out"></span>
+## Desactivarlo
+
+:::note[Elysia v2]
+
+En v1, la opción `new Elysia({ aot: false })` seleccionaba el antiguo handler dinámico. El constructor de v2 ya no ofrece esa opción. Configurar `precompile: true` cambia cuándo se compila; no desactiva la generación de código.
+
+:::
+
+En v2 tienes plugins de build ahead-of-time en rutas como `elysia/plugin/aot/bun`, `elysia/plugin/aot/esbuild` y `elysia/plugin/aot/vite`. Estos plugins preparan los handlers durante el build en lugar de usar el antiguo interruptor del modo dinámico.
+
+Si despliegas en un runtime que restringe la generación dinámica de código, revisa sus [requisitos de despliegue](/patterns/deploy/) y las rutas que admite el plugin de build. No des por hecho que cambiar el antiguo flag `aot` hace compatible una aplicación.
+
+<span id="afterword"></span>
+## Epílogo
+
+El compilador sacrifica algo de trabajo al arrancar, memoria y complejidad de implementación a cambio de repetir menos trabajo al manejar las peticiones. Ese compromiso es clave en el diseño de Elysia.
+
+El proyecto publicó un [artículo de seis páginas en la ACM Digital Library](https://dl.acm.org/doi/10.1145/3605098.3636068) sobre una versión anterior de su compilador JIT y sus optimizaciones de rendimiento. Sirve de contexto sobre el enfoque, aunque la implementación actual ha seguido evolucionando.
+
+Las librerías y los bindings nativos, incluidos sistemas como uWebSockets, hacen otros compromisos y pueden superar a los frameworks de JavaScript en algunas cargas de trabajo. Usa los benchmarks para responder preguntas sobre una carga de trabajo concreta, no para prometer un ganador universal.
+
+</div>
+</InteractiveDocLayout>
+</div>
