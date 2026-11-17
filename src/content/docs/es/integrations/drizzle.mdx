@@ -1,0 +1,412 @@
+---
+title: "Drizzle"
+description: "Puedes usar Drizzle con drizzle-typebox para tener type safety de extremo a extremo, desde la base de datos hasta la validación y el frontend"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Drizzle</h1>
+
+Drizzle ORM es un ORM headless para TypeScript centrado en la type safety y en la experiencia de desarrollo.
+
+En una aplicación con Elysia v2, [valida el límite con la base de datos](#validate-a-v2-database-boundary) usando el propio esquema de Elysia. La receta antigua de v1 convierte un esquema de Drizzle en modelos de validación de Elysia con `drizzle-typebox`.
+
+:::caution[Compatibilidad con TypeBox]
+
+Elysia v2 usa el paquete `typebox` 1.x. La receta de `drizzle-typebox` de abajo está pensada para `@sinclair/typebox` 0.x, incluidos su símbolo `Kind` y sus tipos `BuildSchema`. Fijar la versión de ese paquete antiguo no lo hace compatible con v2. Usa la receta como referencia para esas versiones de los paquetes; en una aplicación con v2, usa un generador que produzca esquemas compatibles o define un esquema de validación de Elysia en el límite con la base de datos.
+
+:::
+
+### Drizzle TypeBox
+[El `t` de Elysia](/essential/validation/#typebox) extiende TypeBox. La compatibilidad de los esquemas depende de la versión de TypeBox que use el generador.
+
+Puedes convertir un esquema de Drizzle en un esquema de TypeBox con ["drizzle-typebox"](https://npmjs.org/package/drizzle-typebox) y usarlo directamente en la validación de esquemas de Elysia v1.
+
+<span id="heres-how-the-v1-recipe-works"></span>
+### Así funciona la receta de v1:
+1. Define el esquema de tu base de datos en Drizzle.
+2. Convierte el esquema de Drizzle en modelos de validación de Elysia con `drizzle-typebox`.
+3. Usa esos modelos de validación de Elysia para garantizar la validación de tipos.
+4. El esquema de OpenAPI se genera a partir de los modelos de validación de Elysia.
+5. Añade [Eden Treaty](/eden) para tener type safety en tu frontend.
+
+```text
+                                                    * ——————————————— *
+                                                    |                 |
+                                               | -> |  Documentation  |
+* ————————— *             * ———————— * OpenAPI |    |                 |
+|           |   drizzle-  |          | ——————— |    * ——————————————— *
+|  Drizzle  | —————————-> |  Elysia  |
+|           |  -typebox   |          | ——————— |    * ——————————————— *
+* ————————— *             * ———————— *   Eden  |    |                 |
+                                               | -> |  Frontend Code  |
+												    |                 |
+												    * ——————————————— *
+
+```
+
+<span id="installation"></span>
+## Instalación
+Para instalar Drizzle, ejecuta este comando:
+
+```bash
+bun add drizzle-orm drizzle-typebox
+```
+
+En la receta antigua, fijar la versión de `@sinclair/typebox` evita conflictos entre los símbolos de esquema 0.x que usa el generador y Elysia v1. Elysia v2, en cambio, declara `typebox >= 1.3.0` como peer dependency.
+
+Si ya tienes un proyecto con v1, revisa su dependencia de TypeBox antes de elegir qué versión fijar:
+```bash
+grep "@sinclair/typebox" node_modules/elysia/package.json
+```
+
+Una entrada `overrides` antigua tiene este aspecto. La versión que aparece es la de la receta original; no la uses para sobrescribir la dependencia `typebox` de Elysia v2:
+```json
+{
+  "overrides": {
+  	"@sinclair/typebox": "0.32.4"
+  }
+}
+```
+
+<span id="validate-a-v2-database-boundary"></span>
+## Validar el límite con la base de datos en v2
+
+Puedes seguir usando Drizzle para las consultas a la base de datos y describir la petición con el propio esquema de Elysia. Así no mezclas generaciones distintas del paquete TypeBox:
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/sign-up', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String(),
+            email: t.String({ format: 'email' })
+        })
+    }, ({ body }) => {
+        // Hash the password and insert the validated fields with Drizzle.
+        return { username: body.username }
+    })
+```
+
+El resto de secciones conserva la receta de v1 para generar esquemas, junto con sus utilidades, para las versiones compatibles del generador.
+
+<span id="drizzle-schema"></span>
+## Esquema de Drizzle
+Supongamos que tienes una tabla `user` en tu código como esta:
+
+
+```ts title="src/database/schema.ts"
+import {
+    pgTable,
+    varchar,
+    timestamp
+} from 'drizzle-orm/pg-core'
+
+import { createId } from '@paralleldrive/cuid2'
+
+export const user = pgTable(
+    'user',
+    {
+        id: varchar('id')
+            .$defaultFn(() => createId())
+            .primaryKey(),
+        username: varchar('username').notNull().unique(),
+        password: varchar('password').notNull(),
+        email: varchar('email').notNull().unique(),
+        salt: varchar('salt', { length: 64 }).notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull(),
+    }
+)
+
+export const table = {
+	user
+} as const
+
+export type Table = typeof table
+```
+
+
+## drizzle-typebox
+Puedes convertir la tabla `user` en modelos de TypeBox con `drizzle-typebox`:
+
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+import { Type } from '@sinclair/typebox'
+import { createInsertSchema } from 'drizzle-typebox'
+import { table } from './database/schema'
+
+const _createUser = createInsertSchema(table.user, {
+	// Replace email with an email type
+	email: Type.String({ format: 'email' })
+})
+
+new Elysia()
+	.post('/sign-up', {
+		body: t.Omit(
+			_createUser,
+			['id', 'salt', 'createdAt']
+		)
+	}, ({ body }) => {
+		// Create a new user
+	})
+```
+
+
+En una aplicación con Elysia v1, esto te permite reutilizar el esquema de la base de datos en los modelos de validación de Elysia.
+
+## Type instantiation is possibly infinite
+Si te aparece un error como **Type instantiation is possibly infinite**, se debe a la referencia circular entre `drizzle-typebox` y `Elysia`.
+
+Si anidas un tipo de drizzle-typebox dentro de un esquema de Elysia, provocarás un bucle infinito de instanciación de tipos.
+
+Para evitarlo, tienes que **definir explícitamente un tipo intermedio entre `drizzle-typebox` y el esquema de `Elysia`**:
+```ts
+import { Elysia, t } from 'elysia'
+import { Type } from '@sinclair/typebox'
+import { createInsertSchema } from 'drizzle-typebox'
+
+import { table } from './database/schema'
+
+const _createUser = createInsertSchema(table.user, {
+	email: Type.String({ format: 'email' })
+})
+
+// ✅ This works, by referencing the type from `drizzle-typebox`
+const createUser = t.Omit(
+	_createUser,
+	['id', 'salt', 'createdAt']
+)
+
+// ❌ This will cause an infinite loop of type instantiation
+const createUserInline = t.Omit(
+	createInsertSchema(table.user, {
+		email: Type.String({ format: 'email' })
+	}),
+	['id', 'salt', 'createdAt']
+)
+```
+
+Si quieres usar tipos de Elysia, declara siempre una variable para el resultado de `drizzle-typebox` y haz referencia a ella.
+
+<span id="utility"></span>
+## Utilidad
+Como seguramente vas a usar `t.Pick` y `t.Omit` para excluir o incluir ciertos campos, repetir el proceso cada vez puede resultar pesado:
+
+Estas funciones de utilidad mantienen la integración con `drizzle-typebox` para los proyectos que siguen usando sus esquemas de `@sinclair/typebox`. Revisa la nota de compatibilidad de arriba antes de usarlas con Elysia v2:
+
+
+```ts title="src/database/utils.ts"
+/**
+ * @lastModified 2025-02-04
+ * @see /integrations/drizzle/#utility
+ */
+
+import { Kind, type TObject } from '@sinclair/typebox'
+import {
+    createInsertSchema,
+    createSelectSchema,
+    BuildSchema,
+} from 'drizzle-typebox'
+
+import { table } from './schema'
+import type { Table } from 'drizzle-orm'
+
+type Spread<
+    T extends TObject | Table,
+    Mode extends 'select' | 'insert' | undefined,
+> =
+    T extends TObject<infer Fields>
+        ? {
+              [K in keyof Fields]: Fields[K]
+          }
+        : T extends Table
+          ? Mode extends 'select'
+              ? BuildSchema<
+                    'select',
+                    T['_']['columns'],
+                    undefined
+                >['properties']
+              : Mode extends 'insert'
+                ? BuildSchema<
+                      'insert',
+                      T['_']['columns'],
+                      undefined
+                  >['properties']
+                : {}
+          : {}
+
+/**
+ * Spread a Drizzle schema into a plain object
+ */
+export const spread = <
+    T extends TObject | Table,
+    Mode extends 'select' | 'insert' | undefined,
+>(
+    schema: T,
+    mode?: Mode,
+): Spread<T, Mode> => {
+    const newSchema: Record<string, unknown> = {}
+    let table
+
+    switch (mode) {
+        case 'insert':
+        case 'select':
+            if (Kind in schema) {
+                table = schema
+                break
+            }
+
+            table =
+                mode === 'insert'
+                    ? createInsertSchema(schema)
+                    : createSelectSchema(schema)
+
+            break
+
+        default:
+            if (!(Kind in schema)) throw new Error('Expect a schema')
+            table = schema
+    }
+
+    for (const key of Object.keys(table.properties))
+        newSchema[key] = table.properties[key]
+
+    return newSchema as any
+}
+
+/**
+ * Spread a Drizzle Table into a plain object
+ *
+ * If `mode` is 'insert', the schema will be refined for insert
+ * If `mode` is 'select', the schema will be refined for select
+ * If `mode` is undefined, the schema will be spread as is, models will need to be refined manually
+ */
+export const spreads = <
+    T extends Record<string, TObject | Table>,
+    Mode extends 'select' | 'insert' | undefined,
+>(
+    models: T,
+    mode?: Mode,
+): {
+    [K in keyof T]: Spread<T[K], Mode>
+} => {
+    const newSchema: Record<string, unknown> = {}
+    const keys = Object.keys(models)
+
+    for (const key of keys) newSchema[key] = spread(models[key], mode)
+
+    return newSchema as any
+}
+```
+
+
+Esta función de utilidad convierte un esquema de Drizzle en un objeto plano del que puedes elegir campos por el nombre de la propiedad:
+```ts
+// ✅ Using spread utility function
+const user = spread(table.user, 'insert')
+
+const createUser = t.Object({
+	id: user.id, // { type: 'string' }
+	username: user.username, // { type: 'string' }
+	password: user.password // { type: 'string' }
+})
+
+// ⚠️ Using t.Pick
+const _createUser = createInsertSchema(table.user)
+
+const createUserPicked = t.Pick(
+	_createUser,
+	['id', 'username', 'password']
+)
+```
+
+<span id="table-singleton"></span>
+### Singleton de tablas
+Te recomendamos usar un patrón singleton para guardar el esquema de las tablas. Así puedes acceder a él desde cualquier parte del código:
+
+
+```ts title="src/database/model.ts"
+import { table } from './schema'
+import { spreads } from './utils'
+
+export const db = {
+	insert: spreads({
+		user: table.user,
+	}, 'insert'),
+	select: spreads({
+		user: table.user,
+	}, 'select')
+} as const
+```
+
+
+Ahora puedes acceder al esquema de las tablas desde cualquier parte del código:
+
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+import { db } from './database/model'
+
+const { user } = db.insert
+
+new Elysia()
+	.post('/sign-up', {
+		body: t.Object({
+			id: user.id,
+			username: user.username,
+			password: user.password
+		})
+	}, ({ body }) => {
+		// Create a new user
+	})
+```
+
+
+<span id="refinement"></span>
+### Refinamiento
+
+Si necesitas refinar los tipos, puedes usar `createInsertSchema` y `createSelectSchema` para refinar el esquema directamente.
+
+
+```ts title="src/database/model.ts"
+import { Type } from '@sinclair/typebox'
+import { createInsertSchema, createSelectSchema } from 'drizzle-typebox'
+
+import { table } from './schema'
+import { spreads } from './utils'
+
+export const db = {
+	insert: spreads({
+		user: createInsertSchema(table.user, {
+			email: Type.String({ format: 'email' })
+		}),
+	}, 'insert'),
+	select: spreads({
+		user: createSelectSchema(table.user, {
+			email: Type.String({ format: 'email' })
+		})
+	}, 'select')
+} as const
+```
+
+
+En el código de arriba, refinamos el esquema de `user.email` para que incluya una propiedad `format`.
+
+La función de utilidad `spread` no vuelve a convertir un esquema que ya está refinado, así que puedes usarlo tal cual.
+
+---
+
+Para más información, consulta la documentación de [Drizzle ORM](https://orm.drizzle.team) y [Drizzle TypeBox](https://orm.drizzle.team/docs/typebox).
+
+</div>
+</InteractiveDocLayout>
+</div>
