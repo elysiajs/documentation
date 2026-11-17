@@ -67,7 +67,7 @@ export const POST = app.fetch
 ```
 
 
-Así te aseguras de que el enrutamiento de Elysia funcione bien, lo coloques donde lo coloques.
+Así te aseguras de que el routing de Elysia funcione bien, lo coloques donde lo coloques.
 
 ## Eden
 
@@ -108,7 +108,7 @@ export const api = treaty<app>('http://localhost:8081')
 ```
 
 
-En un dispositivo físico, sustituye `localhost` por un origen al que pueda llegar el dispositivo, como la dirección de tu máquina de desarrollo en la red local. En producción, usa el origen de tu API desplegada.
+En un dispositivo físico, sustituye `localhost` por un origen al que pueda llegar el dispositivo, como la dirección de tu máquina de desarrollo en la red local. En producción, usa el origen donde hayas hecho deploy de tu API.
 
 3. Usa el cliente en tu pantalla de Expo
 
@@ -131,8 +131,8 @@ export default function Page() {
 
 
 <span id="deployment"></span>
-## Despliegue
-Si lo necesitas, puedes usar la ruta de API con Elysia directamente y desplegarla como una app normal de Elysia, o usar el [runtime de servidor experimental de Expo](https://docs.expo.dev/router/reference/api-routes/#deployment).
+## Deploy
+Si lo necesitas, puedes usar la ruta de API con Elysia directamente y hacer deploy como si fuera una app normal de Elysia, o usar el [runtime de servidor experimental de Expo](https://docs.expo.dev/router/reference/api-routes/#deployment).
 
 Si usas el runtime de servidor de Expo, puedes usar el comando `expo export` para crear un build optimizado de tu app de Expo. Incluirá una función de Expo que usa Elysia en `dist/server/_expo/functions/`
 
@@ -144,9 +144,9 @@ Una función de API exportada necesita un adaptador de servidor para recibir pet
 :::
 
 
-Puedes usar el adaptador de funciones que ofrece Expo para desplegar tu Edge Function.
+Puedes usar el adaptador de funciones que ofrece Expo para hacer deploy de tu Edge Function.
 
-La guía de despliegue de Expo cubre estos adaptadores:
+La guía de deploy de Expo cubre estos adaptadores:
 - [Express](https://docs.expo.dev/router/reference/api-routes/#express)
 - [Netlify](https://docs.expo.dev/router/reference/api-routes/#netlify)
 - [Vercel](https://docs.expo.dev/router/reference/api-routes/#vercel)
