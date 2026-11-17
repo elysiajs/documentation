@@ -1,6 +1,6 @@
 ---
 title: "Cloudflare Worker"
-description: "Crea handlers de Elysia v2 para Cloudflare Workers y configura el despliegue, los archivos estáticos y los bindings."
+description: "Crea handlers de Elysia v2 para Cloudflare Workers y configura el deploy, los archivos estáticos y los bindings."
 template: splash
 ---
 
@@ -110,13 +110,13 @@ command = "bun build.ts"
 
 La fecha de compatibilidad y el flag `nodejs_compat` coinciden con el fixture de Cloudflare de Elysia v2. Mantén el flag en esta configuración: el consejo de v1 de quitarlo no se aplica aquí.
 
-5. Inicia el servidor de desarrollo:
+5. Inicia el dev server:
 
 ```bash
 wrangler dev
 ```
 
-Así tienes el Worker en local en `http://localhost:8787`. Para desplegarlo, ejecuta `wrangler deploy`.
+Así tienes el Worker en local en `http://localhost:8787`. Para hacer deploy, ejecuta `wrangler deploy`.
 
 ### pnpm
 Si tu configuración de pnpm no instala las peer dependencies, añade explícitamente las que necesita Elysia v2:
@@ -248,7 +248,7 @@ const app = new Elysia()
     .compile()
 ```
 
-Todavía tienes que probar los ejemplos de despliegue y de bindings con tu cuenta de Cloudflare y las versiones de dependencias que elijas.
+Todavía tienes que probar los ejemplos de deploy y de bindings con tu cuenta de Cloudflare y las versiones de dependencias que elijas.
 
 </div>
 </InteractiveDocLayout>
