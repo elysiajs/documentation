@@ -69,9 +69,9 @@ type RequestHandler = (v: { request: Request }) => Response | Promise<Response>
 export const fallback: RequestHandler = ({ request }) => app.handle(request)
 ```
 
-Así el enrutamiento de Elysia funciona correctamente esté donde esté el servidor.
+Así el routing de Elysia funciona correctamente esté donde esté el servidor.
 
-Para más información, consulta [el enrutamiento de SvelteKit](https://kit.svelte.dev/docs/routing#server).
+Para más información, consulta [el routing de SvelteKit](https://kit.svelte.dev/docs/routing#server).
 
 </div>
 </InteractiveDocLayout>
