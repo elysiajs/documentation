@@ -1,0 +1,1109 @@
+---
+title: De Express a Elysia
+description: Compara el routing, la validación, los hooks y la type safety de Express y Elysia.
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import '../../../../styles/comparison.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">De Express a Elysia</h1>
+
+:::note[Elysia v2]
+
+Los ejemplos de Elysia usan la v2: las opciones de la ruta van antes del handler, los métodos del ciclo de vida usan el nombre de su evento y los valores que se obtienen de la petición usan `derive`. Los ejemplos del otro framework muestran una configuración habitual en ese framework: son ejemplos de migración, no un repaso de todo lo que puede hacer hoy en día. Las integraciones con frameworks tienen su propia compatibilidad de versiones, así que revisa esos paquetes cuando migres una aplicación.
+
+:::
+
+Esta guía es para ti si usas Express y quieres ver en qué se diferencia de Elysia, sintaxis incluida, y cómo migrar tu aplicación de Express a Elysia con ejemplos.
+
+**Express** es un framework web popular para Node.js y se usa mucho para crear aplicaciones web y APIs. Es conocido por su simplicidad y su flexibilidad.
+
+**Elysia** es un framework web ergonómico para Bun, Node.js y los runtimes compatibles con la API de Web Standard. Está diseñado para ser ergonómico y cómodo de usar, con foco en una **type safety sólida** y en el rendimiento.
+
+<span id="performance"></span>
+## Rendimiento
+Elysia rinde mucho mejor que Express gracias a su implementación nativa para Bun y al análisis estático del código.
+
+Esta comparación usa un [resultado histórico de la Round 22 de TechEmpower](https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22) del 2023-10-17 en la prueba Plaintext. Son las combinaciones de framework y runtime que se midieron entonces, no mediciones de Elysia v2.
+
+| Framework | Peticiones por segundo |
+| --- | ---: |
+| Elysia | 2.454.631 |
+| Express | 113.117 |
+
+## Routing
+
+Express y Elysia tienen una sintaxis de routing parecida: los dos usan métodos como `app.get()` y `app.post()` para definir rutas, y escriben los parámetros de ruta de forma similar.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.get('/', (req, res) => {
+    res.send('Hello World')
+})
+
+app.post('/id/:id', (req, res) => {
+    res.status(201).send(req.params.id)
+})
+
+app.listen(3000)
+```
+
+> Express usa `req` y `res` como objetos de petición y de respuesta
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .post(
+    	'/id/:id',
+     	({ status, params: { id } }) => {
+      		return status(201, id)
+      	}
+    )
+    .listen(3000)
+```
+
+> Elysia usa un único `context` y devuelve la respuesta directamente
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Hay una pequeña diferencia de estilo. Elysia recomienda usar method chaining (encadenar las llamadas a métodos) y la desestructuración de objetos.
+
+Si no necesitas el contexto, Elysia también te deja pasar la respuesta directamente como un valor.
+
+## Handler
+
+Express y Elysia tienen propiedades parecidas para acceder a los datos de entrada, como `headers`, `query`, `params` y `body`.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.use(express.json())
+
+app.post('/user', (req, res) => {
+    const limit = req.query.limit
+    const name = req.body.name
+    const auth = req.headers.authorization
+
+    res.json({ limit, name, auth })
+})
+```
+
+> Express necesita el middleware `express.json()` para parsear un cuerpo JSON
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.post('/user', { body: t.Object({ name: t.String() }) }, (ctx) => {
+	    const limit = ctx.query.limit
+	    const name = ctx.body.name
+	    const auth = ctx.headers.authorization
+
+	    return { limit, name, auth }
+	})
+```
+
+> Elysia parsea por defecto JSON, datos URL-encoded y datos de formulario
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## Subrouter
+
+Express usa un `express.Router()` específico para declarar un subrouter, mientras que Elysia trata cada instancia como un componente que puedes enchufar y combinar con los demás.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const subRouter = express.Router()
+
+subRouter.get('/user', (req, res) => {
+	res.send('Hello User')
+})
+
+const app = express()
+
+app.use('/api', subRouter)
+```
+
+> Express usa `express.Router()` para crear un subrouter
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ prefix: '/api' })
+	.get('/user', 'Hello User')
+
+const app = new Elysia()
+	.use(subRouter)
+```
+
+> Elysia trata cada instancia como un componente
+
+</div>
+</div>
+
+<div class="content-layout">
+
+<span id="validation"></span>
+## Validación
+Elysia incluye validación de peticiones con TypeBox para darte una type safety sólida, y es compatible con Standard Schema de serie, así que puedes usar tu librería favorita: Zod, Valibot, ArkType, Effect Schema, etc. Express no trae validación integrada y te obliga a declarar los tipos a mano según la librería de validación que uses.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import { z } from 'zod'
+
+const app = express()
+
+app.use(express.json())
+
+const paramSchema = z.object({
+	id: z.coerce.number()
+})
+
+const bodySchema = z.object({
+	name: z.string()
+})
+
+app.patch('/user/:id', (req, res) => {
+	const params = paramSchema.safeParse(req.params)
+	if (!params.success)
+		return res.status(422).json(params.error)
+
+	const body = bodySchema.safeParse(req.body)
+	if (!body.success)
+		return res.status(422).json(body.error)
+
+	res.json({
+		params: params.data.id,
+		body: body.data
+	})
+})
+```
+
+> Express necesita una librería de validación externa, como `zod` o `joi`, para validar el cuerpo de la petición
+
+</div>
+<div>
+
+```ts title="Elysia TypeBox"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: t.Object({
+			id: t.Number()
+		}),
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Zod"
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Valibot"
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: v.object({
+			id: v.pipe(v.string(), v.transform(Number), v.number())
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+> Elysia usa TypeBox para validar y convierte los tipos automáticamente, y también admite otras librerías de validación, como Zod y Valibot, con la misma sintaxis.
+
+</div>
+</div>
+
+<div class="content-layout">
+
+<span id="file-upload"></span>
+## Subida de archivos
+Express depende de la librería externa multer para manejar la subida de archivos, mientras que Elysia trae soporte integrado para archivos y datos de formulario, incluida la validación del tipo MIME, con su API declarativa.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import multer from 'multer'
+import { fileTypeFromFile } from 'file-type'
+import path from 'path'
+
+const app = express()
+const upload = multer({ dest: 'uploads/' })
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+	const file = req.file
+
+	if (!file)
+		return res
+			.status(422)
+			.send('No file uploaded')
+
+	const type = await fileTypeFromFile(file.path)
+	if (!type || !type.mime.startsWith('image/'))
+		return res
+			.status(422)
+			.send('File is not a valid image')
+
+	const filePath = path.resolve(file.path)
+	res.sendFile(filePath)
+})
+```
+
+> Express necesita `multer` para la subida de archivos y validar el tipo MIME a mano
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+const app = new Elysia()
+	.post('/upload', {
+		body: t.Object({
+			file: t.File({
+				type: 'image/*'
+			})
+		})
+	}, ({ body }) => body.file)
+```
+
+> Elysia valida el archivo y su tipo MIME de forma declarativa
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Los metadatos de un archivo no demuestran lo que contiene. Los dos ejemplos usan **file-type** para inspeccionar sus bytes.
+
+Elysia registra el detector una sola vez con `setFileTypeDetector` y después comprueba el tipo de forma declarativa con `t.File({ type })`. El detector es obligatorio: sin él, cualquier subida que se compruebe con `type` no pasa la validación.
+
+## Middleware
+
+El middleware de Express sigue un único orden basado en una cola, mientras que Elysia te da un control más fino con un ciclo de vida **basado en eventos**.
+
+Elysia expone las etapas del [ciclo de vida de la petición](/essential/life-cycle):
+
+| Etapa | Para qué sirve |
+| --- | --- |
+| Request | Inspecciona la petición entrante antes de parsearla |
+| Parse | Decodifica el cuerpo de la petición |
+| Transform y validación | Normaliza y valida los datos de entrada de la petición |
+| Before handle | Deriva valores de la petición o devuelve una respuesta anticipada |
+| Handler | Genera la respuesta de la ruta |
+| After handle y map response | Ajusta y serializa la respuesta |
+| After response | Ejecuta tareas después de enviar la respuesta |
+
+El hook de error maneja los fallos que se produzcan en este pipeline.
+
+Mientras que Express usa un único pipeline lineal para las peticiones, Elysia puede interceptar cada evento del pipeline de una petición.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+// Global middleware
+app.use((req, res, next) => {
+	console.log(`${req.method} ${req.url}`)
+	next()
+})
+
+app.get(
+	'/protected',
+	// Route-specific middleware
+	(req, res, next) => {
+	  	const token = req.headers.authorization
+
+	  	if (!token)
+	   		return res.status(401).send('Unauthorized')
+
+	  	next()
+	},
+	(req, res) => {
+  		res.send('Protected route')
+	}
+)
+```
+
+> Express usa una única cola para el middleware, que se ejecuta en orden
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	// Global middleware
+	.onRequest(({ request }) => {
+		console.log(request.method, new URL(request.url).pathname)
+	})
+	// Route-specific middleware
+	.get('/protected', {
+		beforeHandle({ status, headers }) {
+  			if (!headers.authorization)
+     			return status(401)
+		}
+	}, () => 'protected')
+```
+
+> Elysia usa un interceptor de eventos específico para cada punto del pipeline de la petición
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Express tiene una función `next` para llamar al siguiente middleware, pero Elysia no.
+
+<span id="sound-type-safety"></span>
+## Type safety sólida
+Elysia está diseñado para ofrecer una type safety sólida.
+
+Por ejemplo, [derive](/essential/life-cycle#derive) añade al contexto valores propios de cada petición, con sus tipos inferidos. En la v2 también asume el papel de contexto validado que antes tenía `resolve`.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import type { Request, Response } from 'express'
+
+const app = express()
+
+const getVersion = (req: Request, res: Response, next: Function) => {
+	// @ts-ignore
+    req.version = 2
+
+	next()
+}
+
+app.get('/version', getVersion, (req, res) => {
+	// Error: Property 'version' does not exist on type 'Request'
+	res.send(req.version)
+})
+
+const authenticate = (req: Request, res: Response, next: Function) => {
+  	const token = req.headers.authorization
+
+  	if (!token)
+   		return res.status(401).send('Unauthorized')
+
+	// @ts-ignore
+    req.token = token.split(' ')[1]
+
+	next()
+}
+
+app.get('/token', getVersion, authenticate, (req, res) => {
+	// Error: Property 'version' does not exist on type 'Request'
+	req.version
+
+	// Error: Property 'token' does not exist on type 'Request'
+  	res.send(req.token)
+})
+```
+
+> Express añade propiedades con `@ts-ignore`, y `Request` no sabe que existen
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.decorate('version', 2)
+	.get('/version', ({ version }) => version)
+	.derive(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+
+		return {
+			token: authorization.split(' ')[1]
+		}
+	})
+	// {  token: string, version: number }
+	.get('/token', ({ token, version }) => {
+		return token
+	})
+```
+
+> Elysia usa `decorate` para extender el contexto y `derive` para añadirle propiedades personalizadas
+
+</div>
+</div>
+
+<div class="content-layout">
+
+En Express puedes usar `declare module` para extender la interfaz `Request`, pero esa extensión es global, no tiene una type safety sólida y no garantiza que la propiedad esté disponible en todos los handlers.
+
+```ts
+declare module 'express' {
+  	interface Request {
+    	version: number
+  		token: string
+  	}
+}
+```
+> Esto hace falta para que funcione el ejemplo de Express de arriba, y aun así no ofrece una type safety sólida
+
+<span id="middleware-parameter"></span>
+## Parámetros del middleware
+Express usa una función que devuelve un middleware para definir un middleware reutilizable para rutas concretas, mientras que Elysia usa una [macro](/patterns/macro) para definir un hook personalizado.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import { findUser } from './users'
+import express from 'express'
+import type { Request, Response } from 'express'
+
+const app = express()
+
+const role = (role: 'user' | 'admin') =>
+	(req: Request, res: Response, next: Function) => {
+	  	const user = findUser(req.headers.authorization)
+
+	  	if (!user || user.role !== role)
+	   		return res.status(401).send('Unauthorized')
+
+	    req.user = user
+
+		next()
+	}
+
+app.get('/token', role('admin'), (req, res) => {
+	// Error: Property 'user' does not exist on type 'Request'
+  	res.send(req.user)
+})
+```
+
+> Express usa una función callback para pasarle argumentos personalizados al middleware
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { findUser } from './users'
+
+const app = new Elysia()
+	.macro({
+		role: (role: 'user' | 'admin') => ({
+			derive({ status, headers: { authorization } }) {
+				const user = findUser(authorization)
+
+				if (!user || user.role !== role)
+					return status(401)
+
+				return {
+					user
+				}
+			}
+		})
+	})
+	// { user: User }
+	.get('/token', {
+		role: 'admin'
+	}, ({ user }) => user)
+```
+
+> Elysia usa una macro para pasarle argumentos personalizados a un middleware propio
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Aquí, `findUser` es código de tu aplicación que verifica la credencial recibida y devuelve un usuario con un `role`, o ningún usuario si la verificación falla. Comprobar solo una cabecera o el prefijo Bearer no es autenticación.
+
+<span id="error-handling"></span>
+## Manejo de errores
+
+Express usa un único handler de errores para todas las rutas, mientras que Elysia te da un control más fino sobre el manejo de errores.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+class CustomError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'CustomError'
+	}
+}
+
+// global error handler
+app.use((error, req, res, next) => {
+	if(error instanceof CustomError) {
+		res.status(500).json({
+			message: 'Something went wrong!',
+			error
+		})
+	}
+})
+
+// throws CustomError
+app.get('/error', (req, res) => {
+	throw new CustomError('oh uh')
+})
+```
+
+> Express usa middleware para manejar los errores, con un único handler de errores para todas las rutas
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+class CustomError extends Error {}
+
+const app = new Elysia()
+    .onError(CustomError, ({ error, status }) =>
+        status(500, { message: 'Something went wrong!', detail: error.message })
+    )
+    .get('/error', () => {
+        throw new CustomError('oh uh')
+    })
+    .get('/local-error', {
+        error({ error, status }) {
+            if (error instanceof RangeError)
+                return status(500, { message: 'Only for this route!' })
+        }
+    }, () => {
+        throw new RangeError('outside the allowed range')
+    })
+```
+
+> Elysia te da un control más fino sobre el manejo de errores, además de mecanismos de scope
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Express maneja los errores con middleware, mientras que Elysia ofrece:
+
+1. Handlers de errores tanto globales como específicos de cada ruta
+2. El helper `status` para devolver una respuesta con un estado HTTP
+3. Handlers de errores para clases concretas, con el tipo del error inferido
+
+La ruta `/error` usa el handler registrado para `CustomError`. La ruta `/local-error` maneja otro error de forma local. Los hooks de error se ejecutan en el orden en que se registran, y el primero que devuelve un valor envía la respuesta. Los hooks que registras en la app antes de una ruta se ejecutan antes que el propio hook `error` de esa ruta, así que el hook de la ruta no puede sobrescribirlos.
+
+En un handler para una clase concreta, Elysia infiere el tipo del error registrado.
+
+<span id="encapsulation"></span>
+## Encapsulación
+
+El middleware de Express se registra de forma global, mientras que Elysia te deja controlar los efectos secundarios de un plugin con un mecanismo de scope explícito y con el orden del código.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.get('/', (req, res) => {
+	res.send('Hello World')
+})
+
+const subRouter = express.Router()
+
+subRouter.use((req, res, next) => {
+	const token = req.headers.authorization
+
+	if (!token)
+		return res.status(401).send('Unauthorized')
+
+	next()
+})
+
+app.use(subRouter)
+
+// has side-effect from subRouter
+app.get('/side-effect', (req, res) => {
+	res.send('hi')
+})
+
+```
+
+> Express no controla los efectos secundarios del middleware y necesita un prefijo para aislarlos
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // doesn't have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+> Elysia encapsula los efectos secundarios dentro de un plugin
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Por defecto, Elysia encapsula los eventos del ciclo de vida y el contexto en la instancia donde se usan, así que los efectos secundarios de un plugin no afectan a su instancia padre a menos que lo indiques explícitamente.
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	// Scoped to parent instance but not beyond
+	.as('plugin') // [!code ++]
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // [!code ++]
+    // now have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+Elysia ofrece 3 tipos de scope:
+1. **local** - Se aplica a esta instancia y a sus descendientes (por defecto)
+2. **plugin** - Comparte los efectos secundarios con la instancia padre, pero no más allá
+3. **global** - Los comparte con todas las instancias padre
+
+En Express puedes acotar los efectos secundarios del middleware añadiendo un prefijo, pero eso no es una encapsulación real. Los efectos secundarios siguen ahí, solo que limitados a las rutas que empiezan por ese prefijo, y te toca recordar qué prefijos tienen efectos secundarios, lo que añade carga mental.
+
+Tienes estas opciones:
+
+1. Cambiar el orden del código, pero solo si hay una única instancia con efectos secundarios.
+2. Añadir un prefijo, pero los efectos secundarios siguen ahí. Si otra instancia tiene el mismo prefijo, también los recibe.
+
+Depurar esto puede convertirse en una pesadilla, porque Express no ofrece una encapsulación real.
+
+## Cookie
+Express usa la librería externa `cookie-parser` para parsear las cookies, mientras que Elysia trae soporte integrado para cookies y las maneja con un enfoque basado en signals.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import cookieParser from 'cookie-parser'
+
+const app = express()
+
+app.use(cookieParser('secret'))
+
+app.get('/', function (req, res) {
+	req.cookies.name
+	req.signedCookies.name
+
+	res.cookie('name', 'value', {
+		signed: true,
+		maxAge: 1000 * 60 * 60 * 24
+	})
+})
+```
+
+> Express usa `cookie-parser` para parsear las cookies
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({
+    cookie: {
+        secrets: 'replace-with-a-private-secret',
+        sign: ['name']
+    }
+})
+    .get('/', {
+        cookie: t.Cookie({ name: t.Optional(t.String()) })
+    }, ({ cookie: { name } }) => {
+        const previous = name.value
+        name.set({
+            value: 'value',
+            maxAge: 60 * 60 * 24,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax'
+        })
+        return previous ?? 'unset'
+    })
+```
+
+> Elysia verifica y firma automáticamente las cookies configuradas. El `maxAge` de la cookie va en segundos. Sustituye el secreto del ejemplo por un valor privado y sirve las cookies seguras por HTTPS.
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## OpenAPI
+Express necesita una configuración aparte para OpenAPI, la validación y la type safety, mientras que Elysia ofrece OpenAPI con el plugin `@elysia/openapi`, usando un esquema como **única fuente de verdad**.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+import swaggerUi from 'swagger-ui-express'
+
+const app = express()
+app.use(express.json())
+
+app.post('/users', (req, res) => {
+	// TODO: validate request body
+	res.status(201).json(req.body)
+})
+
+const swaggerSpec = {
+	openapi: '3.0.0',
+	info: {
+		title: 'My API',
+		version: '1.0.0'
+	},
+	paths: {
+		'/users': {
+			post: {
+				summary: 'Create user',
+				requestBody: {
+					content: {
+						'application/json': {
+							schema: {
+								type: 'object',
+								properties: {
+									name: {
+										type: 'string',
+										description: 'First name only'
+									},
+									age: { type: 'integer' }
+								},
+								required: ['name', 'age']
+							}
+						}
+					}
+				},
+				responses: {
+					'201': {
+						description: 'User created'
+					}
+				}
+			}
+		}
+	}
+}
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+```
+
+> Express necesita una configuración aparte para OpenAPI, la validación y la type safety
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi' // [!code ++]
+
+const app = new Elysia()
+	.use(openapi()) // [!code ++]
+	.model({
+		user: t.Object({
+			name: t.String(),
+			age: t.Integer()
+		})
+	})
+	.post('/users', {
+		body: 'user',
+		response: {
+			201: 'user'
+		},
+		detail: {
+			summary: 'Create user'
+		}
+	}, ({ body, status }) => status(201, body))
+```
+
+> Elysia usa un esquema como única fuente de verdad
+
+</div>
+</div>
+
+<div class="content-layout">
+
+A partir del esquema que le das, Elysia genera una especificación OpenAPI, valida las peticiones y las respuestas, e infiere los tipos automáticamente.
+
+Elysia también añade a la especificación OpenAPI el esquema que registras en `model`, para que puedas hacer referencia al modelo en su propia sección de Swagger o Scalar UI.
+
+<span id="testing"></span>
+## Pruebas
+
+Express depende de una librería concreta, `supertest`, para probar la aplicación, mientras que Elysia se basa en la API de Web Standard, así que puedes usarlo con cualquier librería de pruebas.
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import request from 'supertest'
+import { describe, it, expect } from 'vitest'
+
+const app = express()
+
+app.get('/', (req, res) => {
+	res.send('Hello World')
+})
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const res = await request(app).get('/')
+
+		expect(res.status).toBe(200)
+		expect(res.text).toBe('Hello World')
+	})
+})
+```
+
+> Express usa la librería `supertest` para probar la aplicación
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { describe, it, expect } from 'vitest'
+
+const app = new Elysia()
+	.get('/', 'Hello World')
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const res = await app.handle(
+			new Request('http://localhost')
+		)
+
+		expect(res.status).toBe(200)
+		expect(await res.text()).toBe('Hello World')
+	})
+})
+```
+
+> Elysia usa la API de Web Standard para manejar las peticiones y las respuestas
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Elysia también ofrece una librería auxiliar llamada [Eden](/eden) para la type safety de extremo a extremo, con la que puedes escribir tus pruebas con autocompletado y type safety completa.
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import { describe, expect, it } from 'bun:test'
+
+const app = new Elysia().get('/hello', 'Hello World')
+const api = treaty(app)
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const { data, error, status } = await api.hello.get()
+
+		expect(status).toBe(200)
+		expect(data).toBe('Hello World')
+	})
+})
+```
+
+<span id="end-to-end-type-safety"></span>
+## Type safety de extremo a extremo
+Elysia incluye **type safety de extremo a extremo** sin generar código gracias a [Eden](/eden), algo que Express no ofrece.
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/mirror', {
+		body: t.Object({
+			message: t.String()
+		})
+	}, ({ body }) => body)
+
+const api = treaty(app)
+
+const { data, error } = await api.mirror.post({
+	message: 'Hello World'
+})
+
+if (error)
+	// error.status: 422
+	// error.value: { type: 'validation', title: 'Validation Error', status: 422, on: 'body', detail, errors: [...] }
+	throw error
+
+// { message: 'Hello World' }
+console.log(data)
+```
+
+Si la type safety de extremo a extremo es importante para ti, Elysia es la opción adecuada.
+
+---
+
+Elysia ofrece una experiencia más ergonómica y cómoda de usar, centrada en el rendimiento, la type safety y la simplicidad. Express es un framework web popular para Node.js, pero tiene algunas limitaciones en cuanto a rendimiento y simplicidad.
+
+Si buscas un framework fácil de usar, con una gran experiencia de desarrollo y construido sobre la API de Web Standard, Elysia es la opción adecuada para ti.
+
+Si vienes de otro framework, también puedes echar un vistazo a estas guías:
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+    <Card href="/migrate/from-fastify">
+<CardTitle>Desde Fastify</CardTitle>
+
+Comparación entre Fastify y Elysia
+
+</Card>
+	<Card href="/migrate/from-hono">
+<CardTitle>Desde Hono</CardTitle>
+
+Comparación entre Hono y Elysia
+
+</Card>
+	<Card href="/migrate/from-trpc">
+<CardTitle>Desde tRPC</CardTitle>
+
+Comparación entre tRPC y Elysia
+
+</Card>
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>
