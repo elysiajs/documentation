@@ -1,0 +1,385 @@
+---
+title: "Chuleta"
+description: "Resumen de Elysia en forma de chuleta y cómo funciona con \"Elysia by example\""
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Chuleta</h1>
+
+Aquí tienes un repaso rápido de los patrones más habituales de Elysia
+
+## Hello world
+Un hello world sencillo
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello World')
+    .listen(3000)
+```
+
+<span id="custom-http-method"></span>
+## Método HTTP personalizado
+Define rutas con métodos o verbos HTTP personalizados
+
+Consulta [Ruta](/essential/route#custom-method)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/hi', () => 'Hi')
+    .post('/hi', () => 'From Post')
+    .put('/hi', () => 'From Put')
+    .method('M-SEARCH', '/hi', () => 'Custom Method')
+    .listen(3000)
+```
+
+<span id="path-parameter"></span>
+## Parámetro de ruta
+Usa parámetros de ruta dinámicos
+
+Consulta [Path](/essential/route/#path-types)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/id/:id', ({ params: { id } }) => id)
+    .get('/rest/*', () => 'Rest')
+    .listen(3000)
+```
+
+<span id="return-json"></span>
+## Devolver JSON
+Elysia convierte las respuestas a JSON automáticamente
+
+Consulta [Handler](/essential/handler)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/json', () => {
+        return {
+            hello: 'Elysia'
+        }
+    })
+    .listen(3000)
+```
+
+<span id="return-a-file"></span>
+## Devolver un archivo
+Devuelve `file()` para un solo archivo. Usa `form()` para devolver archivos en una respuesta multipart form-data.
+
+El formulario tiene que ser un objeto de un solo nivel
+
+Consulta [Handler](/essential/handler/#return-a-file)
+
+```typescript
+import { Elysia, file, form } from 'elysia'
+
+new Elysia()
+    .get('/cat', file('public/cat.jpg'))
+    .get('/form', () => {
+        return form({
+            hello: 'Elysia',
+            image: file('public/cat.jpg')
+        })
+    })
+    .listen(3000)
+```
+
+<span id="header-and-status"></span>
+## Cabecera y estado
+Define una cabecera personalizada y un código de estado
+
+Consulta [Handler](/essential/handler)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set, status }) => {
+        set.headers['x-powered-by'] = 'Elysia'
+
+        return status(418, "I'm a teapot")
+    })
+    .listen(3000)
+```
+
+<span id="group"></span>
+## Grupo
+Define un prefijo una sola vez para varias subrutas
+
+Consulta [Grupo](/essential/route#group)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get("/", () => "Hi")
+    .group("/auth", app => {
+        return app
+            .get("/", () => "Hi")
+            .post("/sign-in", ({ body }) => body)
+            .put("/sign-up", ({ body }) => body)
+    })
+    .listen(3000)
+```
+
+<span id="schema"></span>
+## Esquema
+Exige un tipo de datos concreto en una ruta
+
+Consulta [Validación](/essential/validation)
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/mirror', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body: { username } }) => username)
+    .listen(3000)
+```
+
+<span id="file-upload"></span>
+## Subida de archivos
+Consulta [Validación#file](/essential/validation/#file). Para comprobar `type` necesitas un detector de tipos de archivo: instala `file-type` y regístralo con `setFileTypeDetector`. Si no, cualquier subida que compruebes con `type` no pasará la validación.
+
+```typescript
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+new Elysia()
+	.post('/body', {
+		body: t.Object({
+			file: t.File({ type: 'image/*' }),
+			multipleFiles: t.Files()
+		})
+	}, ({ body }) => body)
+	.listen(3000)
+```
+
+<span id="lifecycle-hook"></span>
+## Hook del ciclo de vida
+Intercepta los eventos de Elysia en orden
+
+Consulta [Ciclo de vida](/essential/life-cycle)
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .onRequest(() => {
+        console.log('On request')
+    })
+    .onBeforeHandle(() => {
+        console.log('Before handle')
+    })
+    .post('/mirror', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        }),
+        afterHandle: () => {
+            console.log("After handle")
+        }
+    }, ({ body }) => body)
+    .listen(3000)
+```
+
+## Guard
+Exige un tipo de datos concreto en las subrutas
+
+Consulta [Guard](/essential/plugin/#guard)
+
+```typescript
+// @errors: 2345
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        response: t.String()
+    }, (app) => app
+        .get('/', () => 'Hi')
+        // Invalid: will throws error, and TypeScript will report error
+        .get('/invalid', () => 1)
+    )
+    .listen(3000)
+```
+
+<span id="custom-context"></span>
+## Contexto personalizado
+Añade tus propias variables al contexto de la ruta
+
+Consulta [Contexto](/essential/handler#context)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('version', 1)
+    .decorate('getDate', () => Date.now())
+    .get('/version', ({
+        getDate,
+        store: { version }
+    }) => `${version} ${getDate()}`)
+    .listen(3000)
+```
+
+<span id="redirect"></span>
+## Redirección
+Respuestas de redirección
+
+Consulta [Handler](/essential/handler#redirect)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'hi')
+    .get('/redirect', ({ redirect }) => {
+        return redirect('/')
+    })
+    .listen(3000)
+```
+
+## Plugin
+Crea una instancia aparte
+
+Consulta [Plugin](/essential/plugin)
+
+```typescript
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .state('plugin-version', 1)
+    .get('/hi', () => 'hi')
+
+new Elysia()
+    .use(plugin)
+    .get('/version', ({ store }) => store['plugin-version'])
+    .listen(3000)
+```
+
+## WebSocket
+Crea una conexión en tiempo real con WebSocket
+
+Consulta [WebSocket](/patterns/websocket)
+
+```typescript
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ping', {
+        message(ws, message) {
+            ws.send('hello ' + message)
+        }
+    })
+    .listen(3000)
+```
+
+<span id="openapi-documentation"></span>
+## Documentación de OpenAPI
+Crea documentación interactiva con Scalar (o, si lo prefieres, con Swagger)
+
+Consulta [openapi](/plugins/openapi)
+
+```typescript
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+const app = new Elysia()
+    .use(openapi())
+    .listen(3000)
+
+console.log(`View documentation at "${app.server!.url}openapi" in your browser`);
+```
+
+<span id="unit-test"></span>
+## Test unitario
+Escribe un test unitario para tu app de Elysia
+
+Consulta [Test unitario](/patterns/unit-test)
+
+```typescript
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Elysia', () => {
+    it('return a response', async () => {
+        const app = new Elysia().get('/', () => 'hi')
+
+        const response = await app
+            .handle(new Request('http://localhost/'))
+            .then((res) => res.text())
+
+        expect(response).toBe('hi')
+    })
+})
+```
+
+<span id="custom-body-parser"></span>
+## Parser personalizado del cuerpo
+Crea tu propia lógica para parsear el cuerpo de las peticiones
+
+Consulta [Parse](/essential/life-cycle#parse)
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onParse(({ request, contentType }) => {
+        if (contentType === 'application/custom-type')
+            return request.text()
+    })
+```
+
+## GraphQL
+Crea tu propio servidor GraphQL con GraphQL Yoga o Apollo
+
+Consulta [GraphQL Yoga](/plugins/graphql-yoga)
+
+```typescript
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+    .use(
+        yoga({
+            typeDefs: /* GraphQL */`
+                type Query {
+                    hi: String
+                }
+            `,
+            resolvers: {
+                Query: {
+                    hi: () => 'Hello from Elysia'
+                }
+            }
+        })
+    )
+    .listen(3000)
+```
+
+</div>
+</InteractiveDocLayout>
+</div>
