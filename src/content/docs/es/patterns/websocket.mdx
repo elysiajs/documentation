@@ -1,0 +1,349 @@
+---
+title: WebSocket
+description: Crea rutas WebSocket tipadas, valida los mensajes y controla el ciclo de vida de la conexión.
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+
+export const steps = [
+    {
+        "label": "Abre un socket",
+        "code": "import { Elysia } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', ({ body }) => body)\n    .listen(3000)"
+    },
+    {
+        "label": "Valida los mensajes",
+        "code": "import { Elysia, t } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', {\n        body: t.Object({ message: t.String() })\n    }, ({ body }) => body.message)\n    .listen(3000)"
+    },
+    {
+        "label": "Envía más de una respuesta",
+        "code": "import { Elysia, t } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', {\n        body: t.Object({ message: t.String() }),\n        response: t.String()\n    }, function* ({ body }) {\n        yield 'Message received'\n        yield body.message\n    })\n    .listen(3000)"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">WebSocket</h1>
+
+WebSocket mantiene una conexión abierta para que tu cliente y tu servidor puedan enviarse mensajes. A diferencia de las peticiones HTTP repetidas, cada mensaje no necesita un nuevo intercambio de petición y respuesta.
+
+Elysia usa el soporte de WebSocket de Bun, construido sobre [uWebSockets](https://github.com/uNetworking/uWebSockets). Socket.IO usa su propio protocolo encima de los transportes; para estas rutas, usa un cliente WebSocket estándar.
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+<span id="open-a-socket"></span>
+## Abre un socket
+
+Registra el plugin de WebSocket una vez y después añade una ruta `.ws()`. Conéctate a `ws://localhost:3000/ws`; cada mensaje se devuelve al cliente que lo envió.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+<span id="validate-messages"></span>
+## Valida los mensajes
+
+El esquema `body` valida los mensajes que llegan. Envía `{"message":"Hello"}` como JSON y el servidor te responde con `Hello`.
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+<span id="send-more-than-one-reply"></span>
+## Envía más de una respuesta
+
+Un generador puede hacer yield de varias respuestas. Cada yield es un mensaje independiente, que se comprueba con el esquema de respuesta.
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+<span id="websocket-message-validation"></span>
+## Validación de mensajes WebSocket
+
+Igual que las rutas HTTP, las rutas WebSocket aceptan esquemas para los datos de la petición y las respuestas. Pon las opciones antes del handler de mensajes:
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+const app = new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.Object({ message: t.String() }),
+        query: t.Object({ id: t.String() }),
+        response: t.Object({
+            id: t.String(),
+            message: t.String(),
+            time: t.Number()
+        })
+    }, ({ query, body }) => ({
+        id: query.id,
+        message: body.message,
+        time: Date.now()
+    }))
+    .listen(3000)
+```
+
+Conéctate a `ws://localhost:3000/ws?id=42` y envía `{"message":"Hello"}`. La respuesta incluye ese mensaje, el `id` de la query y la marca de tiempo actual.
+
+En Elysia 2, las propiedades del contexto como `query` y `params` están directamente en el argumento del socket. Usa `ws.query`, no la forma antigua `ws.data.query`.
+
+| Propiedad del esquema | Valida |
+| --- | --- |
+| `body` | Un mensaje entrante |
+| `query` | La query string de la URL de conexión |
+| `params` | Los parámetros de ruta |
+| `headers` | Las cabeceras de la petición de upgrade |
+| `cookie` | Las cookies de la petición de upgrade |
+| `response` | Los mensajes que el handler devuelve, envía o emite con yield |
+
+Elysia parsea los mensajes de texto con forma de JSON antes de validarlos. También reconoce booleanos, `null` y strings numéricos que se pueden convertir sin riesgo. El resto del texto sigue siendo un string, y los mensajes binarios siguen siendo binarios.
+
+<span id="configuration"></span>
+## Configuración
+
+Pasa las opciones de WebSocket para todo el servidor a `websocket()`:
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket({ idleTimeout: 30 }))
+    .ws('/ws', ({ body }) => body)
+    .listen(3000)
+```
+
+Esto sustituye a la antigua opción `websocket` del constructor. El adaptador de Bun de Elysia usa la [configuración de WebSocket de Bun](https://bun.sh/docs/api/websockets). Los valores por defecto que verás a continuación son los de Bun.
+
+### perMessageDeflate
+
+Por defecto: `false`.
+
+Activa la compresión para los clientes que la soporten. La compresión está desactivada salvo que la actives.
+
+### maxPayloadLength
+
+El tamaño máximo de un mensaje entrante, en bytes. El valor por defecto de Bun es `16 * 1024 * 1024` (16 MiB).
+
+### idleTimeout
+
+Por defecto: `120` segundos.
+
+Cierra una conexión inactiva cuando pasa este tiempo sin mensajes ni pings.
+
+### backpressureLimit
+
+Por defecto: `16 * 1024 * 1024` bytes (16 MiB).
+
+El número máximo de bytes en buffer para una conexión.
+
+### closeOnBackpressureLimit
+
+Por defecto: `false`.
+
+Cierra la conexión cuando llega a su límite de backpressure.
+
+<span id="methods"></span>
+## Métodos
+
+Usa `.ws()` para registrar una ruta WebSocket. El argumento del socket ofrece métodos como `send`, `publish`, `subscribe` y `close`, además de las propiedades del contexto de la ruta.
+
+## ws
+
+`.ws(path, handler)` registra un handler de mensajes. Usa `.ws(path, options, handler)` cuando también necesite esquemas o hooks del ciclo de vida.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', ({ body }) => body)
+    .listen(3000)
+```
+
+La forma con un objeto como segundo argumento también funciona:
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        message(ws, message) {
+            ws.send(message)
+        }
+    })
+    .listen(3000)
+```
+
+- `path` es la ruta que se expone a los clientes WebSocket.
+- `options` configura los esquemas y los callbacks del ciclo de vida.
+- `handler` maneja cada mensaje entrante. Si pasas un handler aparte, no definas también `options.message`.
+
+Siempre que puedas, devuelve un valor o haz yield de él para que se puedan inferir los tipos de respuesta. `ws.send()` sigue disponible cuando necesites enviar algo de forma explícita.
+
+## WebSocketHandler
+
+Las opciones de la ruta pueden incluir callbacks de conexión, callbacks de mensajes, esquemas y opciones de ajuste de WebSocket. Los callbacks reciben el wrapper del socket de Elysia, con el contexto de la petición en el nivel superior.
+
+En las siguientes secciones se describen esos callbacks.
+
+## open
+
+Se llama cuando se abre una conexión. Recibe el argumento del socket.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        open(ws) {
+            console.log('Connected', ws.id)
+        },
+        message: ({ body }) => body
+    })
+```
+
+`ws.id` identifica la conexión. Otras propiedades del socket son `remoteAddress`, `readyState` y la `query`, los `params` y los valores derivados de tu ruta.
+
+## message
+
+Se llama con cada mensaje entrante. El valor ya parseado y validado está disponible como `ws.body` y como segundo argumento del callback.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.String(),
+        message(ws, message) {
+            return message.toUpperCase()
+        }
+    })
+```
+
+El esquema `body` determina el tipo del mensaje. Sin esquema, trata el valor parseado como unknown en lugar de dar por hecho que todos los mensajes son strings.
+
+## close
+
+Se llama cuando se cierra una conexión. Recibe el socket, el código de cierre y el motivo.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        close(ws, code, reason) {
+            console.log('Disconnected', ws.id, code, reason)
+        },
+        message: ({ body }) => body
+    })
+```
+
+## drain
+
+Se llama cuando el socket puede aceptar más datos después de una situación de backpressure. Recibe el socket; los códigos y motivos de cierre son cosa de `close`, no de `drain`.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        drain(ws) {
+            console.log('Ready for more data', ws.id)
+        },
+        message: ({ body }) => body
+    })
+```
+
+## parse
+
+El hook `parse` de WebSocket procesa cada mensaje después del parseo por defecto y antes de validarlo. Recibe el socket y el valor parseado; devuelve un valor nuevo para sustituirlo o `undefined` para conservarlo.
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.String(),
+        parse(_ws, message) {
+            if (typeof message === 'string') return message.trim()
+        }
+    }, ({ body }) => body)
+```
+
+No es lo mismo que un parser del cuerpo HTTP en la petición de upgrade.
+
+## beforeHandle
+
+Se ejecuta antes de que la conexión haga el upgrade, y también interviene en el manejo de cada mensaje antes del handler de mensajes. Devuelve un estado para rechazar el upgrade antes de abrir el socket.
+
+```ts
+import { Elysia, status } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        beforeHandle() {
+            return status(403, 'This socket is closed to new connections')
+        }
+    }, ({ body }) => body)
+```
+
+Para la autenticación, valida aquí las credenciales de la conexión. La validación de mensajes va en el esquema `body`.
+
+## transform
+
+Se ejecuta antes de la validación. En el ciclo de vida actual de WebSocket se ejecuta durante el upgrade y otra vez con cada mensaje, así que no des por hecho que se ejecuta una sola vez por conexión.
+
+## transformMessage
+
+La antigua opción `transformMessage` ya no forma parte de las opciones de ruta WebSocket de Elysia 2. Usa [`parse`](#parse) para transformar un mensaje concreto antes de validarlo.
+
+## upgrade
+
+Usa `upgrade` para añadir cabeceras de respuesta al handshake de WebSocket. Acepta un objeto estático o una función que recibe el contexto del upgrade.
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        upgrade: { 'x-powered-by': 'Elysia' }
+    }, ({ body }) => body)
+```
+
+Para validar las cabeceras de la petición entrante, usa el esquema `headers`.
+
+
+</div>
+</InteractiveDocLayout>
+</div>
