@@ -1,0 +1,156 @@
+---
+title: OpenTelemetry
+description: Referencia y ejemplos de OpenTelemetry.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">OpenTelemetry</h1>
+
+:::tip
+
+Esta página es una **referencia de configuración** de **OpenTelemetry**. Si lo que quieres es configurar e integrar OpenTelemetry, te recomendamos echar un vistazo a [Integración con OpenTelemetry](/patterns/opentelemetry).
+
+:::
+
+Para empezar a usar OpenTelemetry, instala `@elysia/opentelemetry` y aplica el plugin a cualquier instancia.
+
+```bash
+bun add @elysia/opentelemetry@next @opentelemetry/sdk-trace-node @opentelemetry/exporter-trace-otlp-proto
+```
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
+
+new Elysia()
+	.use(
+		opentelemetry({
+			spanProcessors: [
+				new BatchSpanProcessor(
+					new OTLPTraceExporter()
+				)
+			]
+		})
+	)
+```
+
+![Jaeger mostrando las trazas recogidas](/blog/elysia-11/jaeger.webp)
+
+Elysia OpenTelemetry **recoge spans de cualquier librería compatible con el estándar OpenTelemetry** y aplica automáticamente los spans padre e hijo.
+
+<span id="usage"></span>
+## Uso
+Consulta [opentelemetry](/patterns/opentelemetry) para ver cómo usarlo y qué utilidades ofrece.
+
+<span id="config"></span>
+## Configuración
+Este plugin extiende las opciones de parámetros del SDK de OpenTelemetry.
+
+Esta es la configuración que acepta el plugin.
+
+### autoDetectResources - boolean
+Detecta automáticamente los recursos del entorno con los detectores de recursos por defecto.
+
+Por defecto: `true`
+
+### contextManager - ContextManager
+Usa un gestor de contexto personalizado.
+
+Por defecto: `AsyncLocalStorageContextManager`, registrado por `NodeTracerProvider`
+
+### textMapPropagator - TextMapPropagator
+Usa un propagador personalizado.
+
+Por defecto: `CompositePropagator` con W3C Trace Context y Baggage
+
+### metricReader - MetricReader
+Añade un MetricReader que se pasa al MeterProvider.
+
+### views - View[]
+Una lista de views que se pasan al MeterProvider.
+
+Acepta un array de instancias de View. Puedes usar este parámetro para configurar tamaños de bucket explícitos en las métricas de histograma.
+
+### instrumentations - (Instrumentation | Instrumentation[])[]
+Configura las instrumentaciones.
+
+Por defecto no se registra ninguna instrumentación. Para activarlas, pasa una lista, como `getNodeAutoInstrumentations()` de `@opentelemetry/auto-instrumentations-node` (que se instala aparte).
+
+Por defecto: ninguna
+
+### resource - IResource
+Configura un recurso.
+
+Los recursos también se pueden detectar con el método autoDetectResources del SDK.
+
+### resourceDetectors - Array&lt;Detector | DetectorSync&gt;
+Configura los detectores de recursos. Por defecto, los detectores de recursos son [envDetector, processDetector, hostDetector]. NOTA: para activar la detección, el parámetro autoDetectResources tiene que ser true.
+
+Si no defines resourceDetectors, también puedes usar la variable de entorno OTEL_NODE_RESOURCE_DETECTORS para activar solo algunos detectores o desactivarlos por completo:
+
+- env
+- host
+- os
+- process
+- serviceinstance (experimental)
+- all - activa todos los detectores de recursos anteriores
+- none - desactiva la detección de recursos
+
+Por ejemplo, para activar solo los detectores env y host:
+
+```bash
+export OTEL_NODE_RESOURCE_DETECTORS="env,host"
+```
+
+### sampler - Sampler
+Configura un sampler personalizado. Por defecto, se muestrean todas las trazas.
+
+### serviceName - string
+Namespace con el que se identifica.
+
+### spanProcessors - SpanProcessor[]
+Un array de span processors que se registran en el tracer provider.
+
+### traceExporter - SpanExporter
+Configura un exportador de trazas. Si configuras un exportador, se usa con un `BatchSpanProcessor`.
+
+Si no configuras por código ni un exportador ni un span processor, este paquete configura automáticamente el exportador otlp por defecto, con el protocolo http/protobuf y un BatchSpanProcessor.
+
+### spanLimits - SpanLimits
+Configura los parámetros de tracing. Son los parámetros de trazas que también se usan para configurar un tracer.
+
+### checkIfShouldTrace - (request: Request) => boolean
+Decide si se traza una petición. Devuelve `false` para no trazar esa petición.
+
+Por defecto: se trazan todas las peticiones
+
+### spanUrlRedaction - false | object
+Oculta las credenciales y los valores sensibles de la query (como `token`, `password` o `api_key`) en la URL que se registra. Acepta `{ stripCredentials?: boolean, sensitiveQueryParams?: string[] }`: `stripCredentials` (por defecto `true`) quita `user:password@` de la URL, y `sensitiveQueryParams` añade claves de query a la lista integrada.
+
+Pon `false` para registrar las URLs sin modificar, lo que puede filtrar secretos.
+
+Por defecto: ocultación activada con la lista integrada
+
+### recordBody - boolean | object
+Registra el contenido del body de la petición y/o de la respuesta en los spans. `true` registra los dos; `{ request?: boolean, response?: boolean }` registra solo uno de ellos.
+
+Por defecto: `false`
+
+### headersToSpanAttributes - object
+Nombres de cabeceras (sin distinguir mayúsculas de minúsculas) que se registran como atributos del span, con la forma `{ request?: string[], response?: string[] }`. `"*"` registra todas las cabeceras, incluidas las sensibles.
+
+Por defecto: no se registra ninguna cabecera
+
+</div>
+</InteractiveDocLayout>
+</div>
