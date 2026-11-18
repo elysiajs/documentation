@@ -177,9 +177,9 @@ new Elysia()
     .mount(C)
 ```
 
-If an instance passed to mount is an Elysia instance, it will resolve to `use` automatically, providing type-safety and support for Eden by default.
-
-This made the possibility of interlopable framework and runtime to a reality.
+::: info Note
+As of Elysia 1.x, `.mount()` does not resolve to `.use()`. It always extracts the `.fetch` handler. Use [**.use()**](/essential/plugin) to compose Elysia instances with type safety and Eden Treaty support.
+:::
 
 ## Improved starts up time
 Starts up time is an important metric in a serverless environment which Elysia excels it incredibly, but we have taken it even further.
