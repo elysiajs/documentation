@@ -231,7 +231,7 @@ export type App = typeof app
 // @filename: client.ts
 // ---cut---
 import { treaty } from '@elysia/eden'
-import type { App } from 'server'
+import type { App } from './server'
 
 const api = treaty<App>('api.elysiajs.com')
 
@@ -437,7 +437,7 @@ export type App = typeof app
 // @filename: client.ts
 // ---cut---
 import { treaty } from '@elysia/eden'
-import type { App } from 'server'
+import type { App } from './server'
 
 const api = treaty<App>('api.elysiajs.com')
 
