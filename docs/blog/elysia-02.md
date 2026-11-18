@@ -111,7 +111,7 @@ Introducing a new field, `schema.detail`, for customizing details for the route,
 
 <img width="1624" alt="Screenshot 2566-01-23 at 13 54 11" src="https://user-images.githubusercontent.com/35027979/213981321-5717e514-aa4b-492a-b45a-9e69099dc8a8.png">
 
-This allows you to write better documentation and have a fully editable Swagger as you want:
+This allows you to write better documentation and have a fully editable OpenAPI as you want:
 <img width="1624" alt="Screenshot 2566-01-23 at 13 23 41" src="https://user-images.githubusercontent.com/35027979/213981545-46efc6cc-34bc-4db2-86ed-530d27d7ba97.png">
 
 ## Union Type
@@ -150,7 +150,7 @@ app
 
 Elysia will try to validate all schemas in `response`, allowing one of the types to be returned.
 
-Return types are also supported and reported in Swagger's response.
+Return types are also supported and reported in OpenAPI's response.
 
 ## Faster Type Inference
 As Elysia 0.1 explored the possibility of using type inference to improve Developer Experience, we found that sometimes it took a long time to update type inference because of heavy type inference and inefficient custom generics.

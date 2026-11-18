@@ -104,7 +104,7 @@ For migration, besides a breaking change of installing `@elysiajs/fn` explicitly
 ## Conditional Route
 This release introduces `.if` method for registering a conditional route or plugin.
 
-This allows you to declaratively for a specific conditional, for example excluding Swagger documentation from the production environment.
+This allows you to declaratively for a specific conditional, for example excluding OpenAPI documentation from the production environment.
 ```ts
 const isProduction = process.env.NODE_ENV === 'production'
 

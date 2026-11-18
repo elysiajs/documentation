@@ -193,6 +193,6 @@ The endpoint to expose OpenAPI specification in JSON format
 
 ## swagger
 
-Swagger config, refers to [Swagger config](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/)
+Swagger UI config, refers to [Swagger UI config](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/)
 
 Below you can find common patterns to use the plugin.
