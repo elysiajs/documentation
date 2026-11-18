@@ -366,6 +366,8 @@ export default definePrismaConfig({
 
 :::
 
+The module name, `elysia-app` here, becomes the name of our app on Compute, so we should pick one that is unique in our workspace.
+
 Compute assigns the port for each service, which can be accessed via `service.port()`.
 
 Instead of a fixed port, we may use `service.port()` from the service we declared.
