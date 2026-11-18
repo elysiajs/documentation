@@ -43,6 +43,7 @@ Here are some of the official plugins maintained by the Elysia team:
 
 ## Community plugins
 
+-   [Elysia MCP Adapter](https://mwillbanks.github.io/elysia-mcp-adapter) - Expose APIs through MCP, build MCP tools, and MCP apps without bypassing the framework behavior that makes them production-ready.
 -   [Create ElysiaJS](https://github.com/kravetsone/create-elysiajs) - scaffold your Elysia project with the environment easily (help with ORM, Linters and Plugins)!
 -   [Lucia Auth](https://github.com/pilcrowOnPaper/lucia) - authentication that is simple and clean
 -   [Elysia Clerk](https://github.com/wobsoriano/elysia-clerk) - unofficial Clerk authentication plugin
