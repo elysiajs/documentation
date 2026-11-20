@@ -1,0 +1,86 @@
+---
+title: Despliega Elysia en Vercel - ElysiaJS
+head:
+    - - meta
+      - property: 'og:title'
+        content: Despliega Elysia en Vercel - ElysiaJS
+
+    - - meta
+      - name: 'description'
+        content: Vercel Function soporta frameworks Web Standard por defecto, así que puedes ejecutar Elysia en una Vercel Function sin ninguna configuración adicional.
+
+    - - meta
+      - property: 'og:description'
+        content: Vercel Function soporta frameworks Web Standard por defecto, así que puedes ejecutar Elysia en una Vercel Function sin ninguna configuración adicional.
+---
+
+<br>
+
+# Despliega Elysia en Vercel
+
+Elysia se puede desplegar en Vercel sin configuración, usando el runtime de Bun o el de Node.
+
+1. En **src/index.ts**, crea o importa un servidor de Elysia ya existente
+2. Exporta el servidor de Elysia como default export
+
+```typescript
+import { Elysia, t } from 'elysia'
+
+export default new Elysia() // [!code ++]
+    .get('/', () => 'Hello Vercel Function')
+    .post('/', ({ body }) => body, {
+        body: t.Object({
+            name: t.String()
+        })
+    })
+```
+
+3. Desarrolla en local con la CLI de Vercel
+
+```bash
+vc dev
+```
+
+4. Despliega en Vercel
+
+```bash
+vc deploy
+```
+
+Y eso seria todo. Tu app de Elysia ya estaría corriendo en Vercel.
+
+### pnpm
+Si usas pnpm, [pnpm no instala automáticamente las peer dependencies por defecto](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230), así que tienes que instalar las dependencias adicionales manualmente.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
+
+### Usar Node.js
+
+Para desplegar con Node.js, asegúrate de definir `type: module` en tu `package.json`
+
+::: code-group
+
+```ts [package.json]
+{
+  "name": "elysia-app",
+  "type": "module" // [!code ++]
+}
+```
+
+:::
+
+### Usar Bun
+Para desplegar con Bun, asegúrate de definir el runtime como Bun en tu `vercel.json`
+
+::: code-group
+
+```ts [vercel.json]
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "bunVersion": "1.x" // [!code ++]
+}
+```
+
+## Si esto no funciona
+Vercel tiene soporte sin configuración para Elysia. Para configuraciones adicionales, mira la [documentación de Vercel](https://vercel.com/docs/frameworks/backend/elysia).
