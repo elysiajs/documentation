@@ -101,7 +101,7 @@ export const tree = [
                     {
                         id: 'src/libs/message.ts',
                         name: 'message.ts',
-                        meta: 'Helpers puros, sin importar Elysia'
+                        meta: 'Helpers puros que no importan Elysia'
                     }
                 ]
             },
@@ -206,6 +206,7 @@ Esta guía usa una estructura por funcionalidades, inspirada en MVC y en la sepa
 
 En una API JSON, normalmente no hay una capa de vista aparte. Aquí, `model.ts` se refiere a los schemas de la petición y de la respuesta, no a un modelo de base de datos. Es una convención para organizar el código de Elysia sin perder la inferencia de tipos. Adáptala a tu aplicación.
 
+<span id="folder-structure"></span>
 ## Estructura de carpetas
 
 Elysia no impone ninguna estructura de carpetas: tú decides cómo organizar tu código.
@@ -222,9 +223,10 @@ Si no tienes una estructura específica en mente, te recomendamos una estructura
     className="not-content my-6"
 />
 
+<span id="application-setup"></span>
 ## Configuración de la aplicación
 
-`src/index.ts` es el punto de entrada del proceso. Aquí importas la aplicación, empiezas a escuchar e informas los datos de arranque.
+`src/index.ts` es el punto de entrada del proceso. Aquí importas la aplicación, empiezas a escuchar y muestras la información de arranque.
 
 ```ts title="src/index.ts"
 import { app } from './app'
@@ -245,12 +247,14 @@ export const app = new Elysia().use(auth).use(user)
 export type App = typeof app
 ```
 
-Dejar `.listen()` en el punto de entrada permite que los tests importen `app` sin abrir un puerto, y que [Eden](/eden/) importe su tipo. Importar la app igual puede inicializar sus dependencias, como la configuración y los clientes de base de datos.
+Dejar `.listen()` en el punto de entrada permite que los tests importen `app` sin abrir un puerto, y que [Eden](/eden/) importe su tipo. Aun así, importar la app puede inicializar sus dependencias, como la configuración y los clientes de base de datos.
 
+<span id="shared-code"></span>
 ## Código compartido
 
 Un archivo de código va en `libs/` o en `plugins/` solo cuando se comparte entre funcionalidades. Si no, déjalo con la funcionalidad a la que pertenece.
 
+<span id="libraries"></span>
 ### Librerías
 
 Usa `libs/` para el código compartido que no está relacionado con Elysia.
@@ -267,7 +271,7 @@ Deja un helper dentro de su funcionalidad hasta que otra funcionalidad lo necesi
 
 ### Plugins
 
-Usa `plugins/` para el comportamiento reutilizable de Elysia relacionado con HTTP o con los eventos del ciclo de vida, como un macro de autenticación o los metadatos de la petición.
+Usa `plugins/` para el comportamiento reutilizable de Elysia relacionado con HTTP o con los eventos del ciclo de vida, como una macro de autenticación o los metadatos de la petición.
 
 ```ts title="src/plugins/macro.ts"
 import { Elysia } from 'elysia'
@@ -281,9 +285,10 @@ export const metadata = new Elysia({ name: 'request-metadata' }).macro({
 
 La razón es separar lo que le corresponde a HTTP y a Elysia de la lógica de negocio. Un servicio o `libs` no necesitan saber nada de IDs de petición, cookies ni headers.
 
+<span id="routes"></span>
 ## Rutas
 
-Cada carpeta dentro de `routes/` es dueña de una funcionalidad, como `auth` o `user`. Mantén juntas sus rutas, su lógica de negocio y sus schemas de la API, para que un cambio en una funcionalidad no te obligue a buscar entre carpetas de controladores, servicios y modelos de toda la aplicación.
+Cada carpeta dentro de `routes/` se ocupa de una funcionalidad, como `auth` o `user`. Mantén juntas sus rutas, su lógica de negocio y sus schemas de la API, para que un cambio en una funcionalidad no te obligue a buscar entre carpetas de controladores, servicios y modelos de toda la aplicación.
 
 Los tres archivos tienen responsabilidades distintas:
 
@@ -301,6 +306,7 @@ Empieza con lo que la funcionalidad necesita. Una ruta pequeña puede quedarse e
 
 <InteractiveStep>
 
+<span id="controller-indexts"></span>
 ### Controlador (index.ts)
 
 Una instancia de Elysia. Su propósito es encargarse de lo relacionado con HTTP y conectarlo con la lógica de negocio de los modelos y los servicios.
@@ -311,6 +317,7 @@ Todo lo relacionado con HTTP debería hacerse aquí; por ejemplo, definir header
 
 <InteractiveStep>
 
+<span id="model-modelts"></span>
 ### Modelo (model.ts)
 
 Conjunto de schemas y tipos de TypeScript que usa el `Controller` y de los que deriva el `Service`.
@@ -321,21 +328,23 @@ Se usa para validar los schemas en runtime y derivar de ellos los tipos de TypeS
 
 <InteractiveStep>
 
+<span id="service-servicets"></span>
 ### Servicio (service.ts)
 
 Los detalles de implementación de las reglas de negocio, el acceso a datos y las transacciones.
 
-Debería ser independiente del contexto HTTP, salvo por el `status` de Elysia o una clase `HTTPError` para definir códigos de status HTTP cuando haga falta.
+Debería ser independiente del contexto HTTP, salvo por el `status` de Elysia o una clase `HTTPError` para definir códigos de estado HTTP cuando haga falta.
 
 </InteractiveStep>
 
 <InteractiveStep>
 
+<span id="main-instance-appts"></span>
 ### Instancia principal (app.ts)
 
-Aléjate hasta `src/app.ts`, donde cada funcionalidad se agrega con `.use()`. La instancia principal compone los controladores, mientras sus handlers, servicios y modelos se quedan en sus carpetas de rutas.
+Sube un nivel hasta `src/app.ts`, donde cada funcionalidad se añade con `.use()`. La instancia principal compone los controladores, mientras sus handlers, servicios y modelos se quedan en sus carpetas de rutas.
 
-Aquí, `auth` y `user` representan otros controladores de funcionalidades con la misma estructura que `greeting`. Cada `.use()` agrega un controlador distinto. Exporta la app aquí y empieza a escuchar en `src/index.ts`.
+Aquí, `auth` y `user` representan otros controladores de funcionalidades con la misma estructura que `greeting`. Cada `.use()` añade un controlador distinto. Exporta la app aquí y empieza a escuchar en `src/index.ts`.
 
 </InteractiveStep>
 
@@ -343,6 +352,7 @@ Aquí, `auth` y `user` representan otros controladores de funcionalidades con la
 
 <div class="content-layout">
 
+<span id="controller"></span>
 ## Controlador
 
 Conecta lo relacionado con HTTP con la lógica de negocio. Todo lo relacionado con HTTP debería hacerse aquí.
@@ -381,7 +391,7 @@ Por ejemplo, un controlador de inicio de sesión puede definir una cookie de ses
 - Pasa solo los valores que necesita el servicio, como `params.id`, `body` o `user.id`.
 - Evita pasar el contexto completo o anotar un handler extraído con un tipo `Context` a secas.
 
-Se recomienda usar el plugin de Elysia (de la carpeta `plugins`) para la inferencia de tipos, como `requestId: true` más arriba. El plugin agrega una propiedad al contexto, y el controlador puede usarla sin una aserción de tipo.
+Te recomendamos usar el plugin de Elysia (de la carpeta `plugins`) para la inferencia de tipos, como `requestId: true` más arriba. El plugin añade una propiedad al contexto, y el controlador puede usarla sin una aserción de tipo.
 
 :::tip[¿Por qué?]
     Elysia impone este patrón. Hace que una instancia de Elysia conozca solo las
@@ -391,6 +401,7 @@ Se recomienda usar el plugin de Elysia (de la carpeta `plugins`) para la inferen
 
 Una instancia de Elysia ya agrupa las rutas y conserva sus tipos. Una clase base de controlador, o un segundo controlador que solo le pasa los argumentos a un servicio, no aporta ninguna separación útil.
 
+<span id="model"></span>
 ## Modelo
 
 Conjunto de schemas y tipos de TypeScript que usa el controlador y de los que deriva el servicio.
@@ -399,14 +410,16 @@ Se usa para validar los schemas en runtime para el `Controller` y para darle tip
 
 Aquí, el modelo suele estar formado por DTOs definidos con `t` (un export con nombre de `elysia`) o con Standard Schema (Zod, Valibot, etc.), para validar los datos en runtime y derivar de ellos los tipos de TypeScript, en lugar de mantener a mano una interfaz equivalente.
 
+<span id="naming-convention"></span>
 ### Convención de nombres
 
-La convención de nombres la decides tú (y tu equipo), y debería ser consistente en todo el proyecto. Pero si no tienes una convención específica en mente, te recomendamos la siguiente:
+La convención de nombres la decides tú (y tu equipo), y debería ser coherente en todo el proyecto. Pero si no tienes una convención específica en mente, te recomendamos la siguiente:
 
+<span id="group-by-route-path-and-http-method"></span>
 #### Agrupa por ruta y método HTTP
 
 - Exporta un objeto por cada ruta, con el nombre `[Pathname][Method]` en PascalCase.
-- Usa la ruta relativa al prefijo del controlador y agrégale al final el método HTTP.
+- Usa la ruta relativa al prefijo del controlador y añádele al final el método HTTP.
 - Excluye el prefijo de la instancia, que ya está representado por el namespace del modelo. Para la ruta raíz `/`, usa solo el método. Reemplaza cada segmento dinámico por `By[ParameterName]`.
 
 | Prefijo del controlador | Ruta local | Grupo del modelo |
@@ -415,6 +428,7 @@ La convención de nombres la decides tú (y tu equipo), y debería ser consisten
 | `/user` | `GET /:id` | `ByIdGet` |
 | Ninguno | `GET /:userId` | `ByUserIdGet` |
 
+<span id="group-by-schema-type"></span>
 #### Agrupa por tipo de schema
 - Nombra cada propiedad del schema en PascalCase, como `Body`, `Params`, `Query` o `Response`.
 - Exporta un tipo con el mismo nombre que cada grupo de schemas usando `UnwrapModels<typeof Group>`.
@@ -444,6 +458,7 @@ export const ByIdGet = {
 export type ByIdGet = UnwrapModels<typeof ByIdGet>
 ```
 
+<span id="usage"></span>
 #### Uso
 
 - Importa el archivo como `import * as UserModel from './model'`, usando el nombre de la carpeta de la ruta seguido de `Model`.
@@ -465,7 +480,7 @@ export const greeting = new Elysia({ prefix: '/greet' })
 
 Así todo queda tipado y evitas duplicar tipos.
 
-Cuando se actualiza el schema, el tipo de TypeScript se actualiza automáticamente: el servicio se revisa contra él y Elysia también valida el body de la petición en runtime.
+Cuando se actualiza el schema, el tipo de TypeScript se actualiza automáticamente: el servicio se comprueba contra él y Elysia también valida el body de la petición en runtime.
 
 Ten en cuenta que:
 - Las anotaciones de tipo por sí solas no validan los datos en runtime.
@@ -473,25 +488,27 @@ Ten en cuenta que:
 
 Un schema que usa una sola ruta puede quedarse junto a esa ruta. Usa [modelos de referencia](/patterns/openapi/#reference-model) si necesitas nombres de schema registrados; no hace falta registrarlos para compartir un schema entre archivos.
 
+<span id="model-and-database-schema"></span>
 ### Modelo y schema de base de datos
 
-El `Database schema` describe cómo la aplicación guarda los datos, mientras que el `Model` describe qué acepta y devuelve la API. Tienen trabajos distintos, pero a veces se superponen.
+El `Database schema` describe cómo la aplicación guarda los datos, mientras que el `Model` describe qué acepta y devuelve la API. Cumplen funciones distintas, pero a veces se superponen.
 
 Las librerías modernas como Prisma y Drizzle pueden convertir un schema de base de datos a TypeBox o a Standard Schema, que se pueden reutilizar en Elysia.
 
 Así que, en lugar de duplicar el schema, puedes reutilizar el schema de la base de datos como tu modelo.
 
-Esto haría que Elysia valide los datos contra el schema de la base de datos, pero ten cuidado de no exponer campos sensibles ni campos que no sean relevantes para la API.
+Así, Elysia validará los datos contra el schema de la base de datos, pero ten cuidado de no exponer campos sensibles ni campos que no sean relevantes para la API.
 
 Consulta [Prisma](/integrations/prisma/) y [Drizzle](/integrations/drizzle/) para ver cómo reutilizar los schemas de base de datos en Elysia.
 
+<span id="service"></span>
 ## Servicio
 
 Funciones comunes con entradas explícitas.
 
-Un servicio puede consultar la base de datos directamente, revisar la propiedad de un recurso, coordinar otros servicios y ejecutar una transacción cuando varias escrituras tienen que salir bien juntas. No necesitas una capa de repositorio solo para envolver cada llamada a la base de datos.
+Un servicio puede consultar la base de datos directamente, comprobar a quién pertenece un recurso, coordinar otros servicios y ejecutar una transacción cuando varias escrituras tienen que salir bien juntas. No necesitas una capa de repositorio solo para envolver cada llamada a la base de datos.
 
-Mantén los servicios independientes del contexto de la petición. Para los errores propios de tu API, usa `HTTPError.id(code, status)` para darle a cada error un identificador estable y un status HTTP explícito.
+Mantén los servicios independientes del contexto de la petición. Para los errores propios de tu API, usa `HTTPError.id(code, status)` para darle a cada error un identificador estable y un código de estado HTTP explícito.
 
 ```ts title="src/routes/user/service.ts"
 import { HTTPError } from 'elysia'
@@ -514,9 +531,10 @@ export async function getUser(id: UserModel.ByIdGet['Params']['id']) {
 
 Reutiliza los tipos derivados del modelo para los parámetros y los datos que devuelve el servicio, como arriba, para que los cambios en el schema también actualicen el contrato del servicio.
 
+<span id="prefer-custom-class-over-status"></span>
 ### Prefiere una clase personalizada antes que status
 
-Si tienes un servicio que puede devolver el mismo error en varios lugares, prefiere una clase de error personalizada antes que `status()` del contexto del handler. Una clase se puede reutilizar y extender, y le da al error un identificador estable que los clientes pueden revisar.
+Si tienes un servicio que puede devolver el mismo error en varios lugares, prefiere una clase de error personalizada antes que `status()` del contexto del handler. Una clase se puede reutilizar y extender, y le da al error un identificador estable que los clientes pueden comprobar.
 
 ```ts
 import { HTTPError } from 'elysia'
@@ -540,12 +558,13 @@ function getUser(name: string) {
 
 `HTTPError.id` se encarga de las propiedades relacionadas con HTTP y a la vez te da control total. Consulta el [manejo de errores](/patterns/error-handling) para ver más detalles.
 
-Se recomienda hacer `return` de un error cuando sea posible, para una mejor inferencia de tipos. Si lanzas un error con throw, TypeScript no puede inferirlo, y eso deja un tipo desconocido en Eden y en la generación de tipos de OpenAPI.
+Te recomendamos hacer `return` de un error cuando sea posible, para una mejor inferencia de tipos. Si lanzas un error con throw, TypeScript no puede inferirlo, y eso deja un tipo desconocido en Eden y en la generación de tipos de OpenAPI.
 
 :::tip[¿Por qué?]
-	Aunque dijimos que "el servicio no debería manejar información relacionada con HTTP", aquí hace falta para una inferencia de tipos precisa. Puedes pensar en `status` y en `HTTPError` como un tipo "Result" que Elysia puede traducir a una respuesta HTTP.
+	Aunque hemos dicho que "el servicio no debería manejar información relacionada con HTTP", aquí hace falta para una inferencia de tipos precisa. Puedes pensar en `status` y en `HTTPError` como un tipo "Result" que Elysia puede traducir a una respuesta HTTP.
 :::
 
+<span id="growing-a-feature"></span>
 ### Cuando una funcionalidad crece
 
 Cuando `service.ts` se vuelve difícil de recorrer, divídelo por responsabilidad dentro de la misma carpeta.
@@ -576,9 +595,10 @@ Por ejemplo, una funcionalidad de assets puede dejar que `service.ts` coordine e
     className="not-content my-6"
 />
 
+<span id="dependency-injection"></span>
 ## Inyección de dependencias
 
-Elysia **no** es un framework de inyección de dependencias, sino algo más parecido a una **"propagación de contexto"** con tipos seguros. O, en términos técnicos:
+Elysia **no** es un framework de inyección de dependencias, sino algo más parecido a una **"propagación de contexto"** con type safety. O, en términos técnicos:
 
 > Elysia es una composition root con contexto tipado, no un contenedor.
 
@@ -626,8 +646,9 @@ new Elysia()
 - `decorate` es para dependencias singleton, que viven durante toda la app.
 - `derive` es para dependencias por petición, que viven durante cada petición.
 
-Lo que Elysia no hace es manejar el grafo de dependencias por ti. Eso lo tienes que proporcionar tú de forma explícita.
+Lo que Elysia no hace es gestionar el grafo de dependencias por ti. Eso lo tienes que proporcionar tú de forma explícita.
 
+<span id="resource-cleanup"></span>
 ### Liberación de recursos
 
 Un valor de `derive` con `Symbol.asyncDispose` o `Symbol.dispose` se libera cuando termina la petición.
@@ -652,6 +673,7 @@ Solo se libera lo que creó el derive: `dependency` es un singleton de `decorate
 
 Consulta [dispose](/essential/life-cycle/#dispose) para ver los detalles.
 
+<span id="testing"></span>
 ## Tests
 
 Organiza los tests por funcionalidad, como en `test/user.test.ts`.
