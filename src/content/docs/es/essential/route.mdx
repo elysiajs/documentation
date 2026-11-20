@@ -1,5 +1,5 @@
 ---
-title: Enrutamiento interactivo
+title: Routing interactivo
 description: Construye un router de Elysia paso a paso.
 template: splash
 ---
@@ -90,9 +90,9 @@ new Elysia()
 
 <div class="content-layout">
 
-<h1 id="_top">Enrutamiento</h1>
+<h1 id="_top">Routing</h1>
 
-Una [API REST](https://es.wikipedia.org/wiki/Transferencia_de_Estado_Representacional) usa la ruta y el método de cada petición para decidir qué handler ejecutar.
+Una [API REST](https://en.wikipedia.org/wiki/REST) usa la ruta y el método de cada petición para decidir qué handler ejecutar.
 
 <CodePlayground elysia={demo1}>
 
@@ -109,7 +109,7 @@ new Elysia()
 
 > Al llamar a `.listen` se inicia un servidor web en el puerto 3000.
 
-Podemos entrar a nuestro servidor desde http://localhost:3000.
+Podemos acceder a nuestro servidor en http://localhost:3000.
 
 - `/` con el método `GET` devuelve `Elysia`.
 - `/hi` con el método `GET` devuelve `Hello!`.
@@ -117,6 +117,7 @@ Podemos entrar a nuestro servidor desde http://localhost:3000.
 
 Cuando visitas una URL en tu navegador, este envía una petición `GET`.
 
+<span id="path-types"></span>
 ## Tipos de ruta
 
 Las rutas se pueden agrupar en 3 tipos:
@@ -126,13 +127,14 @@ Las rutas se pueden agrupar en 3 tipos:
 <NumberedCards items={[
     { title: 'Rutas estáticas', children: 'coinciden de forma exacta' },
     { title: 'Rutas dinámicas', children: 'algunas partes son dinámicas y se pueden capturar como parámetros' },
-    { title: 'Comodines', children: 'coinciden con todo lo que resta de la ruta' },
+    { title: 'Comodines', children: 'coinciden con todo lo que queda de la ruta' },
 ]} />
 
 <InteractiveDoc steps={steps}>
 
 <InteractiveStep>
 
+<span id="static-path"></span>
 ## Ruta estática
 
 Una ruta estática coincide de forma exacta, sin sorpresas.
@@ -144,9 +146,10 @@ Una ruta estática coincide de forma exacta, sin sorpresas.
 
 <InteractiveStep>
 
+<span id="dynamic-path"></span>
 ## Ruta dinámica
 
-Agrega `:` seguido de un nombre para capturar su valor.
+Añade `:` seguido de un nombre para capturar su valor.
 
 `/user/:id` coincide con `/user/42`, `/user/abc` y `/user/hello-world`.
 
@@ -154,6 +157,7 @@ Agrega `:` seguido de un nombre para capturar su valor.
 
 <InteractiveStep>
 
+<span id="access-params"></span>
 ### Acceder a los parámetros
 
 Lee el valor capturado desde `params` en tu handler.
@@ -164,9 +168,10 @@ Cuando `/user/42/profile` coincide con `/user/:id/profile`, `params.id` vale `42
 
 <InteractiveStep>
 
+<span id="optional-params"></span>
 ### Parámetros opcionales
 
-Agrega `?` después del nombre de un parámetro para que sea opcional.
+Añade `?` después del nombre de un parámetro para que sea opcional.
 
 `/user/:id?/profile` coincide tanto con `/user/42/profile` como con `/user/profile`.
 
@@ -176,11 +181,12 @@ Si el parámetro no está presente, su valor será `undefined`.
 
 <InteractiveStep>
 
+<span id="wildcard"></span>
 ## Comodín
 
-Si agregas `*` al final de una ruta, coincidirá con cualquier ruta que venga después.
+Si añades `*` al final de una ruta, coincidirá con cualquier ruta que venga después.
 
-`/user/*` coincide con rutas de varios segmentos, como `/user/hello-world/profile`. En este ejemplo, `/user/42` sigue yendo a `/user/:id`, porque las rutas dinámicas tienen prioridad sobre los comodines (consulta la [prioridad de rutas](#prioridad-de-rutas)).
+`/user/*` coincide con rutas de varios segmentos, como `/user/hello-world/profile`. En este ejemplo, `/user/42` sigue yendo a `/user/:id`, porque las rutas dinámicas tienen prioridad sobre los comodines (consulta la [prioridad de rutas](#path-priority)).
 
 Para `/user/hello-world/profile`, `params['*']` vale `hello-world/profile`.
 
@@ -190,6 +196,7 @@ Para `/user/hello-world/profile`, `params['*']` vale `hello-world/profile`.
 
 <section class="content-layout">
 
+<span id="path-priority"></span>
 ## Prioridad de rutas
 
 Elysia resuelve las rutas en este orden:
@@ -219,9 +226,10 @@ new Elysia()
 
 ---
 
+<span id="http-verbs"></span>
 ## Verbos HTTP
 
-Los [verbos HTTP](https://developer.mozilla.org/es/docs/Web/HTTP/Reference/Methods) son los métodos de las peticiones, como `GET`, `POST` o `PUT`.
+Los [verbos HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods) son los métodos de las peticiones, como `GET`, `POST` o `PUT`.
 
 <div class="routing-methods">
 
@@ -293,6 +301,7 @@ new Elysia()
 
 <section class="content-layout">
 
+<span id="custom-method"></span>
 ### Método personalizado
 
 Usa `.method` con el nombre del método como primer argumento. El resto funciona igual que con los demás métodos.
@@ -305,6 +314,7 @@ new Elysia()
 	.listen(3000)
 ```
 
+<span id="all-methods"></span>
 ### Todos los métodos
 
 Captura todos los métodos con `.all`:
@@ -320,6 +330,7 @@ new Elysia()
 ---
 
 
+<span id="group"></span>
 ## Grupos
 
 Puedes agrupar varias rutas que comparten el mismo prefijo con `.group`:
@@ -342,6 +353,7 @@ new Elysia()
 
 Es como escribir `/user/sign-in` y `/user/profile` por separado.
 
+<span id="prefix"></span>
 ### Prefijo
 
 Si toda la instancia comparte el mismo prefijo, podemos definirlo en el constructor:
