@@ -1,0 +1,187 @@
+---
+title: Integración con Nextjs - ElysiaJS
+head:
+    - - meta
+      - property: 'og:title'
+        content: Integración con Nextjs - ElysiaJS
+
+    - - meta
+      - name: 'description'
+        content: Con el App Router de Next.js, puedes ejecutar Elysia en las rutas de Next.js. Elysia funciona con normalidad gracias a su compatibilidad con WinterTC.
+
+    - - meta
+      - property: 'og:description'
+        content: Con el App Router de Next.js, puedes ejecutar Elysia en las rutas de Next.js. Elysia funciona con normalidad gracias a su compatibilidad con WinterCG.
+---
+
+# Integración con Next.js
+
+Con el App Router de Next.js, podemos ejecutar Elysia en las rutas de Next.js.
+
+1. Crea **app/api/[[...slugs]]/route.ts**
+2. Define un servidor de Elysia
+3. Exporta **Elysia.fetch** con el nombre de los métodos HTTP que quieras usar
+
+::: code-group
+
+```typescript [app/api/[[...slugs]]/route.ts]
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', 'Hello Nextjs')
+    .post('/', ({ body }) => body, {
+        body: t.Object({
+            name: t.String()
+        })
+    })
+
+export const GET = app.fetch // [!code ++]
+export const POST = app.fetch // [!code ++]
+```
+
+:::
+
+Elysia funciona con normalidad gracias a su compatibilidad con WinterTC.
+
+Puedes tratar el servidor de Elysia como una API route normal de Next.js.
+
+Con este enfoque, puedes tener el frontend y el backend en un solo repositorio y contar con [type safety de punta a punta con ayuda de  Eden](/eden/overview), tanto en el cliente como en los server actions.
+
+### pnpm
+Si usas pnpm, [pnpm no instala automáticamente las peer dependencies por defecto](https://github.com/orgs/pnpm/discussions/3995#discussioncomment-1893230), así que tienes que instalar las dependencias adicionales manualmente.
+```bash
+pnpm add @sinclair/typebox openapi-types
+```
+
+## Prefijo
+
+Como nuestro servidor de Elysia no está en el directorio raíz del app router, tienes que indicar el prefijo en el servidor de Elysia.
+
+Por ejemplo, si colocas el servidor de Elysia en **app/user/[[...slugs]]/route.ts**, tienes que indicar el prefijo **/user** en el servidor de Elysia.
+
+::: code-group
+
+```typescript [app/user/[[...slugs]]/route.ts]
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/user' }) // [!code ++]
+	.get('/', 'Hello Nextjs')
+    .post('/', ({ body }) => body, {
+        body: t.Object({
+            name: t.String()
+        })
+    })
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+:::
+
+Esto asegura que el routing de Elysia funcione bien sin importar dónde decidas colocarlo.
+
+## Eden
+
+Podemos agregar [Eden](/eden/overview) para tener **type safety de punta a punta**, parecido a tRPC.
+
+Con este enfoque, usaremos el patrón de fetch isomórfico para que Elysia pueda:
+1. En el servidor: llamar a Elysia directamente, sin pasar por la capa de red
+2. En el cliente: llamar a Elysia a través de la capa de red
+
+Para empezar, tenemos que seguir estos pasos:
+
+1. Exportar la instancia de Elysia
+
+::: code-group
+
+```typescript [app/api/[[...slugs]]/route.ts]
+import { Elysia } from 'elysia'
+
+export const app = new Elysia({ prefix: '/api' }) // [!code ++]
+	.get('/', 'Hello Nextjs')
+	.post(
+		'/user',
+		({ body }) => body,
+		{
+			body: treaty.schema('User', {
+				name: 'string'
+			})
+		}
+	)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+:::
+
+2. Crear un cliente Treaty con el enfoque isomórfico
+
+::: code-group
+
+```typescript [lib/eden.ts]
+import { treaty } from '@elysia/eden'
+import type { app } from '../app/api/[[...slugs]]/route'
+
+// .api to enter /api prefix
+export const api =
+  // process is defined on server side and build time
+  typeof process !== 'undefined'
+    ? treaty(app).api
+    : treaty<typeof app>('localhost:3000').api
+```
+
+Es importante que uses `typeof process` en lugar de `typeof window`, porque `window` no está definido durante el build y eso causa un error de hydration.
+
+:::
+
+3. Usar el cliente tanto en server components como en client components
+
+::: code-group
+
+```tsx [app/page.tsx]
+import { api } from '../lib/eden'
+
+export default async function Page() {
+	const message = await api.get()
+
+	return <h1>Hello, {message}</h1>
+}
+```
+
+:::
+
+Esto te permite tener type safety desde el frontend hasta el backend con muy poco esfuerzo, genial, ¿no?, y funciona tanto con server components como con client components, además de con Incremental Static Regeneration (ISR).
+
+## React Query
+También se puede usar React Query para interactuar con el servidor de Elysia desde el cliente.
+
+::: code-group
+
+```tsx [src/routes/index.tsx]
+import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+
+import { getTreaty } from './api.$' // [!code ++]
+
+export const Route = createFileRoute('/a')({
+	component: App
+})
+
+function App() {
+	const { data: response } = useQuery({ // [!code ++]
+		queryKey: ['get'], // [!code ++]
+		queryFn: () => getTreaty().get() // [!code ++]
+	}) // [!code ++]
+
+	return response?.data
+}
+```
+
+::: code-group
+
+Esto funciona con cualquier función de React Query, como el caching, la paginación, las infinite queries, etc.
+
+---
+
+Echa un vistazo a  los [Route Handlers de Next.js](https://nextjs.org/docs/app/building-your-application/routing/route-handlers#static-route-handlers) para más información.
