@@ -134,6 +134,7 @@ const app = new Elysia()
 
 </CodePlayground>
 
+<span id="dependency"></span>
 ## Dependencias
 
 Elysia está formada por varias mini apps de Elysia que pueden ejecutarse por su cuenta, de forma parecida a los microservicios que se comunican entre sí.
@@ -169,6 +170,7 @@ Esto se parece a la **inyección de dependencias**: cada instancia declara lo qu
 
 <span id="plugin-deduplication"></span>
 
+<span id="deduplication"></span>
 ### Deduplicación
 
 Los hooks de un plugin sin nombre se pueden registrar más de una vez cuando el plugin se comparte entre instancias.
@@ -217,18 +219,19 @@ const version = (value = 1) => new Elysia({
 
 Ponerle nombre a un plugin deduplica su registro, pero no impide que la función que lo crea se ejecute cada vez que la llamas. Deja fuera de esas llamadas repetidas el trabajo que solo debe hacerse una vez.
 
+<span id="global-vs-explicit-dependency"></span>
 ### Dependencia global vs. explícita
 
 Algunas dependencias tienen más sentido de forma global. Otras deberían declararse en cada instancia que las usa.
 
 | Usa una dependencia global para | Usa una dependencia explícita para |
 | --- | --- |
-| Plugins que no agregan tipos, como CORS, compresión o headers de seguridad | Plugins que agregan tipos, como macros, estado o modelos |
+| Plugins que no añaden tipos, como CORS, compresión o headers de seguridad | Plugins que añaden tipos, como macros, estado o modelos |
 | Hooks del ciclo de vida que deben aplicarse a toda la app, como tracing o logging | Lógica de negocio con la que interactúan los handlers, como la autenticación o una base de datos |
 
 Algunos ejemplos globales son la documentación con OpenAPI, el tracing con OpenTelemetry y el logging. Algunos ejemplos explícitos son los stores y las sesiones, los modelos de un ORM u ODM, los servicios de autenticación y de base de datos, y los módulos de funcionalidades como un chat o las notificaciones.
 
-Si tu dependencia no necesita ser global, prefiere una dependencia explícita.
+Si tu dependencia no necesita ser global, opta por una dependencia explícita.
 
 ## Scope
 
@@ -236,8 +239,9 @@ Los hooks del ciclo de vida de Elysia están **encapsulados** dentro de su propi
 
 <span id="descendant"></span>
 
-En el ejemplo de abajo, `current.use(child)` convierte a `child` en un **descendiente** de `current`. En la otra dirección, `parent.use(current)` convierte a `parent` en su **padre** directo, y `main.use(parent)` agrega otro padre por encima.
+En el ejemplo de abajo, `current.use(child)` convierte a `child` en un **descendiente** de `current`. En la otra dirección, `parent.use(current)` convierte a `parent` en su **padre** directo, y `main.use(parent)` añade otro padre por encima.
 
+<span id="scope-level"></span>
 ### Nivel de scope
 
 Elige hasta dónde llega un hook con el primer argumento de `onBeforeHandle`: `local`, `plugin` o `global`.
@@ -250,6 +254,7 @@ Cada paso usa el mismo árbol de plugins; solo cambia el scope. El hook imprime 
 
 <InteractiveStep class="doc-enhanced:[min-block-size:min(60dvh,44rem)]">
 
+<span id="local-scope"></span>
 ### Scope local
 
 `local` se aplica a la instancia actual y a sus descendientes.
@@ -262,6 +267,7 @@ Este es el scope por defecto. Puedes omitir `'local'` y escribir `onBeforeHandle
 
 <InteractiveStep class="doc-enhanced:[min-block-size:min(60dvh,44rem)]">
 
+<span id="plugin-scope"></span>
 ### Scope plugin
 
 `plugin` llega también al padre directo.
@@ -274,6 +280,7 @@ El hook se detiene en `parent`, así que `/main` no lo ejecuta.
 
 <InteractiveStep class="doc-enhanced:[min-block-size:min(45dvh,33rem)]">
 
+<span id="global-scope"></span>
 ### Scope global
 
 `global` sigue subiendo por cada padre que usa el plugin. Las cuatro rutas imprimen `hi` en el log, incluida `/main`.
@@ -300,9 +307,10 @@ Usa el diagrama para seguir el mismo hook a través del árbol de plugins.
 
 Para promover hooks que ya están registrados en una instancia, consulta [Cambio de scope](#instance-as) para ver `.as('plugin')` y `.as('global')`.
 
+<span id="config"></span>
 ## Configuración
 
-Para que un plugin sea reutilizable, deja que quien lo usa configure las partes que necesitan cambiar. Una función puede recibir opciones y devolver una instancia de Elysia.
+Para que un plugin sea reutilizable, deja que quien lo use configure las partes que necesitan cambiar. Una función puede recibir opciones y devolver una instancia de Elysia.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -317,9 +325,10 @@ const app = new Elysia()
 
 Aquí `/version` devuelve `1`. Pasa otro valor para crear un plugin con otra configuración.
 
+<span id="functional-callback"></span>
 ### Callback funcional
 
-Siempre que puedas, prefiere una nueva instancia de plugin. Los callbacks funcionales reciben directamente la instancia principal, lo que hace más difícil razonar sobre la encapsulación y el scope.
+Siempre que puedas, mejor usa una nueva instancia de plugin. Los callbacks funcionales reciben directamente la instancia principal, lo que hace más difícil razonar sobre la encapsulación y el scope.
 
 Para definir uno, escribe una función que reciba Elysia y devuelva la instancia extendida.
 
@@ -346,7 +355,7 @@ En Elysia 2 ya no existe el getter `app.store` de la instancia. Usa `store` del 
 
 :::tip[Elige la forma más clara]
 
-No necesitas elegir un callback por rendimiento. Las instancias de Elysia son livianas, y usar una instancia aparte también le da a TypeScript un límite más claro para la inferencia.
+No necesitas elegir un callback por rendimiento. Las instancias de Elysia son ligeras, y usar una instancia aparte también le da a TypeScript un límite más claro para la inferencia.
 
 :::
 
@@ -410,8 +419,9 @@ new Elysia()
     .listen(3000)
 ```
 
-En Elysia 2, el schema de una ruta reemplaza por defecto al schema correspondiente que hereda del guard. Agrega `schema: 'merge'` al guard si se deben cumplir ambos schemas. Consulta [validación](/essential/validation/#merge) para ver más.
+En Elysia 2, el schema de una ruta reemplaza por defecto al schema correspondiente que hereda del guard. Añade `schema: 'merge'` al guard si se deben cumplir ambos schemas. Consulta [validación](/essential/validation/#merge) para ver más.
 
+<span id="grouped-guard"></span>
 ### Guard agrupado
 
 Un [grupo](/essential/route/#group) puede recibir tres argumentos: un prefijo, las opciones del guard y el callback de la app.
@@ -447,6 +457,7 @@ new Elysia()
 
 Las dos versiones registran `POST /v1/student`. Un body JSON con el string `"Rikuhachima Aru"` pasa la validación y el handler lo devuelve.
 
+<span id="scope-cast"></span>
 ## Cambio de scope
 
 
@@ -456,7 +467,7 @@ Para aplicar hooks a un padre, elige cuánto quieres compartir:
 
 
 <NumberedCards items={[
-    { title: 'En línea', children: 'Define un scope en línea para un solo hook del ciclo de vida.' },
+    { title: 'Inline', children: 'Define un scope inline para un solo hook del ciclo de vida.' },
     { title: 'Guard', children: 'Usa el scope de un guard para un conjunto de hooks y schemas.' },
     { title: 'Instancia', children: 'Usa el scope de la instancia para promover sus hooks y schemas existentes.' },
 ]} />
@@ -542,14 +553,15 @@ const parent = new Elysia()
     .get('/grandparent', 'also ok')
 ```
 
-Ahora el schema de respuesta de tipo string llega hasta `/grandparent`. Devolver un número desde cualquiera de estas rutas no cumple el schema: TypeScript te lo va a señalar, y la validación de la respuesta lo revisa en runtime.
+Ahora el schema de respuesta de tipo string llega hasta `/grandparent`. Devolver un número desde cualquiera de estas rutas no cumple el schema: TypeScript te lo va a señalar, y la validación de la respuesta lo comprueba en runtime.
 
-## Carga diferida
+## Lazy load
 
-Por defecto, los módulos se cargan de inmediato, así que los plugins síncronos se registran antes de que arranque el servidor. Un módulo pesado de calcular o que bloquea puede retrasar el arranque.
+Por defecto, los módulos se cargan de inmediato, así que los plugins síncronos se registran antes de que arranque el servidor. Un módulo con mucho cálculo o que bloquee puede retrasar el arranque.
 
-Un plugin asíncrono registra sus rutas cuando su promesa se resuelve. `.listen()` y `app.fetch` esperan a todos los módulos pendientes antes de atender peticiones; solo `app.handle()` puede ejecutarse antes.
+Un plugin asíncrono registra sus rutas cuando su Promise se completa. `.listen()` y `app.fetch` esperan a todos los módulos pendientes antes de atender peticiones; solo `app.handle()` puede ejecutarse antes.
 
+<span id="deferred-module"></span>
 ### Módulo diferido
 
 Un módulo diferido es un plugin asíncrono. Este ejemplo espera tu lista de archivos antes de registrar sus rutas:
@@ -580,9 +592,10 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-### Módulo con import dinámico
+<span id="lazy-load-module"></span>
+### Módulo con lazy load
 
-Un `import()` dinámico puede cargar de forma diferida un plugin síncrono o asíncrono. Exporta el plugin como el export por defecto del módulo:
+Un `import()` dinámico puede cargar de forma lazy un plugin síncrono o asíncrono. Exporta el plugin como el export por defecto del módulo:
 
 ```ts title="plugin.ts"
 import { Elysia } from 'elysia'
@@ -599,11 +612,12 @@ const app = new Elysia()
     .listen(3000)
 ```
 
-Esto es útil cuando cargar el módulo en sí es costoso. `.listen()` espera a `app.modules` por su cuenta, así que el servidor nunca arranca con una ruta faltante. Espera tú mismo a `app.modules` solo cuando llames directamente a `app.handle()`, como en los tests.
+Esto es útil cuando cargar el módulo en sí es costoso. `.listen()` espera a `app.modules` por su cuenta, así que el servidor nunca arranca con alguna ruta sin registrar. Espera tú mismo a `app.modules` solo cuando llames directamente a `app.handle()`, como en los tests.
 
+<span id="testing"></span>
 ### Tests
 
-En los tests, espera a `app.modules` antes de hacer una petición a una ruta diferida o cargada con import dinámico.
+En los tests, espera a `app.modules` antes de hacer una petición a una ruta diferida o cargada de forma lazy.
 
 ```ts
 import { describe, expect, it } from 'bun:test'
