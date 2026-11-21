@@ -1,0 +1,206 @@
+---
+title: Plugin de HTML
+description: Referencia y ejemplos del plugin de HTML.
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Plugin de HTML</h1>
+
+Te permite usar [JSX](#jsx) y HTML con los headers y el soporte adecuados.
+
+Instálalo con:
+
+```bash
+bun add @elysia/html@rc
+```
+
+Luego úsalo:
+
+```tsx
+import { Elysia } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.get(
+		'/html',
+		() => `
+            <html lang='en'>
+                <head>
+                    <title>Hello World</title>
+                </head>
+                <body>
+                    <h1>Hello World</h1>
+                </body>
+            </html>`
+	)
+	.get('/jsx', () => (
+		<html lang="en">
+			<head>
+				<title>Hello World</title>
+			</head>
+			<body>
+				<h1>Hello World</h1>
+			</body>
+		</html>
+	))
+	.listen(3000)
+```
+
+Este plugin agregará automáticamente el header `Content-Type: text/html; charset=utf8` a la respuesta, añadirá `<!doctype html>` y la convertirá en un objeto Response.
+
+## JSX
+
+Elysia HTML se basa en [@kitajs/html](https://github.com/kitajs/html), lo que nos permite convertir JSX a string en tiempo de compilación para lograr un alto rendimiento.
+
+Nombra con el sufijo **"x"** al final el archivo que necesite usar JSX:
+
+- .js -> .jsx
+- .ts -> .tsx
+
+Para registrar los tipos de TypeScript, agrega lo siguiente a **tsconfig.json**:
+
+```jsonc
+// tsconfig.json
+{
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "Html.createElement",
+		"jsxFragmentFactory": "Html.Fragment"
+	}
+}
+```
+
+Y eso sería todo, asi de fácil ya puedes usar JSX como tu template engine:
+
+```tsx
+import { Elysia } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.get('/', () => (
+		<html lang="en">
+			<head>
+				<title>Hello World</title>
+			</head>
+			<body>
+				<h1>Hello World</h1>
+			</body>
+		</html>
+	))
+	.listen(3000)
+```
+
+Si aparece el error `Cannot find name 'Html'. Did you mean 'html'?`, tienes que agregar este import al template de JSX:
+
+```tsx
+import { Html } from '@elysia/html'
+```
+
+Es importante que se escriba en mayúsculas.
+
+## XSS
+
+Kita HTML escapa los valores marcados con `safe`. Su plugin de TypeScript puede señalar expresiones JSX potencialmente inseguras mientras editas.
+
+Usa el atributo `safe` para escapar el texto no confiable antes de insertarlo en HTML:
+
+```tsx
+import { Elysia, t } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.post(
+		'/',
+		{
+			body: t.String()
+		}, ({ body }) => (
+			<html lang="en">
+				<head>
+					<title>Hello World</title>
+				</head>
+				<body>
+					<h1 safe>{body}</h1>
+				</body>
+			</html>
+		)
+	)
+	.listen(3000)
+```
+
+Sin embargo, cuando construyes una app a gran escala, lo mejor es tener un recordatorio de tipos que detecte posibles vulnerabilidades XSS en tu codebase.
+
+Para agregar un recordatorio type-safe, instala:
+
+```sh
+bun add @kitajs/ts-html-plugin
+```
+
+Luego agrega lo siguiente a **tsconfig.json**
+
+```jsonc
+// tsconfig.json
+{
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "Html.createElement",
+		"jsxFragmentFactory": "Html.Fragment",
+		"plugins": [{ "name": "@kitajs/ts-html-plugin" }]
+	}
+}
+```
+
+## Opciones
+
+### contentType
+
+- Tipo: `string`
+- Por defecto: `'text/html; charset=utf8'`
+
+El content-type de la respuesta.
+
+### autoDetect
+
+- Tipo: `boolean`
+- Por defecto: `true`
+
+Indica si se debe detectar automáticamente el contenido HTML y definir el content-type.
+
+### autoDoctype
+
+- Tipo: `boolean | 'full'`
+- Por defecto: `true`
+
+Indica si se debe agregar automáticamente `<!doctype html>` a una respuesta que empiece con `<html>`, si no lo encuentra.
+
+Usa `full` para agregar también el doctype a las respuestas HTML devueltas sin el helper `html()`.
+
+```ts
+// Automatic response detection with html({ autoDoctype: 'full' })
+app.get('/', () => '<html></html>')
+
+// Explicit html helper
+app.get('/', ({ html }) => html('<html></html>'))
+```
+
+### isHtml
+
+- Tipo: `(value: string) => boolean`
+- Por defecto: `isHtml` (función exportada)
+
+Esta función se usa para detectar si un string es HTML o no. El detector integrado elimina los espacios en blanco, requiere al menos 7 caracteres y comprueba que el string empiece con `<` y termine con `>`.
+
+Es una heurística, no un validador de HTML. La detección automática de respuestas usa la función que proporciones aquí.
+
+</div>
+</InteractiveDocLayout>
+</div>
