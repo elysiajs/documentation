@@ -13,19 +13,19 @@ import '../../../styles/routing.css';
 
 <h1 id="_top">HTML plugin</h1>
 
-Allows you to use [JSX](#jsx) and HTML with proper headers and support.
+Allows you to use [JSX](#jsx) and HTML with proper headers, streaming, and XSS checks.
 
 Install with:
 
 ```bash
-bun add @elysia/html@rc
+bun add @elysia/html@rc @kitajs/html@next
 ```
 
 Then use it:
 
 ```tsx
 import { Elysia } from 'elysia'
-import { html, Html } from '@elysia/html'
+import { html } from '@elysia/html'
 
 new Elysia()
 	.use(html())
@@ -54,11 +54,11 @@ new Elysia()
 	.listen(3000)
 ```
 
-This plugin will automatically add the `Content-Type: text/html; charset=utf8` header to the response, add `<!doctype html>`, and convert it into a Response object.
+This plugin will automatically add the `Content-Type: text/html; charset=utf-8` header to the response, add `<!doctype html>` before an `<html>` root, and convert it into a Response object.
 
 ## JSX
 
-Elysia HTML is based on [@kitajs/html](https://github.com/kitajs/html) allowing us to convert JSX to a string at compile time to achieve high performance.
+Elysia HTML uses [Kita Html](https://html.kitajs.org), which compiles JSX to strings.
 
 Name your file that needs to use JSX to end with the suffix **"x"**:
 
@@ -71,18 +71,17 @@ To register the TypeScript type, please append the following to **tsconfig.json*
 // tsconfig.json
 {
 	"compilerOptions": {
-		"jsx": "react",
-		"jsxFactory": "Html.createElement",
-		"jsxFragmentFactory": "Html.Fragment"
+		"jsx": "react-jsx",
+		"jsxImportSource": "@kitajs/html"
 	}
 }
 ```
 
-That's it, now you can use JSX as your template engine:
+That's it, now you can use JSX as your template engine without importing anything:
 
 ```tsx
 import { Elysia } from 'elysia'
-import { html, Html } from '@elysia/html'
+import { html } from '@elysia/html'
 
 new Elysia()
 	.use(html())
@@ -99,23 +98,13 @@ new Elysia()
 	.listen(3000)
 ```
 
-If the error `Cannot find name 'Html'. Did you mean 'html'?` occurs, this import must be added to the JSX template:
-
-```tsx
-import { Html } from '@elysia/html'
-```
-
-It is important that it is written in uppercase.
-
 ## XSS
 
-Kita HTML escapes values marked with `safe`. Its TypeScript plugin can flag potentially unsafe JSX expressions while you edit.
-
-Use the `safe` attribute to escape untrusted text before inserting it into HTML:
+JSX children are **not** escaped by default. Use the `safe` attribute to escape untrusted text before inserting it into HTML:
 
 ```tsx
 import { Elysia, t } from 'elysia'
-import { html, Html } from '@elysia/html'
+import { html } from '@elysia/html'
 
 new Elysia()
 	.use(html())
@@ -137,26 +126,115 @@ new Elysia()
 	.listen(3000)
 ```
 
-However, when building a large-scale app, it's best to have a type reminder to detect possible XSS vulnerabilities in your codebase.
+It is easy to forget `safe` in a large codebase, so let the type checker find every unescaped value with `kita-html check`. It requires TypeScript 7.1, published under the `next` tag until its stable release:
 
-To add a type-safe reminder, please install:
-
-```sh
-bun add @kitajs/ts-html-plugin
+```bash
+bun add -d @kitajs/html-cli@next typescript@next
 ```
 
-Then append the following to **tsconfig.json**
+Then run it with your tests, so CI fails on unsafe JSX:
 
 ```jsonc
-// tsconfig.json
+// package.json
 {
-	"compilerOptions": {
-		"jsx": "react",
-		"jsxFactory": "Html.createElement",
-		"jsxFragmentFactory": "Html.Fragment",
-		"plugins": [{ "name": "@kitajs/ts-html-plugin" }]
+	"scripts": {
+		"test": "kita-html check && bun test"
 	}
 }
+```
+
+Inside GitHub Actions, findings are also annotated on the pull request. See [kita-html check](https://html.kitajs.org/guide/xss/cli-scanner) for editor integration and output formats. Projects still on TypeScript 6 can use the deprecated [editor plugin](https://html.kitajs.org/guide/xss/ts-html-plugin) instead.
+
+## Streaming
+
+Wrap slow parts of a page in `Suspense` to send the page immediately with a fallback, then stream each part as soon as it resolves. Pass the `rid` from the context so the plugin knows which response the boundary belongs to:
+
+```tsx
+import { Elysia } from 'elysia'
+import { html } from '@elysia/html'
+import { Suspense } from '@kitajs/html/suspense'
+
+async function Stats() {
+	const stats = await db.stats()
+
+	return <p>{stats.posts} posts</p>
+}
+
+new Elysia()
+	.use(html())
+	.get('/', ({ rid }) => (
+		<html lang="en">
+			<body>
+				<Suspense rid={rid} fallback={<p>Loading...</p>} catch={<p>Failed to load</p>}>
+					<Stats />
+				</Suspense>
+			</body>
+		</html>
+	))
+	.listen(3000)
+```
+
+Enable [autoSuspense](#autosuspense) to skip passing `rid` around, and use `AutoSuspense` instead:
+
+```tsx
+import { Elysia } from 'elysia'
+import { html } from '@elysia/html'
+import { AutoSuspense } from '@kitajs/html/suspense'
+
+new Elysia()
+	.use(html({ autoSuspense: true }))
+	.get('/', () => (
+		<AutoSuspense fallback={<p>Loading...</p>}>
+			<Stats />
+		</AutoSuspense>
+	))
+	.listen(3000)
+```
+
+When an async component wraps the boundaries, pass the JSX to `html()` instead of returning it. Elysia awaits returned values, so a boundary that resolves before the async component would lose its content:
+
+```tsx
+app.get('/', ({ html, rid }) =>
+	html(
+		<AsyncLayout>
+			<Suspense rid={rid} fallback={<p>Loading...</p>}>
+				<Stats />
+			</Suspense>
+		</AsyncLayout>
+	)
+)
+```
+
+If the first boundary is only created after an `await`, pass a function instead. It always streams and `AutoSuspense` works inside it even without `autoSuspense`:
+
+```tsx
+app.get('/', ({ html }) =>
+	html(async () => {
+		const user = await getUser()
+
+		return (
+			<AutoSuspense fallback={<p>Loading...</p>}>
+				<Dashboard user={user} />
+			</AutoSuspense>
+		)
+	})
+)
+```
+
+HEAD requests and clients that disconnect release pending boundaries immediately. See [Suspense](https://html.kitajs.org/guide/async/using-suspense) and [error boundaries](https://html.kitajs.org/guide/async/error-boundaries) for how streaming works.
+
+## Status
+
+HTML passed to `status` is sent with the HTML content type:
+
+```tsx
+import { Elysia, status } from 'elysia'
+import { html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.get('/', () => status(404, <h1>Not found</h1>))
+	.listen(3000)
 ```
 
 ## Options
@@ -164,42 +242,46 @@ Then append the following to **tsconfig.json**
 ### contentType
 
 - Type: `string`
-- Default: `'text/html; charset=utf8'`
+- Default: `'text/html; charset=utf-8'`
 
-The content-type of the response.
+The content-type of the response. A `content-type` set in `set.headers` takes precedence.
 
 ### autoDetect
 
 - Type: `boolean`
 - Default: `true`
 
-Whether to automatically detect HTML content and set the content-type.
+Whether to automatically detect HTML returned from a handler or passed to `status`, and send it as HTML. When disabled, use the `html()` function from the context.
 
 ### autoDoctype
 
-- Type: `boolean | 'full'`
+- Type: `boolean`
 - Default: `true`
 
-Whether to automatically add `<!doctype html>` to a response starting with `<html>`, if not found.
+Whether to automatically add `<!doctype html>` to a response starting with `<html>`.
 
-Use `full` to also add the doctype to HTML responses returned without the `html()` helper.
+### autoSuspense
 
-```ts
-// Automatic response detection with html({ autoDoctype: 'full' })
-app.get('/', () => '<html></html>')
+- Type: `boolean`
+- Default: `false`
 
-// Explicit html helper
-app.get('/', ({ html }) => html('<html></html>'))
-```
+Whether to provide the request ID to `AutoSuspense` automatically. The ID is kept for the whole request, including hooks and async components.
+
+### genRequestId
+
+- Type: `(request: Request) => string | number`
+- Default: `req-1`, `req-2`, ... with the number in base 36
+
+Generates the `rid` of each request. The value is written into the HTML, so return a short trusted value instead of raw request input. It must be unique among requests in flight.
 
 ### isHtml
 
 - Type: `(value: string) => boolean`
 - Default: `isHtml` (exported function)
 
-The function is used to detect if a string is HTML or not. The built-in detector trims whitespace, requires at least 7 characters, and checks that the string starts with `<` and ends with `>`.
+The function used by [autoDetect](#autodetect) to detect if a string is HTML. The built-in detector ignores surrounding whitespace, requires at least 7 characters, and checks that the string starts with `<` and ends with `>`.
 
-This is a heuristic, not an HTML validator. Automatic response detection uses the function you supply here.
+It does not validate the HTML.
 
 </div>
 </InteractiveDocLayout>
