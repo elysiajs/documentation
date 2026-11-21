@@ -143,6 +143,7 @@ Here are some of the official plugins maintained by the Elysia team:
 -   [elysia-autoscale](https://github.com/Aft1n/elysia-autoscale) - scale a Bun + Elysia app across processes on one host, with cgroup-aware auto-scaling and graceful worker retirement
 -   [elysia-local-model](https://github.com/Aft1n/elysia-local-model) - run local Hugging Face transformer models in-process via Transformers.js. Requires Elysia v2.
 -   [Medicus](https://github.com/arthurfiorette/medicus) - Health check library with an Elysia handler that runs custom checkers and responds with a JSON status (200 or 503).
+-   [HyperFetch Elysia](https://hyperfetch.bettertyped.com/docs/integrations/elysia/overview/) - typed [HyperFetch](https://github.com/BetterTyped/hyper-fetch) SDK built from your Elysia app type, with caching, retries and React hooks, no codegen
 
 ## Complementary projects:
 
