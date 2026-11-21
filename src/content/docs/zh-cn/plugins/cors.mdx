@@ -1,0 +1,174 @@
+---
+title: CORS 插件
+description: CORS 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">CORS 插件</h1>
+
+此插件支持自定义[跨源资源共享（CORS）](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)行为。
+
+安装：
+
+```bash
+bun add @elysia/cors@rc
+```
+
+然后这样使用：
+
+```ts
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+
+new Elysia().use(cors()).listen(3000)
+```
+
+这会让 Elysia 接受来自任意源的请求。
+
+## 配置
+
+以下是插件支持的配置选项
+
+### origin
+
+默认值：`true`
+
+指定是否允许来自给定源的请求代码共享响应。
+
+值可以是以下任一类型：
+
+- **string** - 与请求的 `Origin` 请求头比较源（协议可省略，例如 `'example.com'`）；匹配时，会在 [Access-Control-Allow-Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) 响应头中回显请求源，否则不发送该响应头。`'*'` 表示允许任意源。
+- **boolean** - `true` 接受任意源并回显请求的 `Origin` 请求头；如果该请求头不存在，则回退为 `*`。`false` 会禁用 allow-origin 响应头。
+- **RegExp** - 与请求的 `Origin` 请求头匹配的模式；匹配时允许该源。
+- **Function** - 用于控制资源共享的自定义逻辑。返回 `true` 时允许。
+    - 类型如下：
+    ```ts
+    type OriginCheck = (request: Request) => boolean | void
+    ```
+- `Array<string | RegExp | Function>` - 按顺序检查以上各项，其中任一值匹配或返回 `true` 即允许。
+
+---
+
+### methods
+
+默认值：`true`
+
+跨源请求允许使用的方法。默认值 `true` 会回显预检请求中指定的方法。设为 `false` 可省略此响应头。
+
+设置 [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods) 响应头。
+
+值可以是以下任一类型：
+
+- **false | null | ''** - 不发送 allow-methods 响应头。选项为 `undefined` 时使用默认值
+- **\*** - 允许所有方法
+- **string** - 单个方法或以逗号分隔的方法字符串
+    - 例如：`'GET, PUT, POST'`
+- **string[]** - 允许多个 HTTP 方法。
+    - 例如：`['GET', 'PUT', 'POST']`
+
+---
+
+### allowedHeaders
+
+默认值：`true`
+
+传入请求允许使用的请求头。默认值 `true` 会在预检请求中回显 `Access-Control-Request-Headers`。
+
+设置 [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers) 响应头。
+
+值可以是以下任一类型：
+
+- **string** - 单个请求头或以逗号分隔的请求头字符串
+    - 例如：`'Content-Type, Authorization'`
+- **string[]** - 允许多个 HTTP 请求头。
+    - 例如：`['Content-Type', 'Authorization']`
+
+---
+
+### exposeHeaders
+
+默认值：`true`
+
+向浏览器 JavaScript 暴露指定响应头。默认值 `true` 会在每个响应（包括预检响应）中回显传入请求的请求头名称；传入字符串或数组可指定要暴露的名称。
+
+设置 [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers) 响应头。
+
+值可以是以下任一类型：
+
+- **string** - 单个响应头或以逗号分隔的响应头字符串。
+    - 例如：`'Content-Type, X-Powered-By'`
+- **string[]** - 允许多个 HTTP 响应头。
+    - 例如：`['Content-Type', 'X-Powered-By']`
+
+---
+
+### credentials
+
+默认值：`true`
+
+当请求的凭据模式 [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials) 为 `include` 时，Access-Control-Allow-Credentials 响应头会告知浏览器是否向前端 JavaScript 暴露响应。
+
+当请求的凭据模式 [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials) 为 `include` 时，只有 Access-Control-Allow-Credentials 的值为 true，浏览器才会向前端 JavaScript 暴露响应。
+
+凭据包括 Cookie、授权请求头或 TLS 客户端证书。
+
+设置 [Access-Control-Allow-Credentials](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials) 响应头。
+
+---
+
+### maxAge
+
+默认值：`5`
+
+指定 [预检请求](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request)的结果（即 [Access-Control-Allow-Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods) 和 [Access-Control-Allow-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers) 响应头中的信息）可缓存多久。
+
+设置 [Access-Control-Max-Age](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age) 响应头。
+
+---
+
+### preflight
+
+默认值：`true`
+
+预检请求用于检查服务器是否理解 CORS 协议，以及是否允许使用特定方法和请求头。
+
+预检请求以 **OPTIONS** 方法发送，并带有 3 个 HTTP 请求头：
+
+- **Access-Control-Request-Method**
+- **Access-Control-Request-Headers**
+- **Origin**
+
+此配置用于指定服务器是否应响应预检请求。
+
+## 用法模式
+
+以下是此插件的常见用法。
+
+## 按域名允许 CORS
+
+```typescript
+import { Elysia } from 'elysia'
+import { cors } from '@elysia/cors'
+
+const app = new Elysia()
+	.use(
+		cors({
+			origin: /^https:\/\/(?:[a-z0-9-]+\.)*saltyaom\.com$/i
+		})
+	)
+	.get('/', () => 'Hi')
+	.listen(3000)
+```
+
+此配置允许 `saltyaom.com` 及其子域名的 HTTPS 源。正则表达式两端的锚点可避免匹配无关主机名。
+
+</div>
+</InteractiveDocLayout>
+</div>

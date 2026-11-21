@@ -1,0 +1,371 @@
+---
+title: Bun 全栈开发服务器
+description: 使用 Bun 和静态插件，在同一服务中运行前端与 Elysia API。
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import InteractiveDoc from "../../../../components/interactive-code/doc.astro";
+import InteractiveStep from "../../../../components/interactive-code/step.astro";
+import "../../../../styles/routing.css";
+
+export const setupSteps = [
+    {
+        label: '设置服务器',
+        code: `import { Elysia } from 'elysia'
+import { staticPlugin } from '@elysia/static'
+
+new Elysia()
+	.use(await staticPlugin({ bunFullstack: true }))
+	.listen(3000)`,
+    },
+    {
+        label: 'public/index.html',
+        lang: 'html',
+        code: `<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Elysia React App</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="module" src="./index.tsx"></script>
+	</body>
+</html>`,
+    },
+    {
+        label: 'public/index.tsx',
+        lang: 'tsx',
+        code: `import { useState } from 'react'
+import { createRoot } from 'react-dom/client'
+
+function App() {
+	const [count, setCount] = useState(0)
+	const increase = () => setCount((c) => c + 1)
+
+	return (
+		<main>
+			<h2>{count}</h2>
+			<button onClick={increase}>
+				Increase
+			</button>
+		</main>
+	)
+}
+
+const root = createRoot(document.getElementById('root')!)
+root.render(<App />)`,
+    },
+    {
+        label: 'tsconfig.json',
+        lang: 'json',
+        code: `{
+  "compilerOptions": {
+	"jsx": "react-jsx"
+  }
+}`,
+    },
+    {
+        label: '自定义前缀路径',
+        code: `import { Elysia } from 'elysia'
+import { staticPlugin } from '@elysia/static'
+
+new Elysia()
+  	.use(
+  		await staticPlugin({
+  			prefix: '/',
+            bunFullstack: true
+   		})
+   )
+  .listen(3000)`,
+    },
+];
+
+export const tailwindSteps = [
+    {
+        label: 'bunfig.toml',
+        lang: 'toml',
+        code: `[serve.static]
+plugins = ["bun-plugin-tailwind"]`,
+    },
+    {
+        label: 'public/global.css',
+        lang: 'css',
+        code: `@import "tailwindcss";`,
+    },
+    {
+        label: 'public/index.html',
+        lang: 'html',
+        code: `<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Elysia React App</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="./global.css">
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="module" src="./index.tsx"></script>
+	</body>
+</html>`,
+        highlight: [8],
+    },
+    {
+        label: 'public/index.tsx',
+        lang: 'tsx',
+        code: `import { useState } from 'react'
+import { createRoot } from 'react-dom/client'
+
+import './global.css'
+
+function App() {
+	const [count, setCount] = useState(0)
+	const increase = () => setCount((c) => c + 1)
+
+	return (
+		<main>
+			<h2>{count}</h2>
+			<button onClick={increase}>
+				Increase
+			</button>
+		</main>
+	)
+}
+
+const root = createRoot(document.getElementById('root')!)
+root.render(<App />)`,
+        highlight: [4],
+    },
+];
+
+export const pathAliasSteps = [
+    {
+        label: 'tsconfig.json',
+        lang: 'json',
+        code: `{
+  "compilerOptions": {
+	"baseUrl": ".",
+	"paths": {
+	  "@public/*": ["public/*"]
+	}
+  }
+}`,
+    },
+    {
+        label: 'public/index.tsx',
+        lang: 'tsx',
+        code: `import { useState } from 'react'
+import { createRoot } from 'react-dom/client'
+
+import '@public/global.css'
+
+function App() {
+	const [count, setCount] = useState(0)
+	const increase = () => setCount((c) => c + 1)
+
+	return (
+		<main>
+			<h2>{count}</h2>
+			<button onClick={increase}>
+				Increase
+			</button>
+		</main>
+	)
+}
+
+const root = createRoot(document.getElementById('root')!)
+root.render(<App />)`,
+        highlight: [4],
+    },
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">Bun 全栈开发服务器</h1>
+
+Bun 的[全栈开发服务器](https://bun.com/docs/bundler/fullstack)会打包前端资源，并支持热模块替换（HMR）。本指南使用 Bun 1.3 或更高版本以及 Elysia v2 静态插件。
+
+这样就能直接使用 React，无需 Vite 或 Webpack 等打包工具。
+
+<video muted controls preload="metadata" aria-label="Bun 全栈开发演示" style={{aspectRatio: "3736 / 1630"}}>
+  <source src="/assets/bun-fullstack.mp4" type="video/mp4" />
+  视频加载失败。
+</video>
+
+你可以通过[这个示例](https://github.com/saltyaom/elysia-fullstack-example)快速体验。
+
+也可以手动安装：
+
+</div>
+
+<InteractiveDoc steps={setupSteps}>
+
+<InteractiveStep>
+
+## 设置服务器
+
+安装 Elysia v2 静态插件：
+
+```bash
+bun add elysia@rc @elysia/static@next react react-dom
+bun add -d @types/react @types/react-dom
+```
+
+:::tip
+
+启动服务器前，设置 `bunFullstack: true` 并等待 `staticPlugin()` 完成。插件默认只提供普通静态文件服务；仅等待插件完成并不会启用 HTML 打包器。
+
+:::
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 创建 HTML 入口文件
+
+创建 `public/index.html`，并将 `public/index.tsx` 作为模块加载。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 创建 React 应用
+
+在 `public/index.tsx` 中创建一个计数器组件。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 启用 JSX
+
+在 `tsconfig.json` 中启用 JSX。
+
+访问 `http://localhost:3000/public` 查看效果。
+
+Bun 会与 API 一起处理前端打包，因此无需单独运行打包器。
+
+源码示例结合了 HMR、[Tailwind](#tailwind-css)、TanStack Query、[Eden Treaty](/eden/) 和路径别名。请使用与你的 Bun 和 Elysia 版本兼容的依赖版本。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 自定义前缀路径
+
+向 `staticPlugin` 传入 `prefix` 选项，即可更改默认的 `/public` 前缀。
+
+这样静态文件就会从 `/` 而不是 `/public` 提供。
+
+更多配置选项请参阅[静态插件](/plugins/static/)。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## Tailwind CSS
+
+你也可以在 Bun 全栈开发服务器中使用 Tailwind CSS。
+
+</div>
+
+<InteractiveDoc steps={tailwindSteps}>
+
+<InteractiveStep>
+
+### 配置 Tailwind 插件
+
+安装依赖：
+
+```bash
+bun add tailwindcss@4
+bun add -d bun-plugin-tailwind
+```
+
+创建 `bunfig.toml` 并配置 Tailwind 插件。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 添加 Tailwind 指令
+
+创建 `public/global.css` 并添加 Tailwind 指令。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 在 HTML 中引入样式表
+
+在 `public/index.html` 中添加样式表链接。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 在 React 中导入样式表
+
+也可以在 `public/index.tsx` 中导入 `public/global.css`，而不在 HTML 中添加样式表链接。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## 路径别名
+
+你也可以在 Bun 全栈开发服务器中使用路径别名。
+
+</div>
+
+<InteractiveDoc steps={pathAliasSteps}>
+
+<InteractiveStep>
+
+### 配置路径别名
+
+在 `tsconfig.json` 中添加 `paths`。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 使用别名
+
+在代码中使用别名。
+
+无需额外配置即可使用。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## 构建生产版本
+
+你可以像构建普通 Elysia 服务器一样构建全栈服务器。
+
+```bash
+bun build --compile --target bun --outfile server src/index.ts
+```
+
+这会生成名为 `server` 的可执行文件。请同时测试生产构建和开发环境中的 HMR。
+
+运行 **server** 可执行文件时，确保像开发环境一样一并提供 **public** 文件夹。
+
+更多信息请参阅[部署到生产环境](/patterns/deploy)。
+
+</div>
+</InteractiveDocLayout>
+</div>

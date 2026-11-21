@@ -1,0 +1,251 @@
+---
+title: "Cloudflare Worker"
+description: "为 Cloudflare Workers 构建 Elysia v2 处理器，并配置部署、静态资源和绑定。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import { FileTree } from "../../../../components/ui/file-tree";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Cloudflare Worker</h1>
+
+Elysia 可以使用 Web 标准的请求和响应在 Cloudflare Workers 上运行。
+
+在 Elysia v2 中，无需使用 Cloudflare 适配器。你可以选择：
+1. 在启动时编译路由处理器
+2. 在构建时编译路由处理器
+
+### 在启动时编译
+
+最简单的入门方式是在启动时编译处理器。
+
+1. 导出 app 前调用 `compile`：
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Cloudflare Worker!')
+    .compile()
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+不过，在启动时编译处理器会带来额外开销，改为在构建时编译即可避免这部分开销。
+
+### 在构建时编译
+
+1. 使用 [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update) 初始化项目：
+
+```bash
+wrangler init elysia-on-cloudflare
+bun add elysia@rc
+bun add -d esbuild
+```
+
+2. 定义 Elysia 应用，并导出 Elysia 实例和 Worker fetch 处理器：
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+// export here for AOT
+export const app = new Elysia()
+    .get('/', () => 'Hello Cloudflare Worker!')
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+3. 在构建过程中为 `workerd` 编译 Elysia 处理器：
+
+```ts title="build.ts"
+import * as esbuild from 'esbuild'
+import { aot } from 'elysia/plugin/aot/esbuild'
+
+await esbuild.build({
+    entryPoints: ['src/index.ts'],
+    bundle: true,
+    format: 'esm',
+    outfile: 'dist/worker.js',
+    conditions: ['workerd', 'worker', 'browser', 'import'],
+    platform: 'browser',
+    target: 'esnext',
+    external: ['node:*', 'cloudflare:*'],
+    plugins: [aot('src/index.ts', { target: 'workerd' })]
+})
+```
+
+4. 将 Wrangler 指向生成的打包文件。选择 JSONC 或 TOML 配置：
+
+```jsonc title="wrangler.jsonc"
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "elysia-on-cloudflare",
+    "main": "dist/worker.js",
+    "compatibility_date": "2025-09-06",
+    "compatibility_flags": ["nodejs_compat"],
+    "build": { "command": "bun build.ts" }
+}
+```
+
+```toml title="wrangler.toml"
+name = "elysia-on-cloudflare"
+main = "dist/worker.js"
+compatibility_date = "2025-09-06"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "bun build.ts"
+```
+
+兼容性日期和 `nodejs_compat` 标志与 Elysia v2 的 Cloudflare 示例一致。此配置需要保留该标志；v1 中建议省略它的做法不适用于这里。
+
+5. 启动开发服务器：
+
+```bash
+wrangler dev
+```
+
+这会在本地 `http://localhost:8787` 启动 Worker。运行 `wrangler deploy` 即可部署。
+
+### pnpm
+如果你的 pnpm 配置不会自动安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## 限制
+在 Cloudflare Workers 上使用 Elysia 时，有以下已知限制：
+
+1. `file()` 和 [Static 插件](/plugins/static) 不能假定可以访问开发机器的文件系统。Workers 提供[虚拟文件系统](https://developers.cloudflare.com/workers/runtime-apis/nodejs/fs/)，上述兼容性设置下也不例外；要发布文件，请使用[静态资源](#static-files)。
+2. 在构建期间生成 [OpenAPI 类型](/blog/openapi-type-gen/)。Worker 无法检查未包含在打包文件中的 TypeScript 源文件。
+3. 某些对象只能在运行时创建，应避免使用在构建期间或模块初始化时创建它们的插件。Workers 会限制请求处理之外的某些操作。
+4. 返回值时使用函数处理器，这样响应会在处理请求时创建：
+
+```typescript
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+```
+
+<a id="static-files" />
+## 静态文件
+使用 [Cloudflare 内置的静态文件服务](https://developers.cloudflare.com/workers/static-assets/)发布 `public` 目录，无需依赖基于文件系统的静态插件。
+
+将以下配置添加到 Wrangler 配置文件中：
+
+
+```jsonc title="wrangler.jsonc"
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "elysia-on-cloudflare",
+    "main": "dist/worker.js",
+    "compatibility_date": "2025-09-06",
+    "compatibility_flags": ["nodejs_compat"],
+    "build": { "command": "bun build.ts" },
+    "assets": { "directory": "public" }
+}
+```
+
+```toml title="wrangler.toml"
+name = "elysia-on-cloudflare"
+main = "dist/worker.js"
+compatibility_date = "2025-09-06"
+compatibility_flags = ["nodejs_compat"]
+assets = { directory = "public" }
+
+[build]
+command = "bun build.ts"
+```
+
+
+创建 `public` 文件夹，并将静态文件放入其中。
+
+例如，目录结构如下：
+
+<FileTree
+    client:load
+    variant="card"
+    mono
+    dense
+    nodes={[
+        {
+            id: 'public',
+            name: 'public',
+            children: [
+                { id: 'public/kyuukurarin.mp4', name: 'kyuukurarin.mp4' },
+                {
+                    id: 'public/static',
+                    name: 'static',
+                    children: [
+                        { id: 'public/static/mika.webp', name: 'mika.webp' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'src',
+            name: 'src',
+            children: [{ id: 'src/index.ts', name: 'index.ts' }]
+        },
+        { id: 'wrangler.toml', name: 'wrangler.toml' }
+    ]}
+    defaultExpanded={['public', 'public/static', 'src']}
+    className="not-content my-6"
+/>
+
+之后即可通过以下路径访问静态文件：
+- **http://localhost:8787/kyuukurarin.mp4**
+- **http://localhost:8787/static/mika.webp**
+
+## 绑定
+你可以从 `cloudflare:workers` 导入 `env`，以使用 Cloudflare Workers 绑定。请在处理器内部导入，这样构建过程就无需解析仅适用于 Worker 的模块。
+
+```ts title="src/index.ts"
+import { Elysia } from 'elysia'
+
+export const app = new Elysia()
+    .get('/', async () => {
+        const { env } = await import('cloudflare:workers')
+        return `Hello ${await env.KV.get('my-key')}`
+    })
+
+export default {
+    fetch: (request: Request) => app.handle(request)
+}
+```
+
+在 Wrangler 中配置 `KV` 绑定，并使用 `wrangler types` 生成对应的 TypeScript 类型。外部的 `cloudflare:*` 导入在 Worker 运行时仍然可用。
+
+有关绑定的更多信息，请参阅 [Cloudflare Workers：绑定](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global)。
+
+## AoT 编译
+在 v1 中，Workers 最初要求设置 `aot: false`。后来 Cloudflare 添加了[启动时的函数编译](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#enable-eval-during-startup)，Elysia 1.4.7 的 Cloudflare 适配器在兼容性日期不早于 `2025-06-01` 时使用了这项功能。
+
+Elysia v2 使用不同的编译流程。上文的 `aot` 构建插件会将处理器生成移至构建阶段，并通过 `target: 'workerd'` 生成适用于 Workers 的代码，即使构建过程运行在 Bun 上也一样。
+
+调用 `.compile()` 会在当前运行时预热 Elysia 的处理器，但不能替代 Worker 的构建步骤；v2 也没有 `aot: false` 这个构造选项。
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .compile()
+```
+
+部署和绑定示例仍需结合你的 Cloudflare 账号及所选依赖版本进行测试。
+
+</div>
+</InteractiveDocLayout>
+</div>

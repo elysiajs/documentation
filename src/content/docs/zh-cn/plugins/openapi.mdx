@@ -1,0 +1,198 @@
+---
+title: OpenAPI 插件
+description: OpenAPI 插件的参考与示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">OpenAPI 插件</h1>
+
+[OpenAPI 教程](/tutorial/features/openapi/)
+
+
+用于为 [elysia](https://github.com/elysiajs/elysia) 自动生成 API 文档页面的插件。
+
+安装：
+
+```bash
+bun add @elysia/openapi@rc
+```
+
+然后这样使用：
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(openapi())
+    .get('/', () => 'hello')
+    .post('/hello', () => 'OpenAPI')
+    .listen(3000)
+```
+
+访问 `/openapi` 可打开 Scalar UI，查看根据 Elysia 服务器生成的端点文档。也可以通过 `/openapi/json` 获取原始 OpenAPI 规范。
+
+:::tip
+
+此页面是插件配置参考。
+
+如需了解 OpenAPI 的常见模式或进阶用法，请参阅 [模式：OpenAPI](/patterns/openapi)。
+
+:::
+
+<a id="detail" />
+## 详情
+
+`detail` 扩展了 [OpenAPI Operation Object](https://spec.openapis.org/oas/v3.1.2.html#operation-object)。
+
+detail 字段是一个对象，可用于在 API 文档中描述路由信息。
+
+它可以包含以下字段：
+
+### detail.hide
+
+将 `detail.hide` 设为 `true`，即可在生成的文档中隐藏该路由。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia().use(openapi()).post('/sign-in', {
+    body: t.Object(
+        {
+            username: t.String(),
+            password: t.String()
+        },
+        {
+            description: 'Expected a username and password'
+        }
+    ),
+    detail: {
+        hide: true
+    }
+}, ({ body }) => ({ username: body.username }))
+```
+
+### detail.deprecated
+
+声明此操作已弃用。使用方 SHOULD 避免使用已声明弃用的操作。默认值为 `false`。
+
+### detail.description
+
+对操作行为的详细说明。
+
+### detail.summary
+
+对操作功能的简短概述。
+
+## 配置
+
+以下是插件支持的配置选项
+
+### enabled
+
+默认值：`true`
+启用或禁用插件
+
+### documentation
+
+OpenAPI 文档信息
+
+@see https://spec.openapis.org/oas/v3.1.2.html
+
+### exclude
+
+从文档中排除路径或方法的配置
+
+### exclude.methods
+
+要从文档中排除的方法列表
+
+### exclude.paths
+
+要从文档中排除的路径列表
+
+### exclude.staticFile
+
+默认值：`true`
+
+从文档中排除静态文件路由
+
+### exclude.tags
+
+要从文档中排除的标签列表
+
+### mapJsonSchema
+将 Standard Schema 映射为 OpenAPI schema 的自定义函数
+
+#### 示例
+```ts
+import { openapi } from '@elysia/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+	  	valibot: toJsonSchema
+  	}
+})
+```
+
+### path
+
+默认值：`'/openapi'`
+
+用于提供 OpenAPI 文档前端的端点
+
+### provider
+
+默认值：`'scalar'`
+
+OpenAPI 文档前端提供方，可选：
+
+- `scalar`: [Scalar](https://github.com/scalar/scalar)
+- `swagger-ui`: [Swagger UI](https://github.com/swagger-api/swagger-ui)
+- `null`：禁用文档前端
+
+### references
+
+每个端点的附加 OpenAPI 参考信息
+
+### scalar
+
+Scalar 配置，详见 [Scalar 配置文档](https://github.com/scalar/scalar/blob/main/documentation/configuration.md)
+
+#### 自托管 Scalar bundle
+
+自托管 Scalar bundle 并禁用 CDN 字体。
+
+注意：`cdn` 是 Elysia OpenAPI 插件选项（不属于 Scalar 自身配置）；它会覆盖 Scalar bundle 的 URI。
+
+```ts
+    openapi({ 
+      scalar: {
+        cdn: "/public/scalar-standalone.min.js", // plugin override for Scalar bundle URI (self-hosted)
+        withDefaultFonts: false, // disable Scalar’s default font CDN
+      },
+    })
+```
+
+### specPath
+
+默认值：`${path}/json`
+
+用于以 JSON 格式提供 OpenAPI 规范的端点
+
+### swagger
+
+Swagger 配置，详见 [Swagger 配置文档](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/)
+
+</div>
+</InteractiveDocLayout>
+</div>

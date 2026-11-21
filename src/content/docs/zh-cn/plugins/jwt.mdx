@@ -1,0 +1,250 @@
+---
+title: JWT 插件
+description: JWT 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">JWT 插件</h1>
+
+此插件支持在 Elysia 处理器中使用 JWT。
+
+安装：
+```bash
+bun add @elysia/jwt@rc
+```
+
+启动服务器前，请将 `JWT_SECRET` 设置为私有签名密钥。以下路由演示了签名和验证；实际的登录端点必须先验证凭据，再签发令牌。
+
+然后这样使用：
+
+
+```ts title="cookie"
+import { Elysia } from 'elysia'
+import { jwt } from '@elysia/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', async ({ jwt, params: { name }, cookie: { auth } }) => {
+    	const value = await jwt.sign({ name })
+
+        auth!.set({
+            value,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 7 * 86400,
+            path: '/profile',
+        })
+
+        return `Sign in as ${value}`
+    })
+    .get('/profile', async ({ jwt, status, cookie: { auth } }) => {
+        const profile = await jwt.verify(auth!.value)
+
+        if (!profile)
+            return status(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+```ts title="headers"
+import { Elysia } from 'elysia'
+import { jwt } from '@elysia/jwt'
+
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', ({ jwt, params: { name } }) => {
+    	return jwt.sign({ name })
+    })
+    .get('/profile', async ({ jwt, status, headers: { authorization } }) => {
+        const profile = await jwt.verify(authorization?.startsWith('Bearer ') ? authorization.slice(7) : undefined)
+
+        if (!profile)
+            return status(401, 'Unauthorized')
+
+        return `Hello ${profile.name}`
+    })
+    .listen(3000)
+```
+
+
+这些 Cookie 设置要求使用 HTTPS。请求头示例要求 `Authorization: Bearer <token>`。
+
+## 配置
+此插件扩展了 [jose](https://github.com/panva/jose) 的配置。
+
+以下是插件接受的配置。
+
+### name
+用于注册 `jwt` 函数的名称。
+
+例如，可以使用自定义名称注册 `jwt` 函数。
+```ts
+app
+    .use(
+        jwt({
+            name: 'myJWTNamespace',
+            secret: process.env.JWT_SECRET!
+        })
+    )
+    .get('/sign/:name', ({ myJWTNamespace, params }) => {
+        return myJWTNamespace.sign(params)
+    })
+```
+
+如果需要在同一服务器中使用多个配置不同的 `jwt` 实例，就需要为 JWT 函数指定不同的注册名称。
+
+### secret
+用于对 JWT 负载进行签名的私钥。
+
+### schema
+对 JWT 负载进行严格的类型校验。
+
+---
+以下选项介绍 jose 支持的 JWT 声明和 JWS 标头。
+
+### alg
+默认值：`HS256`
+
+用于对 JWT 负载进行签名的算法。
+
+jose 支持以下值：
+HS256
+HS384
+HS512
+PS256
+PS384
+PS512
+RS256
+RS384
+RS512
+ES256
+ES256K
+ES384
+ES512
+EdDSA
+
+### iss
+签发者声明用于标识签发 JWT 的主体，定义见 [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.1)。
+
+简而言之，它通常是签发者的名称（例如域名）。
+
+### sub
+主题声明用于标识 JWT 所指向的主体。
+
+根据 [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.2)，JWT 中的声明通常描述其主题。
+
+### aud
+受众声明用于标识 JWT 的预期接收方。
+
+根据 [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.3)，每个预期处理 JWT 的主体都必须通过受众声明中的值标识自身。
+
+### jti
+JWT ID 声明为 JWT 提供唯一标识符，定义见 [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.7)。
+
+### nbf
+“不得早于”声明标识一个时间点，在此之前不得接受该 JWT 进行处理，定义见 [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.5)。
+
+### exp
+过期时间声明标识 JWT 的失效时间；到达或超过该时间后，必须拒绝处理此 JWT，定义见 [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.4)。
+
+### iat
+“签发时间”声明标识 JWT 的签发时间。
+
+根据 [RFC7519](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.6)，此声明可用于确定 JWT 的签发时长。
+
+### b64
+此 JWS 扩展标头参数会修改 JWS 负载的表示形式和 JWS 签名输入的计算方式，定义见 [RFC7797](https://www.rfc-editor.org/rfc/rfc7797)。
+
+### kid
+用于提示保护此 JWS 所用密钥的标识。
+
+根据 [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.4)，此参数允许发送方明确向接收方指出密钥已更换。
+
+### x5t
+（X.509 证书 SHA-1 指纹）标头参数是对应证书 [RFC5280](https://www.rfc-editor.org/rfc/rfc5280) 的 DER 编码 SHA-1 摘要的 base64url 编码；该证书对应于用于数字签署 JWS 的密钥，定义见 [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.7)。
+
+### x5c
+（X.509 证书链）标头参数包含与用于数字签署 JWS 的密钥对应的 X.509 公钥证书或证书链 [RFC5280](https://www.rfc-editor.org/rfc/rfc5280)，定义见 [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.6)。
+
+### x5u
+（X.509 URL）标头参数是一个 URI [RFC3986](https://www.rfc-editor.org/rfc/rfc3986)，用于指向与数字签署 JWS 所用密钥对应的 X.509 公钥证书或证书链 [RFC5280]，定义见 [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.5)。
+
+### jwk
+`jwk` 标头包含与签名密钥对应的公开 JSON Web Key。独立的 `jku` 标头则是 JWK 集合的 URL。详见 [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.3)。
+
+### typ
+JWS 应用使用 `typ`（类型）标头参数声明完整 JWS 的媒体类型 [IANA.MediaTypes]。
+
+当应用数据结构中可能包含多种对象时，应用可使用此参数标明其中 JWS 的类型，定义见 [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9)。
+
+### cty
+JWS 应用使用 Content-Type 参数声明受保护内容（负载）的媒体类型 [IANA.MediaTypes]。
+
+当 JWS 负载中可能包含多种对象时，应用可使用此参数标明其内容类型，定义见 [RFC7515](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.9)。
+
+## 处理器
+以下是添加到处理器中的值。
+
+### jwt.sign
+对负载签名以创建 JWT。
+
+类型：
+```ts
+sign(payload: Omit<Claims, 'nbf' | 'exp' | 'iat'> & JWTPayloadInput): Promise<string>
+```
+
+`Claims` 的结构由 [schema](#schema) 决定；未设置 schema 时则为任意记录。`JWTPayloadInput` 包含注册声明 [iss](#iss)、[sub](#sub)、[aud](#aud)、[jti](#jti)、[nbf](#nbf)、[exp](#exp) 和 [iat](#iat)；在此处设置的值会覆盖配置中的对应值。
+
+### jwt.verify
+使用给定的 JWT 配置验证令牌。
+
+类型：
+```ts
+verify(jwt?: string, options?: JWTVerifyOptions): Promise<(Claims & Omit<JWTPayloadSpec, keyof Claims>) | false>
+```
+
+返回解码后的负载；令牌缺失或无效时返回 `false`。`JWTPayloadSpec` 包含解码后的注册声明 `iss`、`sub`、`aud`、`jti`、`nbf`、`exp` 和 `iat`。`options` 会传递给 jose 的 `jwtVerify`。
+
+## 用法模式
+以下是此插件的常见用法。
+
+## 设置 JWT 过期时间
+设置 `exp` 来控制令牌何时过期。Cookie 的有效期和 JWT 的过期时间是两个独立设置。
+
+```ts
+const app = new Elysia()
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: process.env.JWT_SECRET!,
+            exp: '7d'
+        })
+    )
+    .get('/sign/:name', async ({ jwt, params }) => jwt.sign(params))
+```
+
+这会签发一个 7 天后过期的 JWT。
+
+</div>
+</InteractiveDocLayout>
+</div>

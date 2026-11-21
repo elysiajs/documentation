@@ -1,0 +1,406 @@
+---
+title: "Drizzle"
+description: "借助 drizzle-typebox，我们可以在数据库、校验和前端之间实现端到端类型安全"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Drizzle</h1>
+
+Drizzle ORM 是一个无头 TypeScript ORM，专注于类型安全和开发者体验。
+
+对于 Elysia v2 应用，可以使用 Elysia 自带的 schema [校验数据库边界](#validate-a-v2-database-boundary)。旧版 v1 示例则使用 `drizzle-typebox` 将 Drizzle schema 转换为 Elysia 校验模型。
+
+:::caution[TypeBox 兼容性]
+
+Elysia v2 使用 `typebox` 1.x 包。下面的 `drizzle-typebox` 示例面向 `@sinclair/typebox` 0.x，包括它的 `Kind` 符号和 `BuildSchema` 类型。固定使用旧版包并不会让它兼容 v2。请将该示例作为这些包版本的参考；对于 v2 应用，请使用能生成兼容 schema 的生成器，或在数据库边界定义 Elysia 校验 schema。
+
+:::
+
+### Drizzle TypeBox
+[Elysia 的 `t`](/essential/validation/#typebox) 扩展自 TypeBox。schema 是否兼容，取决于生成器使用的 TypeBox 版本。
+
+我们可以使用 ["drizzle-typebox"](https://npmjs.org/package/drizzle-typebox) 将 Drizzle schema 转换为 TypeBox schema，并直接用于 Elysia v1 的 schema 校验。
+
+### v1 示例的工作方式如下：
+1. 在 Drizzle 中定义数据库 schema。
+2. 使用 `drizzle-typebox` 将 Drizzle schema 转换为 Elysia 校验模型。
+3. 使用转换后的 Elysia 校验模型进行类型校验。
+4. 根据 Elysia 校验模型生成 OpenAPI schema。
+5. 添加 [Eden Treaty](/eden)，为前端提供类型安全。
+
+```text
+                                                    * ——————————————— *
+                                                    |                 |
+                                               | -> |  Documentation  |
+* ————————— *             * ———————— * OpenAPI |    |                 |
+|           |   drizzle-  |          | ——————— |    * ——————————————— *
+|  Drizzle  | —————————-> |  Elysia  |
+|           |  -typebox   |          | ——————— |    * ——————————————— *
+* ————————— *             * ———————— *   Eden  |    |                 |
+                                               | -> |  Frontend Code  |
+												    |                 |
+												    * ——————————————— *
+
+```
+
+## 安装
+运行以下命令安装 Drizzle：
+
+```bash
+bun add drizzle-orm drizzle-typebox
+```
+
+对于旧版示例，固定 `@sinclair/typebox` 版本可以避免生成器使用的 0.x schema 符号与 Elysia v1 发生冲突。Elysia v2 则声明 `typebox >= 1.3.0` 为 peer 依赖。
+
+对于已有的 v1 项目，请先检查 TypeBox 依赖，再决定固定哪个版本：
+```bash
+grep "@sinclair/typebox" node_modules/elysia/package.json
+```
+
+旧版 `overrides` 配置如下。这里展示的版本来自原始示例；不要用它覆盖 Elysia v2 的 `typebox` 依赖：
+```json
+{
+  "overrides": {
+  	"@sinclair/typebox": "0.32.4"
+  }
+}
+```
+
+<a id="validate-a-v2-database-boundary" />
+## 校验 v2 数据库边界
+
+你可以继续使用 Drizzle 查询数据库，同时用 Elysia 自带的 schema 描述请求。这样就能避免混用不同世代的 TypeBox 包：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/sign-up', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String(),
+            email: t.String({ format: 'email' })
+        })
+    }, ({ body }) => {
+        // Hash the password and insert the validated fields with Drizzle.
+        return { username: body.username }
+    })
+```
+
+后续章节保留了 v1 schema 生成示例及其工具函数，供使用兼容生成器版本的项目参考。
+
+## Drizzle schema
+假设代码库中有如下 `user` 表：
+
+
+```ts title="src/database/schema.ts"
+import {
+    pgTable,
+    varchar,
+    timestamp
+} from 'drizzle-orm/pg-core'
+
+import { createId } from '@paralleldrive/cuid2'
+
+export const user = pgTable(
+    'user',
+    {
+        id: varchar('id')
+            .$defaultFn(() => createId())
+            .primaryKey(),
+        username: varchar('username').notNull().unique(),
+        password: varchar('password').notNull(),
+        email: varchar('email').notNull().unique(),
+        salt: varchar('salt', { length: 64 }).notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull(),
+    }
+)
+
+export const table = {
+	user
+} as const
+
+export type Table = typeof table
+```
+
+
+## drizzle-typebox
+我们可以使用 `drizzle-typebox` 将 `user` 表转换为 TypeBox 模型：
+
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+import { Type } from '@sinclair/typebox'
+import { createInsertSchema } from 'drizzle-typebox'
+import { table } from './database/schema'
+
+const _createUser = createInsertSchema(table.user, {
+	// Replace email with an email type
+	email: Type.String({ format: 'email' })
+})
+
+new Elysia()
+	.post('/sign-up', {
+		body: t.Omit(
+			_createUser,
+			['id', 'salt', 'createdAt']
+		)
+	}, ({ body }) => {
+		// Create a new user
+	})
+```
+
+
+在 Elysia v1 应用中，这样就可以在 Elysia 校验模型中复用数据库 schema。
+
+## 类型实例化可能无限递归
+如果遇到 **Type instantiation is possibly infinite** 这样的错误，这是因为 `drizzle-typebox` 与 `Elysia` 之间存在循环引用。
+
+如果将 drizzle-typebox 中的类型嵌套到 Elysia schema 中，就会导致类型实例化无限循环。
+
+为避免这种情况，我们需要在 `drizzle-typebox` 与 `Elysia` schema 之间**显式定义一个类型**：
+```ts
+import { Elysia, t } from 'elysia'
+import { Type } from '@sinclair/typebox'
+import { createInsertSchema } from 'drizzle-typebox'
+
+import { table } from './database/schema'
+
+const _createUser = createInsertSchema(table.user, {
+	email: Type.String({ format: 'email' })
+})
+
+// ✅ This works, by referencing the type from `drizzle-typebox`
+const createUser = t.Omit(
+	_createUser,
+	['id', 'salt', 'createdAt']
+)
+
+// ❌ This will cause an infinite loop of type instantiation
+const createUserInline = t.Omit(
+	createInsertSchema(table.user, {
+		email: Type.String({ format: 'email' })
+	}),
+	['id', 'salt', 'createdAt']
+)
+```
+
+如果要使用 Elysia 类型，请始终先为 `drizzle-typebox` 声明一个变量，再引用该变量。
+
+## 工具函数
+我们很可能会使用 `t.Pick` 和 `t.Omit` 来选取或排除特定字段，反复编写这些操作可能会很繁琐：
+
+这些工具函数为仍在使用 `@sinclair/typebox` schema 的项目保留了 `drizzle-typebox` 集成。将它们用于 Elysia v2 前，请先查看上面的兼容性说明：
+
+
+```ts title="src/database/utils.ts"
+/**
+ * @lastModified 2025-02-04
+ * @see /integrations/drizzle/#utility
+ */
+
+import { Kind, type TObject } from '@sinclair/typebox'
+import {
+    createInsertSchema,
+    createSelectSchema,
+    BuildSchema,
+} from 'drizzle-typebox'
+
+import { table } from './schema'
+import type { Table } from 'drizzle-orm'
+
+type Spread<
+    T extends TObject | Table,
+    Mode extends 'select' | 'insert' | undefined,
+> =
+    T extends TObject<infer Fields>
+        ? {
+              [K in keyof Fields]: Fields[K]
+          }
+        : T extends Table
+          ? Mode extends 'select'
+              ? BuildSchema<
+                    'select',
+                    T['_']['columns'],
+                    undefined
+                >['properties']
+              : Mode extends 'insert'
+                ? BuildSchema<
+                      'insert',
+                      T['_']['columns'],
+                      undefined
+                  >['properties']
+                : {}
+          : {}
+
+/**
+ * Spread a Drizzle schema into a plain object
+ */
+export const spread = <
+    T extends TObject | Table,
+    Mode extends 'select' | 'insert' | undefined,
+>(
+    schema: T,
+    mode?: Mode,
+): Spread<T, Mode> => {
+    const newSchema: Record<string, unknown> = {}
+    let table
+
+    switch (mode) {
+        case 'insert':
+        case 'select':
+            if (Kind in schema) {
+                table = schema
+                break
+            }
+
+            table =
+                mode === 'insert'
+                    ? createInsertSchema(schema)
+                    : createSelectSchema(schema)
+
+            break
+
+        default:
+            if (!(Kind in schema)) throw new Error('Expect a schema')
+            table = schema
+    }
+
+    for (const key of Object.keys(table.properties))
+        newSchema[key] = table.properties[key]
+
+    return newSchema as any
+}
+
+/**
+ * Spread a Drizzle Table into a plain object
+ *
+ * If `mode` is 'insert', the schema will be refined for insert
+ * If `mode` is 'select', the schema will be refined for select
+ * If `mode` is undefined, the schema will be spread as is, models will need to be refined manually
+ */
+export const spreads = <
+    T extends Record<string, TObject | Table>,
+    Mode extends 'select' | 'insert' | undefined,
+>(
+    models: T,
+    mode?: Mode,
+): {
+    [K in keyof T]: Spread<T[K], Mode>
+} => {
+    const newSchema: Record<string, unknown> = {}
+    const keys = Object.keys(models)
+
+    for (const key of keys) newSchema[key] = spread(models[key], mode)
+
+    return newSchema as any
+}
+```
+
+
+这个工具函数会将 Drizzle schema 转换为普通对象，之后就可以按属性名选取字段：
+```ts
+// ✅ Using spread utility function
+const user = spread(table.user, 'insert')
+
+const createUser = t.Object({
+	id: user.id, // { type: 'string' }
+	username: user.username, // { type: 'string' }
+	password: user.password // { type: 'string' }
+})
+
+// ⚠️ Using t.Pick
+const _createUser = createInsertSchema(table.user)
+
+const createUserPicked = t.Pick(
+	_createUser,
+	['id', 'username', 'password']
+)
+```
+
+### 表 schema 的单例模式
+我们建议使用单例模式存储表 schema。这样就可以在代码库的任何位置访问它：
+
+
+```ts title="src/database/model.ts"
+import { table } from './schema'
+import { spreads } from './utils'
+
+export const db = {
+	insert: spreads({
+		user: table.user,
+	}, 'insert'),
+	select: spreads({
+		user: table.user,
+	}, 'select')
+} as const
+```
+
+
+这样就可以在代码库的任何位置访问表 schema：
+
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+import { db } from './database/model'
+
+const { user } = db.insert
+
+new Elysia()
+	.post('/sign-up', {
+		body: t.Object({
+			id: user.id,
+			username: user.username,
+			password: user.password
+		})
+	}, ({ body }) => {
+		// Create a new user
+	})
+```
+
+
+### 细化
+
+如果需要细化类型，可以使用 `createInsertSchema` 和 `createSelectSchema` 直接细化 schema。
+
+
+```ts title="src/database/model.ts"
+import { Type } from '@sinclair/typebox'
+import { createInsertSchema, createSelectSchema } from 'drizzle-typebox'
+
+import { table } from './schema'
+import { spreads } from './utils'
+
+export const db = {
+	insert: spreads({
+		user: createInsertSchema(table.user, {
+			email: Type.String({ format: 'email' })
+		}),
+	}, 'insert'),
+	select: spreads({
+		user: createSelectSchema(table.user, {
+			email: Type.String({ format: 'email' })
+		})
+	}, 'select')
+} as const
+```
+
+
+在上面的代码中，我们细化了 `user.email` schema，为其添加 `format` 属性。
+
+`spread` 工具函数会跳过已细化的 schema，因此可以直接使用它。
+
+---
+
+更多信息请参阅 [Drizzle ORM](https://orm.drizzle.team) 和 [Drizzle TypeBox](https://orm.drizzle.team/docs/typebox) 文档。
+
+</div>
+</InteractiveDocLayout>
+</div>

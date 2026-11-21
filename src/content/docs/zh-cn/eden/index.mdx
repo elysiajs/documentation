@@ -1,0 +1,144 @@
+---
+title: 端到端类型安全
+description: 使用 Eden 在 Elysia 服务器与客户端之间共享类型。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">端到端类型安全</h1>
+
+想象你有一套玩具火车轨道。
+
+每段轨道都要和下一段严丝合缝，就像拼图一样。
+
+端到端类型安全就像确保每段轨道都正确衔接，让火车不会脱轨或卡住。
+
+对于框架来说，端到端类型安全意味着客户端和服务器可以通过类型安全的方式连接。
+
+Elysia 开箱即用地通过类似 RPC 的连接器 **Eden** 提供端到端类型安全，**无需生成代码**。
+
+<video muted controls preload="metadata" aria-label="Eden Treaty type inference demonstration" style={{ aspectRatio: "16 / 9" }}>
+  <source src="/eden/eden-treaty.mp4" type="video/mp4" />
+  [下载 Eden Treaty 演示](/eden/eden-treaty.mp4)。
+</video>
+
+其他支持端到端类型安全的框架：
+- tRPC
+- Remix
+- SvelteKit
+- Nuxt
+- TS-Rest
+
+
+
+在服务器端修改类型后，Elysia 会立即将变更反映到客户端，帮助你获得自动补全和类型检查。
+
+## Eden
+Eden 是一个类似 RPC 的客户端，连接 Elysia 并提供**端到端类型安全**；它只使用 TypeScript 类型推断，无需生成代码。
+
+它通过仅导入类型的方式与客户端共享服务器类型，无需维护同步的生成客户端。
+
+Eden 包含两个模块：
+1. Eden Treaty **（推荐）**：[Eden Treaty 1](/eden/treaty/legacy)（edenTreaty）的改进版 RPC 客户端
+2. Eden Fetch：类似 fetch 的类型安全客户端
+
+下面分别介绍这两个模块。
+
+## Eden Treaty (recommended)
+Eden Treaty 将 Elysia 服务器表示为对象，提供端到端类型安全，并显著改善开发体验。
+
+使用 Eden Treaty 与 Elysia 服务器交互时，可以获得完整类型支持和自动补全、通过类型收窄处理错误，还能编写类型安全的单元测试。
+
+Eden Treaty 使用示例：
+**server.ts**
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hi')
+    .get('/users', () => 'Skadi')
+    .put('/nendoroid/:id', {
+        body: t.Object({
+            name: t.String(),
+            from: t.String()
+        })
+    }, ({ body }) => body)
+    .get('/nendoroid/:id/name', () => 'Skadi')
+    .listen(3000)
+
+export type App = typeof app
+```
+
+**index.ts**
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// Call [GET] at '/'
+const { data } = await app.get()
+
+// Call [PUT] at '/nendoroid/:id'
+const { data: nendoroid, error } = await app.nendoroid({ id: 1895 }).put({
+    name: 'Skadi',
+    from: 'Arknights'
+})
+```
+
+## Eden Fetch
+面向偏好 fetch 语法的开发者，是 Eden Treaty 的 fetch 风格替代方案。
+
+本例中，先导出包含对应路由的服务器：
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .post('/name/:name', {
+        body: t.Object({ branch: t.String(), type: t.String() })
+    }, ({ params, body }) => ({ name: params.name, ...body }))
+    .listen(3000)
+
+export type App = typeof app
+```
+
+```ts
+import { edenFetch } from '@elysia/eden'
+import type { App } from './server'
+
+const fetch = edenFetch<App>('http://localhost:3000')
+
+const { data } = await fetch('/name/:name', {
+    method: 'POST',
+    params: {
+        name: 'Saori'
+    },
+    body: {
+        branch: 'Arius',
+        type: 'Striker'
+    }
+})
+```
+
+:::tip[Note]
+
+与 Eden Treaty 不同，Eden Fetch 不为 Elysia 服务器提供 WebSocket 实现。
+:::
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

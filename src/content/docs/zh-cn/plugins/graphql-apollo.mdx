@@ -1,0 +1,104 @@
+---
+title: GraphQL Apollo 插件
+description: GraphQL Apollo 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">GraphQL Apollo 插件</h1>
+
+用于在 [elysia](https://github.com/elysiajs/elysia) 中使用 GraphQL Apollo 的插件。
+
+安装：
+
+```bash
+bun add graphql @elysia/apollo@next @apollo/server
+```
+
+然后这样使用：
+
+```ts
+import { Elysia } from 'elysia'
+import { apollo, gql } from '@elysia/apollo'
+
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs: gql`
+				type Book {
+					title: String
+					author: String
+				}
+
+				type Query {
+					books: [Book]
+				}
+			`,
+			resolvers: {
+				Query: {
+					books: () => {
+						return [
+							{
+								title: 'Elysia',
+								author: 'saltyAom'
+							}
+						]
+					}
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+访问 `/graphql` 即可打开 Apollo GraphQL playground 进行交互。
+
+## 上下文
+
+`context` 回调会接收 Elysia 上下文，因此可以从中读取 `request`。
+
+```ts
+const app = new Elysia()
+	.use(
+		apollo({
+			typeDefs,
+			resolvers,
+			context: async ({ request }) => {
+				const authorization = request.headers.get('Authorization')
+
+				return {
+					authorization
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+## 配置
+
+此插件扩展了 Apollo 的 [ApolloServerOptions](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#options)（即 `ApolloServer` 的构造函数参数）。
+
+以下是用于在 Elysia 中配置 Apollo Server 的扩展参数。
+
+### path
+
+默认值：`"/graphql"`
+
+用于提供 Apollo Server 服务的路径。
+
+### enablePlayground
+
+默认值：`process.env.ENV !== 'production'`
+
+指定 Apollo 是否应提供 Apollo Playground。
+
+</div>
+</InteractiveDocLayout>
+</div>

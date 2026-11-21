@@ -1,0 +1,380 @@
+---
+title: Cookie
+description: 使用 Elysia 的响应式 cookie 容器读取、更新、校验并签名 cookie。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+
+export const attributesSteps = [
+    {
+        "label": "直接赋值属性",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia()\n    .get('/', ({ cookie: { name } }) => {\n        // get\n        name.domain\n\n        // set\n        name.domain = 'millennium.sh'\n        name.httpOnly = true\n    })"
+    },
+    {
+        "label": "set 方法",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia()\n    .get('/', ({ cookie: { name } }) => {\n        name.set({\n            domain: 'millennium.sh',\n            httpOnly: true\n        })\n    })"
+    },
+    {
+        "label": "update 方法",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia()\n    .get('/', ({ cookie: { name } }) => {\n        name.update({ httpOnly: true })\n    })"
+    },
+    {
+        "label": "remove 方法",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia()\n    .get('/', ({ cookie: { name } }) => {\n        name.remove()\n    })"
+    }
+];
+
+export const schemaSteps = [
+    {
+        "label": "Cookie 校验 schema",
+        "code": "import { Elysia, t } from 'elysia'\n\nnew Elysia()\n    .get('/', {\n        cookie: t.Cookie({\n            name: t.Object({\n                id: t.Numeric(),\n                name: t.String()\n            })\n        })\n    }, ({ cookie: { name } }) => {\n        // Set\n        name.value = {\n            id: 617,\n            name: 'Summoning 101'\n        }\n    })"
+    },
+    {
+        "label": "可选 cookie",
+        "code": "import { Elysia, t } from 'elysia'\n\nnew Elysia()\n    .get('/', {\n        cookie: t.Cookie({\n            name: t.Optional(\n                t.Object({\n                    id: t.Numeric(),\n                    name: t.String()\n                })\n            )\n        })\n    }, ({ cookie: { name } }) => {\n        // Set\n        name.value = {\n            id: 617,\n            name: 'Summoning 101'\n        }\n    })"
+    }
+];
+
+export const signatureSteps = [
+    {
+        "label": "使用 cookie 签名",
+        "code": "import { Elysia, t } from 'elysia'\n\nnew Elysia()\n    .get('/', {\n        cookie: t.Cookie({\n            profile: t.Optional(t.Object({\n                id: t.Numeric(),\n                name: t.String()\n            }))\n        }, {\n            secrets: 'Fischl von Luftschloss Narfidort',\n            sign: ['profile']\n        })\n    }, ({ cookie: { profile } }) => {\n        profile.value = {\n            id: 617,\n            name: 'Summoning 101'\n        }\n    })"
+    },
+    {
+        "label": "构造函数",
+        "code": "import { Elysia, t } from 'elysia'\n\nnew Elysia({\n    cookie: {\n        secrets: 'Fischl von Luftschloss Narfidort',\n        sign: ['profile']\n    }\n})\n    .get('/', {\n        cookie: t.Cookie({\n            profile: t.Optional(t.Object({\n                id: t.Numeric(),\n                name: t.String()\n            }))\n        })\n    }, ({ cookie: { profile } }) => {\n        profile.value = {\n            id: 617,\n            name: 'Summoning 101'\n        }\n    })"
+    },
+    {
+        "label": "Cookie 密钥轮换",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia({\n    cookie: {\n        secrets: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort']\n    }\n})"
+    },
+    {
+        "label": "无签名 cookie 过渡",
+        "code": "import { Elysia } from 'elysia'\n\nnew Elysia({\n    cookie: {\n        secrets: ['Vengeance will be mine', 'Fischl von Luftschloss Narfidort', null]\n    }\n})"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Cookie</h1>
+
+在处理器中通过 `cookie` 对象读取和更新 cookie。
+
+按名称获取 cookie，然后使用 `.value` 读取或替换它的值。
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ cookie: { name } }) => {
+        // Get
+        name.value
+
+        // Set
+        name.value = "New Value"
+    })
+```
+
+Elysia 会为你编码和解码对象值，因此可以像操作对象一样使用 cookie。
+
+:::note[Cookie 值可能不存在]
+
+即使请求中没有同名 cookie，cookie 属性仍会返回一个 `Cookie` 对象，其 `.value` 可能是 `undefined`。使用 [cookie schema](#cookie-schema) 描述该值，并启用 TypeScript 类型检查。
+
+:::
+
+## 响应式更新
+修改 cookie 的值或属性后，响应中会自动加入 `Set-Cookie` 响应头。你无需手动拼装响应头。
+
+cookie 容器是一个代理对象。读取名称会返回 `Cookie` 对象；读取 `.value` 则会得到它的值。遍历容器会访问已有的 cookie 名称。
+
+## 操作 Cookie
+有两种方式可以操作 cookie：
+
+1. 直接设置属性。
+2. 使用 `set` 或 `update` 更新多个属性。
+
+更多信息请参阅 [cookie 属性配置](#config)。
+
+</div>
+
+<InteractiveDoc steps={attributesSteps}>
+
+<InteractiveStep>
+
+### 直接赋值属性
+像读取或赋值普通对象属性一样操作 cookie 属性。Elysia 写入 cookie 时会使用更新后的属性。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### set
+`set` 会根据初始属性和当前值创建新的 cookie 属性对象，再应用你提供的属性。若要合并到当前属性中，请使用 `update`。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### update
+
+使用 `update` 将属性合并到当前 cookie，而不重置其他属性。旧版文档将此操作称为 `add`；Elysia 2 中的方法名是 `update`。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### remove
+调用 `.remove()` 使 cookie 过期。请使用设置该 cookie 时相同的路径和域名。如果 cookie 没有值，`remove()` 不会执行任何操作。
+
+在 Elysia 2 中，JavaScript 表达式 `delete cookie.name` 不会使浏览器中的 cookie 过期。请使用 `.remove()`，让响应携带过期属性。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<InteractiveDoc steps={schemaSteps}>
+
+<InteractiveStep>
+
+## Cookie schema
+使用 `cookie` 校验收到的 cookie 值，并在处理器中推断其类型。支持 `t.Cookie()` 和 `t.Object()`，且默认允许其他 cookie 名称。
+
+通过 `.value` 属性读取或更新通过校验的 cookie。此示例要求请求中已存在符合指定对象结构的 `name` cookie。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 可选 Cookie
+用 `t.Optional` 包装 cookie 字段，即可允许 cookie 缺失。这会允许 `undefined`；若要接受 `null`，请使用 `t.Nullable`。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## Cookie 规范
+
+Cookie 是浏览器存储并随匹配请求发送的一小段值。可用它保存需要随客户端传递的状态，例如会话标识符。
+
+浏览器的 `fetch` 会自行管理 `Cookie` 请求头。如果请求需要携带浏览器 cookie，请使用 `credentials`：
+
+```ts
+fetch('http://localhost:3000/cookie', {
+    credentials: 'include'
+})
+```
+
+浏览器的 cookie 和跨域规则仍然适用。
+
+## t.Cookie
+
+`t.Cookie()` 用于描述 cookie 值对象，并接受 [cookie 专属选项](#config)作为第二个参数：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/cookie', {
+        cookie: t.Cookie({
+            name: t.String()
+        }, {
+            secure: true,
+            httpOnly: true
+        })
+    }, ({ cookie }) => cookie.name.value)
+```
+
+`secure` 和 `httpOnly` 用于配置服务器发送的 cookie；无法根据收到的 cookie 字符串确认这些属性。
+
+## Cookie 编解码器
+
+Cookie 会从请求中读取并写回响应，因此 cookie 字段的编解码器需要同时支持两个方向。使用 `t.Codec`：收到值时运行 decode，设置 `.value` 时运行 encode：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/cookie', {
+        cookie: t.Object({
+            visit: t.Optional(
+                t.Codec(t.String())
+                    .Decode((value) => new Date(value))
+                    .Encode((date) => date.toISOString())
+            )
+        })
+    }, ({ cookie: { visit } }) => {
+        const last = visit.value // Date | undefined
+
+        visit.value = new Date() // sent as an ISO string
+
+        return last
+    })
+```
+
+`t.Encode` 和 `t.Decode` 都是单向操作：请求发送该 cookie 时，`t.Encode` 会抛出错误；设置它时，`t.Decode` 会抛出错误。
+
+## Cookie 签名
+Cookie 签名让 Elysia 能验证 cookie 值是否由你的密钥签名且未被篡改。Elysia 会自动为发出的值签名，并验证收到的签名。
+
+签名不会加密值，客户端仍然可以读取其内容。
+
+</div>
+
+<InteractiveDoc steps={signatureSteps}>
+
+<InteractiveStep>
+
+## 使用 Cookie 签名
+提供 `secrets`，并通过 `sign` 选择要签名和验证的 cookie 名称。下面的 profile cookie 是可选的，因此首次请求可以创建它。
+
+Elysia 会为更新后的 profile 签名，并在后续请求中检查签名。示例密钥仅供说明；请妥善保管真实签名密钥。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 构造函数
+在 Elysia 构造函数中设置 `cookie.secrets` 和 `cookie.sign`，即可让各路由共用签名配置。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+<a id="cookie-rotation" />
+## Cookie 密钥轮换
+Elysia 会自动处理 cookie 密钥轮换。
+
+将新密钥放在首位，旧密钥依次放在后面。Elysia 会使用每个条目验证收到的签名，并使用第一个密钥为新值签名；第一个密钥必须是非空字符串。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 无签名 Cookie 过渡
+Elysia 支持从无签名 cookie 平滑过渡到有签名 cookie。
+
+在 `cookie.secrets` 数组中设置 `null`，Elysia 就会允许无签名 cookie 通过，同时在有签名时检查无效签名。
+
+Elysia 使用第一个条目为新 cookie 值签名，因此请将 `null` 放在签名密钥之后。
+
+过渡完成后移除 `null`，这样就会拒绝无签名 cookie。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+<span id="config"></span>
+
+## 配置
+可在构造函数或 `t.Cookie` 中使用这些选项。除 `secrets` 和 `sign` 外，其他选项也可在更新 cookie 属性时传入；签名配置应设在应用或路由上，而不是单次写入时设置。
+
+### secrets
+用于签名和验证 cookie 的密钥。选项名是 `secrets`，不是 `secret`。
+
+接受字符串或字符串数组。使用数组即可启用[密钥轮换](#cookie-rotation)。在构造函数中，`secrets` 也可以是 `null` 或包含 `null`，以便过渡期间允许无签名 cookie；`t.Cookie` 不接受 `null`。
+
+### domain
+设置 [Domain Set-Cookie 属性](https://tools.ietf.org/html/rfc6265#section-5.2.3)的值。
+
+默认不设置域名，大多数客户端会认为该 cookie 仅适用于当前域名。
+
+
+### encode
+
+Elysia 2 不提供自定义 `encode` cookie 选项。Cookie 值会在序列化时编码，请通过 `.value` 赋值。
+
+### expires
+将 Date 对象设为 [Expires Set-Cookie 属性](https://tools.ietf.org/html/rfc6265#section-5.2.1)的值。
+
+默认不设置过期时间，大多数客户端会将其视为“非持久性 cookie”，并在关闭浏览器等情况下删除它。
+
+:::tip
+
+根据 [cookie 存储模型规范](https://tools.ietf.org/html/rfc6265#section-5.3)，同时设置 `expires` 和 `maxAge` 时以 `maxAge` 为准。不过并非所有客户端都会遵循这一点，因此若两者都设置，应指向同一日期和时间。
+
+:::
+
+### httpOnly
+默认值：`false`。
+
+设置 [HttpOnly Set-Cookie 属性](https://tools.ietf.org/html/rfc6265#section-5.2.6)的布尔值。
+
+值为真时会设置 HttpOnly 属性，否则不会设置。
+
+默认不设置 HttpOnly 属性。
+
+:::tip
+
+当 `httpOnly` 为 `true` 时，客户端 JavaScript 无法通过 `document.cookie` 读取该 cookie。
+
+:::
+
+### maxAge
+默认值：`undefined`。
+
+设置 [Max-Age Set-Cookie 属性](https://tools.ietf.org/html/rfc6265#section-5.2.2)的值，单位为秒。
+
+给定数字会向下取整为整数。默认不设置最大存续时间。
+
+:::tip
+
+根据 [cookie 存储模型规范](https://tools.ietf.org/html/rfc6265#section-5.3)，同时设置 `expires` 和 `maxAge` 时以 `maxAge` 为准。不过并非所有客户端都会遵循这一点，因此若两者都设置，应指向同一日期和时间。
+
+:::
+
+### path
+设置 [Path Set-Cookie 属性](https://tools.ietf.org/html/rfc6265#section-5.2.4)的值。
+
+省略 `path` 时，Elysia 会设置 `Path=/`，使 cookie 在整个站点范围内可用。
+
+### priority
+设置 [Priority Set-Cookie 属性](https://tools.ietf.org/html/draft-west-cookie-priority-00#section-4.1)的字符串值。
+`low` 会将 Priority 属性设为 Low。
+`medium` 会将 Priority 属性设为 Medium，也是未设置时的默认优先级。
+`high` 会将 Priority 属性设为 High。
+
+不同优先级的详情请参阅[规范](https://tools.ietf.org/html/draft-west-cookie-priority-00#section-4.1)。
+
+:::tip
+
+客户端对该属性的支持各不相同。请在应用支持的浏览器中检查实际行为。
+
+:::
+
+### sameSite
+设置 [SameSite Set-Cookie 属性](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-09#section-5.4.7)的布尔值或字符串值。
+`true` 会将 SameSite 属性设为 Strict，严格限制同站请求。
+`false` 不会设置 SameSite 属性。
+`'lax'` 会将 SameSite 属性设为 Lax，宽松限制同站请求。
+`'none'` 会将 SameSite 属性设为 None，明确允许跨站 cookie。
+`'strict'` 会将 SameSite 属性设为 Strict，严格限制同站请求。
+不同限制级别的详情请参阅[规范](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-09#section-5.4.7)。
+
+:::tip
+
+客户端对该属性的支持各不相同。请在应用支持的浏览器中检查实际行为。
+
+:::
+
+### secure
+设置 [Secure Set-Cookie 属性](https://tools.ietf.org/html/rfc6265#section-5.2.5)的布尔值。值为真时会设置 Secure 属性，否则不会。默认不设置 Secure 属性。
+
+:::tip
+
+将此项设为 true 时请谨慎：如果浏览器没有 HTTPS 连接，遵循规范的客户端之后就不会将该 cookie 发送回服务器。
+
+:::
+
+</div>
+</InteractiveDocLayout>
+</div>

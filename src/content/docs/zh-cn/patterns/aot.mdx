@@ -1,0 +1,242 @@
+---
+title: 提前编译
+description: 使用 AOT 打包插件，在构建时编译 Elysia 路由处理器和 schema。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import FileCodeBlock from '../../../../components/interactive-code/file-code-block.astro';
+import TabItem from '../../../../components/interactive-code/tab-item.astro';
+
+export const aotSteps = [
+    {
+        label: '导出实例',
+        code: `import { Elysia, t } from 'elysia'
+
+export const app = new Elysia()
+	.get('/hello/:name', {
+		params: t.Object({ name: t.String({ minLength: 2 }) })
+	}, ({ params }) => \`Hello, \${params.name}!\`)
+	.listen(3000)`,
+        highlight: [3],
+    },
+    {
+        label: '创建构建脚本',
+        code: `import { aot } from 'elysia/plugin/aot/bun'
+
+const result = await Bun.build({
+	entrypoints: ['src/index.ts'],
+	outdir: 'dist',
+	target: 'bun',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+
+process.exit(0)`,
+        highlight: [4, 7],
+    },
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">提前编译</h1>
+
+Elysia 会为每条路由生成优化后的函数，让应用运行得更快。每条路由只会在收到第一个请求时编译一次，这称为即时编译（JIT）。
+
+你也可以使用提前编译（AOT），将编译移到构建阶段，在加快应用运行的同时消除这部分开销。
+
+## 导出应用
+
+要使用 AOT 插件，请导出 Elysia 实例。
+
+</div>
+
+<InteractiveDoc steps={aotSteps}>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:50dvh]!">
+
+### 导出实例
+
+在 `src/index.ts` 中将 Elysia 实例导出为 `app`，这样 AOT 插件就能找到它。
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:50dvh]!">
+
+### 创建构建脚本
+
+创建 `build.ts`，并在 `entrypoints` 和 `aot()` 中使用相同的入口路径。
+
+脚本会试运行应用以获取路由注册信息，并在 `dist/` 中生成打包文件。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+### 构建并运行
+
+在项目根目录运行构建脚本，然后启动生成的打包文件：
+
+```sh
+bun run build.ts
+bun dist/index.js
+```
+
+### 多个应用
+
+AOT 插件会编译主应用：优先使用 `app` 导出，其次使用 `default` 导出；如果入口只导出一个 Elysia 实例，则使用该实例。
+
+其他每个带有 `name` 且至少注册了一条路由的 Elysia 导出实例，都会获得一份以该名称为键的已编译路由清单：
+
+```ts title="src/index.ts"
+import { Elysia, t } from 'elysia'
+
+export const api = new Elysia({ name: 'api', prefix: '/api' })
+	.post('/state', {
+		body: t.Object({ theme: t.String() })
+	}, ({ body }) => body)
+
+export const app = new Elysia({ name: 'app' }).use(api)
+
+export default app
+```
+
+`app.handle()` 和 `api.handle()` 都会使用各自的清单处理请求。
+
+打包文件中任何会构建自己路由器的其他 Elysia 实例，都必须命名并从入口导出。包括对其调用 `.handle()`、`.listen()` 或 `.compile()`，读取其 `.fetch`，或通过 `.mount(sub.fetch)`、`.mount(sub.handle)` 挂载的实例。否则构建仍会成功，但打包文件运行时会抛出错误：
+
+```text
+[elysia-aot] App "<name>" has no AOT manifest. Name and export it, .mount() ones too
+```
+
+仅通过 `.use()` 组合的插件不需要这样做。`.mount()` 挂载普通函数时也不需要，例如 [Better Auth](/integrations/better-auth/) 的 `auth.handler`。
+
+构建多个应用时，主应用也必须命名，而且每个名称都必须唯一。
+
+应用名称应保持静态，在构建时和运行时一致。不要从环境变量动态生成名称。
+
+## AOT 的优势
+
+将编译移到构建阶段，可以为应用带来这些好处：
+
+- **更快的启动和首次请求。** 路由处理器和 schema 会在服务器运行前编译。
+- **更低的内存峰值。** 服务器无需为运行时编译进行临时内存分配。
+- **更少的运行时代码。** AOT 会分析未使用的 Elysia 模块；如果所有 TypeBox schema 都能编译，还可以完全移除 TypeBox。
+- **更快地合并默认值。** AOT 会预先计算 schema 默认值的合并方式，减少补齐缺失值时的工作量。
+
+生成的路由和 schema 代码可能会增加打包体积和启动时保留的内存。详情请参阅 [Elysia 2.0 AOT 概览](/blog/elysia-20#ahead-of-time-compilation)。
+
+## 检测 AOT 构建
+
+你可以通过代码检测应用是否正在 AOT 构建中运行，并据此决定是否初始化构建阶段不需要的外部服务，例如数据库连接或第三方 API。
+
+```ts
+import { inAotBuild } from 'elysia'
+
+if (!inAotBuild()) {
+	// Initialize external services here.
+}
+```
+
+## 打包工具和运行时
+
+AOT 是为 Elysia 应用生成代码的打包插件，兼容 Bun、Vite、esbuild、Rspack 和 unplugin。
+
+<FileCodeBlock>
+<TabItem label="Bun">
+
+```ts title="build.ts"
+import { aot } from 'elysia/plugin/aot/bun'
+
+await Bun.build({
+	entrypoints: ['src/index.ts'],
+	outdir: 'dist',
+	target: 'bun',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+
+process.exit(0)
+```
+
+</TabItem>
+<TabItem label="Vite">
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import { aot } from 'elysia/plugin/aot/vite'
+
+export default defineConfig({
+	build: { ssr: 'src/index.ts' },
+	ssr: { noExternal: ['elysia'] },
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+```
+
+</TabItem>
+<TabItem label="esbuild">
+
+```ts title="build.ts"
+import * as esbuild from 'esbuild'
+import { aot } from 'elysia/plugin/aot/esbuild'
+
+await esbuild.build({
+	entryPoints: ['src/index.ts'],
+	bundle: true,
+	platform: 'node',
+	format: 'esm',
+	outfile: 'dist/index.js',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+})
+```
+
+</TabItem>
+<TabItem label="Rspack">
+
+```ts title="rspack.config.ts"
+import { aot } from 'elysia/plugin/aot/rspack'
+
+export default {
+	entry: './src/index.ts',
+	target: 'node',
+	plugins: [aot('src/index.ts', { target: 'bun' })]
+}
+```
+
+</TabItem>
+<TabItem label="unplugin">
+
+```ts title="rollup.config.ts"
+import { createUnplugin } from 'unplugin'
+import { aotFactory } from 'elysia/plugin/aot/unplugin'
+
+const aot = createUnplugin(aotFactory)
+
+export default {
+	plugins: [aot.rollup({ entry: 'src/index.ts', target: 'bun' })]
+}
+```
+
+</TabItem>
+</FileCodeBlock>
+
+#### 目标运行时
+
+要针对特定运行时进行优化，请将 AOT 插件的 `target` 设为执行打包文件的运行时：
+
+```ts
+aot('src/index.ts', { target: 'bun' })
+aot('src/index.ts', { target: 'node' })
+aot('src/index.ts', { target: 'workerd' })
+```
+
+对于 Cloudflare Workers，请使用 `target: 'workerd'`，并参阅 [Cloudflare Workers 集成](/integrations/cloudflare-worker/)了解部署设置。
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,206 @@
+---
+title: HTML 插件
+description: HTML 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">HTML 插件</h1>
+
+支持使用 [JSX](#jsx) 和 HTML，并自动处理相应响应头。
+
+安装：
+
+```bash
+bun add @elysia/html@rc
+```
+
+然后这样使用：
+
+```tsx
+import { Elysia } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.get(
+		'/html',
+		() => `
+            <html lang='en'>
+                <head>
+                    <title>Hello World</title>
+                </head>
+                <body>
+                    <h1>Hello World</h1>
+                </body>
+            </html>`
+	)
+	.get('/jsx', () => (
+		<html lang="en">
+			<head>
+				<title>Hello World</title>
+			</head>
+			<body>
+				<h1>Hello World</h1>
+			</body>
+		</html>
+	))
+	.listen(3000)
+```
+
+此插件会自动为响应添加 `Content-Type: text/html; charset=utf8` 响应头和 `<!doctype html>`，并将其转换为 Response 对象。
+
+## JSX
+
+Elysia HTML 基于 [@kitajs/html](https://github.com/kitajs/html)，可在编译时将 JSX 转换为字符串，从而获得更高性能。
+
+需要使用 JSX 的文件请以 **"x"** 结尾：
+
+- .js -> .jsx
+- .ts -> .tsx
+
+要注册 TypeScript 类型，请将以下内容添加到 **tsconfig.json**：
+
+```jsonc
+// tsconfig.json
+{
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "Html.createElement",
+		"jsxFragmentFactory": "Html.Fragment"
+	}
+}
+```
+
+完成后，就可以使用 JSX 作为模板引擎了：
+
+```tsx
+import { Elysia } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.get('/', () => (
+		<html lang="en">
+			<head>
+				<title>Hello World</title>
+			</head>
+			<body>
+				<h1>Hello World</h1>
+			</body>
+		</html>
+	))
+	.listen(3000)
+```
+
+如果出现错误 `Cannot find name 'Html'. Did you mean 'html'?`，请在 JSX 模板中添加此导入：
+
+```tsx
+import { Html } from '@elysia/html'
+```
+
+注意，名称必须以大写字母开头。
+
+## XSS
+
+Kita HTML 会转义标记为 `safe` 的值。其 TypeScript 插件还会在编辑时标出可能不安全的 JSX 表达式。
+
+使用 `safe` 属性，在将不可信文本插入 HTML 前对其进行转义：
+
+```tsx
+import { Elysia, t } from 'elysia'
+import { html, Html } from '@elysia/html'
+
+new Elysia()
+	.use(html())
+	.post(
+		'/',
+		{
+			body: t.String()
+		}, ({ body }) => (
+			<html lang="en">
+				<head>
+					<title>Hello World</title>
+				</head>
+				<body>
+					<h1 safe>{body}</h1>
+				</body>
+			</html>
+		)
+	)
+	.listen(3000)
+```
+
+不过，构建大型应用时，最好添加类型检查提醒，以便发现代码库中潜在的 XSS 漏洞。
+
+要添加类型安全提醒，请安装：
+
+```sh
+bun add @kitajs/ts-html-plugin
+```
+
+然后将以下内容添加到 **tsconfig.json**：
+
+```jsonc
+// tsconfig.json
+{
+	"compilerOptions": {
+		"jsx": "react",
+		"jsxFactory": "Html.createElement",
+		"jsxFragmentFactory": "Html.Fragment",
+		"plugins": [{ "name": "@kitajs/ts-html-plugin" }]
+	}
+}
+```
+
+## 选项
+
+### contentType
+
+- 类型：`string`
+- 默认值：`'text/html; charset=utf8'`
+
+响应的内容类型。
+
+### autoDetect
+
+- 类型：`boolean`
+- 默认值：`true`
+
+是否自动检测 HTML 内容并设置内容类型。
+
+### autoDoctype
+
+- 类型：`boolean | 'full'`
+- 默认值：`true`
+
+如果以 `<html>` 开头的响应中没有 `<!doctype html>`，是否自动添加该声明。
+
+设为 `full` 后，不通过 `html()` 助手返回的 HTML 响应也会添加 doctype。
+
+```ts
+// Automatic response detection with html({ autoDoctype: 'full' })
+app.get('/', () => '<html></html>')
+
+// Explicit html helper
+app.get('/', ({ html }) => html('<html></html>'))
+```
+
+### isHtml
+
+- 类型：`(value: string) => boolean`
+- 默认值：`isHtml`（导出的函数）
+
+此函数用于检测字符串是否为 HTML。内置检测器会去除首尾空白，要求字符串至少有 7 个字符，并检查其是否以 `<` 开头、以 `>` 结尾。
+
+这只是启发式检测，并非 HTML 校验器。自动检测响应时会使用你在此处提供的函数。
+
+</div>
+</InteractiveDocLayout>
+</div>

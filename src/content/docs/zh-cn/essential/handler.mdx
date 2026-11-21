@@ -1,0 +1,504 @@
+---
+title: 处理器
+description: 使用 Elysia 处理器读取请求，并决定要返回什么。
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+
+export const responseDemo = new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/path', ({ path }) => path)
+    .get('/teapot', ({ status }) => status(418, 'I am a teapot'));
+
+export const extendContextDemo = new Elysia()
+    .state('tea', 'Earl Grey')
+    .decorate('greet', (name) => `Hello ${name}`)
+    .derive(({ query }) => ({ name: query.name ?? 'friend' }))
+    .get('/', ({ store, greet, name }) => ({
+        greeting: greet(name),
+        tea: store.tea
+    }));
+
+export const extendContextExamples = await Promise.all(
+    ['/', '/?name=Nagisa'].map(async (path) => ({
+        method: 'GET',
+        displayPath: path,
+        response: await (await extendContextDemo.handle(
+            new Request(`http://elysiajs.com${path}`)
+        )).text()
+    }))
+);
+
+export const steps = [
+    {
+        label: '返回一个值',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: '使用函数',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', () => 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: '读取请求',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ query }) => query.name ?? 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: '选择状态码',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ query, status }) => {
+        if (!query.name) return status(400, 'Tell me your name')
+
+        return query.name
+    })
+    .listen(3000)`,
+        highlight: [4, 5, 7],
+    },
+];
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">处理器</h1>
+
+当请求匹配路由时，**处理器**决定要返回什么。你可以给 Elysia 一个要返回的值，也可以提供一个读取请求并构造响应的函数。
+
+先从问候语开始，再让它根据请求作出响应。
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## 返回一个值
+
+如果每个请求都应得到相同的响应，就传入一个字面值。向 `/` 发送 `GET` 请求会得到 `Hello Elysia`。
+
+Elysia 可以提前准备好这个响应。静态资源（例如文件）也适用这种方式。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 使用函数
+
+如果需要针对每个请求执行操作，就传入一个函数。路由匹配时，Elysia 会调用它，并将返回值转换为响应。
+
+这个函数仍然返回 `Hello Elysia`，问候语不变，但现在可以进一步扩展了。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 读取请求
+
+处理器的第一个参数是**上下文**，其中包含请求信息和用于返回响应的辅助工具。
+
+这里我们从上下文中取出 `query`。访问 `/?name=Nagisa` 会返回 `Nagisa`；访问 `/` 则返回 `Hello Elysia`。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 选择状态码
+
+返回 `status(code, value)`，即可同时指定 HTTP 状态码和响应体。
+
+现在访问 `/` 会返回 `400` 和 `Tell me your name`。添加 `?name=Nagisa` 后，就会得到 `Nagisa`，状态码则为常见的 `200`。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+:::tip[静态值不等于缓存]
+
+字面值处理器会让 Elysia 提前准备响应。生命周期钩子仍可修改响应，包括响应头和状态码。
+
+:::
+
+## 查看响应
+
+选择下面的路由即可查看响应体。`/path` 会返回自身的路径名，`/teapot` 则会以 HTTP 状态码 `418` 返回 `I am a teapot`。
+
+<CodePlayground elysia={responseDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/path', ({ path }) => path)
+    .get('/teapot', ({ status }) => status(418, 'I am a teapot'))
+    .listen(3000)
+```
+
+</CodePlayground>
+
+面板只显示响应体。如需查看状态码和请求头，请在本地运行示例，并使用 HTTP 客户端请求 `http://localhost:3000/teapot`。
+
+<a id="context" />
+## 上下文
+
+每个请求都有自己的上下文。处理器和生命周期钩子都会收到它，不过可用字段取决于当前生命周期阶段。
+
+你可以接收整个对象并读取 `context.path`，也可以像 `({ path }) => path` 这样只解构需要的字段。
+
+| 属性 | 内容 |
+| --- | --- |
+| `body` | 解析后的请求体，例如 JSON、表单字段或上传的文件。 |
+| `query` | 查询参数。对于 `/?name=Nagisa`，`query.name` 是 `Nagisa`。 |
+| `params` | 命名路径参数。`/user/42` 匹配 `/user/:id` 时，`params.id` 是 `42`。 |
+| `headers` | 传入请求的请求头，例如 `content-type`。 |
+| `cookie` | 当前请求的 cookie 值，以及用于更新响应 cookie 的辅助工具。 |
+| `store` | 通过 `.state()` 注册的共享可变状态。 |
+| `path` | 不含查询字符串的请求路径名。 |
+| `request` | 原始 Web 标准 `Request`。 |
+| `server` | 运行中的服务器实例（运行时提供时）。 |
+
+| 辅助工具 | 用途 |
+| --- | --- |
+| `status(code, value)` | 返回带有指定 HTTP 状态码的响应体。 |
+| `redirect(url, status?)` | 返回重定向响应。 |
+| `set` | 设置响应头和默认状态码。 |
+
+`store` 会在请求间共享，通过 `.decorate()` 添加的对象引用也是如此。请改用 `.derive()` 计算请求专属的值。
+
+请求字段的校验和类型定义请参阅[校验](/essential/validation/)。
+
+## status 状态码
+
+对于预期内的错误（例如资源不存在），优先返回 `status()`。Elysia 会将状态码与响应体类型关联起来。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/tea', {
+        response: {
+            200: t.Object({ name: t.String() }),
+            404: t.String()
+        }
+    }, ({ query, status }) => {
+        if (query.name !== 'earl-grey')
+            return status(404, 'That tea is not on the menu')
+
+        return { name: 'Earl Grey' }
+    })
+    .listen(3000)
+```
+
+TypeScript 可以根据对应状态码的响应 schema 检查每个响应体。[Eden](/eden/) 也会使用这些类型，按状态码缩小客户端结果和错误的类型范围。
+
+如果没有指定自定义状态码，也没有发生错误，成功响应会使用 `200`。
+
+## 设置响应详情
+
+使用 `set` 修改传出的响应。它属于当前请求。
+
+### set.headers 请求头
+
+按名称赋值即可设置响应头。你也可以替换整个 headers 对象，或使用 `delete` 移除已设置的条目。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ set, status }) => {
+        set.headers['x-teapot'] = 'true'
+
+        return status(418, 'I am a teapot')
+    })
+    .listen(3000)
+```
+
+请使用小写名称（例如 `content-type`），以匹配 Elysia 的响应头自动补全。HTTP 头字段名称本身不区分大小写。
+
+### set.status 状态码
+
+如果要由钩子或插件选择默认状态码，同时让处理器决定响应体，请使用 `set.status`。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .onBeforeHandle(({ set }) => {
+        set.status = 201
+    })
+    .post('/tea', () => ({ name: 'Earl Grey' }))
+    .listen(3000)
+```
+
+该钩子不返回任何内容，因此处理器仍会运行。向 `/tea` 发送 `POST` 请求会以状态码 `201` 返回该对象。
+
+你可以使用数字或状态名称，例如 `set.status = 'Created'`。返回 `status()` 会覆盖此默认值，并保留状态码与响应体类型之间的关联；赋值给 `set.status` 则不会。
+
+## Cookie
+
+通过 `.value` 属性读取 cookie。赋予新值即可在响应中发送更新后的 cookie。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/tea', ({ cookie: { tea } }) => {
+        const previous = tea.value ?? 'none'
+        tea.value = 'Earl Grey'
+
+        return { previous, current: tea.value }
+    })
+    .listen(3000)
+```
+
+请求中没有 `tea` cookie 时，此示例会返回 `previous: 'none'`，并将 cookie 设置为 `Earl Grey`。这些 cookie 值属于当前请求，而不是共享的全局存储。
+
+选项、签名和移除 cookie 的方法请参阅 [cookie](/patterns/cookie/)。
+
+<a id="redirect" />
+## 重定向
+
+返回 `redirect()` 可将客户端发送到另一个 URL。默认状态码为 `302`，传入第二个参数即可指定其他重定向状态码。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', ({ redirect }) => redirect('/tea'))
+    .get('/old-menu', ({ redirect }) => redirect('/tea', 301))
+    .get('/tea', 'Earl Grey')
+    .listen(3000)
+```
+
+客户端会收到带有 `Location` 响应头的重定向响应。记得从处理器中返回它。
+
+<a id="form-data" />
+## 表单数据
+
+返回 `form()` 以发送 multipart 表单数据。字段可以包含文本和文件。
+
+```ts
+import { Elysia, form, file } from 'elysia'
+
+new Elysia()
+    .get('/album', () => form({
+        name: 'Tea Party',
+        images: [file('nagisa.webp'), file('mika.webp')]
+    }))
+    .listen(3000)
+```
+
+运行示例前，请将示例文件放入应用的工作目录。
+
+<a id="return-a-file" />
+### 返回文件
+
+只有一个文件时，直接返回 `file()` 即可。
+
+```ts
+import { Elysia, file } from 'elysia'
+
+new Elysia()
+    .get('/portrait', file('nagisa.webp'))
+    .listen(3000)
+```
+
+## 流式响应
+
+使用生成器函数和 `yield` 分块发送响应。每个 yield 出的值都会成为流的一部分。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* () {
+        yield 1
+        yield 2
+        yield 3
+    })
+    .listen(3000)
+```
+
+如果生成数据块时需要使用 `await`，请使用 `async function*`。
+
+<a id="server-sent-events" />
+### 服务器发送事件
+
+将每个值传入 `sse()`，即可将其格式化为服务器发送事件。Elysia 会将响应的内容类型设为 `text/event-stream`。
+
+```ts
+import { Elysia, sse } from 'elysia'
+
+new Elysia()
+    .get('/events', function* () {
+        yield sse('Tea is brewing')
+        yield sse({
+            event: 'ready',
+            data: { tea: 'Earl Grey' }
+        })
+    })
+    .listen(3000)
+```
+
+第一个事件携带文本。第二个事件使用名为 `ready` 的事件，并携带 JSON 数据。
+
+### 在开始流式传输前设置请求头
+
+:::caution[首次 yield 之前]
+
+请在 yield 第一个数据块之前设置请求头。流开始时 Elysia 就会发送请求头，此后的修改不会传达给客户端。
+
+:::
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* ({ set }) {
+        set.headers['x-tea'] = 'Earl Grey'
+
+        yield 1
+        yield 2
+    })
+    .listen(3000)
+```
+
+普通流和服务器发送事件都适用此规则。
+
+### 不使用流式传输直接返回
+
+在首次 `yield` 之前返回，即可改为发送普通响应。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/stream', function* ({ query }) {
+        if (query.stream !== 'true') return 'Ready'
+
+        yield 1
+        yield 2
+        yield 3
+    })
+    .listen(3000)
+```
+
+`/stream` 会返回 `Ready`。`/stream?stream=true` 则会流式发送这三个值。
+
+### 取消
+
+如果客户端在流结束前取消请求，Elysia 会关闭生成器。但这不会中断你已经通过 `await` 启动的任意操作；如果这些操作也需要停止，请将请求的中止信号传给支持它们的操作。
+
+### 使用 Eden 消费流
+
+Eden 会将流作为异步生成器读取。使用 `for await` 消费其中的数据块。
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .get('/stream', function* () {
+        yield 1
+        yield 2
+        yield 3
+    })
+
+const { data, error } = await treaty(app).stream.get()
+if (error) throw error
+
+for await (const chunk of data)
+    console.log(chunk)
+```
+
+## Request
+
+如果需要原始 Web 标准 `Request`（包括其 URL、请求头或中止信号），请使用 `request`。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user-agent', ({ request }) =>
+        request.headers.get('user-agent') ?? 'Unknown'
+    )
+    .listen(3000)
+```
+
+如需读取已解析的请求体，请使用上下文中的 `body`。请求体只能读取一次，而且 Elysia 可能已经读取过了。
+
+## Server
+
+在 Bun 上，`server` 会提供正在运行的 Bun 服务器实例。`.listen()` 启动服务器后，该实例才可用。
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/port', ({ server }) => server?.port)
+    .get('/ip', ({ server, request }) => server?.requestIP(request))
+    .listen(3000)
+```
+
+`/port` 会返回监听端口。若客户端 socket 地址信息可用，`server.requestIP(request)` 会将其返回。
+
+这些服务器 API 专用于 Bun。可选链也能处理在没有运行中服务器时分发的请求。
+
+## 扩展上下文
+
+如果处理器需要内置字段以外的值，可以添加自定义值。
+
+| 方法 | 用途 |
+| --- | --- |
+| `.state()` | 共享可变状态，可通过 `store` 访问。 |
+| `.decorate()` | 可从上下文读取的共享辅助函数或服务。 |
+| `.derive()` | 在处理器运行前为每个请求计算的值。 |
+
+<CodePlayground examples={extendContextExamples}>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .state('tea', 'Earl Grey')
+    .decorate('greet', (name: string) => `Hello ${name}`)
+    .derive(({ query }) => ({ name: query.name ?? 'friend' }))
+    .get('/', ({ store, greet, name }) => ({
+        greeting: greet(name),
+        tea: store.tea
+    }))
+    .listen(3000)
+```
+
+</CodePlayground>
+
+访问 `/?name=Nagisa` 会返回问候语 `Hello Nagisa` 和共享的茶饮值 `Earl Grey`。
+
+更多示例请参阅 [derive](/essential/life-cycle/#derive)。在 Elysia v2 中，`.derive()` 会在 `beforeHandle` 阶段运行，取代旧的 `.resolve()` API。
+
+</div>
+
+</InteractiveDocLayout>

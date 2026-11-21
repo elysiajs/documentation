@@ -1,0 +1,105 @@
+---
+title: GraphQL Yoga 插件
+description: GraphQL Yoga 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">GraphQL Yoga 插件</h1>
+
+此插件将 GraphQL Yoga 集成到 Elysia 中。
+
+安装：
+
+```bash
+bun add @elysia/graphql-yoga@rc
+```
+
+然后这样使用：
+
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+	.use(
+		yoga({
+			typeDefs: /* GraphQL */ `
+				type Query {
+					hi: String
+				}
+			`,
+			resolvers: {
+				Query: {
+					hi: () => 'Hello from Elysia'
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+在浏览器中通过 GET 请求访问 `/graphql`，即可打开启用了 GraphQL 的 Elysia 服务器所提供的 GraphiQL 界面。
+
+你也可以按需安装指定版本的可选 peer 依赖：
+
+```bash
+bun add graphql graphql-yoga
+```
+
+## 解析器
+
+Elysia 使用 [Mobius](https://github.com/saltyaom/mobius) 自动从 **typeDefs** 字段推断类型，让你在编写 **resolver** 类型时获得完整的类型安全和自动补全。
+
+## 上下文
+
+添加 **context** 即可向解析器函数传入自定义上下文。
+
+```ts
+import { Elysia } from 'elysia'
+import { yoga } from '@elysia/graphql-yoga'
+
+const app = new Elysia()
+	.use(
+		yoga({
+			typeDefs: /* GraphQL */ `
+				type Query {
+					hi: String
+				}
+			`,
+			context: {
+				name: 'Mobius'
+			},
+			// Required for resolvers to infer the context type
+			useContext(_) {},
+			resolvers: {
+				Query: {
+					hi: async (parent, args, context) => context.name
+				}
+			}
+		})
+	)
+	.listen(3000)
+```
+
+## 配置
+
+此插件扩展了 [GraphQL Yoga 的 createYoga 选项，请参阅 GraphQL Yoga 文档](https://the-guild.dev/graphql/yoga-server/docs)，并将 `schema` 配置内联到根级别。
+
+以下是插件支持的配置选项
+
+### path
+
+默认值：`/graphql`
+
+用于提供 GraphQL 处理器的端点
+
+</div>
+</InteractiveDocLayout>
+</div>

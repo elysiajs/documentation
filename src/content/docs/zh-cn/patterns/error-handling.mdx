@@ -1,0 +1,681 @@
+---
+title: 错误处理
+description: 自定义校验消息、处理错误类，并选择何时抛出错误或返回 HTTP 状态。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import { Elysia, HTTPError, problem, status } from 'elysia';
+
+export class CustomError extends HTTPError.id('UNIQUE_ID', 400) {}
+
+export class CreditDetail extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    headers = { 'x-billing-required': 'true' }
+    detail = 'Top up to continue'
+}
+
+export class CreditValue extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    value() {
+        return { code: 'OUT_OF_CREDIT', ok: false }
+    }
+}
+
+export class CreditStatus extends HTTPError.id('OUT_OF_CREDIT') {
+    constructor(balance) {
+        super()
+        this.balance = balance
+    }
+
+    value() {
+        if (this.balance > 0)
+            return status(500, {
+                detail: 'Something went wrong on our side',
+                balance: this.balance
+            })
+
+        return status(402, {
+            type: this.type,
+            code: this.code,
+            detail: 'Out of credit',
+            balance: this.balance
+        })
+    }
+}
+
+export const errorResponseDemos = [
+    new Elysia().get('/', () => new CreditDetail()),
+    new Elysia().get('/', () => new CreditValue()),
+    new Elysia()
+        .get('/balance/0', () => new CreditStatus(0))
+        .get('/balance/1', () => new CreditStatus(1)),
+    new Elysia().get('/return', () => new CustomError('Invalid request')),
+    new Elysia().get('/', () => problem(409, { detail: 'Username is taken' }))
+];
+
+export const errorResponseExamples = await Promise.all(errorResponseDemos.map(async (app) =>
+    Promise.all(app.routes.map(async ({ method, path }) => {
+        const response = await app.handle(new Request(`http://elysiajs.com${path}`, { method }))
+        const headers = [...response.headers].map(([name, value]) => `${name}: ${value}`).join('\n')
+
+        return {
+            method,
+            displayPath: path,
+            response: `HTTP ${response.status}\n${headers}\n\n${JSON.stringify(await response.json(), null, 2)}`
+        }
+    }))
+));
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">错误处理</h1>
+
+Elysia 提供可静态分析的错误处理机制，让你能预知服务器中大多数可能出现的错误。可以把它理解成一个简化版的 <a target="_blank" href="https://effect.website">Effect</a>。
+
+这对使用 [Eden](/eden) 和 [OpenAPI 类型生成](/patterns/openapi/#openapi-from-types)为 API 生成类型尤其有用。
+
+本页涵盖以下主题：
+- [优先使用 return，而不是 throw](#first-prefer-return-over-throw)
+- [错误钩子](#error-hook)
+- [自定义错误](#custom-error)
+- [Schema 校验](#schema-validation)
+- [错误列表](#error-list)
+
+阅读本页前，建议先了解[错误生命周期](/essential/life-cycle/#error-error-handling)或[错误处理教程](/tutorial/patterns/error-handling/)。
+
+
+<span id="first-prefer-return-over-throw"></span>
+
+## 首先：优先使用 return，而不是 throw
+
+返回错误可以让 TypeScript 静态分析返回类型，而抛出错误则无法做到这一点。
+
+在运行时，返回的 `Error` 与抛出的错误处理方式相同：它会经过错误钩子，并产生相同的响应。
+
+`status()` 和 `problem()` 则不同。返回它们会发送普通响应，不会进入错误处理流程。
+
+### Problem 文档
+
+`problem()` 会返回符合 [RFC 9457](https://www.rfc-editor.org/info/rfc9457) 的 problem 文档，内容类型为 `application/problem+json`。Elysia 会为你填入 `type` 和 `title`：
+
+<CodePlayground examples={errorResponseExamples[4]}>
+
+```ts
+import { Elysia, problem } from 'elysia'
+
+new Elysia()
+    .get('/', () => problem(409, { detail: 'Username is taken' }))
+```
+
+</CodePlayground>
+
+`status()` 和 `problem()` 都可以用状态名称代替数字，例如 `problem('Conflict', { detail: 'Username is taken' })`。
+
+<a id="error-hook" />
+## 错误钩子
+
+使用 `.onError()` 处理实例中的所有错误，或使用 `error` 属性处理单条路由的错误：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', {
+        error({ error, status }) {
+            return status(503, 'Try again later')
+        }
+    }, () => {
+        throw new Error('Maintenance window')
+    })
+```
+
+钩子返回值会作为响应发送；若不返回值，错误会传给下一个钩子，最后交由 Elysia 的默认响应处理。
+
+返回 `Error` 时，就像没有钩子处理它一样，会使用该错误自身的状态码发送响应。`HTTPError` 会发送其 problem 文档；没有状态码的 `Error` 则会变成 `500`。它不会再传给其他钩子。
+
+<span id="third-party-errors"></span>
+
+<a id="mapping-errors" />
+### 映射错误
+
+可以使用 `.onError(ErrorClass, handler)` 将错误映射为响应。
+
+当需要将无法控制的库所抛出的错误映射为响应时，这种方式很有用。
+
+```ts
+import { Elysia, problem } from 'elysia'
+import { DrizzleQueryError } from 'drizzle-orm/errors'
+import { db } from './db'
+import { users } from './schema'
+
+new Elysia()
+    .onError(DrizzleQueryError, () => problem(502, {
+        type: 'UPSTREAM_FAILURE',
+        detail: 'The database connection is unavailable'
+    }))
+    .get('/users', async () => {
+        try {
+            return await db.select().from(users)
+        } catch (error) {
+            if (error instanceof DrizzleQueryError)
+                return error
+
+            throw error
+        }
+    })
+```
+
+这会将 `DrizzleQueryError` 映射为带有 problem 文档的 `502` 响应。
+
+抛出的 `DrizzleQueryError` 同样会到达该钩子。这里的 `try`/`catch` 只是为了返回错误，因此 `502` 响应也会成为路由类型的一部分。
+
+如果响应始终不变，可以直接传入值，而不必使用函数：
+
+```ts
+new Elysia()
+    .onError(DrizzleQueryError, problem(502, { detail: 'Database unavailable' }))
+```
+
+<span id="custom-status-code"></span>
+
+### 错误状态码
+
+任何带有 `status` 属性的 `Error` 都会以该状态码发送，错误消息则作为纯文本响应体。无需为此使用 `HTTPError`：
+
+```ts
+import { Elysia } from 'elysia'
+
+class Teapot extends Error {
+    status = 418
+}
+
+new Elysia()
+    .get('/', () => {
+        throw new Teapot('Short and stout')
+    })
+```
+
+响应状态为 `418`，内容为 `Short and stout`。
+
+### 未处理的错误
+
+没有 `status` 且未被任何钩子处理的错误，会变成 `500` problem 文档：
+
+```json
+{
+    "type": "internal-server-error",
+    "code": "internal-server-error",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "Maintenance window",
+    "name": "Error"
+}
+```
+
+在 `NODE_ENV=production` 时，Elysia 会省略 `detail` 和 `name`，避免内部消息泄露给客户端。
+
+<span id="custom-error"></span>
+
+## 自定义错误
+
+你可以使用 `HTTPError.id()` 创建自定义错误类，让 Elysia 将其转换为 HTTP 响应。
+
+默认情况下，Elysia 会返回 RFC 9457 problem 文档：
+
+<CodePlayground examples={errorResponseExamples[3]}>
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+class CustomError extends HTTPError.id('UNIQUE_ID', 400) {}
+
+new Elysia()
+    .get('/return', () => new CustomError('Invalid request'))
+```
+
+</CodePlayground>
+
+### 错误响应
+
+你可以添加可选属性，自定义错误的行为：
+
+| 属性 | 说明 |
+| --- | --- |
+| `headers` | 添加到响应头中 |
+| `detail` | 设置 problem 文档中的 `detail` 字符串 |
+| `extension()` | 向 problem 文档添加成员 |
+| `value()` | 覆盖整个响应体 |
+
+`value()` 可以是 `async` 函数。
+
+状态码也可以使用名称，例如 `HTTPError.id('OUT_OF_CREDIT', 'Payment Required')`。
+
+使用 `detail` 设置 RFC 9457 problem 文档中的 `detail`。它的优先级高于错误消息，因此错误消息仍可保留在日志中：
+
+<CodePlayground examples={errorResponseExamples[0]}>
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    headers = { 'x-billing-required': 'true' }
+    detail = 'Top up to continue'
+}
+
+new Elysia()
+    .get('/', () => new OutOfCredit())
+```
+
+</CodePlayground>
+
+使用 `extension()` 向 problem 文档添加自定义成员，例如 RFC 9457 中的余额不足示例：
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    detail = 'Your current balance is 30, but that costs 50'
+
+    constructor(readonly balance: number) {
+        super()
+    }
+
+    extension() {
+        return { balance: this.balance, accounts: ['/account/12345'] }
+    }
+}
+
+new Elysia()
+    .get('/', () => new OutOfCredit(30))
+```
+
+```json
+{
+    "type": "OUT_OF_CREDIT",
+    "code": "OUT_OF_CREDIT",
+    "detail": "Your current balance is 30, but that costs 50",
+    "status": 402,
+    "balance": 30,
+    "accounts": [
+        "/account/12345"
+    ],
+    "title": "Payment Required"
+}
+```
+
+`type`、`code` 和 `status` 始终取自错误本身，因此 `extension()` 无法更改它们。它可以设置 `title` 和 `instance`；如果类没有设置 `detail`，也可以设置 `detail` 字符串。
+
+`extension()` 必须同步返回普通对象。其他返回值（例如 Promise）会被忽略，因此异步操作请使用 `value()`。值为函数的成员会被排除。
+
+需要替换整个响应体时，请使用 `value()`：
+
+<CodePlayground examples={errorResponseExamples[1]}>
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {
+    value() {
+        return { code: 'OUT_OF_CREDIT', ok: false }
+    }
+}
+
+new Elysia()
+    .get('/', () => new OutOfCredit())
+```
+
+</CodePlayground>
+
+如果响应取决于请求内容（例如路径或请求头），请改用 [`.onError(Class, handler)`](#mapping-errors) 映射错误。处理器会收到请求上下文：
+
+```ts
+import { Elysia, HTTPError, problem } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {}
+
+new Elysia()
+    .onError(OutOfCredit, ({ path }) =>
+        problem(402, { detail: `Top up to access ${path}` })
+    )
+    .get('/', () => new OutOfCredit())
+```
+
+使用 `problem()` 或 `status()`，根据错误中的值选择状态码。选择下方的余额，比较不同响应：
+
+<CodePlayground examples={errorResponseExamples[2]}>
+
+```ts
+import { Elysia, HTTPError, status } from 'elysia'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT') {
+    constructor(public balance: number) {
+        super()
+    }
+
+    value() {
+        if (this.balance > 0)
+            return status(500, {
+                detail: 'Something went wrong on our side',
+                balance: this.balance
+            })
+
+        return status(402, {
+            type: this.type,
+            code: this.code,
+            detail: 'Out of credit',
+            balance: this.balance
+        })
+    }
+}
+
+new Elysia()
+    .get('/balance/0', () => new OutOfCredit(0))
+    .get('/balance/1', () => new OutOfCredit(1))
+```
+
+</CodePlayground>
+
+注意：
+- Elysia 依次使用 `value()`、`detail`、`extension()` 返回的 `detail`，最后才使用错误消息。
+- 如果 `value()` 返回 `undefined`，Elysia 会继续检查 `detail` 和 `extension()`；否则不会调用 `extension()`。
+- 如果 `value()` 或 `extension()` 抛出错误，Elysia 会返回 `500`，且不带该错误的响应头。
+- 如果生成 `detail` 需要异步操作，请从 `async value()` 返回 `problem()`。
+
+<span id="httperrorid-is-a-syntax-sugar"></span>
+
+### HTTPError.id 是语法糖
+
+你可以继承 `HTTPError`，也可以继承 `Error` 并实现 `HTTPError`：
+
+```ts
+import { HTTPError } from 'elysia'
+
+class Overdrawn extends HTTPError {
+    readonly type = 'OVERDRAWN'
+    readonly status = 402
+}
+
+class OutOfCredit extends Error implements HTTPError {
+    readonly type = 'OUT_OF_CREDIT'
+    readonly status = 402
+    readonly detail = 'Top up to continue'
+}
+```
+
+要让它能被静态分析，`type` 和 `status` 必须声明为 `readonly` 或使用 `as const`，这一点很重要。
+
+如果无法在编译时确定 `status`，可以改为在 `value()` 中使用 `status()`，但必须让 `status` 保持未定义。
+
+`HTTPError.id()` 会额外提供手写类没有的两项功能：在响应中加入 `code` 成员，以及应用下文所述的 `typeBase` 前缀。手写类会原样发送其 `type`。
+
+<a id="problem-type-url" />
+### Problem 类型 URL
+
+你可以将 `HTTPError.typeBase` 设为 URL，为 `HTTPError.id()` 创建的类以及[内置错误](#built-in-errors)的 `type` 添加前缀。校验错误仍保持 `type: 'validation'`。这适用于希望在文档页面查询错误类型的客户端。
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+
+HTTPError.typeBase = 'https://elysiajs.com/errors'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {}
+
+new Elysia()
+    .get('/', () => new OutOfCredit('Top up to continue'))
+```
+
+```json
+{
+    "type": "https://elysiajs.com/errors/OUT_OF_CREDIT",
+    "code": "OUT_OF_CREDIT",
+    "detail": "Top up to continue",
+    "status": 402,
+    "title": "Payment Required"
+}
+```
+
+设置 `typeBase` 后，`code` 保留原始标识符，而 `type` 会变成绝对 URL。对于不需要查询错误类型的客户端，使用 `code` 可能更方便。
+
+### 响应类型
+返回的错误会按其状态码纳入路由的响应类型。Eden 会像处理 `status()` 响应一样缩窄类型：
+
+```ts
+import { Elysia, HTTPError } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+class OutOfCredit extends HTTPError.id('OUT_OF_CREDIT', 402) {}
+
+const app = new Elysia()
+    .get('/credit', () => new OutOfCredit('Top up to continue'))
+
+const { error } = await treaty(app).credit.get()
+
+if (error?.status === 402)
+    console.log(error.value.code) // 'OUT_OF_CREDIT'
+```
+
+`extension()` 返回的成员也会纳入类型。
+
+<span id="schema-validation"></span>
+
+## Schema 校验
+
+<span id="custom-validation-message"></span>
+
+在 schema 字段上添加 `error`，即可指定该字段校验失败时返回的消息。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/:id', {
+        params: t.Object({
+            id: t.Number({ error: 'id must be a number' })
+        })
+    }, ({ params: { id } }) => id)
+```
+
+| 请求 | 响应 |
+| --- | --- |
+| `/string` | `422`，消息为 `id must be a number` |
+| `/1` | `200`，响应为 `1` |
+
+<a id="schema-messages" />
+### Schema 消息
+
+你可以为可能校验失败的特定 schema 附加消息。
+
+```ts
+import { t } from 'elysia'
+
+const Email = t.String({
+    format: 'email',
+    error: 'Invalid email'
+})
+
+const Names = t.Array(
+    t.String({ error: 'All members must be a string' }),
+    { error: 'Expected an array of names' }
+)
+
+const Point = t.Object({ x: t.Number() }, {
+    error: 'Expected an object with a numeric x'
+})
+```
+
+`Names` 遇到 `[1]` 时使用数组项消息，遇到 `"hello"` 时使用数组消息。
+
+对象消息和字段消息彼此独立。对象本身有效但某个字段校验失败时，使用字段消息；值根本不是对象时，则使用对象自身的消息。因此 `"hello"` 会返回 `Point` 的消息。
+
+### error 按字段调用
+
+schema 校验失败时会调用对应的 error 回调。嵌套数字的回调不会处理根本不是对象的值：
+
+```ts
+import { t } from 'elysia'
+
+const Point = t.Object({
+    x: t.Number({
+        error() {
+            return 'Expected x to be a number'
+        }
+    })
+})
+```
+
+| JSON 请求体 | 消息 |
+| --- | --- |
+| `{ "x": "hello" }` | `Expected x to be a number` |
+| `"hello"` | 默认对象校验消息 |
+
+要自定义第二种情况，请为对象本身添加回调：
+
+```ts
+import { t } from 'elysia'
+
+const Point = t.Object({
+    x: t.Number({
+        error() {
+            return 'Expected x to be a number'
+        }
+    })
+}, {
+    error() {
+        return 'Expected value to be an object'
+    }
+})
+```
+
+现在，JSON 字符串 `"hello"` 会得到 `Expected value to be an object`。
+
+### 校验详情
+
+用 `validationDetail()` 包装消息，即可同时包含校验问题。当调用方需要知道哪个字段校验失败及其原因时，这很有用。
+
+```ts
+import { Elysia, t, validationDetail } from 'elysia'
+
+new Elysia()
+    .get('/:id', {
+        params: t.Object({
+            id: t.Number({
+                error: validationDetail('id must be a number')
+            })
+        })
+    }, ({ params: { id } }) => id)
+```
+
+在开发环境中，`/string` 会返回包含自定义消息和校验问题的校验对象。详细说明请参阅[校验错误教程](/tutorial/patterns/validation-error/)。
+
+<span id="validation-detail-on-production"></span>
+
+<a id="validation-detail-in-production" />
+### 生产环境中的校验详情
+
+在 `NODE_ENV=production` 时，Elysia 会从校验响应中省略详细 schema 问题和提交的值。
+
+这是为了避免暴露敏感数据。你的消息仍会返回，但响应会精简为 problem 文档：
+
+```json
+{
+    "type": "validation",
+    "code": "validation",
+    "title": "Validation Error",
+    "status": 422,
+    "on": "params",
+    "property": "/id"
+}
+```
+
+这仅适用于默认校验消息。自定义消息会按原样发送：字符串作为纯文本，对象则作为 JSON，而不是 problem 文档。
+
+:::tip
+对于公开 API，可以使用 [allowUnsafeValidationDetails](/patterns/configuration/#allowunsafevalidationdetails) 在生产环境中包含这些详情。私有 API 不建议这样做，因为这会暴露提交的值和 schema 问题。
+:::
+
+### 将错误消息设为函数
+
+如果要动态构造消息，请使用函数。你可以返回字符串或其他适用于错误响应的值：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/', {
+        body: t.Object({
+            x: t.Number({
+                error() {
+                    return 'Expected x to be a number'
+                }
+            })
+        })
+    }, () => 'Hello World!')
+    .listen(3000)
+```
+
+`error()` 会收到包含以下字段的对象：
+
+| 字段 | 说明 |
+| --- | --- |
+| `type` | 错误类型；对于 schema 错误始终为 `validation` |
+| `on` | 错误所在位置，例如 `body` 或 `params` |
+| `value` | 提交的值（生产环境中省略） |
+| `errors` | 校验问题数组（生产环境中省略） |
+
+在生产环境中，`value` 和 `errors` 会被省略，以免暴露敏感数据。使用 [allowUnsafeValidationDetails](/patterns/configuration/#allowunsafevalidationdetails) 可在生产环境中包含它们。
+
+<span id="error-list"></span>
+
+## 错误列表
+
+`error.all` 是数组属性，不是方法。每个问题都包含点分隔的 `path`（例如 `name` 或 `user.email`）、`message`、`schemaPath` 和 `params`：
+
+```ts
+import { Elysia, t, ValidationError } from 'elysia'
+
+new Elysia()
+    .post('/', {
+        body: t.Object({
+            name: t.String(),
+            age: t.Number()
+        }),
+        error({ error, status }) {
+            if (!(error instanceof ValidationError)) return
+
+            const name = error.all.find((issue) => issue.path === 'name')
+
+            return status(422, name?.message ?? error.message)
+        }
+    }, ({ body }) => body)
+    .listen(3000)
+```
+
+若要读取 schema 提供方返回的原始问题，请使用 `error.errors`。TypeBox 问题通过 `instancePath`（例如 `/name`）定位字段，而 Standard Schema 校验器可能采用不同结构。
+
+<a id="built-in-errors" />
+### 内置错误
+
+Elysia 使用以下错误类。每个类都会发送 problem 文档，并将下表中的 `code` 作为 `code`；除非设置了 [`typeBase`](#problem-type-url)，否则也会作为 `type`。导入相应类即可通过 `.onError()` 处理它。
+
+| 类 | 状态码 | `code` | 触发条件 |
+| --- | --- | --- | --- |
+| `NotFound` | `404` | `not-found` | 没有匹配的路由 |
+| `ParseError` | `400` | `parse` | 请求体无法解析 |
+| `ValidationError` | `422` | `validation` | 请求未通过 schema 校验 |
+| `InvalidCookie` | `400` | `invalid-cookie` | 签名 cookie 验证失败 |
+| `InternalServerError` | `500` | `internal-server-error` | 服务器故障时由你主动抛出 |
+
+`ParseError` 仅在开发环境中将解析器消息作为 `detail` 返回。
+
+如果 cookie 密钥本身缺失，`InvalidCookie` 会改为返回 `500`，因为这是服务器配置错误。
+
+响应未通过 schema 校验时会返回 `500`，而不是 `422`。在生产环境中，该响应只是一个不含校验详情的内部服务器错误。
+
+你也可以自行抛出 `NotFound` 和 `InternalServerError`。你传入的消息（例如 `new NotFound('No such tea')`）在生产环境中也会作为 `detail` 发送。
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,50 @@
+---
+title: Bearer 插件
+description: Bearer 插件的配置参考与使用示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">Bearer 插件</h1>
+
+用于从 [elysia](https://github.com/elysiajs/elysia) 请求中提取 Bearer 令牌的插件。
+
+安装：
+```bash
+bun add @elysia/bearer@rc
+```
+
+然后这样使用：
+```ts
+import { Elysia } from 'elysia'
+import { bearer } from '@elysia/bearer'
+
+const app = new Elysia()
+    .use(bearer())
+    .get('/sign', {
+        beforeHandle({ bearer, set, status }) {
+            if (!bearer) {
+                set.headers[
+                    'WWW-Authenticate'
+                ] = `Bearer realm="sign"`
+
+                return status(401, 'Unauthorized')
+            }
+        }
+    }, ({ bearer }) => bearer)
+    .listen(3000)
+```
+
+此插件用于提取 [RFC6750](https://www.rfc-editor.org/rfc/rfc6750#section-2) 中定义的 Bearer 令牌。
+
+此插件只提取令牌，不会对请求进行身份验证，也不会校验令牌；请在应用中自行添加这些检查。
+
+</div>
+</InteractiveDocLayout>
+</div>

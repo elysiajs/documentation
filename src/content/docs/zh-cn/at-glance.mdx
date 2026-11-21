@@ -1,0 +1,400 @@
+---
+title: 快速了解
+description: 认识 Elysia 的路由、校验、OpenAPI，以及端到端 TypeScript 支持。
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import { Card, CardTitle } from '../../../components/ui/card';
+import '../../../styles/routing.css';
+import InteractiveDocLayout from '../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../components/playground/code.astro';
+import FileCodeBlock from '../../../components/interactive-code/file-code-block.astro';
+import TabItem from '../../../components/interactive-code/tab-item.astro';
+
+export const helloDemo = new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .post('/form', ({ body }) => body);
+
+export const paramsDemo = new Elysia()
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/abc', () => 'abc');
+
+export const steps = [
+    {
+        label: '返回问候语',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .listen(3000)`,
+        highlight: [4],
+    },
+    {
+        label: '读取路径参数',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .listen(3000)`,
+        highlight: [5],
+    },
+    {
+        label: '接收请求体',
+        code: `import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .post('/form', ({ body }) => body)
+    .listen(3000)`,
+        highlight: [6],
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">快速了解</h1>
+
+Elysia 是一款便于使用的 Web 框架，适合构建后端服务。它以简洁和类型安全为设计目标，提供熟悉的 API、完善的 TypeScript 支持，并针对 Bun 做了优化。
+
+先从一个简单的服务器开始吧。
+
+<CodePlayground
+    elysia={helloDemo}
+    alias={{ '/user/:id': '/user/1' }}
+    mock={{
+        '/user/:id': { GET: '1' },
+        '/form': { POST: JSON.stringify({ hello: 'Elysia' }) },
+    }}
+>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/', 'Hello Elysia')
+    .get('/user/:id', ({ params: { id } }) => id)
+    .post('/form', ({ body }) => body)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+## 性能
+
+Elysia 借助 Bun，并通过静态代码分析等优化生成高效处理请求的代码。
+
+以下数据来自 [Bun HTTP 框架基准测试](https://github.com/SaltyAom/bun-http-framework-benchmark/tree/f654bcd175165bce2e3c83b65eaecd8e34294ffd#results)。平均值是每秒请求数的算术平均数；启动时间以毫秒计；内存用量列出了负载测试前、后服务器的 RSS，单位为 MB。详见[基准测试条件](#ref-1)。
+
+| 框架 | 运行时 | 每秒请求数 | 启动时间 | 内存用量 |
+| ----------------- | ------- | ----------: | -------: | ------------------: |
+| elysia | bun | 214,518.67 | 16.0 ms | 36.3 / 48.7 MB |
+| h3 | bun | 172,978.673 | 7.3 ms | 33.6 / 50.0 MB |
+| hono | bun | 169,752.09 | 7.4 ms | 33.5 / 44.3 MB |
+| effect | bun | 123,353.122 | 32.5 ms | 48.8 / 73.6 MB |
+| fastify | bun | 122,655.538 | 76.8 ms | 74.9 / 193.8 MB |
+| fastify | node | 103,292.998 | 69.7 ms | 95.7 / 205.0 MB |
+| h3 | node | 98,758.288 | 45.5 ms | 85.3 / 190.1 MB |
+| hono | node | 93,107.478 | 48.9 ms | 97.0 / 220.6 MB |
+| elysia | node | 92,489.338 | 58.6 ms | 93.0 / 181.3 MB |
+| effect | node | 88,635.68 | 53.5 ms | 93.0 / 177.6 MB |
+| express | bun | 63,217.945 | 42.5 ms | 64.9 / 152.4 MB |
+| koa | node | 44,591.625 | 51.7 ms | 96.1 / 192.2 MB |
+| express | node | 42,293.953 | 44.2 ms | 87.2 / 208.8 MB |
+| nest | node | 31,939.89 | 116.5 ms | 118.7 / 224.3 MB |
+
+Elysia 也曾在 [TechEmpower 第 22 轮测试](#ref-2)中与 Go 和 Rust 框架进行比较。实际性能会受工作负载、运行时、硬件和框架版本影响。选择框架前，建议用自己的工作负载进行测试。
+
+## TypeScript
+
+Elysia 帮你减少需要手写的 TypeScript。它会从路由中推断类型，让你专注于业务逻辑，不必反复声明类型。
+
+<CodePlayground
+    elysia={paramsDemo}
+    alias={{ '/user/:id': '/user/123' }}
+    mock={{ '/user/:id': { GET: '123' } }}
+>
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+    .get('/user/:id', ({ params: { id } }) => id)
+    .get('/user/abc', () => 'abc')
+    .listen(3000)
+```
+
+</CodePlayground>
+
+`:id` 路径段在运行时会成为 `params.id`，在处理器类型中也会对应为 `params.id`，无需手动声明。它的类型是 `string`。
+
+我们推荐使用 TypeScript，但使用 Elysia 并不以此为前提。类型推断能在编写代码时提供帮助；如果还需要在运行时校验数据，就使用 schema。
+
+## 类型完整性
+
+从 Elysia 导入 `t`，定义一个既能在运行时校验数据、又能提供对应 TypeScript 类型的 schema。这样，输入数据的校验规则和类型就有了同一个可信来源。
+
+我们来把路径参数从字符串改为数字：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/user/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+在 Elysia 2 中，schema 写在处理器之前。请求 `/user/123` 时，处理器会收到数字 `123`；请求 `/user/abc` 则无法通过校验。在编辑器中将鼠标悬停在 `id` 上，就能看到推断出的 `number` 类型。
+
+同一个 schema 既定义运行时校验规则，也决定处理器输入值的 TypeScript 类型。
+
+## Standard Schema
+
+Elysia 支持 [Standard Schema](https://github.com/standard-schema/standard-schema)，因此你可以使用实现了该标准的验证库版本。
+
+生态中有 Zod、Valibot、ArkType、Effect Schema、Yup、Joi 的集成，以及[其他实现](https://github.com/standard-schema/standard-schema)。请确认你使用的库或适配器实现了 Standard Schema 接口。
+
+```ts
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import * as v from 'valibot'
+
+new Elysia()
+    .get('/id/:id', {
+        params: z.object({
+            id: z.coerce.number()
+        }),
+        query: v.object({
+            name: v.literal('Lilith')
+        })
+    }, ({ params: { id }, query: { name } }) => id)
+    .listen(3000)
+```
+
+这里 Zod 会把路径参数转换为数字，而 Valibot 要求查询参数为 `?name=Lilith`。Elysia 会根据两个 schema 推断校验后的类型。
+
+## OpenAPI
+
+Elysia 支持 OpenAPI、WinterTC 和 Standard Schema 等标准，方便你将它接入熟悉的工具。
+
+添加 [OpenAPI 插件](/plugins/openapi/)，即可根据路由和 schema 生成 API 文档：
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(openapi())
+    .get('/user/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+该插件会生成一个可与团队分享的文档页面。请使用兼容 Elysia 2 的版本，安装和配置方法请参阅插件文档。
+
+## OpenAPI 类型生成
+
+Elysia 还支持通过 `fromTypes()` 根据 TypeScript 类型生成 OpenAPI schema：
+
+```ts {6}
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(openapi({
+        references: fromTypes()
+    }))
+    .get('/user/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+```
+
+这为 TypeScript 带来了类似 FastAPI 的方式：直接使用代码中的类型生成文档，不必在手写注解中重复定义。设置方法和支持的类型请参阅[从类型生成 OpenAPI](/patterns/openapi/#openapi-from-types)。
+
+## 端到端类型安全
+
+类型安全不止于服务器端。Elysia 的客户端库 **Eden** 能让前端使用服务器端的类型，工作方式与 tRPC 类似。
+
+在 `server.ts` 中导出服务器类型，再在 `client.ts` 中导入：
+
+<FileCodeBlock>
+<TabItem label="server.ts">
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(openapi({
+        references: fromTypes()
+    }))
+    .get('/user/:id', {
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id } }) => id)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+</TabItem>
+<TabItem label="client.ts">
+
+```ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// Request /user/617
+const { data } = await app.user({ id: 617 }).get()
+
+console.log(data)
+```
+
+</TabItem>
+</FileCodeBlock>
+
+Eden 直接使用 Elysia 已有的类型，无需单独生成客户端代码。客户端只导入服务器的类型，因此服务器实现代码不会进入客户端打包产物。
+
+Elysia 帮你构建可靠的后端，以及与之相连的一切。
+
+## 类型健全性
+
+成功响应只是 API 响应的一部分。Elysia 能推断出**所有可能的响应类型**，包括错误响应，让客户端也能安全地处理每一种情况。
+
+```ts title="server.ts"
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+    .macro({
+        auth: {
+            cookie: t.Cookie({
+                session: t.String()
+            }),
+            beforeHandle({ cookie: { session }, status }) {
+                if (session.value !== 'valid')
+                    return status(401)
+            }
+        }
+    })
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/user/:id', {
+        auth: true,
+        params: t.Object({
+            id: t.Number()
+        })
+    }, ({ params: { id }, status }) => {
+        if (Math.random() > 0.1)
+            return status(420)
+
+        return id
+    })
+    .listen(3000)
+
+export type App = typeof app
+```
+
+这里，请求成功时 Elysia 会返回 `number`；同时，类型系统也能推断出 `401` 和 `420` 两种错误响应，让客户端可以类型安全地处理这三种结果。
+
+```ts title="client.ts"
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+const { data, error } = await app.user({ id: 617 }).get()
+
+if (error)
+    console.log(error.status, error.value)
+else
+    console.log(data)
+```
+
+客户端可以分别处理带有类型信息的成功和错误结果。客户端 API 请参阅 [Eden](/eden/)，可复用的路由行为请参阅 [宏](/patterns/macro/)。
+
+## 不限于特定平台
+
+Elysia 针对 Bun 的原生特性进行了优化，但并不局限于 Bun。它兼容 [WinterTC](https://wintertc.org/) 的 Request/Response 接口，因此也能集成到其他运行时。
+
+Elysia 也可以运行在：
+
+- Bun
+- [Node.js](/integrations/node/)
+- [Deno](/integrations/deno/)
+- [Cloudflare Workers](/integrations/cloudflare-worker/)
+- [Vercel](/integrations/vercel/)
+- [Expo](/integrations/expo/) API 路由
+- [Next.js](/integrations/nextjs/) API 路由
+- [Astro](/integrations/astro/) API 路由
+
+每个集成都介绍了对应的适配器和部署方式。更多受支持的环境，请查看集成指南。
+
+## 社区
+
+我们希望 Elysia 给人亲切、友好的感觉：设计明亮活泼，还有手绘的动漫吉祥物 *Elysia chan*。
+
+技术也可以平易近人，为生活增添一点乐趣。当然，我们对框架的质量同样认真：当你用它构建下一个项目时，可靠性和性能都至关重要。
+
+社区成员分享过在生产环境中使用 Elysia 的经验，涉及 [X](https://x.com/shlomiatar/status/1822381556142362734)、[Bank for Agriculture and Agricultural Co-operatives](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13924470)、[Cluely](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-14420139)、[CS.Money](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13913513) 和 [Abacate Pay](https://github.com/elysiajs/elysia/discussions/1312#discussioncomment-13922081)。
+
+曾有超过 10,000 个开源项目使用 Elysia。项目数量会持续变化，可在 [GitHub 依赖项目列表](https://github.com/elysiajs/elysia/network/dependents)中查看。Elysia 于 2022 年开始开发，至今仍在社区的贡献下不断发展。
+
+欢迎来这些地方一起交流和参与：
+
+<div class="grid gap-3 sm:grid-cols-3">
+
+<Card href="https://discord.gg/eaFJ2KDJck">
+<CardTitle>Discord</CardTitle>
+
+Elysia 官方社区服务器。
+
+</Card>
+
+<Card href="https://twitter.com/elysiajs">
+<CardTitle>Twitter</CardTitle>
+
+关注 Elysia 的动态和公告。
+
+</Card>
+
+<Card href="https://github.com/elysiajs">
+<CardTitle>GitHub</CardTitle>
+
+浏览源代码并参与贡献。
+
+</Card>
+
+</div>
+
+---
+
+<p id="ref-1">1. 平均吞吐量、启动时间和服务器内存用量。请参阅 <a href="https://github.com/SaltyAom/bun-http-framework-benchmark/tree/f654bcd175165bce2e3c83b65eaecd8e34294ffd#results" target="_blank">提交 f654bcd 中的基准测试条件与结果</a>。</p>
+
+<p id="ref-2">2. 跨语言比较引用的是 <a href="https://www.techempower.com/benchmarks/#section=data-r22&amp;hw=ph&amp;test=composite" target="_blank">TechEmpower 第 22 轮基准测试</a>。</p>
+
+</div>
+</InteractiveDocLayout>
+</div>

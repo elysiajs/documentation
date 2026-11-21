@@ -1,0 +1,344 @@
+---
+title: WebSocket
+description: 创建带类型的 WebSocket 路由、校验消息，并控制连接生命周期。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+
+export const steps = [
+    {
+        "label": "建立连接",
+        "code": "import { Elysia } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', ({ body }) => body)\n    .listen(3000)"
+    },
+    {
+        "label": "校验消息",
+        "code": "import { Elysia, t } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', {\n        body: t.Object({ message: t.String() })\n    }, ({ body }) => body.message)\n    .listen(3000)"
+    },
+    {
+        "label": "发送多条回复",
+        "code": "import { Elysia, t } from 'elysia'\nimport { websocket } from 'elysia/websocket'\n\nnew Elysia()\n    .use(websocket())\n    .ws('/ws', {\n        body: t.Object({ message: t.String() }),\n        response: t.String()\n    }, function* ({ body }) {\n        yield 'Message received'\n        yield body.message\n    })\n    .listen(3000)"
+    }
+];
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">WebSocket</h1>
+
+WebSocket 会保持连接打开，让客户端和服务器可以互相发送消息。与反复发起 HTTP 请求不同，发送每条消息都不必重新经历一次请求—响应过程。
+
+Elysia 使用基于 [uWebSockets](https://github.com/uNetworking/uWebSockets) 构建的 Bun WebSocket 支持。Socket.IO 在传输层之上使用自己的协议；连接这些路由时，请使用标准 WebSocket 客户端。
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## 建立连接
+
+注册一次 WebSocket 插件，然后添加 `.ws()` 路由。连接到 `ws://localhost:3000/ws` 后，每条消息都会原样发回发送它的客户端。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 校验消息
+
+`body` schema 会校验传入的消息。以 JSON 发送 `{"message":"Hello"}`，服务器就会回复 `Hello`。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 发送多条回复
+
+生成器可以 yield 多条回复。每次 yield 都是一条独立消息，并会根据响应 schema 进行校验。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+## WebSocket 消息校验
+
+与 HTTP 路由一样，WebSocket 路由也可以为请求数据和响应指定 schema。将选项放在消息处理器之前：
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+const app = new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.Object({ message: t.String() }),
+        query: t.Object({ id: t.String() }),
+        response: t.Object({
+            id: t.String(),
+            message: t.String(),
+            time: t.Number()
+        })
+    }, ({ query, body }) => ({
+        id: query.id,
+        message: body.message,
+        time: Date.now()
+    }))
+    .listen(3000)
+```
+
+连接到 `ws://localhost:3000/ws?id=42` 并发送 `{"message":"Hello"}`。响应中会包含该消息、查询参数中的 `id` 和当前时间戳。
+
+在 Elysia 2 中，`query` 和 `params` 等上下文属性直接位于 socket 参数上。请使用 `ws.query`，而不是旧的 `ws.data.query` 形式。
+
+| Schema 属性 | 校验内容 |
+| --- | --- |
+| `body` | 传入的消息 |
+| `query` | 连接 URL 的查询字符串 |
+| `params` | 路径参数 |
+| `headers` | 升级请求的请求头 |
+| `cookie` | 升级请求的 cookie |
+| `response` | 处理器返回、yield 或发送的消息 |
+
+Elysia 会在校验前解析 JSON 格式的字符串消息。它也能识别布尔值、`null` 以及可安全转换的数字字符串。其他文本仍为字符串，二进制消息则保持二进制格式。
+
+<a id="configuration" />
+## 配置
+
+将服务器级别的 WebSocket 选项传给 `websocket()`：
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket({ idleTimeout: 30 }))
+    .ws('/ws', ({ body }) => body)
+    .listen(3000)
+```
+
+这取代了旧的构造函数 `websocket` 选项。Elysia 的 Bun 适配器使用 [Bun 的 WebSocket 配置](https://bun.sh/docs/api/websockets)。以下默认值均来自 Bun。
+
+### perMessageDeflate
+
+默认值：`false`
+
+为支持压缩的客户端启用压缩。默认情况下，压缩处于关闭状态。
+
+### maxPayloadLength
+
+传入消息的最大字节数。Bun 的默认值为 `16 * 1024 * 1024`（16 MiB）。
+
+### idleTimeout
+
+默认值：`120` 秒
+
+连接在此时长内没有消息或 ping 时将关闭。
+
+### backpressureLimit
+
+默认值：`16 * 1024 * 1024` 字节（16 MiB）
+
+单个连接可缓冲的最大字节数。
+
+### closeOnBackpressureLimit
+
+默认值：`false`
+
+达到背压上限时关闭连接。
+
+## 方法
+
+使用 `.ws()` 注册 WebSocket 路由。除路由上下文属性外，socket 参数还提供 `send`、`publish`、`subscribe` 和 `close` 等方法。
+
+## ws
+
+`.ws(path, handler)` 用于注册消息处理器。如果还需要 schema 或生命周期钩子，请使用 `.ws(path, options, handler)`。
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', ({ body }) => body)
+    .listen(3000)
+```
+
+两参数的对象形式也可以使用：
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        message(ws, message) {
+            ws.send(message)
+        }
+    })
+    .listen(3000)
+```
+
+- `path` 是向 WebSocket 客户端公开的路由。
+- `options` 用于配置 schema 和生命周期回调。
+- `handler` 处理每条传入消息。单独传入处理器时，不要同时设置 `options.message`。
+
+尽可能通过返回或 yield 值来推断响应类型。需要显式发送时，仍可使用 `ws.send()`。
+
+## WebSocketHandler
+
+路由选项可以包含连接回调、消息回调、schema 和 WebSocket 调优选项。回调收到的是 Elysia 的 socket 封装对象，请求上下文位于顶层。
+
+以下章节会介绍这些回调。
+
+## open
+
+连接建立时调用，接收 socket 参数。
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        open(ws) {
+            console.log('Connected', ws.id)
+        },
+        message: ({ body }) => body
+    })
+```
+
+`ws.id` 用于标识连接。其他 socket 属性包括 `remoteAddress`、`readyState`，以及路由的 `query`、`params` 和派生值。
+
+## message
+
+每收到一条消息都会调用。解析并校验后的值可通过 `ws.body` 和回调的第二个参数获取。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.String(),
+        message(ws, message) {
+            return message.toUpperCase()
+        }
+    })
+```
+
+`body` schema 决定消息类型。未指定 schema 时，应将解析后的值视为未知类型，不要假定每条消息都是字符串。
+
+## close
+
+连接关闭时调用，接收 socket、关闭代码和原因。
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        close(ws, code, reason) {
+            console.log('Disconnected', ws.id, code, reason)
+        },
+        message: ({ body }) => body
+    })
+```
+
+## drain
+
+背压解除、socket 可以接收更多数据时调用，并接收 socket。关闭代码和原因由 `close` 接收，而非 `drain`。
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        drain(ws) {
+            console.log('Ready for more data', ws.id)
+        },
+        message: ({ body }) => body
+    })
+```
+
+## parse
+
+WebSocket 的 `parse` 钩子会在默认解析后、消息校验前处理每条消息。它接收 socket 和解析后的值；返回替代值，或返回 `undefined` 以保留原值。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        body: t.String(),
+        parse(_ws, message) {
+            if (typeof message === 'string') return message.trim()
+        }
+    }, ({ body }) => body)
+```
+
+这与升级请求上的 HTTP 请求体解析器不同。
+
+## beforeHandle
+
+连接升级前运行，并在消息处理器之前参与消息处理。返回状态即可在建立 socket 前拒绝升级。
+
+```ts
+import { Elysia, status } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        beforeHandle() {
+            return status(403, 'This socket is closed to new connections')
+        }
+    }, ({ body }) => body)
+```
+
+如需身份验证，请在此校验连接凭据。消息校验则应放在 `body` schema 中。
+
+## transform
+
+在校验前运行。在当前 WebSocket 生命周期中，它会在升级时运行，并针对每条消息再次运行，因此不要假定它每个连接只执行一次。
+
+## transformMessage
+
+旧的 `transformMessage` 选项不属于 Elysia 2 的 WebSocket 路由选项。请使用 [`parse`](#parse) 在校验前转换单条消息。
+
+## upgrade
+
+使用 `upgrade` 为 WebSocket 握手添加响应头。它接受静态对象，或接收升级上下文的函数。
+
+```ts
+import { Elysia } from 'elysia'
+import { websocket } from 'elysia/websocket'
+
+new Elysia()
+    .use(websocket())
+    .ws('/ws', {
+        upgrade: { 'x-powered-by': 'Elysia' }
+    }, ({ body }) => body)
+```
+
+如需校验传入请求的请求头，请改用 `headers` schema。
+
+
+</div>
+</InteractiveDocLayout>
+</div>

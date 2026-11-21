@@ -1,0 +1,170 @@
+---
+title: Eden Treaty
+description: 通过对象形式的 TypeScript 客户端调用 Elysia 路由。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+import InteractiveDoc from '../../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../../components/interactive-code/step.astro';
+
+export const steps = [
+    {
+        "label": "读取路由",
+        "code": "import { Elysia } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia().get('/hi', 'Hi Elysia')\nconst api = treaty(app)\n\nconst { data, error } = await api.hi.get()\nif (error) throw error\nconsole.log(data)"
+    },
+    {
+        "label": "传递路径参数",
+        "code": "import { Elysia } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia()\n    .get('/hi', 'Hi Elysia')\n    .get('/id/:id', ({ params: { id } }) => id)\nconst api = treaty(app)\n\nconst { data, error } = await api.id({ id: 1895 }).get()\nif (error) throw error\nconsole.log(data)"
+    },
+    {
+        "label": "发送请求体",
+        "code": "import { Elysia, t } from 'elysia'\nimport { treaty } from '@elysia/eden'\n\nconst app = new Elysia()\n    .get('/hi', 'Hi Elysia')\n    .get('/id/:id', ({ params: { id } }) => id)\n    .post('/mirror', {\n        body: t.Object({ id: t.Number(), name: t.String() })\n    }, ({ body }) => body)\nconst api = treaty(app)\n\nconst { data, error } = await api.mirror.post({ id: 1895, name: 'Skadi' })\nif (error) throw error\nconsole.log(data)"
+    }
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">Eden Treaty</h1>
+
+Eden Treaty 将服务器表示为对象，便于与其交互，并提供类型安全、自动补全和错误处理。
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+## 读取路由
+
+路径会成为客户端上的属性，后面再接 HTTP 方法。`api.hi.get()` 会调用 `GET /hi` 并返回 `Hi Elysia`。
+
+这里直接传入实例，调用就会在同一进程中完成，无需启动监听中的服务器。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 传递路径参数
+
+使用包含参数名的对象调用动态路径段。`api.id({ id: 1895 }).get()` 会调用 `GET /id/1895`。
+
+TypeScript 知道该路由接受哪些参数。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+## 发送请求体
+
+将请求体传给 `post` 等方法。路由的 schema 会为客户端提供提示：此请求需要数字类型的 `id` 和字符串类型的 `name`。
+
+服务器会返回同一个对象。使用 `data` 前，请先检查 `error`。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+若要调用单独运行的服务器，先导出现有 Elysia 服务器的类型：
+
+```ts
+// server.ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/hi', () => 'Hi Elysia')
+    .get('/id/:id', ({ params: { id } }) => id)
+    .post('/mirror', {
+        body: t.Object({
+            id: t.Number(),
+            name: t.String()
+        })
+    }, ({ body }) => body)
+    .listen(3000)
+
+export type App = typeof app
+```
+
+然后导入服务器类型，并在客户端调用 Elysia API：
+
+**client.ts**
+
+```ts
+// client.ts
+import { treaty } from '@elysia/eden'
+import type { App } from './server'
+
+const app = treaty<App>('localhost:3000')
+
+// response type: 'Hi Elysia'
+const { data, error } = await app.hi.get()
+```
+
+## 树状语法
+
+HTTP 路径可以看作文件系统树中的资源标识。
+
+文件系统由多层文件夹组成，例如：
+
+-   /documents/elysia
+-   /documents/kalpas
+-   /documents/kelvin
+
+每一层由 **/**（斜杠）和名称分隔。
+
+而在 JavaScript 中，我们使用 **"."**（点号）而不是 **"/"**（斜杠）来访问更深层的资源。
+
+Eden Treaty 会将 Elysia 服务器转换为树状文件系统，供 JavaScript 前端访问。
+
+| Path         | Treaty       |
+| ------------ | ------------ |
+| /            |              |
+| /hi          | .hi          |
+| /deep/nested | .deep.nested |
+
+再配合 HTTP 方法，就能与 Elysia 服务器交互。
+
+| Path         | Method | Treaty              |
+| ------------ | ------ | ------------------- |
+| /            | GET    | .get()              |
+| /hi          | GET    | .hi.get()           |
+| /deep/nested | GET    | .deep.nested.get()  |
+| /deep/nested | POST   | .deep.nested.post() |
+
+## 动态路径
+
+动态路径参数既需要名称，也需要值。对于服务器注册了 `/item/:name` 的 `api` 客户端，请使用函数调用来指定参数。
+
+```ts
+// Unclear what the value is supposed to represent?
+api.item['skadi'].get()
+```
+
+这种属性访问形式属于[旧版 Eden Treaty 1](/eden/treaty/legacy) 客户端；在 Eden Treaty 2 中会产生类型错误。
+
+为此，可以改用函数形式的动态路径，并传入键值。
+
+```ts
+// Clear that the value is dynamic and the path is 'name'
+api.item({ name: 'Skadi' }).get()
+```
+
+| Path            | Treaty                           |
+| --------------- | -------------------------------- |
+| /item           | .item                            |
+| /item/:name | `.item({ name: 'Skadi' })` |
+| /item/:name/id | `.item({ name: 'Skadi' }).id` |
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

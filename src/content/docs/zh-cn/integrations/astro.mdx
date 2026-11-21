@@ -1,0 +1,104 @@
+---
+title: "集成 Astro"
+description: "你可以在 Astro 中运行 Elysia。得益于对 WinterTC 的兼容，Elysia 可以正常工作。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">集成 Astro</h1>
+
+借助 [Astro Endpoint](https://docs.astro.build/en/core-concepts/endpoints/)，可以直接在 Astro 中运行 Elysia。
+
+先为你的部署目标安装 [Astro 服务端适配器](https://docs.astro.build/en/guides/on-demand-rendering/)，然后：
+
+1. 在 **astro.config.mjs** 中将 **output** 设为 **server**
+
+```javascript
+// astro.config.mjs
+import { defineConfig } from 'astro/config'
+
+// https://astro.build/config
+export default defineConfig({
+    output: 'server'
+})
+```
+
+2. 创建 **src/pages/[...slugs].ts**
+3. 在 **[...slugs].ts** 中创建或导入现有的 Elysia 服务
+4. 使用要公开的 HTTP 方法名称导出处理器
+
+```typescript
+// src/pages/[...slugs].ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/api', () => 'hi')
+    .post('/api', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+const handle = ({ request }: { request: Request }) => app.handle(request)
+
+export const GET = handle
+export const POST = handle
+```
+
+得益于对 WinterTC 的兼容，Elysia 可以正常工作。
+
+在 Bun 上运行时，我们推荐使用 [Astro on Bun](https://docs.astro.build/en/recipes/bun)。
+
+
+:::tip
+
+得益于对 WinterTC 的支持，即使 Astro 不运行在 Bun 上，也可以运行 Elysia 服务。
+
+:::
+
+
+通过这种方式，你可以在同一个代码库中同时维护前后端，并借助 Eden 实现端到端类型安全。
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## 前缀
+
+如果 Elysia 服务不在 pages 目录的根路径下，就需要在 Elysia 服务上指定前缀。
+
+例如，如果 Elysia 服务位于 **src/pages/api/[...slugs].ts**，就需要将 Elysia 服务的前缀设为 **/api**。
+
+```typescript
+// src/pages/api/[...slugs].ts
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', () => 'hi')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+const handle = ({ request }: { request: Request }) => app.handle(request)
+
+export const GET = handle
+export const POST = handle
+```
+
+这样无论将 Elysia 服务放在哪里，路由都能正常工作。
+
+更多信息请参阅 [Astro Endpoints](https://docs.astro.build/en/core-concepts/endpoints/)。
+
+</div>
+</InteractiveDocLayout>
+</div>

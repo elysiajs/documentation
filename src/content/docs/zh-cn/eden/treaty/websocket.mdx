@@ -1,0 +1,60 @@
+---
+title: WebSocket
+description: 使用 Eden Treaty 订阅带类型的 WebSocket 消息。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">WebSocket</h1>
+
+Eden Treaty 通过 `subscribe` 方法支持 WebSocket。
+
+```ts
+import { Elysia, t } from "elysia";
+import { websocket } from 'elysia/websocket'
+import { treaty } from "@elysia/eden";
+
+const app = new Elysia()
+  .use(websocket())
+  .ws("/chat", {
+    body: t.String(),
+    response: t.String(),
+    message({ body }) {
+            return body
+        },
+  })
+  .listen(3000);
+
+const api = treaty<typeof app>("localhost:3000");
+
+const chat = api.chat.subscribe();
+
+chat.subscribe((message) => {
+  console.log("got", message.data);
+});
+
+chat.on("open", () => {
+  chat.send("hello from client");
+});
+```
+
+`subscribe()` 可通过选项接收查询参数。浏览器 WebSocket 无法发送任意请求头；请使用 cookie 或服务器认可的身份验证流程。
+
+## 响应
+`subscribe()` 会返回 `EdenWS` 封装，提供带类型的 `send`、`subscribe`、`on`、`off` 和 `close` 辅助方法。
+
+使用 `chat.ws` 可访问底层原生 WebSocket。该封装并非包含所有原生 WebSocket 属性的子类。
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

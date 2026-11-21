@@ -1,0 +1,637 @@
+---
+title: 插件
+description: 将 Elysia 应用拆分为可复用的插件，声明依赖，并选择钩子的共享方式。
+template: splash
+---
+
+import { Elysia } from 'elysia';
+import '../../../../styles/routing.css';
+import { NumberedCards } from '../../../../components/ui/numbered-cards';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro';
+import InteractiveStep from '../../../../components/interactive-code/step.astro';
+import CodePlayground from '../../../../components/playground/code.astro';
+import { DependencyStory } from '../../../../components/plugin-tree/dependency';
+import { DeduplicationStory } from '../../../../components/plugin-tree/deduplication';
+import { ScopeStory } from '../../../../components/plugin-tree/scope';
+
+export const pluginDemo = new Elysia()
+    .use(new Elysia()
+        .decorate('plugin', 'hi')
+        .get('/plugin', ({ plugin }) => plugin))
+    .get('/', ({ plugin }) => plugin);
+
+export const callbackDemo = new Elysia()
+    .use((app) => app
+        .state('counter', 0)
+        .get('/plugin', () => 'Hi'))
+    .get('/counter', ({ store: { counter } }) => counter);
+
+export const scopeSteps = [
+    {
+        label: '局部作用域',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('local', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11],
+    },
+    {
+        label: '插件作用域',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('plugin', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11, 15],
+    },
+    {
+        label: '全局作用域',
+        code: `import { Elysia } from 'elysia'
+
+const child = new Elysia()
+    .get('/child', 'hi')
+
+const current = new Elysia()
+    .onBeforeHandle('global', () => {
+        console.log('hi')
+    })
+    .use(child)
+    .get('/current', 'hi')
+
+const parent = new Elysia()
+    .use(current)
+    .get('/parent', 'hi')
+
+const main = new Elysia()
+    .use(parent)
+    .get('/main', 'hi')`,
+        highlight: [4, 7, 11, 15, 19],
+    },
+];
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">插件</h1>
+
+**插件**是与主实例解耦的组成部分。每个 Elysia 实例都可以独立运行，也可以作为另一个实例的一部分。
+
+来把一个小应用放进另一个应用里吧。
+
+</div>
+
+<div class="content-layout">
+
+这里，插件通过 decorate 添加了 `plugin` 属性，插件和主应用都能读取它。选择任一路由查看响应。
+
+<CodePlayground elysia={pluginDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .decorate('plugin', 'hi')
+    .get('/plugin', ({ plugin }) => plugin)
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/', ({ plugin }) => plugin)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+## 依赖
+
+Elysia 由多个小型 Elysia 应用组成，它们可以独立运行，就像彼此通信的微服务。
+
+当一个实例需要另一个实例提供的服务时，**必须显式声明依赖**。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+class Auth {
+    getProfile() {
+        return { name: 'Elysia User' }
+    }
+}
+
+const auth = new Elysia()
+    .decorate({
+        auth: new Auth()
+    })
+
+const main = new Elysia()
+    .use(auth)
+    .get('/profile', ({ auth }) => auth.getProfile())
+```
+
+如果没有 `.use(auth)`，处理器就无法访问 `Auth`。在其他实例上注册它，并不会让它在这里可用。
+
+看看依赖从不可用到可用的过程。使用步骤按钮逐步查看。
+
+<DependencyStory client:visible={{ rootMargin: '200px' }} />
+
+这类似于**依赖注入**：每个实例都声明自己需要什么。明确声明依赖，能让依赖关系更易追踪，模块也更易复用。
+
+<span id="plugin-deduplication"></span>
+
+<a id="deduplication" />
+### 去重
+
+未命名插件在多个实例间共享时，其钩子可能被重复注册。
+
+为插件设置唯一的 `name`，让 Elysia 可以对其生命周期钩子去重。
+
+```ts
+import { Elysia } from 'elysia'
+
+const ip = new Elysia({ name: 'ip' })
+    .derive('global', ({ server, request }) => ({
+        ip: server?.requestIP(request)
+    }))
+    .get('/ip', ({ ip }) => ip)
+
+const router1 = new Elysia()
+    .use(ip)
+    .get('/ip-1', ({ ip }) => ip)
+
+const router2 = new Elysia()
+    .use(ip)
+    .get('/ip-2', ({ ip }) => ip)
+
+const server = new Elysia()
+    .use(router1)
+    .use(router2)
+```
+
+`'global'` 会将钩子共享给所有使用该插件的实例，无论是直接使用还是通过其他插件间接使用；参见[作用域](#scope)。尽管两个路由器都使用了共享的 `ip` 钩子，它每个请求只运行一次。支持的服务器适配器提供 `server` 时，`requestIP` 才可用；否则 `ip` 为 `undefined`。
+
+看看这个示例的运行过程：`ip` 会加入两个路由器，并在 `server` 使用它们时只注册一次。
+
+<DeduplicationStory client:visible={{ rootMargin: '200px' }} />
+
+对于可配置的插件，将选项作为 `seed` 传入。`name` 和 `seed` 共同标识一个插件：配置相同的插件会去重，`seed` 不同则视为不同插件。
+
+```ts
+import { Elysia } from 'elysia'
+
+const version = (value = 1) => new Elysia({
+    name: 'version',
+    seed: value
+})
+    .get('/version', value)
+```
+
+为插件命名只会让注册去重；每次调用插件工厂时，它仍会运行。需要只执行一次的工作，应放在重复调用工厂之外。
+
+### 全局依赖与显式依赖
+
+有些依赖适合全局使用，另一些则应由每个使用它们的实例显式声明。
+
+| 适合使用全局依赖的场景 | 适合使用显式依赖的场景 |
+| --- | --- |
+| 不会添加类型的插件，例如 CORS、压缩或安全响应头 | 会添加类型的插件，例如宏、状态或模型 |
+| 应在整个应用中生效的生命周期钩子，例如追踪或日志记录 | 处理器会调用的业务逻辑，例如身份验证或数据库 |
+
+全局依赖的例子包括 OpenAPI 文档、OpenTelemetry 追踪和日志记录。显式依赖的例子包括 store 和 session、ORM 或 ODM 模型、身份验证和数据库服务，以及聊天或通知等功能模块。
+
+如果依赖不需要全局使用，优先选择显式依赖。
+
+<a id="scope" />
+## 作用域
+
+Elysia 的生命周期钩子会在各自的实例中**封装**。插件的钩子不会自动应用到使用该插件的实例中的路由。
+
+<span id="descendant"></span>
+
+在下面的示例中，`current.use(child)` 让 `child` 成为 `current` 的**后代**。反过来，`parent.use(current)` 让 `parent` 成为它的直接**父级**，而 `main.use(parent)` 又在上层添加了一个父级。
+
+<a id="scope-level" />
+### 作用域级别
+
+通过 `onBeforeHandle` 的第一个参数选择钩子的作用范围：`local`、`plugin` 或 `global`。
+
+每个步骤都使用同一棵插件树，只有作用域不同。钩子会记录 `hi`，但不返回值，因此每条路由仍会返回处理器的 `hi` 响应。
+
+</div>
+
+<InteractiveDoc steps={scopeSteps}>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(60dvh,44rem)]">
+
+### 局部作用域
+
+`local` 作用于当前实例及其后代。
+- 请求 `/current` 和 `/child` 时会记录 `hi`
+- 请求 `/parent` 和 `/main` 时不会运行该钩子
+
+这是默认作用域。可以省略 `'local'`，直接写 `onBeforeHandle(() => { ... })`。
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(60dvh,44rem)]">
+
+### 插件作用域
+
+`plugin` 还会作用于直接父级。
+
+- 请求 `/child`、`/current` 和 `/parent` 时会记录 `hi`
+
+钩子到 `parent` 为止，因此 `/main` 不会运行它。
+
+</InteractiveStep>
+
+<InteractiveStep class="doc-enhanced:[min-block-size:min(45dvh,33rem)]">
+
+### 全局作用域
+
+`global` 会沿着所有使用该插件的父级继续传播。包括 `/main` 在内的四条路由都会记录 `hi`。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+各作用域下会运行钩子的路由如下：
+
+| 作用域 | `/child` | `/current` | `/parent` | `/main` |
+| --- | --- | --- | --- | --- |
+| `local` | Yes | Yes | No | No |
+| `plugin` | Yes | Yes | Yes | No |
+| `global` | Yes | Yes | Yes | Yes |
+
+注册顺序仍然重要。钩子只应用于在它之后注册的路由和插件。通过 `.use()` 共享钩子，不会让它作用于接收实例上更早注册的路由。
+
+通过图示追踪同一个钩子在插件树中的传播过程。
+
+<ScopeStory client:visible={{ rootMargin: '200px' }} />
+
+若要提升实例上已注册钩子的作用域，请参阅[作用域提升](#instance-as)中的 `.as('plugin')` 和 `.as('global')`。
+
+## 配置
+
+要让插件可复用，可以让调用方配置需要变化的部分。函数可以接收选项并返回一个 Elysia 实例。
+
+```ts
+import { Elysia } from 'elysia'
+
+const version = (version = 1) => new Elysia()
+    .get('/version', version)
+
+const app = new Elysia()
+    .use(version(1))
+    .listen(3000)
+```
+
+这里 `/version` 会返回 `1`。传入其他值即可创建配置不同的插件。
+
+### 函数回调
+
+条件允许时，优先创建新的插件实例。函数回调会直接接收主实例，因此封装和作用域更难理清。
+
+要定义函数回调，编写一个接收 Elysia 实例并返回扩展后实例的函数即可。
+
+<CodePlayground elysia={callbackDemo}>
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = (app: Elysia) => app
+    .state('counter', 0)
+    .get('/plugin', () => 'Hi')
+
+const app = new Elysia()
+    .use(plugin)
+    .get('/counter', ({ store: { counter } }) => counter)
+    .listen(3000)
+```
+
+</CodePlayground>
+
+回调会直接向主实例添加属性。`/plugin` 返回 `Hi`，`/counter` 返回 `0`。
+
+在 Elysia 2 中，旧的实例 getter `app.store` 已移除。请从处理器上下文中的 `store` 读取状态。
+
+:::tip[选择更清晰的写法]
+
+不必为了性能而选择回调。Elysia 实例很轻量，使用独立实例也能为 TypeScript 类型推断提供更清晰的边界。
+
+:::
+
+<a id="guard" />
+## Guard（守卫）
+
+Guard 可以一次将钩子和 schema 应用于多条路由。把需要应用这些规则的路由放在回调中。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { signUp, signIn, isUserExists } from './auth'
+
+new Elysia()
+    .guard(
+        {
+            body: t.Object({
+                username: t.String(),
+                password: t.String()
+            })
+        },
+        (app) => app
+            .post('/sign-up', ({ body }) => signUp(body))
+            .post('/sign-in', {
+                beforeHandle: isUserExists
+            }, ({ body }) => signIn(body))
+    )
+    .get('/', 'hi')
+    .listen(3000)
+```
+
+请求体 schema 会应用于 `/sign-up` 和 `/sign-in`，但不会应用于 `/`。导入的函数包含应用的账户逻辑。
+
+| 路径 | 是否校验请求体 |
+| --- | --- |
+| `/sign-up` | Yes |
+| `/sign-in` | Yes |
+| `/` | No |
+
+Guard 接受与路由相同的 schema 和钩子选项。不同之处在于，它会将这些选项应用于回调中的所有路由。
+
+这个示例等同于在每条路由上重复设置这些选项：
+
+```ts
+import { Elysia, t } from 'elysia'
+import { signUp, signIn, isUserExists } from './auth'
+
+new Elysia()
+    .post('/sign-up', {
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body }) => signUp(body))
+    .post('/sign-in', {
+        beforeHandle: isUserExists,
+        body: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    }, ({ body }) => signIn(body))
+    .get('/', 'hi')
+    .listen(3000)
+```
+
+在 Elysia 2 中，默认情况下，路由的 schema 会替换继承自 Guard 的对应 schema。如果两者都必须满足，请在 Guard 中添加 `schema: 'merge'`。详情参阅[校验](/essential/validation/#merge)。
+
+### 分组 Guard
+
+[分组](/essential/route/#group)可以接收三个参数：前缀、Guard 选项和应用回调。
+
+先从嵌套的分组和 Guard 开始：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group('/v1', (app) =>
+        app.guard(
+            { body: t.Literal('Rikuhachima Aru') },
+            (app) => app.post('/student', ({ body }) => body)
+        )
+    )
+    .listen(3000)
+```
+
+将 Guard 选项移到分组的第二个参数中，就能减少嵌套并保持相同行为：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .group(
+        '/v1',
+        { body: t.Literal('Rikuhachima Aru') },
+        (app) => app.post('/student', ({ body }) => body)
+    )
+    .listen(3000)
+```
+
+两种写法都会注册 `POST /v1/student`。JSON 字符串请求体 `"Rikuhachima Aru"` 可以通过校验，并由处理器返回。
+
+## 作用域提升
+
+
+要让钩子应用于父级，请选择要共享的范围：
+
+</div>
+
+
+<NumberedCards items={[
+    { title: '内联', children: '为单个生命周期钩子定义内联作用域。' },
+    { title: 'Guard', children: '使用 Guard 作用域共享一组钩子和 schema。' },
+    { title: '实例', children: '提升实例作用域，共享已有的钩子和 schema。' },
+]} />
+
+<div class="content-layout">
+
+### Inline as（内联提升）
+
+在回调前传入作用域字符串，即可共享单个生命周期钩子。
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive('plugin', () => ({ hi: 'ok' }))
+    .get('/child', ({ hi }) => hi)
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', ({ hi }) => hi)
+```
+
+派生出的 `hi` 属性对两条路由都可用。这种写法只会更改当前钩子的作用域。
+
+### Guard as（Guard 提升）
+
+在 Guard 选项前传入作用域字符串，即可一并共享多个钩子和 schema。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+    .guard('plugin', {
+        response: t.String(),
+        beforeHandle() {
+            console.log('ok')
+        }
+    })
+    .get('/child', 'ok')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', 'hello')
+```
+
+响应 schema 和钩子都会应用于两条路由。若要派生带类型的属性，请使用 `.derive('plugin', callback)`，不要将其放入此 Guard。
+
+<a id="instance-as" />
+### Instance as（实例提升）
+
+`.as()` 会提升当前实例上已注册钩子和 schema 的作用域。
+
+```ts
+import { Elysia } from 'elysia'
+
+const plugin = new Elysia()
+    .derive(() => ({ hi: 'ok' }))
+    .get('/child', ({ hi }) => hi)
+    .as('plugin')
+
+const main = new Elysia()
+    .use(plugin)
+    .get('/parent', ({ hi }) => hi)
+```
+
+`plugin` 作用域只会传播到一层父级。若要再向上传播一层，也需要提升父级实例。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const plugin = new Elysia()
+    .guard({ response: t.String() })
+    .onBeforeHandle(() => { console.log('called') })
+    .get('/child', 'ok')
+    .as('plugin')
+
+const instance = new Elysia()
+    .use(plugin)
+    .get('/parent', 'still ok')
+    .as('plugin')
+
+const parent = new Elysia()
+    .use(instance)
+    .get('/grandparent', 'also ok')
+```
+
+现在，字符串响应 schema 会传播到 `/grandparent`。这些路由中的任何一条若返回数字，都会违反 schema；TypeScript 会指出问题，运行时的响应校验也会进行检查。
+
+## 延迟加载
+
+默认情况下，模块会立即加载，因此同步插件会在服务器启动前注册。计算量大或会阻塞的模块可能拖慢启动。
+
+异步插件会在其 Promise 完成后注册路由。`.listen()` 和 `app.fetch` 会等所有待处理模块完成后再处理请求；只有 `app.handle()` 可以提前运行。
+
+### 延迟模块
+
+延迟模块就是异步插件。此示例会先等待文件列表，再注册路由：
+
+```ts title="plugin.ts"
+import { Elysia, file } from 'elysia'
+import { loadAllFiles } from './files'
+
+export const loadStatic = async (app: Elysia) => {
+    const files = await loadAllFiles()
+
+    for (const asset of files) {
+        app.get(asset, file(asset))
+    }
+
+    return app
+}
+```
+
+这里，`loadAllFiles` 会返回本地资源路径数组，这些路径也可用作路由路径。在主文件中：
+
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+import { loadStatic } from './plugin'
+
+const app = new Elysia()
+    .use(loadStatic)
+    .listen(3000)
+```
+
+### 延迟加载模块
+
+动态 `import()` 可以延迟加载同步或异步插件。将插件作为模块的默认导出：
+
+```ts title="plugin.ts"
+import { Elysia } from 'elysia'
+
+export default new Elysia()
+    .get('/plugin', 'Hi')
+```
+
+```ts title="index.ts"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .use(import('./plugin'))
+    .listen(3000)
+```
+
+当模块本身加载开销较大时，这种方式很有用。`.listen()` 会自动等待 `app.modules`，因此服务器启动时不会缺少路由。只有像测试中那样直接调用 `app.handle()` 时，才需要自行等待 `app.modules`。
+
+### 测试
+
+在测试中，请先等待 `app.modules`，再请求延迟注册或延迟加载的路由。
+
+```ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Modules', () => {
+    it('inline async', async () => {
+        const app = new Elysia()
+            .use(async (app) => app.get('/async', 'async'))
+
+        await app.modules
+
+        const response = await app.handle(
+            new Request('http://localhost/async')
+        )
+
+        expect(await response.text()).toBe('async')
+    })
+})
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

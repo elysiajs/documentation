@@ -1,0 +1,79 @@
+---
+title: 单元测试
+description: 使用 Request、Response 和 Bun 测试运行器测试 Elysia 处理器。
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">单元测试</h1>
+
+使用 Web Standard 的 `Request` 和 `Response` 对象测试路由。测试处理器时无需开放端口。
+
+Elysia 提供 **Elysia.handle** 方法：它接受 Web Standard 的 [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request)，并返回一个 [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) Promise，从而模拟 HTTP 请求。
+
+Bun 内置了一个[测试运行器](https://bun.sh/docs/cli/test)，通过 `bun:test` 模块提供类似 Jest 的 API，方便你编写单元测试。
+
+在项目根目录创建 **test/index.test.ts**，内容如下：
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const app = new Elysia().get('/', () => 'hi')
+
+        const response = await app
+            .handle(new Request('http://localhost/'))
+            .then((res) => res.text())
+
+        expect(response).toBe('hi')
+    })
+})
+```
+
+运行 **bun test** 即可执行测试。
+
+```bash
+bun test
+```
+
+传给 `new Request()` 的必须是绝对 URL，像 `/user` 这样的相对路径并不够。
+
+你也可以使用 Jest 等其他测试库为 Elysia 编写单元测试。
+
+## Eden Treaty 端到端测试
+
+你也可以使用 Eden Treaty 为 Elysia 服务器编写端到端类型安全测试：
+
+```ts
+// test/index.test.ts
+import { describe, expect, it } from 'bun:test'
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia().get('/hello', 'hi')
+
+const api = treaty(app)
+
+describe('Elysia', () => {
+    it('returns a response', async () => {
+        const { data, error } = await api.hello.get()
+
+        expect(error).toBeNull()
+        expect(data).toBe('hi')
+    })
+})
+```
+
+设置方法和更多信息请参阅 [Eden Treaty 单元测试](/eden/treaty/unit-test/)。
+
+</div>
+</InteractiveDocLayout>
+</div>

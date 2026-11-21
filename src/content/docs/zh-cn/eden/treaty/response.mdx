@@ -1,0 +1,175 @@
+---
+title: 响应
+description: 在 Eden Treaty 中处理成功结果、错误、流和响应类型。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../../components/interactive-code/layout.astro';
+import '../../../../../styles/routing.css';
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">响应</h1>
+
+调用 fetch 方法后，Eden Treaty 会返回一个 `Promise`，其中的对象包含以下属性：
+- data - 响应返回值（2xx）
+- error - 非 2xx 响应时为 `{ status, value }`，服务器返回值位于 `error.value`
+- response `Response` - Web 标准的 Response 类
+- status `number` - HTTP 状态码
+- headers `Headers` - 响应头
+
+收到结果后，必须处理错误，才能确保响应数据的类型不再可空；否则该值会保持可空。Elysia 提供 `status()` 辅助函数来返回特定状态的响应，而 Eden 会收窄错误值的类型。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+    .post('/user', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body: { name }, status }) => {
+        if(name === 'Otto') return status(400)
+
+        return name
+    })
+    .listen(3000)
+
+const api = treaty<typeof app>('localhost:3000')
+
+const submit = async (name: string) => {
+    const { data, error } = await api.user.post({
+        name
+    })
+
+    // type: string | null
+    console.log(data)
+
+    if (error)
+        switch(error.status) {
+            case 400:
+                // Error type will be narrow down
+                throw error.value
+
+            default:
+                throw error.value
+        }
+
+    // Once the error is handled, type will be unwrapped
+    // type: string
+    return data
+}
+```
+
+默认情况下，Elysia 会自动向 TypeScript 推断 `error` 和 `response` 类型，而 Eden 会提供自动补全和类型收窄，确保行为准确。
+
+:::tip
+
+如果服务器返回的 HTTP 状态码 >= 300，`data` 将为 `null`，而 `error` 将为 `{ status, value }`，服务器返回的值位于 `error.value` 中。
+
+否则，解析后的响应会赋给 `data`。Fetch 默认会跟随重定向，因此重定向可能会先解析为目标地址的响应。
+:::
+
+
+## 流式响应
+Eden 会将流式响应或 [Server-Sent Events](/essential/handler#server-sent-events) 解析为 `AsyncGenerator`，因此可以使用 `for await` 循环读取数据流。
+
+
+
+**数据流**
+
+```ts
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield 1
+		yield 2
+		yield 3
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+```
+
+**服务器发送事件**
+
+```ts
+import { Elysia, sse } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.get('/ok', function* () {
+		yield sse({
+			event: 'message',
+			data: '1'
+		})
+		yield sse({
+			event: 'message',
+			data: '2'
+		})
+		yield sse({
+			event: 'end'
+		})
+	})
+
+const { data, error } = await treaty(app).ok.get()
+if (error) throw error
+
+for await (const chunk of data)
+	console.log(chunk)
+```
+
+
+
+
+
+## 工具类型
+Eden Treaty 提供工具类型 `Treaty.Data<T>` 和 `Treaty.Error<T>`，用于提取响应中的 `data` 和 `error` 类型。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+import { treaty, type Treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/user', {
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ body: { name }, status }) => {
+		if(name === 'Otto') return status(400)
+
+		return name
+	})
+	.listen(3000)
+
+const api =
+	treaty<typeof app>('localhost:3000')
+
+type UserData = Treaty.Data<typeof api.user.post>
+
+// Alternatively, you can also pass a response
+const response = await api.user.post({
+	name: 'Saltyaom'
+})
+
+type UserDataFromResponse = Treaty.Data<typeof response>
+
+type UserError = Treaty.Error<typeof api.user.post>
+```
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>

@@ -1,0 +1,127 @@
+---
+title: "集成 Node.js"
+description: "Elysia 提供运行时适配器，可运行于 Node.js、Cloudflare Workers 等多种运行时"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">集成 Node.js</h1>
+
+Elysia 提供运行时适配器，可运行于包括 Node.js 在内的多种运行时。
+
+要在 Node.js 上运行 Elysia v2，请安装 v2 Node 适配器。v1 适配器属于不同的版本线。
+
+
+```bash title="bun"
+bun add elysia@rc @elysia/node@rc
+```
+
+```bash title="pnpm"
+pnpm add elysia@rc @elysia/node@rc
+```
+
+```bash title="npm"
+npm install elysia@rc @elysia/node@rc
+```
+
+```bash title="yarn"
+yarn add elysia@rc @elysia/node@rc
+```
+
+
+然后将 Node 适配器应用到主 Elysia 实例上。
+
+```typescript
+import { Elysia } from 'elysia'
+import { node } from '@elysia/node'
+
+const app = new Elysia({ adapter: node() })
+	.get('/', () => 'Hello Elysia')
+	.listen(3000)
+```
+
+完成这些步骤，就可以在 Node.js 上运行 Elysia。
+
+### 额外配置（可选）
+为获得更好的开发体验，我们建议安装 `tsx`。
+
+`tsx` 是一个 CLI，可将 TypeScript 转译为 JavaScript，并提供热重载等现代开发环境常见功能。
+
+
+```bash title="bun"
+bun add -d tsx @types/node typescript
+```
+
+```bash title="pnpm"
+pnpm add -D tsx @types/node typescript
+```
+
+```bash title="npm"
+npm install --save-dev tsx @types/node typescript
+```
+
+```bash title="yarn"
+yarn add -D tsx @types/node typescript
+```
+
+
+接着打开 `package.json`，将项目设为使用 ES modules，并添加以下脚本：
+
+```json
+{
+   	"type": "module",
+   	"scripts": {
+  		"dev": "tsx watch src/index.ts",
+    	"build": "tsc -p tsconfig.json",
+  		"start": "NODE_ENV=production node dist/index.js"
+   	}
+}
+```
+
+这些脚本对应应用开发的不同阶段：
+
+- **dev** - 以开发模式启动 Elysia，代码变更时自动重新加载
+- **build** - 构建可用于生产环境的应用
+- **start** - 启动生产环境中的 Elysia 服务
+
+请确保创建 `tsconfig.json`：
+
+```bash
+tsc --init
+```
+
+然后在 `tsconfig.json` 中配置以下选项：
+```json
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "types": ["node"],
+        "rootDir": "src",
+        "outDir": "dist",
+        "strict": true,
+        "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts"]
+}
+```
+
+构建脚本会读取此配置，包括 `strict` 和输出目录。使用 NodeNext 导入自己的模块时，请添加 `.js` 扩展名。`tsx watch` 会在代码变更时重新加载，体验类似 `bun dev`。
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

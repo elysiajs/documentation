@@ -1,0 +1,645 @@
+---
+title: OpenAPI
+description: 描述路由，并根据 schema 和类型生成 OpenAPI 文档。
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+<h1 id="_top">OpenAPI</h1>
+
+根据 Elysia 路由生成 OpenAPI 文档和可浏览的 API 参考。schema 描述数据，路由详情则说明每个端点的作用。
+
+要生成文档页面，请安装插件：
+
+```bash
+bun add @elysia/openapi@rc
+```
+
+然后在服务器中注册插件：
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+```
+
+访问 `/openapi` 即可打开 Scalar UI，查看根据 Elysia 服务器生成的端点文档。
+
+OpenAPI 插件配置请参阅 [OpenAPI 插件页面](/plugins/openapi/)。
+
+<a id="openapi-from-types" />
+## 根据类型生成 OpenAPI
+
+> 这是可选功能，但我们强烈推荐使用，能显著改善文档体验。
+
+默认情况下，Elysia 依靠运行时 schema 生成 OpenAPI 文档。
+
+你也可以使用 OpenAPI 插件中的生成器，根据类型生成 OpenAPI 文档：
+
+1. 指定 Elysia 根文件（如果未指定，Elysia 会使用 `src/index.ts`），并导出一个实例
+
+2. 导入生成器，并向类型生成器提供相对于**项目根目录的文件路径**
+```ts {7}
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes()
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+Elysia 会读取已导出实例的类型，并尝试据此生成 OpenAPI 文档。
+
+类型生成会与运行时 schema 共存，如果两者冲突，以运行时 schema 为准。
+
+### 生产环境
+在生产环境中，你可能会使用 Bun 将 Elysia 编译为[单个可执行文件](/patterns/deploy)，或[打包为单个 JavaScript 文件](/patterns/deploy#compile-to-javascript)。
+
+建议预先生成声明文件（**.d.ts**），为生成器提供类型声明。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes(
+            	process.env.NODE_ENV === 'production'
+             		? 'dist/index.d.ts'
+               		: 'src/index.ts'
+            )
+        })
+    )
+```
+
+<details>
+
+<summary>类型生成遇到问题？</summary>
+
+### 注意：显式类型
+OpenAPI 类型生成在使用隐式类型时效果最好。
+
+有时显式类型会导致问题，因为生成器可能无法正确解析它们。
+
+这种情况下，可以使用 `Prettify` 将类型展开：
+```ts
+import { Elysia, t } from 'elysia'
+
+// Your custom type
+interface User {
+	id: number
+	name: string
+}
+
+// Type helper to inline the type
+type Prettify<T> = {
+	[K in keyof T]: T[K]
+} & {}
+
+// Add Prettify to inline the type
+function getUser(): Prettify<User> {
+    return { id: 1, name: 'Nagisa' }
+}
+```
+
+这样应该可以解决类型未显示的问题。
+
+### 注意：根路径
+由于无法可靠地猜出项目根目录，建议提供项目根目录路径，以确保生成器正常运行，使用 monorepo 时尤其如此。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+import path from 'node:path'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts', {
+            	projectRoot: path.join(import.meta.dir, '..')
+            })
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+### 自定义 tsconfig.json
+如果有多个 `tsconfig.json` 文件，请务必指定用于类型生成的正确配置文件。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, fromTypes } from '@elysia/openapi'
+import path from 'node:path'
+
+export const app = new Elysia()
+    .use(
+        openapi({
+            references: fromTypes('src/index.ts', {
+            	// This is reference from root of the project
+            	tsconfigPath: 'tsconfig.dts.json'
+            })
+        })
+    )
+    .get('/', { test: 'hello' as const })
+    .post('/json', {
+        body: t.Object({
+            hello: t.String()
+        })
+    }, ({ body, status }) => body)
+    .listen(3000)
+```
+
+</details>
+
+## 在 OpenAPI 中使用 Standard Schema
+Elysia 会尝试使用每个 schema 提供的原生方法，将其转换为 OpenAPI schema。
+
+如果 schema 没有提供原生方法，可以通过 `mapJsonSchema` 为 OpenAPI 提供自定义转换器：
+
+
+### Zod 与 OpenAPI
+请根据 Zod 版本选择转换器。Zod 4 导出 `toJSONSchema`；Zod 3 则使用独立的 `zod-to-json-schema` 包。
+
+**Zod 4**
+
+```ts
+import openapi from '@elysia/openapi'
+import * as z from 'zod'
+
+openapi({
+	mapJsonSchema: {
+		zod: z.toJSONSchema
+	}
+})
+```
+
+**Zod 3**
+
+```ts
+import openapi from '@elysia/openapi'
+import { zodToJsonSchema } from 'zod-to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+		zod: zodToJsonSchema
+	}
+})
+```
+
+
+### Valibot 与 OpenAPI
+Valibot 使用独立的包（`@valibot/to-json-schema`）将 Valibot schema 转换为 JSON Schema。
+
+```ts
+import openapi from '@elysia/openapi'
+import { toJsonSchema } from '@valibot/to-json-schema'
+
+openapi({
+	mapJsonSchema: {
+		valibot: toJsonSchema
+	}
+})
+```
+
+
+### Effect 与 OpenAPI
+由于 Effect 的 schema 没有 `toJSONSchema` 方法，我们需要提供自定义转换器，将 Effect schema 转换为 OpenAPI schema。
+
+```ts
+import openapi from '@elysia/openapi'
+import { JSONSchema } from 'effect'
+
+openapi({
+ 	mapJsonSchema: {
+   		effect: JSONSchema.make
+ 	}
+})
+```
+
+
+## 描述路由
+
+我们可以通过提供 schema 类型来添加路由信息。
+
+不过，有时仅定义类型并不能清楚说明路由的用途。你可以使用 [detail](/plugins/openapi/#detail) 字段明确描述路由。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.post(
+		'/sign-in',
+		{
+    		body: t.Object(
+      		{
+	            username: t.String(),
+	            password: t.String({
+	                minLength: 8,
+	                description: 'User password (at least 8 characters)'
+	            })
+	        },
+	        {
+	            description: 'Expected a username and password'
+	        }
+	    ),
+	    detail: {
+	        summary: 'Sign in the user',
+	        tags: ['authentication']
+	    }
+	}, ({ body }) => body.username)
+```
+
+detail 字段遵循 OpenAPI V3 定义，并默认提供自动补全和类型安全。
+
+插件会将这些详情包含在生成的操作中。此示例描述登录请求；实际登录逻辑必须验证凭据，而不能只是返回用户名。
+
+## 响应头
+使用 `withHeaders` 包装 schema，即可添加响应头：
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi, withHeaders } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.get(
+		'/thing',
+		{
+		    response: withHeaders(
+				t.Literal('Hi'),
+				{
+					'x-powered-by': t.Literal('Elysia')
+				}
+			)
+		}, ({ set }) => {
+			set.headers['x-powered-by'] = 'Elysia'
+
+			return 'Hi'
+		}
+	)
+```
+
+请注意，`withHeaders` 只是注解，不会强制设置或校验实际响应头。你需要手动设置响应头。
+
+## 隐藏路由
+
+将 `detail.hide` 设为 `true`，即可在 API 文档页面中隐藏该路由。
+
+```ts
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+	.use(openapi())
+	.post(
+		'/sign-in',
+		{
+		    body: t.Object(
+		        {
+		            username: t.String(),
+		            password: t.String()
+		        },
+		        {
+		            description: 'Expected a username and password'
+		        }
+		    ),
+		    detail: {
+		        hide: true
+		    }
+		}, ({ body }) => ({ username: body.username })
+	)
+```
+
+## 标签
+
+Elysia 可以使用 OpenAPI 标签系统将端点分组。
+
+首先在 OpenAPI 配置中定义可用标签：
+
+```ts
+new Elysia().use(
+    openapi({
+        documentation: {
+            tags: [
+                { name: 'App', description: 'General endpoints' },
+                { name: 'Auth', description: 'Authentication endpoints' }
+            ]
+        }
+    })
+)
+```
+
+然后在路由选项中分配标签。此示例中的 `db` 是应用的数据库客户端：
+
+```ts
+new Elysia()
+    .get('/', {
+        detail: {
+            tags: ['App']
+        }
+    }, () => 'Hello Elysia')
+    .group('/auth', (app) =>
+        app.post(
+            '/sign-up',
+            {
+                body: t.Object({
+                    username: t.String(),
+                    password: t.String()
+                }),
+                detail: {
+                    tags: ['Auth']
+                }
+            }, ({ body }) =>
+                db.user.create({
+                    data: body,
+                    select: {
+                        id: true,
+                        username: true
+                    }
+                })
+        )
+    )
+```
+
+路由会显示在各自对应的标签下：
+![OpenAPI routes grouped by tags](/assets/swagger-demo.webp)
+
+### 标签分组
+
+Elysia 可以接收标签，将整个实例或一组路由归入指定标签。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia({
+    tags: ['user']
+})
+    .get('/user', 'user')
+    .get('/admin', 'admin')
+```
+
+<a id="reference-model" />
+## 引用模型
+
+<span id="models" />
+
+已注册的模型会作为命名 schema 组件出现在生成的 OpenAPI 文档中，路由可以引用这些组件。
+
+多个路由共用同一 schema 时，可以为它命名并重复使用。先看重复定义的结构：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/profile', {
+        body: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        }),
+        response: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    }, ({ body }) => body)
+```
+
+如果只需在此处复用，可以将它提取为变量：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+const Profile = t.Object({
+    username: t.String(),
+    displayName: t.String()
+})
+
+new Elysia()
+    .post('/profile', {
+        body: Profile,
+        response: Profile
+    }, ({ body }) => body)
+```
+
+要在不同路由间使用命名引用和自动补全，请通过 `.model()` 注册：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .model({
+        profile: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    })
+    .post('/profile', {
+        body: 'profile',
+        response: 'profile'
+    }, ({ body }) => body)
+```
+
+### 通过插件共享模型
+
+多个控制器需要同一组模型时，可以将相关模型放入插件：
+
+```ts
+// profile.model.ts
+import { Elysia, t } from 'elysia'
+
+export const profileModel = new Elysia()
+    .model({
+        profile: t.Object({
+            username: t.String(),
+            displayName: t.String()
+        })
+    })
+```
+
+导入插件，并在使用这些模型的路由之前注册它：
+
+```ts
+// index.ts
+import { Elysia } from 'elysia'
+import { profileModel } from './profile.model'
+
+new Elysia()
+    .use(profileModel)
+    .post('/profile', {
+        body: 'profile',
+        response: 'profile'
+    }, ({ body }) => body)
+```
+
+这样可以集中管理模型定义，并让路由和 OpenAPI 生成器都能使用模型名称。个人资料示例使用的是公开字段；登录响应不应原样返回用户提交的密码。
+
+### 多个模型
+
+传入一个对象，其中键为模型名称，值为 schema：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+export const authModel = new Elysia()
+    .model({
+        number: t.Number(),
+        sign: t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+```
+
+### 命名约定
+
+应用的不同部分注册了名称相似的模型时，请使用命名空间。像 `admin.auth` 和 `user.auth` 这样的名称能清楚标明模型归属：
+
+```ts
+import { Elysia, t } from 'elysia'
+
+export const adminModels = new Elysia()
+    .model({
+        'admin.auth': t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+
+export const userModels = new Elysia()
+    .model({
+        'user.auth': t.Object({
+            username: t.String(),
+            password: t.String()
+        })
+    })
+```
+
+请与团队约定统一的命名方式，并避免将无关的 schema 注册为同一个名称。
+
+## Guard
+
+使用 guard，可将相同的 `detail` 应用于其后注册的所有路由。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .guard({
+        detail: {
+            description: 'Require user to be logged in'
+        }
+    })
+    .get('/user', 'user')
+    .get('/admin', 'admin')
+```
+
+## 更改 OpenAPI 端点
+
+在插件配置中设置 [path](/plugins/openapi/#path)，即可更改 OpenAPI 端点。
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(
+        openapi({
+            path: '/v2/openapi'
+        })
+    )
+    .listen(3000)
+```
+
+## 自定义 OpenAPI 信息
+
+在插件配置中设置 [documentation.info](/plugins/openapi/#documentation)，即可自定义 OpenAPI 信息。
+
+```ts
+import { Elysia } from 'elysia'
+import { openapi } from '@elysia/openapi'
+
+new Elysia()
+    .use(
+        openapi({
+            documentation: {
+                info: {
+                    title: 'Elysia Documentation',
+                    version: '1.0.0'
+                }
+            }
+        })
+    )
+    .listen(3000)
+```
+
+这适用于以下场景：
+
+- 添加标题
+- 设置 API 版本
+- 添加说明，介绍 API 的用途
+- 说明有哪些标签，以及每个标签的含义
+
+## 安全配置
+
+要保护 API 端点，可以在 OpenAPI 配置中定义安全方案。下面的示例为端点记录 Bearer 身份验证（JWT）：
+
+```ts
+new Elysia().use(
+    openapi({
+        documentation: {
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: 'http',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT'
+                    }
+                }
+            }
+        }
+    })
+)
+
+export const addressController = new Elysia({
+    prefix: '/address',
+    detail: {
+        tags: ['Address'],
+        security: [
+            {
+                bearerAuth: []
+            }
+        ]
+    }
+})
+```
+
+这段配置只为 `/address` 下的路由记录 Bearer 身份验证；它不会校验 JWT，也不会拒绝访问。请添加身份验证钩子，在处理器运行前验证令牌，并将 `addressController` 注册到负责生成文档的应用实例上。
+
+</div>
+</InteractiveDocLayout>
+</div>

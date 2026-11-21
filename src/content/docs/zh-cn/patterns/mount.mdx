@@ -1,0 +1,76 @@
+---
+title: 挂载
+description: 将基于 Request 和 Response 的应用与 Elysia 一起运行。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">挂载</h1>
+
+[WinterTC](https://wintertc.org/) 是一项标准，适用于构建运行在 Cloudflare、Deno、Vercel 等平台上的 HTTP 服务器。
+
+它通过使用 [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) 和 [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response)，让 Web 服务器能够在不同运行时之间互操作。
+
+Elysia 符合 WinterTC 标准。它针对 Bun 做了优化，也尽可能支持其他运行时。
+
+因此，任何符合 WinterTC 标准的框架或代码都可以协同运行，例如 Elysia、Hono、Remix 和 Itty Router，只需一个简单的函数即可将它们组合起来。
+
+## 挂载
+将 `fetch` 函数传给 `.mount`：
+```ts
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const hono = new Hono()
+	.get('/', (c) => c.text('Hello from Hono!'))
+
+const app = new Elysia()
+    .get('/', () => 'Hello from Elysia')
+    .mount('/hono', hono.fetch)
+```
+
+任何使用 `Request` 和 `Response` 的框架都可以与 Elysia 互操作，例如：
+- Hono
+- Nitro
+- H3
+- [Next.js API Route](/integrations/nextjs/)
+- [Nuxt API Route](/integrations/nuxt/)
+- [SvelteKit API Route](/integrations/sveltekit/)
+
+这些框架也可以运行在多种运行时上，例如：
+- Bun
+- Deno
+- Vercel Edge Runtime
+- Cloudflare Worker
+- Netlify Edge Function
+
+如果框架支持 **.mount** 函数，你也可以在其他框架中挂载 Elysia：
+```ts
+import { Elysia } from 'elysia'
+import { Hono } from 'hono'
+
+const elysia = new Elysia()
+    .get('/', () => 'Hello from Elysia inside Hono inside Elysia')
+
+const hono = new Hono()
+    .get('/', (c) => c.text('Hello from Hono!'))
+    .mount('/elysia', elysia.fetch)
+
+const main = new Elysia()
+    .get('/', () => 'Hello from Elysia')
+    .mount('/hono', hono.fetch)
+    .listen(3000)
+```
+
+被挂载的应用会接收标准的 Request 并返回 Response。组合两个 Elysia 实例时，优先使用 `.use()`，这样 Elysia 才能保留它们的类型和插件作用域。
+
+</div>
+</InteractiveDocLayout>
+</div>

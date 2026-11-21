@@ -1,0 +1,154 @@
+---
+title: OpenTelemetry
+description: OpenTelemetry 的参考与示例。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">OpenTelemetry</h1>
+
+:::tip
+
+此页面是 **OpenTelemetry** 的**配置参考**。如果你想设置并集成 OpenTelemetry，建议改看[集成 OpenTelemetry](/patterns/opentelemetry)。
+
+:::
+
+要开始使用 OpenTelemetry，请安装 `@elysia/opentelemetry`，并将插件应用到任意实例。
+
+```bash
+bun add @elysia/opentelemetry@next @opentelemetry/sdk-trace-node @opentelemetry/exporter-trace-otlp-proto
+```
+
+```ts
+import { Elysia } from 'elysia'
+import { opentelemetry } from '@elysia/opentelemetry'
+
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
+
+new Elysia()
+	.use(
+		opentelemetry({
+			spanProcessors: [
+				new BatchSpanProcessor(
+					new OTLPTraceExporter()
+				)
+			]
+		})
+	)
+```
+
+![Jaeger showing collected traces](/blog/elysia-11/jaeger.webp)
+
+Elysia OpenTelemetry 会**收集所有兼容 OpenTelemetry 标准的库所生成的 span**，并自动关联父级和子级 span。
+
+## 用法
+用法和工具函数请参阅 [opentelemetry](/patterns/opentelemetry)。
+
+## 配置
+此插件扩展了 OpenTelemetry SDK 的参数选项。
+
+以下是插件支持的配置选项
+
+### autoDetectResources - boolean
+使用默认资源检测器自动从环境中检测资源。
+
+默认值：`true`
+
+### contextManager - ContextManager
+使用自定义上下文管理器。
+
+默认值：由 `NodeTracerProvider` 注册的 `AsyncLocalStorageContextManager`
+
+### textMapPropagator - TextMapPropagator
+使用自定义传播器。
+
+默认值：使用 W3C Trace Context 和 Baggage 的 `CompositePropagator`
+
+### metricReader - MetricReader
+添加一个将传递给 MeterProvider 的 MetricReader。
+
+### views - View[]
+要传递给 MeterProvider 的视图列表。
+
+接受由 View 实例组成的数组。此参数可用于配置直方图指标的显式分桶大小。
+
+### instrumentations - (Instrumentation | Instrumentation[])[]
+配置检测组件。
+
+默认不会注册任何检测组件。传入一个列表即可启用，例如单独安装的 `@opentelemetry/auto-instrumentations-node` 中的 `getNodeAutoInstrumentations()`。
+
+默认值：无
+
+### resource - IResource
+配置资源。
+
+也可以使用 SDK 的 autoDetectResources 方法检测资源。
+
+### resourceDetectors - Array&lt;Detector | DetectorSync&gt;
+配置资源检测器。默认检测器为 [envDetector, processDetector, hostDetector]。注意：要启用检测，参数 autoDetectResources 必须为 true。
+
+如果未设置 resourceDetectors，也可以使用环境变量 OTEL_NODE_RESOURCE_DETECTORS 仅启用特定检测器，或完全禁用检测：
+
+- env
+- host
+- os
+- process
+- serviceinstance (experimental)
+- all - 启用以上所有资源检测器
+- none - 禁用资源检测
+
+例如，仅启用 env 和 host 检测器：
+
+```bash
+export OTEL_NODE_RESOURCE_DETECTORS="env,host"
+```
+
+### sampler - Sampler
+配置自定义采样器。默认情况下会对所有追踪进行采样。
+
+### serviceName - string
+用于标识服务的命名空间。
+
+### spanProcessors - SpanProcessor[]
+要注册到 tracer provider 的 span processor 数组。
+
+### traceExporter - SpanExporter
+配置追踪导出器。如果配置了导出器，将与 `BatchSpanProcessor` 一起使用。
+
+如果未通过代码配置导出器或 span processor，此软件包会自动设置默认的 OTLP 导出器，使用 http/protobuf 协议和 BatchSpanProcessor。
+
+### spanLimits - SpanLimits
+配置追踪参数。这些参数与配置 tracer 时使用的参数相同。
+
+### checkIfShouldTrace - (request: Request) => boolean
+决定是否追踪请求。返回 `false` 可跳过该请求的追踪。
+
+默认值：追踪每个请求
+
+### spanUrlRedaction - false | object
+对记录的 URL 中的凭据和敏感查询参数值（例如 `token`、`password`、`api_key`）进行脱敏。接受 `{ stripCredentials?: boolean, sensitiveQueryParams?: string[] }`：`stripCredentials`（默认 `true`）会从 URL 中移除 `user:password@`；`sensitiveQueryParams` 可将查询键添加到内置列表。
+
+设为 `false` 会记录原始 URL，可能导致机密泄露。
+
+默认值：启用脱敏并使用内置列表
+
+### recordBody - boolean | object
+在 span 中记录请求体和/或响应体内容。`true` 表示两者都记录；`{ request?: boolean, response?: boolean }` 可选择记录其中一方。
+
+默认值：`false`
+
+### headersToSpanAttributes - object
+要作为 span 属性记录的 HTTP 头字段名称（不区分大小写），格式为 `{ request?: string[], response?: string[] }`。`"*"` 会记录所有头字段，包括敏感头字段。
+
+默认值：不记录头字段
+
+</div>
+</InteractiveDocLayout>
+</div>

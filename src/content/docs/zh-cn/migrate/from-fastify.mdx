@@ -1,0 +1,1231 @@
+---
+title: 从 Fastify 迁移到 Elysia
+description: 比较 Fastify 与 Elysia 的路由、校验、钩子和类型安全。
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import '../../../../styles/comparison.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">从 Fastify 迁移到 Elysia</h1>
+
+:::note[Elysia v2]
+
+Elysia 示例使用 v2：路由选项写在处理器之前，生命周期方法使用对应的事件名称，从请求派生的值则使用 `derive`。其他框架的示例展示的是该框架的典型配置，旨在说明迁移方式，并非罗列其所有现有功能。框架集成有各自的版本兼容要求，迁移应用时请查看相关软件包的说明。
+
+:::
+
+本指南面向 Fastify 用户，通过示例介绍 Fastify 与 Elysia（包括语法）的差异，以及如何将应用迁移到 Elysia。
+
+**Fastify** 是一款快速、低开销的 Node.js Web 框架，设计简洁易用。它基于 HTTP 模块构建，并提供了便于开发 Web 应用的一系列功能。
+
+**Elysia** 是一款适用于 Bun、Node.js 及支持 Web Standard API 的运行时的易用型 Web 框架，注重开发体验、**可靠的类型安全**和性能。
+
+## 性能
+得益于 Bun 原生实现和静态代码分析，Elysia 的性能显著优于 Fastify。
+
+此处比较采用 2023-10-17 发布的历史 [TechEmpower Round 22 结果](https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22)中的纯文本测试数据。表中是当时记录的框架与运行时组合，并非 Elysia v2 的实测结果。
+
+| 框架 | 每秒请求数 |
+| --- | ---: |
+| Elysia | 2,454,631 |
+| Fastify | 415,600 |
+
+## 路由
+
+Fastify 和 Elysia 的路由语法相似，都使用 `app.get()` 和 `app.post()` 定义路由，路径参数的写法也相近。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+app.get('/', (request, reply) => {
+    reply.send('Hello World')
+})
+
+app.post('/id/:id', (request, reply) => {
+    reply.status(201).send(request.params.id)
+})
+
+app.listen({ port: 3000 })
+```
+
+> Fastify 使用 `request` 和 `reply` 分别表示请求和响应对象
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .post(
+    	'/id/:id',
+     	({ status, params: { id } }) => {
+      		return status(201, id)
+      	}
+    )
+    .listen(3000)
+```
+
+> Elysia 使用统一的 `context`，并直接返回响应
+
+</div>
+</div>
+
+<div class="content-layout">
+
+两者的代码风格略有不同。Elysia 推荐使用方法链和对象解构。
+
+如果不需要使用上下文，Elysia 也支持直接将值作为响应。
+
+## 处理器
+
+两者都提供类似的属性来访问 `headers`、`query`、`params` 和 `body` 等输入参数。Elysia 会自动解析 JSON、URL 编码数据和表单数据；Fastify 可解析 JSON，解析另外两种数据则需要 `@fastify/formbody` 和 `@fastify/multipart`。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+app.post('/user', (request, reply) => {
+    const limit = request.query.limit
+    const name = request.body.name
+    const auth = request.headers.authorization
+
+    reply.send({ limit, name, auth })
+})
+```
+
+> Fastify 会解析数据并将其放入 `request` 对象
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.post('/user', { body: t.Object({ name: t.String() }) }, (ctx) => {
+	    const limit = ctx.query.limit
+	    const name = ctx.body.name
+	    const auth = ctx.headers.authorization
+
+	    return { limit, name, auth }
+	})
+```
+
+> Elysia 会解析数据并将其放入 `context` 对象
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## 子路由
+
+Fastify 通过函数回调定义子路由，而 Elysia 将每个实例视为可灵活组合的组件。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify, { FastifyPluginCallback } from 'fastify'
+
+const subRouter: FastifyPluginCallback = (app, opts, done) => {
+	app.get('/user', (request, reply) => {
+		reply.send('Hello User')
+	})
+
+	done()
+}
+
+const app = fastify()
+
+app.register(subRouter, {
+	prefix: '/api'
+})
+```
+
+> Fastify 使用函数回调声明子路由
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ prefix: '/api' })
+	.get('/user', 'Hello User')
+
+const app = new Elysia()
+	.use(subRouter)
+```
+
+> Elysia 将每个实例视为一个组件
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Elysia 在构造函数中设置前缀，而 Fastify 则要求在选项中设置前缀。
+
+## 校验
+Elysia 内置基于 **TypeBox** 的请求校验，并默认提供可靠的类型安全；Fastify 则使用 JSON Schema 声明模式，并通过 **ajv** 进行校验。
+
+不过，Fastify 不会自动推断类型，需要使用 `@fastify/type-provider-json-schema-to-ts` 之类的类型提供器来推断类型。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts'
+
+const app = fastify().withTypeProvider<JsonSchemaToTsProvider>()
+
+app.patch(
+	'/user/:id',
+	{
+		schema: {
+			params: {
+				type: 'object',
+				properties: {
+					id: {
+						type: 'string',
+						pattern: '^[0-9]+$'
+					}
+				},
+				required: ['id']
+			},
+			body: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' }
+				},
+				required: ['name']
+			},
+		}
+	},
+	(request, reply) => {
+		// map string to number
+		request.params.id = +request.params.id
+
+		reply.send({
+			params: request.params,
+			body: request.body
+		})
+	}
+)
+```
+
+> Fastify 使用 JSON Schema 进行校验
+
+</div>
+<div>
+
+```ts title="Elysia TypeBox"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: t.Object({
+			id: t.Number()
+		}),
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Zod"
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Valibot"
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: v.object({
+			id: v.pipe(v.string(), v.transform(Number), v.number())
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+> Elysia 使用 TypeBox 进行校验并自动转换类型，同时也支持使用相同语法接入 Zod、Valibot 等校验库。
+
+</div>
+</div>
+
+<div class="content-layout">
+
+此外，Fastify 也可以使用 **TypeBox** 或 **Zod** 进行校验，并通过 `@fastify/type-provider-typebox` 自动推断类型。
+
+虽然 Elysia **优先推荐 TypeBox** 进行校验，但也支持 Standard Schema，因此可以直接使用 Zod、Valibot、ArkType、Effect Schema 等库。
+
+## 文件上传
+Fastify 使用 `fastify-multipart` 处理文件上传，其底层依赖 `Busboy`；Elysia 则使用 Web Standard API 处理表单数据，并通过声明式 API 校验 MIME 类型。
+
+不过，Fastify 没有直接校验文件大小、MIME 类型等属性的简便方式，通常需要一些变通方案。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import multipart from '@fastify/multipart'
+
+import { fileTypeFromBuffer } from 'file-type'
+
+const app = fastify()
+app.register(multipart, {
+	attachFieldsToBody: 'keyValues'
+})
+
+app.post(
+	'/upload',
+	{
+		schema: {
+			body: {
+				type: 'object',
+				properties: {
+					file: { type: 'object' }
+				},
+				required: ['file']
+			}
+		}
+	},
+	async (req, res) => {
+		const file = req.body.file
+		if (!file) return res.status(422).send('No file uploaded')
+
+		const type = await fileTypeFromBuffer(file)
+		if (!type || !type.mime.startsWith('image/'))
+			return res.status(422).send('File is not a valid image')
+
+		res.header('Content-Type', type.mime)
+		res.send(file)
+	}
+)
+```
+
+> Fastify 使用 `fastify-multipart` 处理文件上传，并用虚设的 `type: object` 来允许 Buffer
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+const app = new Elysia()
+	.post('/upload', {
+		body: t.Object({
+			file: t.File({
+				type: 'image/*'
+			})
+		})
+	}, ({ body }) => body.file)
+```
+
+> Elysia 使用 `t.File` 处理文件并校验 MIME 类型
+
+</div>
+</div>
+
+<div class="content-layout">
+
+文件元数据并不能证明文件的实际内容。示例使用 **file-type** 检查文件字节。
+
+Elysia 会校验文件模式。按示例注册 `file-type` 检测器，以校验文件字节内容。
+
+## 生命周期事件
+
+Fastify 和 Elysia 都采用基于事件的方式，提供了较为相似的生命周期事件。
+
+### Elysia 生命周期
+Elysia 提供以下[请求生命周期](/essential/life-cycle)阶段：
+
+| 阶段 | 作用 |
+| --- | --- |
+| Request | 在解析前检查传入请求 |
+| Parse | 解码请求体 |
+| Transform and validation | 规范化并校验请求输入 |
+| Before handle | 派生请求值或提前返回响应 |
+| Handler | 生成路由响应 |
+| After handle and map response | 调整并序列化响应 |
+| After response | 在发送响应后执行任务 |
+
+错误钩子用于处理此流程中的失败。
+
+### Fastify 生命周期
+Fastify 的生命周期事件同样采用与 Elysia 类似的事件驱动方式。
+
+两者拦截请求和响应生命周期事件的语法也较为相似。不过，Elysia 无需调用 `done` 即可继续生命周期流程。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+// Global middleware
+app.addHook('onRequest', (request, reply, done) => {
+	console.log(`${request.method} ${request.url}`)
+
+	done()
+})
+
+app.get(
+	'/protected',
+	{
+		// Route-specific middleware
+		preHandler(request, reply, done) {
+			const token = request.headers.authorization
+
+			if (!token) return reply.status(401).send('Unauthorized')
+
+			done()
+		}
+	},
+	(request, reply) => {
+		reply.send('Protected route')
+	}
+)
+```
+
+> Fastify 使用 `addHook` 注册中间件，并要求调用 `done` 才能继续生命周期流程
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	// Global middleware
+	.onRequest(({ request }) => {
+		console.log(request.method, new URL(request.url).pathname)
+	})
+	// Route-specific middleware
+	.get('/protected', {
+		beforeHandle({ status, headers }) {
+  			if (!headers.authorization)
+     			return status(401)
+		}
+	}, () => 'protected')
+```
+
+> Elysia 会自动识别生命周期事件，无需调用 `done` 即可继续流程
+
+</div>
+</div>
+
+<div class="content-layout">
+
+<span id="sounds-type-safety"></span>
+
+## 可靠的类型安全
+Elysia 的设计目标之一是提供可靠的类型安全。
+
+例如，[derive](/essential/life-cycle#derive) 会添加请求级上下文，并推断其类型。在 v2 中，它也承担了此前由 `resolve` 提供的已校验上下文功能。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+app.decorateRequest('version', 2)
+
+app.get('/version', (req, res) => {
+	// Error: Property 'version' does not exist on type 'FastifyRequest'
+	res.send(req.version)
+})
+
+app.get(
+	'/token',
+	{
+		preHandler(req, res, done) {
+			const token = req.headers.authorization
+
+			if (!token) return res.status(401).send('Unauthorized')
+
+			// @ts-ignore
+			req.token = token.split(' ')[1]
+
+			done()
+		}
+	},
+	(req, res) => {
+		// Error: Property 'version' does not exist on type 'FastifyRequest'
+		req.version
+
+		// Error: Property 'token' does not exist on type 'FastifyRequest'
+		res.send(req.token)
+	}
+)
+
+app.listen({
+	port: 3000
+})
+```
+
+> Fastify 使用 `decorateRequest`，但无法提供可靠的类型安全
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.decorate('version', 2)
+	.get('/version', ({ version }) => version)
+	.derive(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+
+		return {
+			token: authorization.split(' ')[1]
+		}
+	})
+	// {  token: string, version: number }
+	.get('/token', ({ token, version }) => {
+		return token
+	})
+```
+
+> Elysia 使用 `decorate` 扩展上下文，并通过 `derive` 向上下文添加自定义属性
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Fastify 可以通过 `declare module` 扩展 `FastifyRequest` 接口，但这种扩展是全局可见的，类型安全性不足，也无法保证该属性在所有请求处理器中都可用。
+
+```ts
+declare module 'fastify' {
+  	interface FastifyRequest {
+    	version: number
+  		token: string
+  	}
+}
+```
+> 上述 Fastify 示例需要这段声明才能运行，但它无法提供可靠的类型安全
+
+## 中间件参数
+Fastify 使用函数返回 Fastify 插件来定义带名称的中间件，而 Elysia 使用 [macro](/patterns/macro) 定义自定义钩子。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import { findUser } from './users'
+import fastify from 'fastify'
+import type { FastifyRequest, FastifyReply } from 'fastify'
+
+const app = fastify()
+
+const role =
+	(role: 'user' | 'admin') =>
+	(request: FastifyRequest, reply: FastifyReply, next: Function) => {
+		const user = findUser(request.headers.authorization)
+
+		if (!user || user.role !== role) return reply.status(401).send('Unauthorized')
+
+		// Error: Property 'user' does not exist on type 'FastifyRequest'
+		request.user = user
+
+		next()
+	}
+
+app.get(
+	'/token',
+	{
+		preHandler: role('admin')
+	},
+	(request, reply) => {
+		// Error: Property 'user' does not exist on type 'FastifyRequest'
+		reply.send(request.user)
+	}
+)
+```
+
+> Fastify 使用函数回调接收中间件的自定义参数
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { findUser } from './users'
+
+const app = new Elysia()
+	.macro({
+		role: (role: 'user' | 'admin') => ({
+			derive({ status, headers: { authorization } }) {
+				const user = findUser(authorization)
+
+				if (!user || user.role !== role)
+					return status(401)
+
+				return {
+					user
+				}
+			}
+		})
+	})
+	// { user: User }
+	.get('/token', {
+		role: 'admin'
+	}, ({ user }) => user)
+```
+
+> Elysia 使用 macro 向自定义中间件传递参数
+
+</div>
+</div>
+
+<div class="content-layout">
+
+这里的 `findUser` 是应用代码，负责验证提供的凭据，并在验证成功时返回带有 `role` 的用户；验证失败则不返回用户。仅检查请求头或 Bearer 前缀并不构成身份验证。
+
+Fastify 使用函数回调，并需要返回一个函数以放入事件处理器，或返回一个作为钩子的对象。当需要多个自定义函数时，必须将它们整合到同一个对象中，处理起来可能不太方便。
+
+## 错误处理
+
+Fastify 和 Elysia 都提供了用于处理错误的生命周期事件。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+
+const app = fastify()
+
+class CustomError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'CustomError'
+	}
+}
+
+// global error handler
+app.setErrorHandler((error, request, reply) => {
+	if (error instanceof CustomError)
+		reply.status(500).send({
+			message: 'Something went wrong!',
+			error
+		})
+})
+
+app.get(
+	'/error',
+	{
+		// route-specific error handler
+		errorHandler(error, request, reply) {
+			reply.send({
+				message: 'Only for this route!',
+				error
+			})
+		}
+	},
+	(request, reply) => {
+		throw new CustomError('oh uh')
+	}
+)
+```
+
+> Fastify 使用 `setErrorHandler` 注册全局错误处理器，并使用 `errorHandler` 注册路由专属错误处理器
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+class CustomError extends Error {
+    status = 500
+}
+
+const app = new Elysia()
+    .onError(CustomError, ({ error, status }) =>
+        status(500, { message: 'Something went wrong!', detail: error.message })
+    )
+    .get('/error', () => {
+        throw new CustomError('oh uh')
+    })
+    .get('/local-error', {
+        error({ error, status }) {
+            if (error instanceof RangeError)
+                return status(500, { message: 'Only for this route!' })
+        }
+    }, () => {
+        throw new RangeError('outside the allowed range')
+    })
+```
+
+> Elysia 提供针对特定错误类的错误处理器，以及用于返回 HTTP 状态响应的辅助函数。
+
+</div>
+</div>
+
+<div class="content-layout">
+
+两者都通过生命周期事件处理错误，而 Elysia 还提供：
+
+1. 可按错误类匹配并推断错误类型的处理器
+2. 用于返回带有 HTTP 状态码响应的 `status` 辅助函数
+
+`/error` 路由使用已注册的 `CustomError` 处理器。`/local-error` 路由则在本地处理另一种错误。错误钩子按注册顺序运行，第一个返回值的钩子会发送响应。应用上在路由之前注册的钩子会先于该路由自己的 `error` 钩子执行，因此路由钩子无法覆盖它们。
+
+Elysia 会在针对特定错误类的处理器中推断已注册的错误类型。
+
+## 封装
+
+Fastify 会封装插件副作用，而 Elysia 通过明确的作用域机制和代码顺序，让你控制插件副作用的范围。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import type { FastifyPluginCallback } from 'fastify'
+
+const subRouter: FastifyPluginCallback = (app, opts, done) => {
+	app.addHook('preHandler', async (request, reply) => {
+		if (!request.headers.authorization?.startsWith('Bearer '))
+			return reply.code(401).send({ error: 'Unauthorized' })
+	})
+
+	done()
+}
+
+const app = fastify()
+	.get('/', (request, reply) => {
+		reply.send('Hello World')
+	})
+	.register(subRouter)
+	// doesn't have side-effect from subRouter
+	.get('/side-effect', () => 'hi')
+```
+
+> Fastify 会封装插件的副作用
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // doesn't have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+> 除非明确指定，否则 Elysia 会封装插件的副作用
+
+</div>
+</div>
+
+<div class="content-layout">
+
+两者都通过插件封装机制来隔离副作用。
+
+不过，Elysia 可以通过声明插件作用域，明确指定哪些插件应产生共享副作用；Fastify 默认进行封装，需要使用 `fastify-plugin` 才能共享副作用。
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	// Scoped to parent instance but not beyond
+	.as('plugin') // [!code ++]
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // [!code ++]
+    // now have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+Elysia 提供 3 种作用域机制：
+1. **local** - 应用于当前实例及其后代（默认）
+2. **plugin** - 与父实例共享副作用，但不继续向外传播
+3. **global** - 在所有父级实例之间共享
+
+---
+
+若要让钩子突破 Fastify 默认的封装边界，下面的示例会为每个钩子创建一个函数并手动添加。
+
+不过，如果处理不当，这可能导致副作用重复发生。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import type {
+	FastifyRequest,
+	FastifyReply,
+	FastifyPluginCallback
+} from 'fastify'
+
+const log = (request: FastifyRequest, reply: FastifyReply, done: Function) => {
+	console.log('Middleware executed')
+
+	done()
+}
+
+const app = fastify()
+
+app.addHook('onRequest', log)
+app.get('/main', (request, reply) => {
+	reply.send('Hello from main!')
+})
+
+const subRouter: FastifyPluginCallback = (app, opts, done) => {
+	app.addHook('onRequest', log)
+
+	// This would log twice
+	app.get('/sub', (request, reply) => {
+		return reply.send('Hello from sub router!')
+	})
+
+	done()
+}
+
+app.register(subRouter, {
+	prefix: '/sub'
+})
+
+app.listen({
+	port: 3000
+})
+```
+
+</div>
+<div>
+
+在这种情况下，Elysia 提供了插件去重机制，避免副作用重复发生。
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ name: 'subRouter' }) // [!code ++]
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	.as('plugin')
+
+const app = new Elysia()
+	.get('/', 'Hello World')
+	.use(subRouter)
+	.use(subRouter) // [!code ++]
+	.use(subRouter) // [!code ++]
+	.use(subRouter) // [!code ++]
+	// side-effect only called once
+	.get('/side-effect', () => 'hi')
+```
+
+使用唯一的 `name` 后，Elysia 只会应用该插件一次，从而避免副作用重复发生。
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## Cookie
+Fastify 使用 `@fastify/cookie` 解析 Cookie，而 Elysia 内置 Cookie 支持，并采用基于信号的方式处理 Cookie。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import cookie from '@fastify/cookie'
+
+const app = fastify()
+
+app.register(cookie, {
+	secret: 'secret',
+	hook: 'onRequest'
+})
+
+app.get('/', function (request, reply) {
+	request.unsignCookie(request.cookies.name)
+
+	reply.setCookie('name', 'value', {
+      	path: '/',
+      	signed: true
+    })
+})
+```
+
+> Fastify 使用 `unsignCookie` 验证 Cookie 签名，并使用 `setCookie` 设置 Cookie
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({
+    cookie: {
+        secrets: 'replace-with-a-private-secret',
+        sign: ['name']
+    }
+})
+    .get('/', {
+        cookie: t.Cookie({ name: t.Optional(t.String()) })
+    }, ({ cookie: { name } }) => {
+        const previous = name.value
+        name.set({
+            value: 'value',
+            maxAge: 60 * 60 * 24,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax'
+        })
+        return previous ?? 'unset'
+    })
+```
+
+> Elysia 会自动验证并签署已配置的 Cookie。Cookie 的 `maxAge` 单位为秒；请将示例密钥替换为私密值，并通过 HTTPS 发送安全 Cookie。
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## OpenAPI
+两者都支持使用 Swagger 提供 OpenAPI 文档；不过，Elysia 默认使用 Scalar UI，这是一个更现代、更易用的 OpenAPI 文档界面。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import swagger from '@fastify/swagger'
+
+const app = fastify()
+app.register(swagger, {
+	openapi: {
+		info: { title: 'My API', version: '1.0.0' }
+	}
+})
+
+app.addSchema({
+	$id: 'user',
+	type: 'object',
+	properties: {
+		name: {
+			type: 'string',
+			description: 'First name only'
+		},
+		age: { type: 'integer' }
+	},
+	required: ['name', 'age']
+})
+
+app.post(
+	'/users',
+	{
+		schema: {
+			summary: 'Create user',
+			body: {
+				$ref: 'user#'
+			},
+			response: {
+				'201': {
+					$ref: 'user#'
+				}
+			}
+		}
+	},
+	(req, res) => {
+		res.status(201).send(req.body)
+	}
+)
+
+await app.ready()
+app.swagger()
+```
+
+> Fastify 使用 `@fastify/swagger` 通过 Swagger 提供 OpenAPI 文档
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi' // [!code ++]
+
+const app = new Elysia()
+	.use(openapi()) // [!code ++]
+	.model({
+		user: t.Object({
+			name: t.String(),
+			age: t.Integer()
+		})
+	})
+	.post('/users', {
+		body: 'user',
+		response: {
+			201: 'user'
+		},
+		detail: {
+			summary: 'Create user'
+		}
+	}, ({ body, status }) => status(201, body))
+```
+
+> Elysia 使用 `@elysia/openapi` 提供 OpenAPI 文档，并默认采用 Scalar。
+
+</div>
+</div>
+
+<div class="content-layout">
+
+两者都支持在 OpenAPI 文档中使用 `$ref` 引用模型。不过，Fastify 不提供类型安全或模型名称自动补全，而 Elysia 支持这些功能。
+
+## 测试
+
+Fastify 使用 `fastify.inject()` 在进程内测试处理器。Elysia 则通过 `app.handle()` 接收符合 Web Standard 的 `Request`。这两种方式都不需要启动网络服务器。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Fastify"
+import fastify from 'fastify'
+import { describe, it, expect } from 'vitest'
+
+function build(opts = {}) {
+  	const app = fastify(opts)
+
+  	app.get('/', async function (request, reply) {
+	    reply.send({ hello: 'world' })
+	})
+
+  	return app
+}
+
+describe('GET /', () => {
+	it('should return the greeting', async () => {
+  		const app = build()
+
+		const response = await app.inject({
+		    url: '/',
+		    method: 'GET',
+	  })
+
+		expect(response.statusCode).toBe(200)
+		expect(response.json()).toEqual({ hello: 'world' })
+	})
+})
+```
+
+> Fastify 使用 `fastify.inject()` 模拟网络请求
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { describe, it, expect } from 'vitest'
+
+const app = new Elysia()
+	.get('/', () => ({ hello: 'world' }))
+
+describe('GET /', () => {
+	it('should return the greeting', async () => {
+		const res = await app.handle(
+			new Request('http://localhost')
+		)
+
+		expect(res.status).toBe(200)
+		expect(await res.json()).toEqual({ hello: 'world' })
+	})
+})
+```
+
+> Elysia 使用 Web Standard API 处理请求
+
+</div>
+</div>
+
+<div class="content-layout">
+
+此外，Elysia 还提供名为 [Eden](/eden) 的辅助库，实现端到端类型安全，让测试也具备自动补全和完整的类型检查。
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import { describe, expect, it } from 'bun:test'
+
+const app = new Elysia().get('/hello', 'Hello World')
+const api = treaty(app)
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const { data, error, status } = await api.hello.get()
+
+		expect(status).toBe(200)
+		expect(data).toBe('Hello World')
+	})
+})
+```
+
+## 端到端类型安全
+Elysia 通过 [Eden](/eden) 内置支持无需代码生成的**端到端类型安全**，而 Fastify 不提供此功能。
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/mirror', {
+		body: t.Object({
+			message: t.String()
+		})
+	}, ({ body }) => body)
+
+const api = treaty(app)
+
+const { data, error } = await api.mirror.post({
+	message: 'Hello World'
+})
+
+if (error)
+	// error.status: 422
+	// error.value: { type: 'validation', title: 'Validation Error', status: 422, on: 'body', detail, errors: [...] }
+	throw error
+
+// { message: 'Hello World' }
+console.log(data)
+```
+
+如果端到端类型安全对你很重要，那么 Elysia 会是合适的选择。
+
+---
+
+Elysia 注重性能、类型安全和简洁，提供更顺手、更友好的开发体验。Fastify 则是成熟的 Node.js 框架之一，但缺少新一代框架所提供的**可靠类型安全**和**端到端类型安全**。
+
+如果你正在寻找一个易于使用、开发体验出色且基于 Web Standard API 构建的框架，Elysia 会是适合你的选择。
+
+如果你使用的是其他框架，也可以看看：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+    <Card href="/migrate/from-express">
+<CardTitle>从 Express 迁移</CardTitle>
+
+Express 与 Elysia 对比
+
+</Card>
+	<Card href="/migrate/from-hono">
+<CardTitle>从 Hono 迁移</CardTitle>
+
+Hono 与 Elysia 对比
+
+</Card>
+	<Card href="/migrate/from-trpc">
+<CardTitle>从 tRPC 迁移</CardTitle>
+
+tRPC 与 Elysia 对比
+
+</Card>
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>

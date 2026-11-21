@@ -1,0 +1,443 @@
+---
+title: TypeBox
+description: 编写 TypeBox schema，使用 Elysia 的 HTTP 类型，并了解请求的自动转换。
+template: splash
+---
+
+import '../../../../styles/routing.css';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">TypeBox</h1>
+
+从 `elysia` 导入 `t`，即可编写在运行时校验值并推断其 TypeScript 类型的 schema。
+
+本文介绍[原始类型](#primitive-type)、[Elysia 类型](#elysia-type)和 [Elysia 的转换行为](#elysia-behavior)。
+
+<a id="primitive-type" />
+## 原始类型
+
+TypeBox schema 使用熟悉的 TypeScript 名称，例如 `String`、`Number`、`Boolean` 和 `Object`。它还提供 `Intersect`、`KeyOf` 和 `Tuple`，用于构造更复杂的类型。
+
+要将请求体校验为字符串，请在处理器之前的路由 schema 中传入 `t.String()`。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/', {
+        body: t.String()
+    }, ({ body }) => `Hello ${body}`)
+    .listen(3000)
+```
+
+请求体符合 schema 时，Elysia 才会运行处理器；否则会通过[错误生命周期](/essential/life-cycle/#error-error-handling)抛出校验错误。
+
+### 基本类型
+
+| TypeBox | TypeScript |
+| --- | --- |
+| `t.String()` | `string` |
+| `t.Number()` | `number` |
+| `t.Boolean()` | `boolean` |
+| `t.Array(t.Number())` | `number[]` |
+| `t.Object({ x: t.Number() })` | `{ x: number }` |
+| `t.Null()` | `null` |
+| `t.Literal(42)` | `42` |
+
+Elysia 除了 HTTP 专用类型，也重新导出了 TypeBox 类型。完整 API 请参阅 [TypeBox 参考文档](https://github.com/sinclairzx81/typebox)。
+
+### 属性
+
+传入选项即可添加校验约束，这些选项遵循 JSON Schema 关键字。
+
+```ts
+import { t } from 'elysia'
+
+// Accepts 'saltyaom@elysia.com'
+t.String({ format: 'email' })
+
+// Accepts numbers from 10 through 100
+t.Number({ minimum: 10, maximum: 100 })
+
+// Accepts one through five numbers
+t.Array(t.Number(), {
+    minItems: 1,
+    maxItems: 5
+})
+
+// Accepts { x: 100, y: 200 }
+t.Object({ x: t.Number() }, {
+    additionalProperties: true
+})
+```
+
+各关键字的说明请参阅 [JSON Schema 校验规范](https://json-schema.org/draft/2020-12/json-schema-validation)。
+
+## 常用组合
+
+以下模式可以组合 schema，或将字段设为可选。
+
+### 联合类型
+
+使用 `t.Union` 接受列出的任意一种类型。它既可以单独使用，也可以作为 `t.Object` 中的字段。
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: string | number
+// Accepts 'Hello' or 123
+t.Union([
+    t.String(),
+    t.Number()
+])
+```
+
+### 可选
+
+用 `t.Optional` 包裹字段，即可允许省略该字段。
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: { x: number, y?: number }
+// Accepts { x: 123 }
+t.Object({
+    x: t.Number(),
+    y: t.Optional(t.Number())
+})
+```
+
+### Partial
+
+使用 `t.Partial` 将对象中的所有字段设为可选。
+
+```ts
+import { t } from 'elysia'
+
+// TypeScript: { x?: number, y?: number }
+// Accepts { y: 123 }
+t.Partial(
+    t.Object({
+        x: t.Number(),
+        y: t.Number()
+    })
+)
+```
+
+:::note[TypeBox 1.0]
+
+Elysia 2 使用 TypeBox 1.0。请用 `t.Codec` 替代 `t.Transform`；`t.Recursive`、`t.Not` 和 `t.RegExp` 已不再导出。
+
+:::
+
+<a id="elysia-type" />
+## Elysia 类型
+
+Elysia 为 HTTP 数据提供了额外类型，包括文件、cookie 以及以字符串编码的值。
+
+| 类型 | 接受值 |
+| --- | --- |
+| [UnionEnum](#unionenum) | 列出的某个字面量值 |
+| [File](#file) | 单个文件 |
+| [Files](#files) | 同一字段中的多个文件 |
+| [Cookie](#cookie) | 支持校验并提供 cookie 选项的 cookie jar |
+| [Nullable](#nullable) | 匹配的值或 `null` |
+| [MaybeEmpty](#maybeempty) | 匹配的值、`null` 或 `undefined` |
+| [Form](#form) | FormData 响应 |
+| [Uint8Array](#uint8array) | `Uint8Array`，或待转换的 `ArrayBuffer` |
+| [ArrayBuffer](#arraybuffer) | `ArrayBuffer` |
+| [ObjectString](#objectstring) | 对象或 JSON 对象字符串 |
+| [BooleanString](#booleanstring) | 布尔值或其字符串表示 |
+| [Numeric](#numeric) | 数字或数字字符串 |
+
+### UnionEnum
+
+接受列出的某个值。值可以是字符串、数字或 `null`。
+
+```ts
+import { t } from 'elysia'
+
+t.UnionEnum(['rapi', 'anis', 1, null])
+```
+
+### File
+
+校验单个上传文件。
+
+```ts
+import { t } from 'elysia'
+
+t.File()
+```
+
+#### type
+
+限制文件的媒体类型，例如 `image/png` 或 `image`。传入数组时，文件类型可以是数组中的任意一种。
+
+```ts
+import { t } from 'elysia'
+
+t.File({ type: ['image/png', 'image/jpeg'] })
+```
+
+:::caution[文件内容检测]
+
+Elysia 2 不会内置 `file-type`。检查 `type` 需要检测器：请安装 `file-type`，并通过 `setFileTypeDetector` 注册一次。没有检测器时，所有根据 `type` 检查的上传文件都会校验失败。请参阅[文件校验](/essential/validation/#file)。
+
+:::
+
+#### minSize
+
+设置文件大小下限，单位为字节，也可以使用 `k` 或 `m` 后缀；文件大小必须不小于此下限。
+
+```ts
+import { t } from 'elysia'
+
+t.File({ minSize: '1k' })
+```
+
+#### maxSize
+
+设置文件大小上限，单位为字节，也可以使用 `k` 或 `m` 后缀；文件大小不得超过此上限。
+
+```ts
+import { t } from 'elysia'
+
+t.File({ maxSize: '5m' })
+```
+
+#### 文件大小单位后缀
+
+| 后缀 | 字节数 |
+| --- | ---: |
+| `k` | 1,024 |
+| `m` | 1,048,576 |
+
+两个大小选项都接受数字或类似 `'512k'` 的字符串。
+
+### Files
+
+使用 `t.Files` 校验同一字段中的多个文件。它支持 [File](#file) 的选项，以及 `minItems`、`maxItems` 等数组长度约束。
+
+```ts
+import { t } from 'elysia'
+
+t.Files()
+```
+
+### Cookie
+
+使用对象属性和 cookie 配置来描述 cookie jar。
+
+```ts
+import { t } from 'elysia'
+
+t.Cookie({
+    name: t.String()
+})
+```
+
+关于读取、写入和签名 cookie 值，请参阅 [cookie](/patterns/cookie/)。
+
+#### secrets
+
+在第二个参数中传入 `secrets` 即可签名 cookie。字符串表示使用一个密钥；数组则支持[密钥轮换](/patterns/cookie/#cookie-rotation)。
+
+```ts
+import { t } from 'elysia'
+
+t.Cookie({ name: t.String() }, {
+    secrets: ['current-secret', 'previous-secret'],
+    sign: ['name']
+})
+```
+
+新 cookie 会使用第一个密钥，该值必须是非空字符串。请将示例密钥替换为应用自己的私密密钥。
+
+### Nullable
+
+接受匹配的值或 `null`，但不接受 `undefined`。
+
+```ts
+import { t } from 'elysia'
+
+t.Nullable(t.String())
+```
+
+### MaybeEmpty
+
+接受匹配的值、`null` 或 `undefined`。只有被包裹的 schema 接受空字符串时，空字符串才会通过校验。
+
+```ts
+import { t } from 'elysia'
+
+t.MaybeEmpty(t.String())
+```
+
+### Form
+
+使用 `t.Form` 校验 [form helper](/essential/handler/#form-data) 返回的 FormData 响应。
+
+```ts
+import { t } from 'elysia'
+
+t.Form({
+    someValue: t.File()
+})
+```
+
+### Uint8Array
+
+接受 `ArrayBuffer` 或 `Uint8Array`，并将其解码为 `Uint8Array`。处理二进制上传时，请搭配 `arrayBuffer` 请求体解析器使用。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/upload', {
+        parse: 'arrayBuffer',
+        body: t.Uint8Array()
+    }, ({ body }) => body.byteLength)
+```
+
+API 的正确写法是 `t.Uint8Array()`，而不是 `t.UInt8Array()`。
+
+### ArrayBuffer
+
+校验 `ArrayBuffer`，而不将其转换为类型化数组。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/upload', {
+        parse: 'arrayBuffer',
+        body: t.ArrayBuffer()
+    }, ({ body }) => body.byteLength)
+```
+
+### ObjectString
+
+接受对象，或可解析为指定对象的 JSON 字符串。适用于查询字符串、请求头和 FormData 字段。
+
+```ts
+import { t } from 'elysia'
+
+// Accepts { name: 'Rapi' } or '{"name":"Rapi"}'
+t.ObjectString({
+    name: t.String()
+})
+```
+
+### BooleanString
+
+接受布尔值或字符串 `'true'`、`'false'`，并将结果解码为布尔值。
+
+```ts
+import { t } from 'elysia'
+
+t.BooleanString()
+```
+
+### Numeric
+
+接受数字或数字字符串，并将结果解码为数字。适用于路径参数和查询值。
+
+```ts
+import { t } from 'elysia'
+
+t.Numeric({ minimum: 1, maximum: 100 })
+```
+
+`Numeric` 支持与 `t.Number` 相同的数字约束。
+
+<a id="elysia-behavior" />
+## Elysia 的行为
+
+Elysia 会在处理器运行前转换常见的、以字符串形式传入的 HTTP 数据。在路由之外创建 schema 不会应用这些路由转换。
+
+<span id="optional-1"></span>
+
+### 可选请求 schema
+
+你可以用 `t.Optional` 包裹整个请求 schema，也可以只包裹对象中的单个字段。请求体和请求头的 schema 同样适用。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .get('/optional', {
+        query: t.Optional(
+            t.Object({
+                name: t.String()
+            })
+        )
+    }, ({ query }) => query)
+```
+
+`/optional` 可以完全省略查询参数。若提供了非空查询参数，其中必须包含字符串类型的 `name`。
+
+<a id="number-to-numeric" />
+### Number 转换为 Numeric
+
+对于以字符串形式传入的请求 schema（例如 params、query 和 headers），Elysia 会将根节点及其直接属性上的 `t.Number` 转换为数字。根级别的数字请求体也会转换，但 JSON 请求体对象内部的数字字段不会转换。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/:id', {
+        params: t.Object({
+            // The path string becomes a number
+            id: t.Number()
+        }),
+        body: t.Object({
+            // JSON must contain a number, not a string
+            id: t.Number()
+        })
+    }, ({ params, body }) => ({
+        pathId: params.id,
+        bodyId: body.id
+    }))
+
+// No route conversion here
+t.Number()
+```
+
+请求 `/42` 并发送 `{"id": 10}` 时，处理器收到的两个值都是数字。若 JSON 请求体为 `{"id": "10"}`，则校验会失败。
+
+### Boolean 转换为 BooleanString
+
+布尔值转换遵循[数字转换](#number-to-numeric)的相同规则。路径、查询参数和请求头中的直接字段接受字符串形式的布尔值；JSON 对象中的布尔值则保持为布尔值。
+
+```ts
+import { Elysia, t } from 'elysia'
+
+new Elysia()
+    .post('/:enabled', {
+        params: t.Object({
+            // The path string becomes a boolean
+            enabled: t.Boolean()
+        }),
+        body: t.Object({
+            // JSON must contain a boolean, not a string
+            enabled: t.Boolean()
+        })
+    }, ({ params, body }) => ({
+        pathEnabled: params.enabled,
+        bodyEnabled: body.enabled
+    }))
+
+// No route conversion here
+t.Boolean()
+```
+
+请求 `/true` 并发送 `{"enabled": false}` 时，处理器收到 `true` 和 `false`。若 JSON 请求体为 `{"enabled": "false"}`，则校验会失败。
+
+</div>
+</InteractiveDocLayout>
+</div>

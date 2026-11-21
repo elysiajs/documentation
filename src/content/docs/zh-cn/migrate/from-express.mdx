@@ -1,0 +1,1100 @@
+---
+title: 从 Express 迁移到 Elysia
+description: 比较 Express 与 Elysia 的路由、校验、钩子和类型安全。
+template: splash
+---
+
+import { Card, CardTitle } from '../../../../components/ui/card';
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+import '../../../../styles/comparison.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">从 Express 迁移到 Elysia</h1>
+
+:::note[Elysia v2]
+
+Elysia 示例使用 v2：路由选项写在处理器之前，生命周期方法使用对应的事件名称，从请求派生的值则使用 `derive`。其他框架的示例展示的是该框架的典型配置，旨在说明迁移方式，并非罗列其所有现有功能。框架集成有各自的版本兼容要求，迁移应用时请查看相关软件包的说明。
+
+:::
+
+本指南面向 Express 用户，通过示例介绍 Express 与 Elysia（包括语法）的差异，以及如何将应用迁移到 Elysia。
+
+**Express** 是一款流行的 Node.js Web 框架，广泛用于构建 Web 应用和 API，以简洁灵活著称。
+
+**Elysia** 是一款适用于 Bun、Node.js 及支持 Web Standard API 的运行时的易用型 Web 框架，注重开发体验、**可靠的类型安全**和性能。
+
+## 性能
+得益于 Bun 原生实现和静态代码分析，Elysia 的性能显著优于 Express。
+
+此处比较采用 2023-10-17 发布的历史 [TechEmpower Round 22 结果](https://www.techempower.com/benchmarks/#hw=ph&test=plaintext&section=data-r22)中的纯文本测试数据。表中是当时记录的框架与运行时组合，并非 Elysia v2 的实测结果。
+
+| 框架 | 每秒请求数 |
+| --- | ---: |
+| Elysia | 2,454,631 |
+| Express | 113,117 |
+
+## 路由
+
+Express 和 Elysia 的路由语法相似，都使用 `app.get()` 和 `app.post()` 定义路由，路径参数的写法也相近。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.get('/', (req, res) => {
+    res.send('Hello World')
+})
+
+app.post('/id/:id', (req, res) => {
+    res.status(201).send(req.params.id)
+})
+
+app.listen(3000)
+```
+
+> Express 使用 `req` 和 `res` 分别表示请求和响应对象
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .post(
+    	'/id/:id',
+     	({ status, params: { id } }) => {
+      		return status(201, id)
+      	}
+    )
+    .listen(3000)
+```
+
+> Elysia 使用统一的 `context`，并直接返回响应
+
+</div>
+</div>
+
+<div class="content-layout">
+
+两者的代码风格略有不同。Elysia 推荐使用方法链和对象解构。
+
+如果不需要使用上下文，Elysia 也支持直接将值作为响应。
+
+## 处理器
+
+Express 和 Elysia 都提供类似的属性来访问输入参数，例如 `headers`、`query`、`params` 和 `body`。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.use(express.json())
+
+app.post('/user', (req, res) => {
+    const limit = req.query.limit
+    const name = req.body.name
+    const auth = req.headers.authorization
+
+    res.json({ limit, name, auth })
+})
+```
+
+> Express 需要使用 `express.json()` 中间件解析 JSON 请求体
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.post('/user', { body: t.Object({ name: t.String() }) }, (ctx) => {
+	    const limit = ctx.query.limit
+	    const name = ctx.body.name
+	    const auth = ctx.headers.authorization
+
+	    return { limit, name, auth }
+	})
+```
+
+> Elysia 默认会解析 JSON、URL 编码数据和表单数据
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## 子路由
+
+Express 使用专门的 `express.Router()` 声明子路由，而 Elysia 将每个实例都视为可组合使用的组件。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const subRouter = express.Router()
+
+subRouter.get('/user', (req, res) => {
+	res.send('Hello User')
+})
+
+const app = express()
+
+app.use('/api', subRouter)
+```
+
+> Express 使用 `express.Router()` 创建子路由
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia({ prefix: '/api' })
+	.get('/user', 'Hello User')
+
+const app = new Elysia()
+	.use(subRouter)
+```
+
+> Elysia 将每个实例都视为一个组件
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## 校验
+Elysia 内置基于 TypeBox 的请求校验，提供可靠的类型安全，也开箱即支持 Standard Schema，因此你可以使用熟悉的库，例如 Zod、Valibot、ArkType、Effect Schema 等。Express 没有内置校验功能，使用各校验库时还需要手动声明类型。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import { z } from 'zod'
+
+const app = express()
+
+app.use(express.json())
+
+const paramSchema = z.object({
+	id: z.coerce.number()
+})
+
+const bodySchema = z.object({
+	name: z.string()
+})
+
+app.patch('/user/:id', (req, res) => {
+	const params = paramSchema.safeParse(req.params)
+	if (!params.success)
+		return res.status(422).json(params.error)
+
+	const body = bodySchema.safeParse(req.body)
+	if (!body.success)
+		return res.status(422).json(body.error)
+
+	res.json({
+		params: params.data.id,
+		body: body.data
+	})
+})
+```
+
+> Express 需要借助 `zod` 或 `joi` 等外部校验库来校验请求体
+
+</div>
+<div>
+
+```ts title="Elysia TypeBox"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: t.Object({
+			id: t.Number()
+		}),
+		body: t.Object({
+			name: t.String()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Zod"
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: z.object({
+			id: z.coerce.number()
+		}),
+		body: z.object({
+			name: z.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+```ts title="Elysia Valibot"
+import { Elysia } from 'elysia'
+import * as v from 'valibot'
+
+const app = new Elysia()
+	.patch('/user/:id', {
+		params: v.object({
+			id: v.pipe(v.string(), v.transform(Number), v.number())
+		}),
+		body: v.object({
+			name: v.string()
+		})
+	}, ({ params, body }) => ({
+		params,
+		body
+	}))
+```
+
+> Elysia 使用 TypeBox 校验并自动转换类型，也支持以相同语法使用 Zod、Valibot 等校验库
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## 文件上传
+Express 依赖外部的 multer 库处理文件上传；Elysia 则内置文件和表单数据支持，并可通过声明式 API 校验 MIME 类型。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import multer from 'multer'
+import { fileTypeFromFile } from 'file-type'
+import path from 'path'
+
+const app = express()
+const upload = multer({ dest: 'uploads/' })
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+	const file = req.file
+
+	if (!file)
+		return res
+			.status(422)
+			.send('No file uploaded')
+
+	const type = await fileTypeFromFile(file.path)
+	if (!type || !type.mime.startsWith('image/'))
+		return res
+			.status(422)
+			.send('File is not a valid image')
+
+	const filePath = path.resolve(file.path)
+	res.sendFile(filePath)
+})
+```
+
+> Express 需要使用 `multer` 上传文件，并手动校验 MIME 类型
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t, setFileTypeDetector } from 'elysia'
+import { fileTypeFromBlob } from 'file-type'
+
+setFileTypeDetector(fileTypeFromBlob)
+
+const app = new Elysia()
+	.post('/upload', {
+		body: t.Object({
+			file: t.File({
+				type: 'image/*'
+			})
+		})
+	}, ({ body }) => body.file)
+```
+
+> Elysia 以声明式方式处理文件和 MIME 类型校验
+
+</div>
+</div>
+
+<div class="content-layout">
+
+文件元数据不能证明文件的实际内容。两个示例都使用 **file-type** 检查文件字节。
+
+Elysia 通过 `setFileTypeDetector` 注册一次检测器，再用 `t.File({ type })` 声明式地校验文件类型。检测器是必需的：如果没有注册它，所有通过 `type` 校验的上传都会失败。
+
+## 中间件
+
+Express 中间件按单一队列顺序执行，而 Elysia 通过**基于事件**的生命周期提供更细致的控制。
+
+Elysia 提供以下[请求生命周期](/essential/life-cycle)阶段：
+
+| 阶段 | 作用 |
+| --- | --- |
+| 请求 | 在解析之前检查传入请求 |
+| 解析 | 解码请求体 |
+| 转换与校验 | 规范化并校验请求输入 |
+| 处理前 | 派生请求值或提前返回响应 |
+| 处理器 | 生成路由响应 |
+| 处理后与响应映射 | 调整并序列化响应 |
+| 响应后 | 在响应发送后执行任务 |
+
+错误钩子负责处理此流程中的失败。
+
+Express 使用单一线性请求流程，而 Elysia 可以拦截请求流程中的各个事件。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+// Global middleware
+app.use((req, res, next) => {
+	console.log(`${req.method} ${req.url}`)
+	next()
+})
+
+app.get(
+	'/protected',
+	// Route-specific middleware
+	(req, res, next) => {
+	  	const token = req.headers.authorization
+
+	  	if (!token)
+	   		return res.status(401).send('Unauthorized')
+
+	  	next()
+	},
+	(req, res) => {
+  		res.send('Protected route')
+	}
+)
+```
+
+> Express 中间件按单一队列顺序依次执行
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	// Global middleware
+	.onRequest(({ request }) => {
+		console.log(request.method, new URL(request.url).pathname)
+	})
+	// Route-specific middleware
+	.get('/protected', {
+		beforeHandle({ status, headers }) {
+  			if (!headers.authorization)
+     			return status(401)
+		}
+	}, () => 'protected')
+```
+
+> Elysia 在请求流程的每个阶段使用对应的事件拦截器
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Express 使用 `next` 函数调用下一个中间件，而 Elysia 不需要这个函数。
+
+## 可靠的类型安全
+Elysia 致力于提供可靠的类型安全。
+
+例如，[derive](/essential/life-cycle#derive) 会添加请求级上下文，并自动推断类型。在 v2 中，它也接替了此前由 `resolve` 承担的已校验上下文功能。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import type { Request, Response } from 'express'
+
+const app = express()
+
+const getVersion = (req: Request, res: Response, next: Function) => {
+	// @ts-ignore
+    req.version = 2
+
+	next()
+}
+
+app.get('/version', getVersion, (req, res) => {
+	// Error: Property 'version' does not exist on type 'Request'
+	res.send(req.version)
+})
+
+const authenticate = (req: Request, res: Response, next: Function) => {
+  	const token = req.headers.authorization
+
+  	if (!token)
+   		return res.status(401).send('Unauthorized')
+
+	// @ts-ignore
+    req.token = token.split(' ')[1]
+
+	next()
+}
+
+app.get('/token', getVersion, authenticate, (req, res) => {
+	// Error: Property 'version' does not exist on type 'Request'
+	req.version
+
+	// Error: Property 'token' does not exist on type 'Request'
+  	res.send(req.token)
+})
+```
+
+> Express 使用 `@ts-ignore` 挂载属性，但 `Request` 类型并不知道这些属性
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+	.decorate('version', 2)
+	.get('/version', ({ version }) => version)
+	.derive(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+
+		return {
+			token: authorization.split(' ')[1]
+		}
+	})
+	// {  token: string, version: number }
+	.get('/token', ({ token, version }) => {
+		return token
+	})
+```
+
+> Elysia 使用 `decorate` 扩展上下文，并通过 `derive` 向上下文添加自定义属性
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Express 可以通过 `declare module` 扩展 `Request` 接口，但这种扩展是全局可用的，缺乏可靠的类型安全，也无法保证所有请求处理器中都能使用该属性。
+
+```ts
+declare module 'express' {
+  	interface Request {
+    	version: number
+  		token: string
+  	}
+}
+```
+> 要让上面的 Express 示例正常工作，必须添加此声明，但它无法提供可靠的类型安全
+
+## 中间件参数
+Express 使用返回中间件的函数来定义可复用的路由专属中间件，而 Elysia 使用 [macro](/patterns/macro) 定义自定义钩子。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import { findUser } from './users'
+import express from 'express'
+import type { Request, Response } from 'express'
+
+const app = express()
+
+const role = (role: 'user' | 'admin') =>
+	(req: Request, res: Response, next: Function) => {
+	  	const user = findUser(req.headers.authorization)
+
+	  	if (!user || user.role !== role)
+	   		return res.status(401).send('Unauthorized')
+
+	    req.user = user
+
+		next()
+	}
+
+app.get('/token', role('admin'), (req, res) => {
+	// Error: Property 'user' does not exist on type 'Request'
+  	res.send(req.user)
+})
+```
+
+> Express 使用回调函数为中间件接收自定义参数
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { findUser } from './users'
+
+const app = new Elysia()
+	.macro({
+		role: (role: 'user' | 'admin') => ({
+			derive({ status, headers: { authorization } }) {
+				const user = findUser(authorization)
+
+				if (!user || user.role !== role)
+					return status(401)
+
+				return {
+					user
+				}
+			}
+		})
+	})
+	// { user: User }
+	.get('/token', {
+		role: 'admin'
+	}, ({ user }) => user)
+```
+
+> Elysia 使用 macro 为自定义中间件传递参数
+
+</div>
+</div>
+
+<div class="content-layout">
+
+这里的 `findUser` 是应用代码，负责验证提供的凭据；验证成功时返回带有 `role` 的用户，失败时则不返回用户。仅检查请求头或 Bearer 前缀并不等同于身份验证。
+
+## 错误处理
+
+Express 为所有路由使用同一个错误处理器，而 Elysia 对错误处理提供了更细致的控制。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+class CustomError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'CustomError'
+	}
+}
+
+// global error handler
+app.use((error, req, res, next) => {
+	if(error instanceof CustomError) {
+		res.status(500).json({
+			message: 'Something went wrong!',
+			error
+		})
+	}
+})
+
+// throws CustomError
+app.get('/error', (req, res) => {
+	throw new CustomError('oh uh')
+})
+```
+
+> Express 使用中间件处理错误，并为所有路由共用一个错误处理器
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+class CustomError extends Error {}
+
+const app = new Elysia()
+    .onError(CustomError, ({ error, status }) =>
+        status(500, { message: 'Something went wrong!', detail: error.message })
+    )
+    .get('/error', () => {
+        throw new CustomError('oh uh')
+    })
+    .get('/local-error', {
+        error({ error, status }) {
+            if (error instanceof RangeError)
+                return status(500, { message: 'Only for this route!' })
+        }
+    }, () => {
+        throw new RangeError('outside the allowed range')
+    })
+```
+
+> Elysia 提供更细致的错误处理控制和作用域机制
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Express 通过中间件处理错误，而 Elysia 还提供：
+
+1. 全局和路由专属错误处理器
+2. 用于返回带 HTTP 状态码响应的 `status` 辅助函数
+3. 可按错误类匹配并推断错误类型的处理器
+
+`/error` 路由使用已注册的 `CustomError` 处理器。`/local-error` 路由则在本地处理另一种错误。错误钩子按注册顺序运行，第一个返回值的钩子会发送响应。路由注册之前挂在应用上的钩子会先于该路由自己的 `error` 钩子运行，因此路由钩子无法覆盖它们。
+
+Elysia 会在针对特定错误类的处理器中推断已注册的错误类型。
+
+## 封装
+
+Express 中间件是全局注册的；Elysia 则通过显式作用域机制和代码顺序，让你控制插件的副作用。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+const app = express()
+
+app.get('/', (req, res) => {
+	res.send('Hello World')
+})
+
+const subRouter = express.Router()
+
+subRouter.use((req, res, next) => {
+	const token = req.headers.authorization
+
+	if (!token)
+		return res.status(401).send('Unauthorized')
+
+	next()
+})
+
+app.use(subRouter)
+
+// has side-effect from subRouter
+app.get('/side-effect', (req, res) => {
+	res.send('hi')
+})
+
+```
+
+> Express 不会封装中间件的副作用，需要使用前缀来隔离副作用
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // doesn't have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+> Elysia 会将副作用封装在插件中
+
+</div>
+</div>
+
+<div class="content-layout">
+
+默认情况下，Elysia 会将生命周期事件和上下文限制在当前实例中，因此插件的副作用不会影响父实例，除非你明确指定。
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+
+const subRouter = new Elysia()
+	.onBeforeHandle(({ status, headers: { authorization } }) => {
+		if(!authorization?.startsWith('Bearer '))
+			return status(401)
+   	})
+	// Scoped to parent instance but not beyond
+	.as('plugin') // [!code ++]
+
+const app = new Elysia()
+    .get('/', 'Hello World')
+    .use(subRouter)
+    // [!code ++]
+    // now have side-effect from subRouter
+    .get('/side-effect', () => 'hi')
+```
+
+Elysia 提供 3 种作用域机制：
+1. **local** - 作用于当前实例及其后代（默认）
+2. **plugin** - 与父实例共享副作用，但不再向外传播
+3. **global** - 在所有父实例之间共享
+
+Express 可以通过添加前缀限制中间件副作用的范围，但这并不是真正的封装。副作用依然存在，只是被限制在以该前缀开头的路由上；开发者还得记住哪些前缀会触发副作用，增加了心智负担。
+
+你可以采取以下做法：
+
+1. 调整代码顺序，但这只适用于只有一个带副作用实例的情况。
+2. 添加前缀，但副作用依然存在；如果另一个实例使用相同前缀，也会受到影响。
+
+由于 Express 不提供真正的封装，这些情况可能让调试变得非常棘手。
+
+## Cookie
+Express 使用外部库 `cookie-parser` 解析 Cookie；Elysia 内置 Cookie 支持，并采用基于信号的方式处理 Cookie。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import cookieParser from 'cookie-parser'
+
+const app = express()
+
+app.use(cookieParser('secret'))
+
+app.get('/', function (req, res) {
+	req.cookies.name
+	req.signedCookies.name
+
+	res.cookie('name', 'value', {
+		signed: true,
+		maxAge: 1000 * 60 * 60 * 24
+	})
+})
+```
+
+> Express 使用 `cookie-parser` 解析 Cookie
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({
+    cookie: {
+        secrets: 'replace-with-a-private-secret',
+        sign: ['name']
+    }
+})
+    .get('/', {
+        cookie: t.Cookie({ name: t.Optional(t.String()) })
+    }, ({ cookie: { name } }) => {
+        const previous = name.value
+        name.set({
+            value: 'value',
+            maxAge: 60 * 60 * 24,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax'
+        })
+        return previous ?? 'unset'
+    })
+```
+
+> Elysia 会自动验证并签名已配置的 Cookie。Cookie 的 `maxAge` 单位是秒；请将示例密钥替换为私密值，并通过 HTTPS 发送安全 Cookie。
+
+</div>
+</div>
+
+<div class="content-layout">
+
+## OpenAPI
+Express 需要分别配置 OpenAPI、校验和类型安全；Elysia 则通过 `@elysia/openapi` 插件提供 OpenAPI，并以 schema 作为**单一事实来源**。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+
+import swaggerUi from 'swagger-ui-express'
+
+const app = express()
+app.use(express.json())
+
+app.post('/users', (req, res) => {
+	// TODO: validate request body
+	res.status(201).json(req.body)
+})
+
+const swaggerSpec = {
+	openapi: '3.0.0',
+	info: {
+		title: 'My API',
+		version: '1.0.0'
+	},
+	paths: {
+		'/users': {
+			post: {
+				summary: 'Create user',
+				requestBody: {
+					content: {
+						'application/json': {
+							schema: {
+								type: 'object',
+								properties: {
+									name: {
+										type: 'string',
+										description: 'First name only'
+									},
+									age: { type: 'integer' }
+								},
+								required: ['name', 'age']
+							}
+						}
+					}
+				},
+				responses: {
+					'201': {
+						description: 'User created'
+					}
+				}
+			}
+		}
+	}
+}
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+```
+
+> Express 需要分别配置 OpenAPI、校验和类型安全
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { openapi } from '@elysia/openapi' // [!code ++]
+
+const app = new Elysia()
+	.use(openapi()) // [!code ++]
+	.model({
+		user: t.Object({
+			name: t.String(),
+			age: t.Integer()
+		})
+	})
+	.post('/users', {
+		body: 'user',
+		response: {
+			201: 'user'
+		},
+		detail: {
+			summary: 'Create user'
+		}
+	}, ({ body, status }) => status(201, body))
+```
+
+> Elysia 以 schema 作为单一事实来源
+
+</div>
+</div>
+
+<div class="content-layout">
+
+Elysia 会根据你提供的 schema 生成 OpenAPI 规范、校验请求和响应，并自动推断类型。
+
+Elysia 还会将注册在 `model` 中的 schema 添加到 OpenAPI 规范中，让你可以在 Swagger 或 Scalar UI 的专属区域引用该模型。
+
+## 测试
+
+Express 使用 `supertest` 测试应用；Elysia 基于 Web Standard API 构建，因此可以配合任何测试库使用。
+
+</div>
+
+<div class="code-comparison">
+<div>
+
+```ts title="Express"
+import express from 'express'
+import request from 'supertest'
+import { describe, it, expect } from 'vitest'
+
+const app = express()
+
+app.get('/', (req, res) => {
+	res.send('Hello World')
+})
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const res = await request(app).get('/')
+
+		expect(res.status).toBe(200)
+		expect(res.text).toBe('Hello World')
+	})
+})
+```
+
+> Express 使用 `supertest` 测试应用
+
+</div>
+<div>
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { describe, it, expect } from 'vitest'
+
+const app = new Elysia()
+	.get('/', 'Hello World')
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const res = await app.handle(
+			new Request('http://localhost')
+		)
+
+		expect(res.status).toBe(200)
+		expect(await res.text()).toBe('Hello World')
+	})
+})
+```
+
+> Elysia 使用 Web Standard API 处理请求和响应
+
+</div>
+</div>
+
+<div class="content-layout">
+
+此外，Elysia 还提供辅助库 [Eden](/eden)，实现端到端类型安全，让你在编写测试时也能获得自动补全和完整的类型安全。
+
+```ts title="Elysia"
+import { Elysia } from 'elysia'
+import { treaty } from '@elysia/eden'
+import { describe, expect, it } from 'bun:test'
+
+const app = new Elysia().get('/hello', 'Hello World')
+const api = treaty(app)
+
+describe('GET /', () => {
+	it('should return Hello World', async () => {
+		const { data, error, status } = await api.hello.get()
+
+		expect(status).toBe(200)
+		expect(data).toBe('Hello World')
+	})
+})
+```
+
+## 端到端类型安全
+Elysia 通过 [Eden](/eden) 内置支持**端到端类型安全**，无需代码生成；Express 则不具备此功能。
+
+```ts title="Elysia"
+import { Elysia, t } from 'elysia'
+import { treaty } from '@elysia/eden'
+
+const app = new Elysia()
+	.post('/mirror', {
+		body: t.Object({
+			message: t.String()
+		})
+	}, ({ body }) => body)
+
+const api = treaty(app)
+
+const { data, error } = await api.mirror.post({
+	message: 'Hello World'
+})
+
+if (error)
+	// error.status: 422
+	// error.value: { type: 'validation', title: 'Validation Error', status: 422, on: 'body', detail, errors: [...] }
+	throw error
+
+// { message: 'Hello World' }
+console.log(data)
+```
+
+如果端到端类型安全对你很重要，那么 Elysia 会是合适的选择。
+
+---
+
+Elysia 注重性能、类型安全和简洁，能带来更顺手、更友好的开发体验。Express 虽然是流行的 Node.js Web 框架，但在性能和简洁性方面仍有一些限制。
+
+如果你想要一个易于使用、开发体验出色且基于 Web Standard API 构建的框架，Elysia 很适合你。
+
+如果你之前使用的是其他框架，也可以看看：
+
+<div class="grid gap-4 sm:grid-cols-2 [&>*]:m-0">
+    <Card href="/migrate/from-fastify">
+<CardTitle>从 Fastify 迁移</CardTitle>
+
+比较 Fastify 与 Elysia
+
+</Card>
+	<Card href="/migrate/from-hono">
+<CardTitle>从 Hono 迁移</CardTitle>
+
+比较 Hono 与 Elysia
+
+</Card>
+	<Card href="/migrate/from-trpc">
+<CardTitle>从 tRPC 迁移</CardTitle>
+
+比较 tRPC 与 Elysia
+
+</Card>
+</div>
+
+</div>
+</InteractiveDocLayout>
+</div>

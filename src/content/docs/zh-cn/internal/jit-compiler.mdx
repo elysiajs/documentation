@@ -1,0 +1,212 @@
+---
+title: JIT 编译器
+description: 了解 Elysia 如何分析处理器并生成针对各路由的请求处理代码。
+template: splash
+---
+
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro';
+import '../../../../styles/routing.css';
+
+<div class="essential-page">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">JIT“编译器”</h1>
+
+Elysia 会同时优化所用的运行时功能和请求处理过程。只读取路径参数的路由，不应该还要解析未使用的查询参数或请求体。
+
+自 2023 年 3 月 30 日发布的 [Elysia 0.4](/blog/elysia-04/) 起，框架便使用 `new Function(...)` 生成 JavaScript 请求处理器。
+
+这并不是将一种编程语言转换为另一种语言的传统编译器，而是根据路由的处理器、schema 和钩子生成定制代码。这就是我们给“编译器”加上引号的原因。
+
+在 v2 中，处理器生成器位于 `src/compile/handler/`，其中包括 `jit.ts`。较早的说明会提到 `src/compose.ts`。Sucrose 仍位于 `src/sucrose.ts`。
+
+默认情况下，路由首次使用时可以进行编译。生成处理器后，后续请求会复用它。静态响应和预编译路由可能采用不同路径，因此并非每个请求或路由都需要相同的分析。
+
+## 静态代码分析（Sucrose）
+
+*Sucrose* 是分析模块的昵称，它帮助编译器了解处理器使用了哪些上下文属性。
+
+它通过 `Function.toString()` 读取函数源码，再用专门的分析方式找出相关的访问模式。它不会执行处理器来判断处理器需要什么。
+
+来看这个路由：
+
+```ts
+import { Elysia } from 'elysia'
+
+const app = new Elysia()
+    .patch('/user/:id', ({ params }) => ({ id: params.id }))
+```
+
+处理器读取了 `params`，但没有读取 `body`、`query` 或 `headers`。
+
+Sucrose 会将这些信息提供给路由编译过程。编译器也会考虑钩子和 schema：即使处理器没有直接读取 `body`，请求体校验 schema 仍然需要对应的输入。
+
+从概念上说，生成的代码可以这样处理：
+
+```ts title="针对路由生成的处理器（简化示意）"
+function tailoredHandler(request) {
+    const context = {
+        request,
+        params: parseParams(request.url)
+    }
+
+    return routeHandler(context)
+}
+```
+
+这些只是用于解释的示意代码，并非 Elysia 实际生成的源码，也不是导出的辅助函数。再看看集中式处理器如何提前准备所有字段：
+
+```ts title="提前处理所有字段的集中式处理器（简化示意）"
+async function centralHandler(request) {
+    const context = {
+        request,
+        params: parseParams(request.url),
+        body: await parseBody(request),
+        query: parseQuery(request.url),
+        headers: parseHeaders(request.headers)
+    }
+
+    return routeHandler(context)
+}
+```
+
+| 输入 | 仅使用参数的路由 | 提前处理的示意代码 |
+| --- | --- | --- |
+| 路径参数 | 读取 | 读取 |
+| 请求体 | 除非路由的其他需求需要，否则跳过 | 读取 |
+| 查询参数 | 除非需要，否则跳过 | 读取 |
+| 请求头对象 | 除非需要，否则跳过 | 读取 |
+
+这样可以减少每个请求中不必要的工作。其他框架也可能采用延迟解析；这里的示意代码是为了解释这种优化，并不是说其他框架都会解析所有内容。
+
+### 为什么不用 acorn、esprima 或其他传统分析工具？
+
+通用解析器理解的 JavaScript 远超这类分析所需的范围，而且还会构建 AST，增加运算和内存分配。
+
+Elysia 专门分析与上下文使用相关的函数源码模式，将这部分内容视为一种小型输入语言；当访问方式难以判断时，则采用保守分析。
+
+这种取舍是缩小分析范围，以减少解析工作。它并不能替代通用 JavaScript 解析器。
+
+## 编译器优化
+
+编译器可以根据路由的实际需求调整控制流、专门处理响应，并尽可能直接访问属性。
+
+常量值和已知 schema 也为它提供了通用请求处理器无法获得的信息。许多细小的优化共同带来效果，实际影响则取决于路由。
+
+### 示例：`mapResponse`、`mapCompactResponse`
+
+Elysia 提供了不同级别的响应映射器，以处理不同数量的响应元数据。
+
+如果处理器没有修改 `set` 或使用自定义状态码，精简映射器就可以直接返回结果，无需额外准备状态码和响应头信息。需要这些信息时，则由完整映射器处理。
+
+创建并映射带有自定义响应头的响应，与直接返回普通值所需的工作不同。这项优化会选择适合当前路由的处理路径，而不是始终承担通用情况的开销。
+
+## 平台特定优化
+
+Elysia 最初是为 Bun 构建的，也通过针对不同运行时的集成支持 [Node.js](/integrations/node/)、[Deno](/integrations/deno/) 等环境。
+
+兼容某个平台和利用其原生 API 是两回事。例如，Bun 的原生路由和静态响应路径可以省去部分 JavaScript 分发工作。
+
+其他示例包括：
+
+- 通过 Elysia 的 [WebSocket 插件](/patterns/websocket/)使用 Bun 原生的 WebSocket 处理能力。
+- 如果平台支持，`file()` 辅助函数会使用平台特定的文件处理方式。
+- 运行时提供原生 HTTP 头字段操作时，使用这些操作。
+
+Elysia 曾参与 [TechEmpower 第 23 轮纯文本基准测试](https://www.techempower.com/benchmarks/#section=data-r23&hw=ph&test=plaintext)。这是针对特定配置的历史结果，并非本页 v2 示例的测量数据。
+
+请针对实际工作负载和运行时进行测量。数据库访问、序列化、中间件和网络状况，都可能比小型路由基准测试产生更大的影响。
+
+## JIT 编译器的开销
+
+生成专用处理器既有收益，也会带来开销。
+
+### 首次请求的开销
+
+路由首次使用时，可能需要进行分析和代码生成。后续请求会复用生成结果。
+
+请针对你使用的版本和运行时，在本地进行测量：
+
+```ts title="测量路由即时编译"
+import { Elysia } from 'elysia'
+
+const iterations = 10_000
+const start = performance.now()
+
+for (let index = 0; index < iterations; index++) {
+    new Elysia()
+        .post('/id/:id', ({ params }) => params.id)
+        .compile()
+}
+
+const elapsed = performance.now() - start
+console.log(`${elapsed.toFixed(1)} ms total`)
+console.log(`${(elapsed / iterations).toFixed(4)} ms per instance`)
+```
+
+这项测量除了编译，也包含实例创建和路由注册。预热、垃圾回收、路由复杂度和硬件都会影响结果。
+
+可以在根应用中设置 `precompile: true`，将编译提前到开始监听之前；也可以显式调用 `.compile()`：
+
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia({ precompile: true })
+    .get('/hello/:name', ({ params }) => 'Hello ' + params.name)
+    .listen(3000)
+```
+
+这样会增加一些启动时间，换取首次请求时更少的工作。
+
+### 内存用量
+
+生成的代码和相关元数据会占用内存。路由越多，可能需要编译的处理器和校验器也越多。如果部署时需要关注内存，请使用有代表性的路由集合进行测量。
+
+### 打包体积增大
+
+编译器及其分析代码会增加 Elysia 包的体积。提前编译工具可能改变运行时所需的内容，但包更小并不必然意味着处理器更快，反之亦然。
+
+### 可维护性
+
+生成代码会增加框架维护的复杂度。调试时需要同时理解路由定义和代码生成过程。
+
+专门化的生成和分析有助于提升运行时性能，但也意味着这些路径需要各自的测试。
+
+### 安全注意事项
+
+`new Function(...)` 会编译 JavaScript，但它不是沙箱。
+
+Elysia 根据应用路由和由编译器控制的结构生成代码，并不会将任意请求字符串当作 JavaScript 执行。不过，处理会影响生成代码的 schema、插件配置或其他输入时，仍需谨慎把握边界。
+
+不要接收不可信的应用代码或可执行 schema 配置，并误以为路由编译会让它们变安全。即便应用逻辑本身正确，运行时对动态代码生成的限制仍然适用。
+
+## 使用动态代码生成的库
+
+生成专用函数的不只有 Elysia。[Ajv](https://ajv.js.org/guide/managing-schemas.html) 和 [TypeBox](https://github.com/sinclairzx81/typebox) 也会使用编译技术进行校验。
+
+大致思路都是先准备一次，再在关键路径上复用函数。Elysia 将这种方式用于请求处理和校验。具体实现细节取决于你选择的校验器及其版本。
+
+## 选择退出
+
+:::note[Elysia v2]
+
+v1 中的选项 `new Elysia({ aot: false })` 用于选择旧的动态处理器。v2 构造函数已不再提供该选项。设置 `precompile: true` 只会改变编译时机，并不会禁用代码生成。
+
+:::
+
+v2 提供提前编译构建插件，例如 `elysia/plugin/aot/bun`、`elysia/plugin/aot/esbuild` 和 `elysia/plugin/aot/vite`。它们会在构建期间准备处理器，而不是使用旧的动态模式开关。
+
+部署到限制动态代码生成的运行时时，请查看其[部署要求](/patterns/deploy/)以及构建插件支持的路径。不要以为修改旧的 `aot` 标志就能让应用兼容。
+
+## 后记
+
+编译器以增加部分启动工作、内存用量和实现复杂度为代价，减少重复的请求处理工作。这种取舍是 Elysia 设计的核心。
+
+项目曾在 ACM 数字图书馆发表一篇介绍早期 JIT 编译器和性能优化的[六页论文](https://dl.acm.org/doi/10.1145/3605098.3636068)。论文介绍了这一方法的背景；目前的实现仍在持续演进。
+
+包括 uWebSockets 在内的原生库和绑定采用了不同的取舍，在某些工作负载下可能比 JavaScript 框架更快。请用基准测试回答特定工作负载的问题，而不要据此断言存在普遍适用的赢家。
+
+</div>
+</InteractiveDocLayout>
+</div>

@@ -1,0 +1,154 @@
+---
+title: "集成 Expo"
+description: "借助 Expo App Router，你可以在 Expo 路由中运行 Elysia。得益于对 WinterTC 的兼容，Elysia 可以正常工作。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">集成 Expo</h1>
+
+从 Expo SDK 50 和 App Router v3 开始，Expo 支持直接在 Expo 应用中创建 API 路由。
+
+1. 创建 **app/[...slugs]+api.ts**
+2. 定义 Elysia 服务
+3. 将 **Elysia.fetch** 以所需 HTTP 方法的名称导出
+
+
+```typescript title="app/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+    .get('/', 'hello Expo')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+你可以像使用普通 Expo API 路由一样使用 Elysia 服务。
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## 前缀
+如果 Elysia 服务不在 app router 的根目录下，就需要在 Elysia 服务上指定前缀。
+
+例如，如果 Elysia 服务位于 **app/api/[...slugs]+api.ts**，就需要将 Elysia 服务的前缀设为 **/api**。
+
+
+```typescript title="app/api/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia({ prefix: '/api' })
+    .get('/', 'Hello Expo')
+    .post('/', {
+        body: t.Object({
+            name: t.String()
+        })
+    }, ({ body }) => body)
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+这样无论将 Elysia 服务放在哪里，路由都能正常工作。
+
+## Eden
+
+可以添加 [Eden](/eden)，实现类似 tRPC 的**端到端类型安全**。
+
+1. 从 Elysia 服务导出 `type`
+
+
+```typescript title="app/[...slugs]+api.ts"
+import { Elysia, t } from 'elysia'
+
+const app = new Elysia()
+	.get('/', 'Hello Expo')
+	.post(
+		'/user',
+		{
+			body: t.Object({
+				name: t.String()
+			})
+		}, ({ body }) => body
+	)
+
+export type app = typeof app
+
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+
+2. 创建 Treaty 客户端
+
+
+```typescript title="lib/eden.ts"
+import { treaty } from '@elysia/eden'
+import type { app } from '../app/[...slugs]+api'
+
+export const api = treaty<app>('http://localhost:8081')
+```
+
+
+在实体设备上，请将 `localhost` 替换为设备可访问的源地址，例如开发机器的局域网地址。生产环境请使用已部署 API 的源地址。
+
+3. 在 Expo 页面中使用客户端
+
+
+```tsx title="app/index.tsx"
+import { useEffect, useState } from 'react'
+import { Text } from 'react-native'
+import { api } from '../lib/eden'
+
+export default function Page() {
+	const [message, setMessage] = useState<string | null>(null)
+
+	useEffect(() => {
+		api.get().then(({ data }) => setMessage(data))
+	}, [])
+
+	return <Text>{message ?? 'Loading…'}</Text>
+}
+```
+
+
+## 部署
+你可以直接通过 Elysia 使用 API 路由，并按需将其作为普通 Elysia 应用部署；也可以使用[实验性的 Expo 服务端运行时](https://docs.expo.dev/router/reference/api-routes/#deployment)。
+
+如果使用 Expo 服务端运行时，可以通过 `expo export` 命令为 Expo 应用创建优化后的构建产物，其中会包含位于 `dist/server/_expo/functions/` 下、使用 Elysia 的 Expo 函数。
+
+
+:::tip
+
+导出的 API 函数需要服务端适配器才能接收请求。仅导入生成的函数并不会分配端口。
+
+:::
+
+
+你可以使用 Expo 提供的函数适配器来部署 Edge Function。
+
+Expo 部署指南介绍了以下适配器：
+- [Express](https://docs.expo.dev/router/reference/api-routes/#express)
+- [Netlify](https://docs.expo.dev/router/reference/api-routes/#netlify)
+- [Vercel](https://docs.expo.dev/router/reference/api-routes/#vercel)
+
+</div>
+</InteractiveDocLayout>
+</div>

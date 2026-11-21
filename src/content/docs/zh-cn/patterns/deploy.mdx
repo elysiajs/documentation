@@ -1,0 +1,335 @@
+---
+title: 部署到生产环境
+description: 将 Elysia 服务器构建并部署为二进制文件、JavaScript 包或容器。
+template: splash
+---
+
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+import "../../../../styles/routing.css";
+
+<div class="essential-page">
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">部署到生产环境</h1>
+
+将服务器构建为可执行文件或 JavaScript 包，然后直接运行或在容器中运行。
+
+## 集群模式
+
+单个 Elysia 进程会在一个主线程上运行 JavaScript。若要将请求分散到多个 CPU 核心，可以运行多个进程。
+
+我们来创建 **index.ts** 文件，从 **server.ts** 导入主服务器，并根据可用 CPU 核心数派生多个工作进程。
+
+```ts
+import cluster from 'node:cluster'
+import os from 'node:os'
+import process from 'node:process'
+import { server } from './server'
+
+if (cluster.isPrimary) {
+  	for (let i = 0; i < os.availableParallelism(); i++)
+    	cluster.fork()
+} else {
+	server.listen({ port: 3000, reusePort: true })
+   
+  	console.log(`Worker ${process.pid} started`)
+}
+```
+
+```ts
+// server.ts
+import { Elysia } from 'elysia'
+
+export const server = new Elysia()
+	.get('/', () => 'Hello World!')
+```
+
+
+这样 Elysia 就能在多个 CPU 核心上运行。
+
+:::tip
+
+此 Bun 示例显式启用了 `reusePort`，让工作进程可以在 Linux 上共享端口 `3000`。在其他平台上，请使用进程管理器，或让负载均衡器将请求分发到不同端口。
+
+:::
+
+## 编译为二进制文件
+建议在部署到生产环境前运行构建命令，因为这可能显著降低内存用量和文件大小。
+
+建议使用以下命令将 Elysia 编译为单个二进制文件：
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun \
+	--outfile server \
+	src/index.ts
+```
+
+这会为所选操作系统和架构生成名为 `server` 的可执行文件。
+
+编译可以减少启动工作和部署体积。请使用自己的生产负载测量内存用量，改善幅度并非固定倍数。
+
+这个命令稍长，我们逐项说明：
+1. **--compile** 将 TypeScript 编译为二进制文件
+2. **--minify-whitespace** 移除不必要的空白
+3. **--minify-syntax** 压缩 JavaScript 语法以减小文件体积
+4. **--target bun** 针对 Bun 运行时优化二进制文件
+5. **--outfile server** 将二进制文件输出为 `server`
+6. **src/index.ts** 服务器（代码库）的入口文件
+
+启动服务器只需运行该二进制文件。
+```bash
+./server
+```
+
+二进制文件编译完成后，运行服务器的机器上无需安装 `Bun`。
+
+这样部署服务器就不需要额外安装运行时，二进制文件也更便于移植。
+
+### 目标平台
+使用对应平台的 `--target` 值，为其他平台构建二进制文件。
+
+```bash
+bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun-linux-x64 \
+	--outfile server \
+	src/index.ts
+```
+
+请选择与部署环境的操作系统、架构和 Linux C 库匹配的目标：
+
+| 目标 | 操作系统 | 架构 | C 库 |
+| --- | --- | --- | --- |
+| `bun-linux-x64` | Linux | x64 | glibc |
+| `bun-linux-arm64` | Linux | arm64 | glibc |
+| `bun-windows-x64` | Windows | x64 | — |
+| `bun-windows-arm64` | Windows | arm64 | — |
+| `bun-darwin-x64` | macOS | x64 | — |
+| `bun-darwin-arm64` | macOS | arm64 | — |
+| `bun-linux-x64-musl` | Linux | x64 | musl |
+| `bun-linux-arm64-musl` | Linux | arm64 | musl |
+
+为其他机器选择构建目标时，请参阅 [Bun 当前支持的目标列表](https://bun.com/docs/bundler/executables#supported-targets)。
+
+### 为什么不使用 --minify
+Bun 提供了 `--minify` 标志，可以压缩二进制文件。
+
+但如果使用 [OpenTelemetry](/plugins/opentelemetry/)，它会将函数名缩短为单个字符。
+
+这会增加追踪难度，因为 OpenTelemetry 依赖函数名。
+
+如果你没有使用 OpenTelemetry，也可以改用 `--minify`：
+```bash
+bun build \
+	--compile \
+	--minify \
+	--outfile server \
+	src/index.ts
+```
+
+### 执行权限
+某些 Linux 发行版可能无法直接运行该二进制文件。如果你使用 Linux，建议为文件添加执行权限：
+```bash
+chmod +x ./server
+
+./server
+```
+
+<span id="unknown-random-chinese-error" />
+
+### CPU 不受支持
+如果可执行文件因非法指令错误而失败，请检查其架构以及用于构建它的 Bun 版本。
+
+当前 Bun x64 构建需要 SSE4.2，并会在运行时选择较新的 CPU 指令。旧版本区分基础版和现代 AVX2 目标；当前版本为保持兼容仍接受这些后缀，但最终会使用相同的二进制文件。
+
+请让目标平台与部署机器匹配，并在重新构建前查看 [Bun 的 CPU 要求](https://bun.com/docs/bundler/executables#supported-targets)。仅凭不熟悉的错误消息，无法判断缺少哪项 CPU 功能。
+
+<span id="compile-to-javascript"></span>
+
+## 编译为 JavaScript
+如果希望将 Bun 作为单独安装的运行时保留，请打包为 JavaScript。这适用于受支持的 Windows、Linux 和 macOS 主机。
+
+```bash
+bun build \
+	--target bun \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile ./dist/index.js \
+	src/index.ts
+```
+
+这会生成一个可移植的 JavaScript 文件，可部署到服务器上。
+```bash
+NODE_ENV=production bun ./dist/index.js
+```
+
+## Docker
+编译后的可执行文件让你可以使用更小的运行时镜像。此示例先在 Bun 镜像中构建，再将文件复制到 Distroless：
+
+`Dockerfile`
+
+```dockerfile
+FROM oven/bun AS build
+
+WORKDIR /app
+
+# Cache packages installation
+COPY package.json package.json
+COPY bun.lock bun.lock
+
+RUN bun install --frozen-lockfile
+
+COPY ./src ./src
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
+```
+
+### OpenTelemetry
+如果你使用 [OpenTelemetry](/patterns/opentelemetry) 部署生产服务器，OpenTelemetry 依赖对 `node_modules/<library>` 进行猴子补丁。要让检测正常工作，需要将待检测的库指定为外部模块，避免将它们打包进去。
+
+例如，若使用 `@opentelemetry/instrumentation-pg` 检测 `pg` 库，就需要将 `pg` 排除在打包之外，并确保它从 `node_modules/pg` 导入。
+
+为此，可以通过 `--external pg` 将 `pg` 指定为外部模块：
+```bash
+bun build --compile --external pg --outfile server src/index.ts
+```
+
+这会告诉 Bun 不要将 `pg` 打包进最终输出文件。运行时会从 `node_modules` 目录导入该库。因此生产服务器上也必须保留 `node_modules` 目录。
+
+建议将生产服务器需要的包列为 `package.json` 中的 `dependencies`，并使用 `bun install --production` 仅安装生产依赖。
+
+将所有保留为外部模块的包都列入 `dependencies`：
+
+```json
+{
+	"dependencies": {
+		"pg": "^8.23.1"
+	},
+	"devDependencies": {
+		"@elysia/opentelemetry": "2.0.0-beta.2",
+		"@opentelemetry/instrumentation-pg": "^0.74.0",
+		"@types/pg": "^8.23.1",
+		"elysia": "2.0.0-beta.32"
+	}
+}
+```
+
+运行构建命令后，在生产服务器上执行：
+```bash
+bun install --production
+```
+
+如果 `node_modules` 目录中仍包含开发依赖，可以删除该目录，然后重新安装生产依赖。
+
+### Monorepo
+如果在 monorepo 中使用 Elysia，可能需要包含依赖的 `packages`。
+
+如果使用 Turborepo，可以将 Dockerfile 放在 apps 目录下，例如 **apps/server/Dockerfile**。这也适用于 Lerna 等其他 monorepo 管理工具。
+
+假设 monorepo 使用 Turborepo，目录结构如下：
+- apps
+	- server
+		- **Dockerfile（在此处放置 Dockerfile）**
+- packages
+	- config
+
+此时可以在 monorepo 根目录（而不是应用根目录）构建 Dockerfile：
+```bash
+docker build -f apps/server/Dockerfile -t elysia-mono .
+```
+
+Dockerfile 内容如下：
+`apps/server/Dockerfile`
+
+```dockerfile
+FROM oven/bun:1 AS build
+
+WORKDIR /app
+
+# Cache packages
+COPY package.json package.json
+COPY bun.lock bun.lock
+
+COPY apps/server/package.json ./apps/server/package.json
+COPY packages/config/package.json ./packages/config/package.json
+
+RUN bun install --frozen-lockfile
+
+COPY apps/server ./apps/server
+COPY packages/config ./packages/config
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	apps/server/src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
+```
+
+## Railway
+[Railway](https://railway.app) 是一个常用的部署平台。
+
+请读取 Railway 的 `PORT` 环境变量，不要假定生产环境使用固定端口。
+
+我们需要修改 Elysia 服务器，使其读取 `PORT` 环境变量，以符合 Railway 的端口配置。
+
+可以使用 `process.env.PORT` 替代固定端口，并为开发环境提供备用值：
+```ts
+import { Elysia } from 'elysia'
+
+new Elysia()
+	.get('/', 'Hello Elysia')
+	.listen({ port: process.env.PORT ?? 3000, hostname: '0.0.0.0' })
+```
+
+这样 Elysia 就能使用 Railway 提供的端口。
+
+:::tip
+
+监听 `0.0.0.0`，这样 Railway 就能通过分配的端口访问服务器。
+
+:::
+
+</div>
+</InteractiveDocLayout>
+</div>

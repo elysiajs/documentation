@@ -1,0 +1,108 @@
+---
+title: "集成 Nuxt"
+description: "使用社区插件 'nuxt-elysia'，可以在 Nuxt API 路由中运行 Elysia，并自动配置 Eden Treaty。"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">集成 Nuxt</h1>
+
+你可以使用 Nuxt 社区插件 [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia)，在 Nuxt API 路由中配置 Elysia 和 Eden Treaty。
+
+:::note[社区集成]
+
+请使用支持你所用 Elysia 版本的 `nuxt-elysia` 版本。配置方式和生成的 Eden 客户端由社区包提供；与 v2 搭配前，请先确认兼容性。
+
+:::
+
+1. 使用以下命令安装插件：
+
+```bash
+bun add elysia@rc @elysia/eden@next
+bun add -d nuxt-elysia
+```
+
+2. 将 `nuxt-elysia` 添加到 Nuxt 配置中：
+
+```ts
+export default defineNuxtConfig({
+    modules: [
+        'nuxt-elysia'
+    ],
+    nitro: {
+        preset: 'bun'
+    }
+})
+```
+
+
+:::tip
+
+`nitro.preset: 'bun'` 是推荐配置，并非必需。它会让 Nuxt 的 Nitro 使用 Bun 作为服务端运行时，而不是默认的 Node.js。
+
+:::
+
+
+3. 在项目根目录创建 `api.ts`：
+
+```typescript title="api.ts"
+import { Elysia } from 'elysia'
+
+export default () => new Elysia()
+  .get('/hello', () => ({ message: 'Hello world!' }))
+```
+
+4. 在 Nuxt 应用中使用 Eden Treaty：
+
+```vue
+<template>
+    <div>
+        <p>{{ data.message }}</p>
+    </div>
+</template>
+<script setup lang="ts">
+const { $api } = useNuxtApp()
+
+const { data } = await useAsyncData(async () => {
+    const { data, error } = await $api.hello.get()
+
+    if (error)
+        throw new Error('Failed to call API')
+
+    return data
+})
+</script>
+```
+
+这样就会自动配置 Elysia，使其运行在 Nuxt API 路由上。
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+## 前缀
+
+默认情况下，Elysia 会挂载在 **/_api**，你可以通过 `nuxt-elysia` 配置修改路径。
+```ts
+export default defineNuxtConfig({
+	nuxtElysia: {
+		path: '/api'
+	}
+})
+```
+
+这样 Elysia 就会挂载在 **/api**，而不是 **/_api**。
+
+更多配置选项请参阅 [nuxt-elysia](https://github.com/tkesgar/nuxt-elysia)。
+
+</div>
+</InteractiveDocLayout>
+</div>

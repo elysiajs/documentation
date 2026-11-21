@@ -1,0 +1,58 @@
+---
+title: "集成 Netlify Edge Function"
+description: "Elysia 基于 Web 标准的 Request/Response 构建，因此可以运行在 Netlify Edge Function 上"
+template: splash
+---
+
+import "../../../../styles/routing.css";
+import InteractiveDocLayout from "../../../../components/interactive-code/layout.astro";
+
+<div class="essential-page spica-surface">
+<InteractiveDocLayout>
+<div class="content-layout">
+
+<h1 id="_top">集成 Netlify Edge Function</h1>
+
+[Netlify Edge Functions](https://docs.netlify.com/build/edge-functions/overview/) 运行在 [Deno](/integrations/deno) 上。Deno 是 Elysia 支持的运行时之一，因为 Elysia 基于 Web 标准构建。
+
+Netlify Edge Functions 需要在专用目录中运行；默认目录是 **\<directory\>/netlify/edge-functions**。
+
+要创建 **/hello** 函数，请在 `netlify/edge-functions/hello.ts` 创建文件，然后导出一个将请求转发给 Elysia 的函数。
+
+
+```typescript title="netlify/edge-functions/hello.ts"
+import { Elysia } from 'elysia'
+
+export const config = { path: '/hello' }
+
+const app = new Elysia({ prefix: '/hello' })
+	.get('/', () => 'Hello Elysia')
+
+export default (request: Request) => app.handle(request)
+```
+
+
+### 本地运行
+要在本地测试运行于 Netlify Edge Functions 的 Elysia 服务，可以安装 [Netlify CLI](https://docs.netlify.com/build/edge-functions/get-started/#test-locally) 来模拟函数调用。
+
+安装 Netlify CLI：
+```bash
+bun add -g netlify-cli
+```
+
+启动开发环境：
+```bash
+netlify dev
+```
+
+更多信息请参阅 [Netlify Edge Functions 文档](https://docs.netlify.com/build/edge-functions)。
+
+### pnpm
+如果 pnpm 配置不会安装 peer 依赖，请显式添加 Elysia v2 所需的依赖：
+```bash
+pnpm add typebox exact-mirror openapi-types
+```
+
+</div>
+</InteractiveDocLayout>
+</div>

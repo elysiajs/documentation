@@ -1,0 +1,669 @@
+---
+title: 最佳实践
+description: 组织 Elysia 控制器、服务和模型，同时保留类型推断。
+template: splash
+---
+
+import { FileTree } from '../../../../components/ui/file-tree'
+import '../../../../styles/routing.css'
+import InteractiveDocLayout from '../../../../components/interactive-code/layout.astro'
+import InteractiveDoc from '../../../../components/interactive-code/doc.astro'
+import InteractiveStep from '../../../../components/interactive-code/step.astro'
+
+export const steps = [
+    {
+        label: '控制器（index.ts）',
+        code: `// src/routes/greet/index.ts
+import { Elysia } from 'elysia'
+import { greet } from './service'
+import * as GreetModel from './model'
+
+export const greeting = new Elysia({ prefix: '/greet' })
+    .post('/', {
+        body: GreetModel.Post.Body
+    }, ({ body }) => greet(body))`
+    },
+    {
+        label: '模型（model.ts）',
+        code: `// src/routes/greet/model.ts
+import { t, type UnwrapModels } from 'elysia'
+
+export const Post = {
+    Body: t.Object({ name: t.String() })
+}
+
+export type Post = UnwrapModels<typeof Post>`
+    },
+    {
+        label: '服务（service.ts）',
+        code: `// src/routes/greet/service.ts
+import type * as GreetModel from './model'
+
+export function greet({ name }: GreetModel.Post['Body']) {
+    return 'Hello ' + name
+}`
+    },
+    {
+        label: '主实例（app.ts）',
+        code: `// src/app.ts
+import { Elysia } from 'elysia'
+import { greeting } from './routes/greet'
+import { auth } from './routes/auth'
+import { user } from './routes/user'
+
+export const app = new Elysia()
+    .use(greeting)
+    .use(auth)
+    .use(user)`
+    }
+]
+
+export const tree = [
+    {
+        id: 'src',
+        name: 'src',
+        children: [
+            {
+                id: 'src/index.ts',
+                name: 'index.ts',
+            meta: '服务器入口，启动监听'
+            },
+            {
+                id: 'src/app.ts',
+                name: 'app.ts',
+            meta: '组合 Elysia 实例，供 index.ts 和测试使用'
+            },
+            {
+                id: 'src/env.ts',
+                name: 'env.ts',
+            meta: '经过校验的环境变量'
+            },
+            {
+                id: 'src/libs',
+                name: 'libs',
+                meta: '与请求上下文无关的共享客户端和辅助函数',
+                children: [
+                    {
+                        id: 'src/libs/db',
+                        name: 'db',
+                            meta: '数据库客户端和 schema（如 Prisma、Drizzle 等）',
+                        children: [
+                            {
+                                id: 'src/libs/db/index.ts',
+                                name: 'index.ts'
+                            },
+                            {
+                                id: 'src/libs/db/table.ts',
+                                name: 'table.ts'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'src/libs/message.ts',
+                        name: 'message.ts',
+                        meta: '不导入 Elysia 的纯辅助函数'
+                    }
+                ]
+            },
+            {
+                id: 'src/plugins',
+                name: 'plugins',
+                meta: '共享的 Elysia 插件和请求生命周期行为',
+                children: [
+                    {
+                        id: 'src/plugins/macro.ts',
+                        name: 'macro.ts',
+                        meta: 'Elysia 自定义宏插件'
+                    }
+                ]
+            },
+            {
+                id: 'src/routes',
+                name: 'routes',
+                meta: '按功能分组的路由',
+                children: [
+                    {
+                        id: 'src/routes/auth',
+                        name: 'auth',
+                        children: [
+                            {
+                                id: 'src/routes/auth/index.ts',
+                                name: 'index.ts',
+                                meta: '连接 HTTP 与业务逻辑'
+                            },
+                            {
+                                id: 'src/routes/auth/service.ts',
+                                name: 'service.ts',
+                                meta: '与请求上下文无关的业务规则和数据访问'
+                            },
+                            {
+                                id: 'src/routes/auth/model.ts',
+                                name: 'model.ts',
+                                meta: 'DTO、校验 schema 和 TypeScript 类型'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'src/routes/user',
+                        name: 'user',
+                        children: [
+                            {
+                                id: 'src/routes/user/index.ts',
+                                name: 'index.ts',
+                                meta: '连接 HTTP 与业务逻辑'
+                            },
+                            {
+                                id: 'src/routes/user/service.ts',
+                                name: 'service.ts',
+                                meta: '与请求上下文无关的业务规则和数据访问'
+                            },
+                            {
+                                id: 'src/routes/user/model.ts',
+                                name: 'model.ts',
+                                meta: 'DTO、校验 schema 和 TypeScript 类型'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'test',
+        name: 'test',
+        children: [
+            {
+                id: 'test/auth.test.ts',
+                name: 'auth.test.ts',
+            meta: '该功能的控制器和服务测试'
+            },
+            { id: 'test/user.test.ts', name: 'user.test.ts' }
+        ]
+    }
+]
+
+export const treeFolders = [
+    'src',
+    'src/libs',
+    'src/plugins',
+    'src/routes',
+    'src/routes/auth',
+    'src/routes/user',
+    'test'
+]
+
+<div class="essential-page">
+
+<InteractiveDocLayout>
+
+<div class="content-layout">
+
+<h1 id="_top">最佳实践</h1>
+
+Elysia 不会强制你采用某种编码模式。
+
+本指南采用按功能组织的结构，借鉴了 MVC 和关注点分离的思路。控制器处理 HTTP，服务实现业务规则，模型描述 API 接收和返回的数据。
+
+对于 JSON API，通常不需要单独的视图层。这里的 `model.ts` 指请求和响应 schema，而不是数据库模型。这是一种组织 Elysia 代码、同时保留类型推断的约定，你可以根据应用的需要调整。
+
+## 文件夹结构
+
+Elysia 不限定文件夹结构，你可以自行决定如何组织代码。
+
+如果还没有明确的结构方案，我们建议按功能组织。
+
+<FileTree
+    client:load
+    variant="card"
+    mono
+    dense
+    nodes={tree}
+    defaultExpanded={treeFolders}
+    className="not-content my-6"
+/>
+
+## 应用设置
+
+`src/index.ts` 是进程入口。在这里导入应用、启动监听并输出启动信息。
+
+```ts title="src/index.ts"
+import { app } from './app'
+import { env } from './env'
+
+app.listen(env.PORT)
+```
+
+`src/app.ts` 创建并导出 Elysia 应用。在这里组合各功能的控制器和应用级插件，例如 CORS 或 OpenAPI。功能相关的处理器和业务规则则留在对应的路由文件夹中。
+
+```ts title="src/app.ts"
+import { Elysia } from 'elysia'
+import { auth } from './routes/auth'
+import { user } from './routes/user'
+
+export const app = new Elysia().use(auth).use(user)
+
+export type App = typeof app
+```
+
+将 `.listen()` 留在入口文件中，测试就能导入 `app` 而不必监听端口，[Eden](/eden/) 也能导入它的类型。不过导入应用仍可能初始化其依赖项，例如配置和数据库客户端。
+
+## 共享代码
+
+只有跨功能共享的代码才放入 `libs/` 或 `plugins/`。否则，就把它留在所属功能的文件夹中。
+
+### 库
+
+使用 `libs/` 存放与 Elysia 无关的共享代码。
+
+| 文件               | 内容                                                 |
+| ------------------ | -------------------------------------------------------- |
+| `libs/db/index.ts` | 创建并导出数据库客户端                       |
+| `libs/db/table.ts` | 为 ORM 或查询构建器定义表和关系 |
+| `libs/message.ts`  | 常用共享辅助函数，例如消息格式化     |
+
+只创建一次数据库客户端，并在需要的地方导入。功能专属的查询应与该功能的业务逻辑放在一起。不要让 `libs/db/index.ts` 变成收纳应用中所有查询的集合。
+
+辅助函数应留在所属功能中，直到其他功能也需要它。文件里有函数，并不意味着它就该放进 `libs/`。
+
+### 插件
+
+使用 `plugins/` 存放可复用且与 HTTP 或生命周期事件相关的 Elysia 行为，例如身份验证宏或请求元数据。
+
+```ts title="src/plugins/macro.ts"
+import { Elysia } from 'elysia'
+
+export const metadata = new Elysia({ name: 'request-metadata' }).macro({
+    requestId: {
+        derive: () => ({ requestId: crypto.randomUUID() })
+    }
+})
+```
+
+这样可以将 HTTP 和 Elysia 相关逻辑与业务逻辑分开。服务或 `libs` 不需要了解请求 ID、cookie 或请求头。
+
+## 路由
+
+`routes/` 下的每个文件夹对应一个功能，例如 `auth` 或 `user`。将该功能的路由、业务逻辑和 API schema 放在一起，这样修改某个功能时就不必在全应用的控制器、服务和模型文件夹中来回查找。
+
+这三个文件各司其职：
+
+| 文件         | 内容                                 | 不包含                                 |
+| ------------ | ---------------------------------------- | ----------------------------------------- |
+| `index.ts`   | Elysia 控制器、HTTP 相关行为 | 具体技术实现         |
+| `service.ts` | 业务操作、事务        | 请求上下文、cookie 处理          |
+| `model.ts`   | DTO、schema、TypeScript 类型          | 数据库连接、业务操作 |
+
+从功能实际需要出发。简单的路由可以留在 `index.ts` 中，不需要共享 schema 的功能也可以省略 `model.ts`。下面将以问候功能为例，依次介绍控制器、模型和服务，再展示主应用如何组合各功能的控制器。只为返回一个字符串，不必拆成三个文件。
+
+</div>
+
+<InteractiveDoc steps={steps}>
+
+<InteractiveStep>
+
+### 控制器（index.ts）
+
+这是一个 Elysia 实例，用于处理 HTTP 相关事项，再交由模型和服务中的业务逻辑继续处理。
+
+HTTP 相关操作都应在这里完成，例如设置请求头、cookie 和重定向。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 模型（model.ts）
+
+供 `Controller` 使用、并用于推导 `Service` 类型的一组 schema 和 TypeScript 类型。
+
+它用于在运行时校验数据，并从 schema 推导 TypeScript 类型，省去手动维护对应接口的工作。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 服务（service.ts）
+
+实现业务规则、数据访问和事务的具体逻辑。
+
+除非需要使用 Elysia 的 `status` 或 `HTTPError` 类设置 HTTP 状态码，否则服务应与 HTTP 上下文无关。
+
+</InteractiveStep>
+
+<InteractiveStep>
+
+### 主实例（app.ts）
+
+回到 `src/app.ts` 看整体结构：每个功能都通过 `.use()` 添加到应用中。主实例负责组合控制器，而控制器的处理器、服务和模型仍留在各自的路由文件夹中。
+
+这里的 `auth` 和 `user` 代表其他与 `greeting` 结构相同的功能控制器。每次调用 `.use()` 都会添加一个控制器。在这里导出应用，并在 `src/index.ts` 中启动监听。
+
+</InteractiveStep>
+
+</InteractiveDoc>
+
+<div class="content-layout">
+
+<a id="controller" />
+## 控制器
+
+将 HTTP 相关事项交给业务逻辑处理。所有 HTTP 相关操作都应在这里完成。
+
+下面的例子读取公开的用户资料。控制器选择路由、绑定校验 schema、设置响应头，并将用户 ID 传给服务。
+
+```ts title="src/routes/user/index.ts"
+import { Elysia } from 'elysia'
+
+import { metadata } from '../../plugins/macro'
+
+import * as UserModel from './model'
+import { getUser } from './service'
+
+export const user = new Elysia({ prefix: '/user' })
+    .use(metadata)
+    .get(
+        '/:id',
+        {
+            requestId: true,
+            params: UserModel.ByIdGet.Params,
+            response: UserModel.ByIdGet.Response
+        },
+        ({ set, params, requestId }) => {
+            set.headers['x-request-id'] = requestId
+
+            return getUser(params.id)
+        }
+    )
+```
+
+Cookie、请求头、重定向和其他 HTTP 细节应放在这里，或放入能够访问请求的插件中。
+
+例如，登录控制器可以在服务创建会话后设置会话 cookie。服务本身不需要 cookie 对象也能完成工作。
+
+- 只传递服务所需的值，例如 `params.id`、`body`、`user.id`。
+- 避免传入整个上下文，也不要给提取出来的处理器只标注一个宽泛的 `Context` 类型。
+
+建议像上面的 `requestId: true` 一样，提供 Elysia 插件（来自 `plugins` 文件夹）以支持类型推断。插件会向上下文添加属性，控制器无需类型断言就能使用它。
+
+:::tip[为什么]
+    This pattern is enforced by Elysia. It makes an Elysia instance know only the
+    Context properties it actually needs, forcing you to provide an actual
+    implementation for type soundness.
+:::
+
+Elysia 实例本身已经能对路由分组并保留其类型。基类控制器，或仅将参数转交给服务的第二个控制器，都无法带来有意义的职责分离。
+
+## 模型
+
+供控制器使用、并用于推导服务类型的一组 schema 和 TypeScript 类型。
+
+它用于为控制器提供运行时校验 schema，并为服务提供 TypeScript 类型。
+
+这里的模型通常由 `t`（`elysia` 的具名导出）定义的 DTO，或 Standard Schema（Zod、Valibot 等）组成，用于在运行时校验数据并从中推导 TypeScript 类型，避免手动维护对应接口。
+
+### 命名约定
+
+命名约定由你（和团队）决定，并在整个项目中保持一致。如果还没有明确的约定，我们建议采用以下方式：
+
+#### 按路由路径和 HTTP 方法分组
+
+- 每条路由导出一个对象，采用 PascalCase 命名为 `[Pathname][Method]`。
+- 使用相对于控制器前缀的路由路径，再追加 HTTP 方法。
+- 不包含实例前缀，因为它已由模型命名空间表示。根路径 `/` 只使用方法名。每个动态路径段替换为 `By[ParameterName]`。
+
+| 控制器前缀 | 本地路由    | 模型分组   |
+| ----------------- | -------------- | ------------- |
+| `/greet`          | `POST /`       | `Post`        |
+| `/user`           | `GET /:id`     | `ByIdGet`     |
+| 无                | `GET /:userId` | `ByUserIdGet` |
+
+#### 按 schema 类型分组
+- 每个 schema 属性都使用 PascalCase 命名，例如 `Body`、`Params`、`Query` 或 `Response`。
+- 使用 `UnwrapModels<typeof Group>` 导出与每个 schema 分组同名的类型。
+
+```ts title="src/routes/user/model.ts"
+import { t, type UnwrapModels } from 'elysia'
+
+export const ByIdGet = {
+    Params: t.Object({
+        id: t.String({ format: 'uuid' })
+    }),
+    Response: {
+        200: t.Object({
+            id: t.String({ format: 'uuid' }),
+            name: t.String()
+        }),
+        404: t.Object({
+            type: t.String(),
+            code: t.Literal('USER_NOT_FOUND'),
+            title: t.String(),
+            status: t.Literal(404),
+            detail: t.String()
+        })
+    }
+}
+
+export type ByIdGet = UnwrapModels<typeof ByIdGet>
+```
+
+#### 使用方式
+
+- 使用 `import * as UserModel from './model'` 导入文件，名称由路由文件夹名加上 `Model` 构成。
+- 通过该命名空间访问 schema，例如 `UserModel.ByIdGet.Params`。
+
+```ts
+import { Elysia } from 'elysia'
+import * as GreetModel from './model'
+
+function greet({ name }: GreetModel.Post['Body']) {
+    return 'Hello ' + name
+}
+
+export const greeting = new Elysia({ prefix: '/greet' })
+    .post('/', {
+        body: GreetModel.Post.Body
+    }, ({ body }) => greet(body))
+```
+
+这样一来，所有内容都有类型支持，也避免了重复定义类型。
+
+更新 schema 时，TypeScript 类型也会自动更新，服务会依据该类型进行检查，Elysia 还会在运行时校验请求体。
+
+请注意：
+- 仅有类型标注并不能在运行时校验数据。
+- 响应 schema 是可选的。如果需要严格约束响应，请使用它。（提供 schema 后，Elysia 也会处理响应的规范化和校验。）
+
+只被一条路由使用的 schema 可以留在该路由旁边。如果需要注册 schema 名称，请使用[引用模型](/patterns/openapi/#reference-model)；在文件之间共享 schema 并不需要注册。
+
+### 模型与数据库 schema
+
+`Database schema` 描述应用如何存储数据，而 `Model` 描述 API 接收和返回什么数据。两者职责不同，但有时内容会重叠。
+
+Prisma 和 Drizzle 等现代库可以将数据库 schema 转换为 TypeBox 或 Standard Schema，供 Elysia 复用。
+
+因此，你可以直接复用数据库 schema 作为模型，而不必重复定义。
+
+这样 Elysia 就会依据数据库 schema 校验数据，但请注意不要暴露敏感字段或与 API 无关的字段。
+
+请参阅 [Prisma](/integrations/prisma/) 和 [Drizzle](/integrations/drizzle/)，了解如何在 Elysia 中复用数据库 schema。
+
+## 服务
+
+输入明确的普通函数。
+
+服务可以直接查询数据库、检查资源归属、协调其他服务，也可以在多个写入必须同时成功时执行事务。无需仅仅为了包装每次数据库调用而增加仓储层。
+
+让服务与请求上下文保持独立。对于 API 自己定义的错误，使用 `HTTPError.id(code, status)` 为每种错误指定稳定标识符和明确的 HTTP 状态码。
+
+```ts title="src/routes/user/service.ts"
+import { HTTPError } from 'elysia'
+import { db } from '../../libs/db'
+import type * as UserModel from './model'
+
+export class UserNotFound extends HTTPError.id('USER_NOT_FOUND', 404) {}
+
+export async function getUser(id: UserModel.ByIdGet['Params']['id']) {
+    const user = await db.users.findById(id)
+
+    if (!user) return new UserNotFound('User not found')
+
+    return {
+        id: user.id,
+        name: user.name
+    } satisfies UserModel.ByIdGet['Response'][200]
+}
+```
+
+像上面那样，复用模型推导出的类型来标注服务参数和返回数据，这样 schema 变更时，服务契约也会随之更新。
+
+### 优先使用自定义类，而不是 status
+
+如果服务可能在多个地方返回同一种错误，优先使用自定义错误类，而不是处理器上下文中的 `status()`。类可以复用和扩展，还能为错误提供稳定标识符，供客户端检查。
+
+```ts
+import { HTTPError } from 'elysia'
+import { db } from '../../libs/db'
+
+class UserNotFound extends HTTPError.id('USER_NOT_FOUND', 404) {
+	detail: string
+
+	constructor(public username: string) {
+		super()
+		this.detail = `User ${username} not found`
+	}
+}
+
+function getUser(name: string) {
+	if (!db.users.has(name)) return new UserNotFound(name)
+
+	return db.users.get(name)
+}
+```
+
+`HTTPError.id` 会处理 HTTP 相关属性，同时让你保留完整控制权。详情请参阅[错误处理](/patterns/error-handling)。
+
+为了获得更好的类型推断，建议尽可能 `return` 错误。如果抛出错误，TypeScript 就无法推断其类型，导致 Eden 和 OpenAPI Type Gen 中的类型变为 unknown。
+
+:::tip[为什么]
+	虽然我们说过“服务不应处理 HTTP 相关信息”，但为了获得准确的类型推断，这里有必要这样做。你可以把 `status` 和 `HTTPError` 都看作一种 "Result" 类型，Elysia 能将它转换为 HTTP 响应。
+:::
+
+### 扩展功能
+
+当 `service.ts` 变得难以查阅时，可以在同一个文件夹中按职责拆分。
+
+例如，资源功能可以让 `service.ts` 负责协调图像处理、存储、元数据和权限：
+
+<FileTree
+    client:load
+    variant="card"
+    mono
+    dense
+    nodes={[
+        {
+            id: 'src/routes/asset',
+            name: 'src/routes/asset',
+            children: [
+                { id: 'asset/index.ts', name: 'index.ts', meta: '控制器' },
+                { id: 'asset/model.ts', name: 'model.ts', meta: '请求和响应 schema' },
+                { id: 'asset/service.ts', name: 'service.ts', meta: '协调资源操作' },
+                { id: 'asset/image.ts', name: 'image.ts', meta: '图像处理' },
+                { id: 'asset/storage.ts', name: 'storage.ts', meta: '文件存储' },
+                { id: 'asset/metadata.ts', name: 'metadata.ts', meta: '资源元数据' },
+                { id: 'asset/permissions.ts', name: 'permissions.ts', meta: '访问规则' }
+            ]
+        }
+    ]}
+    defaultExpanded={['src/routes/asset']}
+    className="not-content my-6"
+/>
+
+## 依赖注入
+
+Elysia **不是**依赖注入框架，而更接近类型安全的**“上下文传播”**。用技术术语来说：
+
+> Elysia 是带有类型化上下文的组合根，而不是容器。
+
+```ts {15-24}
+import { Elysia } from 'elysia'
+
+class Dependency {
+	doThing() { return 'Hi!' }
+}
+
+class Service {
+	constructor(protected dependency: Dependency) {}
+
+	doSomething() {
+		return this.dependency.doThing()
+	}
+}
+
+new Elysia()
+	.decorate({
+		dependency: new Dependency()
+	})
+	// Singleton, alive for the entire app
+	.decorate((deps) => ({
+		...deps,
+		service: new Service(deps.dependency)
+	}))
+	.get('/', ({ service }) => service.doSomething())  
+```
+
+也可以使用 `derive` 为每个请求创建新的 `Service`：
+
+```ts
+new Elysia()
+	.decorate({
+		dependency: new Dependency()
+	})
+	// Per request, alive for each request
+	.derive(({ dependency }) => ({
+		service: new Service(dependency)
+	}))
+	.get('/', ({ service }) => service.doSomething())
+```
+
+- `decorate` 用于单例依赖，在整个应用生命周期内存活。
+- `derive` 用于每个请求各自的依赖，在请求期间存活。
+
+Elysia 不会替你管理依赖关系图，你需要显式地自行提供依赖。
+
+### 资源清理
+
+带有 `Symbol.asyncDispose` 或 `Symbol.dispose` 的 `derive` 值会在请求结束后释放。
+
+```ts
+class Service {
+	constructor(protected dependency: Dependency) {}
+
+	async [Symbol.asyncDispose]() {
+		// Cleanup logic here
+	}
+}
+
+new Elysia()
+	.decorate({ dependency: new Dependency() })
+	.derive(({ dependency }) => ({
+		service: new Service(dependency)
+	}))
+```
+
+只有 `derive` 创建的值会被释放：`dependency` 是 `decorate` 单例，会继续存活。`decorate` 和 `state` 不会自动释放，请在 `onStop` 中释放它们。
+
+详情请参阅[释放资源](/essential/life-cycle/#dispose)。
+
+## 测试
+
+像 `test/user.test.ts` 一样，按功能组织测试。
+
+- 使用 `Service` 测试业务规则，无需构造 HTTP 请求。
+- 使用 `app.handle(url, RequestInit?)` 进行服务器或集成测试。
+
+测试设置和 `.handle()` 示例请参阅[单元测试](/patterns/unit-test/)。
+
+</div>
+
+</InteractiveDocLayout>
+
+</div>
