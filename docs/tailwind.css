@@ -784,7 +784,7 @@ button.copy::after {
 }
 
 .md-table {
-    @apply w-full max-w-full overflow-x-auto md:!table;
+    @apply w-full max-w-full overflow-x-auto xl:!table;
 
     & > tbody > tr > td {
         @apply overflow-auto;
@@ -1419,5 +1419,5 @@ div[class*='language-'] {
 }
 
 .VPNavBar .content {
-    @apply lg:pr-8 md:pl-[var(--vp-sidebar-width)];
+    @apply lg:pr-8 md:pl-40 min-[960px]:pl-[var(--vp-sidebar-width)];
 }
