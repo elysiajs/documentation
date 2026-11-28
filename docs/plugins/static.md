@@ -62,7 +62,7 @@ Path to the folder to expose as static
 Path prefix to register public files
 
 ### ignorePatterns
-@default `[]`
+@default `['.DS_Store', '.git', '.env']`
 
 List of files to ignore from serving as static files
 
@@ -73,7 +73,7 @@ By default, the static plugin will register paths to the Router with a static na
 Tradeoff memory with performance.
 
 ### alwaysStatic
-@default `false`
+@default `true` if `NODE_ENV` is `production`, otherwise `false`
 
 If set to true, static files path will be registered to Router skipping the `staticLimits`.
 
@@ -83,9 +83,9 @@ If set to true, static files path will be registered to Router skipping the `sta
 Set response headers of files
 
 ### indexHTML
-@default `false`
+@default `true`
 
-If set to true, the `index.html` file from the static directory will be served for any request that matches neither a route nor any existing static file.
+If set to true, a request for a directory will be served the `index.html` file inside that directory, for example `/public/docs` serves `public/docs/index.html`.
 
 ## Pattern
 Below you can find the common patterns to use the plugin.
