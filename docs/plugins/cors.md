@@ -114,7 +114,7 @@ Value can be one of the following:
 
 ### credentials
 
-@default `true`
+@default `false`
 
 The Access-Control-Allow-Credentials response header tells browsers whether to expose the response to the frontend JavaScript code when the request's credentials mode [Request.credentials](https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials) is `include`.
 
@@ -123,6 +123,8 @@ When a request's credentials mode [Request.credentials](https://developer.mozill
 Credentials are cookies, authorization headers, or TLS client certificates.
 
 Assign [Access-Control-Allow-Credentials](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials) header.
+
+If your frontend sends cookies or an authorization header with a cross-origin request, set `credentials: true` together with an explicit `origin`.
 
 ---
 
